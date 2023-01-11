@@ -22,7 +22,7 @@ const GlobalNotification = (props) => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminNotificationContainer.updateGlobalNotificationForPages();
-      toastSuccess(t('toaster.update_successed', { target: t('external_notification.external_notification') }));
+      toastSuccess(t('toaster.update_successed', { target: t('external_notification.external_notification'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

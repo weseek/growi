@@ -2,75 +2,50 @@
 
 
 .nologin :global {
-  #page-wrapper {
-    background: none;
-  }
+  height: 100vh;
 
   // layout
-  #wrapper {
+  .page-wrapper {
+    display: flex;
+    align-items: center;
     height: 100vh;
+    margin-top: 0px;
 
-    #page-wrapper {
-      display: flex;
-      align-items: center;
-      height: 100vh;
-      margin-top: 0px;
+    .main {
+      width: 100vw;
 
-      .main {
-        width: 100vw;
-
-        > .row {
-          margin-right: 20px;
-          margin-left: 20px;
-        }
-
-        .noLogin-header {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding-top: 30px;
-          padding-bottom: 10px;
-        }
-
-        .noLogin-form-errors {
-          width: 100%;
-
-          .alert {
-            padding: 5px;
-            margin-top: 10px;
-            margin-bottom: 0;
-
-            ul {
-              padding-left: 1.5em;
-            }
-          }
-        }
+      > .row {
+        margin-right: 20px;
+        margin-left: 20px;
       }
 
-      // .main
+      .nologin-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+        padding-bottom: 10px;
+      }
     }
 
-    // #page-wrapper
+    .link-growi-org {
+      position: absolute;
+      bottom: 9px;
+      z-index: 3;
+    }
+
   }
 
-  // #wrapper
-
   // styles
-  .noLogin-header {
+  .nologin-header {
     h1 {
       font-size: 22px;
       line-height: 1em;
     }
   }
 
-  .dropdown-with-icon {
-    .dropdown-toggle {
-      @extend .form-control;
-    }
-    i {
-      @extend .input-group-text;
-      margin-right: -1px;
-    }
+  .alert {
+    padding: 0.5em 1em 0.5em 2em;
   }
 
   .input-group {
@@ -110,20 +85,12 @@
       rgba(#29487d, 0.4),
       $gray-700,
     ),
-    'twitter': (
-      rgba(#1da1f2, 0.4),
-      $gray-700,
-    ),
     'oidc': (
       rgba(#24292e, 0.4),
       $gray-700,
     ),
     'saml': (
       rgba(#55a79a, 0.4),
-      $gray-700,
-    ),
-    'basic': (
-      rgba(#24292e, 0.4),
       $gray-700,
     ),
   );
@@ -150,10 +117,11 @@
       transition: color 0.8s;
     }
   }
-  .noLogin-header,
-  .noLogin-dialog {
+  .nologin-header,
+  .nologin-dialog {
     max-width: 480px;
   }
+
 }
 
 .link-switch {

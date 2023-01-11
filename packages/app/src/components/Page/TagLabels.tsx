@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 
-import { Skelton } from '../Skelton';
+import { Skeleton } from '../Skeleton';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -13,8 +13,8 @@ type Props = {
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
 }
 
-export const TagLabelsSkelton = (): JSX.Element => {
-  return <Skelton additionalClass={`${styles['grw-tag-labels-skelton']} py-1`} />;
+export const TagLabelsSkeleton = (): JSX.Element => {
+  return <Skeleton additionalClass={`${styles['grw-tag-labels-skeleton']} py-1`} />;
 };
 
 export const TagLabels:FC<Props> = (props: Props) => {
@@ -31,13 +31,13 @@ export const TagLabels:FC<Props> = (props: Props) => {
   };
 
   if (tags == null) {
-    return <TagLabelsSkelton />;
+    return <TagLabelsSkeleton />;
   }
 
   return (
     <>
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
-        <i className="tag-icon icon-tag mr-2"></i>
+        <i className="tag-icon icon-tag mr-2"/>
         <RenderTagLabels
           tags={tags}
           openEditorModal={openEditorModal}

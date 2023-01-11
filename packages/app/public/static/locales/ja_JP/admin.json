@@ -12,7 +12,6 @@
   "Description": "説明",
   "last_login": "最終ログイン",
   "wiki_management_home_page": "Wiki管理トップ",
-  "app_settings": "アプリ設定",
   "public": "公開",
   "anyone_with_the_link": "リンクを知っている人のみ",
   "specified_users": "特定ユーザーのみ",
@@ -27,8 +26,8 @@
     "always_displayed": "表示 (固定)",
     "displayed_or_hidden": "表示 / 非表示",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
-    "Register limitation": "登録の制限",
-    "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
+    "register_limitation": "登録の制限",
+    "register_limitation_desc": "新しいユーザーを登録する方法を制限します。",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
@@ -62,10 +61,12 @@
     "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 管理者のみ可能 > 管理者とページ作者が可能 > 誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete":"セットアップはまだ完了してません",
-    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
+    "providerName": "プロバイダ名",
+    "issuerHost": "発行ホスト",
+    "scope": "範囲",
     "desc_of_callback_URL": "{{AuthName}} プロバイダ側の設定で利用してください。",
     "authorization_endpoint": "認可エンドポイント",
     "token_endpoint": "トークンエンドポイント",
@@ -88,6 +89,10 @@
       "restricted": "制限 (登録完了には管理者の承認が必要)",
       "closed": "非公開 (登録には管理者による招待が必要)"
     },
+    "share_link_management": "共有リンク管理",
+    "No_share_links":"共有リンクが存在しません",
+    "share_link_notice":"共有リンクを全て削除します",
+    "delete_all_share_links":"全ての共有リンクを削除します",
     "share_link_rights": "シェアリンクの権限",
     "enable_link_sharing": "リンクのシェアを許可",
     "all_share_links": "全てのシェアリンク",
@@ -110,7 +115,6 @@
       "email_authentication": "ユーザー登録時のメール認証",
       "enable_email_authentication": "メール認証を有効にする",
       "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
       "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
     },
     "ldap": {
@@ -161,13 +165,6 @@
       "attr_based_login_control_rule_exampl2": "<h5>エスケープの例</h5>ルールに URL を利用したい場合は、次のようにエスケープしてください:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
     },
-    "Basic": {
-      "enable_basic": "Basic を有効にする",
-      "name": "Basic 認証",
-      "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
-      "desc_2": "ユーザーが存在しなかった場合は自動生成します。",
-      "updated_basic": "Basic認証 を更新しました"
-    },
     "OAuth": {
       "enable_oidc": "OIDC を有効にする",
       "register": "%sに登録",
@@ -185,16 +182,6 @@
       "Facebook": {
         "name": "Facebook OAuth"
       },
-      "Twitter": {
-        "enable_twitter": "Twitter OAuth を有効にする",
-        "name": "Twitter OAuth",
-        "register_1": "{{link}} へアクセス",
-        "register_2": "Twitterにサインイン",
-        "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
-        "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
-        "updated_twitter": "Twitter OAuth を更新しました"
-      },
       "GitHub": {
         "enable_github": "GitHub OAuth を有効にする",
         "name": "GitHub OAuth",
@@ -209,13 +196,16 @@
         "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
         "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
+        "register_1": "OIDC IdP Administrator へ接続します。",
+        "register_2": "OIDCアプリの認証コールバックURLを<code>%s</code>として登録します。",
+        "register_3": "上記のClientIDとClient Secretをコピー＆ペーストしてください。",
         "updated_oidc": "OpenID Connect を更新しました",
         "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"
       },
       "how_to": {
         "google": "Google OAuth の設定方法",
         "github": "GitHub OAuth の設定方法",
-        "twitter": "Twitter OAuth の設定方法"
+        "oidc": "OIDC の設定方法"
       }
     },
     "form_item_name": {
@@ -278,7 +268,8 @@
     "delete_notification_pattern": "通知パターンを削除しました。",
     "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "{{path}}の通知設定を変更しました"
+    "toggle_notification": "{{path}}の通知設定を変更しました",
+    "not_found_global_notification_triggerid": "アクセス先の通知設定は見つかりませんでした"
   },
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",
@@ -309,7 +300,6 @@
     "system_information": "システム情報",
     "wiki_administrator": "この画面はWiki管理者のみがアクセスできる画面です。",
     "assign_administrator": "「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。",
-    "list_of_installed_plugins": "インストールされているプラグイン一覧",
     "package_name": "パッケージ名",
     "specified_version": "指定バージョン",
     "installed_version": "インストールされているバージョン",
@@ -324,8 +314,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
-    "go_to_settings": "設定する",
     "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
     "upgrade_to_v5": "v5 互換形式 へ変換",
@@ -355,9 +343,12 @@
     "site_name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
-    "site_url_desc": "サイトURLを設定します。",
-    "site_url_warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
-    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
+    "site_url": {
+      "title": "サイトURL設定",
+      "desc": "サイトURLを設定します。",
+      "warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
+      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL"
+    },
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
     "default_language": "新規ユーザーのデフォルト設定言語",
@@ -394,15 +385,12 @@
     "gridfs_label": "MongoDB(GridFS)",
     "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
     "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
-    "ses_settings": "SES設定",
     "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket_name": "バケット名",
     "custom_endpoint": "カスタムエンドポイント",
     "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
-    "plugin_settings": "プラグイン設定",
-    "enable_plugin_loading": "プラグインの読み込みを有効にします。",
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
@@ -499,15 +487,13 @@
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
     },
-    "code_highlight": "コードハイライト",
-    "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - この Wiki のサイト名",
     "custom_title_detail_placeholder2": "<code>&#123;&#123;pagename&#125;&#125;</code> - 現在表示中のページ名",
     "custom_title_detail_placeholder3": "<code>&#123;&#123;pagepath&#125;&#125;</code> - 現在表示中のページパス",
-    "custom_header": "カスタム HTML Header",
-    "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
+    "custom_noscript": "カスタム Noscript",
+    "custom_noscript_detail": "システム全体に適用される HTML を記述できます。<code>&lt;body&gt;</code> タグ内の最初の <code>&lt;noscript&gt;</code> タグ内に展開されます。<br>変更の反映はページの更新が必要です。",
     "custom_css": "カスタム CSS",
     "write_css": " システム全体に適用されるCSSを記述できます。",
     "ctrl_space": "Ctrl+Space でコード補完",
@@ -520,25 +506,6 @@
     "current_logo": "現在のロゴ",
     "upload_new_logo": "新しいロゴをアップロードする",
     "delete_logo": "ロゴを削除"
-  },
-  "export_management": {
-    "export_archive_data": "データアーカイブ",
-    "exporting_collection_list": "エクスポート中のコレクション",
-    "exported_data_list": "エクスポートされたアーカイブリスト",
-    "export_collections": "コレクションのエクスポート",
-    "check_all": "全てにチェックを付ける",
-    "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
-    "create_new_archive_data": "アーカイブデータの新規作成",
-    "export": "エクスポート",
-    "cancel": "キャンセル",
-    "file": "ファイル名",
-    "growi_version": "Growi バージョン",
-    "collections": "コレクション",
-    "exported_at": "エクスポートされた時間",
-    "export_menu": "エクスポートメニュー",
-    "download": "ダウンロード",
-    "delete": "削除"
   },
   "importer_management": {
     "import_data": "データインポート",
@@ -616,6 +583,25 @@
     "admin_archive_data_import_guide_url": "https://docs.growi.org/ja/admin-guide/management-cookbook/import.html#growi-%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
+  },
+  "export_management": {
+    "export_archive_data": "データアーカイブ",
+    "exporting_collection_list": "エクスポート中のコレクション",
+    "exported_data_list": "エクスポートされたアーカイブリスト",
+    "export_collections": "コレクションのエクスポート",
+    "check_all": "全てにチェックを付ける",
+    "uncheck_all": "全てからチェックを外す",
+    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
+    "create_new_archive_data": "アーカイブデータの新規作成",
+    "export": "エクスポート",
+    "cancel": "キャンセル",
+    "file": "ファイル名",
+    "growi_version": "GROWI バージョン",
+    "collections": "コレクション",
+    "exported_at": "エクスポートされた時間",
+    "export_menu": "エクスポートメニュー",
+    "download": "ダウンロード",
+    "delete": "削除"
   },
   "external_notification": {
     "external_notification": "外部ツールへの通知",
@@ -870,6 +856,19 @@
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "plugins": {
+    "plugins": "プラグイン",
+    "plugin_installer": "プラグインインストーラー",
+    "repository_url": "URL",
+    "description": "リポジトリのURLの入力してください。",
+    "plugin_card": "プラグインカード",
+    "plugin_is_not_installed": "プラグインがインストールされていません",
+    "install": "インストール",
+    "delete": "削除"
+  },
+  "cloud_setting_management": {
+    "to_cloud_settings": "GROWI.cloud の管理画面へ"
+  },
   "audit_log_action_category": {
     "Page": "ページ",
     "Comment": "コメント",
@@ -886,10 +885,8 @@
     "USER_LOGIN_WITH_LDAP": "LDAP 認証でログイン",
     "USER_LOGIN_WITH_GOOGLE": "Google 認証でログイン",
     "USER_LOGIN_WITH_GITHUB": "GitHub 認証でログイン",
-    "USER_LOGIN_WITH_TWITTER": "Twitter 認証でログイン",
     "USER_LOGIN_WITH_OIDC": "OIDC 認証でログイン",
     "USER_LOGIN_WITH_SAML": "SAML 認証でログイン",
-    "USER_LOGIN_WITH_BASIC": "BASIC 認証でログイン",
     "USER_LOGIN_FAILURE": "ログイン失敗",
     "USER_LOGOUT": "ログアウト",
     "USER_FOGOT_PASSWORD": "パスワードリセットのリクエスト",
@@ -967,18 +964,12 @@
     "ADMIN_AUTH_OIDC_ENABLED": "OIDC 認証を有効",
     "ADMIN_AUTH_OIDC_DISABLED": "OIDC 認証を無効",
     "ADMIN_AUTH_OIDC_UPDATE": "OIDC 認証設定の更新",
-    "ADMIN_AUTH_BASIC_ENABLED": "BASIC 認証の有効",
-    "ADMIN_AUTH_BASIC_DISABLED": "BASIC 認証の無効",
-    "ADMIN_AUTH_BASIC_UPDATE": "BASIC 認証設定の更新",
     "ADMIN_AUTH_GOOGLE_ENABLED": "Google 認証の有効",
     "ADMIN_AUTH_GOOGLE_DISABLED": "Google 認証の無効",
     "ADMIN_AUTH_GOOGLE_UPDATE": "Google 認証設定の更新",
     "ADMIN_AUTH_GITHUB_ENABLED": "GitHub 認証の有効",
     "ADMIN_AUTH_GITHUB_DISABLED": "GitHub 認証の無効",
     "ADMIN_AUTH_GITHUB_UPDATE": "GitHub 認証設定の更新",
-    "ADMIN_AUTH_TWITTER_ENABLED": "Twitter 認証の有効",
-    "ADMIN_AUTH_TWITTER_DISABLED": "Twitter 認証の無効",
-    "ADMIN_AUTH_TWITTER_UPDATE": "Twitter 認証設定の更新",
     "ADMIN_MARKDOWN_LINE_BREAK_UPDATE": "Line Break 設定の更新",
     "ADMIN_MARKDOWN_INDENT_UPDATE": "インデント設定の更新",
     "ADMIN_MARKDOWN_PRESENTATION_UPDATE": "プレゼンテーション設定の更新",
@@ -989,7 +980,7 @@
     "ADMIN_FUNCTION_UPDATE": "機能設定の更新",
     "ADMIN_CODE_HIGHLIGHT_UPDATE": "コードハイライト設定の更新",
     "ADMIN_CUSTOM_TITLE_UPDATE": "カスタムタイトル設定の更新",
-    "ADMIN_CUSTOM_HTML_HEADER_UPDATE": "カスタム HTML Header 設定の更新",
+    "ADMIN_CUSTOM_NOSCRIPT_UPDATE": "カスタム noscript 設定の更新",
     "ADMIN_CUSTOM_CSS_UPDATE": "カスタム CSS 設定の更新",
     "ADMIN_CUSTOM_SCRIPT_UPDATE": "カスタムスクリプト設定の更新",
     "ADMIN_ARCHIVE_DATA_UPLOAD": "アーカイブデータのアップロード",
@@ -1040,5 +1031,19 @@
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+  },
+  "toaster": {
+    "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました",
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "install_plugin_success": "{{pluginName}}のインストールに成功しました",
+    "activate_plugin_success": "{{pluginName}}を有効化しました",
+    "deactivate_plugin_success": "{{pluginName}}を無効化しました",
+    "remove_plugin_success": "{{pluginName}}を削除しました"
   }
 }

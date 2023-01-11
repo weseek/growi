@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "6.0.0-RC.1",
+  "version": "6.0.2-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -61,7 +61,8 @@
     "@types/rewire": "^2.5.28",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "cypress": "^9.2.0",
+    "cypress": "^12.0.1",
+    "cypress-wait-until": "^1.7.2",
     "eslint": "^8.18.0",
     "eslint-config-next": "^12.1.6",
     "eslint-config-weseek": "^2.1.0",
@@ -89,6 +90,7 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~4.7",
+    "vite": "^3.2.5",
     "yargs": "^17.3.1"
   },
   "engines": {

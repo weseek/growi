@@ -7,8 +7,8 @@ import {
   DropdownItem, DropdownMenu, UncontrolledDropdown,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -133,7 +133,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     <UncontrolledDropdown
       onToggle={toggleHandler}
       direction={ isBookmarkFolderExists() ? 'up' : 'down' }
-      className="grw-bookmark-folder-dropdown">
+      className='grw-bookmark-folder-dropdown'>
       {children}
       <DropdownMenu
         right

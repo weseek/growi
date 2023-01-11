@@ -1,26 +1,34 @@
 import React from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
-
-import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
+import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
+  useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+} from '~/stores/ui';
+
+import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
+import {
+  useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
 } from '../stores/context';
 
+import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
 } from './utils/commons';
+import { useTranslation } from 'next-i18next';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
@@ -31,10 +39,17 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  showPageLimitationXL: number,
+
+  // UI
   userUISettings?: IUserUISettings
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
+
+  rendererConfig: RendererConfig,
 };
 
-const TrashPage: NextPage<CommonProps> = (props: Props) => {
+const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -44,22 +59,59 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchPage(false);
   useCurrentPageId(null);
   useCurrentPathname('/trash');
-  useCurrentPagePath('/trash');
+
+  // UserUISettings
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+
+  useShowPageLimitationXL(props.showPageLimitationXL);
+
+  useRendererConfig(props.rendererConfig);
+
+  const { t } = useTranslation();
+
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
+
+  const title = generateCustomTitleForPage(props, '/trash');
 
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} >
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={false} />
+          <GrowiSubNavigation
+            pagePath="/trash"
+            showDrawerToggler={isDrawerMode}
+            isGuestUser={isGuestUser}
+            isDrawerMode={isDrawerMode}
+            additionalClasses={['container-fluid']}
+          />
         </header>
 
-        <div className="grw-container-convertible mb-5 pb-5">
+        <div className="content-main grw-container-convertible mb-5 pb-5">
           <TrashPageList />
         </div>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-      </BasicLayout>
+      </div>
+    </>
+  );
+};
 
+TrashPage.getLayout = function getLayout(page) {
+  return (
+    <>
+      <BasicLayoutWithEditorMode>
+        {page}
+      </BasicLayoutWithEditorMode>
       <EmptyTrashModal />
       <PutbackPageModal />
     </>
@@ -67,8 +119,12 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
+
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   if (userUISettings != null) {
@@ -86,6 +142,39 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
+
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
+
+  props.rendererConfig = {
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+
+    // XSS Options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+  };
+}
+
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -103,6 +192,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

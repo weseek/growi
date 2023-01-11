@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
@@ -265,7 +265,7 @@ const ManageCommandsProcess = ({
         permissionsForSingleUseCommands: permissionsForSingleUseCommandsState,
         permissionsForSlackEventActions: permissionsForEventsState,
       });
-      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Token', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

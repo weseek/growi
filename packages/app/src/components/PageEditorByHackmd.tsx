@@ -1,24 +1,32 @@
 import React, {
-  useCallback, useRef, useState, useEffect,
+  useCallback, useRef, useState, useEffect, useMemo,
 } from 'react';
 
 import EventEmitter from 'events';
 
+import { pathUtils } from '@growi/core';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
-
-import { saveOrUpdate } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
+import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
+  useCurrentPageId, useCurrentPathname, useHackmdUri, useIsNotFound,
 } from '~/stores/context';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+  useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
+} from '~/stores/hackmd';
+import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -29,7 +37,12 @@ import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
-declare const globalEmitter: EventEmitter;
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
 
 type HackEditorRef = {
   getValue: () => Promise<string>
@@ -38,22 +51,26 @@ type HackEditorRef = {
 export const PageEditorByHackmd = (): JSX.Element => {
 
   const { t } = useTranslation();
+  const router = useRouter();
+
+  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentPathname } = useCurrentPagePath();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: currentPathname } = useCurrentPathname();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
-  const { data: grant } = useSelectedGrant();
+  const { data: grantData } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
+  const saveOrUpdate = useSaveOrUpdate();
+  const { advance: advancePt } = usePageTreeTermManager();
+
+  const { returnPathForURL } = pathUtils;
 
   // pageData
   const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
-
-  const slackChannels = slackChannelsData?.toString();
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
@@ -67,60 +84,64 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
-  const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
+  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
+  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
+
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
+
+  const optionsToSave = useMemo((): OptionsToSave | undefined => {
+    if (grantData == null) {
+      return;
+    }
+    const optionsToSave = {
+      isSlackEnabled: isSlackEnabled ?? false,
+      slackChannels: '', // set in save method by opts in SavePageControlls.tsx
+      grant: grantData.grant,
+      pageTags: pageTags ?? [],
+      grantUserGroupId: grantData.grantedGroup?.id,
+      grantUserGroupName: grantData.grantedGroup?.name,
+    };
+    return optionsToSave;
+  }, [grantData, isSlackEnabled, pageTags]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.HackMD) { return }
 
     try {
-      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
+      if (currentPathname == null || revision == null || hackmdEditorRef.current == null || revisionIdHackmdSynced == null || optionsToSave == null) {
         throw new Error('Some materials to save are invalid');
       }
 
-      let optionsToSave;
-
-      const currentOptionsToSave = getOptionsToSave(
-        isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
-      );
-
-      if (opts != null) {
-        optionsToSave = Object.assign(currentOptionsToSave, {
-          ...opts,
-        });
-      }
-      else {
-        optionsToSave = currentOptionsToSave;
-      }
+      const options = Object.assign(optionsToSave, opts, { isSyncRevisionToHackmd: true });
 
       const markdown = await hackmdEditorRef.current.getValue();
 
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
-      await mutatePageData();
-      await mutateTagsInfo();
+      const { page } = await saveOrUpdate(markdown, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, options);
+
+      if (page == null) {
+        return;
+      }
+      if (isNotFound) {
+        await router.push(`/${page._id}`);
+      }
+      else {
+        updateStateAfterSave?.();
+        mutateIsHackmdDraftUpdatingInRealtime(false);
+
+        // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
+        advancePt();
+      }
+      setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
-      mutateIsEnabledUnsavedWarning(false);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [editorMode,
-      isSlackEnabled,
-      currentPathname,
-      slackChannels,
-      grant,
-      revision,
-      pageTags,
-      pageId,
-      currentPagePath,
-      mutatePageData,
-      mutateEditorMode,
-      mutateTagsInfo,
-      mutateIsEnabledUnsavedWarning,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, pageId, currentPagePath, isNotFound, mutateEditorMode, router, updateStateAfterSave, mutateIsHackmdDraftUpdatingInRealtime, advancePt]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -130,6 +151,26 @@ export const PageEditorByHackmd = (): JSX.Element => {
       globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
     };
   }, [saveAndReturnToViewHandler]);
+
+  const resetInitializedStatusHandler = useCallback(() => {
+    setIsInitialized(false);
+  }, []);
+
+
+  // set handler to save and reload Page
+  useEffect(() => {
+    globalEmitter.on('resetInitializedHackMdStatus', resetInitializedStatusHandler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('resetInitializedHackMdStatus', resetInitializedStatusHandler);
+    };
+  }, [resetInitializedStatusHandler]);
+
+  useEffect(() => {
+    // for page translation: https://github.com/weseek/growi/pull/7100
+    setIsInitialized(false);
+  }, [pageId]);
+
 
   const isResume = useCallback(() => {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
@@ -186,10 +227,10 @@ export const PageEditorByHackmd = (): JSX.Element => {
         throw new Error(res.error);
       }
 
-      setIsHackmdDraftUpdatingInRealtime(false);
+      mutateIsHackmdDraftUpdatingInRealtime(false);
       mutateHasDraftOnHackmd(false);
       mutatePageIdOnHackmd(res.pageIdOnHackmd);
-      setRemoteRevisionId(res.revisionIdHackmdSynced);
+      mutateRemoteRevisionId(res.revisionIdHackmdSynced);
       mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
 
 
@@ -198,7 +239,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error(err);
       toastError(err.message);
     }
-  }, [setIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, pageId]);
+  }, [mutateIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, mutateRemoteRevisionId, pageId]);
 
   /**
    * save and update state of containers
@@ -208,22 +249,23 @@ export const PageEditorByHackmd = (): JSX.Element => {
     try {
       const currentPagePathOrPathname = currentPagePath || currentPathname;
       if (
-        isSlackEnabled == null || grant == null || slackChannels == null || pageId == null
-        || revisionIdHackmdSynced == null || currentPagePathOrPathname == null
+        pageId == null || revisionIdHackmdSynced == null || currentPagePathOrPathname == null || optionsToSave == null
       ) { throw new Error('Some materials to save are invalid') }
-      const optionsToSave = getOptionsToSave(
-        isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
-      );
-      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
+
+      const options = Object.assign(optionsToSave, { isSyncRevisionToHackmd: true });
+
+      const res = await saveOrUpdate(markdown, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, options);
 
       // update pageData
       mutatePageData(res);
 
       // set updated data
-      setRemoteRevisionId(res.revision._id);
-      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
-      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
+      updateStateAfterSave?.();
       mutateTagsInfo();
+
+      // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
+      advancePt();
+
       mutateIsEnabledUnsavedWarning(false);
 
       logger.debug('success to save');
@@ -234,20 +276,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [isSlackEnabled,
-      grant,
-      slackChannels,
-      pageId,
-      revisionIdHackmdSynced,
-      currentPathname,
-      pageTags,
-      currentPagePath,
-      mutatePageData,
-      mutateRevisionIdHackmdSynced,
-      mutateHasDraftOnHackmd,
-      mutateTagsInfo,
-      mutateIsEnabledUnsavedWarning,
-      t]);
+  }, [
+    currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave,
+    saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, advancePt, mutateIsEnabledUnsavedWarning, t]);
 
   /**
    * onChange event of HackmdEditor handler
@@ -263,13 +294,15 @@ export const PageEditorByHackmd = (): JSX.Element => {
       return;
     }
 
+    mutateIsEnabledUnsavedWarning(true);
+
     try {
       await apiPost('/hackmd.saveOnHackmd', { pageId });
     }
     catch (err) {
       logger.error(err);
     }
-  }, [pageId, revision?.body, hackmdUri]);
+  }, [hackmdUri, pageId, revision?.body, mutateIsEnabledUnsavedWarning]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     toastError(error.message);
@@ -328,8 +361,11 @@ export const PageEditorByHackmd = (): JSX.Element => {
               <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
               <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
-
+                { pageData != null && (
+                  <Link href={urljoin(returnPathForURL(pageData.path, pageData._id), `?revisionId=${revisionIdHackmdSynced}`)} prefetch={false}>
+                    <a><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
+                  </Link>
+                )}
                 <div className="text-center mt-3">
                   <button
                     className="btn btn-link btn-view-outdated-draft p-0"
@@ -402,7 +438,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
         {content}
       </div>
     );
-  }, [discardChanges, isInitializing, isResume, resumeToEdit, startToEdit, t, hackmdUri, pageId, remoteRevisionId, revisionIdHackmdSynced, revision?._id]);
+  // eslint-disable-next-line max-len
+  }, [pageId, hackmdUri, isResume, t, revisionIdHackmdSynced, remoteRevisionId, pageData, returnPathForURL, isInitializing, resumeToEdit, discardChanges, revision?._id, startToEdit]);
 
   if (editorMode == null || revision == null) {
     return <></>;

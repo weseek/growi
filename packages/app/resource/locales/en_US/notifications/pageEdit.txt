@@ -1,5 +1,5 @@
-{{ username }} edited the page {{ path }}.
+<%- username -%> edited the page <%- path -%>.
 
 ----------------------
 
-Growi: {{ appTitle }}
+Growi: <%- appTitle -%>

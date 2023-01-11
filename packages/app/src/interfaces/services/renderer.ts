@@ -1,6 +1,5 @@
 import { XssOptionConfig } from '~/services/xss/xssOption';
 
-
 export type RendererConfig = {
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,

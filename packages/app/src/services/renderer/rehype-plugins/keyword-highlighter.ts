@@ -10,7 +10,7 @@ import { Plugin } from 'unified';
  * @param value
  * @returns
  */
-function splitWithKeyword(keyword: string, value: string): string[] {
+function splitWithKeyword(lowercasedKeyword: string, value: string): string[] {
   if (value.length === 0) {
     return [];
   }
@@ -21,7 +21,7 @@ function splitWithKeyword(keyword: string, value: string): string[] {
   const splitted: string[] = [];
 
   do {
-    cursorEnd = value.indexOf(keyword, cursorStart);
+    cursorEnd = value.toLowerCase().indexOf(lowercasedKeyword, cursorStart);
 
     // not found
     if (cursorEnd === -1) {
@@ -29,7 +29,7 @@ function splitWithKeyword(keyword: string, value: string): string[] {
     }
     // keyword is found
     else if (cursorEnd === cursorStart) {
-      cursorEnd += keyword.length;
+      cursorEnd += lowercasedKeyword.length;
     }
 
     splitted.push(value.slice(cursorStart, cursorEnd));
@@ -50,17 +50,17 @@ function wrapWithEm(textElement: Text): Element {
   };
 }
 
-function highlight(keyword: string, node: Text, index: number, parent: Root | Element): void {
-  if (node.value.includes(keyword)) {
-    const splitted = splitWithKeyword(keyword, node.value);
+function highlight(lowercasedKeyword: string, node: Text, index: number, parent: Root | Element): void {
+  if (node.value.toLowerCase().includes(lowercasedKeyword)) {
+    const splitted = splitWithKeyword(lowercasedKeyword, node.value);
 
     parent.children[index] = {
       type: 'element',
       tagName: 'span',
       properties: {},
       children: splitted.map((text) => {
-        return text === keyword
-          ? wrapWithEm({ type: 'text', value: keyword })
+        return text.toLowerCase() === lowercasedKeyword
+          ? wrapWithEm({ type: 'text', value: text })
           : { type: 'text', value: text };
       }),
     };
@@ -79,11 +79,13 @@ export const rehypePlugin: Plugin<[KeywordHighlighterPluginParams]> = (options) 
 
   const keywords = (typeof options.keywords === 'string') ? [options.keywords] : options.keywords;
 
+  const lowercasedKeywords = keywords.map(keyword => keyword.toLowerCase());
+
   // return rehype-rewrite with hithlighter
   return rehypeRewrite.bind(this)({
     rewrite: (node, index, parent) => {
       if (parent != null && index != null && node.type === 'text') {
-        keywords.forEach(keyword => highlight(keyword, node, index, parent));
+        lowercasedKeywords.forEach(keyword => highlight(keyword, node, index, parent));
       }
     },
   });

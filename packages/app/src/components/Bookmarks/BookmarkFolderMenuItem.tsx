@@ -6,8 +6,8 @@ import {
   DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
@@ -153,7 +153,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       toggle={toggleHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <div className='d-flex justify-content-start  grw-bookmark-folder-menu-item-title'>
+      <div className='d-flex justify-content-start grw-bookmark-folder-menu-item-title'>
         <input
           type="radio"
           checked={isSelected}

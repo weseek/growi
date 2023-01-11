@@ -26,7 +26,6 @@ const editorSettingsSchema = new Schema<EditorSettingsDocument, EditorSettingsMo
   theme: { type: String },
   keymapMode: { type: String },
   styleActiveLine: { type: Boolean, default: false },
-  renderDrawioInRealtime: { type: Boolean, default: true },
   autoFormatMarkdownTable: { type: Boolean, default: true },
   textlintSettings: textlintSettingsSchema,
 });

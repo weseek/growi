@@ -224,7 +224,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpen} toggle={close} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpen} toggle={close}>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         { t('fix_page_grant.modal.title') }
       </ModalHeader>

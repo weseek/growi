@@ -44,7 +44,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       const res = await apiv3Post('/invited', { invitedForm });
       setIsConnectSuccess(true);
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      router.push(redirectTo ?? '/');
     }
     catch (err) {
       setLoginErrors(err);
@@ -84,7 +84,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   }
 
   return (
-    <div className="noLogin-dialog px-3 pb-3 mx-auto" id="noLogin-dialog">
+    <div className="nologin-dialog px-3 pb-3 mx-auto" id="nologin-dialog">
       { formNotification() }
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}

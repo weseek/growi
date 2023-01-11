@@ -1,17 +1,13 @@
-import { pagePathUtils } from '@growi/core';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
-import urljoin from 'url-join';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
-import Activity from '~/server/models/activity';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
-const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -139,7 +135,6 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
-  const swig = require('swig-templates');
 
   const { pathUtils } = require('@growi/core');
 
@@ -147,13 +142,9 @@ module.exports = function(crowi, app) {
   const User = crowi.model('User');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const ShareLink = crowi.model('ShareLink');
   const PageRedirect = mongoose.model('PageRedirect');
 
-  const { PageQueryBuilder } = Page;
-
   const ApiResponse = require('../util/apiResponse');
-  const getToday = require('../util/getToday');
 
   const { configManager, xssService } = crowi;
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -173,572 +164,54 @@ module.exports = function(crowi, app) {
 
   const actions = {};
 
-  function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.pagePath || req.params[0] || req.params.id || '');
-  }
+  // async function showPageForPresentation(req, res, next) {
+  //   const id = req.params.id;
+  //   const { revisionId } = req.query;
 
-  function generatePager(offset, limit, totalCount) {
-    let prev = null;
+  //   let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
 
-    if (offset > 0) {
-      prev = offset - limit;
-      if (prev < 0) {
-        prev = 0;
-      }
-    }
+  //   if (page == null) {
+  //     next();
+  //   }
 
-    let next = offset + limit;
-    if (totalCount < next) {
-      next = null;
-    }
+  //   // empty page
+  //   if (page.isEmpty) {
+  //     // redirect to page (path) url
+  //     const url = new URL('https://dummy.origin');
+  //     url.pathname = page.path;
+  //     Object.entries(req.query).forEach(([key, value], i) => {
+  //       url.searchParams.append(key, value);
+  //     });
+  //     return res.safeRedirect(urljoin(url.pathname, url.search));
 
-    return {
-      prev,
-      next,
-      offset,
-    };
-  }
+  //   }
 
-  function addRenderVarsForPage(renderVars, page) {
-    renderVars.page = page;
-    renderVars.revision = page.revision;
-    renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
-    renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
-    renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+  //   const renderVars = {};
 
-    if (page.creator != null) {
-      renderVars.page.creator = renderVars.page.creator.toObject();
-    }
-    if (page.revision.author != null) {
-      renderVars.revision.author = renderVars.revision.author.toObject();
-    }
-    if (page.deleteUser != null) {
-      renderVars.page.deleteUser = renderVars.page.deleteUser.toObject();
-    }
-  }
+  //   // populate
+  //   page = await page.populateDataToMakePresentation(revisionId);
 
-  function addRenderVarsForPresentation(renderVars, page) {
-    // sanitize page.revision.body
-    if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
-      const preventXssRevision = xss.process(page.revision.body);
-      page.revision.body = preventXssRevision;
-    }
-    renderVars.page = page;
-    renderVars.revision = page.revision;
-  }
+  //   if (page != null) {
+  //     addRenderVarsForPresentation(renderVars, page);
+  //   }
 
-  async function addRenderVarsForUserPage(renderVars, page) {
-    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+  //   return res.render('page_presentation', renderVars);
+  // }
 
-    if (userData != null) {
-      renderVars.pageUser = serializeUserSecurely(userData);
-    }
-  }
-
-  function addRenderVarsForScope(renderVars, page) {
-    renderVars.grant = page.grant;
-    renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
-    renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
-  }
-
-  async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
-    const SEENER_THRESHOLD = 10;
-
-    const queryOptions = {
-      offset,
-      limit,
-      includeTrashed: path.startsWith('/trash/'),
-      isRegExpEscapedFromPath,
-    };
-    const result = await Page.findListWithDescendants(path, requestUser, queryOptions);
-    if (result.pages.length > limit) {
-      result.pages.pop();
-    }
-
-    renderVars.viewConfig = {
-      seener_threshold: SEENER_THRESHOLD,
-    };
-    renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = result.pages;
-  }
-
-  async function addRenderVarsForPageTree(renderVars, pathOrId, user) {
-    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(pathOrId, user);
-
-    if (targetAndAncestors.length === 0 && pathOrId.includes('/') && !isTopPage(pathOrId)) {
-      throw new Error('Ancestors must have at least one page.');
-    }
-
-    renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
-  }
-
-  async function addRenderVarsWhenNotFound(renderVars, pathOrId) {
-    if (pathOrId == null) {
-      return;
-    }
-
-    renderVars.notFoundTargetPathOrId = pathOrId;
-  }
-
-  async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
-    if (!isEmpty) return;
-    renderVars.pageId = pageId;
-    renderVars.isEmpty = isEmpty;
-  }
-
-  function replacePlaceholdersOfTemplate(template, req) {
-    if (req.user == null) {
-      return '';
-    }
-
-    const definitions = {
-      pagepath: getPathFromRequest(req),
-      username: req.user.name,
-      today: getToday(),
-    };
-    const compiledTemplate = swig.compile(template);
-
-    return compiledTemplate(definitions);
-  }
-
-  async function _notFound(req, res) {
-    const path = getPathFromRequest(req);
-    const pathOrId = req.params.id || path;
-
-    let view;
-    let action;
-    const renderVars = { path };
-
-    if (!isCreatablePage(path)) {
-      view = 'layout-growi/not_creatable';
-      action = SupportedAction.ACTION_PAGE_NOT_CREATABLE;
-    }
-    else if (req.isForbidden) {
-      view = 'layout-growi/forbidden';
-      action = SupportedAction.ACTION_PAGE_FORBIDDEN;
-    }
-    else {
-      view = 'layout-growi/not_found';
-      action = SupportedAction.ACTION_PAGE_NOT_FOUND;
-
-      // retrieve templates
-      if (req.user != null) {
-        const template = await Page.findTemplate(path);
-
-        if (template.templateBody) {
-          const body = replacePlaceholdersOfTemplate(template.templateBody, req);
-          const tags = template.templateTags;
-          renderVars.template = body;
-          renderVars.templateTags = tags;
-        }
-      }
-
-      // add scope variables by ancestor page
-      const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
-      if (ancestor != null) {
-        await ancestor.populate('grantedGroup');
-        addRenderVarsForScope(renderVars, ancestor);
-      }
-    }
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset) || 0;
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
-    await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
-    await addRenderVarsWhenNotFound(renderVars, pathOrId);
-    await addRenderVarsWhenEmptyPage(renderVars, req.isEmpty, req.pageId);
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    crowi.activityService.createActivity(parameters);
-
-    return res.render(view, renderVars);
-  }
-
-  async function showPageForPresentation(req, res, next) {
-    const id = req.params.id;
-    const { revisionId } = req.query;
-
-    let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
-
-    if (page == null) {
-      next();
-    }
-
-    // empty page
-    if (page.isEmpty) {
-      // redirect to page (path) url
-      const url = new URL('https://dummy.origin');
-      url.pathname = page.path;
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
-
-    }
-
-    const renderVars = {};
-
-    // populate
-    page = await page.populateDataToMakePresentation(revisionId);
-
-    if (page != null) {
-      addRenderVarsForPresentation(renderVars, page);
-    }
-
-    return res.render('page_presentation', renderVars);
-  }
-
-  async function showTopPage(req, res, next) {
-    const portalPath = req.path;
-    const revisionId = req.query.revision;
-
-    const view = 'layout-growi/page_list';
-    const renderVars = { path: portalPath };
-
-    let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
-    portalPage.initLatestRevisionField(revisionId);
-
-    // add user to seen users
-    if (req.user != null) {
-      portalPage = await portalPage.seen(req.user);
-    }
-
-    // populate
-    portalPage = await portalPage.populateDataToShowRevision();
-
-    addRenderVarsForPage(renderVars, portalPage);
-
-    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
-    renderVars.sharelinksNumber = sharelinksNumber;
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset) || 0;
-
-    await addRenderVarsForDescendants(renderVars, portalPath, req.user, offset, limit);
-
-    await addRenderVarsForPageTree(renderVars, portalPath, req.user);
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_PAGE_VIEW,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    crowi.activityService.createActivity(parameters);
-
-    return res.render(view, renderVars);
-  }
-
-  async function showPageForGrowiBehavior(req, res, next) {
-    const id = req.params.id;
-    const revisionId = req.query.revision;
-
-    let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
-
-    if (page == null) {
-      // check the page is forbidden or just does not exist.
-      req.isForbidden = await Page.count({ _id: id }) > 0;
-      return _notFound(req, res);
-    }
-
-    // empty page
-    if (page.isEmpty) {
-      req.pageId = page._id;
-      req.pagePath = page.path;
-      req.isEmpty = page.isEmpty;
-      return _notFound(req, res);
-    }
-
-    const { path } = page; // this must exist
-
-    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, path);
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset) || 0;
-    const renderVars = {};
-
-    let view = 'layout-growi/page';
-
-    page.initLatestRevisionField(revisionId);
-
-    // add user to seen users
-    if (req.user != null) {
-      page = await page.seen(req.user);
-    }
-
-    // populate
-    page = await page.populateDataToShowRevision();
-    addRenderVarsForPage(renderVars, page);
-    addRenderVarsForScope(renderVars, page);
-
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
-
-    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
-    renderVars.sharelinksNumber = sharelinksNumber;
-
-    if (isUsersHomePage(path)) {
-      // change template
-      view = 'layout-growi/user_page';
-      await addRenderVarsForUserPage(renderVars, page);
-    }
-
-    await addRenderVarsForPageTree(renderVars, path, req.user);
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: isUsersHomePage(path) ? SupportedAction.ACTION_PAGE_USER_HOME_VIEW : SupportedAction.ACTION_PAGE_VIEW,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    crowi.activityService.createActivity(parameters);
-
-    return res.render(view, renderVars);
-  }
-
-  actions.showTopPage = function(req, res) {
-    return showTopPage(req, res);
-  };
-
-  /**
-   * Redirect to the page without trailing slash
-   */
-  actions.showPageWithEndOfSlash = function(req, res, next) {
-    return res.redirect(pathUtils.removeTrailingSlash(req.path));
-  };
 
   /**
    * switch action
    *   - presentation mode
    *   - by behaviorType
    */
-  actions.showPage = async function(req, res, next) {
-    // presentation mode
-    if (req.query.presentation) {
-      return showPageForPresentation(req, res, next);
-    }
-    // delegate to showPageForGrowiBehavior
-    return showPageForGrowiBehavior(req, res, next);
-  };
-
-  actions.showSharedPage = async function(req, res, next) {
-    const { linkId } = req.params;
-    const revisionId = req.query.revision;
-    const renderVars = {};
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-
-    const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
-
-    if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
-
-      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
-      crowi.activityService.createActivity(parameters);
-
-      // page or sharelink are not found (or page is empty: abnormaly)
-      return res.render('layout-growi/not_found_shared_page');
-    }
-    if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
-
-      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
-      crowi.activityService.createActivity(parameters);
-
-      return res.render('layout-growi/forbidden');
-    }
-
-    renderVars.sharelink = shareLink;
-
-    // check if share link is expired
-    if (shareLink.isExpired()) {
-      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW });
-      crowi.activityService.createActivity(parameters);
-
-      // page is not found
-      return res.render('layout-growi/expired_shared_page', renderVars);
-    }
-
-    let page = shareLink.relatedPage;
-
-    // presentation mode
-    if (req.query.presentation) {
-      page = await page.populateDataToMakePresentation(revisionId);
-
-      // populate
-      addRenderVarsForPage(renderVars, page);
-      return res.render('page_presentation', renderVars);
-    }
-
-    page.initLatestRevisionField(revisionId);
-
-    // populate
-    page = await page.populateDataToShowRevision();
-    addRenderVarsForPage(renderVars, page);
-    addRenderVarsForScope(renderVars, page);
-
-    Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW });
-    crowi.activityService.createActivity(parameters);
-
-    return res.render('layout-growi/shared_page', renderVars);
-  };
-
-  /**
-   * switch action by behaviorType
-   */
-  /* eslint-disable no-else-return */
-  actions.trashPageShowWrapper = function(req, res) {
-    // Crowi behavior for '/trash/*'
-    return actions.deletedPageListShow(req, res);
-  };
-  /* eslint-enable no-else-return */
-
-  /**
-   * switch action by behaviorType
-   */
-  /* eslint-disable no-else-return */
-  actions.deletedPageListShowWrapper = function(req, res) {
-    const path = `/trash${getPathFromRequest(req)}`;
-    return res.redirect(path);
-  };
-  /* eslint-enable no-else-return */
-
-  actions.notFound = async function(req, res) {
-    return _notFound(req, res);
-  };
-
-  actions.deletedPageListShow = async function(req, res) {
-    // normalizePath makes '/trash/' -> '/trash'
-    const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset) || 0;
-
-    const queryOptions = {
-      offset,
-      limit,
-      includeTrashed: true,
-    };
-
-    const renderVars = {
-      page: null,
-      path,
-      pages: [],
-    };
-
-    const result = await Page.findListWithDescendants(path, req.user, queryOptions);
-
-    if (result.pages.length > limit) {
-      result.pages.pop();
-    }
-
-    renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
-    renderVars.pages = result.pages;
-    res.render('layout-growi/page_list', renderVars);
-  };
-
-  /**
-   * redirector
-   */
-  async function redirector(req, res, next, path) {
-    const { redirectFrom } = req.query;
-
-    const includeEmpty = true;
-    const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
-
-    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-
-    await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
-    const pages = await builder.query.lean().clone().exec('find');
-    const nonEmptyPages = pages.filter(p => !p.isEmpty);
-
-    if (nonEmptyPages.length >= 2) {
-      return res.render('layout-growi/identical-path-page', {
-        identicalPathPages: nonEmptyPages,
-        redirectFrom,
-        path,
-      });
-    }
-
-    if (nonEmptyPages.length === 1) {
-      const nonEmptyPage = nonEmptyPages[0];
-      const url = new URL('https://dummy.origin');
-
-      url.pathname = `/${nonEmptyPage._id}`;
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
-    }
-
-    // Processing of nonEmptyPage is finished by the time this code is read
-    // If any pages exist then they should be empty
-    const emptyPage = pages[0];
-    if (emptyPage != null) {
-      req.pageId = emptyPage._id;
-      req.isEmpty = emptyPage.isEmpty;
-      return _notFound(req, res);
-    }
-    // redirect by PageRedirect
-    const pageRedirect = await PageRedirect.findOne({ fromPath: path });
-    if (pageRedirect != null) {
-      return res.safeRedirect(`${encodeURI(pageRedirect.toPath)}?redirectFrom=${encodeURIComponent(path)}`);
-    }
-
-    return _notFound(req, res);
-  }
-
-  actions.redirector = async function(req, res, next) {
-    const path = getPathFromRequest(req);
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_PAGE_VIEW,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    crowi.activityService.createActivity(parameters);
-    return redirector(req, res, next, path);
-  };
-
-  actions.redirectorWithEndOfSlash = async function(req, res, next) {
-    const _path = getPathFromRequest(req);
-    const path = pathUtils.removeTrailingSlash(_path);
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_PAGE_VIEW,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    crowi.activityService.createActivity(parameters);
-
-    return redirector(req, res, next, path);
-  };
+  // actions.showPage = async function(req, res, next) {
+  //   // presentation mode
+  //   if (req.query.presentation) {
+  //     return showPageForPresentation(req, res, next);
+  //   }
+  //   // delegate to showPageForGrowiBehavior
+  //   return showPageForGrowiBehavior(req, res, next);
+  // };
 
 
   const api = {};
@@ -870,7 +343,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {};
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -890,11 +363,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
-    }
 
     // global notification
     try {
@@ -1014,7 +482,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
-    const options = { isSyncRevisionToHackmd };
+    const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -1022,7 +490,7 @@ module.exports = function(crowi, app) {
 
     const previousRevision = await Revision.findById(revisionId);
     try {
-      page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
+      page = await crowi.pageService.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
     catch (err) {
       logger.error('error on _api/pages.update', err);
@@ -1043,11 +511,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(page, req.user);
-    }
 
     // global notification
     try {
@@ -1077,7 +540,7 @@ module.exports = function(crowi, app) {
       target: page,
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() });
   };
 
   /**
@@ -1279,6 +742,10 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    if (page.isEmpty && !isRecursively) {
+      return res.json(ApiResponse.error('Empty pages cannot be single deleted', 'single_deletion_empty_pages'));
     }
 
     let creator;

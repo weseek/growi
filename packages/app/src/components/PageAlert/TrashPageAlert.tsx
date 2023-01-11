@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useIsTrashPage, useShareLinkId,
-} from '~/stores/context';
+import { unlink } from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
-import { useSWRxPageInfo, useSWRxCurrentPage } from '~/stores/page';
+import {
+  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage,
+} from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
+
 
 const onDeletedHandler = (pathOrPathsToDelete) => {
   if (typeof pathOrPathsToDelete !== 'string') {
@@ -21,40 +24,46 @@ const onDeletedHandler = (pathOrPathsToDelete) => {
 
 export const TrashPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
-  const { data: shareLinkId } = useShareLinkId();
   const { data: pageData } = useSWRxCurrentPage();
   const { data: isTrashPage } = useIsTrashPage();
   const pageId = pageData?._id;
   const pagePath = pageData?.path;
-  const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+  const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
-
-  if (!isTrashPage) {
-    return <></>;
-  }
+  const { data: currentPagePath } = useCurrentPagePath();
 
 
-  const lastUpdateUserName = pageData?.lastUpdateUser?.name;
+  const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
 
 
-  function openPutbackPageModalHandler() {
-    if (pageId === undefined || pagePath === undefined) {
+  const openPutbackPageModalHandler = useCallback(() => {
+    if (pageId == null || pagePath == null) {
       return;
     }
     const putBackedHandler = () => {
-      window.location.reload();
+      if (currentPagePath == null) {
+        return;
+      }
+      try {
+        unlink(currentPagePath);
+        router.push(`/${pageId}`);
+      }
+      catch (err) {
+        toastError(err);
+      }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }
+  }, [currentPagePath, openPutBackPageModal, pageId, pagePath, router]);
 
-  function openPageDeleteModalHandler() {
+  const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
       return;
     }
@@ -67,9 +76,9 @@ export const TrashPageAlert = (): JSX.Element => {
       meta: pageInfo,
     };
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }
+  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId]);
 
-  function renderTrashPageManagementButtons() {
+  const renderTrashPageManagementButtons = useCallback(() => {
     return (
       <>
         <button
@@ -77,6 +86,7 @@ export const TrashPageAlert = (): JSX.Element => {
           className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
           onClick={openPutbackPageModalHandler}
           data-toggle="modal"
+          data-testid="put-back-button"
         >
           <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
         </button>
@@ -90,17 +100,21 @@ export const TrashPageAlert = (): JSX.Element => {
         </button>
       </>
     );
+  }, [openPageDeleteModalHandler, openPutbackPageModalHandler, pageInfo?.isAbleToDeleteCompletely, t]);
+
+  if (!isTrashPage) {
+    return <></>;
   }
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           <br />
-          <UserPicture user={{ username: lastUpdateUserName }} />
+          <UserPicture user={deleteUser} />
           <span className="ml-2">
-            Deleted by { lastUpdateUserName } at {deletedAt || pageData?.updatedAt}
+            Deleted by { deleteUser?.name } at <span data-vrt-blackout-datetime>{deletedAt || pageData?.updatedAt}</span>
           </span>
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">

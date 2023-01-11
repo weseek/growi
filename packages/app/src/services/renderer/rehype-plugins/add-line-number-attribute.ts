@@ -5,7 +5,7 @@ import { visit } from 'unist-util-visit';
 
 import { addClassToProperties } from './add-class';
 
-const REGEXP_TARGET_TAGNAMES = new RegExp(/^(h1|h2|h3|h4|h5|h6|p|img|pre|blockquote|hr|ol|ul)$/);
+const REGEXP_TARGET_TAGNAMES = new RegExp(/^(h1|h2|h3|h4|h5|h6|p|img|pre|blockquote|hr|ol|ul|table|tr)$/);
 
 export const rehypePlugin: Plugin = () => {
   return (tree) => {
