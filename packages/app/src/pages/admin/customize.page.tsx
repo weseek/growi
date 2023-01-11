@@ -10,7 +10,7 @@ import { Container, Provider } from 'unstated';
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useCustomizeTitle, useCurrentUser } from '~/stores/context';
+import { useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -20,6 +20,7 @@ const CustomizeSettingContents = dynamic(() => import('~/components/Admin/Custom
 
 type Props = CommonProps & {
   customizeTitle: string,
+  isCustomizedLogoUploaded: boolean,
 };
 
 
@@ -27,6 +28,7 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
   useCustomizeTitle(props.customizeTitle);
   useCurrentUser(props.currentUser ?? null);
+  useIsCustomizedLogoUploaded(props.isCustomizedLogoUploaded);
 
   const componentTitle = t('customize_settings.customize_settings');
   const pageTitle = generateCustomTitle(props, componentTitle);
@@ -57,6 +59,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const { crowi } = req;
 
   props.customizeTitle = crowi.configManager.getConfig('crowi', 'customize:title');
+  props.isCustomizedLogoUploaded = await crowi.attachmentService.isBrandLogoExist();
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

@@ -29,8 +29,8 @@ context('Access to page', () => {
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    // hide fab // disable fab for sticky-events warning
-    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab
+    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated

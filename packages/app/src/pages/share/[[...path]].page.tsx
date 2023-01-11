@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { IUserHasId } from '@growi/core';
+import { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
@@ -19,6 +20,7 @@ import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
+import type { PageDocument } from '~/server/models/page';
 import {
   useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
@@ -27,7 +29,7 @@ import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -38,6 +40,7 @@ const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'),
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
 
 type Props = CommonProps & {
+  shareLinkRelatedPage?: IShareLinkRelatedPage,
   shareLink?: IShareLinkHasId,
   isExpired: boolean,
   disableLinkSharing: boolean,
@@ -48,12 +51,29 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 };
 
+type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
+
+superjson.registerCustom<IShareLinkRelatedPage, string>(
+  {
+    isApplicable: (v): v is IShareLinkRelatedPage => {
+      return v != null
+        && v.toObject != null
+        && v.lastUpdateUser != null
+        && v.creator != null
+        && v.revision != null;
+    },
+    serialize: (v) => { return superjson.stringify(v.toObject()) },
+    deserialize: (v) => { return superjson.parse(v) },
+  },
+  'IShareLinkRelatedPageTransformer',
+);
+
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
-  useCurrentPathname(props.currentPathname);
+  const { data: currentPathname } = useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -68,7 +88,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitleForPage(props, currentPathname ?? '');
 
 
   const sideContents = shareLink != null
@@ -91,7 +111,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}
+          {isShowSharedPage && <GrowiContextualSubNavigation currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
@@ -128,7 +148,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           {(isShowSharedPage && shareLink != null) && (
             <>
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              <Page />
+              <Page currentPage={props.shareLinkRelatedPage} />
             </>
           )}
         </MainPane>
@@ -227,7 +247,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     const ShareLinkModel = crowi.model('ShareLink');
     const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink != null) {
-      await shareLink.relatedPage.populateDataToShowRevision();
+      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision();
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
     }

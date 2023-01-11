@@ -114,7 +114,7 @@ export const TrashPageAlert = (): JSX.Element => {
           <br />
           <UserPicture user={deleteUser} />
           <span className="ml-2">
-            Deleted by { deleteUser?.name } at {deletedAt || pageData?.updatedAt}
+            Deleted by { deleteUser?.name } at <span data-vrt-blackout-datetime>{deletedAt || pageData?.updatedAt}</span>
           </span>
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">

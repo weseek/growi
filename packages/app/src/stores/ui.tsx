@@ -465,8 +465,8 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
-  const key = 'isAbleToShowPageEditorModeManager';
+export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToChangeEditorMode';
   const { data: isEditable } = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 

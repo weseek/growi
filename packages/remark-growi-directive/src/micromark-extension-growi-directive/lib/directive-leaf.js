@@ -125,8 +125,6 @@ function tokenizeAttributes(effects, ok, nok) {
     'directiveLeafAttributes',
     'directiveLeafAttributesMarker',
     'directiveLeafAttribute',
-    'directiveLeafAttributeId',
-    'directiveLeafAttributeClass',
     'directiveLeafAttributeName',
     'directiveLeafAttributeInitializerMarker',
     'directiveLeafAttributeValueLiteral',

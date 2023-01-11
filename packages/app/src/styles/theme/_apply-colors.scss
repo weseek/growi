@@ -660,7 +660,9 @@ mark.rbt-highlight-text {
 
 .grw-fab {
   .btn-create-page {
-    fill: hsl.contrast(var(--primary)) !important;
+    svg {
+      fill: hsl.contrast(var(--primary));
+    }
   }
 
   .btn-scroll-to-top {
