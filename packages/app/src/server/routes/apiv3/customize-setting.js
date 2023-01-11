@@ -112,7 +112,6 @@ module.exports = (crowi) => {
     ],
     theme: [
       body('theme').isString(),
-      body('forcedColorScheme').isString().optional({ nullable: true }),
     ],
     sidebar: [
       body('isSidebarDrawerMode').isBoolean(),
@@ -275,7 +274,6 @@ module.exports = (crowi) => {
 
     try {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
-      const currentForcedColorScheme = await crowi.configManager.getConfig('crowi', 'customize:theme:forcedColorScheme');
 
       // retrieve plugin manifests
       const GrowiPluginModel = mongoose.model('GrowiPlugin');
@@ -285,7 +283,7 @@ module.exports = (crowi) => {
         .map(themePlugin => themePlugin.meta.themes)
         .flat();
 
-      return res.apiv3({ currentTheme, currentForcedColorScheme, pluginThemesMetadatas });
+      return res.apiv3({ currentTheme, pluginThemesMetadatas });
     }
     catch (err) {
       const msg = 'Error occurred in getting theme';
@@ -320,15 +318,14 @@ module.exports = (crowi) => {
   router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:theme': req.body.theme,
-      'customize:theme:forcedColorScheme': req.body.forcedColorScheme,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
-        forcedColorScheme: await crowi.configManager.getConfig('crowi', 'customize:theme:forcedColorScheme'),
       };
+      customizeService.initGrowiTheme();
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });

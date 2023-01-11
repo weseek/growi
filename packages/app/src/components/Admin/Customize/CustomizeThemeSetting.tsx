@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { GrowiThemeSchemeType } from '@growi/core';
 import { PresetThemes, PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
@@ -22,15 +21,13 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const { data, error, update } = useSWRxGrowiThemeSetting();
   const [currentTheme, setCurrentTheme] = useState(data?.currentTheme);
-  const [currentForcedColorScheme, setCurrentForcedColorScheme] = useState(data?.currentForcedColorScheme ?? null);
 
   useEffect(() => {
     setCurrentTheme(data?.currentTheme);
   }, [data?.currentTheme]);
 
-  const selectedHandler = useCallback((themeName: string, schemeType: GrowiThemeSchemeType) => {
+  const selectedHandler = useCallback((themeName: string) => {
     setCurrentTheme(themeName);
-    setCurrentForcedColorScheme(schemeType === GrowiThemeSchemeType.BOTH ? null : schemeType);
   }, []);
 
   const submitHandler = useCallback(async() => {
@@ -42,7 +39,6 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     try {
       await update({
         theme: currentTheme,
-        forcedColorScheme: currentForcedColorScheme,
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
@@ -50,7 +46,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [currentForcedColorScheme, currentTheme, t, update]);
+  }, [currentTheme, t, update]);
 
   const availableThemes = data?.pluginThemesMetadatas == null
     ? PresetThemesMetadatas

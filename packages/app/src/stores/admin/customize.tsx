@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import { ColorScheme } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -30,7 +29,6 @@ export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & 
 
 type UpdateThemeArgs = {
   theme: string,
-  forcedColorScheme: ColorScheme | null,
 }
 export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> & updateConfigMethodForAdmin<UpdateThemeArgs> => {
 
@@ -41,9 +39,9 @@ export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> &
 
   const swrResponse = useSWR('/customize-setting/theme', fetcher);
 
-  const update = async({ theme, forcedColorScheme }: UpdateThemeArgs) => {
+  const update = async({ theme }: UpdateThemeArgs) => {
 
-    await apiv3Put('/customize-setting/theme', { theme, forcedColorScheme });
+    await apiv3Put('/customize-setting/theme', { theme });
 
     if (swrResponse.data == null) {
       swrResponse.mutate();

@@ -32,4 +32,5 @@ export * from './models/vo/error-apiv3';
 export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
 export * from './utils/browser-utils';
+export * from './utils/growi-theme-metadata';
 export * from './utils/with-utils';
