@@ -1,29 +1,7 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
-
-// == Define Bootstrap theme colors
-//
-
-// colors for overriding bootstrap $theme-colors
-// $secondary: #;
-// $info: #;
-// $success: #;
-// $warning: #;
-// $danger: #;
-// $light: #;
-// $dark: #;
-
-$themecolor: #b3000c;
-$themelight: white;
-$subthemecolor: #30882c;
-$bgcolor-global: $themelight;
-$linktext: $subthemecolor;
-$linktext-hover: lighten($subthemecolor, 15%);
-$sidebar-text: white;
-$fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%);
-$color-link-wiki: lighten($subthemecolor, 5%);
-$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+@use './theme/hsl-functions' as hsl;
 
 .growi:not(.login-page) {
   // add background-image
@@ -37,72 +15,104 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
 
 //== Light Mode
 //
-:root {
-  $primary: #d3c665;
+:root[data-theme='light'] {
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 53,56%;
+  --primary-l: 61%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+
   // Background colors
-  $bgcolor-card: $gray-50;
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 0,0%;
+  --bgcolor-global-l: 100%;
+  --bgcolor-card: #{$gray-50};
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
+  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
-  $color-global: #112744;
-  $color-reversal: $gray-100;
-  $color-link: $subthemecolor;
-  $color-link-hover: lighten($color-link, 10%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e; // optional
-  $color-modal-header: $themelight;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 214,60%;
+  --color-global-l: 17%;
+  --color-reversal: #{$gray-100};
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 117,51%;
+  --color-link-l: 35%;
+  --color-link-hover: #{hsl.lighten(var(--color-link), 15%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-link-wiki: #{hsl.lighten(var(--color-link), 5%)};
+  --color-link-wiki-hs: var(--color-link-hs);
+  --color-link-wiki-l: calc(var(--color-link-l) + 5%);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 20%)};
+  --color-inline-code: #c7254e; // optional
+  --color-modal-header: var(--bgcolor-global);
 
   // Table colors
-  $border-color-table: $gray-400; // optional
+  --border-color-table: #{$gray-400}; // optional
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  // $color-list-hover: $color-reversal;
-  $color-list-active: $themelight;
-  $bgcolor-list-active: $themecolor;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  // --color-list-hover: var(--color-reversal);
+  --color-list-active: var(--bgcolor-global);
+  --bgcolor-list-active: var(--bgcolor-navbar);
 
   // Navbar
-  $bgcolor-navbar: $themecolor;
-  $bgcolor-search-top-dropdown: $primary;
-  $border-color-navbar-gradient-left: #545fff;
-  $border-color-navbar-gradient-right: #00a6e5;
-  $border-image-navbar: linear-gradient(to right, $primary 0%, $subthemecolor 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-h: 356;
+  --bgcolor-navbar-s: 100%;
+  --bgcolor-navbar-l: 35%;
+  --bgcolor-navbar-hs: var(--bgcolor-navbar-h),var(--bgcolor-navbar-s);
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-color-navbar-gradient-left: #545fff;
+  --border-color-navbar-gradient-right: #00a6e5;
+  --border-image-navbar: linear-gradient(to right, var(--primary) 0%, var(--color-link) 100%);
 
   // Logo colors
-  $bgcolor-logo: $themecolor;
+  --bgcolor-logo: var(--bgcolor-navbar);
+  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 50%),calc(var(--bgcolor-navbar-l) + 50%));
 
   // Sidebar
-  $bgcolor-sidebar: $subthemecolor;
-  $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px $primary; // optional
+  --bgcolor-sidebar: var(--color-link);
+  --bgcolor-sidebar-hs: var(--color-link-hs);
+  --bgcolor-sidebar-l: var(--color-link-l);
+  --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px var(--primary); // optional
+
   // Sidebar resize button
-  $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
-  $color-sidebar-context: $linktext;
-  $bgcolor-sidebar-context: #f4fcf6;
+  --color-resize-button: var(--color-reversal);
+  --bgcolor-resize-button: var(--primary);
+  --bgcolor-resize-button-hs: var(--primary-hs);
+  --bgcolor-resize-button-l: var(--primary-l);
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--primary), 5%)};
+
+  // Sidebar contents
+  --color-sidebar-context: var(--color-link);
+  --color-sidebar-context-hs: var(--color-link-hs);
+  --color-sidebar-context-l: var(--color-link-l);
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 135,57%;
+  --bgcolor-sidebar-context-l: 97%;
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #fafbff; // optional
+  --bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
-
+  --color-editor-icons: var(--color-global);  --color-editor-icons: var(--color-global);
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
-  $bordercolor-inline-code: #ccc8c8; // optional
+  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $themecolor;
+  --bgcolor-dropdown-link-active: var(--bgcolor-navbar);
 
   // admin theme box
-  $color-theme-color-box: lighten($themecolor, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  --color-theme-color-box: #{hsl.lighten(var(--bgcolor-navbar), 20%)};
 
   &, body {
     background-image: url('../images/christmas/christmas.jpg');
@@ -113,11 +123,11 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
   // change color of highlighted header in wiki (default: orange)
 
   .sidebar {
-    background: $themecolor;
+    background: var(--bgcolor-navbar);
   }
 
   .rbt-menu {
-    background: $themelight;
+    background: var(--bgcolor-global);
   }
 
   .page-editor-preview-container {
@@ -159,7 +169,7 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
   */
   .modal-dialog .modal-header.bg-primary {
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
-    border-bottom: 2px solid $subthemecolor;
+    border-bottom: 2px solid var(--color-link);
   }
 
   /*
@@ -167,7 +177,7 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
   */
   .card {
     &.border-primary {
-      border-color: $themecolor !important;
+      border-color: var(--bgcolor-navbar) !important;
     }
     .card-header.bg-primary {
       color: white;
@@ -180,9 +190,9 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
   }
 
   // Button
-  .grw-page-editor-mode-manager {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--color-link), 15%)}, #{hsl.lighten(var(--color-link), 35%)}, #{hsl.lighten(var(--color-link), 45%)});
     }
   }
 }
