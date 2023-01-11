@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -19,7 +19,7 @@ const IGNORED_COLLECTION_NAMES = [
 
 const G2GDataTransfer = (): JSX.Element => {
   const { data: socket } = useAdminSocket();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['admin', 'commons']);
 
   const [startTransferKey, setStartTransferKey] = useState('');
   const [collections, setCollections] = useState<string[]>([]);
@@ -164,12 +164,12 @@ const G2GDataTransfer = (): JSX.Element => {
         </div>
       )}
 
-      <h2 className="border-bottom mt-5">{t('admin:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
+      <h2 className="border-bottom mt-5">{t('commons:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 
       <div className="form-group row mt-4">
         <div className="col-md-3">
           <button type="button" className="btn btn-primary w-100" onClick={onClickHandler}>
-            {t('admin:g2g_data_transfer.publish_transfer_key')}
+            {t('commons:g2g_data_transfer.publish_transfer_key')}
           </button>
         </div>
         <div className="col-md-9">
@@ -181,9 +181,9 @@ const G2GDataTransfer = (): JSX.Element => {
       </div>
 
       <div className="alert alert-warning mt-4">
-        <p className="mb-1">{t('admin:g2g_data_transfer.transfer_key_limit')}</p>
-        <p className="mb-1">{t('admin:g2g_data_transfer.once_transfer_key_used')}</p>
-        <p className="mb-0">{t('admin:g2g_data_transfer.transfer_to_growi_cloud')}</p>
+        <p className="mb-1">{t('commons:g2g_data_transfer.transfer_key_limit')}</p>
+        <p className="mb-1">{t('commons:g2g_data_transfer.once_transfer_key_used')}</p>
+        <p className="mb-0">{t('commons:g2g_data_transfer.transfer_to_growi_cloud')}</p>
       </div>
     </div>
   );

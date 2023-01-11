@@ -18,7 +18,7 @@ type Props = CommonProps;
 
 
 const DataTransferPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation('commons');
   useCurrentUser(props.currentUser ?? null);
 
   const title = t('g2g_data_transfer.data_transfer');

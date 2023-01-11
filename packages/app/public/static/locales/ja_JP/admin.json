@@ -856,6 +856,12 @@
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "g2g_data_transfer": {
+    "transfer_data_to_another_growi": "このGROWIのデータを別GROWIへ移行する",
+    "advanced_options": "詳細オプション",
+    "start_transfer": "移行を開始する",
+    "paste_transfer_key": "移行キーをここにペースト"
+  },
   "plugins": {
     "plugins": "プラグイン",
     "plugin_installer": "プラグインインストーラー",
