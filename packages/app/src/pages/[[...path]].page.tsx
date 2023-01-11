@@ -76,7 +76,7 @@ import {
 
 import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage,
 } from './utils/commons';
 
 
@@ -308,7 +308,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitleForPage(props, pagePath ?? '');
 
 
   const sideContents = !props.isNotFound && !props.isNotCreatable

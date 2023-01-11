@@ -26,8 +26,9 @@ import {
 
 import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
 } from './utils/commons';
+import { useTranslation } from 'next-i18next';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
@@ -70,12 +71,14 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
+  const { t } = useTranslation();
+
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitleForPage(props, '/trash');
 
   return (
     <>
