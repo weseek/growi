@@ -27,7 +27,7 @@ import {
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
+  useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -216,7 +216,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
-  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
@@ -380,7 +380,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                 ) }
               </div>
             ) }
-            {isAbleToShowPageEditorModeManager && (
+            {isAbleToChangeEditorMode && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
                 isBtnDisabled={isGuestUser}
