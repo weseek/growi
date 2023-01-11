@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import type { ColorScheme, IUser } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -207,6 +207,10 @@ export const useIsDefaultLogo = (initialData?: boolean): SWRResponse<boolean, Er
 
 export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isCustomizedLogoUploaded', initialData);
+};
+
+export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<ColorScheme, Error> => {
+  return useContextSWR('forcedColorScheme', initialData);
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {

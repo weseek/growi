@@ -14,6 +14,7 @@ export * as pageUtils from './utils/page-utils';
 // export all
 export * from './plugin/interfaces/option-parser';
 export * from './interfaces/attachment';
+export * from './interfaces/color-scheme';
 export * from './interfaces/common';
 export * from './interfaces/growi-facade';
 export * from './interfaces/growi-theme-metadata';

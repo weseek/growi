@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { GrowiThemeSchemeType } from '@growi/core';
 import { PresetThemes, PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { useSWRxGrowiThemeSetting } from '~/stores/admin/customize';
 
@@ -20,26 +20,29 @@ type Props = {
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data, error } = useSWRxGrowiThemeSetting();
+  const { data, error, update } = useSWRxGrowiThemeSetting();
   const [currentTheme, setCurrentTheme] = useState(data?.currentTheme);
+  const [currentForcedColorScheme, setCurrentForcedColorScheme] = useState(data?.currentForcedColorScheme);
 
   useEffect(() => {
     setCurrentTheme(data?.currentTheme);
   }, [data?.currentTheme]);
 
-  const selectedHandler = useCallback((themeName: string) => {
+  const selectedHandler = useCallback((themeName: string, schemeType: GrowiThemeSchemeType) => {
     setCurrentTheme(themeName);
+    setCurrentForcedColorScheme(schemeType === GrowiThemeSchemeType.BOTH ? undefined : schemeType);
   }, []);
 
   const submitHandler = useCallback(async() => {
-    if (currentTheme == null) {
+    if (currentTheme == null || currentForcedColorScheme == null) {
       toastWarning('The selected theme is undefined');
       return;
     }
 
     try {
-      await apiv3Put('/customize-setting/theme', {
+      await update({
         theme: currentTheme,
+        forcedColorScheme: currentForcedColorScheme,
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
@@ -47,7 +50,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [currentTheme, t]);
+  }, [currentForcedColorScheme, currentTheme, t, update]);
 
   const availableThemes = data?.pluginThemesMetadatas == null
     ? PresetThemesMetadatas
