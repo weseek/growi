@@ -467,12 +467,12 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     if (templateData != null) {
       props.templateTagData = templateData.templateTags as string[];
       props.templateBodyData = templateData.templateBody as string;
+    }
 
-      // take over pagrent page grant
-      const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
-      if (ancestor != null) {
-        await applyGrantToPage(props, ancestor);
-      }
+    // apply pagrent page grant
+    const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
+    if (ancestor != null) {
+      await applyGrantToPage(props, ancestor);
     }
   }
 
