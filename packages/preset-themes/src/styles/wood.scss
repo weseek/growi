@@ -192,8 +192,4 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 30%)}, #{hsl.lighten(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 25%)});
     }
   }
-
-  .alert-primary {
-    color: white !important;
-  }
 }
