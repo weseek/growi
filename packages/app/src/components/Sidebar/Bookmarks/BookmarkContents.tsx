@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import BookmarkFolderNameInput from '~/components/Bookmarks/BookmarkFolderNameInput';
 import BookmarkFolderTree from '~/components/Bookmarks/BookmarkFolderTree';
 import FolderPlusIcon from '~/components/Icons/FolderPlusIcon';
@@ -27,7 +27,7 @@ const BookmarkContents = (): JSX.Element => {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
       await mutateChildBookmarkData();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

@@ -5,8 +5,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -93,7 +93,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
       loadParent();
       setIsRenameAction(false);
-      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -107,7 +107,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       setIsOpen(true);
       setIsCreateAction(false);
       mutateChildBookmarkData();
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
 
     }
     catch (err) {
@@ -123,7 +123,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       setIsDeleteFolderModalShown(false);
       loadParent();
       mutateBookmarkInfo();
-      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
