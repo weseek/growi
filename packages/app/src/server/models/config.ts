@@ -116,6 +116,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
   'customize:theme' : PresetThemes.DEFAULT,
+  'customize:theme:forcedColorScheme' : null,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
   'customize:isEnabledAttachTitleHeader' : false,

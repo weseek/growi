@@ -8,37 +8,37 @@
 //
 
 .table {
-  color: $table-color;
-  background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+  color: $color-table;
+  background-color: $bgcolor-table; // Reset for nesting within parents with `background-color`.
 
   th,
   td {
-    border-top-color: $table-border-color;
+    border-top-color: $border-color-table;
   }
 
   thead th {
-    border-bottom-color: $table-border-color;
+    border-bottom-color: $border-color-table;
   }
 
   tbody + tbody {
-    border-top-color: $table-border-color;
+    border-top-color: $border-color-table;
   }
 }
 
 .table-bordered {
-  border-color: $table-border-color;
+  border-color: $border-color-table;
 
   th,
   td {
-    border-color: $table-border-color;
+    border-color: $border-color-table;
   }
 }
 
 .table-hover {
   tbody tr {
     @include hover() {
-      color: $table-hover-color;
-      background-color: $table-hover-bg;
+      color: $color-table-hover;
+      background-color: $bgcolor-table-hover;
     }
   }
 }
