@@ -56,6 +56,7 @@ resource "aws_codebuild_project" "growi-official-image-builder" {
     location = "https://github.com/weseek/growi.git"
     git_clone_depth = 1
   }
+  source_version = "refs/heads/support/build-with-codebuild"
 
   build_batch_config {
     service_role = aws_iam_role.growi-official-image-builder.arn
