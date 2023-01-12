@@ -82,9 +82,6 @@ $color-themelight: rgba(183, 226, 219, 1);
   // admin theme box
   $color-theme-color-box: darken($primary, 15%);
 
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
-
   &, body {
     background-image: url('../images/island/island.png');
     background-attachment: fixed;

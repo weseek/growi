@@ -81,8 +81,6 @@ $themecolor: #12b105;
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
 
   // Search Top
   .grw-global-search {

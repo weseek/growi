@@ -113,9 +113,6 @@ $themelight: #f5f3ee;
   // portal
   $info: lighten($themecolor, 10%);
 
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
-
   &, body {
     background-image: url('../images/wood/wood.jpg');
     background-attachment: fixed;
