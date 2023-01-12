@@ -229,7 +229,6 @@ schema.statics.getLocalconfig = function(crowi) {
       DRAWIO_URI: env.DRAWIO_URI || null,
       HACKMD_URI: env.HACKMD_URI || null,
       MATHJAX: env.MATHJAX || null,
-      NO_CDN: env.NO_CDN || null,
       GROWI_CLOUD_URI: env.GROWI_CLOUD_URI || null,
       GROWI_APP_ID_FOR_GROWI_CLOUD: env.GROWI_APP_ID_FOR_GROWI_CLOUD || null,
     },
