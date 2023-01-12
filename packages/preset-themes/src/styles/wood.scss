@@ -6,7 +6,7 @@
 .growi:not(.login-page) {
   // add background-image
   .page-editor-preview-container {
-    background-image: url('/images/themes/wood/wood.jpg');
+    background-image: url('../images/wood/wood.jpg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
@@ -15,7 +15,7 @@
 
 .growi.login-page {
   .page-wrapper {
-    background-image: url('/images/themes/wood/wood.jpg');
+    background-image: url('../images/wood/wood.jpg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
@@ -146,13 +146,13 @@
    * Modal
    */
   .modal-dialog .modal-header.bg-primary {
-    background-image: url('/images/themes/wood/wood-navbar.jpg');
+    background-image: url('../images/wood/wood-navbar.jpg');
   }
 
   // Sidebar
   .grw-sidebar {
     div[data-testid='GlobalNavigation'] {
-      background-image: url('/images/themes/wood/wood-navbar.jpg');
+      background-image: url('../images/wood/wood-navbar.jpg');
 
       button,
       .btn {
@@ -162,7 +162,7 @@
     div[data-testid='ContextualNavigation'] {
       > div {
         background-color: rgba(white, 0.6);
-        background-image: url('/images/themes/wood/wood-navbar.jpg');
+        background-image: url('../images/wood/wood-navbar.jpg');
         background-blend-mode: lighten;
       }
     }

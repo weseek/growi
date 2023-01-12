@@ -127,7 +127,7 @@
   .growi:not(.login-page) {
     // add background-image
     .page-editor-preview-container {
-      background-image: url('/images/themes/spring/spring02.svg');
+      background-image: url('../images/spring/spring02.svg');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -137,7 +137,7 @@
   // login and register
   .nologin {
     background: unset !important;
-    background-image: url('/images/themes/spring/spring.svg');
+    background-image: url('../images/spring/spring.svg');
     background-attachment: fixed;
     background-position: bottom;
     background-size: cover;
