@@ -42,6 +42,19 @@ resource "aws_iam_role" "growi-official-image-builder" {
 EOF
 }
 
+resource "aws_secretsmanager_secret" "secret" {
+  name = "growi/official-image-builder"
+}
+
+resource "aws_secretsmanager_secret_version" "main" {
+  secret_id     = aws_secretsmanager_secret.secret.id
+  secret_string = "CHANGE THIS"
+
+  lifecycle {
+    ignore_changes = [secret_string, version_stages]
+  }
+}
+
 resource "aws_iam_role_policy" "growi-official-image-builder" {
   role = aws_iam_role.growi-official-image-builder.name
 
@@ -68,6 +81,18 @@ resource "aws_iam_role_policy" "growi-official-image-builder" {
       "Resource": [
         "${aws_s3_bucket.growi-official-image-builder-cache.arn}",
         "${aws_s3_bucket.growi-official-image-builder-cache.arn}/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": [
+        "${aws_secretsmanager_secret.secret.arn}"
       ]
     },
     {
