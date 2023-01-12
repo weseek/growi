@@ -2,20 +2,37 @@ version: 0.2
 batch:
   fast-fail: true
   build-graph:
+    # build
     - identifier: build_amd64
       buildspec: buildspec-image.yml
       env:
         image: aws/codebuild/standard:6.0
         privileged-mode: true
         type: LINUX_CONTAINER
+        variables:
+          TAG_SUFFIX: amd64
     - identifier: build_arm64
       buildspec: buildspec-image.yml
       env:
         image: aws/codebuild/standard:6.0
         privileged-mode: true
         type: ARM_CONTAINER
-    - identifier: create_manifest
+        variables:
+          TAG_SUFFIX: arm64
+    # create manifest
+    - identifier: create_manifest_dockerhub
       buildspec: buildspec-manifest.yml
+      env:
+        variables:
+          SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD
+      depend-on:
+        - build_amd64
+        - build_arm64
+    - identifier: create_manifest_ghcr
+      buildspec: buildspec-manifest.yml
+      env:
+        variables:
+          SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
       depend-on:
         - build_amd64
         - build_arm64

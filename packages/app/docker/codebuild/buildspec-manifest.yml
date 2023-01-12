@@ -2,20 +2,22 @@ version: 0.2
 env:
   variables:
     IMAGE_HOST: ''
-    IMAGE_NAME: example
+    IMAGE_NAME: weseek/growi
     TAG_VERSION: latest
+    SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD # DOCKER_REGISTRY_PASSWORD or DOCKER_REGISTRY_ON_GITHUB_PASSWORD
+  secrets-manager:
+    DOCKER_REGISTRY_PASSWORD: growi/buildspec-secrets:${SECRETS_JSON_KEY}
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_HOST
-      - export IMAGE_TAG="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}"
-      - export IMAGE_TAG_AMD64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}-amd64"
-      - export IMAGE_TAG_ARM64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}-arm64"
+      - echo ${DOCKER_REGISTRY_PASSWORD} | docker login --username wsmoogle --password-stdin ${IMAGE_HOST}
   build:
     commands:
+      - export IMAGE_TAG="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}"
+      - export IMAGE_TAG_AMD64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}.BUILD.${CODEBUILD_BUILD_NUMBER}-amd64"
+      - export IMAGE_TAG_ARM64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}.BUILD.${CODEBUILD_BUILD_NUMBER}-arm64"
       - docker manifest create $IMAGE_TAG $IMAGE_TAG_AMD64 $IMAGE_TAG_ARM64
 
   post_build:
     commands:
       - docker manifest push $IMAGE_TAG
-      

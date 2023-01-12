@@ -2,16 +2,28 @@ version: 0.2
 env:
   variables:
     DOCKER_BUILDKIT: 1
+    IMAGE_NAME: weseek/growi
+    TAG_VERSION: latest
+    TAG_SUFFIX: amd64
+  secrets-manager:
+    DOCKER_REGISTRY_PASSWORD: growi/buildspec-secrets:DOCKER_REGISTRY_PASSWORD
+    DOCKER_REGISTRY_ON_GITHUB_PASSWORD: growi/buildspec-secrets:DOCKER_REGISTRY_ON_GITHUB_PASSWORD
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_HOST
+      # login to docker.io
+      - echo ${DOCKER_REGISTRY_PASSWORD} | docker login --username wsmoogle --password-stdin
+      # login to ghcr.io
+      - echo ${DOCKER_REGISTRY_ON_GITHUB_PASSWORD} | docker login --username wsmoogle --password-stdin ghcr.io
   build:
     commands:
-      - export IMAGE_TAG="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}${TAG_SUFFIX:+-}${TAG_SUFFIX}"
-      - docker build -t $IMAGE_TAG .
+      - export IMAGE_TAG="${IMAGE_NAME}:${TAG_VERSION}.BUILD.${CODEBUILD_BUILD_NUMBER}${TAG_SUFFIX+-}${TAG_SUFFIX}"
+      - export IMAGE_TAG_GHCR="ghcr.io/${IMAGE_NAME}:${TAG_VERSION}.BUILD.${CODEBUILD_BUILD_NUMBER}${TAG_SUFFIX+-}${TAG_SUFFIX}"
+      - docker build -t $IMAGE_TAG -f ./packages/app/docker/Dockerfile .
+      - docker tag $IMAGE_TAG $IMAGE_TAG_GHCR
 
   post_build:
     commands:
       - docker push $IMAGE_TAG
+      - docker push $IMAGE_TAG_GHCR
       
