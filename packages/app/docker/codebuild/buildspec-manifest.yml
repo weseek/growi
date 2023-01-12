@@ -22,3 +22,4 @@ phases:
   post_build:
     commands:
       - docker manifest push $IMAGE_TAG
+      - docker rmi $IMAGE_TAG_AMD64 $IMAGE_TAG_ARM64
