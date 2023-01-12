@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -162,6 +163,64 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     mutateBookmarkInfo();
   }, [mutateBookmarkInfo, mutateParentBookmarkFolder]);
 
+  const [, drag] = useDrag({
+    type: 'FOLDER',
+    item:  bookmarkFolder,
+    canDrag: () => {
+
+      return true;
+    },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult();
+      if (dropResult != null) {
+        console.log(dropResult);
+      }
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
+    }),
+  });
+
+  const folderItemDropHandler = async(item: BookmarkFolderItems) => {
+    // TODO: Implement update parent folder
+  };
+
+  const isDropable = (item: BookmarkFolderItems, target: BookmarkFolderItems) => {
+    let dropable = false;
+    if (target.parent === item._id || target._id === item._id || target.children?.includes(item)) {
+      dropable = false;
+    }
+    else {
+      dropable = true;
+    }
+
+    return dropable;
+  };
+
+  const [, drop] = useDrop(() => ({
+    accept: 'FOLDER',
+    drop: folderItemDropHandler,
+    hover: (item, monitor) => {
+      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
+      if (monitor.isOver()) {
+        setTimeout(() => {
+          if (monitor.isOver()) {
+            setIsOpen(true);
+          }
+        }, 600);
+      }
+    },
+    canDrop: (item) => {
+      // Implement isDropable function & improve
+
+      return isDropable(item, bookmarkFolder);
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+
   const renderChildFolder = () => {
     return isOpen && currentChildren?.map((childFolder) => {
       return (
@@ -204,7 +263,10 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
-      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" onClick={loadChildFolder}>
+      <li ref={(c) => { drag(c); drop(c) }}
+        className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
+        onClick={loadChildFolder}
+      >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasChildren() && (
             <button
