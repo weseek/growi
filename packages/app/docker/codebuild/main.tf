@@ -14,6 +14,15 @@ provider "aws" {
   region  = "ap-northeast-1"
 }
 
+resource "aws_s3_bucket" "growi-official-image-builder-cache" {
+  bucket = "growi-official-image-builder-cache"
+}
+
+resource "aws_s3_bucket_acl" "growi-official-image-builder-cache" {
+  bucket = aws_s3_bucket.growi-official-image-builder-cache.id
+  acl    = "private"
+}
+
 resource "aws_iam_role" "growi-official-image-builder" {
   name = "growi-official-image-builder"
 
@@ -31,6 +40,55 @@ resource "aws_iam_role" "growi-official-image-builder" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy" "growi-official-image-builder" {
+  role = aws_iam_role.growi-official-image-builder.name
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Resource": [
+        "*"
+      ],
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.growi-official-image-builder-cache.arn}",
+        "${aws_s3_bucket.growi-official-image-builder-cache.arn}/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:StartBuild",
+        "codebuild:StopBuild",
+        "codebuild:RetryBuild",
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+POLICY
 }
 
 resource "aws_codebuild_project" "growi-official-image-builder" {
