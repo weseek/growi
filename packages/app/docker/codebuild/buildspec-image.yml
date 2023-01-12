@@ -1,0 +1,17 @@
+version: 0.2
+env:
+  variables:
+    DOCKER_BUILDKIT: 1
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_HOST
+  build:
+    commands:
+      - export IMAGE_TAG="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}${TAG_SUFFIX:+-}${TAG_SUFFIX}"
+      - docker build -t $IMAGE_TAG .
+
+  post_build:
+    commands:
+      - docker push $IMAGE_TAG
+      

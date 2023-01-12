@@ -1,0 +1,21 @@
+version: 0.2
+env:
+  variables:
+    IMAGE_HOST: ''
+    IMAGE_NAME: example
+    TAG_VERSION: latest
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_HOST
+      - export IMAGE_TAG="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}"
+      - export IMAGE_TAG_AMD64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}-amd64"
+      - export IMAGE_TAG_ARM64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION:-latest}-arm64"
+  build:
+    commands:
+      - docker manifest create $IMAGE_TAG $IMAGE_TAG_AMD64 $IMAGE_TAG_ARM64
+
+  post_build:
+    commands:
+      - docker manifest push $IMAGE_TAG
+      

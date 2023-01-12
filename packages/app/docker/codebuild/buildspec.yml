@@ -1,0 +1,21 @@
+version: 0.2
+batch:
+  fast-fail: true
+  build-graph:
+    - identifier: build_amd64
+      buildspec: buildspec-image.yml
+      env:
+        image: aws/codebuild/standard:6.0
+        privileged-mode: true
+        type: LINUX_CONTAINER
+    - identifier: build_arm64
+      buildspec: buildspec-image.yml
+      env:
+        image: aws/codebuild/standard:6.0
+        privileged-mode: true
+        type: ARM_CONTAINER
+    - identifier: create_manifest
+      buildspec: buildspec-manifest.yml
+      depend-on:
+        - build_amd64
+        - build_arm64
