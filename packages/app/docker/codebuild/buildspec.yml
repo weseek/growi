@@ -4,7 +4,7 @@ batch:
   build-graph:
     # build
     - identifier: build_amd64
-      buildspec: buildspec-image.yml
+      buildspec: packages/app/docker/codebuild/buildspec-image.yml
       env:
         image: aws/codebuild/standard:6.0
         type: LINUX_CONTAINER
@@ -12,7 +12,7 @@ batch:
           TAG_SUFFIX: amd64
           BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
     - identifier: build_arm64
-      buildspec: buildspec-image.yml
+      buildspec: packages/app/docker/codebuild/buildspec-image.yml
       env:
         image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
         type: ARM_CONTAINER
@@ -21,7 +21,7 @@ batch:
           BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
     # create manifest
     - identifier: create_manifest_dockerhub
-      buildspec: buildspec-manifest.yml
+      buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
       env:
         variables:
           SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD
@@ -30,7 +30,7 @@ batch:
         - build_amd64
         - build_arm64
     - identifier: create_manifest_ghcr
-      buildspec: buildspec-manifest.yml
+      buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
       env:
         variables:
           SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
