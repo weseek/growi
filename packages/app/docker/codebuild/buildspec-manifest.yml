@@ -1,7 +1,6 @@
 version: 0.2
 env:
   variables:
-    BUILD_NUM: 0
     IMAGE_HOST: ''
     IMAGE_NAME: weseek/growi
     TAG_VERSION: latest
@@ -15,8 +14,8 @@ phases:
   build:
     commands:
       - export IMAGE_TAG="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}"
-      - export IMAGE_TAG_AMD64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}.BUILD.${BUILD_NUM}-amd64"
-      - export IMAGE_TAG_ARM64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}.BUILD.${BUILD_NUM}-arm64"
+      - export IMAGE_TAG_AMD64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}-amd64"
+      - export IMAGE_TAG_ARM64="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}:${TAG_VERSION}-arm64"
       - docker manifest create $IMAGE_TAG $IMAGE_TAG_AMD64 $IMAGE_TAG_ARM64
 
   post_build:
