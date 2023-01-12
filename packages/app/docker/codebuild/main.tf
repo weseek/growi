@@ -163,8 +163,8 @@ resource "aws_codebuild_project" "codebuild" {
   source_version = "refs/heads/support/build-with-codebuild"
 
   cache {
-    type  = "LOCAL"
-    modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_CUSTOM_CACHE"]
+    type  = "S3"
+    location = "${aws_s3_bucket.s3_bucket.id}"
   }
 
 }
