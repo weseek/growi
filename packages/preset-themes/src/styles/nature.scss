@@ -79,6 +79,8 @@
   --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
   --bgcolor-resize-button-hs: 115,95%;
   --bgcolor-resize-button-l: 36%;
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));

@@ -114,6 +114,8 @@
   --bgcolor-resize-button: var(--themecolor);
   --bgcolor-resize-button-hs: var(--themecolor-hs);
   --bgcolor-resize-button-l: var(--themecolor-l);
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
 
   // Border colors
   --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
