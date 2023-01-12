@@ -7,15 +7,13 @@ batch:
       buildspec: buildspec-image.yml
       env:
         image: aws/codebuild/standard:6.0
-        privileged-mode: true
         type: LINUX_CONTAINER
         variables:
           TAG_SUFFIX: amd64
     - identifier: build_arm64
       buildspec: buildspec-image.yml
       env:
-        image: aws/codebuild/standard:6.0
-        privileged-mode: true
+        image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
         type: ARM_CONTAINER
         variables:
           TAG_SUFFIX: arm64
