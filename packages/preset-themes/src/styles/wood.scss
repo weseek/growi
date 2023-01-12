@@ -1,21 +1,12 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
-
-// == Define Bootstrap theme colors
-//
-// colors for overriding bootstrap $theme-colors
-// $secondary: #;
-// $success: #;
-// $warning: #;
-// $danger: #;
-// $light: #;
-// $dark: #;
+@use './theme/hsl-functions' as hsl;
 
 .growi:not(.login-page) {
   // add background-image
   .page-editor-preview-container {
-    background-image: url('/images/themes/wood/wood.jpg');
+    background-image: url('../images/wood/wood.jpg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
@@ -24,99 +15,125 @@
 
 .growi.login-page {
   .page-wrapper {
-    background-image: url('/images/themes/wood/wood.jpg');
+    background-image: url('../images/wood/wood.jpg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
   }
 }
 
-$themecolor: #b9b177;
-$themelight: #f5f3ee;
-
 //== Light Mode
 //
-:root {
-  $primary: #aaa45f;
+:root[data-theme='light'] {
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 55,31%;
+  --primary-l: 52%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+  --themecolor: hsl(var(--themecolor-hs),var(--themecolor-l));
+  --themecolor-hs: 53,32%;
+  --themecolor-l: 60%;
 
   // Background colors
-  $bgcolor-global: white;
-  $bgcolor-card: #ece8de;
-  $bgcolor-blinked-section: rgba($primary, 0.3);
-  $bgcolor-keyword-highlighted: $grw-marker-blue;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 0,0%;
+  --bgcolor-global-l: 100%;
+  --bgcolor-card: #ece8de;
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),70%)};
+  --bgcolor-keyword-highlighted: #{$grw-marker-blue};
 
   // Font colors
-  // $color-global: black;
-  $color-global: #433005;
-  $color-reversal: #fffffc;
-  $color-link: #9d7406;
-  $color-link-hover: lighten($color-link, 10%);
-  $color-link-wiki: $color-link;
-  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
-  $color-link-nabvar: #a7a7a7;
-  $color-search: white;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 42,86%;
+  --color-global-l: 14%;
+  --color-reversal: #fffffc;
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 44,93%;
+  --color-link-l: 32%;
+  --color-link-hover: #{hsl.lighten(var(--color-link), 10%)};
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hs: var(--color-link-hs);
+  --color-link-wiki-l: var(--color-link-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 10%)};
+  --color-link-nabvar: #a7a7a7;
+  --color-search: white;
 
   // Inline code
-  $bgcolor-inline-code: $themelight; //optional
-  // $color-inline-code: # !default;
-  $bordercolor-inline-code: $themecolor; //optional
+  --bgcolor-inline-code: #f5f3ee;; //optional
+  // --color-inline-code: # !default;
+  --bordercolor-inline-code: var(--themecolor); //optional
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $gray-100;
-  $bgcolor-list-hover: lighten($primary, 40%);
-  // $color-list-active: $color-reversal;
-  $bgcolor-list-active: lighten($primary, 30%);
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: #{$gray-100};
+  --bgcolor-list-hover: #{hsl.lighten(var(--primary), 40%)};
+  // --color-list-active: var(--color-reversal);
+  --bgcolor-list-active: #{hsl.lighten(var(--primary), 30%)};
 
   // Table colors
-  // $color-table: #; // optional
-  // $bgcolor-table: #; // optional
-  $border-color-table: $gray-400; // optional
-  // $color-table-hover: #; // optional
-  // $bgcolor-table-hover: #; // optional
+  // --color-table: #; // optional
+  // --bgcolor-table: #; // optional
+  --border-color-table: #{$gray-400}; // optional
+  // --color-table-hover: #; // optional
+  // --bgcolor-table-hover: #; // optional
 
   // Navbar
-  $bgcolor-navbar: #2a2929;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, $themecolor 0%, darken($themecolor, 20%) 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-hs: 0,1%;
+  --bgcolor-navbar-l: 16%;
+  --bgcolor-search-top-dropdown: var(--themecolor);
+  --bgcolor-search-top-dropdown-hs: var(--themecolor-hs);
+  --bgcolor-search-top-dropdown-l: var(--themecolor-l);
+  --border-image-navbar: linear-gradient(to right, var(--themecolor) 0%, #{hsl.darken(var(--themecolor), 20%)} 100%);
 
   // Logo colors
-  $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: lighten(desaturate($themecolor, 50%), 50%); // Icon colors
-  $color-editor-icons: $color-global;
+  --bgcolor-logo: #{hsl.darken(var(--themecolor), 10%)};
+  --fillcolor-logo-mark: #{lighten(desaturate(#b9b177, 50%), 50%)}; // Icon colors
+  --color-editor-icons: var(--color-global);
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
+  --bgcolor-sidebar: var(--themecolor);
+  --bgcolor-sidebar-hs: var(--themecolor-hs);
+  --bgcolor-sidebar-l: var(--themecolor-l);
+
   // Sidebar contents
-  $color-sidebar-context: #9d7406;
-  $bgcolor-sidebar-context: lighten($themecolor, 38%);
+  --color-sidebar-context: hsl(var(--color-sidebar-context-hs),var(--color-sidebar-context-l));
+  --color-sidebar-context-hs: 44,93%;
+  --color-sidebar-context-l: 32%;
+  --bgcolor-sidebar-context: #{hsl.lighten(var(--themecolor), 38%)};
+  --bgcolor-sidebar-context-hs: var(--themecolor-hs);
+  --bgcolor-sidebar-context-l: calc(var(--themecolor-l) + 38%);
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: rgba(#f7f5f1, 0.5);
+  --bgcolor-sidebar-list-group: rgba(#f7f5f1, 0.5);
+
   // Sidebar resize button
-  $color-resize-button: white;
-  $bgcolor-resize-button: $themecolor;
+  --color-resize-button: white;
+  --bgcolor-resize-button: var(--themecolor);
+  --bgcolor-resize-button-hs: var(--themecolor-hs);
+  --bgcolor-resize-button-l: var(--themecolor-l);
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
 
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
-  $bordercolor-inline-code: #ccc8c8; // optional
+  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $growi-blue;
+  --bgcolor-dropdown-link-active: #{$growi-blue};
 
   // admin theme box
-  $color-theme-color-box: lighten($primary, 20%);
+  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
   // alert
-  $color-alert: $color-reversal;
-
-  // portal
-  $info: lighten($themecolor, 10%);
+  --color-alert: var(--color-reversal);
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   &, body {
     background-image: url('../images/wood/wood.jpg');
@@ -129,13 +146,13 @@ $themelight: #f5f3ee;
    * Modal
    */
   .modal-dialog .modal-header.bg-primary {
-    background-image: url('/images/themes/wood/wood-navbar.jpg');
+    background-image: url('../images/wood/wood-navbar.jpg');
   }
 
   // Sidebar
   .grw-sidebar {
     div[data-testid='GlobalNavigation'] {
-      background-image: url('/images/themes/wood/wood-navbar.jpg');
+      background-image: url('../images/wood/wood-navbar.jpg');
 
       button,
       .btn {
@@ -145,7 +162,7 @@ $themelight: #f5f3ee;
     div[data-testid='ContextualNavigation'] {
       > div {
         background-color: rgba(white, 0.6);
-        background-image: url('/images/themes/wood/wood-navbar.jpg');
+        background-image: url('../images/wood/wood-navbar.jpg');
         background-blend-mode: lighten;
       }
     }
@@ -172,7 +189,7 @@ $themelight: #f5f3ee;
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 30%)}, #{hsl.lighten(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 25%)});
     }
   }
 }

@@ -123,6 +123,14 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.lighten(var(--primary), 20%)});
     }
   }
+
+  .grw-global-search .btn-secondary.dropdown-toggle {
+    color: white;
+  }
+
+  .btn-primary {
+    color:white !important;
+  }
 }
 
 :root[data-theme='dark'] {
@@ -223,10 +231,6 @@
   --border-color-theme: var(--primary);
   --bordercolor-inline-code: #4d4d4d; // optional
 
-  // Dropdown colors
-  --color-dropdown-link-active: var(--color-global);
-  --color-dropdown-link-hover: var(--color-reversal);
-
   // admin theme box
   --color-theme-color-box: var(--primary);
 
@@ -257,4 +261,13 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.darken(var(--primary), 20%)});
     }
   }
+
+  .grw-global-search .btn-secondary.dropdown-toggle {
+    color: white;
+  }
+
+  .btn-primary {
+    color:white !important;
+  }
+
 }

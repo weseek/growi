@@ -6,7 +6,7 @@
 .growi:not(.login-page) {
   // add background-image
   .page-editor-preview-container {
-    background-image: url('/images/themes/christmas/christmas.jpg');
+    background-image: url('../images/christmas/christmas.jpg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
@@ -137,7 +137,7 @@
   }
 
   .page-editor-preview-container {
-    background-image: url('/images/themes/christmas/christmas.jpg');
+    background-image: url('../images/christmas/christmas.jpg');
     background-attachment: fixed;
     background-size: cover;
   }
@@ -174,7 +174,7 @@
   * Modal
   */
   .modal-dialog .modal-header.bg-primary {
-    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+    background-image: url('../images/christmas/christmas-navbar.jpg');
     border-bottom: 2px solid var(--color-link);
   }
 
@@ -187,12 +187,12 @@
     }
     .card-header.bg-primary {
       color: white;
-      background-image: url('/images/themes/christmas/christmas-navbar.jpg') !important;
+      background-image: url('../images/christmas/christmas-navbar.jpg') !important;
     }
   }
 
   .grw-navbar {
-    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
+    background-image: url('../images/christmas/christmas-navbar.jpg');
   }
 
   // Button
@@ -201,4 +201,5 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--color-link), 15%)}, #{hsl.lighten(var(--color-link), 35%)}, #{hsl.lighten(var(--color-link), 45%)});
     }
   }
+
 }

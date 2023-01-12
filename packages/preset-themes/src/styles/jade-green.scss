@@ -178,7 +178,7 @@
   --bgcolor-search-top-dropdown: var(--primary);
   --bgcolor-search-top-dropdown-hs: var(--primary-hs);
   --bgcolor-search-top-dropdown-l: var(--primary-l);
-  --border-image-navbar: linear-gradient(to right, #ea5532 0%, #c9171e 100%);
+  --border-image-navbar: linear-gradient(to right, var(--primary) 0%, #{hsl.darken(var(--primary), 5%)} 100%);
 
   // Logo colors
   --bgcolor-logo: var(--color-global);
@@ -222,10 +222,6 @@
   // Border colors
   --border-color-theme: var(--primary);
   --bordercolor-inline-code: #4d4d4d; // optional
-
-  // Dropdown colors
-  --color-dropdown-link-active: var(--color-global);
-  --color-dropdown-link-hover: var(--color-reversal);
 
   // admin theme box
   --color-theme-color-box: var(--primary);
