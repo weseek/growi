@@ -78,7 +78,11 @@ type GrowiContextualSubNavigationForSharedPageProps = {
 const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
   const { currentPage, isLinkSharingDisabled } = props;
   if (currentPage == null) { return <></> }
-  return <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>;
+  return (
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+    </div>
+  );
 };
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {

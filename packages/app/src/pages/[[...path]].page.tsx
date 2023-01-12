@@ -141,7 +141,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { isLinkSharingDisabled } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   if (currentPage == null) { return <></> }
-  return <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>;
+  return (
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+    </div>
+  );
 };
 
 const IdenticalPathPage = (): JSX.Element => {
