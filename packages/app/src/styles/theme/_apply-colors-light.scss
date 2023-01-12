@@ -28,7 +28,7 @@
   $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
   $color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--color-global));
   $color-dropdown-link-active: var(--color-dropdown-link-active,var(--color-reversal));
-  $bgcolor-dropdown-link-hover: hsl.lighten(var(--bgcolor-global),15%);
+  $bgcolor-dropdown-link-hover: hsl.darken(var(--bgcolor-global),15%);
   $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
 
   // override bootstrap variables

@@ -127,6 +127,10 @@
   .grw-global-search .btn-secondary.dropdown-toggle {
     color: white;
   }
+
+  .btn-primary {
+    color:white;
+  }
 }
 
 :root[data-theme='dark'] {
@@ -227,10 +231,6 @@
   --border-color-theme: var(--primary);
   --bordercolor-inline-code: #4d4d4d; // optional
 
-  // Dropdown colors
-  --color-dropdown-link-active: var(--color-global);
-  --color-dropdown-link-hover: var(--color-reversal);
-
   // admin theme box
   --color-theme-color-box: var(--primary);
 
@@ -264,6 +264,10 @@
 
   .grw-global-search .btn-secondary.dropdown-toggle {
     color: white;
+  }
+
+  .btn-primary {
+    color:white;
   }
 
 }

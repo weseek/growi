@@ -112,10 +112,6 @@ $bordercolor: #7e0d7e;
   --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
   --bordercolor-inline-code: #4d4d4d; // optional
 
-  // Dropdown colors
-  --color-dropdown-link-active: var(--color-reversal);
-  --color-dropdown-link-hover: var(--color-global);
-
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
