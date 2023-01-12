@@ -113,8 +113,10 @@ $themelight: #f5f3ee;
   // portal
   $info: lighten($themecolor, 10%);
 
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
 
   &, body {
     background-image: url('../images/wood/wood.jpg');

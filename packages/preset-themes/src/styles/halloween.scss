@@ -85,6 +85,11 @@ $light: lighten($secondary, 10%);
   $color-resize-button-hover: #effcfa;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
 
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
+
   // Icon colors
   $color-editor-icons: $color-global;
 
@@ -98,9 +103,6 @@ $light: lighten($secondary, 10%);
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
 
   &, body {
     background-image: url('../images/halloween/halloween.jpg');

@@ -78,6 +78,11 @@ $accentcolor: #e08dbc;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
+
   // Icon colors
   $color-editor-icons: $color-global;
 
@@ -90,9 +95,6 @@ $accentcolor: #e08dbc;
 
   // admin theme box
   $color-theme-color-box: darken($primary, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
 
   &, body {
     background-image: url('../images/spring/spring02.svg');

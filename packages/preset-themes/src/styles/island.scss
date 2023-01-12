@@ -66,6 +66,11 @@ $color-themelight: rgba(183, 226, 219, 1);
   // Sidebar list group
   $bgcolor-sidebar-list-group: #eff8f7; // optional
 
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
+
   // Tabs
   $bordercolor-nav-tabs: $gray-300; // optional
 
@@ -81,9 +86,6 @@ $color-themelight: rgba(183, 226, 219, 1);
 
   // admin theme box
   $color-theme-color-box: darken($primary, 15%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
 
   &, body {
     background-image: url('../images/island/island.png');
