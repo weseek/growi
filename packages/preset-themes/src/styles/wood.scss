@@ -133,7 +133,7 @@
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   &, body {
     background-image: url('../images/wood/wood.jpg');
@@ -191,5 +191,9 @@
     .btn.btn-outline-primary {
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 30%)}, #{hsl.lighten(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 25%)});
     }
+  }
+
+  .alert-primary {
+    color: white !important;
   }
 }

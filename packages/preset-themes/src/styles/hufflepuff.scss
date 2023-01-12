@@ -180,6 +180,13 @@
       }
     }
   }
+  .alert-primary {
+    color: white !important;
+  }
+
+  .alert-secondary {
+    color: white !important;
+  }
 }
 
 :root[data-theme='dark'] {
@@ -363,5 +370,8 @@
     .grw-external-auth-form {
       border-color: var(--accentcolor) !important;
     }
+  }
+  .alert-primary {
+    color: white !important;
   }
 }
