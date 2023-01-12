@@ -15,7 +15,7 @@ phases:
       # login to docker.io
       - echo ${DOCKER_REGISTRY_PASSWORD} | docker login --username wsmoogle --password-stdin
       # login to ghcr.io
-      - echo ${DOCKER_REGISTRY_ON_GITHUB_PASSWORD} | docker login --username wsmoogle --password-stdin ghcr.io
+      - echo ${DOCKER_REGISTRY_ON_GITHUB_PASSWORD} | docker login ghcr.io --username wsmoogle --password-stdin
   build:
     commands:
       - export IMAGE_TAG="${IMAGE_NAME}:${TAG_VERSION}.BUILD.${BUILD_NUM}${TAG_SUFFIX+-}${TAG_SUFFIX}"
