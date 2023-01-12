@@ -113,6 +113,11 @@ $themelight: #f5f3ee;
   // portal
   $info: lighten($themecolor, 10%);
 
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
+
   &, body {
     background-image: url('../images/wood/wood.jpg');
     background-attachment: fixed;

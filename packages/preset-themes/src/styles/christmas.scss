@@ -102,8 +102,14 @@
   // Sidebar list group
   --bgcolor-sidebar-list-group: #fafbff; // optional
 
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
+
   // Icon colors
   --color-editor-icons: var(--color-global);  --color-editor-icons: var(--color-global);
+
   // Border colors
   --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
   --bordercolor-inline-code: #ccc8c8; // optional
