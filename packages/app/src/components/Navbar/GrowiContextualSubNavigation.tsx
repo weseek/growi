@@ -184,7 +184,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 };
 
 type GrowiContextualSubNavigationProps = {
-  currentPage: IPagePopulatedToShowRevision,
+  currentPage?: IPagePopulatedToShowRevision | null,
   isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
