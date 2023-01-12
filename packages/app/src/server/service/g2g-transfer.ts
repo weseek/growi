@@ -236,7 +236,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
-    const { fileUploadService } = this.crowi;
+    const { fileUploadService, configManager } = this.crowi;
 
     const version = this.crowi.version;
     if (version !== toGROWIInfo.version) {
@@ -264,7 +264,16 @@ export class G2GTransferPusherService implements Pusher {
       };
     }
 
-    if (!toGROWIInfo.attachmentInfo.writable) {
+    if (configManager.getConfig('crowi', 'app:fileUploadType') === 'none') {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: 'File upload is not configured for this Growi.',
+      };
+    }
+
+    const shouldUseFileUploadTypeOfNewGrowi = toGROWIInfo.attachmentInfo.type !== 'none';
+    if (shouldUseFileUploadTypeOfNewGrowi && !toGROWIInfo.attachmentInfo.writable) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
