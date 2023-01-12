@@ -134,11 +134,6 @@ resource "aws_codebuild_project" "codebuild" {
     image                       = "aws/codebuild/standard:6.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
-
-    environment_variable {
-      name  = "SECRETS_NAME"
-      value = "${aws_secretsmanager_secret.secret.name}"
-    }
   }
 
   source {

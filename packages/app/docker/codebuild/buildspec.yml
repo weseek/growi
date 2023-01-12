@@ -1,4 +1,7 @@
 version: 0.2
+env:
+  variables:
+    BUILD_NUM: 0
 batch:
   fast-fail: true
   build-graph:
@@ -9,8 +12,7 @@ batch:
         image: aws/codebuild/standard:6.0
         type: LINUX_CONTAINER
         variables:
-          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
-          SECRETS_NAME: ${SECRETS_NAME}
+          BUILD_NUM: $CODEBUILD_BUILD_NUMBER
           TAG_SUFFIX: amd64
     - identifier: build_arm64
       buildspec: packages/app/docker/codebuild/buildspec-image.yml
@@ -18,16 +20,14 @@ batch:
         image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
         type: ARM_CONTAINER
         variables:
-          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
-          SECRETS_NAME: ${SECRETS_NAME}
+          BUILD_NUM: $CODEBUILD_BUILD_NUMBER
           TAG_SUFFIX: arm64
     # create manifest
     - identifier: create_manifest_dockerhub
       buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
       env:
         variables:
-          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
-          SECRETS_NAME: ${SECRETS_NAME}
+          BUILD_NUM: $CODEBUILD_BUILD_NUMBER
           SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD
       depend-on:
         - build_amd64
@@ -36,8 +36,7 @@ batch:
       buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
       env:
         variables:
-          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
-          SECRETS_NAME: ${SECRETS_NAME}
+          BUILD_NUM: $CODEBUILD_BUILD_NUMBER
           SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
       depend-on:
         - build_amd64
