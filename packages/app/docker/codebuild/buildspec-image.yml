@@ -3,7 +3,8 @@ env:
   variables:
     DOCKER_BUILDKIT: 1
     IMAGE_NAME: weseek/growi
-    TAG_VERSION: latest
+    # TAG_VERSION: latest
+    TAG_VERSION: codebuildtest
     TAG_SUFFIX: amd64
   secrets-manager:
     DOCKER_REGISTRY_PASSWORD: growi/official-image-builder:DOCKER_REGISTRY_PASSWORD
@@ -25,5 +26,5 @@ phases:
   post_build:
     commands:
       - docker push $IMAGE_TAG
-      - docker push $IMAGE_TAG_GHCR
+      # - docker push $IMAGE_TAG_GHCR
 

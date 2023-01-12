@@ -26,13 +26,12 @@ batch:
       depend-on:
         - build_amd64
         - build_arm64
-    - identifier: create_manifest_ghcr
-      buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
-      env:
-        variables:
-          BUILD_NUM: $BUILD_NUM
-          IMAGE_HOST: ghcr.io
-          SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
-      depend-on:
-        - build_amd64
-        - build_arm64
+    # - identifier: create_manifest_ghcr
+    #   buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
+    #   env:
+    #     variables:
+    #       IMAGE_HOST: ghcr.io
+    #       SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
+    #   depend-on:
+    #     - build_amd64
+    #     - build_arm64
