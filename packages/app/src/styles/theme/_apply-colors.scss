@@ -10,7 +10,6 @@
 //
 
 // determine optional variables
-$border-image-navbar: var(--border-image-navbar);
 $bgcolor-search-top-dropdown: var(--bgcolor-search-top-dropdown,var(--secondary));
 $bgcolor-sidebar-nav-item-active: var(--bgcolor-sidebar-nav-item-active,#{hsl.darken(var(--primary),10%)});
 $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
@@ -171,7 +170,7 @@ ul.pagination {
     color: var(--color-link-nabvar);
   }
 
-  border-image: $border-image-navbar !important;
+  border-image: var(--border-image-navbar) !important;
   border-image-slice: 1 !important;
 
   .grw-app-title {
