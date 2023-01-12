@@ -10,6 +10,7 @@ batch:
         type: LINUX_CONTAINER
         variables:
           TAG_SUFFIX: amd64
+          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
     - identifier: build_arm64
       buildspec: buildspec-image.yml
       env:
@@ -17,12 +18,14 @@ batch:
         type: ARM_CONTAINER
         variables:
           TAG_SUFFIX: arm64
+          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
     # create manifest
     - identifier: create_manifest_dockerhub
       buildspec: buildspec-manifest.yml
       env:
         variables:
           SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD
+          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
       depend-on:
         - build_amd64
         - build_arm64
@@ -31,6 +34,7 @@ batch:
       env:
         variables:
           SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
+          BUILD_NUM: ${CODEBUILD_BUILD_NUMBER}
       depend-on:
         - build_amd64
         - build_arm64

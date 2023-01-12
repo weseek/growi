@@ -2,6 +2,7 @@ version: 0.2
 env:
   variables:
     DOCKER_BUILDKIT: 1
+    BUILD_NUM: 0
     IMAGE_NAME: weseek/growi
     TAG_VERSION: latest
     TAG_SUFFIX: amd64
@@ -17,8 +18,8 @@ phases:
       - echo ${DOCKER_REGISTRY_ON_GITHUB_PASSWORD} | docker login --username wsmoogle --password-stdin ghcr.io
   build:
     commands:
-      - export IMAGE_TAG="${IMAGE_NAME}:${TAG_VERSION}.BUILD.${CODEBUILD_BUILD_NUMBER}${TAG_SUFFIX+-}${TAG_SUFFIX}"
-      - export IMAGE_TAG_GHCR="ghcr.io/${IMAGE_NAME}:${TAG_VERSION}.BUILD.${CODEBUILD_BUILD_NUMBER}${TAG_SUFFIX+-}${TAG_SUFFIX}"
+      - export IMAGE_TAG="${IMAGE_NAME}:${TAG_VERSION}.BUILD.${BUILD_NUM}${TAG_SUFFIX+-}${TAG_SUFFIX}"
+      - export IMAGE_TAG_GHCR="ghcr.io/${IMAGE_NAME}:${TAG_VERSION}.BUILD.${BUILD_NUM}${TAG_SUFFIX+-}${TAG_SUFFIX}"
       - docker build -t $IMAGE_TAG -f ./packages/app/docker/Dockerfile .
       - docker tag $IMAGE_TAG $IMAGE_TAG_GHCR
 
@@ -26,4 +27,4 @@ phases:
     commands:
       - docker push $IMAGE_TAG
       - docker push $IMAGE_TAG_GHCR
-      
+
