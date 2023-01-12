@@ -1,4 +1,5 @@
 version: 0.2
+
 env:
   variables:
     DOCKER_BUILDKIT: 1
@@ -9,6 +10,7 @@ env:
   secrets-manager:
     DOCKER_REGISTRY_PASSWORD: growi/official-image-builder:DOCKER_REGISTRY_PASSWORD
     DOCKER_REGISTRY_ON_GITHUB_PAT: growi/official-image-builder:DOCKER_REGISTRY_ON_GITHUB_PAT
+
 phases:
   pre_build:
     commands:
@@ -28,3 +30,7 @@ phases:
       - docker push $IMAGE_TAG
       # - docker push $IMAGE_TAG_GHCR
 
+cache:
+  paths:
+    - node_modules/**/*
+    - packages/*/node_modules/**/*
