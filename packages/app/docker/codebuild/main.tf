@@ -14,16 +14,16 @@ provider "aws" {
   region  = "ap-northeast-1"
 }
 
-resource "aws_s3_bucket" "growi-official-image-builder-cache" {
+resource "aws_s3_bucket" "s3_bucket" {
   bucket = "growi-official-image-builder-cache"
 }
 
-resource "aws_s3_bucket_acl" "growi-official-image-builder-cache" {
-  bucket = aws_s3_bucket.growi-official-image-builder-cache.id
+resource "aws_s3_bucket_acl" "s3_bucket_acl" {
+  bucket = aws_s3_bucket.s3_bucket.id
   acl    = "private"
 }
 
-resource "aws_iam_role" "growi-official-image-builder" {
+resource "aws_iam_role" "iam_role" {
   name = "growi-official-image-builder"
 
   assume_role_policy = <<EOF
@@ -56,7 +56,7 @@ resource "aws_secretsmanager_secret_version" "main" {
 }
 
 resource "aws_iam_role_policy" "growi-official-image-builder" {
-  role = aws_iam_role.growi-official-image-builder.name
+  role = aws_iam_role.iam_role.name
 
   policy = <<POLICY
 {
@@ -79,8 +79,8 @@ resource "aws_iam_role_policy" "growi-official-image-builder" {
         "s3:*"
       ],
       "Resource": [
-        "${aws_s3_bucket.growi-official-image-builder-cache.arn}",
-        "${aws_s3_bucket.growi-official-image-builder-cache.arn}/*"
+        "${aws_s3_bucket.s3_bucket.arn}",
+        "${aws_s3_bucket.s3_bucket.arn}/*"
       ]
     },
     {
@@ -116,11 +116,14 @@ resource "aws_iam_role_policy" "growi-official-image-builder" {
 POLICY
 }
 
-resource "aws_codebuild_project" "growi-official-image-builder" {
+resource "aws_codebuild_project" "codebuild" {
   name           = "growi-official-image-builder"
   description    = "The CodeBuild Project for GROWI official docker image"
 
-  service_role = aws_iam_role.growi-official-image-builder.arn
+  service_role = aws_iam_role.iam_role.arn
+  build_batch_config {
+    service_role = aws_iam_role.iam_role.arn
+  }
 
   artifacts {
     type = "NO_ARTIFACTS"
@@ -131,6 +134,11 @@ resource "aws_codebuild_project" "growi-official-image-builder" {
     image                       = "aws/codebuild/standard:6.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
+
+    environment_variable {
+      name  = "SECRETS_NAME"
+      value = "${aws_secretsmanager_secret.secret.name}"
+    }
   }
 
   source {
@@ -141,9 +149,5 @@ resource "aws_codebuild_project" "growi-official-image-builder" {
     buildspec = "packages/app/docker/codebuild/buildspec.yml"
   }
   source_version = "refs/heads/support/build-with-codebuild"
-
-  build_batch_config {
-    service_role = aws_iam_role.growi-official-image-builder.arn
-  }
 
 }
