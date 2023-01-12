@@ -113,6 +113,7 @@ resource "aws_codebuild_project" "growi-official-image-builder" {
     type = "GITHUB"
     location = "https://github.com/weseek/growi.git"
     git_clone_depth = 1
+    buildspec = "packages/app/docker/codebuild/buildspec.yml"
   }
   source_version = "refs/heads/support/build-with-codebuild"
 
