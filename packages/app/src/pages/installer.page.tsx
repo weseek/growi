@@ -6,12 +6,11 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
-import CustomNavAndContents from '../components/CustomNavigation/CustomNavAndContents';
-import DataTransferForm from '../components/DataTransferForm';
 import InstallerForm from '../components/InstallerForm';
 import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
@@ -20,6 +19,10 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
+
+
+const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
+const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
