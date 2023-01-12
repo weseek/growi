@@ -23,6 +23,23 @@ resource "aws_s3_bucket_acl" "s3_bucket_acl" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "s3_bucket_lifecycle" {
+  bucket = aws_s3_bucket.s3_bucket.id
+
+  rule {
+    id     = "auto-expire"
+    status = "Enabled"
+
+    expiration {
+      days = 60
+    }
+    noncurrent_version_expiration {
+      noncurrent_days = 3
+    }
+  }
+
+}
+
 resource "aws_iam_role" "iam_role" {
   name = "growi-official-image-builder"
 
@@ -144,5 +161,10 @@ resource "aws_codebuild_project" "codebuild" {
     buildspec = "packages/app/docker/codebuild/buildspec.yml"
   }
   source_version = "refs/heads/support/build-with-codebuild"
+
+  cache {
+    type  = "LOCAL"
+    modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_CUSTOM_CACHE"]
+  }
 
 }
