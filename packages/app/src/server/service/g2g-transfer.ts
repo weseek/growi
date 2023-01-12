@@ -132,6 +132,7 @@ interface Pusher {
     user: any,
     collections: string[],
     optionsMap: any,
+    toGROWIInfo: IDataGROWIInfo,
   ): Promise<void>
 }
 
@@ -400,7 +401,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any, toGROWIInfo: IDataGROWIInfo): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
     socket.emit('admin:g2gProgress', {
@@ -458,6 +459,14 @@ export class G2GTransferPusherService implements Pusher {
       mongo: G2G_PROGRESS_STATUS.COMPLETED,
       attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
     });
+
+    if (toGROWIInfo.attachmentInfo.type === 'none' && ['aws', 'gcs'].includes(this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'))) {
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.COMPLETED,
+        attachments: G2G_PROGRESS_STATUS.SKIPPED,
+      });
+      return;
+    }
 
     try {
       await this.transferAttachments(tk);

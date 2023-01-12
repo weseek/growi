@@ -320,7 +320,7 @@ module.exports = (crowi: Crowi): Router => {
     // Start transfer
     // DO NOT "await". Let it run in the background.
     // Errors should be emitted through websocket.
-    g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
+    g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, toGROWIInfo);
 
     return res.apiv3({ message: 'Successfully requested auto transfer.' });
   });
