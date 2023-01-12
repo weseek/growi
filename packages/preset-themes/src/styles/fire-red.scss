@@ -123,6 +123,10 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.lighten(var(--primary), 20%)});
     }
   }
+
+  .grw-global-search .btn-secondary.dropdown-toggle {
+    color: white;
+  }
 }
 
 :root[data-theme='dark'] {
@@ -257,4 +261,9 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.darken(var(--primary), 20%)});
     }
   }
+
+  .grw-global-search .btn-secondary.dropdown-toggle {
+    color: white;
+  }
+
 }
