@@ -25,7 +25,8 @@ batch:
       env:
         variables:
           SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD
-          SOURCE_MANIFESTS: weseek/growi/latest-amd64 weseek/growi/latest-arm64
+          SOURCE_TAG_AMD64: latest-amd64
+          SOURCE_TAG_ARM64: latest-arm64
           TAGS: latest
       depend-on:
         - build_amd64
