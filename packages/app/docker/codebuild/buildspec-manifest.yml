@@ -4,8 +4,9 @@ env:
     IMAGE_HOST: ''
     # IMAGE_NAME: weseek/growi
     IMAGE_NAME: weseek/growi-codebuild-test
-    TAG_TMP: codebuildtmp
-    TAGS: codebuildtest
+    TAG_AMD64: latest-amd64
+    TAG_ARM64: latest-arm64
+    TAGS: latest
     SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD # DOCKER_REGISTRY_PASSWORD or DOCKER_REGISTRY_ON_GITHUB_PASSWORD
   secrets-manager:
     DOCKER_REGISTRY_PASSWORD: growi/official-image-builder:$SECRETS_JSON_KEY
@@ -16,15 +17,9 @@ phases:
   build:
     commands:
       - export IMAGE="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}"
-      - export TMP_TAG="${IMAGE}:${TAG_TMP}"
-      - export TMP_TAG_AMD64="${IMAGE}:${TAG_TMP}-amd64"
-      - export TMP_TAG_ARM64="${IMAGE}:${TAG_TMP}-arm64"
-      - docker manifest create ${TMP_TAG} ${TMP_TAG_AMD64} ${TMP_TAG_ARM64}
-      - bash ./packages/app/docker/codebuild/tagging.sh --source-image "${TMP_TAG}" --target-image "${IMAGE}" --tags "${TAGS}"
-
-  post_build:
-    commands:
-      - docker image push --all-tags ${IMAGE}
-      # - docker manifest push ${TMP_TAG}
-      # remove
-      # - docker run --rm -it lumir/remove-dockerhub-tag --user wsmoogle --pass ${DOCKER_REGISTRY_PASSWORD} ${TMP_TAG} ${TMP_TAG_AMD64} ${TMP_TAG_ARM64}
+      - export MANIFEST_AMD64="${IMAGE}:${TAG_AMD64}"
+      - export MANIFEST_ARM64="${IMAGE}:${TAG_ARM64}"
+      - bash ./packages/app/docker/codebuild/create-manifests.sh
+          --target-image "${IMAGE}"
+          --tags "${TAGS}"
+          --source-manifests "${MANIFEST_AMD64} ${MANIFEST_ARM64}"
