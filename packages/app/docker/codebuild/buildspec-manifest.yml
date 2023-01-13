@@ -24,7 +24,7 @@ phases:
 
   post_build:
     commands:
-      - docker image push--all-tags ${IMAGE}
+      - docker image push --all-tags ${IMAGE}
       # - docker manifest push ${TMP_TAG}
       # remove
       # - docker run --rm -it lumir/remove-dockerhub-tag --user wsmoogle --pass ${DOCKER_REGISTRY_PASSWORD} ${TMP_TAG} ${TMP_TAG_AMD64} ${TMP_TAG_ARM64}
