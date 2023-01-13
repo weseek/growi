@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ARGUMENT_LIST=(
-  "source-image"
   "target-image"
   "tags"
+  "source-manifests"
 )
 
 
@@ -19,8 +19,8 @@ eval set --$opts
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --source-image)
-      sourceImage=$2
+    --source-manifests)
+      sourceManifests=$2
       shift 2
       ;;
 
@@ -43,6 +43,8 @@ done
 for tag in $(echo $tags | tr "," "\n")
 do
     tag=`echo $tag | awk '{gsub(/ /,""); print}'`
-    echo "docker tag $sourceImage $targetImage:$tag"
-    eval "docker tag $sourceImage $targetImage:$tag"
+    echo "docker manifest create $targetImage:$tag $sourceManifests"
+    eval "docker manifest create $targetImage:$tag $sourceManifests"
+    echo "docker manifest push $targetImage:$tag"
+    eval "docker manifest push $targetImage:$tag"
 done
