@@ -600,6 +600,15 @@ export class G2GTransferReceiverService implements Receiver {
     return importSettingsMap;
   }
 
+  private async processImportWithPrePostProcess(
+      collections: string[],
+      importSettingsMap: { [key: string]: ImportSettings; },
+  ): Promise<void> {
+    await this.crowi.importService.updateIsV5CompatibleBeforeImport(collections);
+    await this.crowi.importService.import(collections, importSettingsMap);
+    await this.crowi.importService.normalizeAllPublicPagesAfterImport(collections);
+  }
+
   public async importCollections(
       collections: string[],
       importSettingsMap: { [key: string]: ImportSettings; },
@@ -614,7 +623,7 @@ export class G2GTransferReceiverService implements Receiver {
       const fileUploadConfigs = await this.getFileUploadConfigs();
 
       // import mongo collections(overwrites file uplaod configs)
-      await importService.import(collections, importSettingsMap);
+      await this.processImportWithPrePostProcess(collections, importSettingsMap);
 
       // restore file upload config from cache
       await configManager.removeConfigsInTheSameNamespace('crowi', UPLOAD_CONFIG_KEYS);
@@ -622,7 +631,7 @@ export class G2GTransferReceiverService implements Receiver {
     }
     else {
       // import mongo collections(overwrites file uplaod configs)
-      await importService.import(collections, importSettingsMap);
+      await this.processImportWithPrePostProcess(collections, importSettingsMap);
 
       // update file upload config
       await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);

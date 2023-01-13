@@ -294,7 +294,12 @@ export default function route(crowi) {
      * import
      */
     try {
-      importService.import(collections, importSettingsMap);
+      (async() => {
+        await importService.updateIsV5CompatibleBeforeImport(collections);
+        await importService.import(collections, importSettingsMap);
+        await importService.normalizeAllPublicPagesAfterImport(collections);
+      })();
+
       const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
       activityEvent.emit('update', res.locals.activity._id, parameters);
     }
