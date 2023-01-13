@@ -174,19 +174,6 @@ class ImportService {
   }
 
   /**
-   * Run pageService.normalizeAllPublicPages when page normalization is required
-   *
-   * @param {string} collections MongoDB collection name
-   * @param {boolean} isV5Compatible Whether pages are v5 compatible
-   * @param {boolean} isImportPagesCollection Whether importing pages collection
-   */
-  async _normalizeAllPublicPagesAfterImport(collections, isV5Compatible, isImportPagesCollection) {
-    const shouldNormalizePages = isV5Compatible && isImportPagesCollection;
-
-    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
-  }
-
-  /**
    * import collections from json
    *
    * @param {string} collections MongoDB collection name
@@ -220,7 +207,9 @@ class ImportService {
 
     const currentIsV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
-    await this._normalizeAllPublicPagesAfterImport(collections, currentIsV5Compatible, isImportPagesCollection);
+    const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
+
+    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
   }
 
   /**
