@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';

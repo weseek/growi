@@ -128,19 +128,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     mutatePageInfo();
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
-  const bookmarkClickHandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
-      return;
-    }
-    if (!isIPageInfoForOperation(pageInfo)) {
-      return;
-    }
-
-    await toggleBookmark(pageId, pageInfo.isBookmarked);
-    mutatePageInfo();
-    mutateBookmarkInfo();
-    mutateCurrentUserBookmark();
-  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, mutateCurrentUserBookmark, pageId, pageInfo]);
 
   const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDuplicateMenuItem == null || path == null) {
@@ -242,10 +229,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       {revisionId != null && (
         <BookmarkButtons
           hideTotalNumber={isCompactMode}
-          bookmarkCount={bookmarkCount}
-          isBookmarked={isBookmarked}
           bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-          onBookMarkClicked={bookmarkClickHandler}
         />
       )}
       {revisionId != null && !isCompactMode && (

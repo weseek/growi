@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 
 
@@ -96,7 +96,7 @@ const BookmarkItem = (props: Props): JSX.Element => {
 
   return (
     <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
-      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-3 d-flex align-items-center" id={bookmarkItemId}>
+      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-5 d-flex align-items-center" id={bookmarkItemId}>
         { isRenameInputShown ? (
           <ClosableTextInput
             value={nodePath.basename(bookmarkedPage.path ?? '')}

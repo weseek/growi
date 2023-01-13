@@ -18,6 +18,10 @@ const validator = {
     body('name').isString().withMessage('name must be a string'),
     body('parent').isMongoId().optional({ nullable: true }),
   ],
+  bookmarkPage: [
+    body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
+    body('folderId').isMongoId().withMessage('Folder ID must be a valid mongo ID'),
+  ],
 };
 
 module.exports = (crowi) => {
@@ -56,6 +60,7 @@ module.exports = (crowi) => {
         name: bookmarkFolder.name,
         parent: bookmarkFolder.parent,
         children: bookmarkFolder.children,
+        bookmarks: bookmarkFolder.bookmarks,
       }));
       return res.apiv3({ bookmarkFolderItems });
     }
@@ -88,5 +93,21 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+  router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
+    const userId = req.user?._id;
+    const { pageId, folderId } = req.body;
+
+    try {
+      const bookmarkFolder = await BookmarkFolder.insertOrUpdateBookmarkedPage(pageId, userId, folderId);
+      logger.debug('bookmark added to folder', bookmarkFolder);
+      return res.apiv3({ bookmarkFolder });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+
   return router;
 };

@@ -269,6 +269,23 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   }
 }
 
+// Bookmark dropdown menu
+.grw-bookmark-folder-dropdown  {
+  .grw-bookmark-folder-menu {
+    .form-control{
+      &:focus {
+        color: $body-color
+      }
+    }
+    .grw-bookmark-folder-menu-item {
+      @include mixins.button-outline-svg-icon-variant($gray-400, $primary);
+      .grw-bookmark-folder-menu-item-title {
+        color: $body-color
+      }
+    }
+  }
+}
+
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $primary, lighten($primary, 52%), transparent);
   @include hover() {
