@@ -22,7 +22,7 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
-  useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
+  useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -73,7 +73,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
-  const { data: currentPathname } = useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -88,7 +87,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
-  const title = generateCustomTitleForPage(props, currentPathname ?? '');
+  const title = generateCustomTitleForPage(props, props.shareLinkRelatedPage?.path ?? '');
 
 
   const sideContents = shareLink != null
