@@ -24,7 +24,7 @@ phases:
       - export TAG_GHCR="ghcr.io/${IMAGE_NAME}:${TAG_TMP}${TAG_SUFFIX+-}${TAG_SUFFIX}"
       # - docker build -t $TAG -f ./packages/app/docker/Dockerfile .
       - docker build -t $TAG -f ./packages/app/docker/Dockerfile.nginx .
-      - docker tag $TAG $GHCR
+      - docker tag $TAG $TAG_GHCR
 
   post_build:
     commands:
