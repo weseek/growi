@@ -295,6 +295,7 @@ export default function route(crowi) {
      */
     try {
       importService.import(collections, importSettingsMap);
+
       const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
       activityEvent.emit('update', res.locals.activity._id, parameters);
     }

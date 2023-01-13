@@ -183,13 +183,6 @@ class ImportService {
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isImportPagesCollection = collections.includes('pages');
-    const shouldNormalizePages = isV5Compatible && isImportPagesCollection;
-
-    // set isV5Compatible to false
-    if (shouldNormalizePages) await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': false });
-
     // process serially so as not to waste memory
     const promises = collections.map((collectionName) => {
       const importSettings = importSettingsMap[collectionName];
@@ -207,13 +200,16 @@ class ImportService {
       }
     }
 
-    // run normalizeAllPublicPages
-    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
-
     this.currentProgressingStatus = null;
     this.emitTerminateEvent();
 
     await this.crowi.configManager.loadConfigs();
+
+    const currentIsV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isImportPagesCollection = collections.includes('pages');
+    const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
+
+    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
   }
 
   /**
