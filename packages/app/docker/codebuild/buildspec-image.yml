@@ -4,8 +4,7 @@ env:
   variables:
     DOCKER_BUILDKIT: 1
     IMAGE_NAME: weseek/growi
-    # TAG_VERSION: latest
-    TAG_VERSION: codebuildtest
+    TAG_TMP: codebuildtmp
     TAG_SUFFIX: amd64
   secrets-manager:
     DOCKER_REGISTRY_PASSWORD: growi/official-image-builder:DOCKER_REGISTRY_PASSWORD
@@ -20,15 +19,15 @@ phases:
       - echo ${DOCKER_REGISTRY_ON_GITHUB_PAT} | docker login ghcr.io --username wsmoogle --password-stdin
   build:
     commands:
-      - export IMAGE_TAG="${IMAGE_NAME}:${TAG_VERSION}${TAG_SUFFIX+-}${TAG_SUFFIX}"
-      - export IMAGE_TAG_GHCR="ghcr.io/${IMAGE_NAME}:${TAG_VERSION}${TAG_SUFFIX+-}${TAG_SUFFIX}"
+      - export TAG="${IMAGE_NAME}:${TAG_TMP}${TAG_SUFFIX+-}${TAG_SUFFIX}"
+      - export TAG_GHCR="ghcr.io/${IMAGE_NAME}:${TAG_TMP}${TAG_SUFFIX+-}${TAG_SUFFIX}"
       - docker build -t $IMAGE_TAG -f ./packages/app/docker/Dockerfile .
-      - docker tag $IMAGE_TAG $IMAGE_TAG_GHCR
+      - docker tag $TAG $GHCR
 
   post_build:
     commands:
-      - docker push $IMAGE_TAG
-      # - docker push $IMAGE_TAG_GHCR
+      - docker push $TAG
+      # - docker push $TAG_GHCR
 
 cache:
   paths:
