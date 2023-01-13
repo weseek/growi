@@ -67,16 +67,6 @@ resource "aws_iam_role_policy" "growi-official-image-builder" {
     {
       "Effect": "Allow",
       "Action": [
-        "s3:*"
-      ],
-      "Resource": [
-        "${aws_s3_bucket.s3_bucket.arn}",
-        "${aws_s3_bucket.s3_bucket.arn}/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
         "secretsmanager:GetResourcePolicy",
         "secretsmanager:GetSecretValue",
         "secretsmanager:DescribeSecret",
