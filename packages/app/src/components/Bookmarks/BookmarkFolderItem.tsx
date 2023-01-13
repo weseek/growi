@@ -7,7 +7,9 @@ import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import {
+  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
+} from '~/client/util/apiv3-client';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -186,8 +188,23 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     // TODO: Implement update parent folder
   };
 
+  const getAllDesc = async(folderId: string) => {
+    try {
+      const res = await apiv3Get(`/bookmark-folder/get-parents/${folderId}`);
+      return res.data;
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
   const isDropable = (item: BookmarkFolderItems, target: BookmarkFolderItems) => {
     let dropable = false;
+    getAllDesc(bookmarkFolder._id).then((result) => {
+      if (result.ancestors.includes(item._id)) {
+        dropable = false;
+      }
+    });
+
     if (target.parent === item._id || target._id === item._id || target.children?.includes(item)) {
       dropable = false;
     }

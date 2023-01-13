@@ -108,6 +108,16 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/get-parents/:folderId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { folderId } = req.params;
 
+    try {
+      const ancestors = await BookmarkFolder.getAllAncestors(folderId);
+      return res.apiv3({ ancestors });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
   return router;
 };
