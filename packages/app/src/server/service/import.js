@@ -174,36 +174,14 @@ class ImportService {
   }
 
   /**
-   * Calculate whether page normalization is required
-   *
-   * @param {string} collections MongoDB collection name
-   */
-  async getShouldNormalizePages(collections) {
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isImportPagesCollection = collections.includes('pages');
-    const shouldNormalizePages = isV5Compatible && isImportPagesCollection;
-
-    return shouldNormalizePages;
-  }
-
-  /**
-   * Update the config app:isV5Compatible to false when page normalization is required
-   *
-   * @param {string} collections MongoDB collection name
-   */
-  async updateIsV5CompatibleBeforeImport(collections) {
-    const shouldNormalizePages = this.getShouldNormalizePages(collections);
-
-    if (shouldNormalizePages) await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': false });
-  }
-
-  /**
    * Run pageService.normalizeAllPublicPages when page normalization is required
    *
    * @param {string} collections MongoDB collection name
+   * @param {boolean} isV5Compatible Whether pages are v5 compatible
+   * @param {boolean} isImportPagesCollection Whether importing pages collection
    */
-  async normalizeAllPublicPagesAfterImport(collections) {
-    const shouldNormalizePages = this.getShouldNormalizePages(collections);
+  async _normalizeAllPublicPagesAfterImport(collections, isV5Compatible, isImportPagesCollection) {
+    const shouldNormalizePages = isV5Compatible && isImportPagesCollection;
 
     if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
   }
@@ -239,6 +217,10 @@ class ImportService {
     this.emitTerminateEvent();
 
     await this.crowi.configManager.loadConfigs();
+
+    const currentIsV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isImportPagesCollection = collections.includes('pages');
+    await this._normalizeAllPublicPagesAfterImport(collections, currentIsV5Compatible, isImportPagesCollection);
   }
 
   /**
