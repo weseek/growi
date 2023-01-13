@@ -184,7 +184,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 };
 
 type GrowiContextualSubNavigationProps = {
-  currentPage?: IPagePopulatedToShowRevision,
+  currentPage?: IPagePopulatedToShowRevision | null,
   isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
@@ -423,21 +423,19 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     : currentPage?.path;
 
   return (
-    <div data-testid="grw-contextual-sub-nav">
-      <GrowiSubNavigation
-        pagePath={pagePath}
-        pageId={currentPage?._id}
-        showDrawerToggler={isDrawerMode}
-        showTagLabel={isAbleToShowTagLabel}
-        isGuestUser={isGuestUser}
-        isDrawerMode={isDrawerMode}
-        isCompactMode={isCompactMode}
-        tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
-        tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
-        rightComponent={RightComponent}
-        additionalClasses={['container-fluid']}
-      />
-    </div>
+    <GrowiSubNavigation
+      pagePath={pagePath}
+      pageId={currentPage?._id}
+      showDrawerToggler={isDrawerMode}
+      showTagLabel={isAbleToShowTagLabel}
+      isGuestUser={isGuestUser}
+      isDrawerMode={isDrawerMode}
+      isCompactMode={isCompactMode}
+      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
+      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
+      rightComponent={RightComponent}
+      additionalClasses={['container-fluid']}
+    />
   );
 };
 

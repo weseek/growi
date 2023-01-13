@@ -12,7 +12,7 @@ import superjson from 'superjson';
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
-import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
+import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -68,6 +68,23 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
   'IShareLinkRelatedPageTransformer',
 );
 
+// GrowiContextualSubNavigation for shared page
+// get page info from props not to send request 'GET /page' from client
+type GrowiContextualSubNavigationForSharedPageProps = {
+  currentPage?: IPagePopulatedToShowRevision,
+  isLinkSharingDisabled: boolean,
+}
+
+const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
+  const { currentPage, isLinkSharingDisabled } = props;
+  if (currentPage == null) { return <></> }
+  return (
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+    </div>
+  );
+};
+
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
@@ -110,7 +127,8 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          {isShowSharedPage && <GrowiContextualSubNavigation currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
+          {isShowSharedPage
+          && <GrowiContextualSubNavigationForSharedPage currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
