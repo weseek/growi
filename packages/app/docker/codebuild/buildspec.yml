@@ -9,7 +9,7 @@ batch:
         image: aws/codebuild/standard:6.0
         type: LINUX_CONTAINER
         variables:
-          TAG_TMP: codebuildtmp
+          TAG_VERSION: latest
           TAG_SUFFIX: amd64
     - identifier: build_arm64
       buildspec: packages/app/docker/codebuild/buildspec-image.yml
@@ -17,15 +17,16 @@ batch:
         image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
         type: ARM_CONTAINER
         variables:
-          TAG_TMP: codebuildtmp
+          TAG_VERSION: latest
           TAG_SUFFIX: arm64
     # create manifest
     - identifier: create_manifest_dockerhub
       buildspec: packages/app/docker/codebuild/buildspec-manifest.yml
       env:
         variables:
-          TAG_VERSION: codebuildtmp
           SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD
+          SOURCE_MANIFESTS: weseek/growi/latest-amd64 weseek/growi/latest-arm64
+          TAGS: latest
       depend-on:
         - build_amd64
         - build_arm64
@@ -34,8 +35,9 @@ batch:
     #   env:
     #     variables:
     #       IMAGE_HOST: ghcr.io
-    #       TAG_VERSION: codebuildtmp
     #       SECRETS_JSON_KEY: DOCKER_REGISTRY_ON_GITHUB_PASSWORD
+    #       SOURCE_MANIFESTS: ghcr.io/weseek/growi/latest-amd64 ghcr.io/weseek/growi/latest-arm64
+    #       TAGS: latest
     #   depend-on:
     #     - build_amd64
     #     - build_arm64

@@ -4,8 +4,7 @@ env:
     IMAGE_HOST: ''
     # IMAGE_NAME: weseek/growi
     IMAGE_NAME: weseek/growi-codebuild-test
-    TAG_AMD64: latest-amd64
-    TAG_ARM64: latest-arm64
+    SOURCE_MANIFESTS: ${IMAGE_NAME}:latest
     TAGS: latest
     SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD # DOCKER_REGISTRY_PASSWORD or DOCKER_REGISTRY_ON_GITHUB_PASSWORD
   secrets-manager:
@@ -17,9 +16,7 @@ phases:
   build:
     commands:
       - export IMAGE="${IMAGE_HOST}${IMAGE_HOST:+/}${IMAGE_NAME}"
-      - export MANIFEST_AMD64="${IMAGE}:${TAG_AMD64}"
-      - export MANIFEST_ARM64="${IMAGE}:${TAG_ARM64}"
       - bash ./packages/app/docker/codebuild/create-manifests.sh
           --target-image "${IMAGE}"
           --tags "${TAGS}"
-          --source-manifests "${MANIFEST_AMD64} ${MANIFEST_ARM64}"
+          --source-manifests "${SOURCE_MANIFESTS}"
