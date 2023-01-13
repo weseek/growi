@@ -96,6 +96,7 @@
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "csv-to-markdown-table": "^1.1.0",
+    "dayjs": "^1.11.7",
     "date-fns": "^2.23.0",
     "detect-indent": "^7.0.0",
     "diff": "^5.0.0",
