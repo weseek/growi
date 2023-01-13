@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import parseISO from 'date-fns/parseISO';
-import isIsoDate from 'is-iso-date';
+import dayjs from 'dayjs';
+import qs from 'qs';
 
 const customAxios = axios.create({
   headers: {
@@ -10,26 +10,10 @@ const customAxios = axios.create({
   },
 });
 
-// add an interceptor to convert ISODate
-const convertDates = (body: any): void => {
-  if (body === null || body === undefined || typeof body !== 'object') {
-    return body;
-  }
-
-  for (const key of Object.keys(body)) {
-    const value = body[key];
-    if (isIsoDate(value)) {
-      body[key] = parseISO(value);
-    }
-    else if (typeof value === 'object') {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      convertDates(value);
-    }
-  }
-};
-customAxios.interceptors.response.use((response) => {
-  convertDates(response.data);
-  return response;
+// serialize Date config: https://github.com/axios/axios/issues/1548#issuecomment-548306666
+customAxios.interceptors.request.use((config) => {
+  config.paramsSerializer = params => qs.stringify(params, { serializeDate: (date: Date) => dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ') });
+  return config;
 });
 
 export default customAxios;
