@@ -3,7 +3,8 @@ version: 0.2
 env:
   variables:
     DOCKER_BUILDKIT: 1
-    IMAGE_NAME: weseek/growi
+    # IMAGE_NAME: weseek/growi
+    IMAGE_NAME: weseek/growi-codebuild-test
     TAG_TMP: codebuildtmp
     TAG_SUFFIX: amd64
   secrets-manager:

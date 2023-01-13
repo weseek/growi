@@ -2,7 +2,8 @@ version: 0.2
 env:
   variables:
     IMAGE_HOST: ''
-    IMAGE_NAME: weseek/growi
+    # IMAGE_NAME: weseek/growi
+    IMAGE_NAME: weseek/growi-codebuild-test
     TAG_TMP: codebuildtmp
     TAGS: codebuildtest
     SECRETS_JSON_KEY: DOCKER_REGISTRY_PASSWORD # DOCKER_REGISTRY_PASSWORD or DOCKER_REGISTRY_ON_GITHUB_PASSWORD
@@ -25,5 +26,5 @@ phases:
     commands:
       - docker image push--all-tags ${IMAGE}
       # - docker manifest push ${TMP_TAG}
-      # remove 
+      # remove
       # - docker run --rm -it lumir/remove-dockerhub-tag --user wsmoogle --pass ${DOCKER_REGISTRY_PASSWORD} ${TMP_TAG} ${TMP_TAG_AMD64} ${TMP_TAG_ARM64}
