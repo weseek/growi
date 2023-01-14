@@ -184,7 +184,7 @@ module.exports = (crowi: Crowi): Router => {
       logger.error(err);
       return res.apiv3Err(
         new ErrorV3(
-          'the version of this growi and the growi that exported the data are not met',
+          'the version of this GROWI and the GROWI that exported the data are not met',
           'version_incompatible',
         ),
         500,
@@ -200,7 +200,7 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Import settings invalid. See growi docs about details.', 'import_settings_invalid'));
+      return res.apiv3Err(new ErrorV3('Import settings invalid. See GROWI docs about details.', 'import_settings_invalid'));
     }
 
     try {
@@ -252,7 +252,7 @@ module.exports = (crowi: Crowi): Router => {
       logger.error(err);
 
       if (!isG2GTransferError(err)) {
-        return res.apiv3Err(new ErrorV3('Failed to prepare growi info', 'failed_to_prepare_growi_info'), 500);
+        return res.apiv3Err(new ErrorV3('Failed to prepare GROWI info', 'failed_to_prepare_growi_info'), 500);
       }
 
       return res.apiv3Err(new ErrorV3(err.message, err.code), 500);
@@ -302,17 +302,17 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // get growi info
-    let toGROWIInfo: IDataGROWIInfo;
+    let destGROWIInfo: IDataGROWIInfo;
     try {
-      toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
+      destGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI growi info.', 'failed_to_ask_growi_info'));
+      return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI info.', 'failed_to_ask_growi_info'));
     }
 
     // Check if can transfer
-    const transferability = await g2gTransferPusherService.getTransferability(toGROWIInfo);
+    const transferability = await g2gTransferPusherService.getTransferability(destGROWIInfo);
     if (!transferability.canTransfer) {
       return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
     }
@@ -320,7 +320,7 @@ module.exports = (crowi: Crowi): Router => {
     // Start transfer
     // DO NOT "await". Let it run in the background.
     // Errors should be emitted through websocket.
-    g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, toGROWIInfo);
+    g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, destGROWIInfo);
 
     return res.apiv3({ message: 'Successfully requested auto transfer.' });
   });

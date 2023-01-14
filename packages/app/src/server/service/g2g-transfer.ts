@@ -100,22 +100,22 @@ interface Pusher {
    */
   generateAxiosConfig(tk: TransferKey, config: AxiosRequestConfig): AxiosRequestConfig
   /**
-   * Send to-growi a request to get growi info
+   * Send to-growi a request to get GROWI info
    * @param {TransferKey} tk Transfer key
    */
   askGROWIInfo(tk: TransferKey): Promise<IDataGROWIInfo>
   /**
    * Check if transfering is proceedable
-   * @param {IDataGROWIInfo} fromGROWIInfo
+   * @param {IDataGROWIInfo} destGROWIInfo GROWI info from dest GROWI
    */
-  getTransferability(fromGROWIInfo: IDataGROWIInfo): Promise<Transferability>
+  getTransferability(destGROWIInfo: IDataGROWIInfo): Promise<Transferability>
   /**
    * List files in the storage
    * @param {TransferKey} tk Transfer key
    */
   listFilesInStorage(tk: TransferKey): Promise<FileMeta[]>
   /**
-   * Transfer all Attachment data to destination GROWI
+   * Transfer all Attachment data to dest GROWI
    * @param {TransferKey} tk Transfer key
    */
   transferAttachments(tk: TransferKey): Promise<void>
@@ -123,7 +123,7 @@ interface Pusher {
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
    * @param {any} user User operating g2g transfer
-   * @param {IDataGROWIInfo} toGROWIInfo GROWI info of new GROWI
+   * @param {IDataGROWIInfo} destGROWIInfo GROWI info of dest GROWI
    * @param {string[]} collections Collection name string array
    * @param {any} optionsMap Options map
    */
@@ -132,7 +132,7 @@ interface Pusher {
     user: any,
     collections: string[],
     optionsMap: any,
-    toGROWIInfo: IDataGROWIInfo,
+    destGROWIInfo: IDataGROWIInfo,
   ): Promise<void>
 }
 
@@ -232,36 +232,36 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      throw new G2GTransferError('Failed to retrieve growi info.', G2GTransferErrorCode.FAILED_TO_RETRIEVE_GROWI_INFO);
+      throw new G2GTransferError('Failed to retrieve GROWI info.', G2GTransferErrorCode.FAILED_TO_RETRIEVE_GROWI_INFO);
     }
   }
 
-  public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
+  public async getTransferability(destGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
     const { fileUploadService, configManager } = this.crowi;
 
     const version = this.crowi.version;
-    if (version !== toGROWIInfo.version) {
+    if (version !== destGROWIInfo.version) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: `Growi versions mismatch. This Growi: ${version} / new Growi: ${toGROWIInfo.version}.`,
+        reason: `GROWI versions mismatch. src GROWI: ${version} / dest GROWI: ${destGROWIInfo.version}.`,
       };
     }
 
     const activeUserCount = await this.crowi.model('User').countActiveUsers();
-    if ((toGROWIInfo.userUpperLimit ?? Infinity) < activeUserCount) {
+    if ((destGROWIInfo.userUpperLimit ?? Infinity) < activeUserCount) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: `The number of active users (${activeUserCount} users) exceeds the limit of new Growi (to up ${toGROWIInfo.userUpperLimit} users).`,
+        reason: `The number of active users (${activeUserCount} users) exceeds the limit of dest GROWI (to up ${destGROWIInfo.userUpperLimit} users).`,
       };
     }
 
-    if (toGROWIInfo.fileUploadDisabled) {
+    if (destGROWIInfo.fileUploadDisabled) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: 'File upload is disabled in new Growi.',
+        reason: 'File upload is disabled in dest GROWI.',
       };
     }
 
@@ -269,26 +269,26 @@ export class G2GTransferPusherService implements Pusher {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: 'File upload is not configured for this Growi.',
+        reason: 'File upload is not configured for src GROWI.',
       };
     }
 
-    const shouldUseFileUploadTypeOfNewGrowi = toGROWIInfo.attachmentInfo.type !== 'none';
-    if (shouldUseFileUploadTypeOfNewGrowi && !toGROWIInfo.attachmentInfo.writable) {
+    const shouldUseFileUploadTypeOfDestGROWI = destGROWIInfo.attachmentInfo.type !== 'none';
+    if (shouldUseFileUploadTypeOfDestGROWI && !destGROWIInfo.attachmentInfo.writable) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: 'The storage of new Growi is not writable.',
+        reason: 'The storage of dest GROWI is not writable.',
       };
     }
 
     const totalFileSize = await fileUploadService.getTotalFileSize();
-    if ((toGROWIInfo.fileUploadTotalLimit ?? Infinity) < totalFileSize) {
+    if ((destGROWIInfo.fileUploadTotalLimit ?? Infinity) < totalFileSize) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
         // eslint-disable-next-line max-len
-        reason: `Total file size exceeds file upload limit of new Growi. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(toGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
+        reason: `Total file size exceeds file upload limit of dest GROWI. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(destGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
       };
     }
 
@@ -311,7 +311,7 @@ export class G2GTransferPusherService implements Pusher {
     const { fileUploadService, socketIoService } = this.crowi;
     const socket = socketIoService.getAdminSocket();
     const Attachment = this.crowi.model('Attachment');
-    const filesFromNewGrowi = await this.listFilesInStorage(tk);
+    const filesFromSrcGROWI = await this.listFilesInStorage(tk);
 
     /**
      * Given these documents,
@@ -354,8 +354,8 @@ export class G2GTransferPusherService implements Pusher {
      * | c.png | 1024 |
      * | d.png | 2048 |
      */
-    const filter = filesFromNewGrowi.length > 0 ? {
-      $and: filesFromNewGrowi.map(({ name, size }) => ({
+    const filter = filesFromSrcGROWI.length > 0 ? {
+      $and: filesFromSrcGROWI.map(({ name, size }) => ({
         $or: [
           { fileName: { $ne: basename(name) } },
           { fileSize: { $ne: size } },
@@ -401,7 +401,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any, toGROWIInfo: IDataGROWIInfo): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any, destGROWIInfo: IDataGROWIInfo): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
     socket.emit('admin:g2gProgress', {
@@ -432,7 +432,7 @@ export class G2GTransferPusherService implements Pusher {
       throw err;
     }
 
-    // Send a zip file to other growi via axios
+    // Send a zip file to other GROWI via axios
     try {
       // Use FormData to immitate browser's form data object
       const form = new FormData();
@@ -451,7 +451,7 @@ export class G2GTransferPusherService implements Pusher {
         mongo: G2G_PROGRESS_STATUS.ERROR,
         attachments: G2G_PROGRESS_STATUS.PENDING,
       });
-      socket.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to new GROWI', key: 'admin:g2g:error_send_growi_archive' });
+      socket.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to dest GROWI', key: 'admin:g2g:error_send_growi_archive' });
       throw err;
     }
 
@@ -460,7 +460,7 @@ export class G2GTransferPusherService implements Pusher {
       attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
     });
 
-    if (toGROWIInfo.attachmentInfo.type === 'none' && ['aws', 'gcs'].includes(this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'))) {
+    if (destGROWIInfo.attachmentInfo.type === 'none' && ['aws', 'gcs'].includes(this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'))) {
       socket.emit('admin:g2gProgress', {
         mongo: G2G_PROGRESS_STATUS.COMPLETED,
         attachments: G2G_PROGRESS_STATUS.SKIPPED,
@@ -488,7 +488,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   /**
-   * Transfer attachment to destination GROWI
+   * Transfer attachment to dest GROWI
    * @param {TransferKey} tk Transfer key
    * @param {any} attachment Attachment model instance
    * @param {Readable} fileStream Attachment data(loaded from storage)
