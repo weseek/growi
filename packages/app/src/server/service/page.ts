@@ -40,7 +40,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
+  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp, generateTrashPageChildrenPathRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -4022,6 +4022,28 @@ class PageService {
       // Use $eq for user-controlled sources. see: https://codeql.github.com/codeql-query-help/javascript/js-sql-injection/#recommendation
       queryBuilder = new PageQueryBuilder(Page.find({ parent: { $eq: parentId } } as any), true); // TODO: improve type
     }
+    await queryBuilder.addViewerCondition(user, userGroups);
+
+    const pages = await queryBuilder
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    return pages;
+  }
+
+  /**
+   * Find all pages in trash page
+   */
+  async findAllPagesInTrashPage(user: IUserHasId, userGroups = null): Promise<PageDocument[]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const path = '/trash';
+    const regexp = generateTrashPageChildrenPathRegExp(path);
+    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+
     await queryBuilder.addViewerCondition(user, userGroups);
 
     const pages = await queryBuilder

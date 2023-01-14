@@ -305,3 +305,12 @@ export const generateChildrenRegExp = (path: string): RegExp => {
   // ex. /parent/any_child OR /any_level1
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
+
+/**
+ * Generate RegExp instance for trash page any lower level paths
+ */
+export const generateTrashPageChildrenPathRegExp = (path: string): RegExp => {
+  // https://regex101.com/r/KYZWls/1
+  // ex. /trash/.*
+  return new RegExp(`^${path}\\/.*$`);
+};
