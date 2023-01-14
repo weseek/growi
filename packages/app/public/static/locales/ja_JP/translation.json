@@ -799,11 +799,13 @@
     "go_to_settings": "設定する"
   },
   "questionnaire": {
-    "Questionnaire": "アンケート",
+    "Give us feedback for improvements": "GROWI の改善のために、アンケートにご協力ください",
+    "thank you for answering": "ご回答ありがとうございます",
     "don't show again": "今後このアンケートを表示しない",
     "answer later": "今は回答しない",
-    "strongly agree": "非常にそう思う",
-    "strongly disagree": "全くそう思わない",
-    "send answer": "回答する"
+    "agree": "肯定",
+    "disagree": "否定",
+    "send answer": "回答する",
+    "no answer": "無回答"
   }
 }
