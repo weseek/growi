@@ -32,7 +32,7 @@ describe('QuestionnaireCronService', () => {
           questions: [
             {
               type: 'points',
-              text: 'Growi は使いやすいですか？',
+              text: 'Is Growi easy to use?',
             },
           ],
           condition: {
@@ -56,7 +56,7 @@ describe('QuestionnaireCronService', () => {
           questions: [
             {
               type: 'points',
-              text: 'アンケート機能は支障なく動いていますか？',
+              text: 'Is this questionnaire functioning properly?',
             },
           ],
           condition: {
@@ -80,7 +80,7 @@ describe('QuestionnaireCronService', () => {
           questions: [
             {
               type: 'points',
-              text: 'これはいい質問ですか？',
+              text: 'Is this a good question?',
             },
           ],
           condition: {
@@ -119,7 +119,7 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'Growi は使いやすいですか？',
+            text: 'Is Growi easy to use?',
           },
         ],
         condition: {
@@ -140,7 +140,7 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: '最近どうですか？',
+            text: 'Is ver 2.0 better than 1.0?',
           },
         ],
         condition: {
@@ -161,7 +161,7 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: '最新のデザインはどうですか？',
+            text: 'How would you rate the latest design?',
           },
         ],
         condition: {
@@ -215,7 +215,7 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'Growi は使いやすいですか？',
+            text: 'Is Growi easy to use?',
           },
         ],
         condition: {
@@ -238,7 +238,7 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'アンケート機能は支障なく動いていますか？',
+            text: 'Is this questionnaire functioning properly?',
           },
         ],
         condition: {

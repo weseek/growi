@@ -35,7 +35,8 @@ interface IGrowiOSInfo {
 
 export interface IGrowiInfo {
   version: string
-  appSiteUrl: string // it may be hashed
+  appSiteUrl?: string
+  appSiteUrlHashed: string
   type: GrowiServiceType
   currentUsersCount: number
   currentActiveUsersCount: number
