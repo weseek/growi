@@ -4,6 +4,7 @@ import { ICondition, IConditionHasId } from './condition';
 import { IQuestion, IQuestionHasId } from './question';
 
 export interface IQuestionnaireOrder {
+  title: string,
   showFrom: Date
   showUntil: Date
   questions: IQuestion[]
@@ -11,6 +12,7 @@ export interface IQuestionnaireOrder {
 }
 
 export type IQuestionnaireOrderHasId = {
+  title: string,
   showFrom: Date
   showUntil: Date
   questions: IQuestionHasId[]

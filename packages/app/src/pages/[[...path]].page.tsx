@@ -17,7 +17,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { renderToString } from 'react-dom/server';
 import superjson from 'superjson';
+import * as toastr from 'toastr';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { Comments } from '~/components/Comments';
@@ -25,7 +27,8 @@ import { MainPane } from '~/components/Layout/MainPane';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
-import QuestionnaireModal from '~/components/Questionnaire/QuestionnaireModal';
+import PopUps from '~/components/PopUps';
+import QuestionnaireModalManager from '~/components/Questionnaire/QuestionnaireModalManager';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -373,7 +376,8 @@ Page.getLayout = function getLayout(page) {
       <DescendantsPageListModal />
       <DrawioModal />
       <HandsontableModal />
-      <QuestionnaireModal />
+      <QuestionnaireModalManager />
+      <PopUps />
     </>
   );
 };

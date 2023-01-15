@@ -11,6 +11,7 @@ export interface QuestionnaireOrderDocument extends IQuestionnaireOrder, Documen
 export type QuestionnaireOrderModel = Model<QuestionnaireOrderDocument>
 
 const questionnaireOrderSchema = new Schema<QuestionnaireOrderDocument>({
+  title: { type: String, required: true },
   showFrom: { type: Date, required: true },
   showUntil: {
     type: Date,
