@@ -184,7 +184,7 @@ module.exports = (crowi: Crowi): Router => {
       logger.error(err);
       return res.apiv3Err(
         new ErrorV3(
-          'the version of this GROWI and the GROWI that exported the data are not met',
+          'The version of this GROWI and the uploaded GROWI data are not the same',
           'version_incompatible',
         ),
         500,
@@ -200,7 +200,7 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Import settings invalid. See GROWI docs about details.', 'import_settings_invalid'));
+      return res.apiv3Err(new ErrorV3('Import settings are invalid. See GROWI docs about details.', 'import_settings_invalid'));
     }
 
     try {

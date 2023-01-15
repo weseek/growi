@@ -253,7 +253,8 @@ export class G2GTransferPusherService implements Pusher {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: `The number of active users (${activeUserCount} users) exceeds the limit of dest GROWI (to up ${destGROWIInfo.userUpperLimit} users).`,
+        // eslint-disable-next-line max-len
+        reason: `The number of active users (${activeUserCount} users) exceeds the limit of the destination GROWI (up to ${destGROWIInfo.userUpperLimit} users).`,
       };
     }
 
@@ -261,7 +262,7 @@ export class G2GTransferPusherService implements Pusher {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: 'File upload is disabled in dest GROWI.',
+        reason: 'The file upload setting is disabled in the destination GROWI.',
       };
     }
 
@@ -278,7 +279,7 @@ export class G2GTransferPusherService implements Pusher {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        reason: 'The storage of dest GROWI is not writable.',
+        reason: 'The storage of the destination GROWI is not writable.',
       };
     }
 
@@ -288,7 +289,7 @@ export class G2GTransferPusherService implements Pusher {
         canTransfer: false,
         // TODO: i18n for reason
         // eslint-disable-next-line max-len
-        reason: `Total file size exceeds file upload limit of dest GROWI. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(destGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
+        reason: `The total file size of attachments exceeds the file upload limit of the destination GROWI. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(destGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
       };
     }
 
@@ -451,7 +452,7 @@ export class G2GTransferPusherService implements Pusher {
         mongo: G2G_PROGRESS_STATUS.ERROR,
         attachments: G2G_PROGRESS_STATUS.PENDING,
       });
-      socket.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to dest GROWI', key: 'admin:g2g:error_send_growi_archive' });
+      socket.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to the destination GROWI', key: 'admin:g2g:error_send_growi_archive' });
       throw err;
     }
 
