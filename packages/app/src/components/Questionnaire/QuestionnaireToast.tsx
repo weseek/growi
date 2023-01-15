@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useTranslation } from 'next-i18next';
+
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useQuestionnaireModal } from '~/stores/modal';
 
@@ -11,6 +13,8 @@ type QuestionnaireToastProps = {
 const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JSX.Element => {
   const { open: openQuestionnaireModal } = useQuestionnaireModal();
   const [isOpen, setIsOpen] = useState(true);
+
+  const { t } = useTranslation();
 
   const answerBtnClickHandler = () => {
     setIsOpen(false);
@@ -25,8 +29,8 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       </button>
     </div>
     <div className="toast-body bg-light">
-      <button type="button" className="btn btn-secondary mr-3" onClick={answerBtnClickHandler}>回答する</button>
-      <button type="button" className="btn btn-secondary" onClick={() => setIsOpen(false)}>スキップする</button>
+      <button type="button" className="btn btn-secondary mr-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
+      <button type="button" className="btn btn-secondary" onClick={() => setIsOpen(false)}>{t('questionnaire.skip')}</button>
     </div>
   </div>;
 };

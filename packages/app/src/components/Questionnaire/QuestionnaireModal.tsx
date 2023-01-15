@@ -32,18 +32,18 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       toggle={() => closeQuestionnaireModal(questionnaireOrder._id)}
       className="bg-primary text-light">
       {answered
-        ? <span className="mr-auto">{t('questionnaire.thank you for answering')}</span>
-        : <span>{t('questionnaire.Give us feedback for improvements')}</span>
+        ? <span className="mr-auto">{t('questionnaire.thank_you_for_answering')}</span>
+        : <span>{t('questionnaire.give_us_feedback')}</span>
       }
     </ModalHeader>
     <ModalBody className="my-4">
       {answered
-        ? <>その他ご意見ご要望は<a href="">こちら</a>からお願い致します。</>
+        ? <>{t('questionnaire.additional_feedback')}</>
         : <div className="container">
           <h3 className="grw-modal-head">{questionnaireOrder.title}</h3>
           <div className="row mt-4">
             <div className="col-6"></div>
-            <div className="col-1 p-0 font-weight-bold text-center">{t('questionnaire.no answer')}</div>
+            <div className="col-1 p-0 font-weight-bold text-center">{t('questionnaire.no_answer')}</div>
             <div className="col-5 d-flex justify-content-between">
               <span className="font-weight-bold pl-3">{t('questionnaire.disagree')}</span>
               <span className="font-weight-bold pr-3">{t('questionnaire.agree')}</span>
@@ -61,9 +61,9 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         : <>
           <div className="form-check form-check-inline mr-4">
             <input className="form-check-input" type="checkbox"/>
-            <label className="form-check-label">{t('questionnaire.don\'t show again')}</label>
+            <label className="form-check-label">{t('questionnaire.dont_show_again')}</label>
           </div>
-          <button type="button" className="btn btn-primary" onClick={() => setAnswered(true)}>{t('questionnaire.send answer')}</button>
+          <button type="button" className="btn btn-primary" onClick={() => setAnswered(true)}>{t('questionnaire.answer')}</button>
         </>}
     </ModalFooter>
   </Modal>);
