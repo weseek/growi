@@ -14,8 +14,6 @@ coverage
 .Trash-*
 ehthumbs.db
 Thumbs.db
-terraform.tfstate.backup
-terraform-provider-*
 
 # debug
 npm-debug.log*
@@ -30,6 +28,11 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Terraform
+**/.terraform/*
+# *.tfstate
+*.tfstate.*
 
 # IDE, dev #
 .idea
