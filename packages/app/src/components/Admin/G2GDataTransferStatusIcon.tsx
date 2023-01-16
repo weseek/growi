@@ -31,6 +31,12 @@ const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.
     );
   }
 
+  if (status === G2G_PROGRESS_STATUS.SKIPPED) {
+    return (
+      <i className={`fa fa-ban fa-fw ${className}`} aria-label="skipped" {...props} />
+    );
+  }
+
   return <i className={`fa fa-circle-o fa-fw ${className}`} aria-label="pending" {...props} />;
 };
 

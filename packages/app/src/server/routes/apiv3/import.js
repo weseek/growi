@@ -356,9 +356,9 @@ export default function route(crowi) {
       return res.apiv3(data);
     }
     catch {
-      const msg = 'the version of this growi and the growi that exported the data are not met';
-      const varidationErr = 'versions-are-not-met';
-      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
+      const msg = 'The version of this GROWI and the uploaded GROWI data are not the same';
+      const validationErr = 'versions-are-not-met';
+      return res.apiv3Err(new ErrorV3(msg, validationErr), 500);
     }
   });
 
