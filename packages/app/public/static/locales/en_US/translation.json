@@ -808,6 +808,7 @@
     "agree": "Agree",
     "disagree": "Disagree",
     "answer": "Answer",
-    "no_answer": "No answer"
+    "no_answer": "No answer",
+    "settings": "Questionnaire Settings"
   }
 }

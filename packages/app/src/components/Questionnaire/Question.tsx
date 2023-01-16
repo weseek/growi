@@ -14,7 +14,7 @@ const Question = ({ question }: QuestionProps): JSX.Element => {
     <div className="col-1 d-flex align-items-center p-0">
       <div className="btn-group btn-group-toggle flex-fill grw-questionnaire-btn-group" data-toggle="buttons">
         <label className="btn btn-outline-primary active">
-          <input type="radio" name={`question-${question._id}`} id={`${question._id}-noAnswer`}/> 0
+          <input type="radio" name={`question-${question._id}`} id={`${question._id}-noAnswer`}/> -
         </label>
       </div>
     </div>

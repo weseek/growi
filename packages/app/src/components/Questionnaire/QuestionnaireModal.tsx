@@ -6,7 +6,9 @@ import {
 } from 'reactstrap';
 
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
+import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
+
 
 import Question from './Question';
 
@@ -15,6 +17,8 @@ type QuestionnaireModalProps = {
 }
 
 const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JSX.Element => {
+  const { data: currentUser } = useCurrentUser();
+
   const { data: questionnaireModalData, close: closeQuestionnaireModal } = useQuestionnaireModal();
   const isOpened = questionnaireModalData?.[questionnaireOrder._id];
 
@@ -45,8 +49,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
             <div className="col-6"></div>
             <div className="col-1 p-0 font-weight-bold text-center">{t('questionnaire.no_answer')}</div>
             <div className="col-5 d-flex justify-content-between">
-              <span className="font-weight-bold pl-3">{t('questionnaire.disagree')}</span>
-              <span className="font-weight-bold pr-3">{t('questionnaire.agree')}</span>
+              <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
+              <span className="font-weight-bold">{t('questionnaire.agree')}</span>
             </div>
           </div>
           {questionnaireOrder.questions?.map((question) => {
@@ -56,13 +60,11 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       }
     </ModalBody>
     <ModalFooter>
+      {currentUser?.admin ? <a href="" className="mr-auto">{t('questionnaire.settings')}</a> : <></>}
       {answered
         ? <button type="button" className="btn btn-primary" onClick={() => closeQuestionnaireModal(questionnaireOrder._id)}>{t('Close')}</button>
         : <>
-          <div className="form-check form-check-inline mr-4">
-            <input className="form-check-input" type="checkbox"/>
-            <label className="form-check-label">{t('questionnaire.dont_show_again')}</label>
-          </div>
+          <button type="button" className="btn btn-outline-secondary mr-3">{t('questionnaire.dont_show_again')}</button>
           <button type="button" className="btn btn-primary" onClick={() => setAnswered(true)}>{t('questionnaire.answer')}</button>
         </>}
     </ModalFooter>
