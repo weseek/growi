@@ -4,7 +4,10 @@ resource "aws_secretsmanager_secret" "secret" {
 
 resource "aws_secretsmanager_secret_version" "main" {
   secret_id     = aws_secretsmanager_secret.secret.id
-  secret_string = "CHANGE THIS"
+  secret_string = jsonencode({
+    KEY1 = "CHANGE THIS"
+    KEY2 = "CHANGE THIS"
+  })
 
   lifecycle {
     ignore_changes = [secret_string, version_stages]
