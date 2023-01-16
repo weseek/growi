@@ -81,6 +81,7 @@ function Crowi() {
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
+  this.questionnaireCronService = null;
 
   this.tokens = null;
 
@@ -305,10 +306,12 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
+
 };
 
 Crowi.prototype.setupCron = function() {
-  new QuestionnaireCronService(this).setUpCron();
+  this.questionnaireCronService = new QuestionnaireCronService(this);
+  this.questionnaireCronService.startCron();
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
