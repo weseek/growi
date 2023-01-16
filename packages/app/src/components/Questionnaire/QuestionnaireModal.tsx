@@ -47,8 +47,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
           <h3 className="grw-modal-head">{questionnaireOrder.title}</h3>
           <div className="row mt-4">
             <div className="col-6"></div>
-            <div className="col-1 p-0 font-weight-bold text-center">{t('questionnaire.no_answer')}</div>
-            <div className="col-5 d-flex justify-content-between">
+            <div className="col-1 p-0 font-weight-bold text-center align-items-center">{t('questionnaire.no_answer')}</div>
+            <div className="col-5 d-flex justify-content-between align-items-center">
               <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
               <span className="font-weight-bold">{t('questionnaire.agree')}</span>
             </div>
