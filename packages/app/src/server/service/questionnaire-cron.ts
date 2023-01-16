@@ -1,10 +1,11 @@
 import axiosRetry from 'axios-retry';
 
+import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
-import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire/questionnaire-order';
+import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
 
 const logger = loggerFactory('growi:service:questionnaire-cron');
 
@@ -39,7 +40,7 @@ class QuestionnaireCronService {
 
   private questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number) {
     const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-    const saveOrders = async(questionnaireOrders: QuestionnaireOrderDocument[]) => {
+    const saveOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
       const currentDate = new Date(Date.now());
       // save questionnaires that are not finished (doesn't have to be started)
       const nonFinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
@@ -53,7 +54,7 @@ class QuestionnaireCronService {
 
       try {
         const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
-        const questionnaireOrders: QuestionnaireOrderDocument[] = response.data.questionnaireOrders;
+        const questionnaireOrders: IQuestionnaireOrder[] = response.data.questionnaireOrders;
 
         await QuestionnaireOrder.deleteMany();
         await saveOrders(questionnaireOrders);
