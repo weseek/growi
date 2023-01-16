@@ -289,7 +289,7 @@ export class G2GTransferPusherService implements Pusher {
         canTransfer: false,
         // TODO: i18n for reason
         // eslint-disable-next-line max-len
-        reason: `The total file size of attachments exceeds the file upload limit of the destination GROWI. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(destGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
+        reason: `The total file size of attachments exceeds the file upload limit of the destination GROWI. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(destGROWIInfo.fileUploadTotalLimit as number).toLocaleString()} bytes.`,
       };
     }
 
