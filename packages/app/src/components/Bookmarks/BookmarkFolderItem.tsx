@@ -30,9 +30,13 @@ import DeleteBookmarkFolderModal from './DeleteBookmarkFolderModal';
 type BookmarkFolderItemProps = {
   bookmarkFolder: BookmarkFolderItems
   isOpen?: boolean
+  level: number
+  root: string
 }
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
-  const { bookmarkFolder, isOpen: _isOpen = false } = props;
+  const {
+    bookmarkFolder, isOpen: _isOpen = false, level, root,
+  } = props;
 
   const { t } = useTranslation();
   const {
@@ -167,7 +171,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   const [, drag] = useDrag({
     type: 'FOLDER',
-    item:  bookmarkFolder,
+    item:  props,
     canDrag: () => {
 
       return true;
@@ -184,35 +188,21 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     }),
   });
 
-  const folderItemDropHandler = async(item: BookmarkFolderItems) => {
+  const folderItemDropHandler = async(item: BookmarkFolderItemProps) => {
     // TODO: Implement update parent folder
   };
 
-  const getAllDesc = async(folderId: string) => {
-    try {
-      const res = await apiv3Get(`/bookmark-folder/get-parents/${folderId}`);
-      return res.data;
+
+  const isDroppable = (item: BookmarkFolderItemProps, targetRoot: string, targetLevel: number): boolean => {
+    if (item.bookmarkFolder.parent === bookmarkFolder._id) {
+      return false;
     }
-    catch (err) {
-      toastError(err);
-    }
-  };
-  const isDropable = (item: BookmarkFolderItems, target: BookmarkFolderItems) => {
-    let dropable = false;
-    getAllDesc(bookmarkFolder._id).then((result) => {
-      if (result.ancestors.includes(item._id)) {
-        dropable = false;
+    if (item.root === targetRoot) {
+      if (item.level === level || item.level < targetLevel) {
+        return false;
       }
-    });
-
-    if (target.parent === item._id || target._id === item._id || target.children?.includes(item)) {
-      dropable = false;
     }
-    else {
-      dropable = true;
-    }
-
-    return dropable;
+    return true;
   };
 
   const [, drop] = useDrop(() => ({
@@ -230,8 +220,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     },
     canDrop: (item) => {
       // Implement isDropable function & improve
-
-      return isDropable(item, bookmarkFolder);
+      return isDroppable(item, root, level);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -245,6 +234,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           <BookmarkFolderItem
             key={childFolder._id}
             bookmarkFolder={childFolder}
+            level={level + 1}
+            root={root}
           />
         </div>
       );

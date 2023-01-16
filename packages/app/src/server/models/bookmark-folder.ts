@@ -33,7 +33,6 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string): Promise<BookmarkFolderDocument>
-  getAllAncestors(folderId: string): Promise<BookmarkFolderItems[]>
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
@@ -172,17 +171,4 @@ Promise<BookmarkFolderDocument> {
   return bookmarkFolder;
 };
 
-bookmarkFolderSchema.statics.getAllAncestors = async function(folderId: string): Promise<string[]> {
-  const getParent = async(folderId) => {
-    let currentParent : string[] = [];
-    const parentFolder = await this.findById(folderId);
-    if (parentFolder && parentFolder.parent != null) {
-      currentParent.push(parentFolder.id);
-      currentParent = currentParent.concat(await getParent(parentFolder.parent));
-    }
-    return currentParent;
-  };
-  const parents = await getParent(folderId);
-  return parents;
-};
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);
