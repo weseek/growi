@@ -44,199 +44,12 @@ import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
-// import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
-// import Linker from './PreProcessor/Linker';
-// import XssFilter from './PreProcessor/XssFilter';
 // import BlockdiagConfigurer from './markdown-it/blockdiag';
-// import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
-// import EmojiConfigurer from './markdown-it/emoji';
-// import FooternoteConfigurer from './markdown-it/footernote';
-// import HeaderConfigurer from './markdown-it/header';
-// import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
-// import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
-// import LinkerByRelativePathConfigurer from './markdown-it/link-by-relative-path';
-// import MathJaxConfigurer from './markdown-it/mathjax';
-// import PlantUMLConfigurer from './markdown-it/plantuml';
-// import TableConfigurer from './markdown-it/table';
-// import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
-// import TaskListsConfigurer from './markdown-it/task-lists';
-// import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 
 
 const logger = loggerFactory('growi:util:GrowiRenderer');
 
-// declare const hljs;
-
-// type MarkdownSettings = {
-//   breaks?: boolean,
-// };
-
-// export default class GrowiRenderer {
-
-//   RendererConfig: RendererConfig;
-
-//   constructor(RendererConfig: RendererConfig, pagePath?: Nullable<string>) {
-//     this.RendererConfig = RendererConfig;
-//     this.pagePath = pagePath;
-
-//     if (isClient() && (window as CustomWindow).growiRenderer != null) {
-//       this.preProcessors = (window as CustomWindow).growiRenderer.preProcessors;
-//       this.postProcessors = (window as CustomWindow).growiRenderer.postProcessors;
-//     }
-//     else {
-//       this.preProcessors = [
-//         new EasyGrid(),
-//         new Linker(),
-//         new CsvToTable(),
-//         new XssFilter({
-//           isEnabledXssPrevention: this.RendererConfig.isEnabledXssPrevention,
-//           tagWhiteList: this.RendererConfig.tagWhiteList,
-//           attrWhiteList: this.RendererConfig.attrWhiteList,
-//         }),
-//       ];
-//       this.postProcessors = [
-//       ];
-//     }
-
-//     this.init = this.init.bind(this);
-//     this.addConfigurers = this.addConfigurers.bind(this);
-//     this.setMarkdownSettings = this.setMarkdownSettings.bind(this);
-//     this.configure = this.configure.bind(this);
-//     this.process = this.process.bind(this);
-//     this.codeRenderer = this.codeRenderer.bind(this);
-//   }
-
-//   init() {
-//     let parser: Processor = unified().use(parse);
-//     this.remarkPlugins.forEach((item) => {
-//       parser = applyPlugin(parser, item);
-//     });
-
-//     let rehype: Processor = parser.use(remark2rehype);
-//     this.rehypePlugins.forEach((item) => {
-//       rehype = applyPlugin(rehype, item);
-//     });
-
-//     this.processor = rehype.use(rehype2react, {
-//       createElement: React.createElement,
-//       components: {
-//         // a: NextLink,
-//       },
-//     });
-//   }
-
-//   init() {
-//     // init markdown-it
-//     this.md = new MarkdownIt({
-//       html: true,
-//       linkify: true,
-//       highlight: this.codeRenderer,
-//     });
-
-//     this.isMarkdownItConfigured = false;
-
-//     this.markdownItConfigurers = [
-//       new TaskListsConfigurer(),
-//       new HeaderConfigurer(),
-//       new EmojiConfigurer(),
-//       new MathJaxConfigurer(),
-//       new DrawioViewerConfigurer(),
-//       new PlantUMLConfigurer(this.RendererConfig),
-//       new BlockdiagConfigurer(this.RendererConfig),
-//     ];
-
-//     if (this.pagePath != null) {
-//       this.markdownItConfigurers.push(
-//         new LinkerByRelativePathConfigurer(this.pagePath),
-//       );
-//     }
-//   }
-
-//   addConfigurers(configurers: any[]): void {
-//     this.markdownItConfigurers.push(...configurers);
-//   }
-
-//   setMarkdownSettings(settings: MarkdownSettings): void {
-//     this.md.set(settings);
-//   }
-
-//   configure(): void {
-//     if (!this.isMarkdownItConfigured) {
-//       this.markdownItConfigurers.forEach((configurer) => {
-//         configurer.configure(this.md);
-//       });
-//     }
-//   }
-
-//   preProcess(markdown, context) {
-//     let processed = markdown;
-//     for (let i = 0; i < this.preProcessors.length; i++) {
-//       if (!this.preProcessors[i].process) {
-//         continue;
-//       }
-//       processed = this.preProcessors[i].process(processed, context);
-//     }
-
-//     return processed;
-//   }
-
-//   process(markdown, context) {
-//     return this.md.render(markdown, context);
-//   }
-
-//   postProcess(html, context) {
-//     let processed = html;
-//     for (let i = 0; i < this.postProcessors.length; i++) {
-//       if (!this.postProcessors[i].process) {
-//         continue;
-//       }
-//       processed = this.postProcessors[i].process(processed, context);
-//     }
-
-//     return processed;
-//   }
-
-//   codeRenderer(code, langExt) {
-//     const noborder = (!this.RendererConfig.highlightJsStyleBorder) ? 'hljs-no-border' : '';
-
-//     let citeTag = '';
-//     let hljsLang = 'plaintext';
-//     let showLinenumbers = false;
-
-//     if (langExt) {
-//       // https://regex101.com/r/qGs7eZ/3
-//       const match = langExt.match(/^([^:=\n]+)?(=([^:=\n]*))?(:([^:=\n]*))?(=([^:=\n]*))?$/);
-
-//       const lang = match[1];
-//       const fileName = match[5] || null;
-//       showLinenumbers = (match[2] != null) || (match[6] != null);
-
-//       if (fileName != null) {
-//         citeTag = `<cite>${fileName}</cite>`;
-//       }
-//       if (hljs.getLanguage(lang)) {
-//         hljsLang = lang;
-//       }
-//     }
-
-//     let highlightCode = code;
-//     try {
-//       highlightCode = hljs.highlight(hljsLang, code, true).value;
-
-//       // add line numbers
-//       if (showLinenumbers) {
-//         highlightCode = hljs.lineNumbersValue((highlightCode));
-//       }
-//     }
-//     catch (err) {
-//       logger.error(err);
-//     }
-
-//     return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
-//   }
-
-// }
 
 type SanitizePlugin = PluginTuple<[SanitizeOption]>;
 export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehypePlugins' | 'components' | 'children'> & {
@@ -290,7 +103,7 @@ const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = tr
   throw new Error('The specified options does not have sanitize plugin in \'rehypePlugins\'');
 };
 
-const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
+const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
       gfm,
@@ -319,14 +132,14 @@ export const generateViewOptions = (
     storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
-  const options = generateCommonOptions(pagePath, config);
+  const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
@@ -336,24 +149,20 @@ export const generateViewOptions = (
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
     rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
-    // [autoLinkHeadings, {
-    //   behavior: 'append',
-    // }]
   );
 
   // add components
@@ -366,18 +175,6 @@ export const generateViewOptions = (
     components.table = TableWithEditButton;
   }
 
-  // // Add configurers for viewer
-  // renderer.addConfigurers([
-  //   new FooternoteConfigurer(),
-  //   new TocAndAnchorConfigurer(),
-  //   new HeaderLineNumberConfigurer(),
-  //   new HeaderWithEditLinkConfigurer(),
-  //   new TableWithHandsontableButtonConfigurer(),
-  // ]);
-
-  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
-  // renderer.configure();
-
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
   }
@@ -386,16 +183,17 @@ export const generateViewOptions = (
 
 export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
 
-  const options = generateCommonOptions(undefined, config);
+  const options = generateCommonOptions(undefined);
 
   const { rehypePlugins } = options;
 
   // add remark plugins
   // remarkPlugins.push();
 
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
@@ -403,9 +201,6 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
     [toc.rehypePluginRestore, { tocNode }],
     rehypeSanitizePlugin,
   );
-  // renderer.rehypePlugins.push([autoLinkHeadings, {
-  //   behavior: 'append',
-  // }]);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options);
@@ -413,37 +208,44 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generateSimpleViewOptions = (config: RendererConfig, pagePath: string, highlightKeywords?: string | string[]): RendererOptions => {
-  const options = generateCommonOptions(pagePath, config);
+export const generateSimpleViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+    highlightKeywords?: string | string[],
+    overrideIsEnabledLinebreaks?: boolean,
+): RendererOptions => {
+  const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     table.remarkPlugin,
   );
-  if (config.isEnabledLinebreaks) {
+
+  const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
+
+  if (isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
     rehypeSanitizePlugin,
     katex,
   );
@@ -462,14 +264,14 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
 };
 
 export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
-  const options = generateCommonOptions(pagePath, config);
+  const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
@@ -480,19 +282,18 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption, addLineNumberAttribute.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+      drawioPlugin.sanitizeOption,
+      addLineNumberAttribute.sanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      drawioPlugin.sanitizeOption,
-      addLineNumberAttribute.sanitizeOption,
-    )],
     rehypeSanitizePlugin,
     katex,
   );
@@ -504,36 +305,11 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.table = Table;
   }
 
-  // verifySanitizePlugin(options, false);
-  return options;
-};
-
-export const generateOthersOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(undefined, config);
-  const { rehypePlugins } = options;
-
-  // renderer.addConfigurers([
-  //   new TableConfigurer(),
-  // ]);
-
-  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
-  // renderer.configure();
-
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption)]
-    : () => {};
-
-  // add rehype plugins
-  rehypePlugins.push(
-    rehypeSanitizePlugin,
-  );
-
   if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options);
+    verifySanitizePlugin(options, false);
   }
   return options;
 };
-
 
 // register to facade
 if (isClient()) {

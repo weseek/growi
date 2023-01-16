@@ -29,10 +29,12 @@ import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
 // eslint-disable-next-line import/no-cycle
 import { PluginService } from '../service/plugin';
+import QuestionnaireCronService from '../service/questionnaire-cron';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -79,6 +81,7 @@ function Crowi() {
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
+  this.questionnaireCronService = null;
 
   this.tokens = null;
 
@@ -105,6 +108,7 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupConfigManager();
   await this.setupSessionConfig();
+  this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
@@ -302,6 +306,12 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
+
+};
+
+Crowi.prototype.setupCron = function() {
+  this.questionnaireCronService = new QuestionnaireCronService(this);
+  this.questionnaireCronService.startCron();
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {

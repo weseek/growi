@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.0](https://github.com/weseek/growi/compare/v5.1.7...v6.0.0) - 2022-12-27
+
+### 💎 Features
+
+- feat: Apply Next.js
+- feat: New plugin (#7034) @yuki-takei
+- feat: Save prevent xss custom settings in new format (#7124) @miya
+
+### 🧰 Maintenance
+
+- support: Request scoped SWR (#6742) @yuki-takei
+- support: Build preset themes within external package (#7057) @yuki-takei
 
 ## [v5.1.7](https://github.com/weseek/growi/compare/v5.1.6...v5.1.7) - 2022-10-26
 

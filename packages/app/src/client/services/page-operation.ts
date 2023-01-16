@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
@@ -130,7 +132,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   /* eslint-enable react-hooks/rules-of-hooks */
 
-  return async function(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) {
+  return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => {
     const { path, pageId, revisionId } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
@@ -172,7 +174,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
 
     return res;
-  };
+  }, [mutateIsEnabledUnsavedWarning]);
 };
 
 export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => Promise<void>) | undefined => {
@@ -183,15 +185,17 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
-  if (pageId == null) { return }
-
   // update swr 'currentPageId', 'currentPage', remote states
-  return async() => {
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
+  return useCallback(async() => {
+    if (pageId == null) { return }
 
+    // update tag before page: https://github.com/weseek/growi/pull/7158
+    // !! DO NOT CHANGE THE ORDERS OF THE MUTATIONS !! -- 12.26 yuken-t
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
+
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
 
     if (updatedPage == null) { return }
 
@@ -207,7 +211,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
     };
 
     setRemoteLatestPageData(remoterevisionData);
-  };
+  }, [mutateCurrentPage, mutateCurrentPageId, mutateEditingMarkdown, mutateTagsInfo, pageId, setRemoteLatestPageData, syncTagsInfoForEditor]);
 };
 
 export const unlink = async(path: string): Promise<void> => {
