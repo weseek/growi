@@ -19,13 +19,13 @@ phases:
   build:
     commands:
       # - docker build -t $TAG -f ./packages/app/docker/Dockerfile .
-      - docker build -t ${TAG} -f ./packages/app/docker/Dockerfile.nginx .
-      - docker tag ${TAG} ${TAG_GHCR}
+      - docker build -t ${IMAGE_TAG} -f ./packages/app/docker/Dockerfile.nginx .
+      - docker tag ${IMAGE_TAG} ${IMAGE_TAG_GHCR}
 
   post_build:
     commands:
-      - docker push $TAG
-      - docker push $TAG_GHCR
+      - docker push $IMAGE_TAG
+      - docker push $IMAGE_TAG_GHCR
 
 cache:
   paths:
