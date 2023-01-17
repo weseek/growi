@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { PresetThemes, PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { useSWRxGrowiThemeSetting } from '~/stores/admin/customize';
 
@@ -20,7 +19,7 @@ type Props = {
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data, error } = useSWRxGrowiThemeSetting();
+  const { data, error, update } = useSWRxGrowiThemeSetting();
   const [currentTheme, setCurrentTheme] = useState(data?.currentTheme);
 
   useEffect(() => {
@@ -38,7 +37,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     }
 
     try {
-      await apiv3Put('/customize-setting/theme', {
+      await update({
         theme: currentTheme,
       });
 
@@ -47,7 +46,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [currentTheme, t]);
+  }, [currentTheme, t, update]);
 
   const availableThemes = data?.pluginThemesMetadatas == null
     ? PresetThemesMetadatas

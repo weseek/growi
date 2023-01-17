@@ -29,6 +29,8 @@ import { ROOT_ELEM_ID as RevisionLoaderRoomElemId, RevisionLoaderProps } from '.
 import { ROOT_ELEM_ID as PageCommentRootElemId, PageCommentProps } from '../PageComment';
 import { PageContentFooterProps } from '../PageContentFooter';
 
+import styles from './SearchResultContent.module.scss';
+
 
 const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
 const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
@@ -242,7 +244,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   return (
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
-      <div className="grw-subnav-append-shadow-container">
+      <div className={`${styles['grw-subnav-append-shadow-container']} grw-subnav-append-shadow-container`}>
         <GrowiSubNavigation
           pagePath={page.path}
           pageId={page._id}

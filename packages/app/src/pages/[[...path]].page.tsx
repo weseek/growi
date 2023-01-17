@@ -32,6 +32,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
+import { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -56,7 +57,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -90,7 +91,8 @@ const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
+const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
+  .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
@@ -131,6 +133,20 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
   'IPageToShowRevisionWithMetaTransformer',
 );
 
+// GrowiContextualSubNavigation for NOT shared page
+type GrowiContextualSubNavigationProps = {
+  isLinkSharingDisabled: boolean,
+}
+
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+  const { isLinkSharingDisabled } = props;
+  const { data: currentPage } = useSWRxCurrentPage();
+  return (
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+    </div>
+  );
+};
 
 const IdenticalPathPage = (): JSX.Element => {
   const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
@@ -183,6 +199,8 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
+
+  grantData?: IPageGrantData,
 
   rendererConfig: RendererConfig,
 
@@ -283,8 +301,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // sync grant data
   useEffect(() => {
-    mutateSelectedGrant(grantData?.grantData.currentPageGrant);
-  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant]);
+    const grantDataToApply = props.grantData ? props.grantData : grantData?.grantData.currentPageGrant;
+    mutateSelectedGrant(grantDataToApply);
+  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant, props.grantData]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -328,7 +347,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
           <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation currentPage={pageWithMeta?.data} isLinkSharingDisabled={props.disableLinkSharing} />
+            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
         <div className="d-edit-none">
@@ -392,6 +411,21 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
+// apply parent page grant fot creating page
+async function applyGrantToPage(props: Props, ancestor: any) {
+  await ancestor.populate('grantedGroup');
+  const grant = {
+    grant: ancestor.grant,
+  };
+  const grantedGroup = ancestor.grantedGroup ? {
+    grantedGroup: {
+      id: ancestor.grantedGroup.id,
+      name: ancestor.grantedGroup.name,
+    },
+  } : {};
+  props.grantData = Object.assign(grant, grantedGroup);
+}
+
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const { model: mongooseModel } = await import('mongoose');
 
@@ -448,6 +482,12 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     if (templateData != null) {
       props.templateTagData = templateData.templateTags as string[];
       props.templateBodyData = templateData.templateBody as string;
+    }
+
+    // apply pagrent page grant
+    const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
+    if (ancestor != null) {
+      await applyGrantToPage(props, ancestor);
     }
   }
 

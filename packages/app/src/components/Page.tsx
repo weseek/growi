@@ -70,7 +70,7 @@ export const Page: FC<Props> = (props: Props) => {
   const { data: shareLinkId } = useShareLinkId();
   const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { data: tagsInfo } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+  const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
   const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions(storeTocNodeHandler);

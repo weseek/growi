@@ -43,7 +43,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
             <Sidebar />
           </div>
 
-          <div className="flex-fill mw-0" style={{ position: 'relative' }}>
+          <div className="flex-fill mw-0">
             <AlertSiteUrlUndefined />
             {children}
           </div>

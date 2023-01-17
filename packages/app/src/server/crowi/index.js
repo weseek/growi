@@ -134,7 +134,6 @@ Crowi.prototype.init = async function() {
     this.setUpFileUploaderSwitchService(),
     this.setupAttachmentService(),
     this.setUpAcl(),
-    this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroupService(),
     this.setupExport(),
@@ -145,6 +144,7 @@ Crowi.prototype.init = async function() {
     this.setupActivityService(),
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
+    this.setUpCustomize(), // depends on pluginService
   ]);
 
   // globalNotification depends on slack and mailer
@@ -608,6 +608,7 @@ Crowi.prototype.setUpCustomize = async function() {
     this.customizeService = new CustomizeService(this);
     this.customizeService.initCustomCss();
     this.customizeService.initCustomTitle();
+    this.customizeService.initGrowiTheme();
 
     // add as a message handler
     if (this.s2sMessagingService != null) {
