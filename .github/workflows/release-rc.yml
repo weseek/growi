@@ -37,13 +37,32 @@ jobs:
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
 
 
-  publish-image-rc:
+  build-image-rc:
     needs: determine-tags
 
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@rc/6.0.3-with-codebuild
     with:
       image-name: weseek/growi-codebuild-test
       tags: ${{ needs.determine-tags.outputs.TAGS }}
+      tag-temporary: latest-rc
+    secrets:
+      AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      DOCKER_REGISTRY_ON_GITHUB_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+
+
+  publish-image-rc:
+    needs: build-image-rc
+
+    strategy:
+      matrix:
+        registry: [docker.io, ghcr.io]
+
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@rc/6.0.3-with-codebuild
+    with:
+      tags: ${{ needs.determine-tags.outputs.TAGS }}
+      registry: ${{ matrix.registry }}
+      image-name: weseek/growi-codebuild-test
       tag-temporary: latest-rc
     secrets:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
