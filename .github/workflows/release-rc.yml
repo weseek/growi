@@ -16,7 +16,12 @@ jobs:
   determine-tags:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        registry: [docker.io, ghcr.io]
+
     outputs:
+      REGISTRY: ${{ matrix.registry }}
       TAGS: ${{ steps.meta.outputs.tags }}
 
     steps:
@@ -30,7 +35,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: weseek/growi-codebuild-test
+        images: ${{ matrix.registry }}/weseek/growi-codebuild-test
         sep-tags: ','
         tags: |
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -49,10 +54,6 @@ jobs:
   publish-image-rc:
     needs: [determine-tags, build-image-rc]
 
-    strategy:
-      matrix:
-        registry: [docker.io, ghcr.io]
-
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@rc/6.0.3-with-codebuild
     with:
       tags: ${{ needs.determine-tags.outputs.TAGS }}
@@ -60,5 +61,5 @@ jobs:
       image-name: weseek/growi-codebuild-test
       tag-temporary: latest-rc
     secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ (startsWith(matrix.registry, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+      DOCKER_REGISTRY_PASSWORD: ${{ (startsWith(meeds.determine-tags.outputs.REGISTRY, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
