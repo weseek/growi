@@ -63,7 +63,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-region: asia-northeast-1
-        role-to-assume: GitHubOIDC-for-growi
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
         role-session-name: SessionForReleaseGROWI-RC
 
     - name: Run CodeBuild
