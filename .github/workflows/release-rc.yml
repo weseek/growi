@@ -19,6 +19,8 @@ jobs:
       tag-version: latest-rc
     secrets:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      DOCKER_REGISTRY_ON_GITHUB_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     # runs-on: ubuntu-latest
 

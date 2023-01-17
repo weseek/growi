@@ -9,6 +9,11 @@ on:
     secrets:
       AWS_ROLE_TO_ASSUME_FOR_OIDC:
         required: true
+      DOCKER_REGISTRY_PASSWORD:
+        required: true
+      DOCKER_REGISTRY_ON_GITHUB_PASSWORD:
+        required: true
+
 
 
 jobs:
@@ -70,7 +75,7 @@ jobs:
       id: meta-base-image
       uses: docker/metadata-action@v4
       with:
-        images: ${{ (matrix.registry == 'docker.io' && '') || 'ghcr.io/' }}weseek/growi
+        images: ${{ matrix.registry }}/weseek/growi-codebuild-test
         sep-tags: ','
         tags: |
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -80,7 +85,7 @@ jobs:
       id: meta-extra-images
       uses: docker/metadata-action@v4
       with:
-        images: ${{ (matrix.registry == 'docker.io' && '') || 'ghcr.io/' }}weseek/growi
+        images: ${{ matrix.registry }}/weseek/growi-codebuild-test
         sep-tags: ','
         tags: |
           type=raw,value=${{ inputs.tag-version }}-amd64
@@ -91,7 +96,7 @@ jobs:
       with:
         registry: ${{ matrix.registry }}
         username: wsmoogle
-        password: ${{ (matrix.registry == 'docker.io' && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+        password: ${{ (startsWith(matrix.registry, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD)) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Create and push manifest images for ${{ matrix.registry }}
       uses: Noelware/docker-manifest-action@master
