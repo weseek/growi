@@ -166,7 +166,7 @@ jobs:
 
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@support/build-with-codebuild
     with:
-      source-version:  refs/tags/v{{ needs.create-github-release.outputs.RELEASED_VERSION }}
+      source-version: refs/tags/v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
       image-name: weseek/growi-codebuild-test
       tag-temporary: latest
     secrets:
