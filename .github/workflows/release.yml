@@ -163,7 +163,7 @@ jobs:
   build-image:
     needs: create-github-release
 
-    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@rc/6.0.3-with-codebuild
+    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@support/build-with-codebuild
     with:
       source-version:  refs/tags/v{{ needs.create-github-release.outputs.RELEASED_VERSION }}
       image-name: weseek/growi-codebuild-test
@@ -175,7 +175,7 @@ jobs:
   publish-image:
     needs: [determine-tags, build-image]
 
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@rc/6.0.3-with-codebuild
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@support/build-with-codebuild
     with:
       tags: ${{ needs.determine-tags.outputs.TAGS }}
       registry: docker.io
@@ -187,7 +187,7 @@ jobs:
   publish-image-ghcr:
     needs: [determine-tags, build-image]
 
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@rc/6.0.3-with-codebuild
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@support/build-with-codebuild
     with:
       tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
       registry: ghcr.io
