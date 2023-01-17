@@ -42,19 +42,6 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
         role-session-name: SessionForReleaseGROWI-RC
 
-    # - name: Run CodeBuild
-    #   uses: aws-actions/aws-codebuild-run-build@v1
-    #   with:
-    #     project-name: growi-official-image-builder
-    #     image-override: ${{ (matrix.platform == 'amd64' && 'aws/codebuild/standard:6.0') || 'aws/codebuild/amazonlinux2-aarch64-standard:2.0' }}
-    #     environment-type-override: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
-    #     env-vars-for-codebuild: |
-    #       IMAGE_TAG,
-    #       IMAGE_TAG_GHCR
-    #   env:
-    #     IMAGE_TAG: docker.io/${{ inputs.image-name }}:${{ inputs.tag-temporary }}-${{ matrix.platform }}
-    #     IMAGE_TAG_GHCR: ghcr.io/${{ inputs.image-name }}:${{ inputs.tag-temporary }}-${{ matrix.platform }}
-
     - name: Run CodeBuild
       uses: dark-mechanicum/aws-codebuild@v1
       with:
