@@ -60,8 +60,7 @@ jobs:
 
     strategy:
       matrix:
-        # registry: [docker.io, ghcr.io]
-        registry: [docker.io]
+        registry: [docker.io, ghcr.io]
 
     steps:
     - uses: actions/checkout@v3

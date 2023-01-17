@@ -29,7 +29,7 @@ phases:
   post_build:
     commands:
       - docker push $TAG
-      # - docker push $TAG_GHCR
+      - docker push $TAG_GHCR
 
 cache:
   paths:
