@@ -16,13 +16,9 @@ jobs:
   determine-tags:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        registry: [docker.io, ghcr.io]
-
     outputs:
-      REGISTRY: ${{ matrix.registry }}
       TAGS: ${{ steps.meta.outputs.tags }}
+      TAGS_GHCR: ${{ steps.meta-ghcr.outputs.tags }}
 
     steps:
     - uses: actions/checkout@v3
@@ -31,11 +27,31 @@ jobs:
       uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
 
-    - name: Docker meta
+    - name: Docker meta for docker.io
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: ${{ matrix.registry }}/weseek/growi-codebuild-test
+        images: docker.io/weseek/growi-codebuild-test
+        sep-tags: ','
+        tags: |
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
+
+    - name: Docker meta for ghcr.io
+      id: meta-ghcr
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/weseek/growi-codebuild-test
+        sep-tags: ','
+        tags: |
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
+
+    - name: Docker meta for ghcr.io
+      id: meta-ghcr
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/weseek/growi-codebuild-test
         sep-tags: ','
         tags: |
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -57,9 +73,21 @@ jobs:
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@rc/6.0.3-with-codebuild
     with:
       tags: ${{ needs.determine-tags.outputs.TAGS }}
-      registry: ${{ matrix.registry }}
+      registry: docker.io
       image-name: weseek/growi-codebuild-test
       tag-temporary: latest-rc
     secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ (startsWith(needs.determine-tags.outputs.REGISTRY, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+  publish-image-rc-ghcr:
+    needs: [determine-tags, build-image-rc]
+
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@rc/6.0.3-with-codebuild
+    with:
+      tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
+      registry: ghcr.io
+      image-name: weseek/growi-codebuild-test
+      tag-temporary: latest-rc
+    secrets:
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
