@@ -8,7 +8,7 @@ module "codebuild" {
 
   source_type         = "GITHUB"
   source_location     = "https://github.com/weseek/growi.git"
-  source_version      = "refs/heads/support/build-with-codebuild"
+  source_version      = "refs/heads/master"
   git_clone_depth     = 1
 
   buildspec           = "packages/app/docker/codebuild/buildspec.yml"
