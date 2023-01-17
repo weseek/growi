@@ -43,7 +43,7 @@ jobs:
         image-override: ${{ (matrix.platform == 'amd64' && 'aws/codebuild/standard:6.0') || 'aws/codebuild/amazonlinux2-aarch64-standard:2.0' }}
         environment-type-override: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
         env-vars-for-codebuild: |
-          TAG_VERSION
+          TAG_VERSION,
           TAG_SUFFIX
       env:
         TAG_VERSION: ${{ inputs.tag-version }}
@@ -63,7 +63,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
 
     - name: Docker meta for base-image
