@@ -8,7 +8,7 @@ import { DropdownToggle } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
+  apiv3Delete, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
@@ -169,17 +169,13 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     mutateBookmarkInfo();
   }, [mutateBookmarkInfo, mutateParentBookmarkFolder]);
 
-  const [, drag] = useDrag({
+  const [, bookmarkFolderDragRef] = useDrag({
     type: 'FOLDER',
     item:  props,
-    canDrag: () => {
-
-      return true;
-    },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (dropResult != null) {
-        console.log(dropResult);
+        mutateParentBookmarkFolder();
       }
     },
     collect: monitor => ({
@@ -189,35 +185,33 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   });
 
   const folderItemDropHandler = async(item: BookmarkFolderItemProps) => {
-    // TODO: Implement update parent folder
+    try {
+      await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: bookmarkFolder._id });
+      await mutateChildBookmarkData();
+      await mutateChildBookmarkData();
+      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
 
   const isDroppable = (item: BookmarkFolderItemProps, targetRoot: string, targetLevel: number): boolean => {
-    if (item.bookmarkFolder.parent === bookmarkFolder._id) {
+    if (item.bookmarkFolder.parent === bookmarkFolder._id || item.bookmarkFolder._id === bookmarkFolder._id) {
       return false;
     }
     if (item.root === targetRoot) {
-      if (item.level === level || item.level < targetLevel) {
+      if (item.level < targetLevel) {
         return false;
       }
     }
     return true;
   };
 
-  const [, drop] = useDrop(() => ({
+  const [, bookmarkFolderDropRef] = useDrop(() => ({
     accept: 'FOLDER',
     drop: folderItemDropHandler,
-    hover: (item, monitor) => {
-      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
-      if (monitor.isOver()) {
-        setTimeout(() => {
-          if (monitor.isOver()) {
-            setIsOpen(true);
-          }
-        }, 600);
-      }
-    },
     canDrop: (item) => {
       // Implement isDropable function & improve
       return isDroppable(item, root, level);
@@ -271,7 +265,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
-      <li ref={(c) => { drag(c); drop(c) }}
+      <li ref={(c) => { bookmarkFolderDragRef(c); bookmarkFolderDropRef(c) }}
         className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
         onClick={loadChildFolder}
       >
