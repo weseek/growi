@@ -5,34 +5,45 @@ on:
     branches:
       - rc/**
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
 jobs:
 
   build-rc:
+    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@support/build-with-codebuild
+    with:
+    secrets:
+      tag-version: latest-rc
+      AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
 
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
-    permissions:
-      id-token: write
-      contents: write
+    # permissions:
+    #   id-token: write
+    #   contents: write
 
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        lfs: true
+    # steps:
+    # - uses: actions/checkout@v3
+      # with:
+      #   lfs: true
 
-    - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
-      id: package-json
+    # - name: Retrieve information from package.json
+    #   uses: myrotvorets/info-from-package-json-action@1.2.0
+    #   id: package-json
 
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: weseek/growi
-        tags: |
-          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
-          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
+    # - name: Docker meta
+    #   id: meta
+    #   uses: docker/metadata-action@v4
+    #   with:
+    #     images: weseek/growi
+    #     tags: |
+    #       type=raw,value=${{ steps.package-json.outputs.packageVersion }}
+    #       type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
 
     # - name: Login to docker.io registry
     #   run: |
@@ -64,18 +75,21 @@ jobs:
     #     cache-to: type=gha,mode=max
     #     tags: ${{ steps.meta.outputs.tags }}
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: ap-northeast-1
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
-        role-session-name: SessionForReleaseGROWI-RC
 
-    - name: Run CodeBuild
-      uses: aws-actions/aws-codebuild-run-build@v1
-      with:
-        project-name: growi-official-image-builder
-        env-vars-for-codebuild: |
-          TAGS
-      env:
-        TAGS: ${{ steps.meta.outputs.tags }}
+
+
+    # - name: Configure AWS Credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-region: ap-northeast-1
+    #     role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
+    #     role-session-name: SessionForReleaseGROWI-RC
+
+    # - name: Run CodeBuild
+    #   uses: aws-actions/aws-codebuild-run-build@v1
+    #   with:
+    #     project-name: growi-official-image-builder
+    #     env-vars-for-codebuild: |
+    #       TAGS
+    #   env:
+    #     TAGS: ${{ steps.meta.outputs.tags }}

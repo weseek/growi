@@ -1,0 +1,92 @@
+name: Reusable build app container image workflow
+
+on:
+  workflow_call:
+    inputs:
+      tag-version:
+        type: string
+        default: latest
+    secrets:
+      AWS_ROLE_TO_ASSUME_FOR_OIDC:
+        required: true
+
+
+jobs:
+
+  build-image:
+    runs-on: ubuntu-latest
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: write
+
+    strategy:
+      matrix:
+        platform: [amd64, arm64]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ap-northeast-1
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
+        role-session-name: SessionForReleaseGROWI-RC
+
+    - name: Run CodeBuild
+      uses: aws-actions/aws-codebuild-run-build@v1
+      with:
+        project-name: growi-official-image-builder
+        buildspec-override: packages/app/docker/codebuild/buildspec/image.yml
+        image-override: ${{ (matrix.platform == 'amd64' && 'aws/codebuild/standard:6.0') || 'aws/codebuild/amazonlinux2-aarch64-standard:2.0' }}
+        environment-type-override: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
+        env-vars-for-codebuild: |
+          TAG_VERSION
+          TAG_SUFFIX
+      env:
+        TAG_VERSION: ${{ inputs.tag-version }}
+        TAG_SUFFIX: ${{ matrix.platform }}
+
+
+  create-manifest:
+    needs: [build-image]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # registry: [docker.io, ghcr.io]
+        registry: [docker.io]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Retrieve information from package.json
+      uses: myrotvorets/info-from-package-json-action@1
+      id: package-json
+
+    - name: Docker meta for base-image
+      id: meta-base-image
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ (matrix.registry == 'docker.io' && '') || 'ghcr.io/' }}weseek/growi
+        tags: |
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
+
+    - name: Docker meta for extra-images
+      id: meta-extra-images
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ (matrix.registry == 'docker.io' && '') || 'ghcr.io/' }}weseek/growi
+        tags: |
+          type=raw,value=${{ inputs.tag-version }}-amd64
+          type=raw,value=${{ inputs.tag-version }}-arm64
+
+    - name: Create and push manifest images for ${{ matrix.registry }}
+      uses: Noelware/docker-manifest-action@master
+      with:
+        base-image: ${{ steps.meta-base-image.outputs.tags }}
+        extra-images: ${{ steps.meta-extra-images.outputs.tags }}
+        push: true
