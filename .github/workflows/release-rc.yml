@@ -13,10 +13,33 @@ concurrency:
 
 jobs:
 
-  build-rc:
+  determine-tags:
+    runs-on: ubuntu-latest
+
+    outputs:
+      TAGS: ${{ steps.meta.outputs.tags }}
+
+    steps:
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ matrix.registry }}/weseek/growi-codebuild-test
+        sep-tags: ','
+        tags: |
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
+
+
+  publish-image-rc:
+    needs: determine-tags
+
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@rc/6.0.3-with-codebuild
     with:
-      tag-version: latest-rc
+      image-name: weseek/growi-codebuild-test
+      tags: ${{ needs.determine-tags.outputs.TAGS }}
+      tag-temporary: latest-rc
     secrets:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
