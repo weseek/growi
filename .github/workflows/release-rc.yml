@@ -47,7 +47,7 @@ jobs:
 
 
   publish-image-rc:
-    needs: determine-tags
+    needs: [determine-tags, build-image-rc]
 
     strategy:
       matrix:
@@ -60,5 +60,5 @@ jobs:
       image-name: weseek/growi-codebuild-test
       tag-temporary: latest-rc
     secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      DOCKER_REGISTRY_ON_GITHUB_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+      DOCKER_REGISTRY_PASSWORD: ${{ (startsWith(matrix.registry, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+

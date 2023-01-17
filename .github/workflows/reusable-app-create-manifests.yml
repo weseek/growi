@@ -18,8 +18,6 @@ on:
     secrets:
       DOCKER_REGISTRY_PASSWORD:
         required: true
-      DOCKER_REGISTRY_ON_GITHUB_PASSWORD:
-        required: true
 
 
 
@@ -46,7 +44,7 @@ jobs:
       with:
         registry: ${{ inputs.registry }}
         username: wsmoogle
-        password: ${{ (startsWith(matrix.registry, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
     - name: Create and push manifest images
       uses: Noelware/docker-manifest-action@master
