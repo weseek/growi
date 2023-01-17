@@ -16,8 +16,8 @@ jobs:
   build-rc:
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@support/build-with-codebuild
     with:
-    secrets:
       tag-version: latest-rc
+    secrets:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
 
     # runs-on: ubuntu-latest
