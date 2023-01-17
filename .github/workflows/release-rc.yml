@@ -14,7 +14,7 @@ concurrency:
 jobs:
 
   build-rc:
-    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@support/build-with-codebuild
+    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@rc/6.0.3-with-codebuild
     with:
       tag-version: latest-rc
     secrets:
