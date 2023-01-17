@@ -7,6 +7,7 @@ batch:
       buildspec: packages/app/docker/codebuild/buildspec/image.yml
       env:
         image: aws/codebuild/standard:6.0
+        compute-type: BUILD_GENERAL1_LARGE
         type: LINUX_CONTAINER
         variables:
           TAG_VERSION: latest
@@ -15,6 +16,7 @@ batch:
       buildspec: packages/app/docker/codebuild/buildspec/image.yml
       env:
         image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
+        compute-type: BUILD_GENERAL1_LARGE
         type: ARM_CONTAINER
         variables:
           TAG_VERSION: latest
