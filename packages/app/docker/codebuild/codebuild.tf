@@ -11,17 +11,11 @@ module "codebuild" {
   source_version      = "refs/heads/support/build-with-codebuild"
   git_clone_depth     = 1
 
-
   buildspec           = "packages/app/docker/codebuild/buildspec/root.yml"
 
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html
   build_image         = "aws/codebuild/standard:6.0"
   build_compute_type  = "BUILD_GENERAL1_LARGE"
-
-  # These attributes are optional, used as ENV variables when building Docker images and pushing them to ECR
-  # For more info:
-  # http://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html
-  # https://www.terraform.io/docs/providers/aws/r/codebuild_project.html
 
   privileged_mode     = true
 
