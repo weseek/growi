@@ -27,8 +27,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-
     - name: Docker meta for extra-images
       id: meta-extra-images
       uses: docker/metadata-action@v4
