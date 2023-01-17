@@ -1,6 +1,5 @@
 module "codebuild" {
-  # https://github.com/weseek/terraform-aws-codebuild
-  source = "github.com/weseek/terraform-aws-codebuild"
+  source = "cloudposse/codebuild/aws"
 
   name                = "growi-official-image-builder"
   description         = "The CodeBuild Project for GROWI official docker image"
@@ -12,7 +11,7 @@ module "codebuild" {
   source_version      = "refs/heads/support/build-with-codebuild"
   git_clone_depth     = 1
 
-  buildspec           = "packages/app/docker/codebuild/buildspec/root.yml"
+  buildspec           = "packages/app/docker/codebuild/buildspec.yml"
 
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html
   build_image         = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
