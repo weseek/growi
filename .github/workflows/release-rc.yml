@@ -28,8 +28,8 @@ jobs:
       id: package-json
 
     - name: Docker meta for docker.io
-      id: meta
       uses: docker/metadata-action@v4
+      id: meta
       with:
         images: docker.io/weseek/growi-codebuild-test
         sep-tags: ','
@@ -38,8 +38,8 @@ jobs:
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
 
     - name: Docker meta for ghcr.io
-      id: meta-ghcr
       uses: docker/metadata-action@v4
+      id: meta-ghcr
       with:
         images: ghcr.io/weseek/growi-codebuild-test
         sep-tags: ','

@@ -140,6 +140,7 @@ jobs:
 
     - name: Docker meta for docker.io
       uses: docker/metadata-action@v4
+      id: meta
       with:
         images: docker.io/weseek/growi-codebuild-test
         sep-tags: ','
@@ -151,6 +152,7 @@ jobs:
 
     - name: Docker meta for ghcr.io
       uses: docker/metadata-action@v4
+      id: meta-ghcr
       with:
         images: ghcr.io/weseek/growi-codebuild-test
         sep-tags: ','
