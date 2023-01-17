@@ -72,7 +72,8 @@ jobs:
         role-session-name: SessionForReleaseGROWI-RC
 
     - name: Run CodeBuild
-      uses: aws-actions/aws-codebuild-run-build@v1
+      # uses: aws-actions/aws-codebuild-run-build@v1
+      uses: seebees/aws-codebuild-run-build@support-batch # https://github.com/aws-actions/aws-codebuild-run-build/pull/59
       with:
         project-name: growi-official-image-builder
         env-vars-for-codebuild: |
