@@ -3,6 +3,9 @@ name: Reusable build app container image workflow
 on:
   workflow_call:
     inputs:
+      source-version:
+        type: string
+        default: ${{ github.sha }}
       image-name:
         type: string
         default: weseek/growi
@@ -57,6 +60,7 @@ jobs:
       with:
         projectName: growi-official-image-builder
       env:
+        CODEBUILD__sourceVersion: ${{ inputs.source-version }}
         CODEBUILD__imageOverride: ${{ (matrix.platform == 'amd64' && 'aws/codebuild/standard:6.0') || 'aws/codebuild/amazonlinux2-aarch64-standard:2.0' }}
         CODEBUILD__environmentTypeOverride: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
         CODEBUILD__environmentVariablesOverride: '[
