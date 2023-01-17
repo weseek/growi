@@ -93,7 +93,6 @@ class XssForm extends React.Component {
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio">
               <input
-                disabled
                 type="radio"
                 className="custom-control-input"
                 id="xssOption2"
