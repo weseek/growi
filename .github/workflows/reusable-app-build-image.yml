@@ -44,7 +44,6 @@ jobs:
       uses: aws-actions/aws-codebuild-run-build@v1
       with:
         project-name: growi-official-image-builder
-        buildspec-override: packages/app/docker/codebuild/buildspec/image.yml
         image-override: ${{ (matrix.platform == 'amd64' && 'aws/codebuild/standard:6.0') || 'aws/codebuild/amazonlinux2-aarch64-standard:2.0' }}
         environment-type-override: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
         env-vars-for-codebuild: |
