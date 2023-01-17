@@ -91,7 +91,7 @@ jobs:
       with:
         registry: ${{ matrix.registry }}
         username: wsmoogle
-        password: ${{ (matrix.registry == 'docker.io' && ${{ secrets.DOCKER_REGISTRY_PASSWORD }}) || ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }} }}
+        password: ${{ (matrix.registry == 'docker.io' && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Create and push manifest images for ${{ matrix.registry }}
       uses: Noelware/docker-manifest-action@master
