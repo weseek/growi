@@ -61,5 +61,5 @@ jobs:
       image-name: weseek/growi-codebuild-test
       tag-temporary: latest-rc
     secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ (startsWith(meeds.determine-tags.outputs.REGISTRY, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+      DOCKER_REGISTRY_PASSWORD: ${{ (startsWith(needs.determine-tags.outputs.REGISTRY, 'docker') && secrets.DOCKER_REGISTRY_PASSWORD) || secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
