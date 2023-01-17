@@ -1,4 +1,5 @@
 module "codebuild" {
+  # https://github.com/weseek/terraform-aws-codebuild
   source = "github.com/weseek/terraform-aws-codebuild"
 
   name                = "growi-official-image-builder"
