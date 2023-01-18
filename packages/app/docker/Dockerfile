@@ -95,16 +95,16 @@ WORKDIR ${optDir}
 # ignore eslint and stylelint
 COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
 # copy all related packages
-COPY packages/app packages/app
-COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
+COPY packages/preset-themes packages/preset-themes
 COPY packages/slack packages/slack
-COPY packages/ui packages/ui
+COPY packages/hackmd packages/hackmd
 COPY packages/remark-drawio packages/remark-drawio
 COPY packages/remark-growi-directive packages/remark-growi-directive
 COPY packages/remark-lsx packages/remark-lsx
-COPY packages/hackmd packages/hackmd
-COPY packages/preset-themes packages/preset-themes
+COPY packages/ui packages/ui
+COPY packages/core packages/core
+COPY packages/app packages/app
 
 # build
 RUN yarn lerna run build
