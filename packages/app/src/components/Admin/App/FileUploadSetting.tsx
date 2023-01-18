@@ -17,10 +17,14 @@ type Props = {
 }
 
 
-const FileUploadSetting = (props: Props) => {
+const FileUploadSetting = (props: Props): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
   const { adminAppContainer } = props;
-  const { fileUploadType } = adminAppContainer.state;
+
+  const {
+    fileUploadType, isFixedFileUploadByEnvVar, envFileUploadType, retrieveError,
+  } = adminAppContainer.state;
+
   const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
 
   const submitHandler = useCallback(async() => {
@@ -59,8 +63,8 @@ const FileUploadSetting = (props: Props) => {
                   className="custom-control-input"
                   name="file-upload-type"
                   id={`file-upload-type-radio-${type}`}
-                  checked={adminAppContainer.state.fileUploadType === type}
-                  disabled={adminAppContainer.state.isFixedFileUploadByEnvVar}
+                  checked={fileUploadType === type}
+                  disabled={isFixedFileUploadByEnvVar}
                   onChange={() => { adminAppContainer.changeFileUploadType(type) }}
                 />
                 <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
@@ -68,12 +72,12 @@ const FileUploadSetting = (props: Props) => {
             );
           })}
         </div>
-        {adminAppContainer.state.isFixedFileUploadByEnvVar && (
+        {isFixedFileUploadByEnvVar && (
           <p className="alert alert-warning mt-2 text-left offset-3 col-6">
             <i className="icon-exclamation icon-fw">
             </i><b>FIXED</b><br />
             {/* eslint-disable-next-line react/no-danger */}
-            <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: adminAppContainer.state.envFileUploadType }) }} />
+            <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: envFileUploadType }) }} />
           </p>
         )}
       </div>
@@ -81,7 +85,7 @@ const FileUploadSetting = (props: Props) => {
       {fileUploadType === 'aws' && <AwsSetting />}
       {fileUploadType === 'gcs' && <GcsSettings />}
 
-      <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
+      <AdminUpdateButtonRow onClick={submitHandler} disabled={retrieveError != null} />
     </>
   );
 };
