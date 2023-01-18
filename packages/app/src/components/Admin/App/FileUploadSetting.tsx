@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -8,8 +8,10 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import AwsSetting from './AwsSetting';
-import GcsSettings from './GcsSettings';
+import { AwsSettingMolecule } from './AwsSetting';
+import type { AwsSettingMoleculeProps } from './AwsSetting';
+import { GcsSettingMolecule } from './GcsSetting';
+import type { GcsSettingMoleculeProps } from './GcsSetting';
 
 const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'] as const;
 
@@ -18,7 +20,7 @@ type FileUploadSettingMoleculeProps = {
   isFixedFileUploadByEnvVar: boolean
   envFileUploadType?: string
   onChangeFileUploadType: (e: ChangeEvent, type: string) => void
-}
+} & AwsSettingMoleculeProps & GcsSettingMoleculeProps;
 
 export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMoleculeProps): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
@@ -68,8 +70,34 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         )}
       </div>
 
-      {props.fileUploadType === 'aws' && <AwsSetting />}
-      {props.fileUploadType === 'gcs' && <GcsSettings />}
+      {props.fileUploadType === 'aws' && <AwsSettingMolecule
+        s3ReferenceFileWithRelayMode={props.s3ReferenceFileWithRelayMode}
+        s3Region={props.s3Region}
+        s3CustomEndpoint={props.s3CustomEndpoint}
+        s3Bucket={props.s3Bucket}
+        s3AccessKeyId={props.s3AccessKeyId}
+        s3SecretAccessKey={props.s3SecretAccessKey}
+        onChangeS3ReferenceFileWithRelayMode={props.onChangeS3ReferenceFileWithRelayMode}
+        onChangeS3Region={props.onChangeS3Region}
+        onChangeS3CustomEndpoint={props.onChangeS3CustomEndpoint}
+        onChangeS3Bucket={props.onChangeS3Bucket}
+        onChangeS3AccessKeyId={props.onChangeS3AccessKeyId}
+        onChangeS3SecretAccessKey={props.onChangeS3SecretAccessKey}
+      />}
+      {props.fileUploadType === 'gcs' && <GcsSettingMolecule
+        gcsReferenceFileWithRelayMode={props.gcsReferenceFileWithRelayMode}
+        gcsUseOnlyEnvVars={props.gcsUseOnlyEnvVars}
+        gcsApiKeyJsonPath={props.gcsApiKeyJsonPath}
+        gcsBucket={props.gcsBucket}
+        gcsUploadNamespace={props.gcsUploadNamespace}
+        envGcsApiKeyJsonPath={props.envGcsApiKeyJsonPath}
+        envGcsBucket={props.envGcsBucket}
+        envGcsUploadNamespace={props.envGcsUploadNamespace}
+        onChangeGcsReferenceFileWithRelayMode={props.onChangeGcsReferenceFileWithRelayMode}
+        onChangeGcsApiKeyJsonPath={props.onChangeGcsApiKeyJsonPath}
+        onChangeGcsBucket={props.onChangeGcsBucket}
+        onChangeGcsUploadNamespace={props.onChangeGcsUploadNamespace}
+      />}
     </>
   );
 });
@@ -86,6 +114,12 @@ const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
 
   const {
     fileUploadType, isFixedFileUploadByEnvVar, envFileUploadType, retrieveError,
+    s3ReferenceFileWithRelayMode,
+    s3Region, s3CustomEndpoint, s3Bucket,
+    s3AccessKeyId, s3SecretAccessKey,
+    gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars,
+    gcsApiKeyJsonPath, envGcsApiKeyJsonPath, gcsBucket,
+    envGcsBucket, gcsUploadNamespace, envGcsUploadNamespace,
   } = adminAppContainer.state;
 
   const submitHandler = useCallback(async() => {
@@ -102,13 +136,80 @@ const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
     adminAppContainer.changeFileUploadType(type);
   }, [adminAppContainer]);
 
+  // S3
+  const onChangeS3ReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
+    adminAppContainer.changeS3ReferenceFileWithRelayMode(val);
+  }, [adminAppContainer]);
+
+  const onChangeS3RegionHandler = useCallback((val: string) => {
+    adminAppContainer.changeS3Region(val);
+  }, [adminAppContainer]);
+
+  const onChangeS3CustomEndpointHandler = useCallback((val: string) => {
+    adminAppContainer.changeS3CustomEndpoint(val);
+  }, [adminAppContainer]);
+
+  const onChangeS3BucketHandler = useCallback((val: string) => {
+    adminAppContainer.changeS3Bucket(val);
+  }, [adminAppContainer]);
+
+  const onChangeS3AccessKeyIdHandler = useCallback((val: string) => {
+    adminAppContainer.changeS3AccessKeyId(val);
+  }, [adminAppContainer]);
+
+  const onChangeS3SecretAccessKeyHandler = useCallback((val: string) => {
+    adminAppContainer.changeS3SecretAccessKey(val);
+  }, [adminAppContainer]);
+
+  // GCS
+  const onChangeGcsReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
+    adminAppContainer.changeGcsReferenceFileWithRelayMode(val);
+  }, [adminAppContainer]);
+
+  const onChangeGcsApiKeyJsonPathHandler = useCallback((val: string) => {
+    adminAppContainer.changeGcsApiKeyJsonPath(val);
+  }, [adminAppContainer]);
+
+  const onChangeGcsBucketHandler = useCallback((val: string) => {
+    adminAppContainer.changeGcsBucket(val);
+  }, [adminAppContainer]);
+
+  const onChangeGcsUploadNamespaceHandler = useCallback((val: string) => {
+    adminAppContainer.changeGcsUploadNamespace(val);
+  }, [adminAppContainer]);
+
   return (
     <>
       <FileUploadSettingMolecule
         fileUploadType={fileUploadType}
         isFixedFileUploadByEnvVar={isFixedFileUploadByEnvVar}
         envFileUploadType={envFileUploadType}
-        onChangeFileUploadType={onChangeFileUploadTypeHandler}/>
+        onChangeFileUploadType={onChangeFileUploadTypeHandler}
+        s3ReferenceFileWithRelayMode={s3ReferenceFileWithRelayMode}
+        s3Region={s3Region}
+        s3CustomEndpoint={s3CustomEndpoint}
+        s3Bucket={s3Bucket}
+        s3AccessKeyId={s3AccessKeyId}
+        s3SecretAccessKey={s3SecretAccessKey}
+        onChangeS3ReferenceFileWithRelayMode={onChangeS3ReferenceFileWithRelayModeHandler}
+        onChangeS3Region={onChangeS3RegionHandler}
+        onChangeS3CustomEndpoint={onChangeS3CustomEndpointHandler}
+        onChangeS3Bucket={onChangeS3BucketHandler}
+        onChangeS3AccessKeyId={onChangeS3AccessKeyIdHandler}
+        onChangeS3SecretAccessKey={onChangeS3SecretAccessKeyHandler}
+        gcsReferenceFileWithRelayMode={gcsReferenceFileWithRelayMode}
+        gcsUseOnlyEnvVars={gcsUseOnlyEnvVars}
+        gcsApiKeyJsonPath={gcsApiKeyJsonPath}
+        gcsBucket={gcsBucket}
+        gcsUploadNamespace={gcsUploadNamespace}
+        envGcsApiKeyJsonPath={envGcsApiKeyJsonPath}
+        envGcsBucket={envGcsBucket}
+        envGcsUploadNamespace={envGcsUploadNamespace}
+        onChangeGcsReferenceFileWithRelayMode={onChangeGcsReferenceFileWithRelayModeHandler}
+        onChangeGcsApiKeyJsonPath={onChangeGcsApiKeyJsonPathHandler}
+        onChangeGcsBucket={onChangeGcsBucketHandler}
+        onChangeGcsUploadNamespace={onChangeGcsUploadNamespaceHandler}
+      />
       <AdminUpdateButtonRow onClick={submitHandler} disabled={retrieveError != null} />
     </>
   );

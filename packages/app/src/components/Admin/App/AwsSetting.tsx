@@ -1,12 +1,6 @@
-import React, { useCallback } from 'react';
-
 import { useTranslation } from 'next-i18next';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-type AwsSettingMoleculeProps = {
+export type AwsSettingMoleculeProps = {
   s3ReferenceFileWithRelayMode
   s3Region
   s3CustomEndpoint
@@ -25,7 +19,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
   const { t } = useTranslation();
 
   return (
-    <React.Fragment>
+    <>
 
       <div className="row form-group my-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
@@ -155,63 +149,6 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
 
-    </React.Fragment>
+    </>
   );
 };
-
-
-const AwsSetting = (props) => {
-  const { adminAppContainer } = props;
-  const {
-    s3ReferenceFileWithRelayMode,
-    s3Region, s3CustomEndpoint, s3Bucket,
-    s3AccessKeyId, s3SecretAccessKey,
-  } = adminAppContainer.state;
-
-  const onChangeS3ReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
-    adminAppContainer.changeS3ReferenceFileWithRelayMode(val);
-  }, [adminAppContainer]);
-
-  const onChangeS3RegionHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3Region(val);
-  }, [adminAppContainer]);
-
-  const onChangeS3CustomEndpointHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3CustomEndpoint(val);
-  }, [adminAppContainer]);
-
-  const onChangeS3BucketHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3Bucket(val);
-  }, [adminAppContainer]);
-
-  const onChangeS3AccessKeyIdHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3AccessKeyId(val);
-  }, [adminAppContainer]);
-
-  const onChangeS3SecretAccessKeyHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3SecretAccessKey(val);
-  }, [adminAppContainer]);
-
-  return <AwsSettingMolecule
-    s3ReferenceFileWithRelayMode={s3ReferenceFileWithRelayMode}
-    s3Region={s3Region}
-    s3CustomEndpoint={s3CustomEndpoint}
-    s3Bucket={s3Bucket}
-    s3AccessKeyId={s3AccessKeyId}
-    s3SecretAccessKey={s3SecretAccessKey}
-    onChangeS3ReferenceFileWithRelayMode={onChangeS3ReferenceFileWithRelayModeHandler}
-    onChangeS3Region={onChangeS3RegionHandler}
-    onChangeS3CustomEndpoint={onChangeS3CustomEndpointHandler}
-    onChangeS3Bucket={onChangeS3BucketHandler}
-    onChangeS3AccessKeyId={onChangeS3AccessKeyIdHandler}
-    onChangeS3SecretAccessKey={onChangeS3SecretAccessKeyHandler}
-  />;
-};
-
-
-/**
- * Wrapper component for using unstated
- */
-const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AdminAppContainer]);
-
-export default AwsSettingWrapper;

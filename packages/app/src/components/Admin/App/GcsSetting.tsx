@@ -1,20 +1,14 @@
-import React, { useCallback } from 'react';
-
 import { useTranslation } from 'next-i18next';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-type GcsSettingMoleculeProps = {
+export type GcsSettingMoleculeProps = {
   gcsReferenceFileWithRelayMode
   gcsUseOnlyEnvVars
   gcsApiKeyJsonPath
-  envGcsApiKeyJsonPath
   gcsBucket
-  envGcsBucket
   gcsUploadNamespace
-  envGcsUploadNamespace
+  envGcsApiKeyJsonPath?
+  envGcsBucket?
+  envGcsUploadNamespace?
   onChangeGcsReferenceFileWithRelayMode: (val: boolean) => void
   onChangeGcsApiKeyJsonPath: (val: string) => void
   onChangeGcsBucket: (val: string) => void
@@ -169,51 +163,3 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
     </>
   );
 };
-
-const GcsSetting = (props) => {
-  const { t } = useTranslation();
-  const { adminAppContainer } = props;
-  const {
-    gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars,
-    gcsApiKeyJsonPath, envGcsApiKeyJsonPath, gcsBucket,
-    envGcsBucket, gcsUploadNamespace, envGcsUploadNamespace,
-  } = adminAppContainer.state;
-
-  const onChangeGcsReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
-    adminAppContainer.changeGcsReferenceFileWithRelayMode(val);
-  }, [adminAppContainer]);
-
-  const onChangeGcsApiKeyJsonPathHandler = useCallback((val: string) => {
-    adminAppContainer.changeGcsApiKeyJsonPath(val);
-  }, [adminAppContainer]);
-
-  const onChangeGcsBucketHandler = useCallback((val: string) => {
-    adminAppContainer.changeGcsBucket(val);
-  }, [adminAppContainer]);
-
-  const onChangeGcsUploadNamespaceHandler = useCallback((val: string) => {
-    adminAppContainer.changeGcsUploadNamespace(val);
-  }, [adminAppContainer]);
-
-  return <GcsSettingMolecule
-    gcsReferenceFileWithRelayMode={gcsReferenceFileWithRelayMode}
-    gcsUseOnlyEnvVars={gcsUseOnlyEnvVars}
-    gcsApiKeyJsonPath={gcsApiKeyJsonPath}
-    envGcsApiKeyJsonPath={envGcsApiKeyJsonPath}
-    gcsBucket={gcsBucket}
-    envGcsBucket={envGcsBucket}
-    gcsUploadNamespace={gcsUploadNamespace}
-    envGcsUploadNamespace={envGcsUploadNamespace}
-    onChangeGcsReferenceFileWithRelayMode={onChangeGcsReferenceFileWithRelayModeHandler}
-    onChangeGcsApiKeyJsonPath={onChangeGcsApiKeyJsonPathHandler}
-    onChangeGcsBucket={onChangeGcsBucketHandler}
-    onChangeGcsUploadNamespace={onChangeGcsUploadNamespaceHandler}
-  />;
-};
-
-/**
- * Wrapper component for using unstated
- */
-const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AdminAppContainer]);
-
-export default GcsSettingWrapper;
