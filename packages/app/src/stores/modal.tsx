@@ -580,3 +580,26 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
     },
   });
 };
+
+/*
+* QuestionnaireModals
+*/
+type QuestionnaireModalStatuses = {
+  openedQuestionnaireId: string | null,
+}
+
+type QuestionnaireModalStatusUtils = {
+  open(string): Promise<QuestionnaireModalStatuses | undefined>
+  close(): Promise<QuestionnaireModalStatuses | undefined>
+}
+
+export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRResponse<QuestionnaireModalStatuses, Error> & QuestionnaireModalStatusUtils => {
+  const initialData: QuestionnaireModalStatuses = { openedQuestionnaireId: null };
+  const swrResponse = useStaticSWR<QuestionnaireModalStatuses, Error>('questionnaireModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (questionnaireOrderId: string) => swrResponse.mutate({ openedQuestionnaireId: questionnaireOrderId }),
+    close: () => swrResponse.mutate({ openedQuestionnaireId: null }),
+  };
+};

@@ -1,3 +1,5 @@
+import { HasObjectId } from '@growi/core';
+
 import { GrowiServiceType } from './growi-info';
 import { UserType } from './user-info';
 
@@ -14,3 +16,5 @@ export interface ICondition {
   user: UserCondition
   growi: GrowiCondition
 }
+
+export type IConditionHasId = ICondition & HasObjectId;

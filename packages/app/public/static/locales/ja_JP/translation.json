@@ -797,5 +797,17 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
+  },
+  "questionnaire": {
+    "give_us_feedback": "GROWI の改善のために、アンケートにご協力ください",
+    "thank_you_for_answering": "ご回答ありがとうございます",
+    "additional_feedback": "その他ご意見ご要望はこちらからお願い致します。",
+    "dont_show_again": "今後このアンケートを表示しない",
+    "skip": "スキップ",
+    "agree": "そう思う",
+    "disagree": "そう思わない",
+    "answer": "回答する",
+    "no_answer": "無回答",
+    "settings": "アンケート設定"
   }
 }

@@ -687,3 +687,17 @@ Emoji picker modal
 .emoji-picker-modal {
   background-color: transparent !important;
 }
+
+/*
+  Questionnaire modal
+*/
+.grw-questionnaire-btn-group {
+  .btn-outline-primary {
+    @include button-outline-variant(
+      lighten($primary, 30%),
+      $color-hover: color-contrast($primary),
+      $active-background: $primary,
+      $active-border: lighten($primary, 30%),
+    );
+  }
+}

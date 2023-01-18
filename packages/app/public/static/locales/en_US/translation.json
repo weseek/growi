@@ -798,5 +798,17 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
+  },
+  "questionnaire": {
+    "give_us_feedback": "Give us feedback for improvements",
+    "thank_you_for_answering": "Thank you for answering",
+    "additional_feedback": "Send us additional feedback from here.",
+    "dont_show_again": "Don`t show again",
+    "skip": "Skip",
+    "agree": "Agree",
+    "disagree": "Disagree",
+    "answer": "Answer",
+    "no_answer": "No answer",
+    "settings": "Questionnaire settings"
   }
 }
