@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -11,31 +11,17 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import AwsSetting from './AwsSetting';
 import GcsSettings from './GcsSettings';
 
+const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'] as const;
 
-type Props = {
-  adminAppContainer: AdminAppContainer,
+type FileUploadSettingMoleculeProps = {
+  fileUploadType: string
+  isFixedFileUploadByEnvVar: boolean
+  envFileUploadType?: string
+  onChangeFileUploadType: (e: ChangeEvent, type: string) => void
 }
 
-
-const FileUploadSetting = (props: Props): JSX.Element => {
+export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMoleculeProps): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
-  const { adminAppContainer } = props;
-
-  const {
-    fileUploadType, isFixedFileUploadByEnvVar, envFileUploadType, retrieveError,
-  } = adminAppContainer.state;
-
-  const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
-
-  const submitHandler = useCallback(async() => {
-    try {
-      await adminAppContainer.updateFileUploadSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings'), ns: 'commons' }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [adminAppContainer, t]);
 
   return (
     <>
@@ -63,28 +49,66 @@ const FileUploadSetting = (props: Props): JSX.Element => {
                   className="custom-control-input"
                   name="file-upload-type"
                   id={`file-upload-type-radio-${type}`}
-                  checked={fileUploadType === type}
-                  disabled={isFixedFileUploadByEnvVar}
-                  onChange={() => { adminAppContainer.changeFileUploadType(type) }}
+                  checked={props.fileUploadType === type}
+                  disabled={props.isFixedFileUploadByEnvVar}
+                  onChange={(e) => { props?.onChangeFileUploadType(e, type) }}
                 />
                 <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
               </div>
             );
           })}
         </div>
-        {isFixedFileUploadByEnvVar && (
+        {props.isFixedFileUploadByEnvVar && (
           <p className="alert alert-warning mt-2 text-left offset-3 col-6">
             <i className="icon-exclamation icon-fw">
             </i><b>FIXED</b><br />
             {/* eslint-disable-next-line react/no-danger */}
-            <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: envFileUploadType }) }} />
+            <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: props.envFileUploadType }) }} />
           </p>
         )}
       </div>
 
-      {fileUploadType === 'aws' && <AwsSetting />}
-      {fileUploadType === 'gcs' && <GcsSettings />}
+      {props.fileUploadType === 'aws' && <AwsSetting />}
+      {props.fileUploadType === 'gcs' && <GcsSettings />}
+    </>
+  );
+});
+FileUploadSettingMolecule.displayName = 'FileUploadSettingMolecule';
 
+
+type FileUploadSettingProps = {
+  adminAppContainer: AdminAppContainer
+}
+
+const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
+  const { t } = useTranslation(['admin', 'commons']);
+  const { adminAppContainer } = props;
+
+  const {
+    fileUploadType, isFixedFileUploadByEnvVar, envFileUploadType, retrieveError,
+  } = adminAppContainer.state;
+
+  const submitHandler = useCallback(async() => {
+    try {
+      await adminAppContainer.updateFileUploadSettingHandler();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings'), ns: 'commons' }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [adminAppContainer, t]);
+
+  const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
+    adminAppContainer.changeFileUploadType(type);
+  }, [adminAppContainer]);
+
+  return (
+    <>
+      <FileUploadSettingMolecule
+        fileUploadType={fileUploadType}
+        isFixedFileUploadByEnvVar={isFixedFileUploadByEnvVar}
+        envFileUploadType={envFileUploadType}
+        onChangeFileUploadType={onChangeFileUploadTypeHandler}/>
       <AdminUpdateButtonRow onClick={submitHandler} disabled={retrieveError != null} />
     </>
   );

@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent, useCallback, useEffect, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -10,6 +12,7 @@ import { useAdminSocket } from '~/stores/socket-io';
 
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
 
+import { FileUploadSettingMolecule } from './App/FileUploadSetting';
 import G2GDataTransferExportForm from './G2GDataTransferExportForm';
 import G2GDataTransferStatusIcon from './G2GDataTransferStatusIcon';
 
@@ -31,6 +34,7 @@ const G2GDataTransfer = (): JSX.Element => {
     mongo: G2G_PROGRESS_STATUS.PENDING,
     attachments: G2G_PROGRESS_STATUS.PENDING,
   });
+  const [fileUploadType, setFileUploadType] = useState('aws');
 
   const updateSelectedCollections = (newSelectedCollections: Set<string>) => {
     setSelectedCollections(newSelectedCollections);
@@ -107,6 +111,10 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
 
+  const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
+    setFileUploadType(type);
+  }, []);
+
   useEffect(() => {
     setCollectionsAndSelectedCollections();
     setupWebsocketEventHandler();
@@ -125,7 +133,14 @@ const G2GDataTransfer = (): JSX.Element => {
       </button>
 
       {collections.length !== 0 && (
-        <div className={isShowExportForm ? '' : 'd-none'}>
+        <div className={`${isShowExportForm ? '' : 'd-none'} px-3 pt-3`}>
+          <h3 className='mb-1'>ファイルアップロード設定</h3>
+          <FileUploadSettingMolecule
+            fileUploadType={fileUploadType}
+            isFixedFileUploadByEnvVar={false}
+            onChangeFileUploadType={onChangeFileUploadTypeHandler}
+          />
+          <h3 className='mb-1'>エクスポート設定</h3>
           <G2GDataTransferExportForm
             allCollectionNames={collections}
             selectedCollections={selectedCollections}
