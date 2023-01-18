@@ -1,4 +1,3 @@
-// TODO: i18n
 import React, {
   ChangeEvent, useCallback, useEffect, useState,
 } from 'react';
