@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 
@@ -214,9 +213,5 @@ const AwsSetting = (props) => {
  * Wrapper component for using unstated
  */
 const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AdminAppContainer]);
-
-AwsSetting.propTypes = {
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
 
 export default AwsSettingWrapper;
