@@ -1,24 +1,12 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
-$themecolor: #aa4a04;
-$themelight: #f0f8ff;
-$accentcolor: #ffd700;
 $bordercolor: #7e0d7e;
 
-// == Define Bootstrap theme colors
-//
-
 // colors for overriding bootstrap $theme-colors
-$primary: $themecolor;
-$light: lighten($secondary, 10%);
 
-// $info: #;
-// $success: #;
-// $warning: #;
-// $danger: #;
-// $dark: #;
 
 .growi:not(.login-page) {
   // add background-image
@@ -28,79 +16,104 @@ $light: lighten($secondary, 10%);
 }
 
 
-:root {
+:root[data-theme='dark'] {
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 25,95%;
+  --primary-l: 34%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+
   // Background colors
-  $bgcolor-global: #050000;
-  $bgcolor-inline-code: #1f1f22; //optional
-  $bgcolor-card: $bgcolor-global;
-  $bgcolor-blinked-section: rgba($primary, 0.4);
-  $bgcolor-keyword-highlighted: darkviolet;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 0,100%;
+  --bgcolor-global-l: 1%;
+  --bgcolor-inline-code: #1f1f22; //optional
+  --bgcolor-card: var(--bgcolor-global);
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 60%)};
+  --bgcolor-keyword-highlighted: darkviolet;
 
   // Font colors
-  $color-global: #e9af2b;
-  $color-reversal: #eeeeee;
-  // $color-header: #2b2b2b;
-  $color-link: #aa97cb;
-  $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: #aa97cb;
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e; // optional
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 42,81%;
+  --color-global-l: 54%;
+  --color-reversal: #eeeeee;
+  // --color-header: #2b2b2b;
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 262,33%;
+  --color-link-l: 69%;
+  --color-link-hover: #{hsl.lighten(var(--color-link), 20%)};
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hs: var(--color-link-hs);
+  --color-link-wiki-l: var(--color-link-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 20%)};
+  --color-link-nabvar: #a7a7a7;
+  --color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: #979797;
-  $bgcolor-list: transparent;
-  $color-list-hover: $themecolor;
-  // $bgcolor-list-hover: ;
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  --color-list: #979797;
+  --bgcolor-list: transparent;
+  --color-list-hover: var(--primary);
+  // --bgcolor-list-hover: ;
+  // --color-list-active: var(--color-reversal);
+  // --bgcolor-list-active: var(--primary);
 
   // Search Top
-  $color-search: $primary;
+  --color-search: var(--primary);
 
   // Navbar
-  $bgcolor-navbar: #eceded;
-  $bgcolor-search-top-dropdown: $primary;
-  $border-image-navbar: linear-gradient(90deg, #e3b7ff 0%, #134774 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-hs: 180,3%;
+  --bgcolor-navbar-l: 93%;
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(90deg, #e3b7ff 0%, #134774 100%);
 
   // Logo colors
-  $bgcolor-logo: darken($themecolor, 10%);
-  $fillcolor-logo-mark: #dedede;
+  --bgcolor-logo: #{hsl.darken(var(--primary),10%)};
+  --fillcolor-logo-mark: #dedede;
 
   // Sidebar
-  $bgcolor-sidebar: #162b33;
-  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
+  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
+  --bgcolor-sidebar-hs: 197,40%;
+  --bgcolor-sidebar-l: 14%;
+  --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
 
   // Sidebar contents
-  $color-sidebar-context: #aa97cb;
-  $bgcolor-sidebar-context: #302b3c;
+  --color-sidebar-context: hsl(var(--color-sidebar-context-hs),var(--color-sidebar-context-l));
+  --color-sidebar-context-hs: 262,33%;
+  --color-sidebar-context-l: 69%;
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 258,17%;
+  --bgcolor-sidebar-context-l: 20%;
 
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #2c2926; // optional
+  --bgcolor-sidebar-list-group: #2c2926; // optional
 
   // Sidebar resize button
-  $color-resize-button: #effcfa;
-  $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: #effcfa;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  --color-resize-button: #effcfa;
+  --bgcolor-resize-button: var(--primary);
+  --bgcolor-resize-button-hs: var(--primary-hs);
+  --bgcolor-resize-button-l: var(--primary-l);
+  --color-resize-button-hover: #effcfa;
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--primary), 5%)};
+
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
-  $bordercolor-inline-code: #4d4d4d; // optional
-
-  // Dropdown colors
-  $color-dropdown-link-active: $color-reversal;
-  $color-dropdown-link-hover: $color-global;
+  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --bordercolor-inline-code: #4d4d4d; // optional
 
   // admin theme box
-  $color-theme-color-box: lighten($primary, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
+  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
   &, body {
     background-image: url('../images/halloween/halloween.jpg');
@@ -113,13 +126,13 @@ $light: lighten($secondary, 10%);
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 35%), $primary, lighten($primary, 5%), darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 35%)}, var(--primary), #{hsl.lighten(var(--primary), 5%)}, #{hsl.darken(var(--primary), 20%)});
     }
   }
 
   // Table
   .table {
-    color: $color-global;
+    color: var(--color-global);
   }
 
   pre {

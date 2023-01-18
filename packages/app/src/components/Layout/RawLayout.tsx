@@ -1,10 +1,11 @@
 import React, { ReactNode, useState } from 'react';
 
+import { ColorScheme } from '@growi/core';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
-import { ColorScheme, useNextThemes, NextThemesProvider } from '~/stores/use-next-themes';
+import { useNextThemes, NextThemesProvider } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
 
