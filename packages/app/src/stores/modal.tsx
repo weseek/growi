@@ -585,23 +585,21 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
 * QuestionnaireModals
 */
 type QuestionnaireModalStatuses = {
-  // key: QuestionnaireOrder _id
-  // value: whether or not the modal of QuestionnaireOrder is opened
-  [key: string]: boolean,
+  openedQuestionnaireId: string | null,
 }
 
 type QuestionnaireModalStatusUtils = {
   open(string): Promise<QuestionnaireModalStatuses | undefined>
-  close(string): Promise<QuestionnaireModalStatuses | undefined>
+  close(): Promise<QuestionnaireModalStatuses | undefined>
 }
 
 export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRResponse<QuestionnaireModalStatuses, Error> & QuestionnaireModalStatusUtils => {
-  const initialData: QuestionnaireModalStatuses = {};
+  const initialData: QuestionnaireModalStatuses = { openedQuestionnaireId: null };
   const swrResponse = useStaticSWR<QuestionnaireModalStatuses, Error>('questionnaireModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (questionnaireOrderId: string) => swrResponse.mutate({ [questionnaireOrderId]: true }),
-    close: (questionnaireOrderId: string) => swrResponse.mutate({ [questionnaireOrderId]: false }),
+    open: (questionnaireOrderId: string) => swrResponse.mutate({ openedQuestionnaireId: questionnaireOrderId }),
+    close: () => swrResponse.mutate({ openedQuestionnaireId: null }),
   };
 };

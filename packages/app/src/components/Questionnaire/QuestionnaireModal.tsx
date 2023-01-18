@@ -19,7 +19,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
   const { data: currentUser } = useCurrentUser();
 
   const { data: questionnaireModalData, close: closeQuestionnaireModal } = useQuestionnaireModal();
-  const isOpened = questionnaireModalData?.[questionnaireOrder._id];
+  const isOpened = questionnaireModalData?.openedQuestionnaireId === questionnaireOrder._id;
 
   const { t } = useTranslation();
 
@@ -34,17 +34,17 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         closeButton: true,
       },
     );
-    closeQuestionnaireModal(questionnaireOrder._id);
+    closeQuestionnaireModal();
   };
 
   return (<Modal
     size="lg"
     isOpen={isOpened}
-    toggle={() => closeQuestionnaireModal(questionnaireOrder._id)}
+    toggle={() => closeQuestionnaireModal()}
   >
     <ModalHeader
       tag="h4"
-      toggle={() => closeQuestionnaireModal(questionnaireOrder._id)}
+      toggle={() => closeQuestionnaireModal()}
       className="bg-primary text-light">
       <span>{t('questionnaire.give_us_feedback')}</span>
     </ModalHeader>

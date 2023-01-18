@@ -25,7 +25,6 @@ import { MainPane } from '~/components/Layout/MainPane';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
-import PopUps from '~/components/PopUps';
 import QuestionnaireModalManager from '~/components/Questionnaire/QuestionnaireModalManager';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
@@ -375,7 +374,6 @@ Page.getLayout = function getLayout(page) {
       <DrawioModal />
       <HandsontableModal />
       <QuestionnaireModalManager />
-      <PopUps />
     </>
   );
 };
