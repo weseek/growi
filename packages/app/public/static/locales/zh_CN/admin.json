@@ -534,7 +534,7 @@
       "upload": "Upload",
       "discard": "Discard uploaded data",
       "errors": {
-        "versions_not_met": "this growi and the uploaded data versions are not met",
+        "different_versions": "The version of this GROWI and the uploaded data are not the same",
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
         "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
@@ -1041,7 +1041,7 @@
   "g2g": {
     "transfer_success": "Completed GROWI to GROWI transfer successfully",
     "error_generate_growi_archive": "Failed to generate GROWI archive file",
-    "error_send_growi_archive": "Failed to send GROWI archive file to new GROWI"
+    "error_send_growi_archive": "Failed to send GROWI archive file to the destination GROWI"
   },
   "toaster": {
     "give_user_admin": "Succeeded to give {{username}} admin",

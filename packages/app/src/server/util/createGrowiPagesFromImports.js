@@ -36,10 +36,10 @@ module.exports = (crowi) => {
       }
       else {
         if (!isCreatableName) {
-          errors.push(new Error(`${path} is not a creatable name in Growi`));
+          errors.push(new Error(`${path} is not a creatable name in GROWI`));
         }
         if (isPageNameTaken) {
-          errors.push(new Error(`${path} already exists in Growi`));
+          errors.push(new Error(`${path} already exists in GROWI`));
         }
       }
     }

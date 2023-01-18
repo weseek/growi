@@ -507,14 +507,14 @@ class ImportService {
   /**
    * validate using meta.json
    * to pass validation, all the criteria must be met
-   *   - ${version of this growi} === ${version of growi that exported data}
+   *   - ${version of this GROWI} === ${version of GROWI that exported data}
    *
    * @memberOf ImportService
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
     if (meta.version !== this.crowi.version) {
-      throw new Error('the version of this growi and the growi that exported the data are not met');
+      throw new Error('The version of this GROWI and the uploaded GROWI data are not the same');
     }
 
     // TODO: check if all migrations are completed

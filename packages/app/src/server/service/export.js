@@ -355,7 +355,7 @@ class ExportService {
 
     await streamToPromise(archive);
 
-    logger.info(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
+    logger.info(`zipped GROWI data into ${zipFile} (${archive.pointer()} bytes)`);
 
     // delete json files
     for (const { from } of configs) {

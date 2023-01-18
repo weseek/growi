@@ -6,6 +6,7 @@ export const G2G_PROGRESS_STATUS = {
   IN_PROGRESS: 'IN_PROGRESS',
   COMPLETED: 'COMPLETED',
   ERROR: 'ERROR',
+  SKIPPED: 'SKIPPED',
 } as const;
 
 /**
