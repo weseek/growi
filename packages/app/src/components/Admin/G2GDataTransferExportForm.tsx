@@ -7,7 +7,6 @@ import { useTranslation } from 'next-i18next';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
-// import { useAdminSocket } from '~/stores/socket-io';
 
 import ImportCollectionConfigurationModal from './ImportData/GrowiArchive/ImportCollectionConfigurationModal';
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportData/GrowiArchive/ImportCollectionItem';
@@ -37,17 +36,12 @@ type Props = {
 };
 
 const G2GDataTransferExportForm = (props: Props): JSX.Element => {
-  // const { data: socket } = useAdminSocket();
   const { t } = useTranslation('admin');
 
   const {
     allCollectionNames, selectedCollections, updateSelectedCollections, optionsMap, updateOptionsMap,
   } = props;
 
-  // const [isImporting, setImporting] = useState(false);
-  // const [isImported, setImported] = useState(false);
-  // const [progressMap, setProgressMap] = useState<any>({});
-  // const [errorsMap, setErrorsMap] = useState<any>([]);
   const [isConfigurationModalOpen, setConfigurationModalOpen] = useState(false);
   const [collectionNameForConfiguration, setCollectionNameForConfiguration] = useState<any>();
 
@@ -59,7 +53,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     updateSelectedCollections(new Set());
   }, [updateSelectedCollections]);
 
-  const updateOption = (collectionName, data) => {
+  const updateOption = useCallback((collectionName, data) => {
     const options = optionsMap[collectionName];
 
     // merge
@@ -70,7 +64,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     updateOptionsMap((prev) => {
       return { ...prev, updatedOptionsMap };
     });
-  };
+  }, [optionsMap, updateOptionsMap]);
 
   const ImportItems = ({ collectionNames }): JSX.Element => {
     const toggleCheckbox = (collectionName, bool) => {
@@ -96,8 +90,6 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <div className="row">
         {collectionNames.map((collectionName) => {
-          // const collectionProgress = progressMap[collectionName];
-          // const errors = errorsMap[collectionName];
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           if (optionsMap[collectionName] == null) {
@@ -107,11 +99,6 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
           return (
             <div className="col-md-6 my-1" key={collectionName}>
               <ImportCollectionItem
-                // isImporting={isImporting}
-                // isImported={collectionProgress ? isImported : false}
-                // insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
-                // modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
-                // errorsCount={errors ? errors.length : 0}
                 isImporting={false}
                 isImported={false}
                 insertedCount={0}
@@ -192,9 +179,9 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         option={optionsMap[collectionNameForConfiguration]}
       />
     );
-  }, [collectionNameForConfiguration, isConfigurationModalOpen]);
+  }, [collectionNameForConfiguration, isConfigurationModalOpen, optionsMap, updateOption]);
 
-  const setInitialOptionsMap = () => {
+  const setInitialOptionsMap = useCallback(() => {
     const initialOptionsMap = {};
     allCollectionNames.forEach((collectionName) => {
       const initialMode = (MODE_RESTRICTED_COLLECTION[collectionName] != null)
@@ -204,66 +191,15 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       initialOptionsMap[collectionName] = new ImportOption(initialMode);
     });
     updateOptionsMap(initialOptionsMap);
-  };
-
-  // TODO: use Socket
-
-  // setupWebsocketEventHandler() {
-  //   const socket = this.props.adminSocketIoContainer.getSocket();
-
-  //   // websocket event
-  //   // eslint-disable-next-line object-curly-newline
-  //   socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
-  //     const { progressMap, errorsMap } = this.state;
-  //     progressMap[collectionName] = collectionProgress;
-
-  //     const errors = errorsMap[collectionName] || [];
-  //     errorsMap[collectionName] = errors.concat(appendedErrors);
-
-  //     this.setState({
-  //       isImporting: true,
-  //       progressMap,
-  //       errorsMap,
-  //     });
-  //   });
-
-  //   // websocket event
-  //   socket.on('admin:onTerminateForImport', () => {
-  //     this.setState({
-  //       isImporting: false,
-  //       isImported: true,
-  //     });
-
-  //     toastSuccess(undefined, 'Import process has completed.');
-  //   });
-
-  //   // websocket event
-  //   socket.on('admin:onErrorForImport', (err) => {
-  //     this.setState({
-  //       isImporting: false,
-  //       isImported: false,
-  //     });
-
-  //     toastError(err, 'Import process has failed.');
-  //   });
-  // }
-
-  // teardownWebsocketEventHandler() {
-  //   const socket = this.props.adminSocketIoContainer.getSocket();
-
-  //   socket.removeAllListeners('admin:onProgressForImport');
-  //   socket.removeAllListeners('admin:onTerminateForImport');
-  // }
+  }, [allCollectionNames, updateOptionsMap]);
 
   useEffect(() => {
     setInitialOptionsMap();
-    // setupWebsocketEventHandler();
-    // teardownWebsocketEventHandler();
   }, []);
 
   return (
     <>
-      <form className="form-inline mt-4">
+      <form className="form-inline mt-3">
         <div className="form-group">
           <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={checkAll}>
             <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}

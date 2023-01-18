@@ -1,10 +1,13 @@
+import { isClient } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { Container, Provider } from 'unstated';
 
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { CommonProps } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
@@ -23,13 +26,21 @@ const DataTransferPage: NextPage<Props> = (props) => {
 
   const title = t('g2g_data_transfer.data_transfer');
 
+  const injectableContainers: Container<any>[] = [];
+  if (isClient()) {
+    const adminAppContainer = new AdminAppContainer();
+    injectableContainers.push(adminAppContainer);
+  }
+
   return (
-    <AdminLayout componentTitle={title}>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <G2GDataTransferPage />
-    </AdminLayout>
+    <Provider inject={[...injectableContainers]}>
+      <AdminLayout componentTitle={title}>
+        <Head>
+          <title>{title}</title>
+        </Head>
+        <G2GDataTransferPage />
+      </AdminLayout>
+    </Provider>
   );
 };
 
