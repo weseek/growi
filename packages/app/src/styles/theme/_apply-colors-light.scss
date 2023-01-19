@@ -459,6 +459,6 @@
   * skeleton
   */
   .grw-skeleton {
-    background-color: hsl.lighten(var(--bgcolor-navbar),10%);
+    background-color: hsl.darken(var(--bgcolor-subnav),10%);
   }
 }

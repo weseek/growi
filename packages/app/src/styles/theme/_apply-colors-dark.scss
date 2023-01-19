@@ -13,7 +13,6 @@
   $color-list-active: var(--color-list-active,var(--color-reversal));
   $bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global));
   $bgcolor-list-active: var(--bgcolor-list-active,var(--primary));
-  $bgcolor-subnav: var(--bgcolor-subnav);
   $color-table: var(--color-table,white);
   $bgcolor-table: var(--bgcolor-table,#343a40);
   $border-color-table: var(--border-color-table,hsl.lighten(var(--bgcolor-table),7.5%),lighten(#343a40, 7.5%));
@@ -574,5 +573,6 @@
   * skeleton
   */
   .grw-skeleton {
+    background-color: hsl.lighten(var(--bgcolor-subnav),10%);
   }
 }
