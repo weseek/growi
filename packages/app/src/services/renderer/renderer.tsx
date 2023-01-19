@@ -29,8 +29,8 @@ import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
-import { RendererConfig } from '~/interfaces/services/renderer';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
@@ -67,13 +67,13 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
     | undefined
 };
 
+const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
+
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
     clobberPrefix: 'mdcont-',
-    attributes: {
-      '*': ['class', 'className', 'style'],
-    },
+    attributes: commonSanitizeAttributes,
   },
 );
 
@@ -151,7 +151,7 @@ export const generateViewOptions = (
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
     commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeOption.attributes ?? {}, config.attrWhiteList ?? {});
+    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -198,7 +198,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
     commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeOption.attributes ?? {}, config.attrWhiteList ?? {});
+    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -247,7 +247,7 @@ export const generateSimpleViewOptions = (
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
     commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeOption.attributes ?? {}, config.attrWhiteList ?? {});
+    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -299,7 +299,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
     commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeOption.attributes ?? {}, config.attrWhiteList ?? {});
+    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
