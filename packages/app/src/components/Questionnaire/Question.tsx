@@ -1,14 +1,20 @@
 import { IQuestionHasId } from '~/interfaces/questionnaire/question';
+import { useCurrentUser } from '~/stores/context';
 
 type QuestionProps = {
   question: IQuestionHasId,
 }
 
 const Question = ({ question }: QuestionProps): JSX.Element => {
+  const { data: currentUser } = useCurrentUser();
+  const lang = currentUser?.lang;
+
+  const questionText = lang === 'en_US' ? question.text.en_US : question.text.ja_JP;
+
   return <div className="row mt-4">
     <div className="col-6 d-flex align-items-center">
       <span>
-        {question.text}
+        {questionText}
       </span>
     </div>
     <div className="col-1 d-flex align-items-center p-0">

@@ -17,6 +17,7 @@ type QuestionnaireModalProps = {
 
 const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
+  const lang = currentUser?.lang;
 
   const { data: questionnaireModalData, close: closeQuestionnaireModal } = useQuestionnaireModal();
   const isOpened = questionnaireModalData?.openedQuestionnaireId === questionnaireOrder._id;
@@ -37,6 +38,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     closeQuestionnaireModal();
   };
 
+  const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
+
   return (<Modal
     size="lg"
     isOpen={isOpened}
@@ -50,7 +53,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     </ModalHeader>
     <ModalBody className="my-4">
       <div className="container">
-        <h3 className="grw-modal-head">{questionnaireOrder.title}</h3>
+        <h3 className="grw-modal-head">{questionnaireOrderTitle}</h3>
         <div className="row mt-4">
           <div className="col-6"></div>
           <div className="col-1 p-0 font-weight-bold text-center align-items-center">{t('questionnaire.no_answer')}</div>
