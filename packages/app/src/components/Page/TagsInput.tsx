@@ -2,6 +2,7 @@ import React, {
   FC, useRef, useState, useCallback,
 } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { useSWRxTagsSearch } from '~/stores/tag';
@@ -20,6 +21,7 @@ type Props = {
 }
 
 const TagsInput: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const tagsInputRef = useRef<TypeaheadInstance>(null);
 
   const [resultTags, setResultTags] = useState<string[]>([]);
@@ -71,7 +73,7 @@ const TagsInput: FC<Props> = (props: Props) => {
         onSearch={searchHandler}
         onKeyDown={keyDownHandler}
         options={resultTags} // Search result (Some tag names)
-        placeholder="tag name"
+        placeholder={t('tag_edit_modal.tags_input.tag_name')}
         autoFocus={props.autoFocus}
       />
     </div>

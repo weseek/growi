@@ -14,6 +14,7 @@ export * as pageUtils from './utils/page-utils';
 // export all
 export * from './plugin/interfaces/option-parser';
 export * from './interfaces/attachment';
+export * from './interfaces/color-scheme';
 export * from './interfaces/common';
 export * from './interfaces/growi-facade';
 export * from './interfaces/growi-theme-metadata';
@@ -31,4 +32,5 @@ export * from './models/vo/error-apiv3';
 export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
 export * from './utils/browser-utils';
+export * from './utils/growi-theme-metadata';
 export * from './utils/with-utils';

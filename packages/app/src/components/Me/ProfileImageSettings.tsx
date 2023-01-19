@@ -105,14 +105,14 @@ const ProfileImageSettings = (): JSX.Element => {
                 onChange={() => setGravatarEnabled(true)}
               />
               <label className="custom-control-label" htmlFor="radioGravatar">
-                <img src={GRAVATAR_DEFAULT} data-hide-in-vrt /> Gravatar
+                <img src={GRAVATAR_DEFAULT} data-vrt-blackout-profile /> Gravatar
               </label>
               <a href="https://gravatar.com/">
                 <small><i className="icon-arrow-right-circle" aria-hidden="true"></i></small>
               </a>
             </div>
           </h4>
-          <img src={generateGravatarSrc(currentUser.email)} width="64" data-hide-in-vrt />
+          <img src={generateGravatarSrc(currentUser.email)} width="64" data-vrt-blackout-profile />
         </div>
 
         <div className="col-md-6 col-12">

@@ -73,12 +73,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
-  NO_CDN: {
-    ns:      'crowi',
-    key:     'app:noCdn',
-    type:    ValueType.STRING,
-    default: null,
-  },
   // PLANTUML_URI: {
   //   ns:      ,
   //   key:     ,

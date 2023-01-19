@@ -116,6 +116,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
   'customize:theme' : PresetThemes.DEFAULT,
+  'customize:theme:forcedColorScheme' : null,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
   'customize:isEnabledAttachTitleHeader' : false,
@@ -229,7 +230,6 @@ schema.statics.getLocalconfig = function(crowi) {
       DRAWIO_URI: env.DRAWIO_URI || null,
       HACKMD_URI: env.HACKMD_URI || null,
       MATHJAX: env.MATHJAX || null,
-      NO_CDN: env.NO_CDN || null,
       GROWI_CLOUD_URI: env.GROWI_CLOUD_URI || null,
       GROWI_APP_ID_FOR_GROWI_CLOUD: env.GROWI_APP_ID_FOR_GROWI_CLOUD || null,
     },
@@ -241,9 +241,6 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
-    customizedLogoSrc: isDefaultLogo != null && !isDefaultLogo
-      ? crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc')
-      : null,
     auditLogEnabled: crowi.configManager.getConfig('crowi', 'app:auditLogEnabled'),
     activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
     auditLogAvailableActions: crowi.activityService.getAvailableActions(false),

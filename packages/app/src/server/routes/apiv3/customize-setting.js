@@ -325,6 +325,7 @@ module.exports = (crowi) => {
       const customizedParams = {
         theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
+      customizeService.initGrowiTheme();
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
@@ -660,12 +661,6 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/customize-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const isDefaultLogo = await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
-    const customizedLogoSrc = await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc');
-    return res.apiv3({ isDefaultLogo, customizedLogoSrc });
-  });
-
   router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
@@ -717,11 +712,6 @@ module.exports = (crowi) => {
       let attachment;
       try {
         attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
-        const attachmentConfigParams = {
-          'customize:customizedLogoSrc': attachment.filePathProxied,
-        };
-
-        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
       }
       catch (err) {
         logger.error(err);
@@ -741,9 +731,6 @@ module.exports = (crowi) => {
 
     try {
       await attachmentService.removeAllAttachments(attachments);
-      // update attachmentId immediately
-      const attachmentConfigParams = { 'customize:customizedLogoSrc': null };
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
     }
     catch (err) {
       logger.error(err);

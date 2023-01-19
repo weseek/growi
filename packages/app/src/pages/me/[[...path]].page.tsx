@@ -111,7 +111,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, targetPage.title);
 
   return (
     <>

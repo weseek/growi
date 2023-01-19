@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import type { ColorScheme, IUser } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -76,8 +76,8 @@ export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Err
   return useContextSWR<boolean, Error>('isSharedUser', initialData);
 };
 
-export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('shareLinkId', initialData);
+export const useShareLinkId = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR('shareLinkId', initialData);
 };
 
 export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
@@ -201,8 +201,16 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
   return useContextSWR('CustomizeTitle', initialData);
 };
 
-export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('customizedLogoSrc', initialData);
+export const useIsDefaultLogo = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isDefaultLogo', initialData);
+};
+
+export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isCustomizedLogoUploaded', initialData);
+};
+
+export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<ColorScheme, Error> => {
+  return useContextSWR('forcedColorScheme', initialData);
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {

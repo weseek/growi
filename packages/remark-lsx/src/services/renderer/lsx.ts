@@ -8,7 +8,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
-const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter'];
+const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except'];
 
 const { hasHeadingSlash } = pathUtils;
 
@@ -104,7 +104,7 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
       }
 
       // resolve relative path
-      lsxElem.properties.prefix = pathResolver(prefix, basePagePath);
+      lsxElem.properties.prefix = decodeURI(pathResolver(prefix, basePagePath));
     });
   };
 };

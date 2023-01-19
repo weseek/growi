@@ -1,10 +1,49 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
 
-## [v6.0.0](https://github.com/weseek/growi/compare/v5.1.7...v6.0.0) - 2022-12-27
+## [v6.0.2](https://github.com/weseek/growi/compare/v6.0.1...v6.0.2) - 2023-01-10
+
+### 🐛 Bug Fixes
+
+- fix: Attaching page title as initial header section (#7228) @yukendev
+- fix: Update PageTree data after saving page (#7227) @yukendev
+- fix: Lsx "filter" and "except" options does not work (#7226) @yuki-takei
+- fix: Omit remark-growi-directive shortcuts (#7225) @yuki-takei
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump textlint-rule-no-doubled-joshi from 4.0.0 to 4.0.1 (#7222) @dependabot
+
+## [v6.0.1](https://github.com/weseek/growi/compare/v6.0.0...v6.0.1) - 2023-01-07
+
+### 🚀 Improvement
+
+- imprv: Reduce frequent API calling by SWR (#7218) @yuki-takei
+- imprv: Do not use api for fetching pages when using shared pages (#7213) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Custom logo not displayed on shared page (#7205) @miya
+- fix: Attach i18n User Setting and TagEditModal (#7216) @jam411
+- fix: Make PLANTUML_URI v5.x compatible (#7215) @yuki-takei
+- fix: Launch with PROMSTER_ENABLED=true failed (#7210) @yuki-takei
+- fix: Lsx performs with strange behavior (#7209) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Arm architecture (#7212) @yuki-takei
+- ci(deps): bump anothrNick/github-tag-action from 1.38.0 to 1.56.0 (#7195) @dependabot
+- ci(deps): bump google-github-actions/setup-gcloud from 0 to 1 (#7193) @dependabot
+- ci(deps): bump github/codeql-action from 1 to 2 (#7194) @dependabot
+- ci(deps): bump flat from 5.0.0 to 5.0.2 (#7200) @dependabot
+- ci(deps): bump json5 from 1.0.1 to 1.0.2 (#7201) @dependabot
+- ci(Mergify): configuration update (#7202) @yuki-takei
+- support: Uninstall swig-template (#7192) @yuki-takei
+
+## [v6.0.0](https://github.com/weseek/growi/compare/v5.1.8...v6.0.0) - 2022-12-27
 
 ### 💎 Features
 
@@ -16,6 +55,14 @@
 
 - support: Request scoped SWR (#6742) @yuki-takei
 - support: Build preset themes within external package (#7057) @yuki-takei
+
+## [v5.1.8](https://github.com/weseek/growi/compare/v5.1.7...v5.1.8) - 2022-11-17
+
+### 🐛 Bug Fixes
+
+- fix: Put back page from trash (#6835) @yukendev
+- fix: Updating page content width is not working (#6914) @yukendev
+- fix: Create page at installer (#6930) @hakumizuki @yuki-takei
 
 ## [v5.1.7](https://github.com/weseek/growi/compare/v5.1.6...v5.1.7) - 2022-10-26
 

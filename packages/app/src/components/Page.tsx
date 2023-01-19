@@ -1,11 +1,11 @@
 import React, {
-  useCallback,
+  FC, useCallback,
   useEffect, useRef,
 } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, IPagePopulatedToShowRevision } from '@growi/core';
 import { DrawioEditByViewerProps } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -48,9 +48,13 @@ const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr:
 
 const logger = loggerFactory('growi:Page');
 
+type Props = {
+  currentPage?: IPagePopulatedToShowRevision,
+}
 
-export const Page = (props) => {
+export const Page: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { currentPage } = props;
 
   // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
   // The toc node passed by customizeTOC is assigned to tocRef.current.
@@ -64,9 +68,9 @@ export const Page = (props) => {
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { data: tagsInfo } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+  const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
   const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions(storeTocNodeHandler);
@@ -128,14 +132,16 @@ export const Page = (props) => {
       toastSuccess(t('toaster.save_succeeded'));
 
       // rerender
-      mutateCurrentPage();
+      if (!isSharedPage) {
+        mutateCurrentPage();
+      }
       mutateEditingMarkdown(newMarkdown);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
+  }, [currentPage, isSharedPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
 
   // set handler to open DrawioModal
   useEffect(() => {
@@ -182,14 +188,16 @@ export const Page = (props) => {
       toastSuccess(t('toaster.save_succeeded'));
 
       // rerender
-      mutateCurrentPage();
+      if (!isSharedPage) {
+        mutateCurrentPage();
+      }
       mutateEditingMarkdown(newMarkdown);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
+  }, [currentPage, isSharedPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
 
   // set handler to open HandsonTableModal
   useEffect(() => {
