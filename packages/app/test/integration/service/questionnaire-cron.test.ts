@@ -32,7 +32,10 @@ describe('QuestionnaireCronService', () => {
           questions: [
             {
               type: 'points',
-              text: 'Is Growi easy to use?',
+              text: {
+                ja_JP: 'GROWI は使いやすいですか？',
+                en_US: 'Is GROWI easy to use?',
+              },
             },
           ],
           condition: {
@@ -56,7 +59,10 @@ describe('QuestionnaireCronService', () => {
           questions: [
             {
               type: 'points',
-              text: 'Is this questionnaire functioning properly?',
+              text: {
+                ja_JP: 'アンケート機能は正常動作していますか？',
+                en_US: 'Is this questionnaire functioning properly?',
+              },
             },
           ],
           condition: {
@@ -80,7 +86,10 @@ describe('QuestionnaireCronService', () => {
           questions: [
             {
               type: 'points',
-              text: 'Is this a good question?',
+              text: {
+                ja_JP: 'これはいい質問ですか？',
+                en_US: 'Is this a good question?',
+              },
             },
           ],
           condition: {
@@ -119,7 +128,10 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'Is Growi easy to use?',
+            text: {
+              ja_JP: 'GROWI は使いやすいですか？',
+              en_US: 'Is GROWI easy to use?',
+            },
           },
         ],
         condition: {
@@ -140,7 +152,10 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'Is ver 2.0 better than 1.0?',
+            text: {
+              ja_JP: 'ver 2.0 は 1.0 より良いですか？',
+              en_US: 'Is ver 2.0 better than 1.0?',
+            },
           },
         ],
         condition: {
@@ -161,7 +176,10 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'How would you rate the latest design?',
+            text: {
+              ja_JP: '新しいデザインは良いですか？',
+              en_US: 'How would you rate the latest design?',
+            },
           },
         ],
         condition: {
@@ -215,7 +233,10 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'Is Growi easy to use?',
+            text: {
+              ja_JP: 'GROWI は使いやすいですか？',
+              en_US: 'Is GROWI easy to use?',
+            },
           },
         ],
         condition: {
@@ -238,7 +259,10 @@ describe('QuestionnaireCronService', () => {
         questions: [
           {
             type: 'points',
-            text: 'Is this questionnaire functioning properly?',
+            text: {
+              ja_JP: 'アンケート機能は正常動作していますか？',
+              en_US: 'Is this questionnaire functioning properly?',
+            },
           },
         ],
         condition: {
