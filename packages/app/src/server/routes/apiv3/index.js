@@ -1,7 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { generateIsEnableLoginWithLocalOrLdapMiddleware } from '../../middlewares/is-enable-login-with-local-or-ldap';
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
 import * as loginFormValidator from '../../middlewares/login-form-validator';
 import * as registerFormValidator from '../../middlewares/register-form-validator';
@@ -45,12 +44,11 @@ module.exports = (crowi, app) => {
   // auth
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
-  const isEnableLoginWithLocalOrLdapMiddleware = generateIsEnableLoginWithLocalOrLdapMiddleware(crowi);
   const login = require('../login')(crowi, app);
   const loginPassport = require('../login-passport')(crowi, app);
 
   routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
-    addActivity, isEnableLoginWithLocalOrLdapMiddleware, loginPassport.loginWithLocal, loginPassport.loginWithLdap,
+    addActivity, loginPassport.isEnableLoginWithLocalOrLdap, loginPassport.loginWithLocal, loginPassport.loginWithLdap,
     loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
 
   routerForAuth.use('/invited', require('./invited')(crowi));
