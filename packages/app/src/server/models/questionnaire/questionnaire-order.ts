@@ -13,7 +13,7 @@ export type QuestionnaireOrderModel = Model<QuestionnaireOrderDocument>
 const questionnaireOrderTitleSchema = new Schema<IQuestionnaireOrder['title']>({
   ja_JP: { type: String, required: true },
   en_US: { type: String, required: true },
-});
+}, { _id: false });
 
 const questionnaireOrderSchema = new Schema<QuestionnaireOrderDocument>({
   title: { type: questionnaireOrderTitleSchema, required: true },
