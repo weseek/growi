@@ -27,6 +27,10 @@ describe('QuestionnaireCronService', () => {
         // saved in db、not finished (user types is updated from the time it was saved)
         {
           _id: '63a8354837e7aa378e16f0b1',
+          title: {
+            ja_JP: 'GROWI に関するアンケート',
+            en_US: 'Questions about GROWI',
+          },
           showFrom: '2022-12-11',
           showUntil: '2100-12-12',
           questions: [
@@ -54,6 +58,10 @@ describe('QuestionnaireCronService', () => {
         // not saved, not finished
         {
           _id: '63a8354837e7aa378e16f0b2',
+          title: {
+            ja_JP: 'GROWI に関するアンケート',
+            en_US: 'Questions about GROWI',
+          },
           showFrom: '2021-12-11',
           showUntil: '2100-12-12',
           questions: [
@@ -81,6 +89,10 @@ describe('QuestionnaireCronService', () => {
         // not saved, finished
         {
           _id: '63a8354837e7aa378e16f0b3',
+          title: {
+            ja_JP: 'GROWI に関するアンケート',
+            en_US: 'Questions about GROWI',
+          },
           showFrom: '2021-12-11',
           showUntil: '2021-12-12',
           questions: [
@@ -123,6 +135,10 @@ describe('QuestionnaireCronService', () => {
     await QuestionnaireOrder.insertMany([
       {
         _id: '63a8354837e7aa378e16f0b1',
+        title: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         showFrom: '2022-12-11',
         showUntil: '2100-12-12',
         questions: [
@@ -147,6 +163,10 @@ describe('QuestionnaireCronService', () => {
       // finished
       {
         _id: '63a8354837e7aa378e16f0b4',
+        title: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         showFrom: '2020-12-11',
         showUntil: '2021-12-12',
         questions: [
@@ -171,6 +191,10 @@ describe('QuestionnaireCronService', () => {
       // questionnaire that doesn't exist in questionnaire server
       {
         _id: '63a8354837e7aa378e16f0b5',
+        title: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         showFrom: '2020-12-11',
         showUntil: '2100-12-12',
         questions: [
@@ -228,6 +252,10 @@ describe('QuestionnaireCronService', () => {
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {
         _id: '63a8354837e7aa378e16f0b1',
+        title: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         showFrom: '2022-12-11T00:00:00.000Z',
         showUntil: '2100-12-12T00:00:00.000Z',
         questions: [
@@ -254,6 +282,10 @@ describe('QuestionnaireCronService', () => {
       },
       {
         _id: '63a8354837e7aa378e16f0b2',
+        title: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         showFrom: '2021-12-11T00:00:00.000Z',
         showUntil: '2100-12-12T00:00:00.000Z',
         questions: [
