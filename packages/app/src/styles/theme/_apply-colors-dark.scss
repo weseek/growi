@@ -105,6 +105,9 @@
     background-color: hsl.darken(var(--bgcolor-global),5%);
   }
 
+  .rbt-input-multi .rbt-input-main {
+    color: black;
+  }
   /*
   * Table
   */
@@ -119,7 +122,7 @@
   /*
   * Card
   */
-  .card:not([class*=‘bg-’]):not(.well):not(.card-disabled) {
+  .card:not([class*='bg-']):not(.well):not(.card-disabled) {
     @extend .bg-dark;
   }
 
@@ -523,6 +526,10 @@
       color: $color-tags;
       background-color: $bgcolor-tags;
     }
+  }
+
+  mark.rbt-highlight-text {
+    color: var(--color-global);
   }
 
   /*
