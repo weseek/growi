@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "build": "yarn build:libs & yarn build:themes",
-    "build:w": "yarn build:libs -w & yarn build:themes -w",
     "build:libs": "vite -c vite.libs.config.ts build",
     "build:themes": "vite -c vite.themes.config.ts build",
+    "dev": "yarn build:libs --mode dev -w & yarn build:themes --mode dev -w",
     "lint:eslint": "eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/**/*.scss",
     "lint": "run-p lint:*",
