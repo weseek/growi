@@ -1,8 +1,12 @@
+
 const { MongoClient } = require('mongodb');
 
 const uri = 'mongodb://mongo:27017/growi';
 
-const regex = /::: drawio\n(.+)\n:::/g;
+const oldDrawioRegExp = /::: drawio\n(.+)\n:::/g; // drawioの旧記法
+const oldPlantUmlRegExp = /@startuml\n(.+)\n@enduml/g; // plantUMLの旧記法
+const oldTsvTableRegExp = /::: tsv(-h)?\n(.+)\n:::/g; // TSVによるテーブル描画の旧記法
+const oldCsvTableRegExp = /::: csv(-h)?\n(.+)\n:::/g; // CSVによるテーブル描画の旧記法
 
 async function main() {
 
@@ -15,54 +19,33 @@ async function main() {
 
     const revision = db.collection('revisions');
 
-    // bodyに旧記法を持つrevisionのcursor
-    // const aggrCursor = revision.aggregate(
-    //   [
-    //     {
-    //       $addFields: {
-    //         regexResObject: {
-    //           $regexFindAll: {
-    //             input: '$body',
-    //             regex,
-    //           },
-    //         },
-    //       },
-    //     },
-    //     {
-    //       $match: {
-    //         regexResObject: {
-    //           $ne: [],
-    //         },
-    //       },
-    //     },
-    //   ],
-    // );
-
-    const aggrCursor = revision.find({ body: { $regex: regex } });
-
-    // console.log('=================変更前のデータ=================');
-    // await aggrCursor.forEach(doc => console.log(doc.body));
-    // console.log('=================変更前のデータ=================');
-
-    await aggrCursor.forEach((doc) => {
-      const newBody = doc.body.replaceAll(regex, '``` drawio\n$1\n```'); // 新記法に置き換え
-
-      // 保存処理
-      revision.updateOne({ _id: doc._id }, [{ $set: { body: newBody } }]);
+    // 旧記法を含むrevisionのcursorを取得
+    const aggrCursor = revision.find({
+      $or: [
+        { body: { $regex: oldDrawioRegExp } },
+        { body: { $regex: oldPlantUmlRegExp } },
+        { body: { $regex: oldTsvTableRegExp } },
+        { body: { $regex: oldCsvTableRegExp } },
+      ],
     });
 
-    // console.log('=================変更後のデータ=================');
-    // await aggrCursor.forEach(doc => console.log(doc));
-    // console.log('=================変更後のデータ=================');
+    // cursorをイテレートして新記法に置き換える
+    await aggrCursor.forEach((doc) => {
+      const bodyDrawio = doc.body.replaceAll(oldDrawioRegExp, '``` drawio\n$1\n```'); // drawioを新記法に置き換え
+      const bodyPlantUml = bodyDrawio.replaceAll(oldPlantUmlRegExp, '``` plantuml\n$1\n```'); // PlantUMLを新記法に置き換え
+      const bodyTsvTable = bodyPlantUml.replaceAll(oldTsvTableRegExp, '``` tsv$1\n$2\n```'); // TSVによるテーブルを新記法に置き換え
+      const bodyCsvTable = bodyTsvTable.replaceAll(oldTsvTableRegExp, '``` csv$1\n$2\n```'); // CSVによるテーブルを新記法に置き換え
 
+      // 保存処理
+      revision.updateOne({ _id: doc._id }, [{ $set: { body: bodyCsvTable } }]);
+    });
   }
   catch (e) {
     console.error(e);
   }
   finally {
-    console.log('finally');
     await client.close();
   }
 }
 
-main().catch(console.error);
+main();
