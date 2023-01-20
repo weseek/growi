@@ -187,6 +187,9 @@ ul.pagination {
   .search-typeahead {
     background-color: hsl.alpha(var(--bgcolor-global),10%);
   }
+  input.form-control {
+    border: none;
+  }
 }
 
 .grw-sidebar {
@@ -329,7 +332,7 @@ ul.pagination {
       color: $color-modal-header;
     }
     .close {
-      color: $color-modal-header;
+      color: $color-modal-header !important;
       opacity: 0.5;
 
       &:hover {
@@ -692,4 +695,11 @@ Emoji picker modal
 */
 .emoji-picker-modal {
   background-color: transparent !important;
+}
+
+/*
+* revision-history-diff
+*/
+.revision-history-diff {
+  background-color: white;
 }
