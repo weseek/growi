@@ -77,6 +77,11 @@ const commonSanitizeOption: SanitizeOption = deepmerge(
   },
 );
 
+const injectCustomSanitizeOption = (config: RendererConfig) => {
+  commonSanitizeOption.tagNames = config.tagWhiteList;
+  commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+};
+
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
     return false;
@@ -150,8 +155,7 @@ export const generateViewOptions = (
   }
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    injectCustomSanitizeOption(config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -197,9 +201,9 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // remarkPlugins.push();
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    injectCustomSanitizeOption(config);
   }
+
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -246,9 +250,9 @@ export const generateSimpleViewOptions = (
   }
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    injectCustomSanitizeOption(config);
   }
+
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -298,8 +302,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   }
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    injectCustomSanitizeOption(config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
