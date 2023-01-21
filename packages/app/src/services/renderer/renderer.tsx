@@ -29,6 +29,7 @@ import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
+import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
@@ -66,15 +67,20 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
     | undefined
 };
 
+const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
+
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
     clobberPrefix: 'mdcont-',
-    attributes: {
-      '*': ['class', 'className', 'style'],
-    },
+    attributes: commonSanitizeAttributes,
   },
 );
+
+const injectCustomSanitizeOption = (config: RendererConfig) => {
+  commonSanitizeOption.tagNames = config.tagWhiteList;
+  commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+};
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
@@ -148,6 +154,10 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
@@ -189,6 +199,11 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   // add remark plugins
   // remarkPlugins.push();
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -233,6 +248,11 @@ export const generateSimpleViewOptions = (
   if (isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -279,6 +299,10 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
+  }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
