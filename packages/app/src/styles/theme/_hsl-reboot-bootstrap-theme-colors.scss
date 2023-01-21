@@ -12,12 +12,6 @@ $hsl-colors: (
 @each $color, $value in $hsl-colors {
   .bg-#{$color} {
     background-color: $value !important;
-    a,
-    button {
-      @include hover-focus() {
-        background-color: hsl.darken($value, 10%) !important;
-      }
-    }
   }
 }
 

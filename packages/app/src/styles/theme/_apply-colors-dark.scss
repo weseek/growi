@@ -579,21 +579,10 @@
     border-color: $border-color-global;
   }
 
-  .modal .modal-header .close:hover {
-    background-color: transparent !important;
-  }
-
   /*
   * skeleton
   */
   .grw-skeleton {
     background-color: hsl.lighten(var(--bgcolor-subnav),10%);
-  }
-
-  /*
-  * navbar
-  */
-  .navbar-dark .navbar-nav .nav-link:hover {
-    background-color: transparent !important;
   }
 }
