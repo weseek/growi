@@ -332,7 +332,7 @@ ul.pagination {
       color: $color-modal-header;
     }
     .close {
-      color: $color-modal-header !important;
+      color: $color-modal-header;
       opacity: 0.5;
 
       &:hover {
@@ -375,14 +375,6 @@ ul.pagination {
 
   .grw-nav-slide-hr {
     border-color: var(--color-link) !important;
-  }
-}
-
-.grw-page-accessories-modal {
-  .modal-header {
-    .close {
-      color: var(--secondary);
-    }
   }
 }
 
