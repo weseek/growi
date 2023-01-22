@@ -814,7 +814,9 @@
     "disagree": "そう思わない",
     "answer": "回答する",
     "no_answer": "無回答",
-    "settings": "アンケート設定"
+    "settings": "アンケート設定",
+    "failed_to_send": "回答送信に失敗しました",
+    "failed_to_get_user_info": "ユーザ情報の取得に失敗したため、回答を送信できませんでした"
   },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",

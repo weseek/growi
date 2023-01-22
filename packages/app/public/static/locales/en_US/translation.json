@@ -814,7 +814,9 @@
     "disagree": "Disagree",
     "answer": "Answer",
     "no_answer": "No answer",
-    "settings": "Questionnaire settings"
+    "settings": "Questionnaire settings",
+    "failed_to_send": "Failed to send feedback",
+    "failed_to_get_user_info": "Feedback couldn't be sent because user info couldn't be achieved"
   },
   "tag_edit_modal": {
     "edit_tags": "Edit Tags",

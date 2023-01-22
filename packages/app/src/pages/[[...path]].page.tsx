@@ -209,6 +209,8 @@ type Props = CommonProps & {
   userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
+
+  growiQuestionnaireServerOrigin: string,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -392,7 +394,7 @@ Page.getLayout = function getLayout(page) {
       <DescendantsPageListModal />
       <DrawioModal />
       <HandsontableModal />
-      <QuestionnaireModalManager />
+      <QuestionnaireModalManager growiQuestionnaireServerOrigin={page.props.growiQuestionnaireServerOrigin}/>
     </>
   );
 };
@@ -618,6 +620,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+
+  props.growiQuestionnaireServerOrigin = configManager.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
 }
 
 /**

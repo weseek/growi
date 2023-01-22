@@ -5,12 +5,19 @@ import QuestionnaireToast from './QuestionnaireToast';
 
 import styles from './QuestionnaireModalManager.module.scss';
 
-const QuestionnaireModalManager = ():JSX.Element => {
+type QuestionnaireModalManagerProps = {
+  growiQuestionnaireServerOrigin: string;
+}
+
+const QuestionnaireModalManager = ({ growiQuestionnaireServerOrigin }: QuestionnaireModalManagerProps):JSX.Element => {
   const { data: questionnaireOrders } = useSWRxQuestionnaireOrders();
 
   return <>
     {questionnaireOrders?.map((questionnaireOrder) => {
-      return <QuestionnaireModal questionnaireOrder={questionnaireOrder} key={questionnaireOrder._id} />;
+      return <QuestionnaireModal
+        questionnaireOrder={questionnaireOrder}
+        growiQuestionnaireServerOrigin = {growiQuestionnaireServerOrigin}
+        key={questionnaireOrder._id} />;
     })}
     <div className={styles['grw-questionnaire-toasts']}>
       {questionnaireOrders?.map((questionnaireOrder) => {
