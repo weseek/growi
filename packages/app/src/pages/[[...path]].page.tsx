@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
+import RevisionRenderer from '~/components/Page/RevisionRenderer';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -30,6 +31,7 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
@@ -291,6 +293,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitleForPage(props, pagePath);
 
+  const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
+  const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
+
   return (
     <>
       <Head>
@@ -311,13 +316,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
-          rendererConfig={props.rendererConfig}
           pagePath={pagePath}
           page={pageWithMeta?.data}
           isIdenticalPathPage={props.isIdenticalPathPage}
           isNotFound={props.isNotFound}
           isForbidden={props.isForbidden}
           isNotCreatable={props.isNotCreatable}
+          ssrBody={ssrBody}
         />
 
         <PageStatusAlert />
