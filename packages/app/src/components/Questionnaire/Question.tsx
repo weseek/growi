@@ -18,16 +18,12 @@ const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => 
         {questionText}
       </span>
     </div>
-    <div className="col-1 d-flex align-items-center p-0">
+    <div className="col-6 d-flex align-items-center pl-0">
       <div className="btn-group btn-group-toggle flex-fill grw-questionnaire-btn-group" data-toggle="buttons">
-        <label className="btn btn-outline-primary active">
+        <label className="btn btn-outline-primary active mr-3 rounded">
           <input type="radio" name={`${inputNamePrefix}${question._id}`} id={`${question._id}-noAnswer`} value='0'/> -
         </label>
-      </div>
-    </div>
-    <div className="col-5 d-flex align-items-center">
-      <div className="btn-group btn-group-toggle flex-fill grw-questionnaire-btn-group" data-toggle="buttons">
-        <label className="btn btn-outline-primary">
+        <label className="btn btn-outline-primary rounded-left">
           <input type="radio" name={`${inputNamePrefix + question._id}`} id={`${question._id}-option1`} value='1'/> 1
         </label>
         <label className="btn btn-outline-primary">
