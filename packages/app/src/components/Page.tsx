@@ -40,9 +40,6 @@ declare global {
 }
 
 const NotFoundPage = dynamic(() => import('./NotFoundPage'), { ssr: false });
-const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
-const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
-
 
 const logger = loggerFactory('growi:Page');
 
@@ -121,7 +118,7 @@ const PageSubstance = (props: PageSubstanceProps): JSX.Element => {
   });
 
 
-  if (currentPage == null || isGuestUser == null || rendererOptions == null) {
+  if (currentPage == null || rendererOptions == null) {
     const entries = Object.entries({
       currentPage, isGuestUser, rendererOptions,
     })
@@ -137,16 +134,8 @@ const PageSubstance = (props: PageSubstanceProps): JSX.Element => {
 
   return (
     <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
-
       { revisionId != null && (
         <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
-      )}
-
-      { !isGuestUser && (
-        <>
-          <GridEditModal />
-          <LinkEditModal />
-        </>
       )}
     </div>
   );
