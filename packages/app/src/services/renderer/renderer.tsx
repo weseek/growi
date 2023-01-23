@@ -80,6 +80,9 @@ const generateCommonSanitizeOptions = (): SanitizeOption => {
 };
 
 const injectCustomSanitizeOptions = (targetSanitizeOption: SanitizeOption, config: RendererConfig) => {
+  if (config.xssOption !== RehypeSanitizeOption.CUSTOM) {
+    return;
+  }
   targetSanitizeOption.tagNames = config.tagWhiteList;
   targetSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
 };
