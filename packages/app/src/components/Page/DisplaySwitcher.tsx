@@ -4,9 +4,9 @@ import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 
-import { useHackmdDraftUpdatedEffect } from '~/client/services/event-listeners/hackmd-draft-updated';
-import { useHashChangedEffect } from '~/client/services/event-listeners/hash-changed';
-import { usePageUpdatedEffect } from '~/client/services/event-listeners/page-updated';
+import { useHackmdDraftUpdatedEffect } from '~/client/services/side-effects/hackmd-draft-updated';
+import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
+import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
 import { useIsEditable } from '~/stores/context';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
