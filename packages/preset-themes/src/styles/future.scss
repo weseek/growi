@@ -19,6 +19,8 @@
 
   // Background colors
   --bgcolor-global: var(--themecolor);
+  --bgcolor-global-hs: var(--themecolor-hs);
+  --bgcolor-global-l: var(--themecolor-l);
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--themecolor), 5%)};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 60%)};
@@ -49,7 +51,7 @@
   // Table colors
   // --color-table: #; // optional
   --bgcolor-table: #{hsl.darken(var(--themecolor), 3%)}; // optional
-  // --border-color-table: #; // optional
+  --border-color-table: #{hsl.lighten(var(--themecolor), 10%)};; // optional
   // --color-table-hover: #; // optional
   // --bgcolor-table-hover: #; // optional
 
@@ -132,10 +134,5 @@
     h#{$i} {
       color: white;
     }
-  }
-
-  pre {
-    color: #95abba;
-    background-color: #1f1f22;
   }
 }
