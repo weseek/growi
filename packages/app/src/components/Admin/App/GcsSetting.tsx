@@ -1,18 +1,33 @@
-
-import React from 'react';
-
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
+export type GcsSettingMoleculeProps = {
+  gcsReferenceFileWithRelayMode
+  gcsUseOnlyEnvVars
+  gcsApiKeyJsonPath
+  gcsBucket
+  gcsUploadNamespace
+  envGcsApiKeyJsonPath?
+  envGcsBucket?
+  envGcsUploadNamespace?
+  onChangeGcsReferenceFileWithRelayMode: (val: boolean) => void
+  onChangeGcsApiKeyJsonPath: (val: string) => void
+  onChangeGcsBucket: (val: string) => void
+  onChangeGcsUploadNamespace: (val: string) => void
+};
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-
-const GcsSetting = (props) => {
+export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element => {
   const { t } = useTranslation();
-  const { adminAppContainer } = props;
-  const { gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars } = adminAppContainer.state;
+
+  const {
+    gcsReferenceFileWithRelayMode,
+    gcsUseOnlyEnvVars,
+    gcsApiKeyJsonPath,
+    envGcsApiKeyJsonPath,
+    gcsBucket,
+    envGcsBucket,
+    gcsUploadNamespace,
+    envGcsUploadNamespace,
+  } = props;
 
   return (
     <>
@@ -39,14 +54,14 @@ const GcsSetting = (props) => {
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeGcsReferenceFileWithRelayMode(true) }}
+                onClick={() => { props?.onChangeGcsReferenceFileWithRelayMode(true) }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeGcsReferenceFileWithRelayMode(false) }}
+                onClick={() => { props?.onChangeGcsReferenceFileWithRelayMode(false) }}
               >
                 { t('admin:app_setting.file_delivery_method_redirect')}
               </button>
@@ -90,12 +105,12 @@ const GcsSetting = (props) => {
                 type="text"
                 name="gcsApiKeyJsonPath"
                 readOnly={gcsUseOnlyEnvVars}
-                defaultValue={adminAppContainer.state.gcsApiKeyJsonPath}
-                onChange={e => adminAppContainer.changeGcsApiKeyJsonPath(e.target.value)}
+                defaultValue={gcsApiKeyJsonPath}
+                onChange={e => props?.onChangeGcsApiKeyJsonPath(e.target.value)}
               />
             </td>
             <td>
-              <input className="form-control" type="text" value={adminAppContainer.state.envGcsApiKeyJsonPath || ''} readOnly tabIndex="-1" />
+              <input className="form-control" type="text" value={envGcsApiKeyJsonPath || ''} readOnly tabIndex={-1} />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:app_setting.use_env_var_if_empty', { variable: 'GCS_API_KEY_JSON_PATH' }) }} />
@@ -110,12 +125,12 @@ const GcsSetting = (props) => {
                 type="text"
                 name="gcsBucket"
                 readOnly={gcsUseOnlyEnvVars}
-                defaultValue={adminAppContainer.state.gcsBucket}
-                onChange={e => adminAppContainer.changeGcsBucket(e.target.value)}
+                defaultValue={gcsBucket}
+                onChange={e => props?.onChangeGcsBucket(e.target.value)}
               />
             </td>
             <td>
-              <input className="form-control" type="text" value={adminAppContainer.state.envGcsBucket || ''} readOnly tabIndex="-1" />
+              <input className="form-control" type="text" value={envGcsBucket || ''} readOnly tabIndex={-1} />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:app_setting.use_env_var_if_empty', { variable: 'GCS_BUCKET' }) }} />
@@ -130,12 +145,12 @@ const GcsSetting = (props) => {
                 type="text"
                 name="gcsUploadNamespace"
                 readOnly={gcsUseOnlyEnvVars}
-                defaultValue={adminAppContainer.state.gcsUploadNamespace}
-                onChange={e => adminAppContainer.changeGcsUploadNamespace(e.target.value)}
+                defaultValue={gcsUploadNamespace}
+                onChange={e => props?.onChangeGcsUploadNamespace(e.target.value)}
               />
             </td>
             <td>
-              <input className="form-control" type="text" value={adminAppContainer.state.envGcsUploadNamespace || ''} readOnly tabIndex="-1" />
+              <input className="form-control" type="text" value={envGcsUploadNamespace || ''} readOnly tabIndex={-1} />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:app_setting.use_env_var_if_empty', { variable: 'GCS_UPLOAD_NAMESPACE' }) }} />
@@ -147,16 +162,4 @@ const GcsSetting = (props) => {
 
     </>
   );
-
 };
-
-/**
- * Wrapper component for using unstated
- */
-const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AdminAppContainer]);
-
-GcsSetting.propTypes = {
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
-
-export default GcsSettingWrapper;

@@ -167,6 +167,7 @@
     "no_page_list": "このページの配下にはページが存在しません。"
   },
   "installer": {
+    "tab": "アカウント作成",
     "title": "インストーラー",
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
