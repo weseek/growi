@@ -274,8 +274,15 @@ export class G2GTransferPusherService implements Pusher {
       };
     }
 
-    const shouldUseFileUploadTypeOfDestGROWI = destGROWIInfo.attachmentInfo.type !== 'none';
-    if (shouldUseFileUploadTypeOfDestGROWI && !destGROWIInfo.attachmentInfo.writable) {
+    if (destGROWIInfo.attachmentInfo.type === 'none') {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: 'File upload is not configured for dest GROWI.',
+      };
+    }
+
+    if (!destGROWIInfo.attachmentInfo.writable) {
       return {
         canTransfer: false,
         // TODO: i18n for reason
@@ -460,14 +467,6 @@ export class G2GTransferPusherService implements Pusher {
       mongo: G2G_PROGRESS_STATUS.COMPLETED,
       attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
     });
-
-    if (destGROWIInfo.attachmentInfo.type === 'none' && ['aws', 'gcs'].includes(this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'))) {
-      socket.emit('admin:g2gProgress', {
-        mongo: G2G_PROGRESS_STATUS.COMPLETED,
-        attachments: G2G_PROGRESS_STATUS.SKIPPED,
-      });
-      return;
-    }
 
     try {
       await this.transferAttachments(tk);
