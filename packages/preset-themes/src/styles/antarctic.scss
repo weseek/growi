@@ -161,8 +161,7 @@
 
   // login and register
   .nologin {
-    a#login.link-switch,
-    a#register.link-switch {
+    a {
       color: rgba(black, 0.5);
     }
 
