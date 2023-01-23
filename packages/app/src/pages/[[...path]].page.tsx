@@ -249,6 +249,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
+  const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPageId(pageId ?? null);
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
@@ -259,7 +260,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
-  useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  useEditingMarkdown(revisionBody);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -310,6 +311,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
+          rendererConfig={props.rendererConfig}
           pagePath={pagePath}
           page={pageWithMeta?.data}
           isIdenticalPathPage={props.isIdenticalPathPage}

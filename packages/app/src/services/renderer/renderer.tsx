@@ -283,6 +283,58 @@ export const generateSimpleViewOptions = (
   return options;
 };
 
+export const generateSSRViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  const options = generateCommonOptions(pagePath);
+
+  const { remarkPlugins, rehypePlugins, components } = options;
+
+  // add remark plugins
+  remarkPlugins.push(
+    math,
+    xsvToTable.remarkPlugin,
+    lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
+  );
+
+  const isEnabledLinebreaks = config.isEnabledLinebreaks;
+
+  if (isEnabledLinebreaks) {
+    remarkPlugins.push(breaks);
+  }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
+    : () => {};
+
+  // add rehype plugins
+  rehypePlugins.push(
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    rehypeSanitizePlugin,
+    katex,
+  );
+
+  // add components
+  if (components != null) {
+    components.lsx = LsxImmutable;
+    components.table = Table;
+  }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
 export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 

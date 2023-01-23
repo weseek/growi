@@ -2,7 +2,7 @@ import React, {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import { IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { HtmlElementNode } from 'rehype-toc';
 

@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { useHackmdDraftUpdatedEffect } from '~/client/services/side-effects/hackmd-draft-updated';
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useIsEditable } from '~/stores/context';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
@@ -17,6 +18,8 @@ import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
+
+import { Page2 } from './Page2';
 
 const { isUsersHomePage } = pagePathUtils;
 
@@ -41,6 +44,7 @@ const IdenticalPathPage = (): JSX.Element => {
 
 
 type Props = {
+  rendererConfig: RendererConfig,
   pagePath: string,
   page?: IPagePopulatedToShowRevision,
   isIdenticalPathPage?: boolean,
@@ -51,16 +55,12 @@ type Props = {
 
 const View = (props: Props): JSX.Element => {
   const {
+    rendererConfig,
     pagePath, page,
     isIdenticalPathPage, isNotFound, isForbidden, isNotCreatable,
   } = props;
 
   const pageId = page?._id;
-
-  const Page = dynamic(() => import('./Page').then(mod => mod.Page), {
-    ssr: false,
-    loading: () => <span>loading...</span>,
-  });
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
@@ -110,7 +110,7 @@ const View = (props: Props): JSX.Element => {
       { specialContents == null && (
         <>
           { isUsersHomePagePath && <UserInfo author={page?.creator} /> }
-          <Page />
+          <Page2 rendererConfig={rendererConfig} pagePath={pagePath} markdownForSSR={page?.revision.body} />
         </>
       ) }
 
