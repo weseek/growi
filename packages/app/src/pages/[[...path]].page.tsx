@@ -20,11 +20,9 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
-import { Comments } from '~/components/Comments';
 import { MainPane } from '~/components/Layout/MainPane';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
-import { PageContentFooter } from '~/components/PageContentFooter';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -58,7 +56,7 @@ import loggerFactory from '~/utils/logger';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import DisplaySwitcher from '../components/Page/DisplaySwitcher';
+import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import type { PageSideContentsProps } from '../components/PageSideContents';
@@ -87,14 +85,9 @@ declare global {
 }
 
 
-const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
-const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
-  .then(mod => mod.UsersHomePageFooter), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
@@ -146,11 +139,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
     </div>
   );
-};
-
-const IdenticalPathPage = (): JSX.Element => {
-  const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-  return <IdenticalPathPage />;
 };
 
 const PutbackPageModal = (): JSX.Element => {
@@ -319,26 +307,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const title = generateCustomTitleForPage(props, pagePath ?? '');
 
 
-  const sideContents = !props.isNotFound && !props.isNotCreatable
-    ? (
-      <PageSideContents page={pageWithMeta?.data} />
-    )
-    : <></>;
-
-  const footerContents = !props.isIdenticalPathPage && !props.isNotFound && pageWithMeta != null
-    ? (
-      <>
-        { pagePath != null && !isTopPagePath && (
-          <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
-        ) }
-        { isUsersHomePage(pageWithMeta.data.path) && (
-          <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-        ) }
-        <PageContentFooter page={pageWithMeta.data} />
-      </>
-    )
-    : <></>;
-
   return (
     <>
       <Head>
@@ -357,21 +325,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <MainPane
-          sideContents={sideContents}
-          footerContents={footerContents}
-        >
-          <PageAlerts />
-          { props.isIdenticalPathPage && <IdenticalPathPage />}
-          { !props.isIdenticalPathPage && (
-            <>
-              { props.isForbidden && <ForbiddenPage /> }
-              { props.isNotCreatable && <NotCreatablePage />}
-              { !props.isForbidden && !props.isNotCreatable && <DisplaySwitcher />}
-            </>
-          ) }
-          <PageStatusAlert />
-        </MainPane>
+        <DisplaySwitcher
+          page={pageWithMeta?.data}
+          isIdenticalPathPage={props.isIdenticalPathPage}
+          isNotFound={props.isNotFound}
+          isForbidden={props.isForbidden}
+          isNotCreatable={props.isNotCreatable}
+        />
+
+        <PageStatusAlert />
 
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>

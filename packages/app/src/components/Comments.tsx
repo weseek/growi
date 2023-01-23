@@ -1,15 +1,19 @@
 import React from 'react';
 
-import { IRevisionHasId } from '@growi/core';
+import { type IRevisionHasId, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { PageCommentProps } from '~/components/PageComment';
+import type { PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
-import { CommentEditorProps } from './PageComment/CommentEditor';
+import type { CommentEditorProps } from './PageComment/CommentEditor';
+
+
+const { isTopPage } = pagePathUtils;
+
 
 const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), { ssr: false });
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
@@ -28,7 +32,9 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
 
-  if (pageId == null) {
+  const isTopPagePath = isTopPage(pagePath);
+
+  if (pageId == null || isTopPagePath) {
     return <></>;
   }
 
