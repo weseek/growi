@@ -69,17 +69,19 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 
 const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
 
-const commonSanitizeOption: SanitizeOption = deepmerge(
-  sanitizeDefaultSchema,
-  {
-    clobberPrefix: 'mdcont-',
-    attributes: commonSanitizeAttributes,
-  },
-);
+const generateCommonSanitizeOptions = (): SanitizeOption => {
+  return deepmerge(
+    sanitizeDefaultSchema,
+    {
+      clobberPrefix: 'mdcont-',
+      attributes: commonSanitizeAttributes,
+    },
+  );
+};
 
-const injectCustomSanitizeOption = (config: RendererConfig) => {
-  commonSanitizeOption.tagNames = config.tagWhiteList;
-  commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+const injectCustomSanitizeOptions = (targetSanitizeOption: SanitizeOption, config: RendererConfig) => {
+  targetSanitizeOption.tagNames = config.tagWhiteList;
+  targetSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
 };
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
@@ -154,8 +156,10 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
+  const commonSanitizeOption = generateCommonSanitizeOptions();
+
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
+    injectCustomSanitizeOptions(commonSanitizeOption, config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -200,10 +204,11 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
+  const commonSanitizeOption = generateCommonSanitizeOptions();
 
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOptions(commonSanitizeOption, config);
+  }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -249,10 +254,11 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
+  const commonSanitizeOption = generateCommonSanitizeOptions();
 
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOptions(commonSanitizeOption, config);
+  }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -301,8 +307,10 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
+  const commonSanitizeOption = generateCommonSanitizeOptions();
+
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
+    injectCustomSanitizeOptions(commonSanitizeOption, config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
