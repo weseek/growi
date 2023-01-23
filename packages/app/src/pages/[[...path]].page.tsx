@@ -23,7 +23,7 @@ import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
-import { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
