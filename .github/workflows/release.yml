@@ -177,6 +177,7 @@ jobs:
     needs: [determine-tags, build-image]
 
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
+    with:
       tags: ${{ needs.determine-tags.outputs.TAGS }}
       registry: docker.io
       image-name: weseek/growi
