@@ -5,7 +5,7 @@ import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnai
 
 export const useSWRxQuestionnaireOrders = (): SWRResponse<IQuestionnaireOrderHasId[], Error> => {
   return useSWR(
-    '/questionnaire-orders',
+    '/questionnaire/questionnaire-orders',
     endpoint => apiv3Get(endpoint).then((response) => {
       return response.data.questionnaireOrders;
     }),

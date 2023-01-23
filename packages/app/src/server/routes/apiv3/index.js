@@ -108,7 +108,7 @@ module.exports = (crowi, app) => {
 
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
-  router.use('/questionnaire-orders', require('./questionnaire-orders')());
+  router.use('/questionnaire', require('./questionnaire')());
 
 
   return [router, routerForAdmin, routerForAuth];

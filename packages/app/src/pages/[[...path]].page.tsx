@@ -621,7 +621,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
-  props.growiQuestionnaireServerOrigin = configManager.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+  props.growiQuestionnaireServerOrigin = configManager.getConfig('crowi', 'app:growiQuestionnaireServerOriginClientSide')
+    || configManager.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
 }
 
 /**

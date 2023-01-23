@@ -3,12 +3,14 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { IAnswer } from '~/interfaces/questionnaire/answer';
 import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { IUserInfo } from '~/interfaces/questionnaire/user-info';
+import { IUserHasId } from '~/interfaces/user';
 import { useCurrentUser, useGrowiVersion } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
 import axios from '~/utils/axios';
@@ -26,6 +28,7 @@ type QuestionnaireModalProps = {
 const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin }: QuestionnaireModalProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const lang = currentUser?.lang;
+  const currentUserHasId = currentUser as IUserHasId;
 
   const { data: questionnaireModalData, close: closeQuestionnaireModal } = useQuestionnaireModal();
   const isOpened = questionnaireModalData?.openedQuestionnaireId === questionnaireOrder._id;
@@ -69,13 +72,35 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
     return null;
   };
 
+  const sendQuestionnaireAnswer = (questionnaireAnswer: IQuestionnaireAnswer) => {
+    axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer)
+      .then(() => {
+        toastSuccess(
+          <>
+            <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
+            <div className="pt-2">{t('questionnaire.additional_feedback')}</div>
+          </>,
+          {
+            autoClose: 3000,
+            closeButton: true,
+          },
+        );
+        apiv3Put('/questionnaire/answer', {
+          user: currentUserHasId._id,
+          questionnaireOrderId: questionnaireOrder._id,
+        }).catch((e) => {
+          logger.error(e);
+          toastError(t('questionnaire.failed_to_update_answer_status'));
+        });
+      })
+      .catch((e) => {
+        logger.error(e);
+        toastError(t('questionnaire.failed_to_send'));
+      });
+  };
+
   const submitHandler = (event) => {
     event.preventDefault();
-
-    const toastOptions = {
-      autoClose: 3000,
-      closeButton: true,
-    };
 
     const growiInfo = getGrowiInfo();
     const userInfo = getUserInfo();
@@ -92,24 +117,25 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
         answeredAt: new Date(),
       };
 
-      axios.post('http://localhost:3003/questionnaire-answer', questionnaireAnswer)
-        .then(() => {
-          toastSuccess(
-            <>
-              <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
-              <div className="pt-2">{t('questionnaire.additional_feedback')}</div>
-            </>,
-            toastOptions,
-          );
-        })
-        .catch((e) => {
-          logger.error(e);
-          toastError(t('questionnaire.failed_to_send'), toastOptions);
-        });
+      sendQuestionnaireAnswer(questionnaireAnswer);
     }
     else {
-      toastError(t('questionnaire.failed_to_get_user_info'), toastOptions);
+      toastError(t('questionnaire.failed_to_get_user_info'));
     }
+
+    closeQuestionnaireModal();
+  };
+
+  const skipHandler = async() => {
+    apiv3Put('/questionnaire/skip', {
+      user: currentUserHasId._id,
+      questionnaireOrderId: questionnaireOrder._id,
+    }).then(() => {
+      toastSuccess(t('questionnaire.skipped'));
+    }).catch((e) => {
+      logger.error(e);
+      toastError(t('questionnaire.failed_to_update_answer_status'));
+    });
 
     closeQuestionnaireModal();
   };
@@ -148,7 +174,7 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
         {currentUser?.admin
         && <a href="" className="mr-auto d-flex align-items-center"><i className="material-icons mr-1">settings</i>{t('questionnaire.settings')}</a>}
         <>
-          <button type="button" className="btn btn-outline-secondary mr-3">{t('questionnaire.dont_show_again')}</button>
+          <button type="button" className="btn btn-outline-secondary mr-3" onClick={skipHandler}>{t('questionnaire.dont_show_again')}</button>
           <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
         </>
       </ModalFooter>
