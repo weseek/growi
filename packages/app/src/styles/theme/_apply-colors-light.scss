@@ -84,7 +84,7 @@
   * card
   */
   .card.card-disabled {
-    background-color: var(--background-color);
+    background-color: var(--bgcolor-global);
     border-color: $gray-200;
   }
 
@@ -459,6 +459,6 @@
   * skeleton
   */
   .grw-skeleton {
-    background-color: hsl.lighten(var(--bgcolor-navbar),10%);
+    background-color: hsl.darken(var(--bgcolor-subnav),10%);
   }
 }

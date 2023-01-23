@@ -1,4 +1,12 @@
 terraform {
+  backend "remote" {
+    organization = "weseek"
+
+    workspaces {
+      name = "growi-official-image-builder"
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"

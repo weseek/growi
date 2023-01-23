@@ -4,7 +4,7 @@ export class ErrorV3 extends Error {
 
   args?: any;
 
-  constructor(message = '', code = '', stack = undefined, args = undefined) {
+  constructor(message = '', code = '', stack = undefined, args: any = undefined) {
     super(); // do not provide message to the super constructor
     this.message = message;
     this.code = code;

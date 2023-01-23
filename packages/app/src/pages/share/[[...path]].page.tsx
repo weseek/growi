@@ -22,7 +22,7 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
-  useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage,
+  useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -86,6 +86,7 @@ const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavi
 };
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
+  useCurrentPathname(props.shareLink?.relatedPage.path);
   useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
@@ -208,8 +209,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    attrWhiteList: xssService.getAttrWhiteList(),
-    tagWhiteList: xssService.getTagWhiteList(),
+    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }
