@@ -48,6 +48,8 @@ const PageRenameModal = (): JSX.Element => {
 
   const [errs, setErrs] = useState(null);
 
+  const [isRenamed, setIsRenamed] = useState(false);
+
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
@@ -117,6 +119,8 @@ const PageRenameModal = (): JSX.Element => {
         url.searchParams.append('withRedirect', 'true');
       }
 
+      setIsRenamed(true);
+
       const onRenamed = renameModalData?.opts?.onRenamed;
       if (onRenamed != null) {
         onRenamed(path);
@@ -157,11 +161,11 @@ const PageRenameModal = (): JSX.Element => {
   }, [isUsersHomePage, pageNameInput]);
 
   useEffect(() => {
-    if (isOpened && page != null && pageNameInput !== page.data.path) {
+    if (isOpened && page != null && pageNameInput !== page.data.path && !isRenamed) {
       checkExistPathsDebounce(page.data.path, pageNameInput);
       checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce, isRenamed]);
 
   function ppacInputChangeHandler(value) {
     setErrs(null);
