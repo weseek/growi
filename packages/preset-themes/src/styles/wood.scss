@@ -175,11 +175,9 @@
     .nologin-header,
     .nologin-dialog {
       background-color: rgba(black, 0.1);
-    }
-
-    a.d-block.link-switch,
-    a#register.link-switch {
-      color: rgba(black, 0.5);
+      a.link-switch {
+        color: rgba(black, 0.5);
+      }
     }
 
     .grw-external-auth-form {

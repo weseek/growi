@@ -154,11 +154,9 @@
     .nologin-header,
     .nologin-dialog {
       background-color: rgba(black, 0.1);
-    }
-
-    a.d-block.link-switch,
-    a#register.link-switch {
-      color: #{hsl.darken(var(--color-global),10%)};
+      a.link-switch  {
+        color: #{hsl.darken(var(--color-global),10%)};
+      }
     }
 
     .grw-external-auth-form {
