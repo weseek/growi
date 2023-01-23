@@ -156,7 +156,8 @@
       background-color: rgba(black, 0.1);
     }
 
-    .link-switch {
+    a.d-block.link-switch,
+    a#register.link-switch {
       color: #{hsl.darken(var(--color-global),10%)};
     }
 
@@ -353,7 +354,7 @@
     }
 
     .link-switch {
-      color: var(--color-global);
+      color: var(--color-global)!important;
     }
 
     .grw-external-auth-form {

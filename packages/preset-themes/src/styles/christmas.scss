@@ -161,7 +161,8 @@
     .nologin-dialog {
       background-color: rgba(#ccc, 0.5);
     }
-    .link-switch {
+    a.d-block.link-switch,
+    a#register.link-switch {
       color: #bd3425;
     }
 

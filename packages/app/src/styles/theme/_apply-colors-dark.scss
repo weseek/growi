@@ -175,15 +175,15 @@
       linear-gradient(225deg, darken(var.$growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
       linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
+    .link-switch {
+      color: #7b9bd5;
+      @include hover() {
+        color: lighten(#7b9bd5,10%);
+      }
+    }
+
     .nologin-header {
       background-color: rgba(black, 0.5);
-
-      a {
-        color: #7b9bd5;
-        @include hover() {
-          color: lighten(#7b9bd5,10%);
-        }
-      }
 
       .logo {
         background-color: rgba(white, 0);

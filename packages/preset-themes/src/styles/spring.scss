@@ -147,7 +147,8 @@
       background-color: rgba(black, 0.1);
     }
 
-    .link-switch {
+    a.d-block.link-switch,
+    a#register.link-switch {
       color: var(--color-global);
     }
 
