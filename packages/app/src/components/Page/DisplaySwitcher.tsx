@@ -24,8 +24,6 @@ const { isUsersHomePage } = pagePathUtils;
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
 const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
-
-const Page = dynamic(() => import('../Page').then(mod => mod.Page), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const Comments = dynamic(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../UsersHomePageFooter')
@@ -58,6 +56,11 @@ const View = (props: Props): JSX.Element => {
   } = props;
 
   const pageId = page?._id;
+
+  const Page = dynamic(() => import('./Page').then(mod => mod.Page), {
+    ssr: false,
+    loading: () => <span>loading...</span>,
+  });
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {

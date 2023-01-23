@@ -2,7 +2,7 @@ import React, {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { HtmlElementNode } from 'rehype-toc';
 
@@ -22,7 +22,7 @@ import {
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
-import RevisionRenderer from './Page/RevisionRenderer';
+import RevisionRenderer from './RevisionRenderer';
 
 import styles from './Page.module.scss';
 

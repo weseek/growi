@@ -13,7 +13,7 @@ import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
-import { Page } from '~/components/Page';
+import { Page } from '~/components/Page/Page';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
