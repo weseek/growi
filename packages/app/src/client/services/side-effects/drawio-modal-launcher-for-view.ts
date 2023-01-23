@@ -1,5 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
+import EventEmitter from 'events';
+
 import { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
@@ -11,7 +13,13 @@ import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:cli:side-effects:useHandsontableModalLauncherForView');
+const logger = loggerFactory('growi:cli:side-effects:useDrawioModalLauncherForView');
+
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 
 export const useDrawioModalLauncherForView = (opts?: {

@@ -1,5 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
+import EventEmitter from 'events';
+
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { useSaveOrUpdate } from '~/client/services/page-operation';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
@@ -11,6 +13,12 @@ import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:cli:side-effects:useHandsontableModalLauncherForView');
+
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 
 export const useHandsontableModalLauncherForView = (opts?: {
