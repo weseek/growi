@@ -248,7 +248,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { pageWithMeta, userUISettings } = props;
 
   const pageId = pageWithMeta?.data._id;
-  const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
+  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
 
   useCurrentPageId(pageId ?? null);
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
@@ -288,7 +288,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     }
   }, [props.currentPathname, router]);
 
-  const title = generateCustomTitleForPage(props, pagePath ?? '');
+  const title = generateCustomTitleForPage(props, pagePath);
 
   return (
     <>
@@ -310,6 +310,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
+          pagePath={pagePath}
           page={pageWithMeta?.data}
           isIdenticalPathPage={props.isIdenticalPathPage}
           isNotFound={props.isNotFound}

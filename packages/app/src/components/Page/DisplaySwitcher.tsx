@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
@@ -12,10 +12,10 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { LazyRenderer } from '../Common/LazyRenderer';
 import { MainPane } from '../Layout/MainPane';
-import { Page } from '../Page';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
+import { UserInfo } from '../User/UserInfo';
 import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
 
 const { isUsersHomePage } = pagePathUtils;
@@ -23,6 +23,9 @@ const { isUsersHomePage } = pagePathUtils;
 
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
+const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
+
+const Page = dynamic(() => import('../Page').then(mod => mod.Page), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const Comments = dynamic(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../UsersHomePageFooter')
@@ -40,6 +43,7 @@ const IdenticalPathPage = (): JSX.Element => {
 
 
 type Props = {
+  pagePath: string,
   page?: IPagePopulatedToShowRevision,
   isIdenticalPathPage?: boolean,
   isNotFound?: boolean,
@@ -49,12 +53,26 @@ type Props = {
 
 const View = (props: Props): JSX.Element => {
   const {
-    page,
+    pagePath, page,
     isIdenticalPathPage, isNotFound, isForbidden, isNotCreatable,
   } = props;
 
   const pageId = page?._id;
-  const pagePath = page?.path;
+
+  const specialContents = useMemo(() => {
+    if (isIdenticalPathPage) {
+      return <IdenticalPathPage />;
+    }
+    if (isForbidden) {
+      return <ForbiddenPage />;
+    }
+    if (isNotCreatable) {
+      return <NotCreatablePage />;
+    }
+    if (isNotFound) {
+      return <NotFoundPage />;
+    }
+  }, [isForbidden, isIdenticalPathPage, isNotCreatable, isNotFound]);
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (
@@ -76,20 +94,23 @@ const View = (props: Props): JSX.Element => {
     )
     : <></>;
 
+  const isUsersHomePagePath = isUsersHomePage(pagePath);
+
   return (
     <MainPane
       sideContents={sideContents}
       footerContents={footerContents}
     >
       <PageAlerts />
-      { props.isIdenticalPathPage && <IdenticalPathPage />}
-      { !props.isIdenticalPathPage && (
+
+      { specialContents }
+      { specialContents == null && (
         <>
-          { isForbidden && <ForbiddenPage /> }
-          { isNotCreatable && <NotCreatablePage />}
-          { !isForbidden && !props.isNotCreatable && <Page /> }
+          { isUsersHomePagePath && <UserInfo author={page?.creator} /> }
+          <Page />
         </>
       ) }
+
     </MainPane>
   );
 };

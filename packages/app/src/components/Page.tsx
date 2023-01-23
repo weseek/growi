@@ -2,21 +2,18 @@ import React, {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import EventEmitter from 'events';
-
-import { pagePathUtils, IPagePopulatedToShowRevision } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 import { HtmlElementNode } from 'rehype-toc';
 
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
 import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import {
-  useIsGuestUser, useCurrentPathname, useIsNotFound,
+  useIsGuestUser, useCurrentPathname,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
   useCurrentPageTocNode,
@@ -26,30 +23,14 @@ import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
-import { UserInfo } from './User/UserInfo';
 
 import styles from './Page.module.scss';
 
-
-const { isUsersHomePage } = pagePathUtils;
-
-
-declare global {
-  // eslint-disable-next-line vars-on-top, no-var
-  var globalEmitter: EventEmitter;
-}
-
-const NotFoundPage = dynamic(() => import('./NotFoundPage'), { ssr: false });
-
 const logger = loggerFactory('growi:Page');
 
-type PageSubstanceProps = {
-  currentPage?: IPagePopulatedToShowRevision,
-}
 
-const PageSubstance = (props: PageSubstanceProps): JSX.Element => {
+export const Page = (): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage } = props;
 
   // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
   // The toc node passed by customizeTOC is assigned to tocRef.current.
@@ -62,7 +43,7 @@ const PageSubstance = (props: PageSubstanceProps): JSX.Element => {
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
-  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
@@ -141,25 +122,3 @@ const PageSubstance = (props: PageSubstanceProps): JSX.Element => {
   );
 
 };
-
-
-export const Page = React.memo((): JSX.Element => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isNotFound } = useIsNotFound();
-  const { data: currentPage } = useSWRxCurrentPage();
-
-  const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
-
-  return (
-    <>
-      { isUsersHomePagePath && <UserInfo author={currentPage?.creator} /> }
-
-      { !isNotFound && (
-        <PageSubstance currentPage={currentPage ?? undefined} />
-      ) }
-
-      { isNotFound && <NotFoundPage /> }
-    </>
-  );
-});
-Page.displayName = 'Page';
