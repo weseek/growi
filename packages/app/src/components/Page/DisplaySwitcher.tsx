@@ -1,47 +1,39 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
-import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
+
 
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useIsEditable, useShareLinkId, useIsNotFound,
+  useCurrentPageId,
+  useIsEditable,
 } from '~/stores/context';
 import { useIsHackmdDraftUpdatingInRealtime } from '~/stores/hackmd';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
-import {
-  useSetRemoteLatestPageData,
-} from '~/stores/remote-latest-page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 
 import CustomTabContent from '../CustomNavigation/CustomTabContent';
 import { Page } from '../Page';
-import { UserInfoProps } from '../User/UserInfo';
-
-const { isUsersHomePage } = pagePathUtils;
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
 const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
 const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
-const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
-const UserInfo = dynamic<UserInfoProps>(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
 
 
-const PageView = React.memo((): JSX.Element => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: shareLinkId } = useShareLinkId();
-  const { data: isNotFound } = useIsNotFound();
-  const { data: currentPage } = useSWRxCurrentPage();
+const DisplaySwitcher = React.memo((): JSX.Element => {
+
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: editorMode = EditorMode.View } = useEditorMode();
+  const { data: isEditable } = useIsEditable();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
-
   const { mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
 
-  const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
-
   const { data: socket } = useGlobalSocket();
+
+  const isViewMode = editorMode === EditorMode.View;
 
   const setLatestRemotePageData = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
@@ -59,10 +51,10 @@ const PageView = React.memo((): JSX.Element => {
 
   const setIsHackmdDraftUpdatingInRealtime = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
-    if (s2cMessagePageUpdated.pageId === currentPage?._id) {
+    if (s2cMessagePageUpdated.pageId === currentPageId) {
       mutateIsHackmdDraftUpdatingInRealtime(true);
     }
-  }, [currentPage?._id, mutateIsHackmdDraftUpdatingInRealtime]);
+  }, [currentPageId, mutateIsHackmdDraftUpdatingInRealtime]);
 
   // listen socket for someone updating this page
   useEffect(() => {
@@ -89,31 +81,12 @@ const PageView = React.memo((): JSX.Element => {
     };
   }, [setIsHackmdDraftUpdatingInRealtime, socket]);
 
-  return (
-    <>
-      { isUsersHomePagePath && <UserInfo author={currentPage?.creator} /> }
-      { !isNotFound && <Page currentPage={currentPage ?? undefined} /> }
-      { isNotFound && <NotFoundPage /> }
-    </>
-  );
-});
-PageView.displayName = 'PageView';
-
-
-const DisplaySwitcher = React.memo((): JSX.Element => {
-
-  const { data: isEditable } = useIsEditable();
-
-  const { data: editorMode = EditorMode.View } = useEditorMode();
-
-  const isViewMode = editorMode === EditorMode.View;
-
   const navTabMapping = useMemo(() => {
     return {
       [EditorMode.View]: {
         Content: () => (
           <div data-testid="page-view" id="page-view">
-            <PageView />
+            <Page />
           </div>
         ),
       },

@@ -1,7 +1,4 @@
-import React, {
-  FC, useCallback,
-  useEffect, useRef,
-} from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import EventEmitter from 'events';
 
@@ -16,11 +13,11 @@ import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useIsGuestUser, useShareLinkId, useCurrentPathname,
+  useIsGuestUser, useShareLinkId, useCurrentPathname, useIsNotFound,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useDrawioModal, useHandsontableModal } from '~/stores/modal';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
   useCurrentPageTocNode,
@@ -32,8 +29,12 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
+import { UserInfo } from './User/UserInfo';
 
 import styles from './Page.module.scss';
+
+
+const { isUsersHomePage } = pagePathUtils;
 
 
 declare global {
@@ -41,18 +42,18 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
-// const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
+const NotFoundPage = dynamic(() => import('./NotFoundPage'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
 
 const logger = loggerFactory('growi:Page');
 
-type Props = {
+type PageSubstanceProps = {
   currentPage?: IPagePopulatedToShowRevision,
 }
 
-export const Page: FC<Props> = (props: Props) => {
+const PageSubstance = (props: PageSubstanceProps): JSX.Element => {
   const { t } = useTranslation();
   const { currentPage } = props;
 
@@ -225,7 +226,7 @@ export const Page: FC<Props> = (props: Props) => {
       .filter(([, value]) => value != null);
 
     logger.warn('Some of materials are missing.', Object.fromEntries(entries));
-    return null;
+    return <></>;
   }
 
   const { _id: revisionId, body: markdown } = currentPage.revision;
@@ -247,3 +248,21 @@ export const Page: FC<Props> = (props: Props) => {
   );
 
 };
+
+
+export const Page = React.memo((): JSX.Element => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isNotFound } = useIsNotFound();
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
+
+  return (
+    <>
+      { isUsersHomePagePath && <UserInfo author={currentPage?.creator} /> }
+      { !isNotFound && <PageSubstance currentPage={currentPage ?? undefined} /> }
+      { isNotFound && <NotFoundPage /> }
+    </>
+  );
+});
+Page.displayName = 'Page';
