@@ -20,15 +20,8 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
-import { MainPane } from '~/components/Layout/MainPane';
-import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-// import { useTranslation } from '~/i18n';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-// import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
-// import { useRendererSettings } from '~/stores/renderer';
-// import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -49,17 +42,10 @@ import {
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-// import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
-
-// import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
-// import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
-// import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
-// import PageStatusAlert from '../client/js/components/PageStatusAlert';
-import type { PageSideContentsProps } from '../components/PageSideContents';
 import {
   useCurrentUser,
   useIsLatestRevision,
@@ -95,7 +81,7 @@ const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').th
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage, isTopPage,
+  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -302,10 +288,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     }
   }, [props.currentPathname, router]);
 
-  const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
-
   const title = generateCustomTitleForPage(props, pagePath ?? '');
-
 
   return (
     <>
@@ -318,6 +301,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
+
         <div className="d-edit-none">
           <GrowiSubNavigationSwitcher />
         </div>

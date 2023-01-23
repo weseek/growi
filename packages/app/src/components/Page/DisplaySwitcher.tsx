@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
@@ -10,7 +10,7 @@ import { usePageUpdatedEffect } from '~/client/services/event-listeners/page-upd
 import { useIsEditable } from '~/stores/context';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
-import CustomTabContent from '../CustomNavigation/CustomTabContent';
+import { LazyRenderer } from '../Common/LazyRenderer';
 import { MainPane } from '../Layout/MainPane';
 import { Page } from '../Page';
 import { PageAlerts } from '../PageAlert/PageAlerts';
@@ -105,44 +105,21 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
 
   const isViewMode = editorMode === EditorMode.View;
 
-  const view = useMemo(() => <View {...props} />, [props]);
-  const editor = useMemo(() => {
-    return isEditable
-      ? (
-        <div data-testid="page-editor" id="page-editor">
-          <PageEditor />
-        </div>
-      )
-      : <></>;
-  }, [isEditable]);
-  const hackmd = useMemo(() => {
-    return isEditable
-      ? (
-        <div id="page-editor-with-hackmd">
-          <PageEditorByHackmd />
-        </div>
-      )
-      : <></>;
-  }, [isEditable]);
-
-  const navTabMapping = useMemo(() => {
-    return {
-      [EditorMode.View]: {
-        Content: () => view,
-      },
-      [EditorMode.Editor]: {
-        Content: () => editor,
-      },
-      [EditorMode.HackMD]: {
-        Content: () => hackmd,
-      },
-    };
-  }, [editor, hackmd, view]);
-
-
   return (
     <>
-      <CustomTabContent activeTab={editorMode} navTabMapping={navTabMapping} />
+      { isViewMode && <View {...props} /> }
+
+      <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
+        <div data-testid="page-editor" id="page-editor" className="editor-root">
+          <PageEditor />
+        </div>
+      </LazyRenderer>
+
+      <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.HackMD}>
+        <div id="page-editor-with-hackmd" className="editor-root">
+          <PageEditorByHackmd />
+        </div>
+      </LazyRenderer>
 
       { isEditable && !isViewMode && <EditorNavbarBottom /> }
     </>
