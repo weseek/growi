@@ -18,7 +18,7 @@ const { isTopPage } = pagePathUtils;
 const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), { ssr: false });
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
-type CommentsProps = {
+export type CommentsProps = {
   pageId: string,
   pagePath: string,
   revision: IRevisionHasId,

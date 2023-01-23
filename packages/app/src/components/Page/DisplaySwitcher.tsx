@@ -10,6 +10,7 @@ import { usePageUpdatedEffect } from '~/client/services/side-effects/page-update
 import { useIsEditable } from '~/stores/context';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
+import type { CommentsProps } from '../Comments';
 import { LazyRenderer } from '../Common/LazyRenderer';
 import { MainPane } from '../Layout/MainPane';
 import { PageAlerts } from '../PageAlert/PageAlerts';
@@ -25,7 +26,7 @@ const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod =>
 const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
 const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const Comments = dynamic(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
+const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
 
