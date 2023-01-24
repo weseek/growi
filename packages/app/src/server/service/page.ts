@@ -40,7 +40,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp, generateTrashPageChildrenPathRegExp,
+  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -4040,8 +4040,10 @@ class PageService {
    */
   async findAllPagesInTrashPage(user: IUserHasId, userGroups = null): Promise<PageDocument[]> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const path = '/trash';
-    const regexp = generateTrashPageChildrenPathRegExp(path);
+
+    // https://regex101.com/r/KYZWls/1
+    // ex. /trash/.*
+    const regexp = new RegExp('^/trash\\/.*$');
     const queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
 
     await queryBuilder.addViewerCondition(user, userGroups);
