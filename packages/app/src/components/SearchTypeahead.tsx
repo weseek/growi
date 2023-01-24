@@ -173,7 +173,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         text: keywordOnInit,
       });
     }
-  });
+  }, [keywordOnInit]);
 
   const labelKey = useCallback((option?: IPageWithSearchMeta) => {
     return option?.data.path ?? '';
