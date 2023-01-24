@@ -66,6 +66,10 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     invokeSearch();
   }, [invokeSearch]);
 
+  useEffect(() => {
+    setKeyword(initialSearchConditions.keyword ?? '');
+  }, [initialSearchConditions.keyword]);
+
   return (
     <div className="position-sticky sticky-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">

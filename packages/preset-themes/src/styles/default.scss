@@ -22,7 +22,7 @@
   --bgcolor-global-l: 100%;
   --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #{$gray-50};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),90%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
   // --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
@@ -154,7 +154,7 @@
   --bgcolor-global-l: 8%;
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global),5%)};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 60%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 40%)};
   --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors
