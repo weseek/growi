@@ -28,9 +28,9 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
     const queryParam = `tag:${tag.name}`;
     return (
       <Link
-        key={tag.name} href={`/_search?q=${encodeURIComponent(queryParam)}`} className="grw-tag-label badge badge-secondary mr-2"
+        key={tag.name} href={`/_search?q=${encodeURIComponent(queryParam)}`}
       >
-        <a>
+        <a className="grw-tag-label badge badge-secondary mr-2">
           {tagNameFormat}
         </a>
       </Link>
