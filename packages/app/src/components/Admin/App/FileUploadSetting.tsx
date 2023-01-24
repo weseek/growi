@@ -27,16 +27,6 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
 
   return (
     <>
-      <p className="card well my-3">
-        {t('admin:app_setting.file_upload')}
-        <br />
-        <br />
-        <span className="text-danger">
-          <i className="ti ti-unlink"></i>
-          {t('admin:app_setting.change_setting')}
-        </span>
-      </p>
-
       <div className="row form-group mb-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.file_upload_method')}
@@ -180,6 +170,15 @@ const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
 
   return (
     <>
+      <p className="card well my-3">
+        {t('admin:app_setting.file_upload')}
+        <br />
+        <br />
+        <span className="text-danger">
+          <i className="ti ti-unlink"></i>
+          {t('admin:app_setting.change_setting')}
+        </span>
+      </p>
       <FileUploadSettingMolecule
         fileUploadType={fileUploadType}
         isFixedFileUploadByEnvVar={isFixedFileUploadByEnvVar}
