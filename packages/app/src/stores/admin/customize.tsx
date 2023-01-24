@@ -27,7 +27,10 @@ export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & 
   };
 };
 
-export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> => {
+type UpdateThemeArgs = {
+  theme: string,
+}
+export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> & updateConfigMethodForAdmin<UpdateThemeArgs> => {
 
   const fetcher = useCallback(async() => {
     const res = await apiv3Get<IResGrowiTheme>('/customize-setting/theme');
@@ -36,8 +39,9 @@ export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> =
 
   const swrResponse = useSWR('/customize-setting/theme', fetcher);
 
-  const update = async(theme: string) => {
-    await apiv3Put('/customize-setting/layout', { theme });
+  const update = async({ theme }: UpdateThemeArgs) => {
+
+    await apiv3Put('/customize-setting/theme', { theme });
 
     if (swrResponse.data == null) {
       swrResponse.mutate();

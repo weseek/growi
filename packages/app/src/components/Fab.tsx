@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useRef,
+  useState, useCallback, useRef, useEffect,
 } from 'react';
 
 import { animateScroll } from 'react-scroll';
@@ -7,9 +7,9 @@ import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
-import { useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
+import { useIsAbleToChangeEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { CreatePageIcon } from './Icons/CreatePageIcon';
@@ -21,45 +21,61 @@ const logger = loggerFactory('growi:cli:Fab');
 
 export const Fab = (): JSX.Element => {
 
-  const { data: currentUser } = useCurrentUser();
+  const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
   const { data: currentPath = '' } = useCurrentPagePath();
   const { open: openCreateModal } = usePageCreateModal();
 
-  const [animateClasses, setAnimateClasses] = useState('invisible');
-  const [buttonClasses, setButtonClasses] = useState('');
+  const [animateClasses, setAnimateClasses] = useState<string>('invisible');
+  const [buttonClasses, setButtonClasses] = useState<string>('');
+  const [isSticky, setIsSticky] = useState<boolean>(false);
 
   // ripple
   const createBtnRef = useRef(null);
   useRipple(createBtnRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
-  /*
-  * TODO: Comment out to prevent err >>> TypeError: Cannot read properties of null (reading 'bottom')
-  *       We need add style={{ position: 'relative }} to child elements if disable StickyEvents. see: use grep = "<Fab".
-  */
-  // const stickyChangeHandler = useCallback((event) => {
-  //   logger.debug('StickyEvents.CHANGE detected');
+  /**
+   * After the fade animation is finished, fix the button display status.
+   * Prevents the fade animation occurred each time by button components rendered.
+   * Check Fab.module.scss for fade animation time.
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isSticky) {
+        setAnimateClasses('visible');
+        setButtonClasses('');
+      }
+      else {
+        setAnimateClasses('invisible');
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [isSticky]);
 
-  //   const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-  //   const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
+  const stickyChangeHandler = useCallback((event) => {
+    logger.debug('StickyEvents.CHANGE detected');
 
-  //   setAnimateClasses(newAnimateClasses);
-  //   setButtonClasses(newButtonClasses);
-  // }, []);
+    const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+    const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
 
-  // // setup effect by sticky event
-  // useEffect(() => {
-  //   // sticky
-  //   // See: https://github.com/ryanwalters/sticky-events
-  //   const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
-  //   const { stickySelector } = stickyEvents;
-  //   const elem = document.querySelector(stickySelector);
-  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    setAnimateClasses(newAnimateClasses);
+    setButtonClasses(newButtonClasses);
+    setIsSticky(event.detail.isSticky);
+  }, []);
 
-  //   // return clean up handler
-  //   return () => {
-  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-  //   };
-  // }, [stickyChangeHandler]);
+  // setup effect by sticky event
+  useEffect(() => {
+    // sticky
+    // See: https://github.com/ryanwalters/sticky-events
+    const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
+    const { stickySelector } = stickyEvents;
+    const elem = document.querySelector(stickySelector);
+    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+
+    // return clean up handler
+    return () => {
+      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    };
+  }, [stickyChangeHandler]);
 
   const PageCreateButton = useCallback(() => {
     return (
@@ -102,7 +118,7 @@ export const Fab = (): JSX.Element => {
 
   return (
     <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab-container">
-      {currentUser != null && <PageCreateButton />}
+      {isAbleToChangeEditorMode && <PageCreateButton />}
       <ScrollToTopButton />
     </div>
   );

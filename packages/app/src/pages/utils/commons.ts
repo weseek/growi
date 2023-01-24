@@ -1,12 +1,13 @@
+import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
 import {
-  DevidedPagePath, Lang, AllLang, IUser, IUserHasId,
+  DevidedPagePath, Lang, AllLang,
 } from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -22,6 +23,7 @@ export type CommonProps = {
   redirectDestination: string | null,
   isDefaultLogo: boolean,
   currentUser?: IUser,
+  forcedColorScheme?: ColorScheme,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -34,7 +36,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
-  const currentPathname = decodeURI(url.pathname);
+  const currentPathname = decodeURIComponent(url.pathname);
 
   const isMaintenanceMode = appService.isMaintenanceMode();
 
@@ -47,6 +49,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
+  const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
@@ -62,6 +65,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination,
     currentUser,
     isDefaultLogo,
+    forcedColorScheme,
   };
 
   return { props };

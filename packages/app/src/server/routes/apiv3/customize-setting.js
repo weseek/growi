@@ -325,6 +325,7 @@ module.exports = (crowi) => {
       const customizedParams = {
         theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
+      customizeService.initGrowiTheme();
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });

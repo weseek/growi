@@ -69,26 +69,26 @@ export const StickyStretchableScroller: FC<StickyStretchableScrollerProps> = (pr
 
   const resetScrollbarDebounced = useMemo(() => debounce(100, resetScrollbar), [resetScrollbar]);
 
-  // const stickyChangeHandler = useCallback(() => {
-  //   logger.debug('StickyEvents.CHANGE detected');
-  //   resetScrollbarDebounced();
-  // }, [resetScrollbarDebounced]);
+  const stickyChangeHandler = useCallback(() => {
+    logger.debug('StickyEvents.CHANGE detected');
+    resetScrollbarDebounced();
+  }, [resetScrollbarDebounced]);
 
-  // // setup effect by sticky event
-  // useEffect(() => {
-  //   // sticky
-  //   // See: https://github.com/ryanwalters/sticky-events
-  //   const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
-  //   stickyEvents.enableEvents();
-  //   const { stickySelector } = stickyEvents;
-  //   const elem = document.querySelector(stickySelector);
-  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  // setup effect by sticky event
+  useEffect(() => {
+    // sticky
+    // See: https://github.com/ryanwalters/sticky-events
+    const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
+    stickyEvents.enableEvents();
+    const { stickySelector } = stickyEvents;
+    const elem = document.querySelector(stickySelector);
+    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-  //   // return clean up handler
-  //   return () => {
-  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-  //   };
-  // }, [stickyElemSelector, stickyChangeHandler]);
+    // return clean up handler
+    return () => {
+      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    };
+  }, [stickyElemSelector, stickyChangeHandler]);
 
   // setup effect by resizing event
   useEffect(() => {

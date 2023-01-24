@@ -45,6 +45,7 @@ type Props = TypeaheadProps & {
 
 // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
 type TypeaheadInstance = {
+  setState(input: { text: string | undefined; }): void;
   clear: () => void,
   focus: () => void,
   toggleMenu: () => void,
@@ -163,6 +164,16 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       onSearchError(searchError);
     }
   }, [onSearchError, searchError]);
+
+  useEffect(() => {
+    // update input with Next Link
+    // update input workaround. see: https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
+    if (typeaheadRef.current != null) {
+      typeaheadRef.current.setState({
+        text: keywordOnInit,
+      });
+    }
+  }, [keywordOnInit]);
 
   const labelKey = useCallback((option?: IPageWithSearchMeta) => {
     return option?.data.path ?? '';

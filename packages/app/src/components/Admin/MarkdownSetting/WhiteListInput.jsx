@@ -24,13 +24,13 @@ class WhiteListInput extends React.Component {
   }
 
   onClickRecommendTagButton() {
-    // this.tagWhiteList.current.value = this.tags;
-    // this.props.adminMarkDownContainer.setState({ tagWhiteList: this.tags });
+    this.tagWhiteList.current.value = this.tags;
+    this.props.adminMarkDownContainer.setState({ tagWhiteList: this.tags });
   }
 
   onClickRecommendAttrButton() {
-    // this.attrWhiteList.current.value = this.attrs;
-    // this.props.adminMarkDownContainer.setState({ attrWhiteList: this.attrs });
+    this.attrWhiteList.current.value = this.attrs;
+    this.props.adminMarkDownContainer.setState({ attrWhiteList: this.attrs });
   }
 
   render() {
@@ -41,12 +41,11 @@ class WhiteListInput extends React.Component {
         <div className="mt-4">
           <div className="d-flex justify-content-between">
             {t('markdown_settings.xss_options.tag_names')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0 disabled" onClick={this.onClickRecommendTagButton}>
+            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
               {t('markdown_settings.xss_options.import_recommended', { target: 'Tags' })}
             </p>
           </div>
           <textarea
-            disabled
             className="form-control xss-list"
             name="recommendedTags"
             rows="6"
@@ -59,12 +58,11 @@ class WhiteListInput extends React.Component {
         <div className="mt-4">
           <div className="d-flex justify-content-between">
             {t('markdown_settings.xss_options.tag_attributes')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0 disabled" onClick={this.onClickRecommendAttrButton}>
+            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
               {t('markdown_settings.xss_options.import_recommended', { target: 'Attrs' })}
             </p>
           </div>
           <textarea
-            disabled
             className="form-control xss-list"
             name="recommendedAttrs"
             rows="6"

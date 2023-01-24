@@ -104,6 +104,10 @@ describe('isCreatablePage test', () => {
     expect(isCreatablePage('http://demo.growi.org/hoge')).toBeFalsy();
     expect(isCreatablePage('https://demo.growi.org/hoge')).toBeFalsy();
 
+    // include backslash
+    expect(isCreatablePage('/foo\\/bar')).toBeFalsy();
+    expect(isCreatablePage('/foo\\\\bar')).toBeFalsy();
+
     expect(isCreatablePage('/_search')).toBeFalsy();
     expect(isCreatablePage('/_search/foo')).toBeFalsy();
     expect(isCreatablePage('/_private-legacy-pages')).toBeFalsy();

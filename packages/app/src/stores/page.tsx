@@ -32,19 +32,20 @@ export const useSWRxPage = (
   const swrResponse = useSWRImmutable<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
     // TODO: upgrade SWR to v2 and use useSWRMutation
-    //        in order to trigger mutation manually
-    (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
-      .then(result => result.data.page)
-      .catch((errs) => {
-        if (!Array.isArray(errs)) { throw Error('error is not array') }
-        const statusCode = errs[0].status;
-        if (statusCode === 403 || statusCode === 404) {
-          // for NotFoundPage
-          return null;
-        }
-        throw Error('failed to get page');
-      }),
-    config,
+    //        in order to avoid complicated fetcher settings
+    Object.assign({
+      fetcher: (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
+        .then(result => result.data.page)
+        .catch((errs) => {
+          if (!Array.isArray(errs)) { throw Error('error is not array') }
+          const statusCode = errs[0].status;
+          if (statusCode === 403 || statusCode === 404) {
+            // for NotFoundPage
+            return null;
+          }
+          throw Error('failed to get page');
+        }),
+    }, config ?? {}),
   );
 
   useEffect(() => {
@@ -92,22 +93,14 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
 
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+  const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
-  const key = [endpoint, pageId];
 
-  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
-    let tags: string[] = [];
-    // when the page exists
-    if (pageId != null) {
-      const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
-      tags = res?.tags;
-    }
-
-    return { tags };
-  };
-
-  return useSWRImmutable(key, fetcher);
+  return useSWRImmutable<IPageTagsInfo | undefined, Error>(
+    shareLinkId == null && pageId != null ? [endpoint, pageId] : null,
+    (endpoint, pageId) => apiGet<IPageTagsInfo>(endpoint, { pageId }).then(result => result),
+  );
 };
 
 export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {

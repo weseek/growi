@@ -46,8 +46,8 @@ context('Access User settings', () => {
     });
     cy.visit('/me');
     cy.collapseSidebar(true, true);
-    // hide fab // disable fab for sticky-events warning
-    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab
+    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
 
   it('Access User information', () => {
