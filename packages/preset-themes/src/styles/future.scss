@@ -23,7 +23,7 @@
   --bgcolor-global-l: var(--themecolor-l);
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--themecolor), 5%)};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 60%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 40%)};
   --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors

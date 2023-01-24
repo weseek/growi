@@ -47,6 +47,7 @@ import loggerFactory from '~/utils/logger';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
+import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser,
@@ -74,7 +75,7 @@ declare global {
 
 
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
+const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
@@ -309,7 +310,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         </header>
 
         <div className="d-edit-none">
-          <GrowiSubNavigationSwitcher />
+          <GrowiSubNavigationSwitcher isLinkSharingDisabled={props.disableLinkSharing} />
         </div>
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
