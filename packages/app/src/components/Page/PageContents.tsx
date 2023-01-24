@@ -2,14 +2,12 @@ import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import { HtmlElementNode } from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
 import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import {
-  useIsGuestUser, useCurrentPathname,
-} from '~/stores/context';
+import { useCurrentPathname } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
@@ -31,7 +29,6 @@ export const PageContents = (): JSX.Element => {
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { data: isGuestUser } = useIsGuestUser();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
@@ -82,7 +79,7 @@ export const PageContents = (): JSX.Element => {
 
   if (currentPage == null || rendererOptions == null) {
     const entries = Object.entries({
-      currentPage, isGuestUser, rendererOptions,
+      currentPage, rendererOptions,
     })
       .map(([key, value]) => [key, value == null ? 'null' : undefined])
       .filter(([, value]) => value != null);
