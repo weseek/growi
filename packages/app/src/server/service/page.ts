@@ -4038,7 +4038,7 @@ class PageService {
   /**
    * Find all pages in trash page
    */
-  async findAllPagesInTrashPage(user: IUserHasId, userGroups = null): Promise<PageDocument[]> {
+  async findAllTrashPages(user: IUserHasId, userGroups = null): Promise<PageDocument[]> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     // https://regex101.com/r/KYZWls/1
