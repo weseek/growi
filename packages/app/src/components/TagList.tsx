@@ -33,12 +33,13 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
     return tagData.map((tag:IDataTagCount, index:number) => {
       const tagListClasses: string = index === 0 ? 'list-group-item d-flex' : 'list-group-item d-flex border-top-0';
 
-      const queryParam = `tag:${tag.name}`;
+      const url = new URL('/_search', 'https://example.com');
+      url.searchParams.append('q', `tag:${tag.name}`);
 
       return (
         <Link
           key={tag._id}
-          href={`/_search?q=${encodeURIComponent(queryParam)}`}
+          href={`${url.pathname}${url.search}`}
         >
           <a
             className={tagListClasses}
