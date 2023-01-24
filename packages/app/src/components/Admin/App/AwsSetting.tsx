@@ -1,20 +1,25 @@
-import React from 'react';
-
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
+export type AwsSettingMoleculeProps = {
+  s3ReferenceFileWithRelayMode
+  s3Region
+  s3CustomEndpoint
+  s3Bucket
+  s3AccessKeyId
+  s3SecretAccessKey
+  onChangeS3ReferenceFileWithRelayMode: (val: boolean) => void
+  onChangeS3Region: (val: string) => void
+  onChangeS3CustomEndpoint: (val: string) => void
+  onChangeS3Bucket: (val: string) => void
+  onChangeS3AccessKeyId: (val: string) => void
+  onChangeS3SecretAccessKey: (val: string) => void
+};
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-
-function AwsSetting(props) {
+export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element => {
   const { t } = useTranslation();
-  const { adminAppContainer } = props;
-  const { s3ReferenceFileWithRelayMode } = adminAppContainer.state;
 
   return (
-    <React.Fragment>
+    <>
 
       <div className="row form-group my-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
@@ -31,21 +36,21 @@ function AwsSetting(props) {
               aria-haspopup="true"
               aria-expanded="true"
             >
-              {s3ReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_relay')}
-              {!s3ReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_redirect')}
+              {props.s3ReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_relay')}
+              {!props.s3ReferenceFileWithRelayMode && t('admin:app_setting.file_delivery_method_redirect')}
             </button>
             <div className="dropdown-menu" aria-labelledby="ddS3ReferenceFileWithRelayMode">
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeS3ReferenceFileWithRelayMode(true) }}
+                onClick={() => { props?.onChangeS3ReferenceFileWithRelayMode(true) }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { adminAppContainer.changeS3ReferenceFileWithRelayMode(false) }}
+                onClick={() => { props?.onChangeS3ReferenceFileWithRelayMode(false) }}
               >
                 { t('admin:app_setting.file_delivery_method_redirect')}
               </button>
@@ -68,9 +73,9 @@ function AwsSetting(props) {
           <input
             className="form-control"
             placeholder={`${t('eg')} ap-northeast-1`}
-            defaultValue={adminAppContainer.state.s3Region || ''}
+            defaultValue={props.s3Region || ''}
             onChange={(e) => {
-              adminAppContainer.changeS3Region(e.target.value);
+              props?.onChangeS3Region(e.target.value);
             }}
           />
         </div>
@@ -85,9 +90,9 @@ function AwsSetting(props) {
             className="form-control"
             type="text"
             placeholder={`${t('eg')} http://localhost:9000`}
-            defaultValue={adminAppContainer.state.s3CustomEndpoint || ''}
+            defaultValue={props.s3CustomEndpoint || ''}
             onChange={(e) => {
-              adminAppContainer.changeS3CustomEndpoint(e.target.value);
+              props?.onChangeS3CustomEndpoint(e.target.value);
             }}
           />
           <p className="form-text text-muted">{t('admin:app_setting.custom_endpoint_change')}</p>
@@ -103,9 +108,9 @@ function AwsSetting(props) {
             className="form-control"
             type="text"
             placeholder={`${t('eg')} crowi`}
-            defaultValue={adminAppContainer.state.s3Bucket || ''}
+            defaultValue={props.s3Bucket || ''}
             onChange={(e) => {
-              adminAppContainer.changeS3Bucket(e.target.value);
+              props.onChangeS3Bucket(e.target.value);
             }}
           />
         </div>
@@ -119,9 +124,9 @@ function AwsSetting(props) {
           <input
             className="form-control"
             type="text"
-            defaultValue={adminAppContainer.state.s3AccessKeyId || ''}
+            defaultValue={props.s3AccessKeyId || ''}
             onChange={(e) => {
-              adminAppContainer.changeS3AccessKeyId(e.target.value);
+              props?.onChangeS3AccessKeyId(e.target.value);
             }}
           />
         </div>
@@ -135,27 +140,15 @@ function AwsSetting(props) {
           <input
             className="form-control"
             type="text"
-            defaultValue={adminAppContainer.state.s3SecretAccessKey || ''}
+            defaultValue={props.s3SecretAccessKey || ''}
             onChange={(e) => {
-              adminAppContainer.changeS3SecretAccessKey(e.target.value);
+              props?.onChangeS3SecretAccessKey(e.target.value);
             }}
           />
         </div>
       </div>
 
 
-    </React.Fragment>
+    </>
   );
-}
-
-
-/**
- * Wrapper component for using unstated
- */
-const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AdminAppContainer]);
-
-AwsSetting.propTypes = {
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
-
-export default AwsSettingWrapper;

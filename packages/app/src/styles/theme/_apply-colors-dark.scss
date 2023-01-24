@@ -13,12 +13,11 @@
   $color-list-active: var(--color-list-active,var(--color-reversal));
   $bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global));
   $bgcolor-list-active: var(--bgcolor-list-active,var(--primary));
-  $bgcolor-subnav: var(--bgcolor-subnav);
   $color-table: var(--color-table,white);
   $bgcolor-table: var(--bgcolor-table,#343a40);
-  $border-color-table: var(--border-color-table,hsl.lighten(var(--bgcolor-table),7.5%),lighten(#343a40, 7.5%));
+  $border-color-table: var(--border-color-table,lighten(#343a40, 7.5%));
   $color-table-hover: var(--color-table-hover,rgba(white, 0.075));
-  $bgcolor-table-hover: var(--bgcolor-table-hover,hsl.lighten(var(--bgcolor-table),7.5%),lighten(#343a40, 7.5%));
+  $bgcolor-table-hover: var(--bgcolor-table-hover,lighten(#343a40, 7.5%));
   $bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
   $color-tags: var(--color-tags,#949494);
   $bgcolor-tags: var(--bgcolor-tags,var(--dark));
@@ -28,7 +27,7 @@
   $bgcolor-dropdown: var(--bgcolor-dropdown,var(--bgcolor-global));
   $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
   $color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--light));
-  $bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,var(--primary));
+  $bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,hsl.lighten(var(--bgcolor-global), 15%));
   $color-dropdown-link-active: var(--color-dropdown-link-active,var(--light));
   $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
 
@@ -106,17 +105,24 @@
     background-color: hsl.darken(var(--bgcolor-global),5%);
   }
 
+  .rbt-input-multi .rbt-input-main {
+    color: black;
+  }
   /*
   * Table
   */
   .table {
     @extend .table-dark;
+    thead th {
+      vertical-align: bottom;
+      border-bottom: 2px solid #d6dadf;
+    }
   }
 
   /*
   * Card
   */
-  .card:not([class*=‘bg-’]):not(.well):not(.card-disabled) {
+  .card:not([class*='bg-']):not(.well):not(.card-disabled) {
     @extend .bg-dark;
   }
 
@@ -184,6 +190,12 @@
 
     .nologin-dialog {
       background-color: rgba(black, 0.5);
+      .link-switch {
+        color: #7b9bd5;
+        @include hover() {
+          color: lighten(#7b9bd5,10%);
+        }
+      }
     }
 
     .input-group {
@@ -247,7 +259,6 @@
     @include mixins-buttons.button-svg-icon-variant($dark, $dark);
     color: $gray-400;
     box-shadow: none !important;
-
   }
 
   /*
@@ -522,6 +533,10 @@
     }
   }
 
+  mark.rbt-highlight-text {
+    color: var(--color-global);
+  }
+
   /*
   * GROWI popular tags
   */
@@ -574,5 +589,6 @@
   * skeleton
   */
   .grw-skeleton {
+    background-color: hsl.lighten(var(--bgcolor-subnav),10%);
   }
 }

@@ -93,7 +93,6 @@ class XssForm extends React.Component {
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio">
               <input
-                disabled
                 type="radio"
                 className="custom-control-input"
                 id="xssOption2"
@@ -102,9 +101,7 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
-                <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}
-                  <span className='text-warning'> (TBD: Currently unavailable)</span>
-                </p>
+                <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
                 <WhiteListInput customizable />
               </label>
             </div>

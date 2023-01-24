@@ -121,63 +121,91 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
-  build-image:
+  determine-tags:
     needs: create-github-release
-
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        platform: [linux/amd64, linux/arm64]
+    outputs:
+      TAGS: ${{ steps.meta.outputs.tags }}
+      TAGS_GHCR: ${{ steps.meta-ghcr.outputs.tags }}
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
-        lfs: true
 
-    - name: Docker meta
-      id: meta
+    - name: Retrieve information from package.json
+      uses: myrotvorets/info-from-package-json-action@1.2.0
+      id: package-json
+
+    - name: Docker meta for docker.io
       uses: docker/metadata-action@v4
+      id: meta
       with:
-        images: weseek/growi,ghcr.io/weseek/growi
+        images: docker.io/weseek/growi
+        sep-tags: ','
         tags: |
           type=raw,value=latest
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
+    - name: Docker meta for ghcr.io
+      uses: docker/metadata-action@v4
+      id: meta-ghcr
       with:
-        username: wsmoogle
-        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        images: ghcr.io/weseek/growi
+        sep-tags: ','
+        tags: |
+          type=raw,value=latest
+          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}
+          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}
+          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
+
+  build-image:
+    needs: create-github-release
+
+    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@master
+    with:
+      source-version: refs/tags/v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
+      image-name: weseek/growi
+      tag-temporary: latest
+    secrets:
+      AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
+
+
+  publish-image:
+    needs: [determine-tags, build-image]
+
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
+    with:
+      tags: ${{ needs.determine-tags.outputs.TAGS }}
+      registry: docker.io
+      image-name: weseek/growi
+      tag-temporary: latest
+    secrets:
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+  publish-image-ghcr:
+    needs: [determine-tags, build-image]
+
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
+    with:
+      tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
+      registry: ghcr.io
+      image-name: weseek/growi
+      tag-temporary: latest
+    secrets:
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+
+
+  post-publish:
+    needs: [create-github-release, publish-image, publish-image-ghcr]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
       with:
-        registry: ghcr.io
-        username: wsmoogle
-        password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
-
-    - name: Set up QEMU
-      if: ${{ matrix.platform == 'linux/arm64' }}
-      uses: docker/setup-qemu-action@v1
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        file: ./packages/app/docker/Dockerfile
-        platforms: ${{ matrix.platform }}
-        push: true
-        builder: ${{ steps.buildx.outputs.name }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        tags: ${{ steps.meta.outputs.tags }}
+        ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
@@ -193,7 +221,6 @@ jobs:
         channel: '#release'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         created_tag: 'v${{ needs.create-github-release.outputs.RELEASED_VERSION }}'
-        message: '*Release v${{ needs.create-github-release.outputs.RELEASED_VERSION }} (${{ matrix.platform }})* Succeeded'
 
     - name: Check whether workspace is clean
       run: |
