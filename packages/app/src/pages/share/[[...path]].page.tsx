@@ -14,6 +14,7 @@ import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import RevisionRenderer from '~/components/Page/RevisionRenderer';
+import ShareLinkAlert from '~/components/Page/ShareLinkAlert';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
@@ -37,7 +38,6 @@ const logger = loggerFactory('growi:next-page:share');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('~/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 // const Comments = dynamic(() => import('~/components/Comments').then(mod => mod.Comments), { ssr: false });
-const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
 
 type Props = CommonProps & {
@@ -127,11 +127,11 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   //   : <></>;
 
   const contents = (() => {
-    const Page = dynamic(() => import('~/components/Page/Page').then(mod => mod.Page), {
+    const PageContents = dynamic(() => import('~/components/Page/PageContents').then(mod => mod.PageContents), {
       ssr: false,
       loading: () => ssrBody,
     });
-    return <Page />;
+    return <PageContents />;
   })();
 
   return (
