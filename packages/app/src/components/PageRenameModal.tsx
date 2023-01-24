@@ -139,6 +139,10 @@ const PageRenameModal = (): JSX.Element => {
       setExistingPaths(existPaths);
     }
     catch (err) {
+      // Do not toast in case of this error because debounce process may be executed after the renaming process is completed.
+      if (err.length === 1 && err[0].message === 'fromPage is Null') {
+        return;
+      }
       setErrs(err);
       toastError(t('modal_rename.label.Failed to get exist path'));
     }
