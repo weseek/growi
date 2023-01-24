@@ -28,7 +28,7 @@
   --bgcolor-global-l: 99%;
   --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #f1ffe4;
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 90%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 10%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
