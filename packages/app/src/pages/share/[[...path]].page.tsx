@@ -180,7 +180,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           {(isShowSharedPage && shareLink != null) && (
             <>
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              { contents }
+              <div className="mb-5">
+                { contents }
+              </div>
             </>
           )}
         </MainPane>

@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable, useIsNotFound,
 } from '~/stores/context';
+import { useIsMobile } from '~/stores/ui';
 
 import type { CommentsProps } from '../Comments';
 import { MainPane } from '../Layout/MainPane';
@@ -15,6 +16,9 @@ import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
+
+import styles from './PageView.module.scss';
+
 
 const { isUsersHomePage } = pagePathUtils;
 
@@ -50,6 +54,7 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isMobile } = useIsMobile();
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
@@ -109,7 +114,9 @@ export const PageView = (props: Props): JSX.Element => {
       { specialContents == null && (
         <>
           { isUsersHomePagePath && <UserInfo author={page?.creator} /> }
-          { contents }
+          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+            { contents }
+          </div>
         </>
       ) }
 

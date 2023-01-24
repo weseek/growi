@@ -13,16 +13,12 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
-import {
-  useCurrentPageTocNode,
-  useIsMobile,
-} from '~/stores/ui';
+import { useCurrentPageTocNode } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
 
-import styles from './PageContents.module.scss';
 
 const logger = loggerFactory('growi:Page');
 
@@ -36,7 +32,6 @@ export const PageContents = (): JSX.Element => {
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: isMobile } = useIsMobile();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
@@ -100,11 +95,11 @@ export const PageContents = (): JSX.Element => {
   const { _id: revisionId, body: markdown } = currentPage.revision;
 
   return (
-    <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+    <>
       { revisionId != null && (
         <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
       )}
-    </div>
+    </>
   );
 
 };
