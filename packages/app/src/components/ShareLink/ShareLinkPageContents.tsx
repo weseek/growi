@@ -14,11 +14,11 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 const logger = loggerFactory('growi:Page');
 
 
-type Props = {
+export type ShareLinkPageContentsProps = {
   page?: IPagePopulatedToShowRevision,
 }
 
-export const ShareLinkPageContents = (props: Props): JSX.Element => {
+export const ShareLinkPageContents = (props: ShareLinkPageContentsProps): JSX.Element => {
   const { page } = props;
 
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();

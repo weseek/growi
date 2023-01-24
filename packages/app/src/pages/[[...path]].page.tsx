@@ -319,10 +319,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <DisplaySwitcher
           pagePath={pagePath}
           page={pageWithMeta?.data}
-          isIdenticalPathPage={props.isIdenticalPathPage}
-          isNotFound={props.isNotFound}
-          isForbidden={props.isForbidden}
-          isNotCreatable={props.isNotCreatable}
           ssrBody={ssrBody}
         />
 

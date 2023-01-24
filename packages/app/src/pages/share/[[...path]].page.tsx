@@ -17,6 +17,7 @@ import RevisionRenderer from '~/components/Page/RevisionRenderer';
 import ShareLinkAlert from '~/components/Page/ShareLinkAlert';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import type { ShareLinkPageContentsProps } from '~/components/ShareLink/ShareLinkPageContents';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -127,10 +128,13 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   //   : <></>;
 
   const contents = (() => {
-    const ShareLinkPageContents = dynamic(() => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents), {
-      ssr: false,
-      loading: () => ssrBody,
-    });
+    const ShareLinkPageContents = dynamic<ShareLinkPageContentsProps>(
+      () => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents),
+      {
+        ssr: false,
+        loading: () => ssrBody,
+      },
+    );
     return <ShareLinkPageContents page={props.shareLinkRelatedPage} />;
   })();
 
