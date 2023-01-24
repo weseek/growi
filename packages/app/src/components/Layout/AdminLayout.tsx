@@ -10,6 +10,7 @@ import styles from './Admin.module.scss';
 
 
 const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
+const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 
@@ -45,6 +46,7 @@ const AdminLayout = ({
           </div>
         </div>
 
+        <PageCreateModal />
         <SystemVersion />
       </div>
 
