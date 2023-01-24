@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useEffect, useRef,
-} from 'react';
+import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -32,14 +30,6 @@ const logger = loggerFactory('growi:Page');
 export const PageContents = (): JSX.Element => {
   const { t } = useTranslation();
 
-  // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
-  // The toc node passed by customizeTOC is assigned to tocRef.current.
-  const tocRef = useRef<HtmlElementNode>();
-
-  const storeTocNodeHandler = useCallback((toc: HtmlElementNode) => {
-    tocRef.current = toc;
-  }, []);
-
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
@@ -47,9 +37,11 @@ export const PageContents = (): JSX.Element => {
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
-  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
+  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
+    mutateCurrentPageTocNode(toc);
+  });
 
   // register to facade
   useEffect(() => {
@@ -61,12 +53,6 @@ export const PageContents = (): JSX.Element => {
       },
     });
   }, [mutateRendererOptions]);
-
-  useEffect(() => {
-    mutateCurrentPageTocNode(tocRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
-
 
   useHandsontableModalLauncherForView({
     onSaveSuccess: (newMarkdown) => {

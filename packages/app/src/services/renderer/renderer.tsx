@@ -220,6 +220,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options);
   }
+
   return options;
 };
 
