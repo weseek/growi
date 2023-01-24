@@ -1,6 +1,6 @@
 export class ErrorV3 extends Error {
 
-  code?: string;
+  code: string;
 
   args?: any;
 
