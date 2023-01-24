@@ -30,7 +30,7 @@ $bordercolor: #7e0d7e;
   --bgcolor-global-l: 1%;
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: var(--bgcolor-global);
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 60%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 40%)};
   --bgcolor-keyword-highlighted: darkviolet;
 
   // Font colors

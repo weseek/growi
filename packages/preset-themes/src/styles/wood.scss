@@ -40,7 +40,7 @@
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
   --bgcolor-card: #ece8de;
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),70%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),30%)};
   --bgcolor-keyword-highlighted: #{$grw-marker-blue};
 
   // Font colors
