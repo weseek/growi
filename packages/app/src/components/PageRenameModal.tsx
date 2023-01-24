@@ -11,6 +11,7 @@ import { debounce } from 'throttle-debounce';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { isErrorV3 } from '~/interfaces/errors/v3-error';
 import { isIPageInfoForEntity } from '~/interfaces/page';
 import { useSiteUrl, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageRenameModal } from '~/stores/modal';
@@ -19,7 +20,6 @@ import { useSWRxPageInfo } from '~/stores/page';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import PagePathAutoComplete from './PagePathAutoComplete';
-
 
 const isV5Compatible = (meta: unknown): boolean => {
   return isIPageInfoForEntity(meta) ? meta.isV5Compatible : true;
@@ -140,7 +140,7 @@ const PageRenameModal = (): JSX.Element => {
     }
     catch (err) {
       // Do not toast in case of this error because debounce process may be executed after the renaming process is completed.
-      if (err.length === 1 && err[0].message === 'fromPage is Null') {
+      if (err.length === 1 && isErrorV3(err[0]) && err[0].code === 'from-page-is-not-exist') {
         return;
       }
       setErrs(err);
