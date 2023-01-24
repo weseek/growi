@@ -187,6 +187,9 @@ ul.pagination {
   .search-typeahead {
     background-color: hsl.alpha(var(--bgcolor-global),10%);
   }
+  input.form-control {
+    border: none;
+  }
 }
 
 .grw-sidebar {
@@ -372,14 +375,6 @@ ul.pagination {
 
   .grw-nav-slide-hr {
     border-color: var(--color-link) !important;
-  }
-}
-
-.grw-page-accessories-modal {
-  .modal-header {
-    .close {
-      color: var(--secondary);
-    }
   }
 }
 
@@ -692,4 +687,11 @@ Emoji picker modal
 */
 .emoji-picker-modal {
   background-color: transparent !important;
+}
+
+/*
+* revision-history-diff
+*/
+.revision-history-diff {
+  background-color: white;
 }

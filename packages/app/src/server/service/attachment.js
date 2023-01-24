@@ -37,7 +37,7 @@ class AttachmentService {
     let attachment;
     try {
       attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size, attachmentType);
-      await fileUploadService.uploadFile(fileStream, attachment);
+      await fileUploadService.uploadAttachment(fileStream, attachment);
       await attachment.save();
     }
     catch (err) {

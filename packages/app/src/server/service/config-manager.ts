@@ -4,9 +4,10 @@ import loggerFactory from '~/utils/logger';
 
 import ConfigModel from '../models/config';
 import S2sMessage from '../models/vo/s2s-message';
+
+import ConfigLoader, { ConfigObject } from './config-loader';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
-import ConfigLoader, { ConfigObject } from './config-loader';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
@@ -187,7 +188,7 @@ export default class ConfigManager implements S2sMessageHandlable {
    *  );
    * ```
    */
-  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage) {
+  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage?) {
     const queries: any[] = [];
     for (const key of Object.keys(configs)) {
       queries.push({
@@ -195,6 +196,25 @@ export default class ConfigManager implements S2sMessageHandlable {
           filter: { ns: namespace, key },
           update: { ns: namespace, key, value: this.convertInsertValue(configs[key]) },
           upsert: true,
+        },
+      });
+    }
+    await ConfigModel.bulkWrite(queries);
+
+    await this.loadConfigs();
+
+    // publish updated date after reloading
+    if (this.s2sMessagingService != null && !withoutPublishingS2sMessage) {
+      this.publishUpdateMessage();
+    }
+  }
+
+  async removeConfigsInTheSameNamespace(namespace, configKeys: string[], withoutPublishingS2sMessage?) {
+    const queries: any[] = [];
+    for (const key of configKeys) {
+      queries.push({
+        deleteOne: {
+          filter: { ns: namespace, key },
         },
       });
     }
@@ -354,6 +374,20 @@ export default class ConfigManager implements S2sMessageHandlable {
   async handleS2sMessage(s2sMessage) {
     logger.info('Reload configs by pubsub notification');
     return this.loadConfigs();
+  }
+
+  /**
+   * Returns file upload total limit in bytes.
+   * Reference to previous implementation is
+   * {@link https://github.com/weseek/growi/blob/798e44f14ad01544c1d75ba83d4dfb321a94aa0b/src/server/service/file-uploader/gridfs.js#L86-L88}
+   * @returns file upload total limit in bytes
+   */
+  getFileUploadTotalLimit(): number {
+    const fileUploadTotalLimit = this.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
+      // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
+      ? this.getConfig('crowi', 'gridfs:totalLimit') ?? this.getConfig('crowi', 'app:fileUploadTotalLimit')
+      : this.getConfig('crowi', 'app:fileUploadTotalLimit');
+    return fileUploadTotalLimit;
   }
 
 }
