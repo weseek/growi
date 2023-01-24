@@ -4,5 +4,5 @@ export type IErrorV3 = ErrorV3
 
 // type guard
 export const isErrorV3 = (args: any): args is IErrorV3 => {
-  return args.message != null && args.code != null;
+  return args.message != null;
 };
