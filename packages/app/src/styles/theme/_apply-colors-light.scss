@@ -113,6 +113,12 @@
 
     .nologin-dialog {
       background-color: rgba(white, 0.5);
+      .link-switch {
+        color: #1939b8;
+        @include hover() {
+          color: lighten(#1939b8,20%);
+        }
+      }
     }
 
     .dropdown-with-icon {
