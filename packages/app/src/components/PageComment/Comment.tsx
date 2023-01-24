@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { IUser, pathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -78,6 +78,12 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
+
+    // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
+    let commentCreatedAt = comment.createdAt;
+    if (typeof commentCreatedAt === 'string') {
+      commentCreatedAt = parseISO(commentCreatedAt);
+    }
 
     // Conditional for called from SearchResultContext
     if (revisionId != null && revisionCreatedAt != null) {
