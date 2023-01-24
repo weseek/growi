@@ -22,7 +22,7 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
 
-import styles from './Page.module.scss';
+import styles from './PageContents.module.scss';
 
 const logger = loggerFactory('growi:Page');
 
