@@ -127,11 +127,11 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   //   : <></>;
 
   const contents = (() => {
-    const PageContents = dynamic(() => import('~/components/Page/PageContents').then(mod => mod.PageContents), {
+    const ShareLinkPageContents = dynamic(() => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents), {
       ssr: false,
       loading: () => ssrBody,
     });
-    return <PageContents />;
+    return <ShareLinkPageContents page={props.shareLinkRelatedPage} />;
   })();
 
   return (
