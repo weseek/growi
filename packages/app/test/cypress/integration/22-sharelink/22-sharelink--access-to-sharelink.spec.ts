@@ -8,6 +8,7 @@ context('Access to sharelink by guest', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+
     cy.visit('/Sandbox/Bootstrap4');
 
     // open dropdown
@@ -35,9 +36,11 @@ context('Access to sharelink by guest', () => {
       cy.getByTestid('btn-sharelink-toggleform').should('be.visible').click();
       cy.getByTestid('btn-sharelink-issue').should('be.visible').click();
 
-      // store id
       cy.get('tbody > tr > td > div > span').first().then((elem) => {
+        // store id
         createdSharelinkId = elem.text();
+        // overwrite the label
+        elem.html('63d100000000000000000000');
       });
     });
 
