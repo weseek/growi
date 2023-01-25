@@ -18,8 +18,14 @@ function isInWhitelist(whitelistOfHosts, redirectToFqdn) {
     return false;
   }
 
-  const redirectUrl = new URL(redirectToFqdn);
-  return whitelistOfHosts.includes(redirectUrl.hostname) || whitelistOfHosts.includes(redirectUrl.host);
+  try {
+    const redirectUrl = new URL(redirectToFqdn);
+    return whitelistOfHosts.includes(redirectUrl.hostname) || whitelistOfHosts.includes(redirectUrl.host);
+  }
+  catch (err) {
+    logger.warn(err);
+    return false;
+  }
 }
 
 
