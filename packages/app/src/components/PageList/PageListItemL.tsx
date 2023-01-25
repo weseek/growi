@@ -24,7 +24,7 @@ import {
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal, useDescendantsPageListModal,
 } from '~/stores/modal';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
@@ -85,6 +85,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
+  const { data: descendantsPageListModalData, close: closeDescendantsPageListModal } = useDescendantsPageListModal();
+  const isOpendDescendantsPageListModal = descendantsPageListModalData?.isOpened ?? false;
+
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
 
@@ -119,7 +122,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     if (onClickItem != null) {
       onClickItem(pageData._id);
     }
-  }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+
+    if (isOpendDescendantsPageListModal) {
+      closeDescendantsPageListModal();
+    }
+
+  }, [closeDescendantsPageListModal, isDeviceSmallerThanLg, isOpendDescendantsPageListModal, onClickItem, pageData._id]);
 
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
