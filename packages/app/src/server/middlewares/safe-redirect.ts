@@ -4,16 +4,18 @@
  * Usage: app.use(require('middlewares/safe-redirect')(['example.com', 'some.example.com:8080']))
  */
 
+import {
+  Request, Response, NextFunction,
+} from 'express';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:safe-redirect');
 
 /**
  * Check whether the redirect url host is in specified whitelist
- * @param {Array<string>} whitelistOfHosts
- * @param {string} redirectToFqdn
  */
-function isInWhitelist(whitelistOfHosts, redirectToFqdn) {
+function isInWhitelist(whitelistOfHosts: string[], redirectToFqdn: string): boolean {
   if (whitelistOfHosts == null || whitelistOfHosts.length === 0) {
     return false;
   }
@@ -29,12 +31,16 @@ function isInWhitelist(whitelistOfHosts, redirectToFqdn) {
 }
 
 
-module.exports = (whitelistOfHosts) => {
+type ResWithSafeRedirect = Response & {
+  safeRedirect: (redirectTo?: string) => void,
+}
 
-  return function(req, res, next) {
+module.exports = (whitelistOfHosts: string[]) => {
+
+  return function(req: Request, res: ResWithSafeRedirect, next: NextFunction) {
 
     // extend res object
-    res.safeRedirect = function(redirectTo) {
+    res.safeRedirect = function(redirectTo?: string) {
       if (redirectTo == null) {
         return res.redirect('/');
       }
