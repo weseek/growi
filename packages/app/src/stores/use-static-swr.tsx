@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import assert from 'assert';
 
 import {
-  Key, SWRConfiguration, SWRResponse,
+  mutate, Key, SWRConfiguration, SWRResponse,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -27,10 +27,9 @@ export function useStaticSWR<Data, Error>(
   // Do mutate with `data` from args
   useEffect(() => {
     if (data !== undefined) {
-      swrResponse.mutate(data);
+      mutate(key, data);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]); // Only depends on `data`
+  }, [data, key]);
 
   return swrResponse;
 }

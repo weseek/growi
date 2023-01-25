@@ -13,12 +13,13 @@ import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
-import { useSWRxTagsInfo } from './page';
+import { useCurrentPagePath, useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('editingMarkdown', initialData);
+  const { data: currentPagePath } = useCurrentPagePath();
+  return useStaticSWR(['editingMarkdown', currentPagePath], initialData);
 };
 
 
