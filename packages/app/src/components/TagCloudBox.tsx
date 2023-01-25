@@ -1,6 +1,9 @@
 import React, { FC, memo } from 'react';
 
+import Link from 'next/link';
+
 import { IDataTagCount } from '~/interfaces/tag';
+
 
 type Props = {
   tags:IDataTagCount[],
@@ -22,10 +25,18 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
 
   const tagElements = tags.map((tag:IDataTagCount) => {
     const tagNameFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
+
+    const url = new URL('/_search', 'https://example.com');
+    url.searchParams.append('q', `tag:${tag.name}`);
+
     return (
-      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
-        {tagNameFormat}
-      </a>
+      <Link
+        key={tag.name} href={`${url.pathname}${url.search}`}
+      >
+        <a className="grw-tag-label badge badge-secondary mr-2">
+          {tagNameFormat}
+        </a>
+      </Link>
     );
   });
 

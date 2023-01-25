@@ -15,6 +15,10 @@ import styles from './GrowiSubNavigationSwitcher.module.scss';
 
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
+export type GrowiSubNavigationSwitcherProps = {
+  isLinkSharingDisabled: boolean,
+}
+
 /**
  * GrowiSubNavigation
  *
@@ -22,7 +26,8 @@ const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
  *   #grw-subnav-fixed-container element
  *   #grw-subnav-sticky-trigger element
  */
-export const GrowiSubNavigationSwitcher = (): JSX.Element => {
+export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProps): JSX.Element => {
+  const { isLinkSharingDisabled } = props;
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isSidebarCollapsed } = useSidebarCollapsed();
@@ -96,7 +101,7 @@ export const GrowiSubNavigationSwitcher = (): JSX.Element => {
         ref={fixedContainerRef}
         style={{ width }}
       >
-        <GrowiContextualSubNavigation currentPage={currentPage} isCompactMode isLinkSharingDisabled />
+        <GrowiContextualSubNavigation currentPage={currentPage} isCompactMode isLinkSharingDisabled={isLinkSharingDisabled} />
       </div>
     </div>
   );
