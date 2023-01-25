@@ -36,7 +36,11 @@ context('Access to sharelink by guest', () => {
       cy.getByTestid('btn-sharelink-toggleform').should('be.visible').click();
       cy.getByTestid('btn-sharelink-issue').should('be.visible').click();
 
-      cy.get('tbody > tr > td > div > span').first().then((elem) => {
+      cy.get('tbody')
+        .find('tr').first() // the first row
+        .find('td').first() // the first column
+        .find('span').first().then((elem) => {
+
         // store id
         createdSharelinkId = elem.text();
         // overwrite the label
