@@ -35,6 +35,7 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import { NotAvailable } from '../NotAvailable';
 import { NotAvailableForNow } from '../NotAvailableForNow';
 import { Skeleton } from '../Skeleton';
 
@@ -140,17 +141,20 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         {t('attachment_data')}
       </DropdownItem>
 
-      <DropdownItem
-        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
-        disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
-        data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
-        className="grw-page-control-dropdown-item"
-      >
-        <span className="grw-page-control-dropdown-icon">
-          <ShareLinkIcon />
-        </span>
-        {t('share_links.share_link_management')}
-      </DropdownItem>
+      { !isGuestUser && !isSharedUser && (
+        <NotAvailable isDisabled={isLinkSharingDisabled ?? false} title="Disabled by admin">
+          <DropdownItem
+            onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
+            data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
+            className="grw-page-control-dropdown-item"
+          >
+            <span className="grw-page-control-dropdown-icon">
+              <ShareLinkIcon />
+            </span>
+            {t('share_links.share_link_management')}
+          </DropdownItem>
+        </NotAvailable>
+      ) }
     </>
   );
 };

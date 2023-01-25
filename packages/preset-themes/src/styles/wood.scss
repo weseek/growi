@@ -40,7 +40,7 @@
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
   --bgcolor-card: #ece8de;
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),70%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),30%)};
   --bgcolor-keyword-highlighted: #{$grw-marker-blue};
 
   // Font colors
@@ -175,10 +175,9 @@
     .nologin-header,
     .nologin-dialog {
       background-color: rgba(black, 0.1);
-    }
-
-    .link-switch {
-      color: rgba(black, 0.5);
+      a.link-switch {
+        color: rgba(black, 0.5);
+      }
     }
 
     .grw-external-auth-form {

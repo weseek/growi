@@ -6,6 +6,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommandOutput,
+  ListObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -14,6 +15,15 @@ import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
+
+/**
+ * File metadata in storage
+ * TODO: mv this to "./uploader"
+ */
+  interface FileMeta {
+  name: string;
+  size: number;
+}
 
 type AwsCredential = {
   accessKeyId: string,
@@ -76,7 +86,7 @@ module.exports = (crowi) => {
     return true;
   };
 
-  lib.isValidUploadSettings = () => {
+  lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'aws:s3AccessKeyId') != null
       && configManager.getConfig('crowi', 'aws:s3SecretAccessKey') != null
       && (
@@ -86,11 +96,11 @@ module.exports = (crowi) => {
       && configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
-  lib.canRespond = () => {
+  lib.canRespond = function() {
     return !configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
   };
 
-  lib.respond = async(res, attachment) => {
+  lib.respond = async function(res, attachment) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -124,12 +134,12 @@ module.exports = (crowi) => {
 
   };
 
-  lib.deleteFile = async(attachment) => {
+  lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
   };
 
-  lib.deleteFiles = async(attachments) => {
+  lib.deleteFiles = async function(attachments) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -147,7 +157,7 @@ module.exports = (crowi) => {
     return s3.send(new DeleteObjectsCommand(totalParams));
   };
 
-  lib.deleteFileByFilePath = async(filePath) => {
+  lib.deleteFileByFilePath = async function(filePath) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -169,7 +179,7 @@ module.exports = (crowi) => {
     return s3.send(new DeleteObjectCommand(params));
   };
 
-  lib.uploadFile = async(fileStream, attachment) => {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -191,7 +201,22 @@ module.exports = (crowi) => {
     return s3.send(new PutObjectCommand(params));
   };
 
-  lib.findDeliveryFile = async(attachment) => {
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const params = {
+      Bucket: awsConfig.bucket,
+      ContentType: contentType,
+      Key: filePath,
+      Body: data,
+      ACL: 'public-read',
+    };
+
+    return s3.send(new PutObjectCommand(params));
+  };
+
+  lib.findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -224,10 +249,53 @@ module.exports = (crowi) => {
     return stream;
   };
 
-  lib.checkLimit = async(uploadFileSize) => {
-    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+  lib.checkLimit = async function(uploadFileSize) {
+    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
+    const totalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
+  };
+
+  /**
+   * List files in storage
+   */
+  lib.listFiles = async function() {
+    if (!lib.getIsReadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const files: FileMeta[] = [];
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    const params = {
+      Bucket: awsConfig.bucket,
+    };
+    let shouldContinue = true;
+    let nextMarker: string | undefined;
+
+    // handle pagination
+    while (shouldContinue) {
+      // eslint-disable-next-line no-await-in-loop
+      const { Contents = [], IsTruncated, NextMarker } = await s3.send(new ListObjectsCommand({
+        ...params,
+        Marker: nextMarker,
+      }));
+      files.push(...(
+        Contents.map(({ Key, Size }) => ({
+          name: Key as string,
+          size: Size as number,
+        }))
+      ));
+
+      if (!IsTruncated) {
+        shouldContinue = false;
+        nextMarker = undefined;
+      }
+      else {
+        nextMarker = NextMarker;
+      }
+    }
+
+    return files;
   };
 
   return lib;

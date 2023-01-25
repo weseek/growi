@@ -3,7 +3,7 @@ terraform {
     organization = "weseek"
 
     workspaces {
-      name = "official-image-builder"
+      name = "growi-official-image-builder"
     }
   }
 

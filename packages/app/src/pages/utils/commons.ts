@@ -36,7 +36,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
-  const currentPathname = decodeURI(url.pathname);
+  const currentPathname = decodeURIComponent(url.pathname);
 
   const isMaintenanceMode = appService.isMaintenanceMode();
 

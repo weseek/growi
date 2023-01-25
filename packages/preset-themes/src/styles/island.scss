@@ -20,7 +20,7 @@
   --bgcolor-global-l: 90%;
   --bgcolor-card: #{$gray-50};
   --bgcolor-inline-code: #{$gray-100}; //optional
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 70%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 30%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors

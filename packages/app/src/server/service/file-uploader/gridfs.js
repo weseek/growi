@@ -1,11 +1,15 @@
+import { Readable } from 'stream';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
-const mongoose = require('mongoose');
 const util = require('util');
+
+const mongoose = require('mongoose');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
+  const { configManager } = crowi;
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
@@ -83,16 +87,13 @@ module.exports = function(crowi) {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
-  lib.checkLimit = async(uploadFileSize) => {
-    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-
-    // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimitd is null)
-    const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit')
-      || crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
-    return lib.doCheckLimit(uploadFileSize, maxFileSize, gridfsTotalLimit);
+  lib.checkLimit = async function(uploadFileSize) {
+    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
+    const totalLimit = configManager.getFileUploadTotalLimit();
+    return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
-  lib.uploadFile = async function(fileStream, attachment) {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     return AttachmentFile.promisifiedWrite(
@@ -101,6 +102,20 @@ module.exports = function(crowi) {
         contentType: attachment.fileFormat,
       },
       fileStream,
+    );
+  };
+
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const readable = new Readable();
+    readable.push(data);
+    readable.push(null); // EOF
+
+    return AttachmentFile.promisifiedWrite(
+      {
+        filename: filePath,
+        contentType,
+      },
+      readable,
     );
   };
 
@@ -125,6 +140,16 @@ module.exports = function(crowi) {
 
     // return stream.Readable
     return AttachmentFile.read({ _id: attachmentFile._id });
+  };
+
+  /**
+   * List files in storage
+   */
+  lib.listFiles = async function() {
+    const attachmentFiles = await AttachmentFile.find();
+    return attachmentFiles.map(({ filename: name, length: size }) => ({
+      name, size,
+    }));
   };
 
   return lib;

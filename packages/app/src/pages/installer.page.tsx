@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import {
@@ -6,6 +6,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
@@ -15,11 +16,13 @@ import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
-
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
+
+const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
+const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -35,6 +38,24 @@ type Props = CommonProps & {
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { t: tCommons } = useTranslation('commons');
+
+  const navTabMapping = useMemo(() => {
+    return {
+      user_infomation: {
+        Icon: () => <i className="icon-fw icon-user"></i>,
+        Content: InstallerForm,
+        i18n: t('installer.tab'),
+        index: 0,
+      },
+      external_accounts: {
+        Icon: () => <i className="icon-fw icon-share-alt"></i>,
+        Content: DataTransferForm,
+        i18n: tCommons('g2g_data_transfer.tab'),
+        index: 1,
+      },
+    };
+  }, [t, tCommons]);
 
   // commons
   useAppTitle(props.appTitle);
@@ -50,8 +71,8 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div id="installer-form-container">
-        <InstallerForm />
+      <div id="installer-form-container" className="nologin-dialog mx-auto">
+        <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['p-0']} />
       </div>
     </NoLoginLayout>
   );

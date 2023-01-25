@@ -165,6 +165,7 @@
     "no_page_list": "There are no pages under this page."
   },
   "installer": {
+    "tab": "Create account",
     "title": "Installer",
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
