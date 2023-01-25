@@ -1,3 +1,6 @@
+// ===========================================
+// processors for old format
+// ===========================================
 function drawioProcessor(body) {
   var oldDrawioRegExp = /:::\s?drawio\n(.+)\n:::/g; // drawio old format
   return body.replace(oldDrawioRegExp, '``` drawio\n$1\n```');
@@ -18,37 +21,41 @@ function csvProcessor(body) {
   return body.replace(oldCsvTableRegExp, '``` csv$1\n$2\n```');
 }
 
+
+// ===========================================
+// replace method with processors
+// ===========================================
 function replaceLatestRevisions(body, processors) {
   var replacedBody = body;
   processors.forEach((processor) => {
-    replacedBody = processor(body)
+    replacedBody = processor(replacedBody)
   })
   return replacedBody;
 }
 
+
+// ===========================================
+// main process
+// ===========================================
+
 var pagesCollection = db.getCollection("pages");
-var revisionIds = [];
-
-pagesCollection.find({}).forEach((doc) => {
-    if (doc.revision != undefined) {
-        revisionIds.push(doc.revision);
-    }
-});
-
 var revisionsCollection = db.getCollection("revisions");
+
 var operations = [];
 var oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor];
 var growiSyntaxLinkerProcessor = [];
 var userOriginalProcessor = [];
 
-revisionsCollection.find({ _id: { $in: revisionIds } }).forEach((doc) => {
-    var replacedBody = replaceLatestRevisions(doc.body, [...oldFormatProcessors, ...growiSyntaxLinkerProcessor, ...userOriginalProcessor]);
+pagesCollection.find({}).forEach((doc) => {
+  if (doc.revision) {
+    var revision = revisionsCollection.findOne({_id: doc.revision})
+    var replacedBody = replaceLatestRevisions(revision.body, [...oldFormatProcessors, ...growiSyntaxLinkerProcessor, ...userOriginalProcessor]);
     var operation = {
         updateOne: {
-            filter: {_id: doc._id},
+            filter: {_id: revision._id},
             update: {
                 $set: { body: replacedBody }
-         }
+        }
         }
     };
     operations.push(operation);
@@ -60,5 +67,6 @@ revisionsCollection.find({ _id: { $in: revisionIds } }).forEach((doc) => {
         sleep(5);
         operations = []
     }
+  }
 })
 revisionsCollection.bulkWrite(operations);
