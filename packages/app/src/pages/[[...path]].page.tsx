@@ -66,6 +66,7 @@ import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage,
 } from './utils/commons';
+import { PageView } from '~/components/Page/PageView';
 
 
 declare global {
@@ -317,9 +318,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
-          pagePath={pagePath}
-          page={pageWithMeta?.data}
-          ssrBody={ssrBody}
+          pageView={
+            <PageView
+              pagePath={pagePath}
+              page={pageWithMeta?.data}
+              ssrBody={ssrBody}
+            />
+          }
         />
 
         <PageStatusAlert />

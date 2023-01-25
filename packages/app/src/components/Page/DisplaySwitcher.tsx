@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { type IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 
@@ -12,7 +11,6 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { LazyRenderer } from '../Common/LazyRenderer';
 
-import { PageView } from './PageView';
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
@@ -21,12 +19,11 @@ const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBotto
 
 
 type Props = {
-  pagePath: string,
-  page?: IPagePopulatedToShowRevision,
-  ssrBody?: JSX.Element,
+  pageView: JSX.Element,
 }
 
 export const DisplaySwitcher = (props: Props): JSX.Element => {
+  const { pageView } = props;
 
   const { data: editorMode = EditorMode.View } = useEditorMode();
   const { data: isEditable } = useIsEditable();
@@ -39,7 +36,7 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
 
   return (
     <>
-      { isViewMode && <PageView {...props} /> }
+      { isViewMode && pageView }
 
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
         <div data-testid="page-editor" id="page-editor" className="editor-root">
