@@ -1,7 +1,3 @@
-
-
-
-
 function drawioProcessor(body) {
   var oldDrawioRegExp = /:::\s?drawio\n(.+)\n:::/g; // drawio old format
   return body.replace(oldDrawioRegExp, '``` drawio\n$1\n```');
@@ -42,9 +38,11 @@ pagesCollection.find({}).forEach((doc) => {
 var revisionsCollection = db.getCollection("revisions");
 var operations = [];
 var oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor];
+var growiSyntaxLinkerProcessor = [];
+var userOriginalProcessor = [];
 
 revisionsCollection.find({ _id: { $in: revisionIds } }).forEach((doc) => {
-    var replacedBody = replaceLatestRevisions(doc.body, oldFormatProcessors);
+    var replacedBody = replaceLatestRevisions(doc.body, [...oldFormatProcessors, ...growiSyntaxLinkerProcessor, ...userOriginalProcessor]);
     var operation = {
         updateOne: {
             filter: {_id: doc._id},
