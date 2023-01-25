@@ -10,17 +10,16 @@ import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentPageId,
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
-import { useSWRxTagsInfo } from './page';
+import { useCurrentPagePath, useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  const { data: pageId } = useCurrentPageId();
-  return useStaticSWR(['editingMarkdown', pageId], initialData);
+  const { data: currentPagePath } = useCurrentPagePath();
+  return useStaticSWR(['editingMarkdown', currentPagePath], initialData);
 };
 
 

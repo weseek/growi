@@ -45,7 +45,7 @@ export const useCurrentPathname = (initialData?: string): SWRResponse<string, Er
 };
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
