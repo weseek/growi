@@ -16,6 +16,7 @@ import MailSetting from './MailSetting';
 import { MaintenanceMode } from './MaintenanceMode';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
+import QuestionnaireSettings from './QuestionnaireSettings';
 
 
 const logger = loggerFactory('growi:appSettings');
@@ -104,6 +105,13 @@ const AppSettingsPageContents = (props: Props) => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:app_setting.file_upload_settings')}</h2>
           <FileUploadSetting />
+        </div>
+      </div>
+
+      <div className="row mt-5">
+        <div className="col-lg-12">
+          <h2 className="admin-setting-header">アンケート設定</h2>
+          <QuestionnaireSettings />
         </div>
       </div>
 
