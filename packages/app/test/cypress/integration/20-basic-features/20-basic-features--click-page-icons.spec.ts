@@ -108,8 +108,12 @@ context('Click page icons button', () => {
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}7-bookmark-page`) });
 
     // total bookmarker
-    cy.get('#po-total-bookmarks').click({force: true});
-    cy.get('.user-list-popover').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('#po-total-bookmarks').click({force: true});
+      // wait until
+      return cy.get('.user-list-popover').then($elem => $elem.is(':visible'));
+    });
     cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}8-bookmarks-counter`) });
 
@@ -129,8 +133,12 @@ context('Click page icons button', () => {
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}9-unbookmark-page`) });
 
     // total bookmarker
-    cy.get('#po-total-bookmarks').click({force: true});
-    cy.get('.user-list-popover').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('#po-total-bookmarks').click({force: true});
+      // wait until
+      return cy.get('.user-list-popover').then($elem => $elem.is(':visible'));
+    });
     cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}10-bookmarks-counter`) });
   });
