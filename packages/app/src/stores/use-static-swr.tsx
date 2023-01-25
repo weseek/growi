@@ -29,7 +29,7 @@ export function useStaticSWR<Data, Error>(
     if (data !== undefined) {
       mutate(key, data);
     }
-  }, [data, key]); // Only depends on `data`
+  }, [data, key]);
 
   return swrResponse;
 }
