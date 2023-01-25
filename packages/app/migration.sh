@@ -1,7 +1,7 @@
-var oldDrawioRegExp = /:::\s?drawio\n(.+)\n:::/g; // drawioの旧記法
-var oldPlantUmlRegExp = /@startuml\n([\s\S]*?)\n@enduml/g; // plantUMLの旧記法
-var oldTsvTableRegExp = /::: tsv(-h)?\n([\s\S]*?)\n:::/g; // TSVによるテーブル描画の旧記法
-var oldCsvTableRegExp = /::: csv(-h)?\n([\s\S]*?)\n:::/g; // CSVによるテーブル描画の旧記法
+var oldDrawioRegExp = /:::\s?drawio\n(.+)\n:::/g; // drawio old format
+var oldPlantUmlRegExp = /@startuml\n([\s\S]*?)\n@enduml/g; // plantUML old format
+var oldTsvTableRegExp = /::: tsv(-h)?\n([\s\S]*?)\n:::/g; // TSV old format
+var oldCsvTableRegExp = /::: csv(-h)?\n([\s\S]*?)\n:::/g; // CSV old format
 
 function replaceBody(body) {
   const drawioReplaced = body.replace(oldDrawioRegExp, '``` drawio\n$1\n```');
@@ -14,7 +14,6 @@ function replaceBody(body) {
 var pagesCollection = db.getCollection("pages");
 var revisionIds = [];
 
-// 各ページの最新のrevisionを取得(最新revisionしか記法のマイグレーションをしない)
 pagesCollection.find({}).forEach((doc) => {
     if (doc.revision != undefined) {
         revisionIds.push(doc.revision);
@@ -36,10 +35,10 @@ revisionsCollection.find({ _id: { $in: revisionIds } }).forEach((doc) => {
     };
     operations.push(operation);
 
-    // revision 100毎にbulkWriteを実行
+    // bulkWrite per 100 revisions
     if (operations.length > 99) {
         revisionsCollection.bulkWrite(operations);
-        // sleep時間は環境変数で設定できるようにする
+        // sleep time can be set from env var
         sleep(5);
         operations = []
     }
