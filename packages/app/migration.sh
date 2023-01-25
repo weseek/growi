@@ -4,7 +4,7 @@ var oldTsvTableRegExp = /::: tsv(-h)?\n([\s\S]*?)\n:::/g; // TSVによるテー�
 var oldCsvTableRegExp = /::: csv(-h)?\n([\s\S]*?)\n:::/g; // CSVによるテーブル描画の旧記法
 
 function replaceBody(body) {
-  const drawioReplaced = body.replace(oldDrawioRegExp, '```drawio\n$1\n```');
+  const drawioReplaced = body.replace(oldDrawioRegExp, '``` drawio\n$1\n```');
   const plantUmlReplaced = drawioReplaced.replace(oldPlantUmlRegExp, '``` plantuml\n$1\n```');
   const tsvReplaced = plantUmlReplaced.replace(oldTsvTableRegExp, '``` tsv$1\n$2\n```');
   const csvReplaced = tsvReplaced.replace(oldCsvTableRegExp, '``` csv$1\n$2\n```');
