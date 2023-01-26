@@ -12,7 +12,7 @@ import { NormalComponents } from 'react-markdown/lib/complex-types';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
+import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
@@ -29,7 +29,6 @@ import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
@@ -66,26 +65,6 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
       >
     | undefined
 };
-
-// const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
-
-// const generateCommonSanitizeOptions = (): SanitizeOption => {
-//   return deepmerge(
-//     sanitizeDefaultSchema,
-//     {
-//       clobberPrefix: 'mdcont-',
-//       attributes: commonSanitizeAttributes,
-//     },
-//   );
-// };
-
-// const injectCustomSanitizeOptions = (targetSanitizeOption: SanitizeOption, config: RendererConfig) => {
-//   if (config.xssOption !== RehypeSanitizeOption.CUSTOM) {
-//     return;
-//   }
-//   targetSanitizeOption.tagNames = config.tagWhiteList;
-//   targetSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
-// };
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
