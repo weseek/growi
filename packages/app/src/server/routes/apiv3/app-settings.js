@@ -198,6 +198,10 @@ module.exports = (crowi) => {
       body('s3SecretAccessKey').trim(),
       body('s3ReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
     ],
+    questionnaireSettings: [
+      body('isEnableQuestionnaire').isBoolean(),
+      body('isAppSiteUrlHashed').isBoolean(),
+    ],
     maintenanceMode: [
       body('flag').isBoolean(),
     ],
@@ -266,6 +270,10 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
+
+      isEnableQuestionnaire: crowi.configManager.getConfig('crowi', 'questionnaire:isEnableQuestionnaire'),
+      isAppSiteUrlHashed: crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed'),
+
       isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
     };
     return res.apiv3({ appSettingsParams });
@@ -666,6 +674,35 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating fileUploadType';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+    }
+
+  });
+
+  // eslint-disable-next-line max-len
+  router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+    const { isEnableQuestionnaire, isAppSiteUrlHashed } = req.body;
+
+    const requestParams = {
+      'questionnaire:isEnableQuestionnaire': isEnableQuestionnaire,
+      'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+
+      const responseParams = {
+        isEnableQuestionnaire: crowi.configManager.getConfig('crowi', 'questionnaire:isEnableQuestionnaire'),
+        isAppSiteUrlHashed: crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed'),
+      };
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+      return res.apiv3({ responseParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating questionnaire settings';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
     }
 
   });
