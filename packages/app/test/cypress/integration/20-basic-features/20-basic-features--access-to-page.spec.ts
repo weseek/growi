@@ -68,6 +68,34 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
+  it('View and Edit contents are successfully loaded', () => {
+    cy.visit('/Sandbox#edit');
+    cy.waitUntilSkeletonDisappear();
+
+    const testContents = 'test contents';
+    // remove contents
+    cy.get('.rbt-input-main').should('be.visible');
+    cy.get('.rbt-input-main').clear();
+
+    // update to test contents
+    cy.get('.rbt-input-main').type(testContents);
+
+    // save
+    cy.getByTestid('save-page-btn').click();
+
+    // test for View and Edit are equal
+    cy.get('.wiki').should('be.visible');
+    cy.get('.wiki').children().first().should('have.text', testContents);
+
+    // Edit again
+    cy.getByTestid('editor-button').should('be.visible');
+    cy.getByTestid('editor-button').click();
+
+    // test for View and Edit are equal
+    cy.get('. CodeMirror-line ').should('be.visible');
+    cy.get('. CodeMirror-line ').children().first().should('have.text', testContents);
+  })
+
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin');
 
