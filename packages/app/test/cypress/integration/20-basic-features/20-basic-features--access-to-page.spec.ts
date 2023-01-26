@@ -74,11 +74,11 @@ context('Access to page', () => {
 
     const testContents = 'test contents';
     // remove contents
-    cy.get('.rbt-input-main').should('be.visible');
-    cy.get('.rbt-input-main').clear();
+    cy.get('.CodeMirror').should('be.visible');
+    cy.get('.CodeMirror').clear();
 
     // update to test contents
-    cy.get('.rbt-input-main').type(testContents);
+    cy.get('.CodeMirror').type(testContents);
 
     // save
     cy.getByTestid('save-page-btn').click();
