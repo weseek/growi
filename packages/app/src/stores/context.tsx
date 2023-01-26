@@ -234,7 +234,7 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     ['isGuestUser', currentUser],
-    (key: Key, currentUser: IUser) => currentUser == null,
+    ([, currentUser]) => currentUser == null,
     { fallbackData: currentUser == null },
   );
 };
@@ -247,7 +247,7 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     ['isEditable', isGuestUser, isForbidden, isNotCreatable, isIdenticalPath],
-    (key: Key, isGuestUser: boolean, isForbidden: boolean, isNotCreatable: boolean, isIdenticalPath: boolean) => {
+    ([, isGuestUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
       return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser);
     },
   );

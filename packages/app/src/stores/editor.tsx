@@ -41,7 +41,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
 
   const swrResult = useSWRImmutable<IEditorSettings>(
     isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
-    endpoint => apiv3Get(endpoint).then(result => result.data),
+    ([endpoint]) => apiv3Get(endpoint).then(result => result.data),
     {
       // use: [localStorageMiddleware], // store to localStorage for initialization fastly
       // fallbackData: undefined,
@@ -96,7 +96,7 @@ export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResp
   const shouldFetch: boolean = currentPagePath != null;
   return useSWRImmutable(
     shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
-    (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
+    ([endpoint, path]) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
     { fallbackData: [''] },
   );
 };
