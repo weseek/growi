@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
+import { PageView } from '~/components/Page/PageView';
 import RevisionRenderer from '~/components/Page/RevisionRenderer';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -66,7 +67,6 @@ import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage,
 } from './utils/commons';
-import { PageView } from '~/components/Page/PageView';
 
 
 declare global {
@@ -295,8 +295,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitleForPage(props, pagePath);
 
-  const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
-  const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
+  // TODO: show SSR body
+  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
+  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
 
   return (
     <>
@@ -322,7 +323,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
             <PageView
               pagePath={pagePath}
               page={pageWithMeta?.data}
-              ssrBody={ssrBody}
+              // TODO: show SSR body
+              // ssrBody={ssrBody}
             />
           }
         />

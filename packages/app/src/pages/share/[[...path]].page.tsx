@@ -112,8 +112,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitleForPage(props, pagePath);
 
-  const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
-  const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
+  // TODO: show SSR body
+  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
+  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
 
   const sideContents = shareLink != null
     ? <PageSideContents page={shareLink.relatedPage} />
@@ -132,7 +133,8 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       () => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents),
       {
         ssr: false,
-        loading: () => ssrBody,
+        // TODO: show SSR body
+        // loading: () => ssrBody,
       },
     );
     return <ShareLinkPageContents page={props.shareLinkRelatedPage} />;

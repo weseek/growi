@@ -98,7 +98,8 @@ export const PageView = (props: Props): JSX.Element => {
     : (() => {
       const PageContents = dynamic(() => import('./PageContents').then(mod => mod.PageContents), {
         ssr: false,
-        loading: () => ssrBody ?? <></>,
+        // TODO: show SSR body
+        // loading: () => ssrBody ?? <></>,
       });
       return <PageContents />;
     })();
