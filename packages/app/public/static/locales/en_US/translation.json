@@ -816,7 +816,6 @@
     "no_answer": "No answer",
     "settings": "Questionnaire settings",
     "failed_to_send": "Failed to send feedback",
-    "failed_to_get_user_info": "Feedback couldn't be sent because user info couldn't be achieved",
     "failed_to_update_answer_status": "Failed to update questionnaire answer status",
     "skipped": "The questionnaire was skipped and won't be shown again"
   },

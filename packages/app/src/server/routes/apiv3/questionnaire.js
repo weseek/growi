@@ -1,17 +1,15 @@
-import { Request, Router } from 'express';
+import { Router } from 'express';
 
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '~/server/models/questionnaire/questionnaire-order';
 import loggerFactory from '~/utils/logger';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
-
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
 
 const router = Router();
 
-const changeAnswerStatus = async(user, questionnaireOrderId, status: StatusType): Promise<number> => {
+const changeAnswerStatus = async(user, questionnaireOrderId, status) => {
   const result = await QuestionnaireAnswerStatus.updateOne({
     user,
     questionnaireOrderId,
@@ -28,9 +26,10 @@ const changeAnswerStatus = async(user, questionnaireOrderId, status: StatusType)
   return 404;
 };
 
-module.exports = () => {
+module.exports = (crowi) => {
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
-  router.get('/orders', async(req: Request, res: ApiV3Response) => {
+  router.get('/orders', async(req, res) => {
     const currentDate = new Date();
     try {
       const questionnaireOrders = await QuestionnaireOrder.find({
@@ -47,9 +46,9 @@ module.exports = () => {
     }
   });
 
-  router.put('/answer', async(req: Request, res: ApiV3Response) => {
+  router.put('/answer', loginRequired, async(req, res) => {
     try {
-      const status = await changeAnswerStatus(req.body.user, req.body.questionnaireOrderId, StatusType.answered);
+      const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
       return res.apiv3({}, status);
     }
     catch (err) {
@@ -58,9 +57,9 @@ module.exports = () => {
     }
   });
 
-  router.put('/skip', async(req: Request, res: ApiV3Response) => {
+  router.put('/skip', loginRequired, async(req, res) => {
     try {
-      const status = await changeAnswerStatus(req.body.user, req.body.questionnaireOrderId, StatusType.skipped);
+      const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
       return res.apiv3({}, status);
     }
     catch (err) {

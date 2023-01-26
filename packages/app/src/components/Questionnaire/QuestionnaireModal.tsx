@@ -61,15 +61,12 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
   }, [growiVersion]);
 
   // TODO: モック化されている箇所を実装
-  const getUserInfo = useCallback((): IUserInfo | null => {
-    if (currentUser) {
-      return {
-        userIdHash: '542bcc3bc5bc61b840017a18',
-        type: currentUser.admin ? 'admin' : 'general',
-        userCreatedAt: currentUser.createdAt,
-      };
-    }
-    return null;
+  const getUserInfo = useCallback((): IUserInfo => {
+    return {
+      userIdHash: '542bcc3bc5bc61b840017a18',
+      type: currentUser?.admin ? 'admin' : 'general',
+      userCreatedAt: currentUser?.createdAt || new Date(),
+    };
   }, [currentUser]);
 
   const sendQuestionnaireAnswer = useCallback(async(questionnaireAnswer: IQuestionnaireAnswer) => {
@@ -93,7 +90,6 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
 
     try {
       await apiv3Put('/questionnaire/answer', {
-        user: currentUser?._id,
         questionnaireOrderId: questionnaireOrder._id,
       });
     }
@@ -101,7 +97,7 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
       logger.error(e);
       toastError(t('questionnaire.failed_to_update_answer_status'));
     }
-  }, [currentUser?._id, growiQuestionnaireServerOrigin, questionnaireOrder._id, t]);
+  }, [growiQuestionnaireServerOrigin, questionnaireOrder._id, t]);
 
   const submitHandler = useCallback((event) => {
     event.preventDefault();
@@ -113,27 +109,21 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
       return { question: question._id, value: answerValue };
     });
 
-    if (userInfo) {
-      const questionnaireAnswer: IQuestionnaireAnswer = {
-        growiInfo,
-        userInfo,
-        answers,
-        answeredAt: new Date(),
-      };
+    const questionnaireAnswer: IQuestionnaireAnswer = {
+      growiInfo,
+      userInfo,
+      answers,
+      answeredAt: new Date(),
+    };
 
-      sendQuestionnaireAnswer(questionnaireAnswer);
-    }
-    else {
-      toastError(t('questionnaire.failed_to_get_user_info'));
-    }
+    sendQuestionnaireAnswer(questionnaireAnswer);
 
     closeQuestionnaireModal();
-  }, [closeQuestionnaireModal, getGrowiInfo, getUserInfo, t, questionnaireOrder.questions, sendQuestionnaireAnswer]);
+  }, [closeQuestionnaireModal, getGrowiInfo, getUserInfo, questionnaireOrder.questions, sendQuestionnaireAnswer]);
 
   const skipBtnClickHandler = useCallback(async() => {
     try {
       apiv3Put('/questionnaire/skip', {
-        user: currentUser?._id,
         questionnaireOrderId: questionnaireOrder._id,
       });
       toastSuccess(t('questionnaire.skipped'));
@@ -143,7 +133,7 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
       toastError(t('questionnaire.failed_to_update_answer_status'));
     }
     closeQuestionnaireModal();
-  }, [closeQuestionnaireModal, currentUser?._id, questionnaireOrder._id, t]);
+  }, [closeQuestionnaireModal, questionnaireOrder._id, t]);
 
   const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
 
