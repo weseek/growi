@@ -191,7 +191,7 @@ export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => 
       return undefined;
     },
     // TODO: set fallbackData
-    // { fallbackData:  },
+    // { fallbackData:  }
   );
 };
 
