@@ -7,7 +7,7 @@ import {
   isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
 } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -160,7 +160,7 @@ const PutbackPageModal = (): JSX.Element => {
 };
 
 type Props = CommonProps & {
-  currentUser: IUserHasId,
+  currentUser: IUser,
 
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
@@ -394,7 +394,7 @@ Page.getLayout = function getLayout(page) {
       <DescendantsPageListModal />
       <DrawioModal />
       <HandsontableModal />
-      <QuestionnaireModalManager growiQuestionnaireServerOrigin={page.props.growiQuestionnaireServerOrigin}/>
+      <QuestionnaireModalManager />
     </>
   );
 };
@@ -619,9 +619,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
-
-  props.growiQuestionnaireServerOrigin = configManager.getConfig('crowi', 'app:growiQuestionnaireServerOriginClientSide')
-    || configManager.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
 }
 
 /**

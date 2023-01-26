@@ -19,7 +19,6 @@ const logger = loggerFactory('growi:QuestionnaireModal');
 
 type QuestionnaireModalProps = {
   questionnaireOrder: IQuestionnaireOrderHasId
-  growiQuestionnaireServerOrigin: string
 }
 
 const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JSX.Element => {
