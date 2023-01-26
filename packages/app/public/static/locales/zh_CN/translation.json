@@ -49,6 +49,8 @@
 	"Sign up with this Google Account": "Sign up with this Google Account",
 	"Example": "例如",
 	"Taro Yamada": "John Doe",
+  "Select": "请选择",
+  "Required": "必需的",
 	"List View": "列表",
 	"Timeline View": "时间线",
   "History": "历史",
@@ -143,6 +145,7 @@
 	"edited this page": "edited this page.",
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
+  "Questionnaire": "调查",
   "Disassociate": "解除关联",
   "No bookmarks yet": "暂无书签",
   "add_bookmark": "添加到书签",
@@ -806,6 +809,27 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "questionnaire": {
+    "title": "改善服务的GROWI调查表",
+    "successfully_submit": "问卷已经发出。",
+    "thanks_for_answer": "非常感谢您完成问卷调查。",
+    "more_satisfied_services": "我们希望让使用GROWI的人更加满意",
+    "strive_to_improve_services": "我们将利用你的反馈来改善我们的服务。",
+    "satisfaction_with_growi": "对GROWI的满意程度",
+    "history_of_growi_use": "GROWI的使用历史",
+    "position": "职业类型",
+    "occupation": "职位",
+    "comment_on_growi": "关于GROWI的评论",
+    "answer": "答案是",
+    "length_of_experience": {
+      "more_than_two_years": "2年以上",
+      "one_to_two_years": "超过1年但少于2年",
+      "six_months_to_one_year": "超过6个月但少于1年",
+      "three_months_to_six_months": "超过3个月但少于6个月",
+      "one_month_to_three_months": "超过1个月但少于3个月",
+      "less_than_one_month": "不到1个月"
+    }
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",
