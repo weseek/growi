@@ -37,7 +37,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       toastSuccess(t('questionnaire.skipped'));
     }).catch((e) => {
       logger.error(e);
-      toastError(t('questionnaire.failed_to_update_answer_status'));
+      toastError(t('questionnaire.failed_to_skip'));
     });
 
     setIsOpen(false);

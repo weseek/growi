@@ -822,7 +822,7 @@
     "no_answer": "No answer",
     "settings": "Questionnaire settings",
     "failed_to_send": "Failed to send feedback",
-    "failed_to_update_answer_status": "Failed to update questionnaire answer status",
+    "failed_to_skip": "Failed to skip questionnaire",
     "skipped": "The questionnaire was skipped and won't be shown again",
     "title": "GROWI questionnaire for service improvement",
     "successfully_submit": "Your survey has been submitted.",

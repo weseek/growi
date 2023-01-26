@@ -77,7 +77,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     }
     catch (e) {
       logger.error(e);
-      toastError(t('questionnaire.failed_to_update_answer_status'));
+      toastError(t('questionnaire.failed_to_skip'));
     }
     closeQuestionnaireModal();
   }, [closeQuestionnaireModal, questionnaireOrder._id, t]);

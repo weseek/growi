@@ -209,8 +209,6 @@ type Props = CommonProps & {
   userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
-
-  growiQuestionnaireServerOrigin: string,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
