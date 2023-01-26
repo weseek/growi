@@ -658,6 +658,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 4,
   },
+  QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE: {
+    ns: 'crowi',
+    key: 'questionnaire:isEnableQuestionnaire',
+    type: ValueType.BOOLEAN,
+    default: true,
+  },
+  QUESTIONNAIRE_IS_APP_SITE_URL_HASHED: {
+    ns: 'crowi',
+    key: 'questionnaire:isAppSiteUrlHashed',
+    type: ValueType.BOOLEAN,
+    default: true,
+  },
 };
 
 
