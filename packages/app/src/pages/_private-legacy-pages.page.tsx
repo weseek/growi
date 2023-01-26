@@ -136,8 +136,9 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }

@@ -681,7 +681,7 @@ module.exports = (crowi) => {
     try {
       const fromPage = await Page.findByPath(fromPath, true);
       if (fromPage == null) {
-        return res.apiv3Err(new ErrorV3('fromPage is Null'), 400);
+        return res.apiv3Err(new ErrorV3('fromPage is not exist', 'from-page-is-not-exist'), 400);
       }
 
       const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user, {}, true);

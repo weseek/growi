@@ -55,10 +55,10 @@ import loggerFactory from '~/utils/logger';
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
-// import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
+import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -92,7 +92,7 @@ const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
+const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
@@ -354,7 +354,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
           </div>
         </header>
         <div className="d-edit-none">
-          <GrowiSubNavigationSwitcher />
+          <GrowiSubNavigationSwitcher isLinkSharingDisabled={props.disableLinkSharing} />
         </div>
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
@@ -608,12 +608,11 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-
-    // XSS: rehype-sanitize options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
   props.sidebarConfig = {

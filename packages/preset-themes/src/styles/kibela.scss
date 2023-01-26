@@ -23,7 +23,7 @@
   --bgcolor-global-l: 96%;
   --bgcolor-inline-code: #{hsl.lighten(var(--subthemecolor), 70%)};
   --bgcolor-card: var(--lightthemecolor);
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),80%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),20%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors

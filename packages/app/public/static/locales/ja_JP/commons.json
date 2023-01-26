@@ -96,5 +96,15 @@
 
   "not_found_page": {
     "page_not_exist": "このページは存在しません。"
+  },
+
+  "g2g_data_transfer": {
+    "tab": "データ移行",
+    "data_transfer": "別GROWIとのデータ移行",
+    "transfer_data_to_this_growi": "別GROWIのデータをこのGROWIへ移行する",
+    "publish_transfer_key": "移行キーを発行する",
+    "transfer_key_limit": "※ 移行キーの有効期限は発行から1時間となります。",
+    "once_transfer_key_used": "※ 移行キーは一度移行に利用するとそれ移行はご利用いただけなくなります。",
+    "transfer_to_growi_cloud": "※ GROWI.cloud への移行を実施する場合はこちらをご確認ください。"
   }
 }

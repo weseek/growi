@@ -27,6 +27,7 @@ module.exports = {
   'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
   'growi:service:search-delegator:elasticsearch': 'debug',
+  'growi:service:g2g-transfer': 'debug',
 
   /*
    * configure level for client

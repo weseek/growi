@@ -5,6 +5,8 @@ import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inje
 import * as loginFormValidator from '../../middlewares/login-form-validator';
 import * as registerFormValidator from '../../middlewares/register-form-validator';
 
+import g2gTransfer from './g2g-transfer';
+import importRoute from './import';
 import pageListing from './page-listing';
 import * as userActivation from './user-activation';
 
@@ -33,13 +35,14 @@ module.exports = (crowi, app) => {
   routerForAdmin.use('/users', require('./users')(crowi));
   routerForAdmin.use('/user-groups', require('./user-group')(crowi));
   routerForAdmin.use('/export', require('./export')(crowi));
-  routerForAdmin.use('/import', require('./import')(crowi));
+  routerForAdmin.use('/import', importRoute(crowi));
   routerForAdmin.use('/search', require('./search')(crowi));
   routerForAdmin.use('/security-setting', require('./security-setting')(crowi));
   routerForAdmin.use('/mongo', require('./mongo')(crowi));
   routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
   routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
   routerForAdmin.use('/activity', require('./activity')(crowi));
+  routerForAdmin.use('/g2g-transfer', g2gTransfer(crowi));
 
   // auth
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
@@ -48,7 +51,8 @@ module.exports = (crowi, app) => {
   const loginPassport = require('../login-passport')(crowi, app);
 
   routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
-    addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
+    addActivity, loginPassport.isEnableLoginWithLocalOrLdap, loginPassport.loginWithLocal, loginPassport.loginWithLdap,
+    loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
 
   routerForAuth.use('/invited', require('./invited')(crowi));
   routerForAuth.use('/logout', require('./logout')(crowi));

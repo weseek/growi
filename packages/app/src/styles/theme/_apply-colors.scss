@@ -187,6 +187,9 @@ ul.pagination {
   .search-typeahead {
     background-color: hsl.alpha(var(--bgcolor-global),10%);
   }
+  input.form-control {
+    border: none;
+  }
 }
 
 .grw-sidebar {
@@ -372,14 +375,6 @@ ul.pagination {
 
   .grw-nav-slide-hr {
     border-color: var(--color-link) !important;
-  }
-}
-
-.grw-page-accessories-modal {
-  .modal-header {
-    .close {
-      color: var(--secondary);
-    }
   }
 }
 
@@ -695,8 +690,8 @@ Emoji picker modal
 }
 
 /*
-  Questionnaire modal
-*/
+ * Questionnaire modal
+ */
 .grw-questionnaire-btn-group {
   .btn-outline-primary {
     @include hsl-button.button-outline-variant(
@@ -711,4 +706,11 @@ Emoji picker modal
       background-color: var(--primary) !important;
     }
   }
+}
+
+/*
+ * revision-history-diff
+ */
+.revision-history-diff {
+  background-color: white;
 }

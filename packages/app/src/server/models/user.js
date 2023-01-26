@@ -69,6 +69,7 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
+    isEnableQuestionnaire: { type: Boolean, default: true },
   }, {
     timestamps: true,
     toObject: {
@@ -447,12 +448,16 @@ module.exports = function(crowi) {
 
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
-    const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
+    const activeUsers = await this.countActiveUsers();
     if (userUpperLimit <= activeUsers) {
       return true;
     }
 
     return false;
+  };
+
+  userSchema.statics.countActiveUsers = async function() {
+    return this.countListByStatus(STATUS_ACTIVE);
   };
 
   userSchema.statics.countListByStatus = async function(status) {
@@ -724,6 +729,11 @@ module.exports = function(crowi) {
     const totalCount = (await this.find(conditions).distinct('username')).length;
 
     return { users, totalCount };
+  };
+
+  userSchema.methods.updateIsEnableQuestionnaire = async function(value) {
+    this.isEnableQuestionnaire = value;
+    return this.save();
   };
 
   class UserUpperLimitException {

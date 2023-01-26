@@ -41,7 +41,7 @@
   --bgcolor-global-l: 97%;
   --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #{$gray-50};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 85%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 15%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
@@ -161,8 +161,7 @@
 
   // login and register
   .nologin {
-    a#login.link-switch,
-    a#register.link-switch {
+    .nologin-dialog a.link-switch {
       color: rgba(black, 0.5);
     }
 
