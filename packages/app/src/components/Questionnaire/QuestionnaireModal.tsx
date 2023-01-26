@@ -11,7 +11,7 @@ import { IAnswer } from '~/interfaces/questionnaire/answer';
 import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
-import { IUserInfo } from '~/interfaces/questionnaire/user-info';
+import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 import { useCurrentUser, useGrowiVersion } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
 import axios from '~/utils/axios';
@@ -62,11 +62,14 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
 
   // TODO: モック化されている箇所を実装
   const getUserInfo = useCallback((): IUserInfo => {
-    return {
-      userIdHash: '542bcc3bc5bc61b840017a18',
-      type: currentUser?.admin ? 'admin' : 'general',
-      userCreatedAt: currentUser?.createdAt || new Date(),
-    };
+    if (currentUser) {
+      return {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: currentUser?.admin ? UserType.admin : UserType.general,
+        userCreatedAt: currentUser?.createdAt,
+      };
+    }
+    return { type: UserType.guest };
   }, [currentUser]);
 
   const sendQuestionnaireAnswer = useCallback(async(questionnaireAnswer: IQuestionnaireAnswer) => {
