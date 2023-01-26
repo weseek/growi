@@ -179,8 +179,6 @@ export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: currentPathname } = useCurrentPathname();
 
-  const fallbackData = (currentPathname != null && !_isPermalink(currentPathname)) ? currentPathname : undefined;
-
   return useSWRImmutable(
     ['currentPagePath', currentPage?.path, currentPathname],
     (key: Key, pagePath: string|undefined, pathname: string|undefined) => {
@@ -192,7 +190,8 @@ export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => 
       }
       return undefined;
     },
-    { fallbackData },
+    // TODO: set fallbackData
+    // { fallbackData:  },
   );
 };
 
