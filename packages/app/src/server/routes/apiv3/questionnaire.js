@@ -1,10 +1,6 @@
-import crypto from 'crypto';
-import * as os from 'node:os';
-
 import { Router } from 'express';
 
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
-import { UserType } from '~/interfaces/questionnaire/user-info';
 import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '~/server/models/questionnaire/questionnaire-order';
 import axios from '~/utils/axios';
@@ -55,57 +51,10 @@ module.exports = (crowi) => {
   });
 
   router.put('/answer', loginRequired, async(req, res) => {
-    const getUserInfo = (user, appSiteUrlHashed) => {
-      if (user) {
-        const hasher = crypto.createHmac('sha256', appSiteUrlHashed);
-        hasher.update(user._id.toString());
-
-        return {
-          userIdHash: hasher.digest('hex'),
-          type: user.admin ? UserType.admin : UserType.general,
-          userCreatedAt: user.createdAt,
-        };
-      }
-
-      return { type: UserType.guest };
-    };
-
-    const getGrowiInfo = async() => {
-      const appSiteUrl = crowi.appService.getSiteUrl();
-      const hasher = crypto.createHash('sha256');
-      hasher.update(appSiteUrl);
-      const appSiteUrlHashed = hasher.digest('hex');
-
-      const currentUsersCount = await User.countDocuments();
-      const currentActiveUsersCount = await User.countActiveUsers();
-      const attachmentType = crowi.configManager.getConfig('crowi', 'app:fileUploadType');
-
-      return {
-        version: crowi.version,
-        osInfo: {
-          type: os.type(),
-          platform: os.platform(),
-          arch: os.arch(),
-          totalmem: os.totalmem(),
-        },
-        appSiteUrl,
-        appSiteUrlHashed,
-        type: 'cloud', // TODO: set actual value
-        currentUsersCount,
-        currentActiveUsersCount,
-        wikiType: 'open', // TODO: set actual value
-        attachmentType,
-        activeExternalAccountTypes: undefined, // TODO: set actual value
-        deploymentType: undefined, // TODO: set actual value
-      };
-    };
-
     const sendQuestionnaireAnswer = async(user, answers) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-
-      const growiInfo = await getGrowiInfo();
-
-      const userInfo = getUserInfo(user, growiInfo.appSiteUrlHashed);
+      const growiInfo = await crowi.questionnaireInfoService.getGrowiInfo();
+      const userInfo = crowi.questionnaireInfoService.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
       const questionnaireAnswer = {
         growiInfo,

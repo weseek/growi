@@ -31,6 +31,7 @@ import PageOperationService from '../service/page-operation';
 // eslint-disable-next-line import/no-cycle
 import { PluginService } from '../service/plugin';
 import QuestionnaireCronService from '../service/questionnaire-cron';
+import QuestionnaireInfoService from '../service/questionnaire-info';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -84,6 +85,7 @@ function Crowi() {
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
+  this.questionnaireInfoService = null;
   this.questionnaireCronService = null;
 
   this.tokens = null;
@@ -148,6 +150,7 @@ Crowi.prototype.init = async function() {
     this.setupActivityService(),
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
+    this.setupQuestionnaireInfoService(),
     this.setUpCustomize(), // depends on pluginService
   ]);
 
@@ -316,6 +319,10 @@ Crowi.prototype.setupModels = async function() {
 Crowi.prototype.setupCron = function() {
   this.questionnaireCronService = new QuestionnaireCronService(this);
   this.questionnaireCronService.startCron();
+};
+
+Crowi.prototype.setupQuestionnaireInfoService = function() {
+  this.questionnaireInfoService = new QuestionnaireInfoService(this);
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
