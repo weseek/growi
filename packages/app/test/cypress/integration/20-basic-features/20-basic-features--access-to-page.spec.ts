@@ -69,31 +69,55 @@ context('Access to page', () => {
   })
 
   it('View and Edit contents are successfully loaded', () => {
-    cy.visit('/Sandbox#edit');
-    cy.waitUntilSkeletonDisappear();
-
     const testContents = 'test contents';
-    // remove contents
-    cy.get('.CodeMirror').should('be.visible');
-    cy.get('.CodeMirror').clear();
 
-    // update to test contents
+    cy.visit('/Sandbox/test');
+
+    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('@pageEditorModeManager').within(() => {
+        cy.get('button:nth-child(2)').click();
+      });
+      // until
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    })
+
     cy.get('.CodeMirror').type(testContents);
 
-    // save
+    // // remove contents
+    // cy.get('.CodeMirror').should('be.visible');
+    // cy.get('.CodeMirror').clear();
+
+    // // update to test contents
+    // cy.get('.CodeMirror').type(testContents);
+
+    // // save
     cy.getByTestid('save-page-btn').click();
 
-    // test for View and Edit are equal
+    // // test for View and Edit are equal
     cy.get('.wiki').should('be.visible');
     cy.get('.wiki').children().first().should('have.text', testContents);
 
-    // Edit again
-    cy.getByTestid('editor-button').should('be.visible');
-    cy.getByTestid('editor-button').click();
+    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('@pageEditorModeManager').within(() => {
+        cy.get('button:nth-child(2)').click();
+      });
+      // until
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    })
 
-    // test for View and Edit are equal
-    cy.get('. CodeMirror-line ').should('be.visible');
-    cy.get('. CodeMirror-line ').children().first().should('have.text', testContents);
+    cy.get('.CodeMirror').contains(testContents);
+
+    // // Edit again
+    // cy.getByTestid('editor-button').should('be.visible');
+    // cy.getByTestid('editor-button').click();
+
+    // // test for View and Edit are equal
+    // cy.get('. CodeMirror-line ').should('be.visible');
+    // cy.get('. CodeMirror-line ').children().first().should('have.text', testContents);
   })
 
   it('/user/admin is successfully loaded', () => {
