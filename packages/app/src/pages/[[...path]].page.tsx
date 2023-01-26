@@ -20,25 +20,19 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
-import { Comments } from '~/components/Comments';
-import { MainPane } from '~/components/Layout/MainPane';
-import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-// import { useTranslation } from '~/i18n';
-import { PageContentFooter } from '~/components/PageContentFooter';
+import { PageView } from '~/components/Page/PageView';
+import RevisionRenderer from '~/components/Page/RevisionRenderer';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-// import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
-// import { useRendererSettings } from '~/stores/renderer';
-// import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
-import { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
@@ -51,17 +45,11 @@ import {
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-// import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
-
-// import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
-import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-// import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
-// import PageStatusAlert from '../client/js/components/PageStatusAlert';
-import type { PageSideContentsProps } from '../components/PageSideContents';
+import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser,
   useIsLatestRevision,
@@ -87,14 +75,9 @@ declare global {
 }
 
 
-const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
-const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
-  .then(mod => mod.UsersHomePageFooter), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
@@ -102,7 +85,7 @@ const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').th
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage, isTopPage,
+  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -146,11 +129,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
     </div>
   );
-};
-
-const IdenticalPathPage = (): JSX.Element => {
-  const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-  return <IdenticalPathPage />;
 };
 
 const PutbackPageModal = (): JSX.Element => {
@@ -274,7 +252,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { pageWithMeta, userUISettings } = props;
 
   const pageId = pageWithMeta?.data._id;
-  const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
+  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
+  const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPageId(pageId ?? null);
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
@@ -316,33 +295,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // initialize mutateEditingMarkdown only once per page
   useEffect(() => {
-    mutateEditingMarkdown(pageWithMeta?.data.revision?.body);
-  }, [mutateEditingMarkdown, pageWithMeta?.data.revision?.body]);
+    mutateEditingMarkdown(revisionBody);
+  }, [mutateEditingMarkdown, revisionBody]);
 
-  const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
+  const title = generateCustomTitleForPage(props, pagePath);
 
-  const title = generateCustomTitleForPage(props, pagePath ?? '');
-
-
-  const sideContents = !props.isNotFound && !props.isNotCreatable
-    ? (
-      <PageSideContents page={pageWithMeta?.data} />
-    )
-    : <></>;
-
-  const footerContents = !props.isIdenticalPathPage && !props.isNotFound && pageWithMeta != null
-    ? (
-      <>
-        { pagePath != null && !isTopPagePath && (
-          <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
-        ) }
-        { isUsersHomePage(pageWithMeta.data.path) && (
-          <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-        ) }
-        <PageContentFooter page={pageWithMeta.data} />
-      </>
-    )
-    : <></>;
+  // TODO: show SSR body
+  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
+  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
 
   return (
     <>
@@ -355,6 +315,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
+
         <div className="d-edit-none">
           <GrowiSubNavigationSwitcher isLinkSharingDisabled={props.disableLinkSharing} />
         </div>
@@ -362,21 +323,18 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <MainPane
-          sideContents={sideContents}
-          footerContents={footerContents}
-        >
-          <PageAlerts />
-          { props.isIdenticalPathPage && <IdenticalPathPage />}
-          { !props.isIdenticalPathPage && (
-            <>
-              { props.isForbidden && <ForbiddenPage /> }
-              { props.isNotCreatable && <NotCreatablePage />}
-              { !props.isForbidden && !props.isNotCreatable && <DisplaySwitcher />}
-            </>
-          ) }
-          <PageStatusAlert />
-        </MainPane>
+        <DisplaySwitcher
+          pageView={
+            <PageView
+              pagePath={pagePath}
+              page={pageWithMeta?.data}
+              // TODO: show SSR body
+              // ssrBody={ssrBody}
+            />
+          }
+        />
+
+        <PageStatusAlert />
 
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>
