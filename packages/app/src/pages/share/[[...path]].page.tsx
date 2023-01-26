@@ -13,14 +13,17 @@ import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
-import { Page } from '~/components/Page';
+import RevisionRenderer from '~/components/Page/RevisionRenderer';
+import ShareLinkAlert from '~/components/Page/ShareLinkAlert';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import type { ShareLinkPageContentsProps } from '~/components/ShareLink/ShareLinkPageContents';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
+import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
@@ -36,7 +39,6 @@ const logger = loggerFactory('growi:next-page:share');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('~/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 // const Comments = dynamic(() => import('~/components/Comments').then(mod => mod.Comments), { ssr: false });
-const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
 
 type Props = CommonProps & {
@@ -105,8 +107,14 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
-  const title = generateCustomTitleForPage(props, props.shareLinkRelatedPage?.path ?? '');
+  const pagePath = props.shareLinkRelatedPage?.path ?? '';
+  const revisionBody = props.shareLinkRelatedPage?.revision.body;
 
+  const title = generateCustomTitleForPage(props, pagePath);
+
+  // TODO: show SSR body
+  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
+  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
 
   const sideContents = shareLink != null
     ? <PageSideContents page={shareLink.relatedPage} />
@@ -119,6 +127,18 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   //     </>
   //   )
   //   : <></>;
+
+  const contents = (() => {
+    const ShareLinkPageContents = dynamic<ShareLinkPageContentsProps>(
+      () => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents),
+      {
+        ssr: false,
+        // TODO: show SSR body
+        // loading: () => ssrBody,
+      },
+    );
+    return <ShareLinkPageContents page={props.shareLinkRelatedPage} />;
+  })();
 
   return (
     <>
@@ -166,7 +186,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           {(isShowSharedPage && shareLink != null) && (
             <>
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              <Page currentPage={props.shareLinkRelatedPage} />
+              <div className="mb-5">
+                { contents }
+              </div>
             </>
           )}
         </MainPane>

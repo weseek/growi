@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -8,8 +8,9 @@ import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 /**
  * Change editorMode by browser forward/back operation
  */
-const HashChanged = (): JSX.Element => {
+export const useHashChangedEffect = (): void => {
   const router = useRouter();
+
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
 
@@ -47,8 +48,4 @@ const HashChanged = (): JSX.Element => {
       router.events.off('routeChangeComplete', hashchangeHandler);
     };
   }, [hashchangeHandler, router.events]);
-
-  return <></>;
 };
-
-export default HashChanged;
