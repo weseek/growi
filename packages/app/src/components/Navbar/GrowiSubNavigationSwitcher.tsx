@@ -38,12 +38,15 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   // use more specific type HTMLDivElement for avoid assertion error.
   // see: https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement
   const fixedContainerRef = useRef<HTMLDivElement>(null);
-  // get parent elements width
   const clientWidth = fixedContainerRef.current?.parentElement?.clientWidth;
 
   const initWidth = useCallback(() => {
-    if (clientWidth != null) setWidth(clientWidth);
-  }, [clientWidth]);
+    if (fixedContainerRef.current != null && fixedContainerRef.current.parentElement != null) {
+      // get parent elements width
+      const { clientWidth } = fixedContainerRef.current.parentElement;
+      setWidth(clientWidth);
+    }
+  }, []);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
