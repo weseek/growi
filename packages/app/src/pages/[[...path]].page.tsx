@@ -314,6 +314,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     }
   }, [props.currentPathname, router]);
 
+  // initialize mutateEditingMarkdown only once per page
   useEffect(() => {
     mutateEditingMarkdown(pageWithMeta?.data.revision?.body);
   }, [mutateEditingMarkdown, pageWithMeta?.data.revision?.body]);

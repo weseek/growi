@@ -19,6 +19,8 @@ import { useStaticSWR } from './use-static-swr';
 
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  // need to include useCurrentPathname not useCurrentPagePath
+  // https://github.com/weseek/growi/pull/7301
   const { data: currentPagePath } = useCurrentPathname();
 
   return useStaticSWR(['editingMarkdown', currentPagePath], initialData);
