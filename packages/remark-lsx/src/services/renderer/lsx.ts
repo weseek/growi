@@ -4,13 +4,14 @@ import { pathUtils } from '@growi/core';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll, HastNode } from 'hast-util-select';
+import isAbsolute from 'is-absolute-url';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except'];
 
-const { hasHeadingSlash } = pathUtils;
+const { addHeadingSlash, hasHeadingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 
@@ -66,10 +67,16 @@ export type LsxRehypePluginParams = {
   pagePath?: string,
 }
 
-const pathResolver = (relativeHref: string, basePath: string): string => {
+const pathResolver = (href: string, basePath: string): string => {
+  // exclude absolute URL
+  if (isAbsolute(href)) {
+    // remove scheme
+    return href.replace(/^(.+?):\/\//, '/');
+  }
+
   // generate relative pathname
   const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
-  const relativeUrl = new URL(relativeHref, baseUrl);
+  const relativeUrl = new URL(href, baseUrl);
 
   return relativeUrl.pathname;
 };
