@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import * as os from 'node:os';
 
 import { Router } from 'express';
@@ -17,6 +18,8 @@ const router = Router();
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
+  const User = crowi.model('User');
+
   const changeAnswerStatus = async(user, questionnaireOrderId, status) => {
     const result = await QuestionnaireAnswerStatus.updateOne({
       user,
@@ -32,43 +35,6 @@ module.exports = (crowi) => {
       return 201;
     }
     return 404;
-  };
-
-  const sendQuestionnaireAnswer = async(user, answers) => {
-    const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-
-    const growiInfo = {
-      version: crowi.version,
-      osInfo: {
-        type: os.type(),
-        platform: os.platform(),
-        arch: os.arch(),
-        totalmem: os.totalmem(),
-      },
-      appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
-      type: 'cloud',
-      currentUsersCount: 100,
-      currentActiveUsersCount: 50,
-      wikiType: 'open',
-      attachmentType: 'aws',
-      activeExternalAccountTypes: 'sample account type',
-      deploymentType: 'official-helm-chart',
-    };
-
-    const userInfo = user ? {
-      userIdHash: '542bcc3bc5bc61b840017a18',
-      type: user.admin ? UserType.admin : UserType.general,
-      userCreatedAt: user.createdAt,
-    } : { type: UserType.guest };
-
-    const questionnaireAnswer = {
-      growiInfo,
-      userInfo,
-      answers,
-      answeredAt: new Date(),
-    };
-
-    axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
   };
 
   router.get('/orders', async(req, res) => {
@@ -89,6 +55,68 @@ module.exports = (crowi) => {
   });
 
   router.put('/answer', loginRequired, async(req, res) => {
+    const getUserInfo = (user, appSiteUrlHashed) => {
+      if (user) {
+        const hasher = crypto.createHmac('sha256', appSiteUrlHashed);
+        hasher.update(user._id.toString());
+
+        return {
+          userIdHash: hasher.digest('hex'),
+          type: user.admin ? UserType.admin : UserType.general,
+          userCreatedAt: user.createdAt,
+        };
+      }
+
+      return { type: UserType.guest };
+    };
+
+    const getGrowiInfo = async() => {
+      const appSiteUrl = crowi.appService.getSiteUrl();
+      const hasher = crypto.createHash('sha256');
+      hasher.update(appSiteUrl);
+      const appSiteUrlHashed = hasher.digest('hex');
+
+      const currentUsersCount = await User.countDocuments();
+      const currentActiveUsersCount = await User.countActiveUsers();
+      const attachmentType = crowi.configManager.getConfig('crowi', 'app:fileUploadType');
+
+      return {
+        version: crowi.version,
+        osInfo: {
+          type: os.type(),
+          platform: os.platform(),
+          arch: os.arch(),
+          totalmem: os.totalmem(),
+        },
+        appSiteUrl,
+        appSiteUrlHashed,
+        type: 'cloud', // TODO: set actual value
+        currentUsersCount,
+        currentActiveUsersCount,
+        wikiType: 'open', // TODO: set actual value
+        attachmentType,
+        activeExternalAccountTypes: undefined, // TODO: set actual value
+        deploymentType: undefined, // TODO: set actual value
+      };
+    };
+
+    const sendQuestionnaireAnswer = async(user, answers) => {
+      const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+
+      const growiInfo = await getGrowiInfo();
+
+      const userInfo = getUserInfo(user, growiInfo.appSiteUrlHashed);
+
+      const questionnaireAnswer = {
+        growiInfo,
+        userInfo,
+        answers,
+        answeredAt: new Date(),
+      };
+
+      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+    };
+
     try {
       await sendQuestionnaireAnswer(req.user, req.body.answers);
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
