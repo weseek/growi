@@ -22,6 +22,7 @@ export type IUser = {
   lastLoginAt?: Date,
   introduction: string,
   status: IUserStatus,
+  isEnableQuestionnaire: boolean,
 }
 
 export type IUserGroupRelation = {

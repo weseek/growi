@@ -235,6 +235,7 @@
     "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
+  "Other Settings": "その他の設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",

@@ -127,6 +127,9 @@ module.exports = (crowi) => {
       body('defaultSubscribeRules.*.name').isString(),
       body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
     ],
+    questionnaireSettings: [
+      body('isEnableQuestionnaire').isBoolean(),
+    ],
   };
 
   /**
@@ -678,6 +681,21 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error(err);
       return res.apiv3Err('getting-in-app-notification-settings-failed');
+    }
+  });
+
+  // eslint-disable-next-line max-len
+  router.put('/questionnaire-settings', accessTokenParser, loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+    const { isEnableQuestionnaire } = req.body;
+    const { user } = req;
+    try {
+      await user.updateIsEnableQuestionnaire(isEnableQuestionnaire);
+
+      return res.apiv3({ message: 'Successfully updated questionnaire settings.', isEnableQuestionnaire });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err({ error: 'Failed to update questionnaire settings.' });
     }
   });
 
