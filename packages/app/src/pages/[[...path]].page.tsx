@@ -285,7 +285,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
-  useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -313,6 +313,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       router.replace(`${props.currentPathname}${search}${hash}`, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
+
+  useEffect(() => {
+    mutateEditingMarkdown(pageWithMeta?.data.revision?.body);
+  }, [mutateEditingMarkdown, pageWithMeta?.data.revision?.body]);
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
