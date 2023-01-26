@@ -1,4 +1,4 @@
-import express, { Request } from 'express';
+import { Request, Router } from 'express';
 
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
@@ -9,7 +9,7 @@ import { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
 
-const router = express.Router();
+const router = Router();
 
 const changeAnswerStatus = async(user, questionnaireOrderId, status: StatusType): Promise<number> => {
   const result = await QuestionnaireAnswerStatus.updateOne({
@@ -30,7 +30,7 @@ const changeAnswerStatus = async(user, questionnaireOrderId, status: StatusType)
 
 module.exports = () => {
 
-  router.get('/questionnaire-orders', async(req: Request, res: ApiV3Response) => {
+  router.get('/orders', async(req: Request, res: ApiV3Response) => {
     const currentDate = new Date();
     try {
       const questionnaireOrders = await QuestionnaireOrder.find({

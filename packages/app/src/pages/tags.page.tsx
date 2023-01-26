@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -33,7 +33,7 @@ import {
 const PAGING_LIMIT = 10;
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUserHasId,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,

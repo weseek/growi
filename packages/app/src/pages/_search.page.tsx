@@ -1,17 +1,17 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { useTranslation } from 'next-i18next';
 import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import type { IUser, IUserHasId } from '~/interfaces/user';
+import type { IUserHasId } from '~/interfaces/user';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
@@ -32,7 +32,7 @@ import {
 
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUserHasId,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,

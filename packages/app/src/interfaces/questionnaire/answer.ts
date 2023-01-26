@@ -1,6 +1,4 @@
-import { Types } from 'mongoose';
-
-export interface IAnswer {
-  question: Types.ObjectId | string
+export interface IAnswer<ID = string> {
+  question: ID
   value: string
 }

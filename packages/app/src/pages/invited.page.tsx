@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IUserHasId, IUser } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { USER_STATUS } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -21,7 +21,7 @@ import {
 const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUserHasId,
   invitedFormUsername: string,
   invitedFormName: string,
 }

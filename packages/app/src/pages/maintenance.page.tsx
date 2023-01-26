@@ -1,4 +1,4 @@
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -14,7 +14,7 @@ import {
 
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUserHasId,
 };
 
 const MaintenancePage: NextPage<CommonProps> = (props: Props) => {

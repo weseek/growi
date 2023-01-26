@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -10,7 +12,6 @@ import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { IUserInfo } from '~/interfaces/questionnaire/user-info';
-import { IUserHasId } from '~/interfaces/user';
 import { useCurrentUser, useGrowiVersion } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
 import axios from '~/utils/axios';
@@ -28,7 +29,6 @@ type QuestionnaireModalProps = {
 const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin }: QuestionnaireModalProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const lang = currentUser?.lang;
-  const currentUserHasId = currentUser as IUserHasId;
 
   const { data: questionnaireModalData, close: closeQuestionnaireModal } = useQuestionnaireModal();
   const isOpened = questionnaireModalData?.openedQuestionnaireId === questionnaireOrder._id;
@@ -40,7 +40,7 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
   const { t } = useTranslation();
 
   // TODO: モック化されている箇所を実装
-  const getGrowiInfo = (): IGrowiInfo => {
+  const getGrowiInfo = useCallback((): IGrowiInfo => {
     return {
       version: growiVersion || '',
       osInfo: {
@@ -58,10 +58,10 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
       activeExternalAccountTypes: 'sample account type',
       deploymentType: 'official-helm-chart',
     };
-  };
+  }, [growiVersion]);
 
   // TODO: モック化されている箇所を実装
-  const getUserInfo = (): IUserInfo | null => {
+  const getUserInfo = useCallback((): IUserInfo | null => {
     if (currentUser) {
       return {
         userIdHash: '542bcc3bc5bc61b840017a18',
@@ -70,36 +70,40 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
       };
     }
     return null;
-  };
+  }, [currentUser]);
 
-  const sendQuestionnaireAnswer = (questionnaireAnswer: IQuestionnaireAnswer) => {
-    axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer)
-      .then(() => {
-        toastSuccess(
-          <>
-            <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
-            <div className="pt-2">{t('questionnaire.additional_feedback')}</div>
-          </>,
-          {
-            autoClose: 3000,
-            closeButton: true,
-          },
-        );
-        apiv3Put('/questionnaire/answer', {
-          user: currentUserHasId._id,
-          questionnaireOrderId: questionnaireOrder._id,
-        }).catch((e) => {
-          logger.error(e);
-          toastError(t('questionnaire.failed_to_update_answer_status'));
-        });
-      })
-      .catch((e) => {
-        logger.error(e);
-        toastError(t('questionnaire.failed_to_send'));
+  const sendQuestionnaireAnswer = useCallback(async(questionnaireAnswer: IQuestionnaireAnswer) => {
+    try {
+      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+      toastSuccess(
+        <>
+          <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
+          <div className="pt-2">{t('questionnaire.additional_feedback')}</div>
+        </>,
+        {
+          autoClose: 3000,
+          closeButton: true,
+        },
+      );
+    }
+    catch (e) {
+      logger.error(e);
+      toastError(t('questionnaire.failed_to_send'));
+    }
+
+    try {
+      await apiv3Put('/questionnaire/answer', {
+        user: currentUser?._id,
+        questionnaireOrderId: questionnaireOrder._id,
       });
-  };
+    }
+    catch (e) {
+      logger.error(e);
+      toastError(t('questionnaire.failed_to_update_answer_status'));
+    }
+  }, [currentUser?._id, growiQuestionnaireServerOrigin, questionnaireOrder._id, t]);
 
-  const submitHandler = (event) => {
+  const submitHandler = useCallback((event) => {
     event.preventDefault();
 
     const growiInfo = getGrowiInfo();
@@ -124,21 +128,22 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
     }
 
     closeQuestionnaireModal();
-  };
+  }, [closeQuestionnaireModal, getGrowiInfo, getUserInfo, t, questionnaireOrder.questions, sendQuestionnaireAnswer]);
 
-  const skipHandler = async() => {
-    apiv3Put('/questionnaire/skip', {
-      user: currentUserHasId._id,
-      questionnaireOrderId: questionnaireOrder._id,
-    }).then(() => {
+  const skipBtnClickHandler = useCallback(async() => {
+    try {
+      apiv3Put('/questionnaire/skip', {
+        user: currentUser?._id,
+        questionnaireOrderId: questionnaireOrder._id,
+      });
       toastSuccess(t('questionnaire.skipped'));
-    }).catch((e) => {
+    }
+    catch (e) {
       logger.error(e);
       toastError(t('questionnaire.failed_to_update_answer_status'));
-    });
-
+    }
     closeQuestionnaireModal();
-  };
+  }, [closeQuestionnaireModal, currentUser?._id, questionnaireOrder._id, t]);
 
   const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
 
@@ -166,7 +171,7 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
             </div>
           </div>
           {questionnaireOrder.questions?.map((question) => {
-            return <Question question={question} inputNamePrefix={inputNamePrefix} key={question._id.toString()}/>;
+            return <Question question={question} inputNamePrefix={inputNamePrefix} key={question._id}/>;
           })}
         </div>
       </ModalBody>
@@ -174,7 +179,7 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
         {currentUser?.admin
         && <a href="" className="mr-auto d-flex align-items-center"><i className="material-icons mr-1">settings</i>{t('questionnaire.settings')}</a>}
         <>
-          <button type="button" className="btn btn-outline-secondary mr-3" onClick={skipHandler}>{t('questionnaire.dont_show_again')}</button>
+          <button type="button" className="btn btn-outline-secondary mr-3" onClick={skipBtnClickHandler}>{t('questionnaire.dont_show_again')}</button>
           <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
         </>
       </ModalFooter>
