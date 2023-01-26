@@ -264,7 +264,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
-  useEditingMarkdown(revisionBody);
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -292,6 +292,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       router.replace(`${props.currentPathname}${search}${hash}`, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
+
+  // initialize mutateEditingMarkdown only once per page
+  useEffect(() => {
+    mutateEditingMarkdown(revisionBody);
+  }, [mutateEditingMarkdown, revisionBody]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
