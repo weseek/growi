@@ -122,12 +122,13 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     if (onClickItem != null) {
       onClickItem(pageData._id);
     }
+  }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
+  const pagePathClickHandler = useCallback(() => {
     if (isOpendDescendantsPageListModal) {
       closeDescendantsPageListModal();
     }
-
-  }, [closeDescendantsPageListModal, isDeviceSmallerThanLg, isOpendDescendantsPageListModal, onClickItem, pageData._id]);
+  }, [closeDescendantsPageListModal, isOpendDescendantsPageListModal]);
 
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
@@ -234,12 +235,13 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                         ? (
                           <a
                             className="page-segment"
+                            onClick={pagePathClickHandler}
                             // eslint-disable-next-line react/no-danger
                             dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
                           >
                           </a>
                         )
-                        : <a className="page-segment">{linkedPagePathHighlightedLatter.pathName}</a>
+                        : <a className="page-segment" onClick={pagePathClickHandler}>{linkedPagePathHighlightedLatter.pathName}</a>
                       }
                     </Link>
                   </span>
