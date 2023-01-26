@@ -67,25 +67,25 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
     | undefined
 };
 
-const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
+// const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
 
-const generateCommonSanitizeOptions = (): SanitizeOption => {
-  return deepmerge(
-    sanitizeDefaultSchema,
-    {
-      clobberPrefix: 'mdcont-',
-      attributes: commonSanitizeAttributes,
-    },
-  );
-};
+// const generateCommonSanitizeOptions = (): SanitizeOption => {
+//   return deepmerge(
+//     sanitizeDefaultSchema,
+//     {
+//       clobberPrefix: 'mdcont-',
+//       attributes: commonSanitizeAttributes,
+//     },
+//   );
+// };
 
-const injectCustomSanitizeOptions = (targetSanitizeOption: SanitizeOption, config: RendererConfig) => {
-  if (config.xssOption !== RehypeSanitizeOption.CUSTOM) {
-    return;
-  }
-  targetSanitizeOption.tagNames = config.tagWhiteList;
-  targetSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
-};
+// const injectCustomSanitizeOptions = (targetSanitizeOption: SanitizeOption, config: RendererConfig) => {
+//   if (config.xssOption !== RehypeSanitizeOption.CUSTOM) {
+//     return;
+//   }
+//   targetSanitizeOption.tagNames = config.tagWhiteList;
+//   targetSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+// };
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
@@ -140,6 +140,7 @@ const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
 export const generateViewOptions = (
     pagePath: string,
     config: RendererConfig,
+    commonSanitizeOption: SanitizeOption,
     storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
@@ -157,12 +158,6 @@ export const generateViewOptions = (
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
-  }
-
-  const commonSanitizeOption = generateCommonSanitizeOptions();
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOptions(commonSanitizeOption, config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -198,7 +193,7 @@ export const generateViewOptions = (
   return options;
 };
 
-export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
+export const generateTocOptions = (config: RendererConfig, commonSanitizeOption: SanitizeOption, tocNode: HtmlElementNode | undefined): RendererOptions => {
 
   const options = generateCommonOptions(undefined);
 
@@ -206,12 +201,6 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   // add remark plugins
   // remarkPlugins.push();
-
-  const commonSanitizeOption = generateCommonSanitizeOptions();
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOptions(commonSanitizeOption, config);
-  }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
@@ -234,6 +223,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 export const generateSimpleViewOptions = (
     config: RendererConfig,
     pagePath: string,
+    commonSanitizeOption: SanitizeOption,
     highlightKeywords?: string | string[],
     overrideIsEnabledLinebreaks?: boolean,
 ): RendererOptions => {
@@ -255,12 +245,6 @@ export const generateSimpleViewOptions = (
 
   if (isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
-  }
-
-  const commonSanitizeOption = generateCommonSanitizeOptions();
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOptions(commonSanitizeOption, config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -292,7 +276,7 @@ export const generateSimpleViewOptions = (
   return options;
 };
 
-export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
+export const generatePreviewOptions = (config: RendererConfig, pagePath: string, commonSanitizeOption: SanitizeOption): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
@@ -308,12 +292,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
-  }
-
-  const commonSanitizeOption = generateCommonSanitizeOptions();
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOptions(commonSanitizeOption, config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
