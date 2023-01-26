@@ -1,4 +1,4 @@
-import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
+import type { ColorScheme, IUser } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -36,8 +36,8 @@ export const useConfidential = (initialData?: string): SWRResponse<string, Error
   return useContextSWR('confidential', initialData);
 };
 
-export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<Nullable<IUserHasId>, Error> => {
-  return useContextSWR<Nullable<IUserHasId>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
+  return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {

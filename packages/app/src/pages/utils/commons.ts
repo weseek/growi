@@ -1,4 +1,4 @@
-import type { ColorScheme, IUserHasId } from '@growi/core';
+import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
 import {
   DevidedPagePath, Lang, AllLang,
 } from '@growi/core';
@@ -22,7 +22,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   isDefaultLogo: boolean,
-  currentUser?: IUserHasId,
+  currentUser?: IUser,
   forcedColorScheme?: ColorScheme,
 } & Partial<SSRConfig>;
 

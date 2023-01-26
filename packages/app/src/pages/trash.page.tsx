@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IUserHasId } from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -35,7 +35,7 @@ const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { 
 const PutbackPageModal = dynamic(() => import('~/components/PutbackPageModal'), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUserHasId,
+  currentUser: IUser,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,

@@ -10,7 +10,7 @@ import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import type { IUserHasId } from '~/interfaces/user';
+import type { IUser, IUserHasId } from '~/interfaces/user';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
@@ -29,7 +29,7 @@ import {
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUserHasId,
+  currentUser: IUser,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,

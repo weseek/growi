@@ -8,13 +8,9 @@ import {
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { IAnswer } from '~/interfaces/questionnaire/answer';
-import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
-import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
-import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
-import { useCurrentUser, useGrowiVersion } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
-import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
 import Question from './Question';
@@ -26,55 +22,23 @@ type QuestionnaireModalProps = {
   growiQuestionnaireServerOrigin: string
 }
 
-const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin }: QuestionnaireModalProps): JSX.Element => {
+const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const lang = currentUser?.lang;
 
   const { data: questionnaireModalData, close: closeQuestionnaireModal } = useQuestionnaireModal();
   const isOpened = questionnaireModalData?.openedQuestionnaireId === questionnaireOrder._id;
 
-  const { data: growiVersion } = useGrowiVersion();
-
   const inputNamePrefix = 'question-';
 
   const { t } = useTranslation();
 
-  // TODO: モック化されている箇所を実装
-  const getGrowiInfo = useCallback((): IGrowiInfo => {
-    return {
-      version: growiVersion || '',
-      osInfo: {
-        type: 'Linux',
-        platform: 'linux',
-        arch: 'arm',
-        totalmem: 8,
-      },
-      appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
-      type: 'cloud',
-      currentUsersCount: 100,
-      currentActiveUsersCount: 50,
-      wikiType: 'open',
-      attachmentType: 'aws',
-      activeExternalAccountTypes: 'sample account type',
-      deploymentType: 'official-helm-chart',
-    };
-  }, [growiVersion]);
-
-  // TODO: モック化されている箇所を実装
-  const getUserInfo = useCallback((): IUserInfo => {
-    if (currentUser) {
-      return {
-        userIdHash: '542bcc3bc5bc61b840017a18',
-        type: currentUser?.admin ? UserType.admin : UserType.general,
-        userCreatedAt: currentUser?.createdAt,
-      };
-    }
-    return { type: UserType.guest };
-  }, [currentUser]);
-
-  const sendQuestionnaireAnswer = useCallback(async(questionnaireAnswer: IQuestionnaireAnswer) => {
+  const sendAnswer = useCallback(async(answers: IAnswer[]) => {
     try {
-      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+      await apiv3Put('/questionnaire/answer', {
+        questionnaireOrderId: questionnaireOrder._id,
+        answers,
+      });
       toastSuccess(
         <>
           <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
@@ -90,39 +54,20 @@ const QuestionnaireModal = ({ questionnaireOrder, growiQuestionnaireServerOrigin
       logger.error(e);
       toastError(t('questionnaire.failed_to_send'));
     }
+  }, [questionnaireOrder._id, t]);
 
-    try {
-      await apiv3Put('/questionnaire/answer', {
-        questionnaireOrderId: questionnaireOrder._id,
-      });
-    }
-    catch (e) {
-      logger.error(e);
-      toastError(t('questionnaire.failed_to_update_answer_status'));
-    }
-  }, [growiQuestionnaireServerOrigin, questionnaireOrder._id, t]);
-
-  const submitHandler = useCallback((event) => {
+  const submitHandler = useCallback(async(event) => {
     event.preventDefault();
 
-    const growiInfo = getGrowiInfo();
-    const userInfo = getUserInfo();
     const answers: IAnswer[] = questionnaireOrder.questions.map((question) => {
       const answerValue = event.target[`${inputNamePrefix + question._id}`].value;
       return { question: question._id, value: answerValue };
     });
 
-    const questionnaireAnswer: IQuestionnaireAnswer = {
-      growiInfo,
-      userInfo,
-      answers,
-      answeredAt: new Date(),
-    };
-
-    sendQuestionnaireAnswer(questionnaireAnswer);
+    sendAnswer(answers);
 
     closeQuestionnaireModal();
-  }, [closeQuestionnaireModal, getGrowiInfo, getUserInfo, questionnaireOrder.questions, sendQuestionnaireAnswer]);
+  }, [closeQuestionnaireModal, questionnaireOrder.questions, sendAnswer]);
 
   const skipBtnClickHandler = useCallback(async() => {
     try {
