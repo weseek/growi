@@ -10,7 +10,9 @@ const QuestionnaireModalManager = ():JSX.Element => {
 
   return <>
     {questionnaireOrders?.map((questionnaireOrder) => {
-      return <QuestionnaireModal questionnaireOrder={questionnaireOrder} key={questionnaireOrder._id} />;
+      return <QuestionnaireModal
+        questionnaireOrder={questionnaireOrder}
+        key={questionnaireOrder._id} />;
     })}
     <div className={styles['grw-questionnaire-toasts']}>
       {questionnaireOrders?.map((questionnaireOrder) => {
