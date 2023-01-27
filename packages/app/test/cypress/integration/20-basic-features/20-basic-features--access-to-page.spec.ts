@@ -70,6 +70,7 @@ context('Access to page', () => {
 
   it('View and Edit contents are successfully loaded', () => {
     const testContents = 'test contents';
+    const savePageShortcutKey = '{ctrl+s}';
 
     cy.visit('/Sandbox/test');
 
@@ -85,20 +86,16 @@ context('Access to page', () => {
 
     cy.get('.CodeMirror').type(testContents);
 
-    // // remove contents
-    // cy.get('.CodeMirror').should('be.visible');
-    // cy.get('.CodeMirror').clear();
+    // check EDIT contents after saving with shortcut key
+    cy.get('.CodeMirror').type(savePageShortcutKey);
+    cy.get('.CodeMirror').contains(testContents);
 
-    // // update to test contents
-    // cy.get('.CodeMirror').type(testContents);
-
-    // // save
+    // check VIEW contents after saving
     cy.getByTestid('save-page-btn').click();
-
-    // // test for View and Edit are equal
     cy.get('.wiki').should('be.visible');
     cy.get('.wiki').children().first().should('have.text', testContents);
 
+    // check EDIT contents after saving
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
     cy.waitUntil(() => {
       // do
@@ -108,16 +105,7 @@ context('Access to page', () => {
       // until
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
-
     cy.get('.CodeMirror').contains(testContents);
-
-    // // Edit again
-    // cy.getByTestid('editor-button').should('be.visible');
-    // cy.getByTestid('editor-button').click();
-
-    // // test for View and Edit are equal
-    // cy.get('. CodeMirror-line ').should('be.visible');
-    // cy.get('. CodeMirror-line ').children().first().should('have.text', testContents);
   })
 
   it('/user/admin is successfully loaded', () => {
