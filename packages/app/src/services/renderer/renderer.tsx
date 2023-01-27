@@ -77,9 +77,14 @@ const commonSanitizeOption: SanitizeOption = deepmerge(
   },
 );
 
+let isInjectedCustomSanitaizeOption = false;
+
 const injectCustomSanitizeOption = (config: RendererConfig) => {
-  commonSanitizeOption.tagNames = config.tagWhiteList;
-  commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+  if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    commonSanitizeOption.tagNames = config.tagWhiteList;
+    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    isInjectedCustomSanitaizeOption = true;
+  }
 };
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
