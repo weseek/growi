@@ -105,11 +105,9 @@ context('Access to page', () => {
     cy.get('.CodeMirror').contains(testContents);
 
     // check EDIT contents after saving with shortcut key
-    cy.get('.CodeMirror').clear();
-    cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     cy.get('.CodeMirror').type(testContents2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(testContents2);
+    cy.get('.CodeMirror').contains(testContents+testContents2);
   })
 
   it('/user/admin is successfully loaded', () => {
