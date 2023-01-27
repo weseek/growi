@@ -7,6 +7,7 @@ import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import { isEqual } from 'lodash';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import { NormalComponents } from 'react-markdown/lib/complex-types';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
@@ -77,9 +78,19 @@ const commonSanitizeOption: SanitizeOption = deepmerge(
   },
 );
 
+let isInjectedCustomSanitaizeOption = false;
+
 const injectCustomSanitizeOption = (config: RendererConfig) => {
-  commonSanitizeOption.tagNames = config.tagWhiteList;
-  commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+  if (!isInjectedCustomSanitaizeOption && config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    const mergedCommonAttributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+
+    const isInjectedCustomTags = isEqual(commonSanitizeOption.tagNames, config.tagWhiteList);
+    const isInjectedCustomAttributes = isEqual(commonSanitizeOption.attributes, mergedCommonAttributes);
+    isInjectedCustomSanitaizeOption = isInjectedCustomTags && isInjectedCustomAttributes;
+
+    commonSanitizeOption.tagNames = config.tagWhiteList;
+    commonSanitizeOption.attributes = mergedCommonAttributes;
+  }
 };
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
