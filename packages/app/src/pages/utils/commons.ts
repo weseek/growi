@@ -45,15 +45,16 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser = user.toObject();
   }
 
+  // Redirect destination for page transition by next/link
   let redirectDestination: string | null = null;
-  if (!isMaintenanceMode && currentPathname === '/maintenance') {
+  if (!crowi.aclService.isGuestAllowedToRead() && currentUser == null) {
+    redirectDestination = '/login';
+  }
+  else if (!isMaintenanceMode && currentPathname === '/maintenance') {
     redirectDestination = '/';
   }
   else if (isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance')) {
     redirectDestination = '/maintenance';
-  }
-  else if (!crowi.aclService.isGuestAllowedToRead() && currentUser == null) {
-    redirectDestination = '/login';
   }
   else {
     redirectDestination = null;
