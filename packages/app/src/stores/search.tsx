@@ -2,7 +2,6 @@ import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
-
 import { IFormattedSearchResult, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
@@ -73,7 +72,7 @@ export const useSWRxSearch = (
 
   const swrResult = useSWRImmutable(
     isKeywordValid ? ['/search', keyword, fixedConfigurations, termNumber] : null,
-    (endpoint, keyword, fixedConfigurations) => {
+    ([endpoint, , fixedConfigurations]) => {
       const {
         limit, offset, sort, order,
       } = fixedConfigurations;

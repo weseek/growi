@@ -39,7 +39,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
 
-  const swrResult = useSWRImmutable<IEditorSettings>(
+  const swrResult = useSWRImmutable(
     isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
     ([endpoint]) => apiv3Get(endpoint).then(result => result.data),
     {

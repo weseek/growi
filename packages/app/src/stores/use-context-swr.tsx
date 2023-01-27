@@ -28,7 +28,7 @@ export function useContextSWR<Data, Error>(
 
   // write data to cache directly
   if (data !== undefined) {
-    cache.set(key, data);
+    cache.set(key, { ...cache.get(key), data });
   }
 
   const result = Object.assign(swrResponse, { mutate: () => { throw Error('mutate can not be used in context') } });

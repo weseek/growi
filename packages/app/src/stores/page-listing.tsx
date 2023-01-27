@@ -18,7 +18,7 @@ import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
-  return useSWR<IPageHasId[], Error>(
+  return useSWR(
     path != null ? ['/page', path, findAll] : null,
     ([endpoint, path, findAll]) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
   );
@@ -105,7 +105,7 @@ export const useSWRxPageInfoForList = (
 
   const shouldFetch = (pageIds != null && pageIds.length > 0) || path != null;
 
-  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
+  const swrResult = useSWRImmutable(
     shouldFetch ? ['/page-listing/info', pageIds, path, attachBookmarkCount, attachShortBody] : null,
     ([endpoint, pageIds, path, attachBookmarkCount, attachShortBody]) => {
       return apiv3Get(endpoint, {
