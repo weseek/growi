@@ -85,6 +85,7 @@ context('Access to page', () => {
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
 
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.get('.CodeMirror').type(testContents);
 
     // check VIEW contents after saving
@@ -102,6 +103,7 @@ context('Access to page', () => {
       // until
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.get('.CodeMirror').contains(testContents);
 
     // check EDIT contents after saving with shortcut key
