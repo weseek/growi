@@ -45,7 +45,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: rendererConfig } = useRendererConfig();
   const { data: tocNode } = useCurrentPageTocNode();
 
-  const isAllDataValid = rendererConfig != null;
+  const isAllDataValid = currentPagePath != null && rendererConfig != null && tocNode != null;
 
   const key = isAllDataValid
     ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
@@ -54,6 +54,9 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
   return useSWRImmutable<RendererOptions, Error>(
     key,
     (rendererId, path, tocNode, rendererConfig) => generateTocOptions(rendererConfig, tocNode),
+    {
+      fallbackData: isAllDataValid ? generateTocOptions(rendererConfig, tocNode) : undefined,
+    },
   );
 };
 

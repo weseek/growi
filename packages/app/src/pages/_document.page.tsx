@@ -100,12 +100,6 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
       <Html>
         <Head>
           {this.renderCustomScript(customScript)}
-          <link rel='preload' href="/static/fonts/PressStart2P-latin.woff2" as="font" type="font/woff2" />
-          <link rel='preload' href="/static/fonts/PressStart2P-latin-ext.woff2" as="font" type="font/woff2" />
-          <link rel='preload' href="/static/fonts/Lato-Regular-latin.woff2" as="font" type="font/woff2" />
-          <link rel='preload' href="/static/fonts/Lato-Regular-latin-ext.woff2" as="font" type="font/woff2" />
-          <link rel='preload' href="/static/fonts/Lato-Bold-latin.woff2" as="font" type="font/woff2" />
-          <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
           <link rel="stylesheet" key="link-theme" href={themeHref} />
           <HeadersForGrowiPlugin pluginResourceEntries={pluginResourceEntries} />
           {this.renderCustomCss(customCss)}

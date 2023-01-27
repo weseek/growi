@@ -21,8 +21,6 @@ const TableOfContents = (): JSX.Element => {
 
   const isUserPage = currentPagePath != null && _isUserPage(currentPagePath);
 
-  // const [tocHtml, setTocHtml] = useState('');
-
   const { data: rendererOptions } = useTocOptions();
 
   const calcViewHeight = useCallback(() => {
