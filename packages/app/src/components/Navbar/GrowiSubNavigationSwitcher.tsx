@@ -40,6 +40,7 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   const fixedContainerRef = useRef<HTMLDivElement>(null);
   const clientWidth = fixedContainerRef.current?.parentElement?.clientWidth;
 
+  // Do not use clientWidth as useCallback deps, resizing events will not work in production builds.
   const initWidth = useCallback(() => {
     if (fixedContainerRef.current != null && fixedContainerRef.current.parentElement != null) {
       // get parent elements width
