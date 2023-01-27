@@ -10,7 +10,7 @@ export type QuestionnaireAnswerStatusModel = Model<QuestionnaireAnswerStatusDocu
 const questionnaireOrderSchema = new Schema<QuestionnaireAnswerStatusDocument>({
   user: { type: Schema.Types.ObjectId, required: true },
   questionnaireOrderId: { type: String, required: true },
-  status: { type: String, enum: Object.values(StatusType), required: true },
+  status: { type: String, enum: Object.values(StatusType), default: StatusType.not_answered },
 }, { timestamps: true });
 
 export default getOrCreateModel<QuestionnaireAnswerStatusDocument, QuestionnaireAnswerStatusModel>('QuestionnaireAnswerStatus', questionnaireOrderSchema);
