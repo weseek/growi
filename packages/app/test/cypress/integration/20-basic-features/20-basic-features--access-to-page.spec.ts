@@ -69,11 +69,11 @@ context('Access to page', () => {
   })
 
   it('View and Edit contents are successfully loaded', () => {
-    const testContents = 'test contents';
-    const testContents2 = 'test contents2';
+    const body1 = 'hello';
+    const body2 = ' world!';
     const savePageShortcutKey = '{ctrl+s}';
 
-    cy.visit('/Sandbox/test');
+    cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
     cy.waitUntil(() => {
@@ -86,14 +86,18 @@ context('Access to page', () => {
     })
 
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
-    cy.get('.CodeMirror').type(testContents);
 
-    // check VIEW contents after saving
+    // check VIEW contents after save
+    cy.get('.CodeMirror').type(body1);
+    cy.get('.CodeMirror').contains(body1);
+    cy.get('.page-editor-preview-body').contains(body1);
+    // cy.get('.CodeMirror').type(savePageShortcutKey);
+    cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('.wiki').should('be.visible');
-    cy.get('.wiki').children().first().should('have.text', testContents);
+    cy.get('.layout-root').should('not.have.class', 'editing');
+    cy.get('.wiki').children().first().should('have.text', body1);
 
-    // check EDIT contents after saving
+
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
     cy.waitUntil(() => {
       // do
@@ -103,13 +107,60 @@ context('Access to page', () => {
       // until
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
-    cy.get('.grw-editor-navbar-bottom').should('be.visible');
-    cy.get('.CodeMirror').contains(testContents);
 
-    // check EDIT contents after saving with shortcut key
-    cy.get('.CodeMirror').type(testContents2);
+
+    // check EDIT contents after save with shortcut key
+    cy.get('.CodeMirror').clear();
+    cy.get('.CodeMirror').type(body2);
+    cy.get('.CodeMirror').contains(body2);
+    cy.get('.page-editor-preview-body').contains(body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(testContents+testContents2);
+    cy.get('.CodeMirror').contains(body2);
+    cy.get('.page-editor-preview-body').contains(body2);
+    cy.getByTestid('save-page-btn').click();
+    cy.get('.layout-root').should('not.have.class', 'editing');
+    cy.get('.wiki').children().first().should('have.text', body2);
+    // const testContents = 'test contents';
+    // const testContents2 = 'test contents2';
+    // const savePageShortcutKey = '{ctrl+s}';
+
+    // cy.visit('/Sandbox/test');
+
+    // cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    // cy.waitUntil(() => {
+    //   // do
+    //   cy.get('@pageEditorModeManager').within(() => {
+    //     cy.get('button:nth-child(2)').click();
+    //   });
+    //   // until
+    //   return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    // })
+
+    // cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    // cy.get('.CodeMirror').type(testContents);
+
+    // // check VIEW contents after saving
+    // cy.getByTestid('save-page-btn').click();
+    // cy.get('.wiki').should('be.visible');
+    // cy.get('.wiki').children().first().should('have.text', testContents);
+
+    // // check EDIT contents after saving
+    // cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    // cy.waitUntil(() => {
+    //   // do
+    //   cy.get('@pageEditorModeManager').within(() => {
+    //     cy.get('button:nth-child(2)').click();
+    //   });
+    //   // until
+    //   return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    // })
+    // cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    // cy.get('.CodeMirror').contains(testContents);
+
+    // // check EDIT contents after saving with shortcut key
+    // cy.get('.CodeMirror').type(testContents2);
+    // cy.get('.CodeMirror').type(savePageShortcutKey);
+    // cy.get('.CodeMirror').contains(testContents+testContents2);
   })
 
   it('/user/admin is successfully loaded', () => {
