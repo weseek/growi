@@ -10,6 +10,7 @@ import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
+  useCurrentPathname,
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
@@ -18,7 +19,11 @@ import { useStaticSWR } from './use-static-swr';
 
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('editingMarkdown', initialData);
+  // need to include useCurrentPathname not useCurrentPagePath
+  // https://github.com/weseek/growi/pull/7301
+  const { data: currentPagePath } = useCurrentPathname();
+
+  return useStaticSWR(['editingMarkdown', currentPagePath], initialData);
 };
 
 
