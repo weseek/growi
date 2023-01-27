@@ -70,6 +70,7 @@ context('Access to page', () => {
 
   it('View and Edit contents are successfully loaded', () => {
     const testContents = 'test contents';
+    const testContents2 = 'test contents2';
     const savePageShortcutKey = '{ctrl+s}';
 
     cy.visit('/Sandbox/test');
@@ -85,10 +86,6 @@ context('Access to page', () => {
     })
 
     cy.get('.CodeMirror').type(testContents);
-
-    // check EDIT contents after saving with shortcut key
-    cy.get('.CodeMirror').type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(testContents);
 
     // check VIEW contents after saving
     cy.getByTestid('save-page-btn').click();
@@ -106,6 +103,12 @@ context('Access to page', () => {
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
     cy.get('.CodeMirror').contains(testContents);
+
+    // check EDIT contents after saving with shortcut key
+    cy.get('.CodeMirror').clear();
+    cy.get('.CodeMirror').type(testContents2);
+    cy.get('.CodeMirror').type(savePageShortcutKey);
+    cy.get('.CodeMirror').contains(testContents2);
   })
 
   it('/user/admin is successfully loaded', () => {
