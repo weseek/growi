@@ -1,20 +1,26 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
 
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
+import Crowi from '~/server/crowi';
 import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '~/server/models/questionnaire/questionnaire-order';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
+
+import { ApiV3Response } from './interfaces/apiv3-response';
 
 
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
 
 const router = Router();
 
-module.exports = (crowi) => {
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+interface AuthorizedRequest extends Request {
+  user?: any
+}
 
-  const User = crowi.model('User');
+module.exports = (crowi: Crowi): Router => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const changeAnswerStatus = async(user, questionnaireOrderId, status) => {
     const result = await QuestionnaireAnswerStatus.updateOne({
@@ -33,8 +39,9 @@ module.exports = (crowi) => {
     return 404;
   };
 
-  router.get('/orders', async(req, res) => {
+  router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const currentDate = new Date();
+    // TODO: add condition
     try {
       const questionnaireOrders = await QuestionnaireOrder.find({
         showUntil: {
@@ -50,11 +57,11 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/answer', loginRequired, async(req, res) => {
+  router.put('/answer', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user, answers) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-      const growiInfo = await crowi.questionnaireInfoService.getGrowiInfo();
-      const userInfo = crowi.questionnaireInfoService.getUserInfo(user, growiInfo.appSiteUrlHashed);
+      const growiInfo = await crowi.questionnaireInfoService!.getGrowiInfo();
+      const userInfo = crowi.questionnaireInfoService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
       const questionnaireAnswer = {
         growiInfo,
@@ -77,7 +84,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/skip', loginRequired, async(req, res) => {
+  router.put('/skip', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
       return res.apiv3({}, status);
