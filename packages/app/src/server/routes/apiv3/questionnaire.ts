@@ -3,7 +3,6 @@ import { Router, Request } from 'express';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import Crowi from '~/server/crowi';
 import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
-import QuestionnaireOrder from '~/server/models/questionnaire/questionnaire-order';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
@@ -40,14 +39,12 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const currentDate = new Date();
+    const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
+    const userInfo = crowi.questionnaireService!.getUserInfo(req.user, growiInfo.appSiteUrlHashed);
+
     // TODO: add condition
     try {
-      const questionnaireOrders = await QuestionnaireOrder.find({
-        showUntil: {
-          $gte: currentDate,
-        },
-      });
+      const questionnaireOrders = await crowi.questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo);
 
       return res.apiv3({ questionnaireOrders });
     }
@@ -60,8 +57,8 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/answer', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user, answers) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-      const growiInfo = await crowi.questionnaireInfoService!.getGrowiInfo();
-      const userInfo = crowi.questionnaireInfoService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
+      const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
+      const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
       const questionnaireAnswer = {
         growiInfo,
