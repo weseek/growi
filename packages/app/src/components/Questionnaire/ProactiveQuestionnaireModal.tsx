@@ -72,7 +72,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
       growiVersion,
     };
 
-    // TODO: send qestionnaire data
+    // TODO: send questionnaire data
 
     onClose();
     setQuestionnaireCompletionModal(true);
