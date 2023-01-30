@@ -54,6 +54,36 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  router.post('/proactive/answer', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const sendQuestionnaireAnswer = async() => {
+      const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+      const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
+      const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
+
+      const body = {
+        satisfaction: req.body.satisfaction,
+        lengthOfExperience: req.body.lengthOfExperience,
+        position: req.body.position,
+        occupation: req.body.occupation,
+        commentText: req.body.commentText,
+        growiInfo,
+        userInfo,
+        answeredAt: new Date(),
+      };
+
+      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, body);
+    };
+
+    try {
+      await sendQuestionnaireAnswer();
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   router.put('/answer', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user, answers) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
