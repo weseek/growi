@@ -50,7 +50,7 @@ context('Modal for page operation', () => {
       // do
       cy.getByTestid('save-page-btn').should('be.visible').click();
       // wait until
-      return Cypress.$('.layout-root').hasClass('editing');
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     });
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
@@ -69,7 +69,9 @@ context('Modal for page operation', () => {
       // do
       cy.getByTestid('newPageBtn').click({force: true});
       // wait until
-      return cy.getByTestid('page-create-modal').then($elem => $elem.is(':visible'));
+      return cy.get('body').within(() => {
+        return Cypress.$('[data-testid=page-create-modal]').is(':visible');
+      });
     });
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
