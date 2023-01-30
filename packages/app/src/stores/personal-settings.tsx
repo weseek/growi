@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
-
 import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
+import { useIsGuestUser } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
@@ -14,8 +14,12 @@ const logger = loggerFactory('growi:stores:personal-settings');
 
 
 export const useSWRxPersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> => {
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const key = !isGuestUser ? '/personal-setting' : null;
+
   return useSWR(
-    '/personal-setting',
+    key,
     endpoint => apiv3Get(endpoint).then(response => response.data.currentUser),
     config,
   );

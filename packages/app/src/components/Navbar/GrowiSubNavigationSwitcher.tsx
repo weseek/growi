@@ -38,9 +38,11 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   // use more specific type HTMLDivElement for avoid assertion error.
   // see: https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement
   const fixedContainerRef = useRef<HTMLDivElement>(null);
+  const clientWidth = fixedContainerRef.current?.parentElement?.clientWidth;
 
+  // Do not use clientWidth as useCallback deps, resizing events will not work in production builds.
   const initWidth = useCallback(() => {
-    if (fixedContainerRef.current && fixedContainerRef.current.parentElement) {
+    if (fixedContainerRef.current != null && fixedContainerRef.current.parentElement != null) {
       // get parent elements width
       const { clientWidth } = fixedContainerRef.current.parentElement;
       setWidth(clientWidth);
@@ -84,10 +86,14 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
     }
   }, [isSidebarCollapsed, initWidth]);
 
-  // initialize width
+  /*
+   * initialize width.
+   * Since width is not recalculated at production build first rendering,
+   * make initWidth execution dependent on clientWidth.
+   */
   useEffect(() => {
-    initWidth();
-  }, [initWidth]);
+    if (clientWidth != null) initWidth();
+  }, [initWidth, clientWidth]);
 
   if (currentPage == null) {
     return <></>;

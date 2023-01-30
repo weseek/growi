@@ -77,9 +77,14 @@ const commonSanitizeOption: SanitizeOption = deepmerge(
   },
 );
 
+let isInjectedCustomSanitaizeOption = false;
+
 const injectCustomSanitizeOption = (config: RendererConfig) => {
-  commonSanitizeOption.tagNames = config.tagWhiteList;
-  commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+  if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    commonSanitizeOption.tagNames = config.tagWhiteList;
+    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    isInjectedCustomSanitaizeOption = true;
+  }
 };
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
@@ -220,6 +225,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options);
   }
+
   return options;
 };
 
@@ -274,6 +280,58 @@ export const generateSimpleViewOptions = (
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.table = Table;
+  }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
+export const generateSSRViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  const options = generateCommonOptions(pagePath);
+
+  const { remarkPlugins, rehypePlugins, components } = options;
+
+  // add remark plugins
+  remarkPlugins.push(
+    math,
+    xsvToTable.remarkPlugin,
+    lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
+  );
+
+  const isEnabledLinebreaks = config.isEnabledLinebreaks;
+
+  if (isEnabledLinebreaks) {
+    remarkPlugins.push(breaks);
+  }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
+    : () => {};
+
+  // add rehype plugins
+  rehypePlugins.push(
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    rehypeSanitizePlugin,
+    katex,
+  );
+
+  // add components
+  if (components != null) {
+    components.lsx = LsxImmutable;
     components.table = Table;
   }
 
