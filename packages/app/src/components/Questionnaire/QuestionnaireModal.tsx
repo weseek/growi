@@ -82,17 +82,31 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     closeQuestionnaireModal();
   }, [closeQuestionnaireModal, questionnaireOrder._id, t]);
 
+  // No showing toasts since not important
+  const closeBtnClickHandler = useCallback(async() => {
+    closeQuestionnaireModal();
+
+    try {
+      await apiv3Put('/questionnaire/deny', {
+        questionnaireOrderId: questionnaireOrder._id,
+      });
+    }
+    catch (e) {
+      logger.error(e);
+    }
+  }, [closeQuestionnaireModal, questionnaireOrder._id]);
+
   const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
 
   return (<Modal
     size="lg"
     isOpen={isOpened}
-    toggle={() => closeQuestionnaireModal()}
+    toggle={closeBtnClickHandler}
   >
     <form onSubmit={submitHandler}>
       <ModalHeader
         tag="h4"
-        toggle={() => closeQuestionnaireModal()}
+        toggle={closeBtnClickHandler}
         className="bg-primary text-light">
         <span>{t('questionnaire.give_us_feedback')}</span>
       </ModalHeader>

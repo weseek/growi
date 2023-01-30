@@ -10,7 +10,10 @@ const GrowiWikiType = { open: 'open', closed: 'closed' } as const;
 const GrowiAttachmentType = {
   aws: 'aws',
   gcs: 'gcs',
+  gcp: 'gcp',
   gridfs: 'gridfs',
+  mongo: 'mongo',
+  mongodb: 'mongodb',
   local: 'local',
   none: 'none',
 } as const;

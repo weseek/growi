@@ -1,10 +1,12 @@
 import axiosRetry from 'axios-retry';
 
+import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
+import QuestionnaireAnswerStatus from '../models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
 
 const logger = loggerFactory('growi:service:questionnaire-cron');
@@ -56,7 +58,15 @@ class QuestionnaireCronService {
         const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
         const questionnaireOrders: IQuestionnaireOrder[] = response.data.questionnaireOrders;
 
+        // Reset status (denied => not_answered)
+        await QuestionnaireAnswerStatus.updateMany(
+          { status: StatusType.denied },
+          { status: StatusType.not_answered },
+        );
+
+        // Cleanup
         await QuestionnaireOrder.deleteMany();
+
         await saveOrders(questionnaireOrders);
       }
       catch (e) {
