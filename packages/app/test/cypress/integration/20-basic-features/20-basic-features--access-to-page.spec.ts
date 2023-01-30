@@ -98,6 +98,7 @@ context('Access to page', () => {
       // wait until
       return Cypress.$('.layout-root').hasClass('editing');
     });
+    cy.screenshot('useEditingMarkdown1');
     cy.get('.wiki').children().first().should('have.text', body1);
 
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
@@ -110,11 +111,12 @@ context('Access to page', () => {
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
 
+    cy.screenshot('useEditingMarkdown2');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // check EDIT contents after save with shortcut key
     cy.get('.CodeMirror').type(body2);
-    cy.screenshot('useEditingMarkdown1');
+    cy.screenshot('useEditingMarkdown3');
     cy.get('.CodeMirror').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
@@ -127,6 +129,7 @@ context('Access to page', () => {
       // wait until
       return Cypress.$('.layout-root').hasClass('editing');
     });
+    cy.screenshot('useEditingMarkdown4');
     // cy.getByTestid('save-page-btn').click();
     // cy.get('.layout-root').should('not.have.class', 'editing');
     // cy.waitUntil(() => {
