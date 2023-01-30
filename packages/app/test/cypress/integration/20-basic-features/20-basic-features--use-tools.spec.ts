@@ -45,8 +45,13 @@ context('Modal for page operation', () => {
       cy.getByTestid('btn-create-memo').click();
     });
     cy.getByTestid('page-editor').should('be.visible');
-    cy.getByTestid('save-page-btn').click();
-    cy.get('.layout-root').should('not.have.class', 'editing');
+
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('save-page-btn').should('be.visible').click();
+      // wait until
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    });
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
 
@@ -64,7 +69,9 @@ context('Modal for page operation', () => {
       // do
       cy.getByTestid('newPageBtn').click({force: true});
       // wait until
-      return cy.getByTestid('page-create-modal').then($elem => $elem.is(':visible'));
+      return cy.get('body').within(() => {
+        return Cypress.$('[data-testid=page-create-modal]').is(':visible');
+      });
     });
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {

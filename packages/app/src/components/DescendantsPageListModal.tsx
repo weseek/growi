@@ -1,8 +1,9 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -38,6 +39,15 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const { data: isSharedUser } = useIsSharedUser();
 
   const { data: status, close } = useDescendantsPageListModal();
+
+  const { events } = useRouter();
+
+  useEffect(() => {
+    events.on('routeChangeStart', close);
+    return () => {
+      events.off('routeChangeStart', close);
+    };
+  }, [close, events]);
 
   const navTabMapping = useMemo(() => {
     return {
