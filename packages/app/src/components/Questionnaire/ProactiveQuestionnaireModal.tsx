@@ -5,7 +5,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
-import { useSiteUrl, useGrowiVersion } from '~/stores/context';
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 type ModalProps = {
   isOpen: boolean,
@@ -44,8 +44,6 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { isOpen, onClose } = props;
-  const { data: siteUrl } = useSiteUrl();
-  const { data: growiVersion } = useGrowiVersion();
 
   const [isQuestionnaireCompletionModal, setQuestionnaireCompletionModal] = useState(false);
 
@@ -68,15 +66,13 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
       position,
       occupation,
       commentText,
-      growiUri: siteUrl,
-      growiVersion,
     };
 
-    // TODO: send questionnaire data
+    apiv3Post('/questionnaire/proactive/answer', sendValues);
 
     onClose();
     setQuestionnaireCompletionModal(true);
-  }, [growiVersion, onClose, siteUrl]);
+  }, [onClose]);
 
   return (
     <>
