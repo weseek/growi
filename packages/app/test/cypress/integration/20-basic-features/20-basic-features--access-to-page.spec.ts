@@ -118,7 +118,10 @@ context('Access to page', () => {
     cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('.layout-root').should('not.have.class', 'editing');
+    // cy.get('.layout-root').should('not.have.class', 'editing');
+    cy.waitUntil(() => {
+      return cy.get('.layout-root').then($elem => !$elem.hasClass('editing'));
+    })
     cy.get('.wiki').children().first().should('have.text', body1+body2);
     // const testContents = 'test contents';
     // const testContents2 = 'test contents2';
