@@ -29,19 +29,18 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
     openQuestionnaireModal(questionnaireOrder._id);
   }, [openQuestionnaireModal, questionnaireOrder._id]);
 
-  const skipBtnClickHandler = useCallback(async() => {
+  const denyBtnClickHandler = useCallback(async() => {
     // Immediately close
     setIsOpen(false);
 
     try {
-      await apiv3Put('/questionnaire/skip', {
+      await apiv3Put('/questionnaire/deny', {
         questionnaireOrderId: questionnaireOrder._id,
       });
-      toastSuccess(t('questionnaire.skipped'));
+      toastSuccess(t('questionnaire.denied'));
     }
     catch (e) {
       logger.error(e);
-      toastError(t('questionnaire.failed_to_skip'));
     }
   }, [questionnaireOrder._id, t]);
 
@@ -50,7 +49,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
     setIsOpen(false);
 
     try {
-      await apiv3Put('/questionnaire/deny', {
+      await apiv3Put('/questionnaire/skip', {
         questionnaireOrderId: questionnaireOrder._id,
       });
     }
@@ -70,7 +69,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
     </div>
     <div className="toast-body bg-light d-flex justify-content-end">
       <button type="button" className="btn btn-secondary mr-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
-      <button type="button" className="btn btn-secondary" onClick={skipBtnClickHandler}>{t('questionnaire.skip')}</button>
+      <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.skip')}</button>
     </div>
   </div>;
 };

@@ -68,16 +68,15 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     closeQuestionnaireModal();
   }, [closeQuestionnaireModal, questionnaireOrder.questions, sendAnswer]);
 
-  const skipBtnClickHandler = useCallback(async() => {
+  const denyBtnClickHandler = useCallback(async() => {
     try {
-      apiv3Put('/questionnaire/skip', {
+      apiv3Put('/questionnaire/deny', {
         questionnaireOrderId: questionnaireOrder._id,
       });
-      toastSuccess(t('questionnaire.skipped'));
+      toastSuccess(t('questionnaire.denied'));
     }
     catch (e) {
       logger.error(e);
-      toastError(t('questionnaire.failed_to_skip'));
     }
     closeQuestionnaireModal();
   }, [closeQuestionnaireModal, questionnaireOrder._id, t]);
@@ -87,7 +86,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     closeQuestionnaireModal();
 
     try {
-      await apiv3Put('/questionnaire/deny', {
+      await apiv3Put('/questionnaire/skip', {
         questionnaireOrderId: questionnaireOrder._id,
       });
     }
@@ -130,7 +129,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         {currentUser?.admin
         && <a href="" className="mr-auto d-flex align-items-center"><i className="material-icons mr-1">settings</i>{t('questionnaire.settings')}</a>}
         <>
-          <button type="button" className="btn btn-outline-secondary mr-3" onClick={skipBtnClickHandler}>{t('questionnaire.dont_show_again')}</button>
+          <button type="button" className="btn btn-outline-secondary mr-3" onClick={denyBtnClickHandler}>{t('questionnaire.dont_show_again')}</button>
           <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
         </>
       </ModalFooter>
