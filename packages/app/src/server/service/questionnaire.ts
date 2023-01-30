@@ -52,8 +52,8 @@ class QuestionnaireService {
     };
   }
 
-  getUserInfo(user: IUserHasId, appSiteUrlHashed: string): IUserInfo {
-    if (user) {
+  getUserInfo(user: IUserHasId | null, appSiteUrlHashed: string): IUserInfo {
+    if (user != null) {
       const hasher = crypto.createHmac('sha256', appSiteUrlHashed);
       hasher.update(user._id.toString());
 

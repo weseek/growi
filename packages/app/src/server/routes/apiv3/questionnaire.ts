@@ -40,7 +40,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
-    const userInfo = crowi.questionnaireService!.getUserInfo(req.user, growiInfo.appSiteUrlHashed);
+    const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
     // TODO: add condition
     try {
@@ -71,7 +71,7 @@ module.exports = (crowi: Crowi): Router => {
     };
 
     try {
-      await sendQuestionnaireAnswer(req.user, req.body.answers);
+      await sendQuestionnaireAnswer(req.user ?? null, req.body.answers);
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
       return res.apiv3({}, status);
     }
