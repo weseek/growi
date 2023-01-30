@@ -58,11 +58,11 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
     }
   }, [questionnaireOrder._id]);
 
-  const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
+  const questionnaireOrderShortTitle = lang === 'en_US' ? questionnaireOrder.shortTitle.en_US : questionnaireOrder.shortTitle.ja_JP;
 
   return <div className={`toast ${isOpen ? 'show' : 'hide'}`}>
     <div className="toast-header bg-info">
-      <strong className="mr-auto text-light">{questionnaireOrderTitle}</strong>
+      <strong className="mr-auto text-light">{questionnaireOrderShortTitle}</strong>
       <button type="button" className="ml-2 mb-1 close" onClick={closeBtnClickHandler}>
         <span aria-hidden="true" className="text-light">&times;</span>
       </button>

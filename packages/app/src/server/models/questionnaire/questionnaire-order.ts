@@ -16,6 +16,7 @@ const questionnaireOrderTitleSchema = new Schema<IQuestionnaireOrder['title']>({
 }, { _id: false });
 
 const questionnaireOrderSchema = new Schema<QuestionnaireOrderDocument>({
+  shortTitle: { type: questionnaireOrderTitleSchema, required: true },
   title: { type: questionnaireOrderTitleSchema, required: true },
   showFrom: { type: Date, required: true },
   showUntil: {
