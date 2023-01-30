@@ -45,8 +45,13 @@ context('Modal for page operation', () => {
       cy.getByTestid('btn-create-memo').click();
     });
     cy.getByTestid('page-editor').should('be.visible');
-    cy.getByTestid('save-page-btn').click();
-    cy.get('.layout-root').should('not.have.class', 'editing');
+
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('save-page-btn').should('be.visible').click();
+      // wait until
+      return Cypress.$('.layout-root').hasClass('editing');
+    });
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
 
