@@ -95,6 +95,7 @@ context('Access to page', () => {
     cy.getByTestid('save-page-btn').click();
     cy.get('.layout-root').should('not.have.class', 'editing');
     cy.get('.wiki').children().first().should('have.text', body1);
+    cy.screenshot(`useEditingMarkdown test case1`);
 
 
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
@@ -107,6 +108,7 @@ context('Access to page', () => {
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
 
+    cy.screenshot(`useEditingMarkdown test case2`);
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // check EDIT contents after save with shortcut key
@@ -117,11 +119,13 @@ context('Access to page', () => {
     cy.get('.CodeMirror').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.getByTestid('page-editor').should('be.visible');
+    cy.screenshot(`useEditingMarkdown test case3`);
     cy.getByTestid('save-page-btn').click();
-    // cy.get('.layout-root').should('not.have.class', 'editing');
-    cy.waitUntil(() => {
-      return cy.get('.layout-root').then($elem => !$elem.hasClass('editing'));
-    })
+    cy.screenshot(`useEditingMarkdown test case4`);
+    cy.get('.layout-root').should('not.have.class', 'editing');
+    // cy.waitUntil(() => {
+    //   return cy.get('.layout-root').then($elem => !$elem.hasClass('editing'));
+    // })
     cy.get('.wiki').children().first().should('have.text', body1+body2);
     // const testContents = 'test contents';
     // const testContents2 = 'test contents2';
