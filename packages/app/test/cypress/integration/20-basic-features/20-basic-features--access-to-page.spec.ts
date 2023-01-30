@@ -116,6 +116,7 @@ context('Access to page', () => {
     cy.get('.CodeMirror').type(savePageShortcutKey);
     cy.get('.CodeMirror').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
     cy.get('.layout-root').should('not.have.class', 'editing');
     cy.get('.wiki').children().first().should('have.text', body1+body2);
