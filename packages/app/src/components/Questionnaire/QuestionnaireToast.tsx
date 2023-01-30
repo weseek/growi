@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -24,31 +24,47 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
 
   const { t } = useTranslation();
 
-  const answerBtnClickHandler = () => {
+  const answerBtnClickHandler = useCallback(() => {
     setIsOpen(false);
     openQuestionnaireModal(questionnaireOrder._id);
-  };
+  }, [openQuestionnaireModal, questionnaireOrder._id]);
 
-  const skipBtnClickHandler = async() => {
-    apiv3Put('/questionnaire/skip', {
-      user: currentUser?._id,
-      questionnaireOrderId: questionnaireOrder._id,
-    }).then(() => {
+  const skipBtnClickHandler = useCallback(async() => {
+    // Immediately close
+    setIsOpen(false);
+
+    try {
+      await apiv3Put('/questionnaire/skip', {
+        questionnaireOrderId: questionnaireOrder._id,
+      });
       toastSuccess(t('questionnaire.skipped'));
-    }).catch((e) => {
+    }
+    catch (e) {
       logger.error(e);
       toastError(t('questionnaire.failed_to_skip'));
-    });
+    }
+  }, [questionnaireOrder._id, t]);
 
+  // No showing toasts since not important
+  const closeBtnClickHandler = useCallback(async() => {
     setIsOpen(false);
-  };
+
+    try {
+      await apiv3Put('/questionnaire/deny', {
+        questionnaireOrderId: questionnaireOrder._id,
+      });
+    }
+    catch (e) {
+      logger.error(e);
+    }
+  }, [questionnaireOrder._id]);
 
   const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
 
   return <div className={`toast ${isOpen ? 'show' : 'hide'}`}>
     <div className="toast-header bg-info">
       <strong className="mr-auto text-light">{questionnaireOrderTitle}</strong>
-      <button type="button" className="ml-2 mb-1 close" onClick={() => setIsOpen(false)}>
+      <button type="button" className="ml-2 mb-1 close" onClick={closeBtnClickHandler}>
         <span aria-hidden="true" className="text-light">&times;</span>
       </button>
     </div>

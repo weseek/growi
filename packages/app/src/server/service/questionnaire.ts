@@ -2,11 +2,14 @@ import crypto from 'crypto';
 import * as os from 'node:os';
 
 import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
+import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 import { IUserHasId } from '~/interfaces/user';
 import QuestionnaireOrder, { QuestionnaireOrderDocument } from '~/server/models/questionnaire/questionnaire-order';
 
-import { shouldShowQuestionnaire } from '../util/questionnaire/condition';
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import QuestionnaireAnswerStatus from '../models/questionnaire/questionnaire-answer-status';
+import { isShowableCondition } from '../util/questionnaire/condition';
 
 class QuestionnaireService {
 
@@ -64,18 +67,29 @@ class QuestionnaireService {
     return { type: UserType.guest };
   }
 
-  async getQuestionnaireOrdersToShow(userInfo, growiInfo): Promise<QuestionnaireOrderDocument[]> {
+  async getQuestionnaireOrdersToShow(userInfo, growiInfo, userId: ObjectIdLike | null): Promise<QuestionnaireOrderDocument[]> {
     const currentDate = new Date();
 
-    const questionnaireOrders = await QuestionnaireOrder.find({
+    let questionnaireOrders = await QuestionnaireOrder.find({
       showUntil: {
         $gte: currentDate,
       },
     });
 
-    return questionnaireOrders.filter((order) => {
-      return shouldShowQuestionnaire(order.condition, userInfo, growiInfo);
-    });
+    if (userId != null) {
+      const statuses = await QuestionnaireAnswerStatus.find({ userId, questionnaireOrderId: { $in: questionnaireOrders.map(d => d._id) } });
+
+      questionnaireOrders = questionnaireOrders.filter((order) => {
+        const status = statuses.find(s => s.questionnaireOrderId.toString() === order._id.toString());
+
+        return status?.status === StatusType.not_answered;
+      });
+    }
+
+    return questionnaireOrders
+      .filter((order) => {
+        return isShowableCondition(order, userInfo, growiInfo);
+      });
   }
 
 }

@@ -44,7 +44,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // TODO: add condition
     try {
-      const questionnaireOrders = await crowi.questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo);
+      const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
       return res.apiv3({ questionnaireOrders });
     }
@@ -84,6 +84,17 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/skip', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
+      return res.apiv3({}, status);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.put('/deny', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    try {
+      const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.denied);
       return res.apiv3({}, status);
     }
     catch (err) {

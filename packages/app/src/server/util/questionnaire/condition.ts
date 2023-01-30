@@ -1,5 +1,6 @@
 import { ICondition } from '~/interfaces/questionnaire/condition';
 import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
+import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
 import { IUserInfo } from '~/interfaces/questionnaire/user-info';
 
 
@@ -23,7 +24,9 @@ const checkGrowiInfo = (condition: ICondition, growiInfo: IGrowiInfo): boolean =
   return true;
 };
 
-export const shouldShowQuestionnaire = (condition: ICondition, userInfo: IUserInfo, growiInfo: IGrowiInfo): boolean => {
+export const isShowableCondition = (order: IQuestionnaireOrder, userInfo: IUserInfo, growiInfo: IGrowiInfo): boolean => {
+  const { condition } = order;
+
   if (!checkUserInfo(condition, userInfo)) {
     return false;
   }
