@@ -1,8 +1,23 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.5](https://github.com/weseek/growi/compare/v6.0.4...v6.0.5) - 2023-01-30
+
+### 🚀 Improvement
+
+- imprv: Override process for CommonSanitizeOptions (#7305) @miya
+
+### 🐛 Bug Fixes
+
+- fix:  Request to "/_api/v3/personal-settings"  occurs when in guest mode (#7307) @miya
+- fix: Undeleteable trash pages when clicked empty trash button bug (#7250) @jam411
+- fix: Guest users are able to move to pages that require authentication (#7300) @miya
+- fix: Modal does not close after clicking on path in DescendantsPageListModal (#7291) @miya
+- fix: GrowiContextualSubNavigation style is broken (#7304) @jam411
+- fix: Markdown in the editor reverted when save with shortcut (#7301) @yukendev
 
 ## [v6.0.4](https://github.com/weseek/growi/compare/v6.0.3...v6.0.4) - 2023-01-25
 
