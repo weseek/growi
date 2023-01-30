@@ -112,7 +112,7 @@ context('Click page icons button', () => {
       // do
       cy.get('#po-total-bookmarks').click({force: true});
       // wait until
-      return cy.get('.user-list-popover').then($elem => $elem.is(':visible'));
+      return Cypress.$('.user-list-popover').is(':visible');
     });
     cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}8-bookmarks-counter`) });
@@ -137,7 +137,7 @@ context('Click page icons button', () => {
       // do
       cy.get('#po-total-bookmarks').click({force: true});
       // wait until
-      return cy.get('.user-list-popover').then($elem => $elem.is(':visible'));
+      return Cypress.$('.user-list-popover').is(':visible');
     });
     cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}10-bookmarks-counter`) });

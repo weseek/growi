@@ -17,6 +17,8 @@ import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
 
+import { PageContents } from './PageContents';
+
 import styles from './PageView.module.scss';
 
 
@@ -95,14 +97,15 @@ export const PageView = (props: Props): JSX.Element => {
 
   const contents = specialContents != null
     ? <></>
-    : (() => {
-      const PageContents = dynamic(() => import('./PageContents').then(mod => mod.PageContents), {
-        ssr: false,
-        // TODO: show SSR body
-        // loading: () => ssrBody ?? <></>,
-      });
-      return <PageContents />;
-    })();
+    // TODO: show SSR body
+    // : (() => {
+    //   const PageContents = dynamic(() => import('./PageContents').then(mod => mod.PageContents), {
+    //     ssr: false,
+    //     // loading: () => ssrBody ?? <></>,
+    //   });
+    //   return <PageContents />;
+    // })();
+    : <PageContents />;
 
   return (
     <MainPane

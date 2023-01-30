@@ -45,8 +45,21 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser = user.toObject();
   }
 
-  // eslint-disable-next-line max-len, no-nested-ternary
-  const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
+  // Redirect destination for page transition by next/link
+  let redirectDestination: string | null = null;
+  if (!crowi.aclService.isGuestAllowedToRead() && currentUser == null) {
+    redirectDestination = '/login';
+  }
+  else if (!isMaintenanceMode && currentPathname === '/maintenance') {
+    redirectDestination = '/';
+  }
+  else if (isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance')) {
+    redirectDestination = '/maintenance';
+  }
+  else {
+    redirectDestination = null;
+  }
+
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
