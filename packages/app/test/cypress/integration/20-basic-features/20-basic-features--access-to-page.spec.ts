@@ -114,6 +114,7 @@ context('Access to page', () => {
 
     // check EDIT contents after save with shortcut key
     cy.get('.CodeMirror').type(body2);
+    cy.screenshot('useEditingMarkdown1');
     cy.get('.CodeMirror').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
