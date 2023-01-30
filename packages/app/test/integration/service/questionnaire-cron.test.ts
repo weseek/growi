@@ -27,6 +27,10 @@ describe('QuestionnaireCronService', () => {
         // saved in db、not finished (user types is updated from the time it was saved)
         {
           _id: '63a8354837e7aa378e16f0b1',
+          shortTitle: {
+            ja_JP: 'GROWI に関するアンケート',
+            en_US: 'Questions about GROWI',
+          },
           title: {
             ja_JP: 'GROWI に関するアンケート',
             en_US: 'Questions about GROWI',
@@ -58,6 +62,10 @@ describe('QuestionnaireCronService', () => {
         // not saved, not finished
         {
           _id: '63a8354837e7aa378e16f0b2',
+          shortTitle: {
+            ja_JP: 'GROWI に関するアンケート',
+            en_US: 'Questions about GROWI',
+          },
           title: {
             ja_JP: 'GROWI に関するアンケート',
             en_US: 'Questions about GROWI',
@@ -89,6 +97,10 @@ describe('QuestionnaireCronService', () => {
         // not saved, finished
         {
           _id: '63a8354837e7aa378e16f0b3',
+          shortTitle: {
+            ja_JP: 'GROWI に関するアンケート',
+            en_US: 'Questions about GROWI',
+          },
           title: {
             ja_JP: 'GROWI に関するアンケート',
             en_US: 'Questions about GROWI',
@@ -135,6 +147,10 @@ describe('QuestionnaireCronService', () => {
     await QuestionnaireOrder.insertMany([
       {
         _id: '63a8354837e7aa378e16f0b1',
+        shortTitle: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         title: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
@@ -163,6 +179,10 @@ describe('QuestionnaireCronService', () => {
       // finished
       {
         _id: '63a8354837e7aa378e16f0b4',
+        shortTitle: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         title: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
@@ -191,6 +211,10 @@ describe('QuestionnaireCronService', () => {
       // questionnaire that doesn't exist in questionnaire server
       {
         _id: '63a8354837e7aa378e16f0b5',
+        shortTitle: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         title: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
@@ -252,6 +276,10 @@ describe('QuestionnaireCronService', () => {
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {
         _id: '63a8354837e7aa378e16f0b1',
+        shortTitle: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         title: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
@@ -282,6 +310,10 @@ describe('QuestionnaireCronService', () => {
       },
       {
         _id: '63a8354837e7aa378e16f0b2',
+        shortTitle: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
         title: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
