@@ -67,7 +67,7 @@ class QuestionnaireService {
     return { type: UserType.guest };
   }
 
-  async getQuestionnaireOrdersToShow(userInfo, growiInfo, userId: ObjectIdLike | null): Promise<QuestionnaireOrderDocument[]> {
+  async getQuestionnaireOrdersToShow(userInfo: IUserInfo, growiInfo: IGrowiInfo, userId: ObjectIdLike | null): Promise<QuestionnaireOrderDocument[]> {
     const currentDate = new Date();
 
     let questionnaireOrders = await QuestionnaireOrder.find({
