@@ -199,8 +199,8 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
       const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
       // initialize
-      if (cache.get(key) == null) {
-        mutate(key, !mql.matches);
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: !mql.matches });
       }
 
       return () => {
@@ -227,8 +227,8 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
       const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
       // initialize
-      if (cache.get(key) == null) {
-        mutate(key, !mql.matches);
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: !mql.matches });
       }
 
       return () => {

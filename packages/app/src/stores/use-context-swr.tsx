@@ -23,7 +23,7 @@ export function useContextSWR<Data, Error>(
   const { cache } = useSWRConfig();
   const swrResponse = useSWRImmutable(key, null, {
     ...configuration,
-    fallbackData: configuration?.fallbackData ?? cache.get(key),
+    fallbackData: configuration?.fallbackData ?? cache.get(key)?.data,
   });
 
   // write data to cache directly
