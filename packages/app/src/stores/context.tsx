@@ -1,4 +1,4 @@
-import type { ColorScheme, IUser } from '@growi/core';
+import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -36,8 +36,8 @@ export const useConfidential = (initialData?: string): SWRResponse<string, Error
   return useContextSWR('confidential', initialData);
 };
 
-export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
-  return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<Nullable<IUserHasId>, Error> => {
+  return useContextSWR('currentUser', initialData);
 };
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
@@ -230,12 +230,12 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
  *********************************************************** */
 
 export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
 
   return useSWRImmutable(
-    ['isGuestUser', currentUser],
-    ([, currentUser]) => currentUser == null,
-    { fallbackData: currentUser == null },
+    isLoading ? null : ['isGuestUser', currentUser?._id],
+    ([, currentUserId]) => currentUserId == null,
+    { fallbackData: currentUser?._id == null },
   );
 };
 

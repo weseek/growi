@@ -13,7 +13,6 @@ import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
 } from '~/stores/context';
-import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 
 
 import { CommonProps } from './utils/commons';
@@ -26,13 +25,12 @@ import '~/styles/theme/_apply-colors.scss';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const swrConfig: SWRConfigValue = {
-  ...swrGlobalConfiguration,
+const swrConfig = isServer()
   // set the request scoped cache provider in server
-  provider: isServer()
-    ? cache => new Map(cache)
-    : undefined,
-};
+  ? {
+    provider: (cache: any) => new Map<string, any>(cache),
+  }
+  : {};
 
 
 // eslint-disable-next-line @typescript-eslint/ban-types

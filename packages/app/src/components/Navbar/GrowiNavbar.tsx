@@ -2,10 +2,8 @@ import React, {
   FC, memo, useMemo, useRef,
 } from 'react';
 
-import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -17,7 +15,6 @@ import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
-import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { GlobalSearchProps } from './GlobalSearch';
@@ -33,7 +30,7 @@ const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isGuestUser, isLoading } = useIsGuestUser();
 
   // ripple
   const newButtonRef = useRef(null);
@@ -44,6 +41,10 @@ const NavbarRight = memo((): JSX.Element => {
   const isAuthenticated = isGuestUser === false;
 
   const authenticatedNavItem = useMemo(() => {
+    if (isLoading) {
+      return <></>;
+    }
+
     return (
       <>
         <li className="nav-item">
@@ -72,9 +73,13 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [t, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [isLoading, t, isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
+    if (isLoading) {
+      return <></>;
+    }
+
     return (
       <>
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
@@ -83,7 +88,7 @@ const NavbarRight = memo((): JSX.Element => {
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
       </>
     );
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading]);
 
   return (
     <>
