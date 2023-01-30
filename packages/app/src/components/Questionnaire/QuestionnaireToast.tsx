@@ -69,7 +69,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
     </div>
     <div className="toast-body bg-light d-flex justify-content-end">
       <button type="button" className="btn btn-secondary mr-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
-      <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.skip')}</button>
+      <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.deny')}</button>
     </div>
   </div>;
 };
