@@ -3,24 +3,19 @@ import { HasObjectId } from '@growi/core';
 import { ICondition, IConditionHasId } from './condition';
 import { IQuestion, IQuestionHasId } from './question';
 
-export interface IQuestionnaireOrder {
+export interface IQuestionnaireOrder<TQUESTION = IQuestion, TCONDITION = ICondition> {
+  shortTitle: {
+    ja_JP: string
+    en_US: string
+  }
   title: {
     ja_JP: string
     en_US: string
   }
   showFrom: Date
   showUntil: Date
-  questions: IQuestion[]
-  condition: ICondition
+  questions: TQUESTION[]
+  condition: TCONDITION
 }
 
-export type IQuestionnaireOrderHasId = {
-  title: {
-    ja_JP: string
-    en_US: string
-  }
-  showFrom: Date
-  showUntil: Date
-  questions: IQuestionHasId[]
-  condition: IConditionHasId
-} & HasObjectId;
+export type IQuestionnaireOrderHasId = IQuestionnaireOrder<IQuestionHasId, IConditionHasId> & HasObjectId;
