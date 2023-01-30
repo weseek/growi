@@ -7,7 +7,7 @@ import {
   isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
 } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -137,8 +137,6 @@ const PutbackPageModal = (): JSX.Element => {
 };
 
 type Props = CommonProps & {
-  currentUser: IUser,
-
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
   redirectFrom?: string;
