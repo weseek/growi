@@ -4,6 +4,7 @@ import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import type { HtmlElementNode } from 'rehype-toc';
 
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
 import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -30,6 +31,7 @@ export const PageContents = (): JSX.Element => {
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
+  const updateStateAfterSave = useUpdateStateAfterSave(currentPage?._id);
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
     mutateCurrentPageTocNode(toc);
@@ -47,14 +49,10 @@ export const PageContents = (): JSX.Element => {
   }, [mutateRendererOptions]);
 
   useHandsontableModalLauncherForView({
-    onSaveSuccess: (newMarkdown) => {
+    onSaveSuccess: () => {
       toastSuccess(t('toaster.save_succeeded'));
 
-      // rerender
-      if (!isSharedPage) {
-        mutateCurrentPage();
-      }
-      mutateEditingMarkdown(newMarkdown);
+      updateStateAfterSave?.();
     },
     onSaveError: (error) => {
       toastError(error);
@@ -62,14 +60,10 @@ export const PageContents = (): JSX.Element => {
   });
 
   useDrawioModalLauncherForView({
-    onSaveSuccess: (newMarkdown) => {
+    onSaveSuccess: () => {
       toastSuccess(t('toaster.save_succeeded'));
 
-      // rerender
-      if (!isSharedPage) {
-        mutateCurrentPage();
-      }
-      mutateEditingMarkdown(newMarkdown);
+      updateStateAfterSave?.();
     },
     onSaveError: (error) => {
       toastError(error);

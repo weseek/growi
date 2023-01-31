@@ -22,7 +22,7 @@ declare global {
 
 
 export const useHandsontableModalLauncherForView = (opts?: {
-  onSaveSuccess?: (newMarkdown: string) => void,
+  onSaveSuccess?: () => void,
   onSaveError?: (error: any) => void,
 }): void => {
 
@@ -60,7 +60,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
         optionsToSave,
       );
 
-      opts?.onSaveSuccess?.(newMarkdown);
+      opts?.onSaveSuccess?.();
     }
     catch (error) {
       logger.error('failed to save', error);
