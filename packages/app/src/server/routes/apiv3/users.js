@@ -134,6 +134,19 @@ module.exports = (crowi) => {
     query('options').optional().isString().withMessage('options must be string'),
   ];
 
+  // express middleware
+  const certifyUserOperationOtherThenYourOwn = (req, res, next) => {
+    const { id } = req.params;
+
+    if (req.user._id.toString() === id) {
+      const msg = 'This API is not available for your own users';
+      logger.error(msg);
+      return res.apiv3Err(new ErrorV3(msg), 400);
+    }
+
+    next();
+  };
+
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
@@ -509,7 +522,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -605,7 +618,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of deactivate user
    */
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -649,7 +662,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
