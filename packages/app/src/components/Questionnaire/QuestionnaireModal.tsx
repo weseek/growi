@@ -119,9 +119,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
           </div>
           <div className="container">
             <div className="row mt-4">
-              <div className="col-6"></div>
-              <div className="col-1 p-0 pr-2 font-weight-bold text-center align-items-center">{t('questionnaire.no_answer')}</div>
-              <div className="col-5 d-flex justify-content-between align-items-center pl-2">
+              <div className="col-md-2 offset-md-5 font-weight-bold text-right align-items-center p-0">{t('questionnaire.no_answer')}</div>
+              <div className="col-md-5 d-flex justify-content-between align-items-center">
                 <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
                 <span className="font-weight-bold">{t('questionnaire.agree')}</span>
               </div>
