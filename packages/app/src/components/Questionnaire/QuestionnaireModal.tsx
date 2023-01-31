@@ -65,7 +65,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
 
     sendAnswer(answers);
 
-    closeQuestionnaireModal();
+    const shouldCloseToastor = true;
+    closeQuestionnaireModal(shouldCloseToastor);
   }, [closeQuestionnaireModal, questionnaireOrder.questions, sendAnswer]);
 
   const denyBtnClickHandler = useCallback(async() => {
@@ -78,12 +79,13 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     catch (e) {
       logger.error(e);
     }
-    closeQuestionnaireModal();
+    const shouldCloseToastor = true;
+    closeQuestionnaireModal(shouldCloseToastor);
   }, [closeQuestionnaireModal, questionnaireOrder._id, t]);
 
   // No showing toasts since not important
-  const closeBtnClickHandler = useCallback(async() => {
-    closeQuestionnaireModal();
+  const closeBtnClickHandler = useCallback(async(shouldCloseToastor: boolean) => {
+    closeQuestionnaireModal(shouldCloseToastor);
 
     try {
       await apiv3Put('/questionnaire/skip', {
@@ -95,17 +97,21 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     }
   }, [closeQuestionnaireModal, questionnaireOrder._id]);
 
+  const closeBtnClickHandlerClosingToastor = useCallback(async() => {
+    closeBtnClickHandler(true);
+  }, [closeBtnClickHandler]);
+
   const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
 
   return (<Modal
     size="lg"
     isOpen={isOpened}
-    toggle={closeBtnClickHandler}
+    toggle={closeBtnClickHandlerClosingToastor}
   >
     <form onSubmit={submitHandler}>
       <ModalHeader
         tag="h4"
-        toggle={closeBtnClickHandler}
+        toggle={closeBtnClickHandlerClosingToastor}
         className="bg-primary text-light">
         <span>{t('questionnaire.give_us_feedback')}</span>
       </ModalHeader>

@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastSuccess } from '~/client/util/toastr';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
@@ -25,8 +25,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
   const { t } = useTranslation();
 
   const answerBtnClickHandler = useCallback(() => {
-    setIsOpen(false);
-    openQuestionnaireModal(questionnaireOrder._id);
+    openQuestionnaireModal(questionnaireOrder._id, () => setIsOpen(false));
   }, [openQuestionnaireModal, questionnaireOrder._id]);
 
   const denyBtnClickHandler = useCallback(async() => {
