@@ -30,7 +30,7 @@ const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isGuestUser, isLoading } = useIsGuestUser();
+  const { data: isGuestUser } = useIsGuestUser();
 
   // ripple
   const newButtonRef = useRef(null);
@@ -41,10 +41,6 @@ const NavbarRight = memo((): JSX.Element => {
   const isAuthenticated = isGuestUser === false;
 
   const authenticatedNavItem = useMemo(() => {
-    if (isLoading) {
-      return <></>;
-    }
-
     return (
       <>
         <li className="nav-item">
@@ -73,13 +69,9 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [isLoading, t, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [t, isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
-    if (isLoading) {
-      return <></>;
-    }
-
     return (
       <>
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
@@ -88,7 +80,7 @@ const NavbarRight = memo((): JSX.Element => {
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
       </>
     );
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated]);
 
   return (
     <>
