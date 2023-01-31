@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { TFunction } from 'next-i18next';
 import { Disable } from 'react-disable';
 import { UncontrolledTooltip, UncontrolledTooltipProps } from 'reactstrap';
 
 type NotAvailableProps = {
   children: JSX.Element
   isDisabled: boolean
-  title: ReturnType<TFunction>
+  title: string
   classNamePrefix?: string
   placement?: UncontrolledTooltipProps['placement']
 }

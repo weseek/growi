@@ -216,8 +216,7 @@ export const SearchPage = (): JSX.Element => {
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
         allControl={allControl}
-      >
-      </SearchControl>
+      />
     );
   }, [allControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
 

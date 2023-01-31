@@ -4,12 +4,11 @@ import React, {
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
-import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 
 
 type Props = {
-  headerLabel?: TFunctionResult,
+  headerLabel?: string,
   userGroups: IUserGroupHasId[],
   userGroupRelations: IUserGroupRelation[],
   childUserGroups: IUserGroupHasId[],
