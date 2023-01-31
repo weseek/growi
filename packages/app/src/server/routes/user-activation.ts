@@ -10,10 +10,16 @@ type Crowi = {
 
 type CrowiReq = ReqWithUserRegistrationOrder & {
   crowi: Crowi,
+  user: any
 }
 
 export const renderUserActivationPage = (crowi: Crowi) => {
   return (req: CrowiReq, res: Response): void => {
+
+    if (req.user != null) {
+      return res.redirect('/');
+    }
+
     const { userRegistrationOrder } = req;
     const { nextApp } = crowi;
     req.crowi = crowi;
