@@ -54,10 +54,12 @@ const QuestionnaireSettings = (): JSX.Element => {
   return (
     <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
+        システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。<br />
         送信されるデータにユーザーの個人情報は一切含まれません。
-        <br />
-        ユーザー設定画面から個別にアンケート機能を有効無効に設定できます。
-        <br />
+        <div>
+          {/* eslint-disable-next-line max-len */}
+          詳しくは<a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html" rel="noreferrer" target="_blank" className="d-inline"> GROWI Docs &quot;アンケート設定&quot; <i className="icon-share-alt"></i></a>を参照ください。
+        </div>
         <br />
         GROWI の改善にご協力お願いします。
       </p>
@@ -94,8 +96,11 @@ const QuestionnaireSettings = (): JSX.Element => {
                 disabled={!isEnableQuestionnaire}
               />
               <label className="custom-control-label" htmlFor="isAppSiteUrlHashed">
-                アプリ URL を匿名化して送信する
+                サイト URL を匿名化して送信する
               </label>
+              <p className="form-text text-muted small">
+                アンケート回答データに含まれるサイト URL が匿名化されます。この設定を有効にすることで、アンケート回答データの送信元である GROWI アプリケーションが特定されなくなります。
+              </p>
             </div>
           </div>
 
