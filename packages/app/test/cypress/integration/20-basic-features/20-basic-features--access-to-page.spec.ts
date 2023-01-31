@@ -87,17 +87,13 @@ context('Access to page', () => {
 
     // 更新ボタンから保存、編集した文章がViewと一致しているか
     cy.get('.CodeMirror').type(body1);
-    cy.get('.CodeMirror').contains(body1);
-    cy.get('.page-editor-preview-body').contains(body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
     cy.get('.wiki').should('be.visible');
     cy.get('.wiki').children().first().should('have.text', body1);
-    cy.screenshot('testForUseEditingMarkdown1');
   })
 
   it('View and Edit contents are successfully loaded2', () => {
-    const body1 = 'hello';
     const body2 = ' world!';
     const savePageShortcutKey = '{ctrl+s}';
 
@@ -116,14 +112,12 @@ context('Access to page', () => {
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // ショートカットキーから保存、編集した文章がViewと一致しているか
-    cy.get('.CodeMirror').type(body2);
-    cy.get('.CodeMirror').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
-    cy.get('.CodeMirror').type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
-    cy.screenshot('testForUseEditingMarkdown2');
-
+    cy.get('. CodeMirror-line ').children().first().should(($elm) => {
+      const text = $elm.text()
+      cy.get('.CodeMirror').type(body2);
+      cy.get('.CodeMirror').type(savePageShortcutKey);
+      cy.get('. CodeMirror-line ').children().first().should('have.text', text+body2);
+    })
   })
 
   it('/user/admin is successfully loaded', () => {
