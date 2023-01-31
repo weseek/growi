@@ -1,6 +1,5 @@
 import React, { ReactElement, ReactNode, useEffect } from 'react';
 
-import { isServer } from '@growi/core';
 import { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
@@ -25,16 +24,6 @@ import '~/styles/theme/_apply-colors.scss';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const swrConfig = Object.assign(
-  {},
-  swrGlobalConfiguration,
-  // set the request scoped cache provider in server
-  isServer()
-    ? {
-      provider: (cache: any) => new Map<string, any>(cache),
-    }
-    : {},
-);
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -73,7 +62,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   const getLayout = Component.getLayout ?? (page => page);
 
   return (
-    <SWRConfig value={swrConfig}>
+    <SWRConfig value={swrGlobalConfiguration}>
       {getLayout(<Component {...pageProps} />)}
     </SWRConfig>
   );
