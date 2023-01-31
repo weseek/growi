@@ -17,7 +17,9 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPathname, useShareLinkId } from './context';
+import {
+  useCurrentPageId, useCurrentPathname, useShareLinkId, useIsGuestUser,
+} from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -157,8 +159,12 @@ export const useSWRxIsGrantNormalized = (
     pageId: string | null | undefined,
 ): SWRResponse<IResIsGrantNormalized, Error> => {
 
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const key = !isGuestUser && pageId != null ? ['/page/is-grant-normalized', pageId] : null;
+
   return useSWRImmutable(
-    pageId != null ? ['/page/is-grant-normalized', pageId] : null,
+    key,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };
