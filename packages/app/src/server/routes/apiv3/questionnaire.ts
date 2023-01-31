@@ -1,4 +1,5 @@
 import { Router, Request } from 'express';
+import { body, validationResult } from 'express-validator';
 
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import Crowi from '~/server/crowi';
@@ -20,6 +21,12 @@ interface AuthorizedRequest extends Request {
 module.exports = (crowi: Crowi): Router => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
+
+  const validators = {
+    proactiveAnswer: [body('satisfaction').exists().isNumeric(), body('commentText').exists().isString()],
+    answer: [body('questionnaireOrderId').exists().isString(), body('answers').exists().isArray({ min: 1 })],
+    skipDeny: [body('questionnaireOrderId').exists().isString()],
+  };
 
   const changeAnswerStatus = async(user, questionnaireOrderId, status) => {
     const result = await QuestionnaireAnswerStatus.updateOne({
@@ -54,7 +61,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.post('/proactive/answer', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
@@ -74,6 +81,11 @@ module.exports = (crowi: Crowi): Router => {
       await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, body);
     };
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
       await sendQuestionnaireAnswer();
       return res.apiv3({});
@@ -84,7 +96,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.put('/answer', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user, answers) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
@@ -100,6 +112,11 @@ module.exports = (crowi: Crowi): Router => {
       await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
     };
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
       await sendQuestionnaireAnswer(req.user ?? null, req.body.answers);
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
@@ -111,7 +128,12 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.put('/skip', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/skip', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
       return res.apiv3({}, status);
@@ -122,7 +144,12 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.put('/deny', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/deny', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.denied);
       return res.apiv3({}, status);
