@@ -13,7 +13,7 @@ import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
 } from '~/stores/context';
-
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
@@ -25,13 +25,16 @@ import '~/styles/theme/_apply-colors.scss';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const swrConfig = isServer()
+const swrConfig = Object.assign(
+  {},
+  swrGlobalConfiguration,
   // set the request scoped cache provider in server
-  ? {
-    provider: (cache: any) => new Map<string, any>(cache),
-  }
-  : {};
-
+  isServer()
+    ? {
+      provider: (cache: any) => new Map<string, any>(cache),
+    }
+    : {},
+);
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
