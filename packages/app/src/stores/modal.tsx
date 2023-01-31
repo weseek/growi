@@ -2,14 +2,18 @@ import { useCallback, useMemo } from 'react';
 
 import { SWRResponse } from 'swr';
 
+
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
+import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
+
+const logger = loggerFactory('growi:stores:modal');
 
 /*
 * PageCreateModal
@@ -586,11 +590,12 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
 */
 type QuestionnaireModalStatuses = {
   openedQuestionnaireId: string | null,
+  closeToastor?: () => void | Promise<void>,
 }
 
 type QuestionnaireModalStatusUtils = {
-  open(string): Promise<QuestionnaireModalStatuses | undefined>
-  close(): Promise<QuestionnaireModalStatuses | undefined>
+  open(string: string, closeToastor: () => void | Promise<void>): Promise<QuestionnaireModalStatuses | undefined>
+  close(shouldCloseToastor?: boolean): Promise<QuestionnaireModalStatuses | undefined>
 }
 
 export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRResponse<QuestionnaireModalStatuses, Error> & QuestionnaireModalStatusUtils => {
@@ -599,7 +604,17 @@ export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRR
 
   return {
     ...swrResponse,
-    open: (questionnaireOrderId: string) => swrResponse.mutate({ openedQuestionnaireId: questionnaireOrderId }),
-    close: () => swrResponse.mutate({ openedQuestionnaireId: null }),
+    open: (questionnaireOrderId: string, closeToastor: () => void | Promise<void>) => swrResponse.mutate({
+      openedQuestionnaireId: questionnaireOrderId,
+      closeToastor,
+    }),
+    close: (shouldCloseToastor?: boolean) => {
+      if (shouldCloseToastor) {
+        swrResponse.data?.closeToastor?.();
+        if (swrResponse.data?.closeToastor === undefined) logger.debug('Tried to run `swrResponse.data?.closeToastor` but it was `undefined`');
+      }
+
+      return swrResponse.mutate({ openedQuestionnaireId: null });
+    },
   };
 };
