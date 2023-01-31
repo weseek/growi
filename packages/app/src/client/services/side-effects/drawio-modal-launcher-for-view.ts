@@ -23,7 +23,7 @@ declare global {
 
 
 export const useDrawioModalLauncherForView = (opts?: {
-  onSaveSuccess?: (newMarkdown: string) => void,
+  onSaveSuccess?: () => void,
   onSaveError?: (error: any) => void,
 }): void => {
 
@@ -61,7 +61,7 @@ export const useDrawioModalLauncherForView = (opts?: {
         optionsToSave,
       );
 
-      opts?.onSaveSuccess?.(newMarkdown);
+      opts?.onSaveSuccess?.();
     }
     catch (error) {
       logger.error('failed to save', error);
