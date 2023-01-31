@@ -112,7 +112,7 @@ context('Access to page', () => {
     })
 
     cy.screenshot('useEditingMarkdown2');
-    // cy.get('.CodeMirror').should('be.visible');
+    cy.get('.CodeMirror').should('be.visible');
 
     // check EDIT contents after save with shortcut key
     cy.get('.CodeMirror').type(body2);
