@@ -1,3 +1,7 @@
+import {
+  useCallback, useEffect, useRef,
+} from 'react';
+
 import { HtmlElementNode } from 'rehype-toc';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -17,9 +21,22 @@ import { useCurrentPagePath } from './page';
 import { useCurrentPageTocNode } from './ui';
 
 
-export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => void): SWRResponse<RendererOptions, Error> => {
+export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: rendererConfig } = useRendererConfig();
+  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
+
+  const tocRef = useRef<HtmlElementNode|undefined>();
+
+  const storeTocNodeHandler = useCallback((toc: HtmlElementNode) => {
+    tocRef.current = toc;
+  }, []);
+
+  useEffect(() => {
+    mutateCurrentPageTocNode(tocRef.current);
+  // using useRef not to re-render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutateCurrentPageTocNode, tocRef.current]);
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
