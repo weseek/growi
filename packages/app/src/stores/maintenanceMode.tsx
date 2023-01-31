@@ -27,5 +27,5 @@ export const useIsMaintenanceMode = (initialData?: boolean): SWRResponseWithUtil
     },
   };
 
-  return withUtils(swrResult, utils);
+  return withUtils<maintenanceModeUtils, boolean>(swrResult, utils);
 };
