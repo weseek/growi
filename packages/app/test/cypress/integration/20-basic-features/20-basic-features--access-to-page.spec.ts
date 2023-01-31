@@ -113,7 +113,7 @@ context('Access to page', () => {
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // check editing contents with shortcut key
-    cy.get('. CodeMirror-line ').children().first().should(($elm) => {
+    cy.get('.CodeMirror-line').children().first().should(($elm) => {
       const text = $elm.text()
       cy.get('.CodeMirror').type(body2);
       cy.get('.CodeMirror').contains(text+body2);
