@@ -52,7 +52,7 @@ const QuestionnaireSettings = (): JSX.Element => {
   const isLoading = data === undefined && error === undefined;
 
   return (
-    <div className="mb-5">
+    <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
         送信されるデータにユーザーの個人情報は一切含まれません。
         <br />
@@ -94,7 +94,7 @@ const QuestionnaireSettings = (): JSX.Element => {
                 disabled={!isEnableQuestionnaire}
               />
               <label className="custom-control-label" htmlFor="isAppSiteUrlHashed">
-                アプリ URL を暗号化して送信する
+                アプリ URL を匿名化して送信する
               </label>
             </div>
           </div>

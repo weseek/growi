@@ -107,38 +107,48 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
     size="lg"
     isOpen={isOpened}
     toggle={closeBtnClickHandlerClosingToastor}
+    centered
   >
     <form onSubmit={submitHandler}>
-      <ModalHeader
-        tag="h4"
-        toggle={closeBtnClickHandlerClosingToastor}
-        className="bg-primary text-light">
-        <span>{t('questionnaire.give_us_feedback')}</span>
-      </ModalHeader>
-      <ModalBody className="my-4">
-        <div className="container">
-          <h3 className="grw-modal-head">{questionnaireOrderTitle}</h3>
-          <div className="row mt-4">
-            <div className="col-6"></div>
-            <div className="col-1 p-0 pr-2 font-weight-bold text-center align-items-center">{t('questionnaire.no_answer')}</div>
-            <div className="col-5 d-flex justify-content-between align-items-center pl-2">
-              <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
-              <span className="font-weight-bold">{t('questionnaire.agree')}</span>
-            </div>
+      <ModalBody className="bg-primary overflow-hidden p-0" style={{ borderRadius: 8 }}>
+        <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
+          <div className="text-center mb-2">
+            <h2 className="my-4">{questionnaireOrderTitle}</h2>
+            <p className="mb-1">{t('questionnaire.more_satisfied_services')}</p>
+            <p>{t('questionnaire.strive_to_improve_services')}</p>
           </div>
-          {questionnaireOrder.questions?.map((question) => {
-            return <Question question={question} inputNamePrefix={inputNamePrefix} key={question._id}/>;
-          })}
+          <div className="container">
+            <div className="row mt-4">
+              <div className="col-6"></div>
+              <div className="col-1 p-0 pr-2 font-weight-bold text-center align-items-center">{t('questionnaire.no_answer')}</div>
+              <div className="col-5 d-flex justify-content-between align-items-center pl-2">
+                <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
+                <span className="font-weight-bold">{t('questionnaire.agree')}</span>
+              </div>
+            </div>
+            {questionnaireOrder.questions?.map((question) => {
+              return <Question question={question} inputNamePrefix={inputNamePrefix} key={question._id}/>;
+            })}
+          </div>
+          <div className="text-center mt-5">
+            <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
+          </div>
+          <div className="text-center cursor-pointer text-decoration-underline my-3">
+            <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={denyBtnClickHandler}>{t('questionnaire.dont_show_again')}</span>
+          </div>
+
+          {currentUser?.admin && (
+            <a href="/admin/app#questionnaire-settings">
+              <i className="material-icons mr-1" >admin_panel_settings</i>
+            </a>
+          )}
+          {currentUser != null && (
+            <a href="/me">
+              <i className="material-icons" >settings</i>
+            </a>
+          )}
         </div>
       </ModalBody>
-      <ModalFooter>
-        {currentUser?.admin
-        && <a href="" className="mr-auto d-flex align-items-center"><i className="material-icons mr-1">settings</i>{t('questionnaire.settings')}</a>}
-        <>
-          <button type="button" className="btn btn-outline-secondary mr-3" onClick={denyBtnClickHandler}>{t('questionnaire.dont_show_again')}</button>
-          <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
-        </>
-      </ModalFooter>
     </form>
   </Modal>);
 };
