@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, startTransition } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
