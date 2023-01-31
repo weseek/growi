@@ -1,8 +1,7 @@
-import React, { useEffect, startTransition } from 'react';
+import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import type { HtmlElementNode } from 'rehype-toc';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
@@ -33,7 +32,7 @@ export const PageContents = (): JSX.Element => {
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
   const updateStateAfterSave = useUpdateStateAfterSave(currentPage?._id);
 
-  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
+  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc) => {
     mutateCurrentPageTocNode(toc);
   });
 
