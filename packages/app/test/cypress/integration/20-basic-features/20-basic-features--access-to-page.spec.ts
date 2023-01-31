@@ -70,6 +70,33 @@ context('Access to page', () => {
 
   it('View and Edit contents are successfully loaded', () => {
     const body1 = 'hello';
+
+    cy.visit('/Sandbox/testForUseEditingMarkdown');
+
+    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('@pageEditorModeManager').within(() => {
+        cy.get('button:nth-child(2)').click();
+      });
+      // until
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    })
+
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+
+    // 更新ボタンから保存、編集した文章がViewと一致しているか
+    cy.get('.CodeMirror').type(body1);
+    cy.get('.CodeMirror').contains(body1);
+    cy.get('.page-editor-preview-body').contains(body1);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').click();
+    cy.get('.wiki').should('be.visible');
+    cy.get('.wiki').children().first().should('have.text', body1);
+    cy.screenshot('testForUseEditingMarkdown1');
+  })
+
+  it('View and Edit contents are successfully loaded2', () => {
     const body2 = ' world!';
     const savePageShortcutKey = '{ctrl+s}';
 
@@ -85,98 +112,18 @@ context('Access to page', () => {
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     })
 
-    cy.get('.CodeMirror').should('be.visible');
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
-    // check VIEW contents after save
-    cy.get('.CodeMirror').type(body1);
-    cy.get('.CodeMirror').contains(body1);
-    cy.get('.page-editor-preview-body').contains(body1);
-    cy.getByTestid('page-editor').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('save-page-btn').should('be.visible').click();
-      // wait until
-      return Cypress.$('.layout-root').hasClass('editing');
-    });
-    cy.screenshot('useEditingMarkdown1');
-    cy.get('.wiki').children().first().should('have.text', body1);
-
-    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
-
-    cy.screenshot('useEditingMarkdown2');
-    cy.get('.CodeMirror').should('be.visible');
-
-    // check EDIT contents after save with shortcut key
+    // ショートカットキーから保存、編集した文章がViewと一致しているか
+    cy.get('.CodeMirror').clear();
     cy.get('.CodeMirror').type(body2);
-    cy.screenshot('useEditingMarkdown3');
-    cy.get('.CodeMirror').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.get('.CodeMirror').contains(body2);
+    cy.get('.page-editor-preview-body').contains(body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
-    cy.getByTestid('page-editor').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('save-page-btn').should('be.visible').click();
-      // wait until
-      return Cypress.$('.layout-root').hasClass('editing');
-    });
-    cy.screenshot('useEditingMarkdown4');
-    // cy.getByTestid('save-page-btn').click();
-    // cy.get('.layout-root').should('not.have.class', 'editing');
-    // cy.waitUntil(() => {
-    //   return cy.get('.layout-root').then($elem => !$elem.hasClass('editing'));
-    // })
-    cy.get('.wiki').children().first().should('have.text', body1+body2);
-    // const testContents = 'test contents';
-    // const testContents2 = 'test contents2';
-    // const savePageShortcutKey = '{ctrl+s}';
+    cy.get('.CodeMirror').contains(body2);
+    cy.get('.page-editor-preview-body').contains(body2);
+    cy.screenshot('testForUseEditingMarkdown2');
 
-    // cy.visit('/Sandbox/test');
-
-    // cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    // cy.waitUntil(() => {
-    //   // do
-    //   cy.get('@pageEditorModeManager').within(() => {
-    //     cy.get('button:nth-child(2)').click();
-    //   });
-    //   // until
-    //   return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    // })
-
-    // cy.get('.grw-editor-navbar-bottom').should('be.visible');
-    // cy.get('.CodeMirror').type(testContents);
-
-    // // check VIEW contents after saving
-    // cy.getByTestid('save-page-btn').click();
-    // cy.get('.wiki').should('be.visible');
-    // cy.get('.wiki').children().first().should('have.text', testContents);
-
-    // // check EDIT contents after saving
-    // cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    // cy.waitUntil(() => {
-    //   // do
-    //   cy.get('@pageEditorModeManager').within(() => {
-    //     cy.get('button:nth-child(2)').click();
-    //   });
-    //   // until
-    //   return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    // })
-    // cy.get('.grw-editor-navbar-bottom').should('be.visible');
-    // cy.get('.CodeMirror').contains(testContents);
-
-    // // check EDIT contents after saving with shortcut key
-    // cy.get('.CodeMirror').type(testContents2);
-    // cy.get('.CodeMirror').type(savePageShortcutKey);
-    // cy.get('.CodeMirror').contains(testContents+testContents2);
   })
 
   it('/user/admin is successfully loaded', () => {
