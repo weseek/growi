@@ -112,11 +112,11 @@ context('Access to page', () => {
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // ショートカットキーから保存、編集した文章がViewと一致しているか
-    cy.get('. CodeMirror-line ').children().first().should(($elm) => {
+    cy.get('.CodeMirror-line').children().first().should(($elm) => {
       const text = $elm.text()
       cy.get('.CodeMirror').type(body2);
       cy.get('.CodeMirror').type(savePageShortcutKey);
-      cy.get('. CodeMirror-line ').children().first().should('have.text', text+body2);
+      cy.get('.CodeMirror-line').children().first().should('have.text', text+body2);
     })
   })
 
