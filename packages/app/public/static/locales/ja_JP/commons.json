@@ -100,7 +100,7 @@
 
   "g2g_data_transfer": {
     "tab": "データ移行",
-    "data_transfer": "別GROWIとのデータ移行",
+    "data_transfer": "データ移行",
     "transfer_data_to_this_growi": "別GROWIのデータをこのGROWIへ移行する",
     "publish_transfer_key": "移行キーを発行する",
     "transfer_key_limit": "※ 移行キーの有効期限は発行から1時間となります。",

@@ -100,7 +100,7 @@
 
   "g2g_data_transfer": {
     "tab": "数据迁移",
-    "data_transfer": "与另一个GROWI的数据转移",
+    "data_transfer": "数据迁移",
     "transfer_data_to_this_growi": "将数据从另一个GROWI迁移到这个GROWI上",
     "publish_transfer_key": "发布迁移密钥",
     "transfer_key_limit": "迁移密钥在签发后一小时内有效。",
