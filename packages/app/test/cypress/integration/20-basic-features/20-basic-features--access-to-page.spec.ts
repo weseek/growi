@@ -97,6 +97,7 @@ context('Access to page', () => {
   })
 
   it('View and Edit contents are successfully loaded2', () => {
+    const body1 = 'hello';
     const body2 = ' world!';
     const savePageShortcutKey = '{ctrl+s}';
 
@@ -115,13 +116,12 @@ context('Access to page', () => {
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // ショートカットキーから保存、編集した文章がViewと一致しているか
-    cy.get('.CodeMirror').clear();
     cy.get('.CodeMirror').type(body2);
-    cy.get('.CodeMirror').contains(body2);
-    cy.get('.page-editor-preview-body').contains(body2);
+    cy.get('.CodeMirror').contains(body1+body2);
+    cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(body2);
-    cy.get('.page-editor-preview-body').contains(body2);
+    cy.get('.CodeMirror').contains(body1+body2);
+    cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.screenshot('testForUseEditingMarkdown2');
 
   })
