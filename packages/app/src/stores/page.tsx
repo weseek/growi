@@ -165,7 +165,7 @@ export const useSWRxIsGrantNormalized = (
 
   return useSWRImmutable(
     key,
-    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    ([endpoint, pageId]) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };
 
