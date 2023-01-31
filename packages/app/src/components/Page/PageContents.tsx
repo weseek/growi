@@ -49,7 +49,7 @@ export const PageContents = (): JSX.Element => {
   }, [mutateRendererOptions]);
 
   useHandsontableModalLauncherForView({
-    onSaveSuccess: (newMarkdown) => {
+    onSaveSuccess: () => {
       toastSuccess(t('toaster.save_succeeded'));
 
       updateStateAfterSave?.();
@@ -60,7 +60,7 @@ export const PageContents = (): JSX.Element => {
   });
 
   useDrawioModalLauncherForView({
-    onSaveSuccess: (newMarkdown) => {
+    onSaveSuccess: () => {
       toastSuccess(t('toaster.save_succeeded'));
 
       updateStateAfterSave?.();
