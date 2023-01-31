@@ -818,7 +818,7 @@
     "agree": "そう思う",
     "disagree": "そう思わない",
     "answer": "回答する",
-    "no_answer": "無回答",
+    "no_answer": "わからない",
     "settings": "アンケート設定",
     "failed_to_send": "回答送信に失敗しました",
     "denied": "このアンケートは今後表示されません",
