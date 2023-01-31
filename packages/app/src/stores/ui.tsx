@@ -446,7 +446,7 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId, isPageExist, isEmptyPage, isTrashPage, isSharedUser],
-    ([, ,, isPageExist, isTrashPage, isSharedUser]) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
+    ([, , isPageExist, isEmptyPage, isTrashPage, isSharedUser]) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
   );
 };
 
