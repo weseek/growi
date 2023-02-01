@@ -94,13 +94,19 @@ export const getNextI18NextConfig = async(
 ): Promise<SSRConfig> => {
 
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, user } = req;
+  const { crowi, user, headers } = req;
   const { configManager } = crowi;
 
+  // detect locale from browser accept language
+  const acceptLanguages = headers['accept-language'];
+  const browserLang = acceptLanguages?.split(',').shift();
+  let detectLocale = 'en_US';
+  if (browserLang?.includes('ja')) detectLocale = 'ja_JP';
+  if (browserLang?.includes('zh')) detectLocale = 'zh_CN';
+
   // determine language
-  const locale = user?.lang
-    ?? configManager.getConfig('crowi', 'app:globalLang') as Lang
-    ?? Lang.en_US;
+  const locale = user == null ? detectLocale
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {
