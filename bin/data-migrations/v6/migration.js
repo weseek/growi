@@ -58,19 +58,19 @@ var migrationType = process.env.MIGRATION_TYPE;
 
 var oldFormatProcessors;
 switch (migrationType) {
-  case 'drawio':
+  case 'v6-drawio':
     oldFormatProcessors = [drawioProcessor];
     break;
-  case 'plantuml':
+  case 'v6-plantuml':
     oldFormatProcessors = [plantumlProcessor];
     break;
-  case 'tsv':
+  case 'v6-tsv':
     oldFormatProcessors = [tsvProcessor];
     break;
-  case 'csv':
+  case 'v6-csv':
     oldFormatProcessors = [csvProcessor];
     break;
-  case 'bracketlink':
+  case 'v6-bracketlink':
     oldFormatProcessors = [bracketlinkProcessor];
     break;
   case 'v6':
