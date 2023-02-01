@@ -82,6 +82,7 @@ switch (migrationType) {
     throw Error('invalid MIGRATION_TYPE: document link');
 }
 
+var batchSize = process.env.BATCH_SIZE ?? 100; // default 100 revisions in 1 bulkwrite
 var sleepTime = process.env.SLEEP_TIME ?? 5; // default 5 milliseconds
 
 pagesCollection.find({}).forEach((doc) => {
@@ -99,7 +100,7 @@ pagesCollection.find({}).forEach((doc) => {
     operations.push(operation);
 
     // bulkWrite per 100 revisions
-    if (operations.length > 99) {
+    if (operations.length > (batchSize - 1)) {
       revisionsCollection.bulkWrite(operations);
       // sleep time can be set from env var
       sleep(sleepTime);
