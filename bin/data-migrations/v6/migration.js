@@ -83,7 +83,7 @@ switch (migrationType) {
 }
 
 var batchSize = process.env.BATCH_SIZE ?? 100; // default 100 revisions in 1 bulkwrite
-var sleepTime = process.env.SLEEP_TIME ?? 5; // default 5 milliseconds
+var batchSizeInterval = process.env.BATCH_INTERVAL ?? 3000; // default 3 sec
 
 pagesCollection.find({}).forEach((doc) => {
   if (doc.revision) {
@@ -103,7 +103,7 @@ pagesCollection.find({}).forEach((doc) => {
     if (operations.length > (batchSize - 1)) {
       revisionsCollection.bulkWrite(operations);
       // sleep time can be set from env var
-      sleep(sleepTime);
+      sleep(batchSizeInterval);
       operations = [];
     }
   }
