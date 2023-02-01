@@ -4,8 +4,9 @@ import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
 } from '@growi/core';
 import { isClient, pagePathUtils } from '@growi/core';
-import useSWR, { Key, SWRConfiguration, SWRResponse } from 'swr';
+import useSWR, { mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
+import useSWRMutation, { SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -24,53 +25,28 @@ import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
-export const useSWRxPage = (
-    pageId?: string|null,
-    shareLinkId?: string,
-    revisionId?: string,
-    initialData?: IPagePopulatedToShowRevision|null,
-    config?: SWRConfiguration,
-): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
 
-  const swrResponse = useSWRImmutable(
-    pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
-    // TODO: upgrade SWR to v2 and use useSWRMutation
-    //        in order to avoid complicated fetcher settings
-    Object.assign({
-      fetcher: ([endpoint, pageId, shareLinkId, revisionId]: [string, string, string|undefined, string|undefined]) => {
-        return apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
-          .then(result => result.data.page)
-          .catch((errs) => {
-            if (!Array.isArray(errs)) { throw Error('error is not array') }
-            const statusCode = errs[0].status;
-            if (statusCode === 403 || statusCode === 404) {
-              // for NotFoundPage
-              return null;
-            }
-            throw Error('failed to get page');
-          });
-      },
-    }, config ?? {}),
-  );
+export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
+  const key = 'currentPage';
 
   useEffect(() => {
     if (initialData !== undefined) {
-      swrResponse.mutate(initialData);
+      mutate(key, initialData, {
+        optimisticData: initialData,
+        populateCache: true,
+        revalidate: false,
+      });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialData]); // Only depends on `initialData`
+  }, [initialData, key]);
 
-  return swrResponse;
+  return useSWR(key, null, {
+    keepPreviousData: true,
+  });
 };
 
-export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
-  return useSWR(
-    path != null ? ['/page', path] : null,
-    ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
-  );
-};
+export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision|null> => {
+  const key = 'currentPage';
 
-export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -82,20 +58,34 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
     revisionId = requestRevisionId != null ? requestRevisionId : undefined;
   }
 
-  const swrResult = useSWRxPage(
-    currentPageId, shareLinkId, revisionId,
-    initialData,
-    // overwrite fetcher if the current page is share link
-    shareLinkId == null
-      ? undefined
-      : {
-        fetcher: () => null,
-      },
+  return useSWRMutation(
+    key,
+    async() => {
+      return apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
+        .then(result => result.data.page)
+        .catch((errs) => {
+          if (!Array.isArray(errs)) { throw Error('error is not array') }
+          const statusCode = errs[0].status;
+          if (statusCode === 403 || statusCode === 404) {
+            // for NotFoundPage
+            return null;
+          }
+          throw Error('failed to get page');
+        });
+    },
+    {
+      populateCache: true,
+      revalidate: false,
+    },
   );
-
-  return swrResult;
 };
 
+export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useSWR(
+    path != null ? ['/page', path] : null,
+    ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
+  );
+};
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
   const { data: shareLinkId } = useShareLinkId();

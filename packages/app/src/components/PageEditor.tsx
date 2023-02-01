@@ -25,15 +25,16 @@ import {
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
-  useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
   useIsConflict,
   useEditingMarkdown,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+} from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
-import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -74,7 +75,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);

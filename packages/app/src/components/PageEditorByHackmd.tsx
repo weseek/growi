@@ -24,7 +24,9 @@ import {
 import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
-import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+} from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
@@ -69,7 +71,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { returnPathForURL } = pathUtils;
 
   // pageData
-  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
+  const { data: pageData } = useSWRxCurrentPage();
+  const { trigger: mutatePageData } = useSWRMUTxCurrentPage();
   const revision = pageData?.revision;
 
   const [isInitialized, setIsInitialized] = useState(false);

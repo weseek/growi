@@ -16,7 +16,7 @@ import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useCurrentPagePath, usePageInfoTermManager, useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPagePath, usePageInfoTermManager, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
   usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
 } from '~/stores/page-listing';
@@ -117,7 +117,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
 
   // for mutation
-  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
