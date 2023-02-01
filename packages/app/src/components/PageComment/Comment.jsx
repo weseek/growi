@@ -8,7 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useCurrentPagePath } from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
@@ -50,6 +50,7 @@ class Comment extends React.PureComponent {
   initCurrentRenderingContext() {
     this.currentRenderingContext = {
       markdown: this.props.comment.comment,
+      pagePath: this.props.currentPath,
     };
   }
 
@@ -239,6 +240,7 @@ Comment.propTypes = {
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   currentUser: PropTypes.object,
+  currentPath: PropTypes.string,
   onComment: PropTypes.func,
 };
 
@@ -246,8 +248,9 @@ const CommentWrapperFC = (props) => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
+  const { data: currentPath } = useCurrentPagePath();
 
-  return <Comment t={t} currentUser={currentUser} {...props} />;
+  return <Comment t={t} currentUser={currentUser} currentPath={currentPath} {...props} />;
 };
 
 /**
