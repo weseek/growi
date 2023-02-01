@@ -36,8 +36,8 @@ const EditorNavbarBottom = (): JSX.Element => {
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
 
+  // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
   const slackChannelsDataString = slackChannelsData?.toString();
-
   useEffect(() => {
     if (slackChannelsDataString != null) {
       setSlackChannelsStr(slackChannelsDataString);
