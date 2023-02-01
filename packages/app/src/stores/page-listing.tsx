@@ -16,7 +16,6 @@ import {
 } from '../interfaces/page-listing-results';
 
 import { useCurrentPagePath } from './page';
-import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
@@ -45,48 +44,46 @@ export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHa
     },
   );
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxPageList = (
-    path: string | null, pageNumber?: number, termNumber?: number, limit?: number,
+    mutationId: string | null,
+    path: string | null, pageNumber?: number, limit?: number,
 ): SWRResponse<IPagingResult<IPageHasId>, Error> => {
-
-  let key: [string, number|undefined] | null;
-  // if path not exist then the key is null
-  if (path == null) {
-    key = null;
-  }
-  else {
-    const pageListPath = `/pages/list?path=${path}&page=${pageNumber ?? 1}`;
-    // if limit exist then add it as query string
-    const requestPath = limit == null ? pageListPath : `${pageListPath}&limit=${limit}`;
-    key = [requestPath, termNumber];
-  }
-
   return useSWR(
-    key,
-    ([endpoint]) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
-      return {
-        items: response.data.pages,
-        totalCount: response.data.totalCount,
-        limit: response.data.limit,
-      };
-    }),
+    path == null
+      ? null
+      : [mutationId, '/pages/list', path, pageNumber, limit],
+    ([, endpoint, path, pageNumber, limit]) => {
+      const args = Object.assign(
+        { path, page: pageNumber ?? 1 },
+        // if limit exist then add it as query string
+        (limit != null) ? { limit } : {},
+      );
+
+      return apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint, args)
+        .then((response) => {
+          return {
+            items: response.data.pages,
+            totalCount: response.data.totalCount,
+            limit: response.data.limit,
+          };
+        });
+    },
+    {
+      keepPreviousData: true,
+    },
   );
 };
 
-export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
+const MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH = 'descendantsPageListForCurrentPath';
+export const mutateDescendantsPageListForCurrentPath = async(): Promise<any[]> => {
+  return mutate(
+    key => Array.isArray(key) && key[0] === MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH,
+  );
 };
 
 export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number, limit?:number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
-
-  const path = currentPagePath == null || termNumber == null
-    ? null
-    : currentPagePath;
-
-  return useSWRxPageList(path, pageNumber, termNumber, limit);
+  return useSWRxPageList(MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH, currentPagePath ?? null, pageNumber, limit);
 };
 
 

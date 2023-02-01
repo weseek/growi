@@ -15,8 +15,9 @@ import {
 } from '~/stores/context';
 import { useIsTrashPage } from '~/stores/page';
 import {
+  mutateDescendantsPageListForCurrentPath,
   mutatePageTree,
-  useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
+  useSWRxDescendantsPageListForCurrrentPath,
   useSWRxPageInfoForList, useSWRxPageList,
 } from '~/stores/page-listing';
 
@@ -53,9 +54,6 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
 
   let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
-  // for mutation
-  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
-
   // initial data
   if (pagingResult != null) {
     // convert without meta at first
@@ -85,12 +83,12 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     toastSuccess(t('page_has_been_reverted', { path }));
 
     mutatePageTree();
-    advanceDpl();
+    mutateDescendantsPageListForCurrentPath();
 
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [advanceDpl, onPagePutBacked, t]);
+  }, [onPagePutBacked, t]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
@@ -144,7 +142,7 @@ export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Elemen
 
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { data: pagingResult, error, mutate } = useSWRxPageList(isSharedUser ? null : path, activePage);
+  const { data: pagingResult, error, mutate } = useSWRxPageList(null, isSharedUser ? null : path, activePage);
 
   if (error != null) {
     return (

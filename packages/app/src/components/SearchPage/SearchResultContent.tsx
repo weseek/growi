@@ -18,7 +18,7 @@ import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { mutatePageTree, useDescendantsPageListForCurrentPathTermManager } from '~/stores/page-listing';
+import { mutateDescendantsPageListForCurrentPath, mutatePageTree } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
@@ -93,7 +93,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   // for mutation
   const { advance: advanceFts } = useFullTextSearchTermManager();
-  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
@@ -168,10 +167,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
       mutatePageTree();
       advanceFts();
-      advanceDpl();
+      mutateDescendantsPageListForCurrentPath();
     };
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [advanceDpl, advanceFts, openDuplicateModal, t]);
+  }, [advanceFts, openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
@@ -179,10 +178,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
       mutatePageTree();
       advanceFts();
-      advanceDpl();
+      mutateDescendantsPageListForCurrentPath();
     };
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
-  }, [advanceDpl, advanceFts, openRenameModal, t]);
+  }, [advanceFts, openRenameModal, t]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
@@ -198,8 +197,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     }
     mutatePageTree();
     advanceFts();
-    advanceDpl();
-  }, [advanceDpl, advanceFts, t]);
+    mutateDescendantsPageListForCurrentPath();
+  }, [advanceFts, t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
