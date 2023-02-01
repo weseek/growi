@@ -3,10 +3,8 @@
 # https://www.mongodb.com/docs/manual/release-notes/6.0-compatibility/#legacy-mongo-shell-removed
 FROM mongo:6.0
 
-# copy mongo shell scripts for migration
-COPY migration.js /opt/bin/
-COPY processor.js /opt/bin/
-
 WORKDIR /opt/bin/
+
+# refer migration.js and processor.js with bind mount
 
 CMD /bin/mongosh ${MONGO_URI} migration.js
