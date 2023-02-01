@@ -13,7 +13,7 @@ import {
 import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/stores/context';
-import { useSWRxPageInfoForList, usePageTreeTermManager } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
@@ -45,7 +45,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, null, true, true);
 
   // for mutation
-  const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
 
   const itemsRef = useRef<(ISelectable|null)[]>([]);
@@ -98,14 +97,14 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   const duplicatedHandler : OnDuplicatedFunction = (fromPath, toPath) => {
     toastSuccess(t('duplicated_pages', { fromPath }));
 
-    advancePt();
+    mutatePageTree();
     advanceFts();
   };
 
   const renamedHandler: OnRenamedFunction = (path) => {
     toastSuccess(t('renamed_pages', { path }));
 
-    advancePt();
+    mutatePageTree();
     advanceFts();
   };
   const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -121,7 +120,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     else {
       toastSuccess(t('deleted_pages', { path }));
     }
-    advancePt();
+    mutatePageTree();
     advanceFts();
   };
 

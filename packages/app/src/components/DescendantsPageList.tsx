@@ -15,7 +15,8 @@ import {
 } from '~/stores/context';
 import { useIsTrashPage } from '~/stores/page';
 import {
-  usePageTreeTermManager, useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
+  mutatePageTree,
+  useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
   useSWRxPageInfoForList, useSWRxPageList,
 } from '~/stores/page-listing';
 
@@ -53,7 +54,6 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
   // for mutation
-  const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   // initial data
@@ -74,23 +74,23 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
       toastSuccess(t('deleted_pages_completely', { path }));
     }
 
-    advancePt();
+    mutatePageTree();
 
     if (onPagesDeleted != null) {
       onPagesDeleted(...args);
     }
-  }, [advancePt, onPagesDeleted, t]);
+  }, [onPagesDeleted, t]);
 
   const pagePutBackedHandler: OnPutBackedFunction = useCallback((path) => {
     toastSuccess(t('page_has_been_reverted', { path }));
 
-    advancePt();
+    mutatePageTree();
     advanceDpl();
 
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [advanceDpl, advancePt, onPagePutBacked, t]);
+  }, [advanceDpl, onPagePutBacked, t]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);

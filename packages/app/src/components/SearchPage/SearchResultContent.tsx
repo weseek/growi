@@ -18,7 +18,7 @@ import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager } from '~/stores/page-listing';
+import { mutatePageTree, useDescendantsPageListForCurrentPathTermManager } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
@@ -92,7 +92,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const [isPageCommentLoaded, setPageCommentLoaded] = useState(false);
 
   // for mutation
-  const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
@@ -167,23 +166,23 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
-      advancePt();
+      mutatePageTree();
       advanceFts();
       advanceDpl();
     };
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
+  }, [advanceDpl, advanceFts, openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 
-      advancePt();
+      mutatePageTree();
       advanceFts();
       advanceDpl();
     };
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
+  }, [advanceDpl, advanceFts, openRenameModal, t]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
@@ -197,10 +196,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     else {
       toastSuccess(t('deleted_pages', { path }));
     }
-    advancePt();
+    mutatePageTree();
     advanceFts();
     advanceDpl();
-  }, [advanceDpl, advanceFts, advancePt, t]);
+  }, [advanceDpl, advanceFts, t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });

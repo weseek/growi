@@ -7,7 +7,7 @@ import nodePath from 'path';
 
 
 import {
-  IPageHasId, PageGrant, pathUtils,
+  IPageHasId, pathUtils,
 } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -34,7 +34,7 @@ import { useConflictDiffModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
 } from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -92,7 +92,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
-  const { advance: advancePt } = usePageTreeTermManager();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -211,7 +210,7 @@ const PageEditor = React.memo((): JSX.Element => {
       );
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
-      advancePt();
+      mutatePageTree();
 
       return page;
     }
@@ -229,8 +228,7 @@ const PageEditor = React.memo((): JSX.Element => {
       return null;
     }
 
-  // eslint-disable-next-line max-len
-  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId, advancePt]);
+  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {

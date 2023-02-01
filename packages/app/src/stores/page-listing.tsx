@@ -1,5 +1,7 @@
+import assert from 'assert';
+
 import { Nullable, HasObjectId } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { Arguments, mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
@@ -133,10 +135,6 @@ export const useSWRxPageInfoForList = (
   };
 };
 
-export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'pageTreeTermManager');
-};
-
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
   return useSWRImmutable(
     '/page-listing/root',
@@ -145,27 +143,41 @@ export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
         rootPage: response.data.rootPage,
       };
     }),
+    {
+      keepPreviousData: true,
+    },
   );
+};
+
+const MUTATION_ID_FOR_PAGETREE = 'pageTree';
+const keyMatcherForPageTree = (key: Arguments): boolean => {
+  return Array.isArray(key) && key[0] === MUTATION_ID_FOR_PAGETREE;
+};
+export const mutatePageTree = async(): Promise<undefined[]> => {
+  return mutate(keyMatcherForPageTree);
 };
 
 export const useSWRxPageAncestorsChildren = (
     path: string | null,
 ): SWRResponse<AncestorsChildrenResult, Error> => {
-  const { data: termNumber } = usePageTreeTermManager();
+  const key = path ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/ancestors-children', path] : null;
 
-  // HACKME: Consider using global mutation from useSWRConfig and not to use term number -- 2022/12/08 @hakumizuki
-  const prevTermNumber = termNumber ? termNumber - 1 : 0;
-  const prevSWRRes = useSWRImmutable(path ? [`/page-listing/ancestors-children?path=${path}`, prevTermNumber] : null);
+  // take care of the degration
+  // see: https://github.com/weseek/growi/pull/7038
+
+  if (key != null) {
+    assert(keyMatcherForPageTree(key));
+  }
 
   return useSWRImmutable(
-    path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
-    ([endpoint]) => apiv3Get(endpoint).then((response) => {
+    key,
+    ([, endpoint, path]) => apiv3Get(endpoint, { path }).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
     {
-      fallbackData: prevSWRRes.data, // avoid data to be undefined due to the termNumber to change
+      keepPreviousData: true,
     },
   );
 };
@@ -173,15 +185,22 @@ export const useSWRxPageAncestorsChildren = (
 export const useSWRxPageChildren = (
     id?: string | null,
 ): SWRResponse<ChildrenResult, Error> => {
-  const { data: termNumber } = usePageTreeTermManager();
+  const key = id ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/children', id] : null;
+
+  if (key != null) {
+    assert(keyMatcherForPageTree(key));
+  }
 
   return useSWR(
-    id ? [`/page-listing/children?id=${id}`, termNumber] : null,
-    ([endpoint]) => apiv3Get(endpoint).then((response) => {
+    key,
+    ([, endpoint, id]) => apiv3Get(endpoint, { id }).then((response) => {
       return {
         children: response.data.children,
       };
     }),
+    {
+      keepPreviousData: true,
+    },
   );
 };
 

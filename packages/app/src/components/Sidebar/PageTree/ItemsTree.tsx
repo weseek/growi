@@ -18,7 +18,7 @@ import {
 } from '~/stores/modal';
 import { useCurrentPagePath, usePageInfoTermManager, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
-  usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
+  useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager, mutatePageTree,
 } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
@@ -118,7 +118,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   // for mutation
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
   const { advance: advancePi } = usePageInfoTermManager();
@@ -151,27 +150,27 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
   const onRenamed = useCallback((fromPath: string | undefined, toPath: string) => {
-    advancePt();
+    mutatePageTree();
     advanceFts();
     advanceDpl();
 
     if (currentPagePath === fromPath || currentPagePath === toPath) {
       mutateCurrentPage();
     }
-  }, [advanceDpl, advanceFts, advancePt, currentPagePath, mutateCurrentPage]);
+  }, [advanceDpl, advanceFts, currentPagePath, mutateCurrentPage]);
 
   const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
-      advancePt();
+      mutatePageTree();
       advanceFts();
       advanceDpl();
     };
 
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
+  }, [advanceDpl, advanceFts, openDuplicateModal, t]);
 
   const onClickDeleteMenuItem = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -188,7 +187,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
         toastSuccess(t('deleted_pages', { path }));
       }
 
-      advancePt();
+      mutatePageTree();
       advanceFts();
       advanceDpl();
       advancePi();
@@ -200,7 +199,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [advanceDpl, advanceFts, advancePi, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
+  }, [advanceDpl, advanceFts, advancePi, currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
