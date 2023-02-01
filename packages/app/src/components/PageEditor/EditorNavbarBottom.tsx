@@ -39,11 +39,11 @@ const EditorNavbarBottom = (): JSX.Element => {
   // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
   const slackChannelsDataString = slackChannelsData?.toString();
   useEffect(() => {
-    if (slackChannelsDataString != null) {
-      setSlackChannelsStr(slackChannelsDataString);
+    if (editorMode === 'editor') {
+      setSlackChannelsStr(slackChannelsDataString ?? '');
       mutateIsSlackEnabled(false);
     }
-  }, [mutateIsSlackEnabled, slackChannelsDataString]);
+  }, [editorMode, mutateIsSlackEnabled, slackChannelsDataString]);
 
   const isSlackEnabledToggleHandler = (bool: boolean) => {
     mutateIsSlackEnabled(bool, false);
