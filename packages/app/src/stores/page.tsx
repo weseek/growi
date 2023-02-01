@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
@@ -98,26 +98,40 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
   );
 };
 
-export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'pageInfoTermNumber');
+export const mutateAllPageInfo = (): Promise<any[]> => {
+  return mutate(
+    key => Array.isArray(key) && key[0] === '/page/info',
+  );
 };
 
 export const useSWRxPageInfo = (
     pageId: string | null | undefined,
     shareLinkId?: string | null,
     initialData?: IPageInfoForEntity,
-): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
-
-  const { data: termNumber } = usePageInfoTermManager();
+): SWRResponse<IPageInfo | IPageInfoForOperation> => {
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
+  const key = useMemo(() => {
+    return pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null;
+  }, [fixedShareLinkId, pageId]);
+
   const swrResult = useSWRImmutable(
-    pageId != null && termNumber != null ? ['/page/info', pageId, fixedShareLinkId, termNumber] : null,
-    ([endpoint, pageId, shareLinkId]) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
+    key,
+    ([endpoint, pageId, shareLinkId]: [string, string, string|null]) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
+
+  useEffect(() => {
+    if (initialData !== undefined) {
+      mutate(key, initialData, {
+        optimisticData: initialData,
+        populateCache: true,
+        revalidate: false,
+      });
+    }
+  }, [initialData, key]);
 
   return swrResult;
 };

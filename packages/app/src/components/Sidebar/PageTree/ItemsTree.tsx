@@ -16,7 +16,7 @@ import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useCurrentPagePath, usePageInfoTermManager, useSWRMUTxCurrentPage } from '~/stores/page';
+import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
   useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutateDescendantsPageListForCurrentPath,
 } from '~/stores/page-listing';
@@ -119,7 +119,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   // for mutation
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { advance: advanceFts } = useFullTextSearchTermManager();
-  const { advance: advancePi } = usePageInfoTermManager();
 
   const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
 
@@ -189,7 +188,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       mutatePageTree();
       advanceFts();
       mutateDescendantsPageListForCurrentPath();
-      advancePi();
+      mutateAllPageInfo();
 
       if (currentPagePath === pathOrPathsToDelete) {
         mutateCurrentPage();
@@ -198,7 +197,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [advanceFts, advancePi, currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
+  }, [advanceFts, currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
