@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import type { HtmlElementNode } from 'rehype-toc';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
@@ -12,7 +11,6 @@ import { useCurrentPathname } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
-import { useCurrentPageTocNode } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
@@ -30,12 +28,9 @@ export const PageContents = (): JSX.Element => {
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
   const updateStateAfterSave = useUpdateStateAfterSave(currentPage?._id);
 
-  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
-    mutateCurrentPageTocNode(toc);
-  });
+  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions();
 
   // register to facade
   useEffect(() => {

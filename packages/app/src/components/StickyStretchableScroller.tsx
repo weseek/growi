@@ -15,6 +15,7 @@ export type StickyStretchableScrollerProps = {
   stickyElemSelector: string,
   simplebarRef?: (ref: RefObject<SimpleBar>) => void,
   calcViewHeight?: (scrollElement: HTMLElement) => number,
+  children?: JSX.Element,
 }
 
 /**
@@ -39,7 +40,7 @@ export type StickyStretchableScrollerProps = {
     </StickyStretchableScroller>
   );
  */
-export const StickyStretchableScroller: FC<StickyStretchableScrollerProps> = (props) => {
+export const StickyStretchableScroller = (props: StickyStretchableScrollerProps): JSX.Element => {
 
   const {
     children, stickyElemSelector, calcViewHeight, simplebarRef: setSimplebarRef,

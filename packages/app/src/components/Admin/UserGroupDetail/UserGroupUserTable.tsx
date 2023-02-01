@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const UserGroupUserTable = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const {
     userGroupRelations, onClickRemoveUserBtn, onClickPlusBtn,

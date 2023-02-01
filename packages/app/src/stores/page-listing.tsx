@@ -18,9 +18,9 @@ import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
-  return useSWR<IPageHasId[], Error>(
+  return useSWR(
     path != null ? ['/page', path, findAll] : null,
-    (endpoint, path, findAll) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
+    ([endpoint, path, findAll]) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
   );
 };
 
@@ -31,12 +31,12 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
   );
 };
 export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
-  const getKey = (page: number) => {
+  const getKey = (page: number): string => {
     return `/pages/recent?offset=${page + 1}`;
   };
   return useSWRInfinite(
     getKey,
-    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
+    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
     {
       revalidateFirstPage: false,
       revalidateAll: false,
@@ -48,7 +48,7 @@ export const useSWRxPageList = (
     path: string | null, pageNumber?: number, termNumber?: number, limit?: number,
 ): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
-  let key;
+  let key: [string, number|undefined] | null;
   // if path not exist then the key is null
   if (path == null) {
     key = null;
@@ -62,7 +62,7 @@ export const useSWRxPageList = (
 
   return useSWR(
     key,
-    (endpoint: string) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
+    ([endpoint]) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
         totalCount: response.data.totalCount,
@@ -105,9 +105,9 @@ export const useSWRxPageInfoForList = (
 
   const shouldFetch = (pageIds != null && pageIds.length > 0) || path != null;
 
-  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
+  const swrResult = useSWRImmutable(
     shouldFetch ? ['/page-listing/info', pageIds, path, attachBookmarkCount, attachShortBody] : null,
-    (endpoint, pageIds, path, attachBookmarkCount, attachShortBody) => {
+    ([endpoint, pageIds, path, attachBookmarkCount, attachShortBody]) => {
       return apiv3Get(endpoint, {
         pageIds, path, attachBookmarkCount, attachShortBody,
       }).then(response => response.data);
@@ -159,7 +159,7 @@ export const useSWRxPageAncestorsChildren = (
 
   return useSWRImmutable(
     path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
+    ([endpoint]) => apiv3Get(endpoint).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
       };
@@ -177,7 +177,7 @@ export const useSWRxPageChildren = (
 
   return useSWR(
     id ? [`/page-listing/children?id=${id}`, termNumber] : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
+    ([endpoint]) => apiv3Get(endpoint).then((response) => {
       return {
         children: response.data.children,
       };

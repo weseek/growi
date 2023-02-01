@@ -22,7 +22,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   isDefaultLogo: boolean,
-  currentUser?: IUser,
+  currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
 } & Partial<SSRConfig>;
 

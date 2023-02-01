@@ -17,7 +17,7 @@ export const toastError = (err: string | Error | Error[], option: ToastOptions =
 
   for (const err of errs) {
     const message = (typeof err === 'string') ? err : err.message;
-    toast.error(message || err, option);
+    toast.error(message, option);
   }
 };
 

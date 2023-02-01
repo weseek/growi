@@ -1,7 +1,8 @@
 import React from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -17,7 +18,7 @@ import {
   useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
 
-import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
+import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -28,7 +29,6 @@ import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
 } from './utils/commons';
-import { useTranslation } from 'next-i18next';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
@@ -109,9 +109,9 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 TrashPage.getLayout = function getLayout(page) {
   return (
     <>
-      <BasicLayoutWithEditorMode>
+      <BasicLayout>
         {page}
-      </BasicLayoutWithEditorMode>
+      </BasicLayout>
       <EmptyTrashModal />
       <PutbackPageModal />
     </>

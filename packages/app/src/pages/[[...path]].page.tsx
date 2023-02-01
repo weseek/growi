@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 
 
 import EventEmitter from 'events';
@@ -7,7 +7,7 @@ import {
   isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
 } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -19,7 +19,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
+import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import RevisionRenderer from '~/components/Page/RevisionRenderer';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -46,7 +46,7 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import loggerFactory from '~/utils/logger';
 
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
+import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
@@ -137,8 +137,6 @@ const PutbackPageModal = (): JSX.Element => {
 };
 
 type Props = CommonProps & {
-  currentUser: IUser,
-
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
   redirectFrom?: string;
@@ -342,14 +340,29 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
+type LayoutProps = {
+  children?: ReactNode
+  className?: string
+}
+
+const Layout = ({ children }: LayoutProps): JSX.Element => {
+  const className = useEditorModeClassName();
+
+  return (
+    <BasicLayout className={className}>
+      {children}
+    </BasicLayout>
+  );
+};
+
 Page.getLayout = function getLayout(page) {
   return (
     <>
       <DrawioViewerScript />
 
-      <BasicLayoutWithEditorMode>
+      <Layout>
         {page}
-      </BasicLayoutWithEditorMode>
+      </Layout>
       <UnsavedAlertDialog />
       <DescendantsPageListModal />
       <DrawioModal />

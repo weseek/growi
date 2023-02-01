@@ -8,7 +8,7 @@ import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@g
 import { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import {
-  useSWRConfig, SWRResponse, Key, Fetcher,
+  useSWRConfig, SWRResponse, Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -155,7 +155,7 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const swrResponse = useSWRImmutable<EditorMode>(
+  const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
     null,
     { fallbackData: initialData },
@@ -199,8 +199,8 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
       const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
       // initialize
-      if (cache.get(key) == null) {
-        mutate(key, !mql.matches);
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: !mql.matches });
       }
 
       return () => {
@@ -227,8 +227,8 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
       const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
       // initialize
-      if (cache.get(key) == null) {
-        mutate(key, !mql.matches);
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: !mql.matches });
       }
 
       return () => {
@@ -260,7 +260,7 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWit
     },
   };
 
-  return withUtils(swrResponse, utils);
+  return withUtils<PreferDrawerModeByUserUtils>(swrResponse, utils);
 
 };
 
@@ -286,29 +286,36 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
+  const condition = editorMode != null && preferDrawerModeByUser != null && preferDrawerModeOnEditByUser != null && isDeviceSmallerThanMd != null;
 
-  const calcDrawerMode: Fetcher<boolean> = (
-      key: Key, editorMode: EditorMode, preferDrawerModeByUser: boolean, preferDrawerModeOnEditByUser: boolean, isDeviceSmallerThanMd: boolean,
+  const calcDrawerMode = (
+      endpoint: string,
+      editorMode: EditorMode,
+      preferDrawerModeByUser: boolean,
+      preferDrawerModeOnEditByUser: boolean,
+      isDeviceSmallerThanMd: boolean,
   ): boolean => {
-
     // get preference on view or edit
     const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
-    return isDeviceSmallerThanMd || preferDrawerMode;
+    return isDeviceSmallerThanMd ?? preferDrawerMode ?? false;
   };
 
   const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
   const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
-  const useFallbackData = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
-  const fallbackOption = useFallbackData
-    ? { fallbackData: true }
-    : { fallback: calcDrawerMode };
+  const isDrawerModeFixed = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
 
   return useSWRImmutable(
     condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
-    calcDrawerMode,
-    fallbackOption,
+    // calcDrawerMode,
+    key => calcDrawerMode(...key),
+    condition
+      ? {
+        fallbackData: isDrawerModeFixed
+          ? true
+          : calcDrawerMode('isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd),
+      }
+      : undefined,
   );
 };
 
@@ -321,7 +328,7 @@ type SidebarConfigOption = {
 }
 
 export const useSWRxSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
-  const swrResponse = useSWRImmutable<ISidebarConfig>(
+  const swrResponse = useSWRImmutable(
     '/customize-setting/sidebar',
     endpoint => apiv3Get(endpoint).then(result => result.data),
   );
@@ -439,8 +446,7 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId, isPageExist, isEmptyPage, isTrashPage, isSharedUser],
-    // eslint-disable-next-line max-len
-    (key: string, pageId: string, isPageExist: boolean, isTrashPage: boolean, isSharedUser: boolean) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
+    ([, , isPageExist, isEmptyPage, isTrashPage, isSharedUser]) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
   );
 };
 
