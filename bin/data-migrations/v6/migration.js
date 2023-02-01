@@ -25,10 +25,10 @@ function csvProcessor(body) {
   return body.replace(oldCsvTableRegExp, '``` csv$1\n$2\n```');
 }
 
-function pagelinkProcessor(body) {
+function bracketlinkProcessor(body) {
   // https://regex101.com/r/btZ4hc/1
-  var oldpageLinkRegExp = /(?<!\[)\[{1}(\/.*?)\]{1}(?!\])/g; // Page Link old format
-  return body.replace(oldpageLinkRegExp, '[[$1]]');
+  var oldBracketLinkRegExp = /(?<!\[)\[{1}(\/.*?)\]{1}(?!\])/g; // Page Link old format
+  return body.replace(oldBracketLinkRegExp, '[[$1]]');
 }
 
 // ===========================================
@@ -70,11 +70,11 @@ switch (migrationType) {
   case 'csv':
     oldFormatProcessors = [csvProcessor];
     break;
-  case 'pagelink':
-    oldFormatProcessors = [pagelinkProcessor];
+  case 'bracketlink':
+    oldFormatProcessors = [bracketlinkProcessor];
     break;
   case 'v6':
-    oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, pagelinkProcessor];
+    oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor];
     break;
   case undefined:
     throw Error('env var MIGRATION_TYPE is required: document link');
