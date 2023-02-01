@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.9](https://github.com/weseek/growi/compare/v5.1.8...v5.1.9) - 2023-02-01
+
+### 🐛 Bug Fixes
+
+- fix: Can delete own user (v5) (#7327) @miya
+- fix: Comment is cleared when using Pukiwiki like linker (#7331 ) @miya
 
 ## [v5.1.8](https://github.com/weseek/growi/compare/v5.1.7...v5.1.8) - 2022-11-17
 
