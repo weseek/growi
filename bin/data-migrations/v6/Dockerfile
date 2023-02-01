@@ -5,5 +5,8 @@ FROM mongo:6.0
 
 # copy mongo shell scripts for migration
 COPY migration.js /opt/bin/
+COPY processor.js /opt/bin/
 
-CMD /bin/mongosh ${MONGO_URI} /opt/bin/migration.js
+WORKDIR /opt/bin/
+
+CMD /bin/mongosh ${MONGO_URI} migration.js
