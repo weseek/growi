@@ -36,12 +36,14 @@ const EditorNavbarBottom = (): JSX.Element => {
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
 
+  const slackChannelsDataString = slackChannelsData?.toString();
+
   useEffect(() => {
-    if (slackChannelsData != null) {
-      setSlackChannelsStr(slackChannelsData.toString());
+    if (slackChannelsDataString != null) {
+      setSlackChannelsStr(slackChannelsDataString);
       mutateIsSlackEnabled(false);
     }
-  }, [mutateIsSlackEnabled, slackChannelsData]);
+  }, [mutateIsSlackEnabled, slackChannelsDataString]);
 
   const isSlackEnabledToggleHandler = (bool: boolean) => {
     mutateIsSlackEnabled(bool, false);
