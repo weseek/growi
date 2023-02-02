@@ -4,7 +4,7 @@ import { ComponentType } from 'react';
 import { isClient } from '@growi/core';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
-import { Lsx, LsxImmutable, LsxDisable } from '@growi/remark-lsx/components';
+import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
@@ -174,7 +174,7 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -185,7 +185,7 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = config.isLsxDisabled ? LsxDisable : Lsx;
+    components.lsx = Lsx;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
   }
@@ -270,7 +270,7 @@ export const generateSimpleViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
@@ -278,7 +278,7 @@ export const generateSimpleViewOptions = (
 
   // add components
   if (components != null) {
-    components.lsx = config.isLsxDisabled ? LsxDisable : LsxImmutable;
+    components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
@@ -324,14 +324,14 @@ export const generateSSRViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
   );
 
   // add components
   if (components != null) {
-    components.lsx = config.isLsxDisabled ? LsxDisable : LsxImmutable;
+    components.lsx = LsxImmutable;
     components.table = Table;
   }
 
@@ -374,7 +374,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     addLineNumberAttribute.rehypePlugin,
     rehypeSanitizePlugin,
     katex,
@@ -382,7 +382,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = config.isLsxDisabled ? LsxDisable : LsxImmutable;
+    components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
