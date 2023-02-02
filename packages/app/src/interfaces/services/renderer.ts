@@ -1,7 +1,7 @@
 import { XssOptionConfig } from '~/services/xss/xssOption';
 
 export type RendererConfig = {
-  isLsxDisabled?: boolean,
+  isLsxDisabled?: boolean, // for shared page
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
