@@ -96,3 +96,13 @@ export const LsxImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.
   return <Lsx {...props} isImmutable />;
 });
 LsxImmutable.displayName = 'LsxImmutable';
+
+export const LsxDisable = React.memo((): JSX.Element => {
+  return (
+    <div className="text-muted">
+      <i className="fa fa-fw fa-info-circle"></i>
+      <small>lsx is not available on the share link page</small>
+    </div>
+  );
+});
+LsxDisable.displayName = 'LsxDisable';

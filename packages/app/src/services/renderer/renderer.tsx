@@ -4,7 +4,7 @@ import { ComponentType } from 'react';
 import { isClient } from '@growi/core';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
-import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
+import { Lsx, LsxImmutable, LsxDisable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
@@ -143,6 +143,8 @@ export const generateViewOptions = (
     storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
+  console.log('config.isLsxDisabled', config.isLsxDisabled);
+
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
@@ -185,7 +187,7 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = Lsx;
+    components.lsx = config.isLsxDisabled ? LsxDisable : Lsx;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
   }
@@ -278,7 +280,7 @@ export const generateSimpleViewOptions = (
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
+    components.lsx = config.isLsxDisabled ? LsxDisable : LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
@@ -331,7 +333,7 @@ export const generateSSRViewOptions = (
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
+    components.lsx = config.isLsxDisabled ? LsxDisable : LsxImmutable;
     components.table = Table;
   }
 
@@ -382,7 +384,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
+    components.lsx = config.isLsxDisabled ? LsxDisable : LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
