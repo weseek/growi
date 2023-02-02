@@ -1,1 +1,1 @@
-export { Lsx, LsxImmutable, LsxDisable } from './Lsx';
+export { Lsx, LsxImmutable } from './Lsx';
