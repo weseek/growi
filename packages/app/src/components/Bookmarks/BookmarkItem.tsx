@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
+import { useDrag } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
@@ -94,8 +95,18 @@ const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteMenuItem(pageToDelete);
   }, [bookmarkedPage, onClickDeleteMenuItem]);
 
+  const [, bookmarkItemDragRef] = useDrag({
+    type: 'BOOKMARK',
+    item:  bookmarkedPage,
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
+    }),
+  });
+
+
   return (
-    <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
+    <div className="grw-foldertree-item-container" key={bookmarkedPage._id} ref={(c) => { bookmarkItemDragRef(c) }}>
       <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-5 d-flex align-items-center" id={bookmarkItemId}>
         { isRenameInputShown ? (
           <ClosableTextInput
