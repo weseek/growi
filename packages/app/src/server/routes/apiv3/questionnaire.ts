@@ -23,7 +23,13 @@ module.exports = (crowi: Crowi): Router => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const validators = {
-    proactiveAnswer: [body('satisfaction').exists().isNumeric(), body('commentText').exists().isString()],
+    proactiveAnswer: [
+      body('satisfaction').exists().isNumeric(),
+      body('lengthOfExperience').isString(),
+      body('position').isString(),
+      body('occupation').isString(),
+      body('commentText').exists().isString(),
+    ],
     answer: [body('questionnaireOrderId').exists().isString(), body('answers').exists().isArray({ min: 1 })],
     skipDeny: [body('questionnaireOrderId').exists().isString()],
   };
