@@ -32,7 +32,7 @@ function bracketlinkProcessor(body) {
 }
 
 // ===========================================
-// main process
+// define processors
 // ===========================================
 
 var migrationType = process.env.MIGRATION_TYPE;
