@@ -35,32 +35,31 @@ function bracketlinkProcessor(body) {
 // define processors
 // ===========================================
 
-var migrationType = process.env.MIGRATION_TYPE;
-
-var oldFormatProcessors;
-switch (migrationType) {
-  case 'v6-drawio':
-    oldFormatProcessors = [drawioProcessor];
-    break;
-  case 'v6-plantuml':
-    oldFormatProcessors = [plantumlProcessor];
-    break;
-  case 'v6-tsv':
-    oldFormatProcessors = [tsvProcessor];
-    break;
-  case 'v6-csv':
-    oldFormatProcessors = [csvProcessor];
-    break;
-  case 'v6-bracketlink':
-    oldFormatProcessors = [bracketlinkProcessor];
-    break;
-  case 'v6':
-    oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor];
-    break;
-  case undefined:
-    throw Error('env var MIGRATION_TYPE is required: document link');
-  default:
-    throw Error('invalid MIGRATION_TYPE: document link');
+function getProcessorArray(migrationType) {
+  var oldFormatProcessors;
+  switch (migrationType) {
+    case 'v6-drawio':
+      oldFormatProcessors = [drawioProcessor];
+      break;
+    case 'v6-plantuml':
+      oldFormatProcessors = [plantumlProcessor];
+      break;
+    case 'v6-tsv':
+      oldFormatProcessors = [tsvProcessor];
+      break;
+    case 'v6-csv':
+      oldFormatProcessors = [csvProcessor];
+      break;
+    case 'v6-bracketlink':
+      oldFormatProcessors = [bracketlinkProcessor];
+      break;
+    case 'v6':
+      oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor];
+      break;
+    default:
+      oldFormatProcessors = [];
+  }
+  return oldFormatProcessors;
 }
 
-module.exports = oldFormatProcessors;
+module.exports = getProcessorArray;
