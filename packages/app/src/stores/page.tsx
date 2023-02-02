@@ -21,7 +21,6 @@ import { IPageTagsInfo } from '../interfaces/tag';
 import {
   useCurrentPageId, useCurrentPathname, useShareLinkId, useIsGuestUser,
 } from './context';
-import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
@@ -98,7 +97,7 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
   );
 };
 
-export const mutateAllPageInfo = (): Promise<any[]> => {
+export const mutateAllPageInfo = (): Promise<void[]> => {
   return mutate(
     key => Array.isArray(key) && key[0] === '/page/info',
   );

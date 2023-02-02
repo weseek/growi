@@ -20,7 +20,7 @@ import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/
 import {
   useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutateDescendantsPageListForCurrentPath,
 } from '~/stores/page-listing';
-import { useFullTextSearchTermManager } from '~/stores/search';
+import { mutateSearching } from '~/stores/search';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
@@ -118,7 +118,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   // for mutation
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const { advance: advanceFts } = useFullTextSearchTermManager();
 
   const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
 
@@ -149,13 +148,13 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const onRenamed = useCallback((fromPath: string | undefined, toPath: string) => {
     mutatePageTree();
-    advanceFts();
+    mutateSearching();
     mutateDescendantsPageListForCurrentPath();
 
     if (currentPagePath === fromPath || currentPagePath === toPath) {
       mutateCurrentPage();
     }
-  }, [advanceFts, currentPagePath, mutateCurrentPage]);
+  }, [currentPagePath, mutateCurrentPage]);
 
   const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -163,12 +162,12 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
       mutatePageTree();
-      advanceFts();
+      mutateSearching();
       mutateDescendantsPageListForCurrentPath();
     };
 
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [advanceFts, openDuplicateModal, t]);
+  }, [openDuplicateModal, t]);
 
   const onClickDeleteMenuItem = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -186,7 +185,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       }
 
       mutatePageTree();
-      advanceFts();
+      mutateSearching();
       mutateDescendantsPageListForCurrentPath();
       mutateAllPageInfo();
 
@@ -197,7 +196,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [advanceFts, currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
+  }, [currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {

@@ -11,10 +11,9 @@ import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/stores/context';
 import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';
-import { useFullTextSearchTermManager } from '~/stores/search';
+import { mutateSearching } from '~/stores/search';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { PageListItemL } from '../PageList/PageListItemL';
@@ -43,9 +42,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, null, true, true);
-
-  // for mutation
-  const { advance: advanceFts } = useFullTextSearchTermManager();
 
   const itemsRef = useRef<(ISelectable|null)[]>([]);
 
@@ -94,20 +90,21 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const duplicatedHandler : OnDuplicatedFunction = (fromPath, toPath) => {
+  const duplicatedHandler = useCallback((fromPath, toPath) => {
     toastSuccess(t('duplicated_pages', { fromPath }));
 
     mutatePageTree();
-    advanceFts();
-  };
+    mutateSearching();
+  }, [t]);
 
-  const renamedHandler: OnRenamedFunction = (path) => {
+  const renamedHandler = useCallback((path) => {
     toastSuccess(t('renamed_pages', { path }));
 
     mutatePageTree();
-    advanceFts();
-  };
-  const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+    mutateSearching();
+  }, [t]);
+
+  const deletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
@@ -121,8 +118,8 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
-    advanceFts();
-  };
+    mutateSearching();
+  }, [t]);
 
   return (
     <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">

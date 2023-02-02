@@ -75,7 +75,7 @@ export const useSWRxPageList = (
 };
 
 const MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH = 'descendantsPageListForCurrentPath';
-export const mutateDescendantsPageListForCurrentPath = async(): Promise<any[]> => {
+export const mutateDescendantsPageListForCurrentPath = async(): Promise<void[]> => {
   return mutate(
     key => Array.isArray(key) && key[0] === MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH,
   );
