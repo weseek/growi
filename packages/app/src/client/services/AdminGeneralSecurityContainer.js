@@ -196,7 +196,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch userPageDelete enabled
+   * Switch isUserPageDeleteEnabled
    */
   switchIsUserPageDeleteEnabled() {
     this.setState({ isUserPageDeleteEnabled: !this.state.isUserPageDeleteEnabled });
