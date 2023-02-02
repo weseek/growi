@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { pagePathUtils } from '@growi/core';
 
 import { useSWRxNodeTree } from '../stores/lsx';
 
@@ -38,10 +37,7 @@ export const Lsx = React.memo(({
     return new LsxContext(prefix, options);
   }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const pathname = window.location.pathname;
-  const isSharedPage = pagePathUtils.isSharedPage(pathname);
-
-  const { data, error } = useSWRxNodeTree(!isSharedPage, lsxContext, isImmutable);
+  const { data, error } = useSWRxNodeTree(lsxContext, isImmutable);
 
   const isLoading = data === undefined;
   const hasError = error != null;
@@ -85,15 +81,6 @@ export const Lsx = React.memo(({
 
     return <LsxListView nodeTree={data.nodeTree} lsxContext={lsxContext} basisViewersCount={data.toppageViewersCount} />;
   }, [data?.nodeTree, data?.toppageViewersCount, isLoading, lsxContext]);
-
-  if (isSharedPage) {
-    return (
-      <div className="text-warning">
-        <i className="fa fa-exclamation-triangle fa-fw"></i>
-        {lsxContext.toString()} (-&gt; <small>lsx is not available on the share link page</small>)
-      </div>
-    );
-  }
 
   return (
     <div className={`lsx ${styles.lsx}`}>
