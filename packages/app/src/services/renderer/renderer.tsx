@@ -143,8 +143,6 @@ export const generateViewOptions = (
     storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
-  console.log('config.isLsxDisabled', config.isLsxDisabled);
-
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
