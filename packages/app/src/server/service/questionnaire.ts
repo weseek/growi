@@ -82,7 +82,7 @@ class QuestionnaireService {
       questionnaireOrders = questionnaireOrders.filter((order) => {
         const status = statuses.find(s => s.questionnaireOrderId.toString() === order._id.toString());
 
-        return status?.status === StatusType.not_answered;
+        return !status || status?.status === StatusType.not_answered;
       });
     }
 
