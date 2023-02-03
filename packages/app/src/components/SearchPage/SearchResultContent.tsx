@@ -18,9 +18,9 @@ import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager } from '~/stores/page-listing';
+import { mutatePageList, mutatePageTree } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
-import { useFullTextSearchTermManager } from '~/stores/search';
+import { mutateSearching } from '~/stores/search';
 
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
@@ -90,11 +90,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const [isRevisionLoaded, setRevisionLoaded] = useState(false);
   const [isPageCommentLoaded, setPageCommentLoaded] = useState(false);
-
-  // for mutation
-  const { advance: advancePt } = usePageTreeTermManager();
-  const { advance: advanceFts } = useFullTextSearchTermManager();
-  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
@@ -167,23 +162,23 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
-      advancePt();
-      advanceFts();
-      advanceDpl();
+      mutatePageTree();
+      mutateSearching();
+      mutatePageList();
     };
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
+  }, [openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 
-      advancePt();
-      advanceFts();
-      advanceDpl();
+      mutatePageTree();
+      mutateSearching();
+      mutatePageList();
     };
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
+  }, [openRenameModal, t]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
@@ -197,10 +192,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     else {
       toastSuccess(t('deleted_pages', { path }));
     }
-    advancePt();
-    advanceFts();
-    advanceDpl();
-  }, [advanceDpl, advanceFts, advancePt, t]);
+    mutatePageTree();
+    mutateSearching();
+    mutatePageList();
+  }, [t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
