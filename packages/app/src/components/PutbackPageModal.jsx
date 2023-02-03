@@ -7,9 +7,8 @@ import {
 } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
-import { PathAlreadyExistsError } from '~/server/models/errors';
 import { usePutBackPageModal } from '~/stores/modal';
-import { usePageInfoTermManager } from '~/stores/page';
+import { mutateAllPageInfo } from '~/stores/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -17,7 +16,6 @@ const PutBackPageModal = () => {
   const { t } = useTranslation();
 
   const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
-  const { advance: advancePi } = usePageInfoTermManager();
   const { isOpened, page } = pageDataToRevert;
   const { pageId, path } = page;
   const onPutBacked = pageDataToRevert.opts?.onPutBacked;
@@ -43,7 +41,7 @@ const PutBackPageModal = () => {
         page_id: pageId,
         recursively,
       });
-      advancePi();
+      mutateAllPageInfo();
 
       if (onPutBacked != null) {
         onPutBacked(response.page.path);
