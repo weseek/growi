@@ -6,10 +6,10 @@ import { useTranslation } from 'next-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   apiv3Delete, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -265,6 +265,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           onUnbookmarked={onUnbookmarkHandler}
           onRenamed={mutateParentBookmarkFolder}
           onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
+          parentFolder={bookmarkFolder}
         />
       );
     });
