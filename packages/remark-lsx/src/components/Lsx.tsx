@@ -90,6 +90,7 @@ const LsxSubstance = React.memo(({
     </div>
   );
 });
+LsxSubstance.displayName = 'LsxSubstance';
 
 const LsxDisabled = React.memo((): JSX.Element => {
   return (
