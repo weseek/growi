@@ -28,8 +28,7 @@ export interface BookmarkFolderDocument extends Document {
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): Promise<BookmarkFolderDocument>
-  findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): Promise<BookmarkFolderItems[] | null>
-  findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
+  findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): Promise<BookmarkFolderItems[]>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string): Promise<BookmarkFolderDocument>
@@ -114,12 +113,6 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
   return bookmarkFolders;
 };
 
-bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
-  const parentFolder = await this.findById(parentFolderId) as unknown as BookmarkFolderDocument;
-  const childFolders = await this.find({ parent: parentFolder });
-  return childFolders;
-};
-
 bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}> {
   const bookmarkFolder = await this.findById(bookmarkFolderId);
   // Delete parent and all children folder
@@ -143,9 +136,9 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFo
   return { deletedCount };
 };
 
-bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parent: string):
+bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parentId: string):
  Promise<BookmarkFolderDocument> {
-  const parentFolder = await this.findById(parent);
+  const parentFolder = await this.findById(parentId);
   const updateFields = {
     name, parent: parentFolder?._id || null,
   };
