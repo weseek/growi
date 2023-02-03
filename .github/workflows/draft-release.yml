@@ -57,7 +57,7 @@ jobs:
 
       # See: https://github.com/bakunyo/git-pr-release-action/issues/15, https://github.com/samunohito/SimpleVolumeMixer/commit/2059044c71236509466cf9b1bb2d56d515274938
       - name: Create/Update Pull Request
-        uses: bakunyo/git-pr-release-action@281e1fe424fac01f3992542266805e4202a22fe0
+        uses: bakunyo/git-pr-release-action@035b7151a53745c03b85c6274ab1ae4bc734eccd
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release/current
