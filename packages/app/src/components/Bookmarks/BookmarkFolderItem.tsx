@@ -73,12 +73,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     return children.length > 0;
   }, [children.length, currentChildren]);
 
-  const loadChildFolder = useCallback(async () => {
+  const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
     setTargetFolder(folderId);
   }, [folderId, isOpen]);
 
-  const loadParent = useCallback(async () => {
+  const loadParent = useCallback(async() => {
     if (!isRenameAction) {
       if (parent != null) {
         await mutateParentBookmarkFolder();
@@ -93,7 +93,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [isRenameAction, mutateParentBookmarkFolder, parent]);
 
   // Rename  for bookmark folder handler
-  const onPressEnterHandlerForRename = useCallback(async (folderName: string) => {
+  const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
       await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
       loadParent();
@@ -106,7 +106,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [folderId, loadParent, parent, t]);
 
   // Create new folder / subfolder handler
-  const onPressEnterHandlerForCreate = useCallback(async (folderName: string) => {
+  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
       setIsOpen(true);
@@ -122,7 +122,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [mutateChildBookmarkData, t, targetFolder]);
 
   // Delete Fodler handler
-  const onClickDeleteButtonHandler = useCallback(async () => {
+  const onClickDeleteButtonHandler = useCallback(async() => {
     try {
       await apiv3Delete(`/bookmark-folder/${folderId}`);
       setIsDeleteFolderModalShown(false);
@@ -135,7 +135,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     }
   }, [folderId, loadParent, mutateBookmarkInfo, t]);
 
-  const onClickPlusButton = useCallback(async (e) => {
+  const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
     if (!isOpen && hasChildren()) {
       setIsOpen(true);
@@ -183,7 +183,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   });
 
 
-  const folderItemDropHandler = async (item: BookmarkFolderItemProps) => {
+  const folderItemDropHandler = async(item: BookmarkFolderItemProps) => {
     try {
       await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: bookmarkFolder._id });
       await mutateChildBookmarkData();
@@ -194,7 +194,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     }
   };
 
-  const bookmarkItemDropHandler = useCallback(async (item: IPageHasId) => {
+  const bookmarkItemDropHandler = useCallback(async(item: IPageHasId) => {
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: bookmarkFolder._id });
       mutateParentBookmarkFolder();
