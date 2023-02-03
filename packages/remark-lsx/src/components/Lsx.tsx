@@ -8,16 +8,6 @@ import { LsxContext } from './lsx-context';
 
 import styles from './Lsx.module.scss';
 
-
-const LsxDisabled = React.memo((): JSX.Element => {
-  return (
-    <div className="text-muted">
-      <i className="fa fa-fw fa-info-circle"></i>
-      <small>lsx is not available on the share link page</small>
-    </div>
-  );
-});
-
 type Props = {
   children: React.ReactNode,
   className?: string,
@@ -34,10 +24,10 @@ type Props = {
   isSharedPage?: boolean,
 };
 
-export const Lsx = React.memo(({
+const LsxSubstance = React.memo(({
   prefix,
   num, depth, sort, reverse, filter, except,
-  isImmutable, isSharedPage,
+  isImmutable,
 }: Props): JSX.Element => {
 
   const lsxContext = useMemo(() => {
@@ -47,7 +37,7 @@ export const Lsx = React.memo(({
     return new LsxContext(prefix, options);
   }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const { data, error } = useSWRxNodeTree(!isSharedPage, lsxContext, isImmutable);
+  const { data, error } = useSWRxNodeTree(lsxContext, isImmutable);
 
   const isLoading = data === undefined;
   const hasError = error != null;
@@ -92,10 +82,6 @@ export const Lsx = React.memo(({
     return <LsxListView nodeTree={data.nodeTree} lsxContext={lsxContext} basisViewersCount={data.toppageViewersCount} />;
   }, [data?.nodeTree, data?.toppageViewersCount, isLoading, lsxContext]);
 
-  if (isSharedPage) {
-    return <LsxDisabled />;
-  }
-
   return (
     <div className={`lsx ${styles.lsx}`}>
       <Error />
@@ -103,6 +89,24 @@ export const Lsx = React.memo(({
       {contents}
     </div>
   );
+});
+
+const LsxDisabled = React.memo((): JSX.Element => {
+  return (
+    <div className="text-muted">
+      <i className="fa fa-fw fa-info-circle"></i>
+      <small>lsx is not available on the share link page</small>
+    </div>
+  );
+});
+LsxDisabled.displayName = 'LsxDisabled';
+
+export const Lsx = React.memo((props: Props): JSX.Element => {
+  if (props.isSharedPage) {
+    return <LsxDisabled />;
+  }
+
+  return <LsxSubstance {...props} />;
 });
 Lsx.displayName = 'Lsx';
 
