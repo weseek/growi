@@ -18,7 +18,7 @@ import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { mutateDescendantsPageListForCurrentPath, mutatePageTree } from '~/stores/page-listing';
+import { mutatePageList, mutatePageTree } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
@@ -164,7 +164,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
       mutatePageTree();
       mutateSearching();
-      mutateDescendantsPageListForCurrentPath();
+      mutatePageList();
     };
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal, t]);
@@ -175,7 +175,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
       mutatePageTree();
       mutateSearching();
-      mutateDescendantsPageListForCurrentPath();
+      mutatePageList();
     };
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
   }, [openRenameModal, t]);
@@ -194,7 +194,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     }
     mutatePageTree();
     mutateSearching();
-    mutateDescendantsPageListForCurrentPath();
+    mutatePageList();
   }, [t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {

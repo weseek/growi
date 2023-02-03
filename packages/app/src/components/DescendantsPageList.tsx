@@ -11,17 +11,14 @@ import {
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import {
-  useIsGuestUser, useIsSharedUser, useShowPageLimitationXL,
+  useIsGuestUser, useIsSharedUser,
 } from '~/stores/context';
-import { useIsTrashPage } from '~/stores/page';
 import {
-  mutateDescendantsPageListForCurrentPath,
   mutatePageTree,
-  useSWRxDescendantsPageListForCurrrentPath,
   useSWRxPageInfoForList, useSWRxPageList,
 } from '~/stores/page-listing';
 
-import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
+import { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 
@@ -39,7 +36,7 @@ const convertToIDataWithMeta = (page: IPageHasId): IDataWithMeta<IPageHasId> => 
   return { data: page };
 };
 
-export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
+const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
 
   const { t } = useTranslation();
 
@@ -83,7 +80,6 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     toastSuccess(t('page_has_been_reverted', { path }));
 
     mutatePageTree();
-    mutateDescendantsPageListForCurrentPath();
 
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
@@ -133,16 +129,18 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
 
 export type DescendantsPageListProps = {
   path: string,
+  limit?: number,
+  forceHideMenuItems?: ForceHideMenuItems,
 }
 
 export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
-  const { path } = props;
+  const { path, limit, forceHideMenuItems } = props;
 
   const [activePage, setActivePage] = useState(1);
 
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { data: pagingResult, error, mutate } = useSWRxPageList(null, isSharedUser ? null : path, activePage);
+  const { data: pagingResult, error, mutate } = useSWRxPageList(isSharedUser ? null : path, activePage, limit);
 
   if (error != null) {
     return (
@@ -151,35 +149,6 @@ export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Elemen
       </div>
     );
   }
-
-  return (
-    <DescendantsPageListSubstance
-      pagingResult={pagingResult}
-      activePage={activePage}
-      setActivePage={setActivePage}
-      onPagesDeleted={() => mutate()}
-      onPagePutBacked={() => mutate()}
-    />
-  );
-};
-
-export const DescendantsPageListForCurrentPath = (): JSX.Element => {
-
-  const [activePage, setActivePage] = useState(1);
-
-  const { data: isTrashPage } = useIsTrashPage();
-  const { data: limit } = useShowPageLimitationXL();
-  const { data: pagingResult, error, mutate } = useSWRxDescendantsPageListForCurrrentPath(activePage, limit);
-
-  if (error != null) {
-    return (
-      <div className="my-5">
-        <div className="text-danger">{error.message}</div>
-      </div>
-    );
-  }
-
-  const forceHideMenuItems = isTrashPage ? [MenuItemType.RENAME] : undefined;
 
   return (
     <DescendantsPageListSubstance
@@ -188,7 +157,7 @@ export const DescendantsPageListForCurrentPath = (): JSX.Element => {
       setActivePage={setActivePage}
       forceHideMenuItems={forceHideMenuItems}
       onPagesDeleted={() => mutate()}
+      onPagePutBacked={() => mutate()}
     />
   );
-
 };

@@ -15,7 +15,6 @@ import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
-import { useCurrentPagePath } from './page';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
@@ -44,15 +43,21 @@ export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHa
     },
   );
 };
+
+export const mutatePageList = async(): Promise<void[]> => {
+  return mutate(
+    key => Array.isArray(key) && key[0] === '/pages/list',
+  );
+};
+
 export const useSWRxPageList = (
-    mutationId: string | null,
     path: string | null, pageNumber?: number, limit?: number,
 ): SWRResponse<IPagingResult<IPageHasId>, Error> => {
   return useSWR(
     path == null
       ? null
-      : [mutationId, '/pages/list', path, pageNumber, limit],
-    ([, endpoint, path, pageNumber, limit]) => {
+      : ['/pages/list', path, pageNumber, limit],
+    ([endpoint, path, pageNumber, limit]) => {
       const args = Object.assign(
         { path, page: pageNumber ?? 1 },
         // if limit exist then add it as query string
@@ -72,18 +77,6 @@ export const useSWRxPageList = (
       keepPreviousData: true,
     },
   );
-};
-
-const MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH = 'descendantsPageListForCurrentPath';
-export const mutateDescendantsPageListForCurrentPath = async(): Promise<void[]> => {
-  return mutate(
-    key => Array.isArray(key) && key[0] === MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH,
-  );
-};
-
-export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number, limit?:number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  return useSWRxPageList(MUTATION_ID_FOR_DESCENDANTS_PAGELIST_FOR_CURRENT_PATH, currentPagePath ?? null, pageNumber, limit);
 };
 
 

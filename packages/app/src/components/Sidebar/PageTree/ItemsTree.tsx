@@ -18,7 +18,7 @@ import {
 } from '~/stores/modal';
 import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
-  useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutateDescendantsPageListForCurrentPath,
+  useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutatePageList,
 } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
@@ -149,7 +149,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const onRenamed = useCallback((fromPath: string | undefined, toPath: string) => {
     mutatePageTree();
     mutateSearching();
-    mutateDescendantsPageListForCurrentPath();
+    mutatePageList();
 
     if (currentPagePath === fromPath || currentPagePath === toPath) {
       mutateCurrentPage();
@@ -163,7 +163,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
       mutatePageTree();
       mutateSearching();
-      mutateDescendantsPageListForCurrentPath();
+      mutatePageList();
     };
 
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
@@ -186,7 +186,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
       mutatePageTree();
       mutateSearching();
-      mutateDescendantsPageListForCurrentPath();
+      mutatePageList();
       mutateAllPageInfo();
 
       if (currentPagePath === pathOrPathsToDelete) {
