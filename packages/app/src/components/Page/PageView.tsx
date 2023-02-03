@@ -69,15 +69,15 @@ export const PageView = (props: Props): JSX.Element => {
       return <NotCreatablePage />;
     }
     if (isNotFound) {
-      return <NotFoundPage />;
+      return <NotFoundPage path={pagePath} />;
     }
-  }, [isForbidden, isIdenticalPathPage, isNotCreatable, isNotFound]);
+  }, [isForbidden, isIdenticalPathPage, isNotCreatable, isNotFound, pagePath]);
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (
       <PageSideContents page={page} />
     )
-    : <></>;
+    : null;
 
   const footerContents = !isIdenticalPathPage && !isNotFound && page != null
     ? (
@@ -91,7 +91,7 @@ export const PageView = (props: Props): JSX.Element => {
         <PageContentFooter page={page} />
       </>
     )
-    : <></>;
+    : null;
 
   const isUsersHomePagePath = isUsersHomePage(pagePath);
 

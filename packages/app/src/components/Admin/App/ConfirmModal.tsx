@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
+
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'next-i18next';
-import { TFunctionResult } from 'i18next';
 
 type ConfirmModalProps = {
   isModalOpen: boolean
-  warningMessage: TFunctionResult
-  supplymentaryMessage: TFunctionResult | null
-  confirmButtonTitle: TFunctionResult
+  warningMessage: string
+  supplymentaryMessage: string | null
+  confirmButtonTitle: string
   onConfirm?: () => Promise<void>
   onCancel?: () => void
 };
@@ -43,13 +43,14 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
               <br />
               <br />
               <span className="text-warning">
-                <i className="icon-exclamation icon-fw"></i>
-                {props.supplymentaryMessage}
+                <>
+                  <i className="icon-exclamation icon-fw"></i>
+                  {props.supplymentaryMessage}
+                </>
               </span>
             </>
           )
         }
-
       </ModalBody>
       <ModalFooter>
         <button

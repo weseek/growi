@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import type { HtmlElementNode } from 'rehype-toc';
 
 import { useViewOptions } from '~/stores/renderer';
-import { useCurrentPageTocNode } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
@@ -21,11 +19,7 @@ export type ShareLinkPageContentsProps = {
 export const ShareLinkPageContents = (props: ShareLinkPageContentsProps): JSX.Element => {
   const { page } = props;
 
-  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
-
-  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions((toc: HtmlElementNode) => {
-    mutateCurrentPageTocNode(toc);
-  });
+  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions();
 
   // register to facade
   useEffect(() => {
