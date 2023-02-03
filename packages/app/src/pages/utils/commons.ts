@@ -100,9 +100,9 @@ export const getNextI18NextConfig = async(
   // detect locale from browser accept language
   const acceptLanguages = headers['accept-language'];
   const browserLang = acceptLanguages?.split(',').shift();
-  let detectLocale = 'en_US';
-  if (browserLang?.includes('ja')) detectLocale = 'ja_JP';
-  if (browserLang?.includes('zh')) detectLocale = 'zh_CN';
+  let detectLocale: Lang = Lang.en_US;
+  if (browserLang?.includes('ja')) detectLocale = Lang.ja_JP;
+  if (browserLang?.includes('zh')) detectLocale = Lang.zh_CN;
 
   // determine language
   const locale = user == null ? detectLocale
