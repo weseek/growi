@@ -9,7 +9,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
-const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except'];
+const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except', 'isSharedPage'];
 
 const { addHeadingSlash, hasHeadingSlash } = pathUtils;
 
@@ -65,6 +65,7 @@ export const remarkPlugin: Plugin = function() {
 
 export type LsxRehypePluginParams = {
   pagePath?: string,
+  isSharedPage?: boolean,
 }
 
 const pathResolver = (href: string, basePath: string): string => {
@@ -95,6 +96,11 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
     elements.forEach((lsxElem) => {
       if (lsxElem.properties == null) {
         return;
+      }
+
+      const isSharedPage = lsxElem.properties.isSharedPage;
+      if (isSharedPage == null || typeof isSharedPage !== 'boolean') {
+        lsxElem.properties.isSharedPage = options.isSharedPage;
       }
 
       const prefix = lsxElem.properties.prefix;
