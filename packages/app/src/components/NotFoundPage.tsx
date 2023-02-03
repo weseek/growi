@@ -3,19 +3,26 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
+import { DescendantsPageList } from './DescendantsPageList';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import { PageTimeline } from './PageTimeline';
 
-const NotFoundPage = (): JSX.Element => {
+
+type NotFoundPageProps = {
+  path: string,
+}
+
+const NotFoundPage = (props: NotFoundPageProps): JSX.Element => {
   const { t } = useTranslation();
+
+  const { path } = props;
 
   const navTabMapping = useMemo(() => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: DescendantsPageListForCurrentPath,
+        Content: () => <DescendantsPageList path={path} />,
         i18n: t('page_list'),
         index: 0,
       },
@@ -26,7 +33,7 @@ const NotFoundPage = (): JSX.Element => {
         index: 1,
       },
     };
-  }, [t]);
+  }, [path, t]);
 
   return (
     <div className="d-edit-none">
