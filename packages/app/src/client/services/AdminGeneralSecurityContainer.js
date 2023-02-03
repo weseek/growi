@@ -38,7 +38,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      isUserPageDeleteEnabled: false,
+      isUserPageDeletionEnabled: false,
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
@@ -74,7 +74,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveCompleteDeletionAuthority: generalSetting.pageRecursiveCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
-      isUserPageDeleteEnabled: generalSetting.isUserPageDeleteEnabled,
+      isUserPageDeletionEnabled: generalSetting.isUserPageDeletionEnabled,
       sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
       disableLinkSharing: shareLinkSetting.disableLinkSharing,
@@ -196,10 +196,10 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch isUserPageDeleteEnabled
+   * Switch isUserPageDeletionEnabled
    */
-  switchIsUserPageDeleteEnabled() {
-    this.setState({ isUserPageDeleteEnabled: !this.state.isUserPageDeleteEnabled });
+  switchisUserPageDeletionEnabled() {
+    this.setState({ isUserPageDeletionEnabled: !this.state.isUserPageDeletionEnabled });
   }
 
   /**

@@ -460,11 +460,11 @@ class SecuritySetting extends React.Component {
               <input
                 type="checkbox"
                 className="custom-control-input"
-                id="isUserPageDeleteEnabled"
-                checked={adminGeneralSecurityContainer.state.isUserPageDeleteEnabled}
-                onChange={() => { adminGeneralSecurityContainer.switchIsUserPageDeleteEnabled() }}
+                id="is-user-page-deletion-enabled"
+                checked={adminGeneralSecurityContainer.state.isUserPageDeletionEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchisUserPageDeletionEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="isUserPageDeleteEnabled">
+              <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
                 無効化 / 有効化
               </label>
             </div>
