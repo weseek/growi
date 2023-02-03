@@ -37,10 +37,10 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     rendererOptions, pageId, revisionId, lazy, onRevisionLoaded,
   } = props;
 
-  const [isLoading, setIsLoading] = useState<boolean>();
-  const [isLoaded, setIsLoaded] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [markdown, setMarkdown] = useState<string>('');
-  const [errors, setErrors] = useState<any | null>();
+  const [errors, setErrors] = useState<any | null>(null);
 
   const loadData = useCallback(async() => {
     if (!isLoaded && !isLoading) {
@@ -81,6 +81,21 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     return;
   };
 
+  useEffect(() => {
+    if (errors == null) return;
+
+    const isForbidden = errors != null && errors[0].code === 'forbidden-page';
+    if (isForbidden) {
+      setMarkdown(`<i class="icon-exclamation p-1"></i>${t('not_allowed_to_see_this_page')}`);
+    }
+    else {
+      const errorMessages = errors.map((error) => {
+        return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
+      });
+      setMarkdown(errorMessages.join('\n'));
+    }
+  }, [errors, t]);
+
   /* ----- before load ----- */
   if (lazy && !isLoaded) {
     return (
@@ -97,18 +112,6 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
         </div>
       </div>
     );
-  }
-
-  /* ----- after load ----- */
-  const isForbidden = errors != null && errors[0].code === 'forbidden-page';
-  if (isForbidden) {
-    setMarkdown(`<i class="icon-exclamation p-1"></i>${t('not_allowed_to_see_this_page')}`);
-  }
-  else if (errors != null) {
-    const errorMessages = errors.map((error) => {
-      return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
-    });
-    setMarkdown(errorMessages.join('\n'));
   }
 
   return (
