@@ -1,13 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 
+import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable, useIsNotFound,
 } from '~/stores/context';
+import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 
 import type { CommentsProps } from '../Comments';
 import { MainPane } from '../Layout/MainPane';
@@ -32,22 +35,17 @@ const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSid
 const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
-
-const IdenticalPathPage = (): JSX.Element => {
-  const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-  return <IdenticalPathPage />;
-};
+const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
 
 
 type Props = {
   pagePath: string,
   page?: IPagePopulatedToShowRevision,
-  ssrBody?: JSX.Element,
 }
 
 export const PageView = (props: Props): JSX.Element => {
   const {
-    pagePath, page, ssrBody,
+    pagePath, page,
   } = props;
 
   const pageId = page?._id;
@@ -57,6 +55,19 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isNotFound } = useIsNotFound();
   const { data: isMobile } = useIsMobile();
+
+  const { mutate: mutateRendererOptions } = useViewOptions();
+
+  // register to facade
+  useEffect(() => {
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsMutators: {
+          viewOptionsMutator: mutateRendererOptions,
+        },
+      },
+    });
+  }, [mutateRendererOptions]);
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
