@@ -19,7 +19,7 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import {
-  useCurrentPageId, useCurrentPathname, useShareLinkId, useIsGuestUser,
+  useCurrentPageId, useCurrentPathname, useShareLinkId, useIsGuestUser, useIsNotFound,
 } from './context';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -163,8 +163,11 @@ export const useSWRxIsGrantNormalized = (
 ): SWRResponse<IResIsGrantNormalized, Error> => {
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isNotFound } = useIsNotFound();
 
-  const key = !isGuestUser && pageId != null ? ['/page/is-grant-normalized', pageId] : null;
+  const key = !isGuestUser && !isNotFound && pageId != null
+    ? ['/page/is-grant-normalized', pageId]
+    : null;
 
   return useSWRImmutable(
     key,
