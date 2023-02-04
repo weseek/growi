@@ -1,7 +1,7 @@
 import { envUtils } from '@growi/core';
 import { parseISO } from 'date-fns';
 
-
+import { GrowiServiceType } from '~/interfaces/questionnaire/growi-info';
 import loggerFactory from '~/utils/logger';
 
 import ConfigModel, {
@@ -669,6 +669,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key: 'questionnaire:isAppSiteUrlHashed',
     type: ValueType.BOOLEAN,
     default: true,
+  },
+  SERVICE_TYPE: {
+    ns: 'crowi',
+    key: 'app:serviceType',
+    type: ValueType.STRING,
+    default: GrowiServiceType.onPremise,
+  },
+  DEPLOYMENT_TYPE: {
+    ns: 'crowi',
+    key: 'app:deploymentType',
+    type: ValueType.STRING,
+    default: null,
   },
 };
 
