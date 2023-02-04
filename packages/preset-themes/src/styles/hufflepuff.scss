@@ -146,14 +146,15 @@
   // login and register
   .nologin {
     background: unset !important;
-    background-image: url('../images/hufflepuff/badger-light.png');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-
+    .page-wrapper{
+      background-image: url('../images/hufflepuff/badger-light.png');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
     .nologin-header,
     .nologin-dialog {
-      background-color: rgba(black, 0.1);
+      background-color: rgba(black, 0.1) !important;
       a.link-switch  {
         color: #{hsl.darken(var(--color-global),10%)};
       }
@@ -341,14 +342,15 @@
   // login and register
   .nologin {
     background: unset !important;
-    background-image: url('../images/hufflepuff/badger-light.png');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-
+    .page-wrapper{
+      background-image: url('../images/hufflepuff/badger-light.png');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
     .nologin-header,
     .nologin-dialog {
-      background-color: rgba(black, 0.1);
+      background-color: rgba(black, 0.1) !important;
     }
 
     .link-switch {

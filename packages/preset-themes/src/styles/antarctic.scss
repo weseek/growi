@@ -14,11 +14,13 @@
 }
 
 .nologin {
-  background: unset !important;
-  background-image: url('/images/themes/antarctic/topimage.svg');
-  background-attachment: fixed;
-  background-position: center center;
-  background-size: cover;
+  background-image: unset !important;
+  .page-wrapper{
+    background-image: url('../images/antarctic/topimage.svg');
+    background-attachment: fixed;
+    background-position: 50%;
+    background-size: cover;
+  }
 }
 
 .grw-navbar {

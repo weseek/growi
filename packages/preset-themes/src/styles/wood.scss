@@ -174,7 +174,7 @@
 
     .nologin-header,
     .nologin-dialog {
-      background-color: rgba(black, 0.1);
+      background-color: rgba(black, 0.1) !important;
       a.link-switch {
         color: rgba(black, 0.5);
       }
