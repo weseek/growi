@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react';
 import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
 } from '@growi/core';
-import { isClient, pagePathUtils } from '@growi/core';
+import { Ref, isClient, pagePathUtils } from '@growi/core';
 import useSWR, { mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { SWRMutationResponse } from 'swr/mutation';
@@ -14,7 +14,7 @@ import {
   IPageInfo, IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import { IRevisionHasId, IRevisionsForPagination } from '~/interfaces/revision';
+import { IRevision, IRevisionHasId, IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
@@ -136,7 +136,7 @@ export const useSWRxPageInfo = (
 };
 
 
-export const useSWRMUTxPageRevision = (pageId: string, revisionId: string): SWRMutationResponse<IRevisionHasId> => {
+export const useSWRMUTxPageRevision = (pageId: string, revisionId: Ref<IRevision>): SWRMutationResponse<IRevisionHasId> => {
   const key = 'pageRevision';
 
   return useSWRMutation(

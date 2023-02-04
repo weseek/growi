@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { IRevisionHasId } from '@growi/core';
+import { Ref, IRevision, IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { Waypoint } from 'react-waypoint';
 
@@ -15,7 +15,7 @@ export const ROOT_ELEM_ID = 'revision-loader' as const;
 export type RevisionLoaderProps = {
   rendererOptions: RendererOptions,
   pageId: string,
-  revisionId: string,
+  revisionId: Ref<IRevision>,
   lazy?: boolean,
   onRevisionLoaded?: (revision: IRevisionHasId) => void,
 }
