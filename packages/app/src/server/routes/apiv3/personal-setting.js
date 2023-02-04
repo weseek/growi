@@ -128,7 +128,7 @@ module.exports = (crowi) => {
       body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
     ],
     questionnaireSettings: [
-      body('isEnableQuestionnaire').isBoolean(),
+      body('isQuestionnaireEnabled').isBoolean(),
     ],
   };
 
@@ -686,12 +686,12 @@ module.exports = (crowi) => {
 
   // eslint-disable-next-line max-len
   router.put('/questionnaire-settings', accessTokenParser, loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isEnableQuestionnaire } = req.body;
+    const { isQuestionnaireEnabled } = req.body;
     const { user } = req;
     try {
-      await user.updateIsEnableQuestionnaire(isEnableQuestionnaire);
+      await user.updateIsQuestionnaireEnabled(isQuestionnaireEnabled);
 
-      return res.apiv3({ message: 'Successfully updated questionnaire settings.', isEnableQuestionnaire });
+      return res.apiv3({ message: 'Successfully updated questionnaire settings.', isQuestionnaireEnabled });
     }
     catch (err) {
       logger.error(err);

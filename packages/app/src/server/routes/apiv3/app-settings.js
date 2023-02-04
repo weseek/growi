@@ -199,7 +199,7 @@ module.exports = (crowi) => {
       body('s3ReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
     ],
     questionnaireSettings: [
-      body('isEnableQuestionnaire').isBoolean(),
+      body('isQuestionnaireEnabled').isBoolean(),
       body('isAppSiteUrlHashed').isBoolean(),
     ],
     maintenanceMode: [
@@ -271,7 +271,7 @@ module.exports = (crowi) => {
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
 
-      isEnableQuestionnaire: crowi.configManager.getConfig('crowi', 'questionnaire:isEnableQuestionnaire'),
+      isQuestionnaireEnabled: crowi.configManager.getConfig('crowi', 'questionnaire:isQuestionnaireEnabled'),
       isAppSiteUrlHashed: crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed'),
 
       isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
@@ -680,10 +680,10 @@ module.exports = (crowi) => {
 
   // eslint-disable-next-line max-len
   router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isEnableQuestionnaire, isAppSiteUrlHashed } = req.body;
+    const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
 
     const requestParams = {
-      'questionnaire:isEnableQuestionnaire': isEnableQuestionnaire,
+      'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
       'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
     };
 
@@ -691,7 +691,7 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
 
       const responseParams = {
-        isEnableQuestionnaire: crowi.configManager.getConfig('crowi', 'questionnaire:isEnableQuestionnaire'),
+        isQuestionnaireEnabled: crowi.configManager.getConfig('crowi', 'questionnaire:isQuestionnaireEnabled'),
         isAppSiteUrlHashed: crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed'),
       };
 

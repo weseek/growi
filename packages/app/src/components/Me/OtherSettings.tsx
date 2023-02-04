@@ -3,37 +3,40 @@ import {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '~/stores/context';
+import { useSWRxIsQuestionnaireEnabled } from '~/stores/questionnaire';
 
 const OtherSettings = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser, error: errorCurrentUser } = useCurrentUser();
+  const { data: growiIsQuestionnaireEnabled } = useSWRxIsQuestionnaireEnabled();
 
-  const [isEnableQuestionnaire, setIsEnableQuestionnaire] = useState(currentUser?.isEnableQuestionnaire);
+  const [isQuestionnaireEnabled, setIsQuestionnaireEnabled] = useState(currentUser?.isQuestionnaireEnabled);
 
-  const onChangeIsEnableQuestionnaireHandler = useCallback(async() => {
-    setIsEnableQuestionnaire(prev => !prev);
+  const onChangeIsQuestionnaireEnabledHandler = useCallback(async() => {
+    setIsQuestionnaireEnabled(prev => !prev);
   }, []);
 
-  const onClickUpdateIsEnableQuestionnaireHandler = useCallback(async() => {
+  const onClickUpdateIsQuestionnaireEnabledHandler = useCallback(async() => {
     try {
       await apiv3Put('/personal-setting/questionnaire-settings', {
-        isEnableQuestionnaire,
+        isQuestionnaireEnabled,
       });
       toastSuccess(t('toaster.update_successed', { target: 'アンケート設定', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [isEnableQuestionnaire, t]);
+  }, [isQuestionnaireEnabled, t]);
 
   // Sync currentUser and state
   useEffect(() => {
-    setIsEnableQuestionnaire(currentUser?.isEnableQuestionnaire);
-  }, [currentUser?.isEnableQuestionnaire]);
+    setIsQuestionnaireEnabled(currentUser?.isQuestionnaireEnabled);
+  }, [currentUser?.isQuestionnaireEnabled]);
 
   const isLoadingCurrentUser = currentUser === undefined && errorCurrentUser === undefined;
 
@@ -49,19 +52,25 @@ const OtherSettings = (): JSX.Element => {
         <div className="offset-md-3 col-md-6 text-left">
           {!isLoadingCurrentUser && (
             <div className="custom-control custom-switch custom-checkbox-primary">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="isEnableQuestionnaire"
-                checked={isEnableQuestionnaire}
-                onChange={onChangeIsEnableQuestionnaireHandler}
-              />
-              <label className="custom-control-label" htmlFor="isEnableQuestionnaire">
+              <span id="personal-questionnaire-settings-toggle">
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="isQuestionnaireEnabled"
+                  checked={growiIsQuestionnaireEnabled && isQuestionnaireEnabled}
+                  onChange={onChangeIsQuestionnaireEnabledHandler}
+                  disabled={!growiIsQuestionnaireEnabled}
+                />
+                <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
                 アンケートを有効にする
-              </label>
+                </label>
+              </span>
               <p className="form-text text-muted small">
                 GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。
               </p>
+              <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-toggle">
+                管理者によってアンケートは無効化されています
+              </UncontrolledTooltip>
             </div>
           )}
         </div>
@@ -69,13 +78,20 @@ const OtherSettings = (): JSX.Element => {
 
       <div className="row my-3">
         <div className="offset-4 col-5">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={onClickUpdateIsEnableQuestionnaireHandler}
-          >
-            {t('Update')}
-          </button>
+          <span className="d-inline-block" id="personal-questionnaire-settings-btn">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={onClickUpdateIsQuestionnaireEnabledHandler}
+              disabled={!growiIsQuestionnaireEnabled}
+              style={growiIsQuestionnaireEnabled ? {} : { pointerEvents: 'none' }}
+            >
+              {t('Update')}
+            </button>
+          </span>
+          <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-btn">
+            管理者によってアンケートは無効化されています
+          </UncontrolledTooltip>
         </div>
       </div>
     </>

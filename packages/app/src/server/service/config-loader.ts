@@ -660,7 +660,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE: {
     ns: 'crowi',
-    key: 'questionnaire:isEnableQuestionnaire',
+    key: 'questionnaire:isQuestionnaireEnabled',
     type: ValueType.BOOLEAN,
     default: true,
   },
