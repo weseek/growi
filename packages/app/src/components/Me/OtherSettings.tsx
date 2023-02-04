@@ -68,9 +68,9 @@ const OtherSettings = (): JSX.Element => {
               <p className="form-text text-muted small">
                 GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。
               </p>
-              <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-toggle">
+              {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-toggle">
                 管理者によってアンケートは無効化されています
-              </UncontrolledTooltip>
+              </UncontrolledTooltip> }
             </div>
           )}
         </div>
@@ -89,9 +89,9 @@ const OtherSettings = (): JSX.Element => {
               {t('Update')}
             </button>
           </span>
-          <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-btn">
+          {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-btn">
             管理者によってアンケートは無効化されています
-          </UncontrolledTooltip>
+          </UncontrolledTooltip>}
         </div>
       </div>
     </>
