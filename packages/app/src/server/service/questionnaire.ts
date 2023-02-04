@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
+import { GrowiWikiType, IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 import { IUserHasId } from '~/interfaces/user';
@@ -31,6 +31,9 @@ class QuestionnaireService {
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
 
+    const wikiMode = this.crowi.configManager.getConfig('crowi', 'security:wikiMode');
+    const wikiType = wikiMode === 'private' ? GrowiWikiType.closed : GrowiWikiType.open;
+
     return {
       version: this.crowi.version,
       osInfo: {
@@ -44,7 +47,7 @@ class QuestionnaireService {
       type: this.crowi.configManager.getConfig('crowi', 'app:serviceType'),
       currentUsersCount,
       currentActiveUsersCount,
-      wikiType: 'open', // TODO: set actual value
+      wikiType,
       attachmentType: this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       activeExternalAccountTypes: undefined, // TODO: set actual value
       deploymentType: this.crowi.configManager.getConfig('crowi', 'app:deploymentType'),

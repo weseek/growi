@@ -6,7 +6,7 @@ export const GrowiServiceType = {
   onPremise: 'on-premise',
   others: 'others',
 } as const;
-const GrowiWikiType = { open: 'open', closed: 'closed' } as const;
+export const GrowiWikiType = { open: 'open', closed: 'closed' } as const;
 const GrowiAttachmentType = {
   aws: 'aws',
   gcs: 'gcs',
