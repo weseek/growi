@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { Ref, IRevision, IRevisionHasId } from '@growi/core';
+import { IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { Waypoint } from 'react-waypoint';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { RendererOptions } from '~/services/renderer/renderer';
+import { useSWRMUTxPageRevision } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
@@ -15,7 +15,7 @@ export const ROOT_ELEM_ID = 'revision-loader' as const;
 export type RevisionLoaderProps = {
   rendererOptions: RendererOptions,
   pageId: string,
-  revisionId: Ref<IRevision>,
+  revisionId: string,
   lazy?: boolean,
   onRevisionLoaded?: (revision: IRevisionHasId) => void,
 }
@@ -37,6 +37,8 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     rendererOptions, pageId, revisionId, lazy, onRevisionLoaded,
   } = props;
 
+  const { trigger: mutatePageRevision } = useSWRMUTxPageRevision(pageId, revisionId);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [markdown, setMarkdown] = useState<string>('');
@@ -49,13 +51,12 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
 
     // load data with REST API
     try {
-      const res = await apiv3Get(`/revisions/${revisionId}`, { pageId });
+      const pageRevision = await mutatePageRevision();
 
-      setMarkdown(res.data?.revision?.body);
-      setErrors(null);
+      setMarkdown(pageRevision?.body ?? '');
 
-      if (onRevisionLoaded != null) {
-        onRevisionLoaded(res.data.revision);
+      if (onRevisionLoaded != null && pageRevision != null) {
+        onRevisionLoaded(pageRevision);
       }
     }
     catch (errors) {
@@ -66,7 +67,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
       setIsLoading(false);
     }
 
-  }, [isLoaded, isLoading, onRevisionLoaded, pageId, revisionId]);
+  }, [isLoaded, isLoading, mutatePageRevision, onRevisionLoaded]);
 
   useEffect(() => {
     if (!lazy) {

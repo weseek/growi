@@ -14,7 +14,7 @@ import {
   IPageInfo, IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import { IRevisionsForPagination } from '~/interfaces/revision';
+import { IRevisionHasId, IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
@@ -133,6 +133,16 @@ export const useSWRxPageInfo = (
   }, [initialData, key]);
 
   return swrResult;
+};
+
+
+export const useSWRMUTxPageRevision = (pageId: string, revisionId: string): SWRMutationResponse<IRevisionHasId> => {
+  const key = 'pageRevision';
+
+  return useSWRMutation(
+    key,
+    () => apiv3Get<{ revision: IRevisionHasId }>(`/revisions/${revisionId}`, { pageId }).then(result => result.data.revision),
+  );
 };
 
 export const useSWRxPageRevisions = (
