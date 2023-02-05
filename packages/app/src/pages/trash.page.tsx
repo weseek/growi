@@ -1,17 +1,15 @@
 import React from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { useTranslation } from 'next-i18next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
@@ -25,9 +23,9 @@ import {
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
 } from '../stores/context';
 
-import { NextPageWithLayout } from './_app.page';
+import type { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -70,8 +68,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useShowPageLimitationXL(props.showPageLimitationXL);
 
   useRendererConfig(props.rendererConfig);
-
-  const { t } = useTranslation();
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
