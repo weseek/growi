@@ -4,7 +4,6 @@ import {
 
 import { HtmlElementNode } from 'rehype-toc';
 import useSWR, { SWRResponse } from 'swr';
-import useSWRImmutable from 'swr/immutable';
 
 import {
   RendererOptions,
@@ -52,6 +51,8 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
     {
       keepPreviousData: true,
       fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -63,7 +64,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null && tocNode != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
       : null,
@@ -71,6 +72,8 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
     {
       keepPreviousData: true,
       fallbackData: isAllDataValid ? generateTocOptions(rendererConfig, tocNode) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -93,6 +96,8 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
     {
       keepPreviousData: true,
       fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -103,7 +108,7 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['commentPreviewOptions', rendererConfig, currentPagePath]
       : null,
@@ -121,6 +126,8 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
         undefined,
         rendererConfig.isEnabledLinebreaksInComments,
       ) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -131,13 +138,15 @@ export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeyword
 
   const isAllDataValid = rendererConfig != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['selectedPagePreviewOptions', rendererConfig, pagePath, highlightKeywords]
       : null,
     ([, rendererConfig, pagePath, highlightKeywords]) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
     {
       fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -150,7 +159,7 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
 
   const isAllDataValid = rendererConfig != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['customSidebarOptions', rendererConfig]
       : null,
@@ -158,6 +167,8 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
     {
       keepPreviousData: true,
       fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
