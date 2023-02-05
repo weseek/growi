@@ -116,7 +116,7 @@ export const PageView = (props: Props): JSX.Element => {
     return (
       <>
         <PageContentsUtilities />
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
+        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
       </>
     );
   };
