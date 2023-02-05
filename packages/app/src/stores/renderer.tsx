@@ -2,12 +2,11 @@ import {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import { HtmlElementNode } from 'rehype-toc';
-import useSWR, { SWRResponse } from 'swr';
-import useSWRImmutable from 'swr/immutable';
+import type { HtmlElementNode } from 'rehype-toc';
+import useSWR, { type SWRResponse } from 'swr';
 
 import {
-  RendererOptions,
+  type RendererOptions,
   generateSimpleViewOptions, generatePreviewOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
@@ -50,7 +49,10 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
       return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
     },
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -62,13 +64,16 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null && tocNode != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
       : null,
     ([, , tocNode, rendererConfig]) => generateTocOptions(rendererConfig, tocNode),
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateTocOptions(rendererConfig, tocNode) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -89,7 +94,10 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
       return optionsGenerator(rendererConfig, pagePath);
     },
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -100,7 +108,7 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['commentPreviewOptions', rendererConfig, currentPagePath]
       : null,
@@ -111,12 +119,15 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
       rendererConfig.isEnabledLinebreaksInComments,
     ),
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateSimpleViewOptions(
         rendererConfig,
         currentPagePath,
         undefined,
         rendererConfig.isEnabledLinebreaksInComments,
       ) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -127,13 +138,15 @@ export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeyword
 
   const isAllDataValid = rendererConfig != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['selectedPagePreviewOptions', rendererConfig, pagePath, highlightKeywords]
       : null,
     ([, rendererConfig, pagePath, highlightKeywords]) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
     {
       fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords) : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -146,13 +159,16 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
 
   const isAllDataValid = rendererConfig != null;
 
-  return useSWRImmutable(
+  return useSWR(
     isAllDataValid
       ? ['customSidebarOptions', rendererConfig]
       : null,
     ([, rendererConfig]) => generateSimpleViewOptions(rendererConfig, '/'),
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
