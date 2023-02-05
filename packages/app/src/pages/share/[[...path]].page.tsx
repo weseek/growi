@@ -93,7 +93,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsContainerFluid(props.isContainerFluid);
 
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
 
   const pagePath = props.shareLinkRelatedPage?.path ?? '';
 
