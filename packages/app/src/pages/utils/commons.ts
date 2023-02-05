@@ -98,11 +98,45 @@ export const getNextI18NextConfig = async(
   const { configManager } = crowi;
 
   // detect locale from browser accept language
-  const acceptLanguages = headers['accept-language'];
-  const browserLang = acceptLanguages?.split(',').shift();
-  let detectLocale: Lang = Lang.en_US;
-  if (browserLang?.includes('ja')) detectLocale = Lang.ja_JP;
-  if (browserLang?.includes('zh')) detectLocale = Lang.zh_CN;
+  const detectLocaleFromBrowserAcceptLanguage = () => {
+    // ex. "ja,ar-SA;q=0.8,en;q=0.6,en-CA;q=0.4,en-US;q=0.2"
+    const acceptLanguages = headers['accept-language'];
+
+    if (acceptLanguages == null) {
+      return Lang.en_US;
+    }
+
+    // ex. {'1': 'ja','0.8': 'ar-SA','0.6': 'en','0.4': 'en-CA','0.2': 'en-US'}
+    // 1. trim blank spaces.
+    // 2. separate by ,.
+    // 3. if "lang;q=x", then { 'x', 'lang' } to add to the associative array.
+    //    if "lang" has no weight x (";q=x"), add it to the associative array with key = 1.
+    const acceptLanguagesArray = acceptLanguages
+      .replace(/\s+/g, '')
+      .split(',')
+      .map(item => item.split(/\s*;\s*q\s*=\s*/))
+      .reduce((acc, [key, value = '1']) => {
+        acc[value] = key;
+        return acc;
+      }, {});
+
+    // ex. [ 'ja', 'ar-SA', 'en', 'en-CA', 'en-US' ]
+    // create an array of sorted languages in descending order.
+    const sortedLanguages = Object.keys(acceptLanguagesArray)
+      .sort((a, b) => b.localeCompare(a))
+      .map(item => acceptLanguagesArray[item]);
+
+    // it return the first language that matches 'en', 'ja' or 'zh.
+    // if no matching language is found, it returns Lang.en_US as a default.
+    for (const lang of sortedLanguages) {
+      if (lang.includes('en')) return Lang.en_US;
+      if (lang.includes('ja')) return Lang.ja_JP;
+      if (lang.includes('zh')) return Lang.zh_CN;
+    }
+    return Lang.en_US;
+  };
+
+  const detectLocale = detectLocaleFromBrowserAcceptLanguage();
 
   // determine language
   const locale = user == null ? detectLocale
