@@ -41,7 +41,7 @@ export type IResAppSettings = {
 
   isEnabledPlugins: boolean,
 
-  isEnableQuestionnaire: boolean,
+  isQuestionnaireEnabled: boolean,
   isAppSiteUrlHashed: boolean,
 
   isMaintenanceMode: boolean,

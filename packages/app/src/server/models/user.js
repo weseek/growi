@@ -69,7 +69,7 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
-    isEnableQuestionnaire: { type: Boolean, default: true },
+    isQuestionnaireEnabled: { type: Boolean, default: true },
   }, {
     timestamps: true,
     toObject: {
@@ -731,8 +731,8 @@ module.exports = function(crowi) {
     return { users, totalCount };
   };
 
-  userSchema.methods.updateIsEnableQuestionnaire = async function(value) {
-    this.isEnableQuestionnaire = value;
+  userSchema.methods.updateIsQuestionnaireEnabled = async function(value) {
+    this.isQuestionnaireEnabled = value;
     return this.save();
   };
 

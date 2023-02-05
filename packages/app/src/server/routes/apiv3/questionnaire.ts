@@ -67,6 +67,11 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const isEnabled = crowi.configManager!.getConfig('crowi', 'questionnaire:isQuestionnaireEnabled');
+    return res.apiv3({ isEnabled });
+  });
+
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');

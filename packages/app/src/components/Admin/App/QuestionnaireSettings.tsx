@@ -19,9 +19,9 @@ const QuestionnaireSettings = (): JSX.Element => {
 
   const { data, error, mutate } = useSWRxAppSettings();
 
-  const [isEnableQuestionnaire, setIsEnableQuestionnaire] = useState(data?.isEnableQuestionnaire);
-  const onChangeIsEnableQuestionnaireHandler = useCallback(() => {
-    setIsEnableQuestionnaire(prev => !prev);
+  const [isQuestionnaireEnabled, setIsQuestionnaireEnabled] = useState(data?.isQuestionnaireEnabled);
+  const onChangeIsQuestionnaireEnabledHandler = useCallback(() => {
+    setIsQuestionnaireEnabled(prev => !prev);
   }, []);
 
   const [isAppSiteUrlHashed, setIsAppSiteUrlHashed] = useState(data?.isAppSiteUrlHashed);
@@ -32,7 +32,7 @@ const QuestionnaireSettings = (): JSX.Element => {
   const onSubmitHandler = useCallback(async() => {
     try {
       await apiv3Put('/app-settings/questionnaire-settings', {
-        isEnableQuestionnaire,
+        isQuestionnaireEnabled,
         isAppSiteUrlHashed,
       });
       toastSuccess(t('toaster.update_successed', { target: 'アンケート設定', ns: 'commons' }));
@@ -41,13 +41,13 @@ const QuestionnaireSettings = (): JSX.Element => {
       toastError(err);
     }
     mutate();
-  }, [isAppSiteUrlHashed, isEnableQuestionnaire, mutate, t]);
+  }, [isAppSiteUrlHashed, isQuestionnaireEnabled, mutate, t]);
 
   // Sync SWR value and state
   useEffect(() => {
-    setIsEnableQuestionnaire(data?.isEnableQuestionnaire);
+    setIsQuestionnaireEnabled(data?.isQuestionnaireEnabled);
     setIsAppSiteUrlHashed(data?.isAppSiteUrlHashed);
-  }, [data, data?.isAppSiteUrlHashed, data?.isEnableQuestionnaire]);
+  }, [data, data?.isAppSiteUrlHashed, data?.isQuestionnaireEnabled]);
 
   const isLoading = data === undefined && error === undefined;
 
@@ -75,11 +75,11 @@ const QuestionnaireSettings = (): JSX.Element => {
               <input
                 type="checkbox"
                 className="custom-control-input"
-                id="isEnableQuestionnaire"
-                checked={isEnableQuestionnaire}
-                onChange={onChangeIsEnableQuestionnaireHandler}
+                id="isQuestionnaireEnabled"
+                checked={isQuestionnaireEnabled}
+                onChange={onChangeIsQuestionnaireEnabledHandler}
               />
-              <label className="custom-control-label" htmlFor="isEnableQuestionnaire">
+              <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
                 アンケートを有効にする
               </label>
             </div>
@@ -93,7 +93,7 @@ const QuestionnaireSettings = (): JSX.Element => {
                 id="isAppSiteUrlHashed"
                 checked={isAppSiteUrlHashed}
                 onChange={onChangeisAppSiteUrlHashedHandler}
-                disabled={!isEnableQuestionnaire}
+                disabled={!isQuestionnaireEnabled}
               />
               <label className="custom-control-label" htmlFor="isAppSiteUrlHashed">
                 サイト URL を匿名化して送信する

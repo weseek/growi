@@ -11,3 +11,12 @@ export const useSWRxQuestionnaireOrders = (): SWRResponse<IQuestionnaireOrderHas
     }),
   );
 };
+
+export const useSWRxIsQuestionnaireEnabled = (): SWRResponse<boolean, Error> => {
+  return useSWR(
+    '/questionnaire/is-enabled',
+    endpoint => apiv3Get(endpoint)
+      .then(response => !!response.data.isEnabled)
+      .catch(() => false),
+  );
+};
