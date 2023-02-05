@@ -2,11 +2,11 @@ import {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import { HtmlElementNode } from 'rehype-toc';
-import useSWR, { SWRResponse } from 'swr';
+import type { HtmlElementNode } from 'rehype-toc';
+import useSWR, { type SWRResponse } from 'swr';
 
 import {
-  RendererOptions,
+  type RendererOptions,
   generateSimpleViewOptions, generatePreviewOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
