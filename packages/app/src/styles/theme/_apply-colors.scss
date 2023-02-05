@@ -496,23 +496,24 @@ ul.pagination {
  * GROWI Editor
  */
 .layout-root.editing {
-  .main {
-    background-color: hsl.darken(var(--bgcolor-global),2%);
+  background-color: hsl.darken(var(--bgcolor-global),2%);
 
+  &.builtin-editor {
     .page-editor-editor-container {
       border-right-color: var(--border-color-theme);
-
-      .navbar-editor {
-        background-color: var(--bgcolor-global); // same color with active tab
-        border-bottom-color: var(--border-color-theme);
-      }
-    }
-
-    .page-editor-preview-container {
-      background-color: var(--bgcolor-global);
     }
   }
+
+  .navbar-editor {
+    background-color: var(--bgcolor-global); // same color with active tab
+    border-bottom-color: var(--border-color-theme);
+  }
+
+  .page-editor-preview-container {
+    background-color: var(--bgcolor-global);
+  }
 }
+
 
 /*
  * Preview for editing /Sidebar
