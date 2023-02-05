@@ -142,7 +142,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
             </a>
           )}
           {currentUser != null && (
-            <a href="/me">
+            <a href="/me#other_settings">
               <i className="material-icons" >settings</i>
             </a>
           )}

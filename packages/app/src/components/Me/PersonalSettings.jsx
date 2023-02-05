@@ -64,11 +64,15 @@ const PersonalSettings = () => {
     };
   }, [t]);
 
-  const onPasswordSettings = window.location.hash === '#password';
+  const getDefaultTabIndex = () => {
+    // e.g) '/me#password_settings' sets password settings tab as default
+    const tab = window.location.hash?.substring(1);
+    return navTabMapping[tab]?.index;
+  };
 
   return (
     <div data-testid="grw-personal-settings">
-      <CustomNavAndContents defaultTabIndex={onPasswordSettings && 2} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+      <CustomNavAndContents defaultTabIndex={getDefaultTabIndex()} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
     </div>
   );
 
