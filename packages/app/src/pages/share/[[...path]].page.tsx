@@ -13,7 +13,7 @@ import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { ShareLinkPageView } from '~/components/ShareLink/ShareLinkPageView';
-import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
+import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
@@ -26,7 +26,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
 import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, type CommonProps,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
