@@ -76,8 +76,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
-
   const title = generateCustomTitleForPage(props, '/trash');
 
   return (
@@ -85,7 +83,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
+      <div className="dynamic-layout-root">
         <header className="py-0 position-relative">
           <GrowiSubNavigation
             pagePath="/trash"

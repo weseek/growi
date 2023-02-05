@@ -16,14 +16,15 @@ export const useEditorModeClassName = (): string => {
   return `${getClassNamesByEditorMode().join(' ') ?? ''}`;
 };
 
-export const useCurrentGrowiLayoutFluidClassName = (): string => {
+export const useCurrentGrowiLayoutFluidClassName = (initialPage?: IPage): string => {
   const { data: currentPage } = useSWRxCurrentPage();
 
   const { data: dataIsContainerFluid } = useIsContainerFluid();
 
-  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
+  const page = currentPage ?? initialPage;
+  const isContainerFluidEachPage = page == null || !('expandContentWidth' in page)
     ? null
-    : currentPage.expandContentWidth;
+    : page.expandContentWidth;
   const isContainerFluidDefault = dataIsContainerFluid;
   const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
