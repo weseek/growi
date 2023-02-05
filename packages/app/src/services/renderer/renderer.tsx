@@ -174,7 +174,7 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -270,7 +270,7 @@ export const generateSimpleViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
@@ -324,7 +324,7 @@ export const generateSSRViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
   );
@@ -374,7 +374,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     addLineNumberAttribute.rehypePlugin,
     rehypeSanitizePlugin,
     katex,
