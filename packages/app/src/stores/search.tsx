@@ -1,15 +1,8 @@
-import { SWRResponse } from 'swr';
+import { mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { IFormattedSearchResult, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
-
-import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
-
-
-export const useFullTextSearchTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');
-};
 
 
 export type ISearchConfigurations = {
@@ -49,11 +42,15 @@ const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeU
   return query;
 };
 
-export const useSWRxSearch = (
-    keyword: string | null, nqName: string | null, configurations: ISearchConfigurations, disableTermManager = false,
-): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
-  const { data: termNumber } = useFullTextSearchTermManager(disableTermManager);
+export const mutateSearching = async(): Promise<void[]> => {
+  return mutate(
+    key => Array.isArray(key) && key[0] === '/search',
+  );
+};
 
+export const useSWRxSearch = (
+    keyword: string | null, nqName: string | null, configurations: ISearchConfigurations,
+): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
   const {
     limit, offset, sort, order, includeTrashPages, includeUserPages,
   } = configurations;
@@ -71,7 +68,7 @@ export const useSWRxSearch = (
   const isKeywordValid = keyword != null && keyword.length > 0;
 
   const swrResult = useSWRImmutable(
-    isKeywordValid ? ['/search', keyword, fixedConfigurations, termNumber] : null,
+    isKeywordValid ? ['/search', keyword, fixedConfigurations] : null,
     ([endpoint, , fixedConfigurations]) => {
       const {
         limit, offset, sort, order,

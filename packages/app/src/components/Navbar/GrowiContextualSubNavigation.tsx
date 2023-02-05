@@ -24,7 +24,7 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
@@ -200,7 +200,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
