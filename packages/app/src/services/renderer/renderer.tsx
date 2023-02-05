@@ -122,6 +122,10 @@ const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
       pukiwikiLikeLinker,
       growiDirective,
     ],
+    remarkRehypeOptions: {
+      clobberPrefix: 'mdcont-',
+      allowDangerousHtml: true,
+    },
     rehypePlugins: [
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
@@ -324,6 +328,7 @@ export const generateSSRViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
+    slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
