@@ -4,7 +4,7 @@ import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { IShareLinkHasId } from '~/interfaces/share-link';
+import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import { useIsNotFound } from '~/stores/context';
 import { useViewOptions } from '~/stores/renderer';
@@ -14,7 +14,7 @@ import loggerFactory from '~/utils/logger';
 import { MainPane } from '../Layout/MainPane';
 import RevisionRenderer from '../Page/RevisionRenderer';
 import ShareLinkAlert from '../Page/ShareLinkAlert';
-import { PageSideContentsProps } from '../PageSideContents';
+import type { PageSideContentsProps } from '../PageSideContents';
 
 
 const logger = loggerFactory('growi:Page');

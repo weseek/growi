@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
-import {
+import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -13,10 +13,10 @@ import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { ShareLinkPageView } from '~/components/ShareLink/ShareLinkPageView';
-import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { IShareLinkHasId } from '~/interfaces/share-link';
+import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
   useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage, useCurrentPathname, useIsNotFound,
@@ -24,9 +24,9 @@ import {
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from '../_app.page';
+import type { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, type CommonProps,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
