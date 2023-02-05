@@ -319,7 +319,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
           pageView={
             <PageView
               pagePath={pagePath}
-              page={pageWithMeta?.data}
+              initialPage={pageWithMeta?.data}
+              rendererConfig={props.rendererConfig}
             />
           }
         />

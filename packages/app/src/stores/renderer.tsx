@@ -50,6 +50,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
       return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
     },
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
     },
   );
@@ -68,6 +69,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
       : null,
     ([, , tocNode, rendererConfig]) => generateTocOptions(rendererConfig, tocNode),
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateTocOptions(rendererConfig, tocNode) : undefined,
     },
   );
@@ -89,6 +91,7 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
       return optionsGenerator(rendererConfig, pagePath);
     },
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
     },
   );
@@ -111,6 +114,7 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
       rendererConfig.isEnabledLinebreaksInComments,
     ),
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateSimpleViewOptions(
         rendererConfig,
         currentPagePath,
@@ -152,6 +156,7 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
       : null,
     ([, rendererConfig]) => generateSimpleViewOptions(rendererConfig, '/'),
     {
+      keepPreviousData: true,
       fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
     },
   );

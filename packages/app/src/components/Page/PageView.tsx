@@ -3,11 +3,12 @@ import React, { useEffect, useMemo } from 'react';
 import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable, useIsNotFound,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
@@ -20,7 +21,7 @@ import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
 
-import { PageContents } from './PageContents';
+import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
 
@@ -32,6 +33,7 @@ const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod =>
 const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
 const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageContentsUtilities = dynamic(() => import('./PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
 const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
@@ -40,23 +42,27 @@ const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod 
 
 type Props = {
   pagePath: string,
-  page?: IPagePopulatedToShowRevision,
+  rendererConfig: RendererConfig,
+  initialPage?: IPagePopulatedToShowRevision,
 }
 
 export const PageView = (props: Props): JSX.Element => {
   const {
-    pagePath, page,
+    pagePath, initialPage, rendererConfig,
   } = props;
-
-  const pageId = page?._id;
 
   const { data: isIdenticalPathPage } = useIsIdenticalPath();
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
-  const { data: isNotFound } = useIsNotFound();
+  const { data: isNotFoundMeta } = useIsNotFound();
   const { data: isMobile } = useIsMobile();
 
-  const { mutate: mutateRendererOptions } = useViewOptions();
+  const { data: pageBySWR } = useSWRxCurrentPage();
+  const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
+
+  const page = pageBySWR ?? initialPage;
+  const isNotFound = isNotFoundMeta || page == null;
+  const isUsersHomePagePath = isUsersHomePage(pagePath);
 
   // register to facade
   useEffect(() => {
@@ -79,10 +85,7 @@ export const PageView = (props: Props): JSX.Element => {
     if (isNotCreatable) {
       return <NotCreatablePage />;
     }
-    if (isNotFound) {
-      return <NotFoundPage path={pagePath} />;
-    }
-  }, [isForbidden, isIdenticalPathPage, isNotCreatable, isNotFound, pagePath]);
+  }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (
@@ -90,13 +93,11 @@ export const PageView = (props: Props): JSX.Element => {
     )
     : null;
 
-  const footerContents = !isIdenticalPathPage && !isNotFound && page != null
+  const footerContents = !isIdenticalPathPage && !isNotFound
     ? (
       <>
-        { pageId != null && pagePath != null && (
-          <Comments pageId={pageId} pagePath={pagePath} revision={page.revision} />
-        ) }
-        { pagePath != null && isUsersHomePage(pagePath) && (
+        <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} />
+        { isUsersHomePagePath && (
           <UsersHomePageFooter creatorId={page.creator._id}/>
         ) }
         <PageContentFooter page={page} />
@@ -104,19 +105,21 @@ export const PageView = (props: Props): JSX.Element => {
     )
     : null;
 
-  const isUsersHomePagePath = isUsersHomePage(pagePath);
+  const Contents = () => {
+    if (isNotFound) {
+      return <NotFoundPage path={pagePath} />;
+    }
 
-  const contents = specialContents != null
-    ? <></>
-    // TODO: show SSR body
-    // : (() => {
-    //   const PageContents = dynamic(() => import('./PageContents').then(mod => mod.PageContents), {
-    //     ssr: false,
-    //     // loading: () => ssrBody ?? <></>,
-    //   });
-    //   return <PageContents />;
-    // })();
-    : <PageContents />;
+    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
+    const markdown = page.revision.body;
+
+    return (
+      <>
+        <PageContentsUtilities />
+        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
+      </>
+    );
+  };
 
   return (
     <MainPane
@@ -130,7 +133,7 @@ export const PageView = (props: Props): JSX.Element => {
         <>
           { isUsersHomePagePath && <UserInfo author={page?.creator} /> }
           <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
-            { contents }
+            <Contents />
           </div>
         </>
       ) }
