@@ -1,6 +1,6 @@
-import rehypeToc, { HtmlElementNode } from 'rehype-toc';
-import { Plugin } from 'unified';
-import { Node } from 'unist';
+import rehypeToc, { type HtmlElementNode } from 'rehype-toc';
+import type { Plugin } from 'unified';
+import type { Node } from 'unist';
 
 type StoreTocPluginParams = {
   storeTocNode: (toc: HtmlElementNode) => void,
