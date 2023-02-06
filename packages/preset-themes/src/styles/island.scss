@@ -162,7 +162,7 @@
     // Foldertree
     .grw-foldertree {
       .grw-foldertree-triangle-btn {
-        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
+        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, var(--bgcolor-sidebar));
       }
     }
   }
