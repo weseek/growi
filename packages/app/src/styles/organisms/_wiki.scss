@@ -31,7 +31,7 @@
       margin-top: 0;
     }
 
-    scroll-margin-top: 120px;
+    scroll-margin-top: var.$grw-scroll-margin-top-in-view;
   }
 
   h1 {
