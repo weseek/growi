@@ -1,0 +1,24 @@
+pull_request_rules:
+  - name: Automatic merge for Dependabot pull requests
+    conditions:
+      - author = dependabot[bot]
+      - '#approved-reviews-by >= 1'
+      - check-success = "lint (16.x)"
+      - check-success = "test (16.x)"
+      - check-success = "launch-dev (16.x)"
+      - check-success = "test-prod-node14 / launch-prod"
+      - check-success = "test-prod-node16 / launch-prod"
+    actions:
+      merge:
+        method: merge
+
+  - name: Automatic merge for Preparing next version
+    conditions:
+      - author = github-actions[bot]
+      - '#approved-reviews-by >= 1'
+      - check-skipped = "test (16.x)"
+      - check-skipped = "test-prod-node14 / launch-prod"
+      - check-skipped = "test-prod-node16 / launch-prod"
+    actions:
+      merge:
+        method: merge

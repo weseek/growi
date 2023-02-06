@@ -16,10 +16,14 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/remark-growi-plugin/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-*/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   lint:
@@ -53,12 +57,15 @@ jobs:
         run: |
           npx lerna bootstrap -- --frozen-lockfile
 
-      - name: lerna run lint for plugins
+      - name: lerna run lint for dependent packages
         run: |
-          yarn lerna run lint --scope @growi/remark-growi-plugin --scope @growi/plugin-*
+          yarn lerna run lint --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/hackmd --scope @growi/preset-themes --scope @growi/remark-* --scope @growi/slack --scope @growi/ui
+      - name: build dependent packages
+        run: |
+          yarn lerna run build --scope @growi/preset-themes
       - name: lerna run lint for app
         run: |
-          yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
+          yarn lerna run lint --scope @growi/app
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -109,7 +116,7 @@ jobs:
 
       - name: lerna run test for plugins
         run: |
-          yarn lerna run test --scope @growi/remark-growi-plugin --scope @growi/plugin-*
+          yarn lerna run test --scope @growi/remark-*
 
       - name: Test app
         working-directory: ./packages/app
@@ -124,7 +131,7 @@ jobs:
           name: Coverage Report
           path: |
             packages/app/coverage
-            packages/remark-growi-plugin/coverage
+            packages/remark-growi-directive/coverage
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master

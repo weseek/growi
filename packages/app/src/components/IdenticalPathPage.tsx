@@ -3,11 +3,9 @@ import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPathname, useIsSharedUser } from '~/stores/context';
-import { useDescendantsPageListModal } from '~/stores/modal';
+import { useCurrentPathname } from '~/stores/context';
 import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listing';
 
-import PageListIcon from './Icons/PageListIcon';
 import { PageListItemL } from './PageList/PageListItemL';
 
 
@@ -40,7 +38,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
           { path: _path, pageName: _pageName })}<br />
         <span
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }}
+          dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { title: t('GROWI.5.0_new_schema') }) }}
         />
       </p>
       <p className="mb-1">{t('duplicated_page_alert.select_page_to_see')}</p>
@@ -50,15 +48,11 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 
 
 export const IdenticalPathPage = (): JSX.Element => {
-  const { t } = useTranslation();
 
   const { data: currentPath } = useCurrentPathname();
-  const { data: isSharedUser } = useIsSharedUser();
 
   const { data: pages } = useSWRxPagesByPath(currentPath);
   const { injectTo } = useSWRxPageInfoForList(null, currentPath, true, true);
-
-  const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
   if (pages == null) {
     return <></>;
@@ -67,48 +61,27 @@ export const IdenticalPathPage = (): JSX.Element => {
   const injectedPages = injectTo(pages);
 
   return (
-    <div className="d-flex flex-column flex-lg-row-reverse">
+    <>
+      <IdenticalPathAlert path={currentPath} />
 
-      <div className="grw-side-contents-container">
-        <div className={`pb-1 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-          { currentPath != null && !isSharedUser && (
-            <button
-              type="button"
-              className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between"
-              onClick={() => openDescendantPageListModal(currentPath)}
-            >
-              <PageListIcon />
-              {t('page_list')}
-              <span></span> {/* for a count badge */}
-            </button>
-          ) }
-        </div>
+      <div className={`page-list ${styles['page-list']}`}>
+        <ul className="page-list-ul list-group list-group-flush">
+          {injectedPages.map((pageWithMeta) => {
+            const pageId = pageWithMeta.data._id;
+
+            return (
+              <PageListItemL
+                key={pageId}
+                page={pageWithMeta}
+                isSelected={false}
+                isEnableActions
+                showPageUpdatedTime
+              />
+            );
+          })}
+        </ul>
       </div>
 
-      <div className="flex-grow-1 flex-basis-0 mw-0">
-
-        <IdenticalPathAlert path={currentPath} />
-
-        <div className={`page-list ${styles['page-list']}`}>
-          <ul className="page-list-ul list-group list-group-flush">
-            {injectedPages.map((pageWithMeta) => {
-              const pageId = pageWithMeta.data._id;
-
-              return (
-                <PageListItemL
-                  key={pageId}
-                  page={pageWithMeta}
-                  isSelected={false}
-                  isEnableActions
-                  showPageUpdatedTime
-                />
-              );
-            })}
-          </ul>
-        </div>
-
-      </div>
-
-    </div>
+    </>
   );
 };

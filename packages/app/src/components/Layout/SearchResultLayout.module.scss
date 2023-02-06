@@ -67,6 +67,10 @@
       }
 
       .search-result-content-body-container {
+        // correct apply overflow scrolling for react-markdown on Google Chrome
+        // see: https://github.com/weseek/growi/pull/6731
+        position: relative;
+
         overflow-y: auto;
 
         .wiki {

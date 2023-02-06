@@ -4,18 +4,17 @@ import React, {
 } from 'react';
 
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pathUtils } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
-import urljoin from 'url-join';
-
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
@@ -55,6 +54,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
+
+  const { returnPathForURL } = pathUtils;
 
   const [likerCount, setLikerCount] = useState(pageData.liker.length);
   const [bookmarkCount, setBookmarkCount] = useState(pageMeta && pageMeta.bookmarkCount ? pageMeta.bookmarkCount : 0);
@@ -148,9 +149,24 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
   }, [pageData, openDeleteModal, onPageDeleted]);
 
-  const revertMenuItemClickHandler = useCallback(() => {
+  const revertMenuItemClickHandler = useCallback(async() => {
     const { _id: pageId, path } = pageData;
-    openPutBackPageModal({ pageId, path }, { onPutBacked: onPagePutBacked });
+
+    const putBackedHandler = async(path) => {
+      try {
+        // pageData path should be `/trash/fuga` (`/trash` should be included to the prefix)
+        await unlink(pageData.path);
+      }
+      catch (err) {
+        toastError(err);
+      }
+
+      if (onPagePutBacked != null) {
+        // This path should be `/fuga` ( `/trash` is not included to the prefix)
+        onPagePutBacked(path);
+      }
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
@@ -161,6 +177,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
   const canRenderRevisionSnippet = revisionShortBody != null;
+
+  const hasBrowsingRights = canRenderESSnippet || canRenderRevisionSnippet;
 
   return (
     <li
@@ -205,7 +223,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link href={encodeURI(urljoin('/', pageData._id))} prefetch={false}>
+                    <Link href={returnPathForURL(pageData.path, pageData._id)} prefetch={false}>
                       {shouldDangerouslySetInnerHTMLForPaths
                         ? (
                           <a
@@ -228,7 +246,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </div>
 
               {/* doropdown icon includes page control buttons */}
-              <div className="ml-auto">
+              {hasBrowsingRights
+              && <div className="ml-auto">
                 <PageItemControl
                   alignRight
                   pageId={pageData._id}
@@ -242,6 +261,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>
+              }
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
@@ -250,10 +270,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                 ) }
                 { revisionShortBody != null && (
-                  <div>{revisionShortBody}</div>
+                  <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
                 ) }
                 {
-                  !canRenderESSnippet && !canRenderRevisionSnippet && (
+                  !hasBrowsingRights && (
                     <>
                       <i className="icon-exclamation p-1"></i>
                       {t('not_allowed_to_see_this_page')}

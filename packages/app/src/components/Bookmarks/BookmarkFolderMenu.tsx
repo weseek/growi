@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -7,8 +7,8 @@ import {
   DropdownItem, DropdownMenu, UncontrolledDropdown,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -32,11 +32,13 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
+
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
   }, []);
 
-  useEffect(() => {
+  const toggleHandler = useCallback(() => {
+    mutateBookmarkFolderData();
     bookmarkFolders?.forEach((bookmarkFolder) => {
       bookmarkFolder.bookmarks.forEach((bookmark) => {
         if (bookmark.page._id === currentPage?._id) {
@@ -44,7 +46,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
         }
       });
     });
-  }, [bookmarkFolders, currentPage?._id]);
+  }, [bookmarkFolders, currentPage?._id, mutateBookmarkFolderData]);
 
   const isBookmarkFolderExists = useCallback((): boolean => {
     if (bookmarkFolders && bookmarkFolders.length > 0) {
@@ -69,14 +71,17 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
-      setSelectedItem(itemId);
+
       mutateBookmarkInfo();
       toastSuccess('Bookmark added to bookmark folder successfully');
     }
     catch (err) {
       toastError(err);
     }
-  }, [currentPage, mutateBookmarkInfo]);
+
+    mutateBookmarkFolderData();
+    setSelectedItem(itemId);
+  }, [currentPage?._id, mutateBookmarkFolderData, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = useCallback(() => {
     return (
@@ -102,8 +107,8 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
                 {
                   <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
                     <BookmarkFolderMenuItem
-                      isSelected={selectedItem === folder._id}
                       item={folder}
+                      isSelected={selectedItem === folder._id}
                       onSelectedChild={() => setSelectedItem(null)}
                     />
                   </div>
@@ -120,12 +125,13 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
       onClickNewBookmarkFolder,
       onMenuItemClickHandler,
       onPressEnterHandlerForCreate,
-      selectedItem,
       t,
+      selectedItem,
   ]);
 
   return (
     <UncontrolledDropdown
+      onToggle={toggleHandler}
       direction={ isBookmarkFolderExists() ? 'up' : 'down' }
       className='grw-bookmark-folder-dropdown'>
       {children}

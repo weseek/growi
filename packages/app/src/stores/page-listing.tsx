@@ -13,7 +13,7 @@ import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath } from './page';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
@@ -44,11 +44,21 @@ export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHa
   );
 };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (path: string | null, pageNumber?: number, termNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxPageList = (
+    path: string | null, pageNumber?: number, termNumber?: number, limit?: number,
+): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
-  const key = path != null
-    ? [`/pages/list?path=${path}&page=${pageNumber ?? 1}`, termNumber]
-    : null;
+  let key;
+  // if path not exist then the key is null
+  if (path == null) {
+    key = null;
+  }
+  else {
+    const pageListPath = `/pages/list?path=${path}&page=${pageNumber ?? 1}`;
+    // if limit exist then add it as query string
+    const requestPath = limit == null ? pageListPath : `${pageListPath}&limit=${limit}`;
+    key = [requestPath, termNumber];
+  }
 
   return useSWR(
     key,
@@ -66,7 +76,7 @@ export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boo
   return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
 };
 
-export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number, limit?:number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
 
@@ -74,7 +84,7 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
     ? null
     : currentPagePath;
 
-  return useSWRxPageList(path, pageNumber, termNumber);
+  return useSWRxPageList(path, pageNumber, termNumber, limit);
 };
 
 
@@ -124,18 +134,17 @@ export const useSWRxPageInfoForList = (
 };
 
 export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');
+  return useTermNumberManager(isDisabled === true ? null : 'pageTreeTermManager');
 };
 
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
-  return useSWR(
+  return useSWRImmutable(
     '/page-listing/root',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         rootPage: response.data.rootPage,
       };
     }),
-    { revalidateOnFocus: false },
   );
 };
 
@@ -144,14 +153,20 @@ export const useSWRxPageAncestorsChildren = (
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const { data: termNumber } = usePageTreeTermManager();
 
-  return useSWR(
+  // HACKME: Consider using global mutation from useSWRConfig and not to use term number -- 2022/12/08 @hakumizuki
+  const prevTermNumber = termNumber ? termNumber - 1 : 0;
+  const prevSWRRes = useSWRImmutable(path ? [`/page-listing/ancestors-children?path=${path}`, prevTermNumber] : null);
+
+  return useSWRImmutable(
     path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
-    { revalidateOnFocus: false },
+    {
+      fallbackData: prevSWRRes.data, // avoid data to be undefined due to the termNumber to change
+    },
   );
 };
 

@@ -198,9 +198,6 @@ module.exports = (crowi) => {
       body('s3SecretAccessKey').trim(),
       body('s3ReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
     ],
-    pluginSetting: [
-      body('isEnabledPlugins').isBoolean(),
-    ],
     maintenanceMode: [
       body('flag').isBoolean(),
     ],
@@ -669,51 +666,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating fileUploadType';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
-   *    /app-settings/plugin-setting:
-   *      put:
-   *        tags: [AppSettings]
-   *        operationId: updateAppSettingPluginSetting
-   *        summary: /app-settings/plugin-setting
-   *        description: Update plugin setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/PluginSettingParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update plugin setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/PluginSettingParams'
-   */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, addActivity, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
-    const requestPluginSettingParams = {
-      'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestPluginSettingParams);
-      const pluginSettingParams = {
-        isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
-      };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_PLUGIN_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ pluginSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating plugin setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-pluginSetting-failed'));
     }
 
   });

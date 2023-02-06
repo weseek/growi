@@ -4,26 +4,27 @@ import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
 import InstallerForm from '../components/InstallerForm';
 import {
-  useCurrentPagePath, useCsrfToken,
-  useAppTitle, useSiteUrl, useConfidential,
+  useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
@@ -33,6 +34,7 @@ type Props = CommonProps & {
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
   // commons
   useAppTitle(props.appTitle);
@@ -40,13 +42,14 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
-  // page
-  useCurrentPagePath(props.currentPathname);
-
+  const title = generateCustomTitle(props, t('installer.title'));
   const classNames: string[] = [];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <div id="installer-form-container">
         <InstallerForm />
       </div>
@@ -65,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  injectNextI18NextConfigurations(context, props, ['translation']);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

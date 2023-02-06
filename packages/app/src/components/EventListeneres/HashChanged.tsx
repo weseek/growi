@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 
-import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
+import { useRouter } from 'next/router';
+
 import { useIsEditable } from '~/stores/context';
+import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 
 /**
  * Change editorMode by browser forward/back operation
  */
 const HashChanged = (): JSX.Element => {
+  const router = useRouter();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
 
@@ -31,7 +34,19 @@ const HashChanged = (): JSX.Element => {
       window.removeEventListener('hashchange', hashchangeHandler);
     };
 
-  }, [hashchangeHandler, isEditable, mutateEditorMode]);
+  }, [hashchangeHandler, isEditable]);
+
+  /*
+  * Route changes by Next Router
+  * https://nextjs.org/docs/api-reference/next/router
+  */
+  useEffect(() => {
+    router.events.on('routeChangeComplete', hashchangeHandler);
+
+    return () => {
+      router.events.off('routeChangeComplete', hashchangeHandler);
+    };
+  }, [hashchangeHandler, router.events]);
 
   return <></>;
 };

@@ -6,8 +6,8 @@ import {
   DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
@@ -21,17 +21,18 @@ import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 
 type Props ={
   item: BookmarkFolderItems
-  isSelected: boolean
   onSelectedChild: () => void
+  isSelected: boolean
 }
 const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const {
-    item, isSelected,
+    item, isSelected, onSelectedChild,
   } = props;
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [currentChildFolders, setCurrentChildFolders] = useState<BookmarkFolderItems[]>();
   const { data: childFolders, mutate: mutateChildFolders } = useSWRxBookamrkFolderAndChild(item._id);
-
+  const { mutate: mutateParentFolders } = useSWRxBookamrkFolderAndChild(item.parent);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
@@ -50,11 +51,13 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
 
   }, [item, mutateChildFolders, t]);
 
+
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && childFolders != null) {
       mutateChildFolders();
+      setCurrentChildFolders(childFolders);
     }
-    childFolders?.forEach((bookmarkFolder) => {
+    currentChildFolders?.forEach((bookmarkFolder) => {
       bookmarkFolder.bookmarks.forEach((bookmark) => {
         if (bookmark.page._id === currentPage?._id) {
           setSelectedItem(bookmarkFolder._id);
@@ -62,7 +65,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       });
     });
 
-  }, [childFolders, currentPage?._id, isOpen, mutateChildFolders]);
+  }, [childFolders, currentChildFolders, currentPage?._id, isOpen, item, mutateChildFolders, mutateParentFolders]);
 
   const onClickNewBookmarkFolder = useCallback((e) => {
     e.stopPropagation();
@@ -84,16 +87,21 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
-    setSelectedItem(item._id);
     mutateBookmarkInfo();
+    onSelectedChild();
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
       toastSuccess('Bookmark added to bookmark folder successfully');
+      mutateParentFolders();
+      mutateChildFolders();
+      setSelectedItem(item._id);
     }
     catch (err) {
       toastError(err);
     }
-  }, [currentPage, mutateBookmarkInfo]);
+
+
+  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (
@@ -114,9 +122,9 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
               </DropdownItem>
             )}
 
-            { childFolders && childFolders?.length > 0 && (<DropdownItem divider />)}
+            { currentChildFolders && currentChildFolders?.length > 0 && (<DropdownItem divider />)}
 
-            {childFolders?.map(child => (
+            {currentChildFolders?.map(child => (
               <div key={child._id} >
 
                 <div
@@ -125,8 +133,8 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
                   onClick={e => onClickChildMenuItemHandler(e, child)}>
                   <BookmarkFolderMenuItem
                     onSelectedChild={() => setSelectedItem(null)}
-                    isSelected={selectedItem === child._id}
                     item={child}
+                    isSelected={selectedItem === child._id}
                   />
                 </div>
               </div>
@@ -135,7 +143,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
         )}
       </>
     );
-  }, [childFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, selectedItem, t]);
+  }, [childFolders, currentChildFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, selectedItem, t]);
 
   return (
     <UncontrolledDropdown
@@ -145,7 +153,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       toggle={toggleHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <div className='d-flex justify-content-start  grw-bookmark-folder-menu-item-title'>
+      <div className='d-flex justify-content-start grw-bookmark-folder-menu-item-title'>
         <input
           type="radio"
           checked={isSelected}

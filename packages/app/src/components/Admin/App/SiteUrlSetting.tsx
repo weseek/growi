@@ -17,26 +17,27 @@ type Props = {
 }
 
 const SiteUrlSetting = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin', { keyPrefix: 'app_setting' });
+  const { t: tCommon } = useTranslation('commons');
   const { adminAppContainer } = props;
 
 
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('Site URL settings') }));
+      toastSuccess(tCommon('toaster.update_successed', { target: t('site_url.title') }));
     }
     catch (err) {
       toastError(err);
       logger.error(err);
     }
-  }, [adminAppContainer, t]);
+  }, [adminAppContainer, t, tCommon]);
 
   return (
     <React.Fragment>
-      <p className="card well">{t('admin:app_setting.site_url_desc')}</p>
+      <p className="card well">{t('site_url.desc')}</p>
       {!adminAppContainer.state.isSetSiteUrl
-          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
+          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('site_url.warn')}</p>)}
 
       <div className="row form-group">
         <div className="col-md-9 offset-md-3">
@@ -64,14 +65,14 @@ const SiteUrlSetting = (props: Props) => {
                   />
                   <p className="form-text text-muted">
                     {/* eslint-disable-next-line react/no-danger */}
-                    <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.siteurl_help') }} />
+                    <span dangerouslySetInnerHTML={{ __html: t('site_url.help') }} />
                   </p>
                 </td>
                 <td>
                   <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl || ''} readOnly />
                   <p className="form-text text-muted">
                     {/* eslint-disable-next-line react/no-danger */}
-                    <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
+                    <span dangerouslySetInnerHTML={{ __html: t('use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
                   </p>
                 </td>
               </tr>

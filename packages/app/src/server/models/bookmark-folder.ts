@@ -21,17 +21,16 @@ export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
   owner: Types.ObjectId
-  parent?: [this]
-  bookmarks?: [Types.ObjectId]
+  parent?: this[]
+  bookmarks?: Types.ObjectId[]
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
-  createByParameters(params: IBookmarkFolder): BookmarkFolderDocument
-  findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): BookmarkFolderItems[]
-  findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
-  deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): {deletedCount: number}
-  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
-  insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string)
+  createByParameters(params: IBookmarkFolder): Promise<BookmarkFolderDocument>
+  findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): Promise<BookmarkFolderItems[]>
+  deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
+  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): Promise<BookmarkFolderDocument>
+  insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string): Promise<BookmarkFolderDocument>
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
@@ -57,10 +56,10 @@ bookmarkFolderSchema.virtual('children', {
 
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
   const { name, owner, parent } = params;
-  let bookmarkFolder;
+  let bookmarkFolder: BookmarkFolderDocument;
 
   if (parent == null) {
-    bookmarkFolder = await this.create({ name, owner }) as unknown as BookmarkFolderDocument;
+    bookmarkFolder = await this.create({ name, owner });
   }
   else {
     // Check if parent folder id is valid and parent folder exists
@@ -73,7 +72,7 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
     if (parentFolder == null) {
       throw new InvalidParentBookmarkFolderError('Parent folder not found');
     }
-    bookmarkFolder = await this.create({ name, owner, parent:  parentFolder._id }) as unknown as BookmarkFolderDocument;
+    bookmarkFolder = await this.create({ name, owner, parent:  parentFolder._id });
   }
 
   return bookmarkFolder;
@@ -84,8 +83,23 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
     parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
 
-  const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
-  const bookmarkFolders = await this.find({ owner: userId, parent: parentFolder })
+  let parentFolder: BookmarkFolderDocument | null;
+  let query = {};
+  // Load child bookmark folders
+  if (parentId != null) {
+    parentFolder = await this.findById(parentId);
+    if (parentFolder != null) {
+      query = { owner: userId, parent: parentFolder };
+    }
+    else {
+      throw new InvalidParentBookmarkFolderError('Parent folder not found');
+    }
+  }
+  // Load initial / root bookmark folders
+  else {
+    query = { owner: userId, parent: null };
+  }
+  const bookmarkFolders: BookmarkFolderItems[] = await this.find(query)
     .populate({ path: 'children' })
     .populate({
       path: 'bookmarks',
@@ -94,14 +108,8 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
         path: 'page',
         model: 'Page',
       },
-    }).exec() as unknown as BookmarkFolderItems[];
+    });
   return bookmarkFolders;
-};
-
-bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
-  const parentFolder = await this.findById(parentFolderId) as unknown as BookmarkFolderDocument;
-  const childFolders = await this.find({ parent: parentFolder });
-  return childFolders;
 };
 
 bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}> {
@@ -127,20 +135,22 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFo
   return { deletedCount };
 };
 
-bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parent: string):
- Promise<BookmarkFolderDocument | null> {
-
-  const parentFolder = await this.findById(parent);
+bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parentId: string):
+ Promise<BookmarkFolderDocument> {
+  const parentFolder = await this.findById(parentId);
   const updateFields = {
     name, parent: parentFolder?._id || null,
   };
   const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: updateFields }, { new: true });
+  if (bookmarkFolder == null) {
+    throw new Error('Update bookmark folder failed');
+  }
   return bookmarkFolder;
 
 };
 
 bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string):
-Promise<BookmarkFolderDocument | null> {
+Promise<BookmarkFolderDocument> {
 
   // Create bookmark or update existing
   const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: pageId, user: userId }, { page: pageId, user: userId }, { new: true, upsert: true });

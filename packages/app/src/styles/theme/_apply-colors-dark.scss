@@ -1,6 +1,6 @@
 @use '../variables' as var;
 @use '../bootstrap/init' as *;
-@use '../mixins';
+@use '../atoms/mixins/buttons' as mixins-buttons;
 @use './mixins/count-badge';
 
 // determine optional variables
@@ -141,7 +141,7 @@ ul.pagination {
     linear-gradient(225deg, darken(var.$growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
-  .noLogin-header {
+  .nologin-header {
     background-color: rgba(black, 0.5);
 
     .logo {
@@ -154,7 +154,7 @@ ul.pagination {
     }
   }
 
-  .noLogin-dialog {
+  .nologin-dialog {
     background-color: rgba(black, 0.5);
   }
 
@@ -301,7 +301,7 @@ ul.pagination {
       lighten($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
-      @include mixins.button-outline-svg-icon-variant($secondary, $gray-200);
+      @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
     }
     .btn-page-item-control {
       @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
@@ -603,6 +603,13 @@ ul.pagination {
 }
 
 /*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
+}
+
+/*
  * modal
  */
 .grw-modal-head {
@@ -610,8 +617,8 @@ ul.pagination {
 }
 
 /*
- * skelton
+ * skeleton
  */
-.grw-skelton {
+.grw-skeleton {
   background-color: lighten($bgcolor-subnav, 15%);
 }

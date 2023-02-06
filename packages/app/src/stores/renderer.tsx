@@ -1,44 +1,21 @@
 import { HtmlElementNode } from 'rehype-toc';
-import { Key, SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { RendererConfig } from '~/interfaces/services/renderer';
 import {
   RendererOptions,
-  generateSimpleViewOptions, generatePreviewOptions, generateOthersOptions,
+  generateSimpleViewOptions, generatePreviewOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
+import { getGrowiFacade } from '~/utils/growi-facade';
 
 
 import {
-  useCurrentPagePath, useCurrentPageTocNode, useRendererConfig,
+  useRendererConfig,
 } from './context';
+import { useCurrentPagePath } from './page';
+import { useCurrentPageTocNode } from './ui';
 
-interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig): RendererOptions
-}
-
-// The base hook with common processes
-const _useOptionsBase = (
-    rendererId: string, generator: ReactMarkdownOptionsGenerator,
-): SWRResponse<RendererOptions, Error> => {
-  const { data: rendererConfig } = useRendererConfig();
-
-  const isAllDataValid = rendererConfig != null;
-
-  const key = isAllDataValid
-    ? [rendererId, rendererConfig]
-    : null;
-
-  const swrResult = useSWRImmutable<RendererOptions, Error>(key);
-
-  if (isAllDataValid && swrResult.data == null) {
-    swrResult.mutate(generator(rendererConfig));
-  }
-
-  // call useSWRImmutable again to foce to update cache
-  return useSWRImmutable<RendererOptions, Error>(key);
-};
 
 export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => void): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
@@ -50,9 +27,13 @@ export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => vo
     ? ['viewOptions', currentPagePath, rendererConfig]
     : null;
 
-  return useSWRImmutable<RendererOptions, Error>(
+  return useSWR<RendererOptions, Error>(
     key,
-    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler),
+    (rendererId, currentPagePath, rendererConfig) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions ?? generateViewOptions;
+      return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
+    },
     {
       fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
     },
@@ -86,9 +67,13 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
     ? ['previewOptions', rendererConfig, currentPagePath]
     : null;
 
-  return useSWRImmutable<RendererOptions, Error>(
+  return useSWR<RendererOptions, Error>(
     key,
-    (rendererId, rendererConfig, currentPagePath) => generatePreviewOptions(rendererConfig, currentPagePath),
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions ?? generatePreviewOptions;
+      return optionsGenerator(rendererConfig, pagePath, highlightKeywords);
+    },
     {
       fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
     },
@@ -102,14 +87,24 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
   const key = isAllDataValid
-    ? ['commentForCurrentPageOptions', rendererConfig, currentPagePath]
+    ? ['commentPreviewOptions', rendererConfig, currentPagePath]
     : null;
 
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, rendererConfig, currentPagePath) => generateSimpleViewOptions(rendererConfig, currentPagePath),
+    (rendererId, rendererConfig, currentPagePath) => generateSimpleViewOptions(
+      rendererConfig,
+      currentPagePath,
+      undefined,
+      rendererConfig.isEnabledLinebreaksInComments,
+    ),
     {
-      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, currentPagePath) : undefined,
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(
+        rendererConfig,
+        currentPagePath,
+        undefined,
+        rendererConfig.isEnabledLinebreaksInComments,
+      ) : undefined,
     },
   );
 };
@@ -134,20 +129,22 @@ export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeyword
 };
 export const useSearchResultOptions = useSelectedPagePreviewOptions;
 
-export const useTimelineOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'timelineOptions';
-
-  return _useOptionsBase(key, generateOthersOptions);
-};
-
-export const useDraftOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'draftOptions';
-
-  return _useOptionsBase(key, generateOthersOptions);
-};
+export const useTimelineOptions = useSelectedPagePreviewOptions;
 
 export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key: Key = 'customSidebarOptions';
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useOptionsBase(key, generateOthersOptions);
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['customSidebarOptions', rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
+    },
+  );
 };

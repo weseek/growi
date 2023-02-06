@@ -40,6 +40,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
   };
 
   const getTooltipMessage = useCallback(() => {
+
     if (isGuestUser) {
       return 'Not available for guest';
     }
@@ -60,7 +61,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         </DropdownToggle>
       </BookmarkFolderMenu>
 
-      <UncontrolledTooltip placement="top" target="bookmark-dropdown-btn" fade={false}>
+      <UncontrolledTooltip placement="top" data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 

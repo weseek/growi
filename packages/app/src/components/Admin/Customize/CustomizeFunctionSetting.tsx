@@ -25,7 +25,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
 
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.function') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.function'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -44,21 +44,6 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
           </Card>
 
 
-          <div className="form-group row">
-            <div className="offset-md-3 col-md-6 text-left">
-              <CustomizeFunctionOption
-                optionId="isSavedStatesOfTabChanges"
-                label={t('admin:customize_settings.function_options.tab_switch')}
-                isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
-                onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
-              >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.tab_switch_desc1')}<br />
-                  {t('admin:customize_settings.function_options.tab_switch_desc2')}
-                </p>
-              </CustomizeFunctionOption>
-            </div>
-          </div>
           <div className="form-group row">
             <div className="offset-md-3 col-md-6 text-left">
               <CustomizeFunctionOption

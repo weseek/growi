@@ -34,7 +34,7 @@ const validator = {
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
     body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
+      'local', 'ldap', 'saml', 'oidc', 'google', 'github',
     ]),
   ],
   localSetting: [
@@ -91,9 +91,6 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
     body('isSameEmailTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
   ],
-  basicAuth: [
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-  ],
   googleOAuth: [
     body('googleClientId').if(value => value != null).isString(),
     body('googleClientSecret').if(value => value != null).isString(),
@@ -102,11 +99,6 @@ const validator = {
   githubOAuth: [
     body('githubClientId').if(value => value != null).isString(),
     body('githubClientSecret').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-  ],
-  twitterOAuth: [
-    body('twitterConsumerKey').if(value => value != null).isString(),
-    body('twitterConsumerSecret').if(value => value != null).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
   ],
 };
@@ -291,12 +283,6 @@ const validator = {
  *          isSameEmailTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
- *      BasicAuthSetting:
- *        type: object
- *        properties:
- *          isSameUsernameTreatedAsIdenticalUser:
- *            type: boolean
- *            description: local account automatically linked the email matched
  *      GitHubOAuthSetting:
  *        type: object
  *        properties:
@@ -316,18 +302,6 @@ const validator = {
  *            type: string
  *            description: key of comsumer
  *          googleClientSecret:
- *            type: string
- *            description: password of comsumer
- *          isSameUsernameTreatedAsIdenticalUser:
- *            type: boolean
- *            description: local account automatically linked the email matched
- *      TwitterOAuthSetting:
- *        type: object
- *        properties:
- *          twitterConsumerKey:
- *            type: string
- *            description: key of comsumer
- *          twitterConsumerSecret:
  *            type: string
  *            description: password of comsumer
  *          isSameUsernameTreatedAsIdenticalUser:
@@ -398,10 +372,8 @@ module.exports = (crowi) => {
         isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-        isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGitHubEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
-        isTwitterEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       ldapAuth: {
         serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
@@ -461,9 +433,6 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       },
-      basicAuth: {
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
-      },
       googleOAuth: {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
@@ -473,11 +442,6 @@ module.exports = (crowi) => {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
-      },
-      twitterOAuth: {
-        twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
     return res.apiv3({ securityParams });
@@ -562,13 +526,6 @@ module.exports = (crowi) => {
           }
           parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_DISABLED;
           break;
-        case 'basic':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_DISABLED;
-          break;
         case 'google':
           if (isEnabled) {
             parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_ENABLED;
@@ -582,13 +539,6 @@ module.exports = (crowi) => {
             break;
           }
           parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
-          break;
-        case 'twitter':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_DISABLED;
           break;
       }
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1103,49 +1053,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/basic:
-   *      put:
-   *        tags: [SecuritySetting, apiv3]
-   *        description: Update basic
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/BasicAuthSetting'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update basic
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/BasicAuthSetting'
-   */
-  router.put('/basic', loginRequiredStrictly, adminRequired, addActivity, validator.basicAuth, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
-    };
-
-    try {
-      await updateAndReloadStrategySettings('basic', requestParams);
-
-      const securitySettingParams = {
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
-      };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_BASIC_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating basicAuth';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-basicOAuth-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
    *    /_api/v3/security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting, apiv3]
@@ -1237,56 +1144,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating githubOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /_api/v3/security-setting/twitter-oauth:
-   *      put:
-   *        tags: [SecuritySetting, apiv3]
-   *        description: Update twitter OAuth
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/TwitterOAuthSetting'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update twitter OAuth
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/TwitterOAuthSetting'
-   */
-  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
-
-    let requestParams = {
-      'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
-      'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
-      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
-    };
-
-    requestParams = removeNullPropertyFromObject(requestParams);
-
-    try {
-      await updateAndReloadStrategySettings('twitter', requestParams);
-
-      const securitySettingParams = {
-        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
-      };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_TWITTER_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating twitterOAuth';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));
     }
   });
 

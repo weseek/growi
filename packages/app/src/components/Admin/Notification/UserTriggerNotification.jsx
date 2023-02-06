@@ -129,7 +129,7 @@ class UserTriggerNotification extends React.Component {
                 </p>
               </td>
               <td>
-                <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
+                <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('commons:Add')}</button>
               </td>
             </tr>
             {userNotifications.length > 0 && userNotifications.map((notification) => {

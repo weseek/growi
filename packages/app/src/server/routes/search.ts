@@ -40,25 +40,6 @@ module.exports = function(crowi, app) {
   const actions: any = {};
   const api: any = {};
 
-  actions.searchPage = async function(req, res) {
-    const keyword = req.query.q || null;
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_SEARCH_PAGE_VIEW,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    await crowi.activityService.createActivity(parameters);
-
-    return res.render('search', {
-      q: keyword,
-    });
-  };
-
   /**
    * @swagger
    *

@@ -14,10 +14,9 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/remark-growi-plugin/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-**
   pull_request:
     branches:
       - master
@@ -32,10 +31,20 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/remark-growi-plugin/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-**
+  workflow_call:
+    inputs:
+      cypress-config-video:
+        description: 'Enable video when running Cypress test'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
 
@@ -52,8 +61,9 @@ jobs:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 16.x
-      skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
+      skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
       cypress-report-artifact-name: Cypress report
+      cypress-config-video: ${{ inputs.cypress-config-video || false }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -67,7 +77,7 @@ jobs:
 
     with:
       node-version: 16.x
-      skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
+      skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
       cypress-report-artifact-name: Cypress report
     secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}

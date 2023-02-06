@@ -1,18 +1,21 @@
 import React from 'react';
 
-import { IUserHasId, IUser } from '@growi/core';
+import type { IUserHasId, IUser } from '@growi/core';
+import { USER_STATUS } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { InvitedFormProps } from '~/components/InvitedForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
@@ -24,15 +27,20 @@ type Props = CommonProps & {
 }
 
 const InvitedPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
   useCurrentUser(props.currentUser);
 
+  const title = generateCustomTitle(props, t('invited.title'));
   const classNames: string[] = ['invited-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <InvitedForm invitedFormUsername={props.invitedFormUsername} invitedFormName={props.invitedFormName} />
     </NoLoginLayout>
   );
@@ -76,6 +84,17 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     props.currentUser = user.toObject();
+
+    // Only invited user can access to /invited page
+    if (props.currentUser.status !== USER_STATUS.INVITED) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
+    }
+
   }
 
   await injectServerConfigurations(context, props);
