@@ -11,7 +11,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import {
-  useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed
+  useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
 
 export type CommonProps = {
@@ -152,4 +152,4 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
-}
+};
