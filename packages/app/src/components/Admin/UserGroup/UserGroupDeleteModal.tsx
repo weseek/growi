@@ -2,7 +2,6 @@ import React, {
   FC, useCallback, useState, useMemo,
 } from 'react';
 
-import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -30,7 +29,7 @@ type AvailableOption = {
   actionForPages: string,
   iconClass: string,
   styleClass: string,
-  label: TFunctionResult,
+  label: string,
 };
 
 // actionName master constants

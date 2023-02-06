@@ -84,9 +84,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   /* ----- before load ----- */
   if (lazy && !isLoaded) {
     return (
-      <Waypoint onPositionChange={onWaypointChange} bottomOffset="-100px">
-        <div></div>
-      </Waypoint>
+      <Waypoint onPositionChange={onWaypointChange} bottomOffset="-100px" />
     );
   }
 

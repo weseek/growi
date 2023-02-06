@@ -20,7 +20,6 @@ import DuplicatedPathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import PagePathAutoComplete from './PagePathAutoComplete';
 
-
 const isV5Compatible = (meta: unknown): boolean => {
   return isIPageInfoForEntity(meta) ? meta.isV5Compatible : true;
 };
@@ -139,6 +138,10 @@ const PageRenameModal = (): JSX.Element => {
       setExistingPaths(existPaths);
     }
     catch (err) {
+      // Do not toast in case of this error because debounce process may be executed after the renaming process is completed.
+      if (err.length === 1 && err[0].code === 'from-page-is-not-exist') {
+        return;
+      }
       setErrs(err);
       toastError(t('modal_rename.label.Failed to get exist path'));
     }
@@ -304,7 +307,7 @@ const PageRenameModal = (): JSX.Element => {
             </label>
           </div>
 
-          <div className="custom-control custom-checkbox custom-checkbox-primary">
+          <div className="custom-control custom-checkbox custom-checkbox-success">
             <input
               className="custom-control-input"
               name="remain_metadata"

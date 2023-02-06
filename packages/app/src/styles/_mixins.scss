@@ -24,63 +24,41 @@
     + 25px //   add .btn-open-dropzone height
     + 30px; //  add .navbar-editor height
 
-  .main {
+  .editor-root {
     width: 100%;
-    height: calc(100vh - #{$editor-margin-top});
+    height: calc(100vh - #{$header-plus-footer});
+    min-height: calc(100vh - #{$header-plus-footer}); // for IE11
     margin-top: 0px !important;
 
-    .grw-container-convertible {
-      max-width: unset;
-      padding: 0;
-      margin: 0;
+    // left(editor)
+    .page-editor-editor-container {
+      height: calc(100vh - #{$header-plus-footer});
+      min-height: calc(100vh - #{$header-plus-footer}); // for IE11
+
+      .react-codemirror2,
+      .CodeMirror,
+      .CodeMirror-scroll,
+      .textarea-editor {
+        height: calc(100vh - #{$editor-margin});
+      }
     }
 
+    // right(preview)
+    .page-editor-preview-container,
+    .page-editor-preview-body {
+      height: calc(100vh - #{$header-plus-footer});
+      min-height: calc(100vh - #{$header-plus-footer}); // for IE11
+    }
+  }
+
+  .editor-root#page-editor-with-hackmd {
     &,
-    .content-main,
-    .tab-content {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-
-      .tab-pane {
-        height: calc(100vh - #{$header-plus-footer});
-        min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-      }
-
-      #page-editor {
-        // right(preview)
-        &,
-        & > .row,
-        .page-editor-preview-container,
-        .page-editor-preview-body {
-          height: calc(100vh - #{$header-plus-footer});
-          min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-        }
-
-        // left(editor)
-        .page-editor-editor-container {
-          height: calc(100vh - #{$header-plus-footer});
-          min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-
-          .react-codemirror2,
-          .CodeMirror,
-          .CodeMirror-scroll,
-          .textarea-editor {
-            height: calc(100vh - #{$editor-margin});
-          }
-        }
-      }
-
-      #page-editor-with-hackmd {
-        &,
-        .hackmd-preinit,
-        .hackmd-error,
-        #iframe-hackmd-container > iframe {
-          width: 100%;
-          height: calc(100vh - #{$header-plus-footer});
-          min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-        }
-      }
+    .hackmd-preinit,
+    .hackmd-error,
+    #iframe-hackmd-container > iframe {
+      width: 100%;
+      height: calc(100vh - #{$header-plus-footer});
+      min-height: calc(100vh - #{$header-plus-footer}); // for IE11
     }
   }
 }

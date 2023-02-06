@@ -159,6 +159,7 @@
   "not_allowed_to_see_this_page": "你不能看到这个页面",
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
+  "copied_to_clipboard": "它已复制到剪贴板。",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -172,6 +173,7 @@
     "no_page_list": "There are no pages under this page."
   },
 	"installer": {
+    "tab": "创建账户",
     "title": "安装",
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",

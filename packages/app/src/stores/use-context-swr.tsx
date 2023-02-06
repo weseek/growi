@@ -23,12 +23,12 @@ export function useContextSWR<Data, Error>(
   const { cache } = useSWRConfig();
   const swrResponse = useSWRImmutable(key, null, {
     ...configuration,
-    fallbackData: configuration?.fallbackData ?? cache.get(key),
+    fallbackData: configuration?.fallbackData ?? cache.get(key)?.data,
   });
 
   // write data to cache directly
   if (data !== undefined) {
-    cache.set(key, data);
+    cache.set(key, { ...cache.get(key), data });
   }
 
   const result = Object.assign(swrResponse, { mutate: () => { throw Error('mutate can not be used in context') } });

@@ -7,7 +7,7 @@
 
 @each $color, $value in $theme-colors {
   .border-#{$color} {
-    border-color: $value !important;
+    border-color: $value;
   }
 }
 
@@ -57,16 +57,16 @@
       border-color: $color;
     }
     .custom-control-input:checked + .custom-control-label::after {
-      color: $bgcolor-global;
+      color: var(--bgcolor-global);
     }
     .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-      color: $bgcolor-global;
+      color: var(--bgcolor-global);
       background-color: $color;
       border-color: $color;
     }
     .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-      color: $bgcolor-global;
-      background-color: $bgcolor-global;
+      color: var(--bgcolor-global);
+      background-color: var(--bgcolor-global);
       border-color: $input-focus-border-color;
     }
   }
@@ -79,6 +79,15 @@
       theme-color-level($color, $alert-border-level),
       theme-color-level($color, $alert-color-level)
     );
+  }
+  // Alert link
+  :root, .wiki {
+    .alert.alert-#{$color} {
+      a,
+      a:hover {
+        color: theme-color-level($color, $alert-color-level - 2);
+      }
+    }
   }
 }
 

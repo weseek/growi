@@ -12,17 +12,20 @@ import superjson from 'superjson';
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
-import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
-import { Page } from '~/components/Page';
+import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
+import RevisionRenderer from '~/components/Page/RevisionRenderer';
+import ShareLinkAlert from '~/components/Page/ShareLinkAlert';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import type { ShareLinkPageContentsProps } from '~/components/ShareLink/ShareLinkPageContents';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
+import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
-  useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
+  useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -36,7 +39,6 @@ const logger = loggerFactory('growi:next-page:share');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('~/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 // const Comments = dynamic(() => import('~/components/Comments').then(mod => mod.Comments), { ssr: false });
-const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
 
 type Props = CommonProps & {
@@ -68,12 +70,29 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
   'IShareLinkRelatedPageTransformer',
 );
 
+// GrowiContextualSubNavigation for shared page
+// get page info from props not to send request 'GET /page' from client
+type GrowiContextualSubNavigationForSharedPageProps = {
+  currentPage?: IPagePopulatedToShowRevision,
+  isLinkSharingDisabled: boolean,
+}
+
+const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
+  const { currentPage, isLinkSharingDisabled } = props;
+  if (currentPage == null) { return <></> }
+  return (
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+    </div>
+  );
+};
+
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
+  useCurrentPathname(props.shareLink?.relatedPage.path);
   useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
-  const { data: currentPathname } = useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -88,8 +107,14 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
-  const title = generateCustomTitleForPage(props, currentPathname ?? '');
+  const pagePath = props.shareLinkRelatedPage?.path ?? '';
+  const revisionBody = props.shareLinkRelatedPage?.revision.body;
 
+  const title = generateCustomTitleForPage(props, pagePath);
+
+  // TODO: show SSR body
+  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
+  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
 
   const sideContents = shareLink != null
     ? <PageSideContents page={shareLink.relatedPage} />
@@ -103,6 +128,18 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   //   )
   //   : <></>;
 
+  const contents = (() => {
+    const ShareLinkPageContents = dynamic<ShareLinkPageContentsProps>(
+      () => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents),
+      {
+        ssr: false,
+        // TODO: show SSR body
+        // loading: () => ssrBody,
+      },
+    );
+    return <ShareLinkPageContents page={props.shareLinkRelatedPage} />;
+  })();
+
   return (
     <>
       <Head>
@@ -111,7 +148,8 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          {isShowSharedPage && <GrowiContextualSubNavigation currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
+          {isShowSharedPage
+          && <GrowiContextualSubNavigationForSharedPage currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
@@ -148,7 +186,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           {(isShowSharedPage && shareLink != null) && (
             <>
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              <Page currentPage={props.shareLinkRelatedPage} />
+              <div className="mb-5">
+                { contents }
+              </div>
             </>
           )}
         </MainPane>
@@ -181,6 +221,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
   props.rendererConfig = {
+    isSharedPage: true,
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
@@ -191,8 +232,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    attrWhiteList: xssService.getAttrWhiteList(),
-    tagWhiteList: xssService.getTagWhiteList(),
+    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }

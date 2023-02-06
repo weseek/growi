@@ -1,85 +1,112 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 :root[data-theme='light'] {
   // Theme colors
-  $themecolor: #00587a;
-  $themelight: #f7fbfd;
-  $accentcolor: #16617d;
-  $subthemecolor: #186718;
-
-  $primary: $themecolor;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 197,100%;
+  --primary-l: 24%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+  --accentcolor-hs: 210,14%;
+  --accentcolor-l: 89%;
 
   // Background colors
-  $bgcolor-global: $themelight;
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: darken($themelight, 5%);
-  $bgcolor-blinked-section: rgba($primary, 0.1);
-  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 200,60%;
+  --bgcolor-global-l: 98%;
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
+  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
-  $color-global: $themecolor;
-  $color-reversal: $gray-100;
-  $color-link: lighten($primary, 5%);
-  $color-link-hover: lighten($color-link, 12%);
-  $color-link-wiki: lighten($primary, 20%);
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e; // optional
-  $color-search: #c0d6df;
+  --color-global: var(--primary);
+  --color-global-hs: var(--primary-hs);
+  --color-global-l: var(--primary-l);
+  --color-reversal: #{$gray-100};
+  --color-link: #{hsl.lighten(var(--primary),5%)};
+  --color-link-hs: var(--primary-hs);
+  --color-link-l: calc(var(--primary-l) + 5%);
+  --color-link-hover: #{hsl.lighten(var(--color-link), 12%)};
+  --color-link-wiki: #{hsl.lighten(var(--primary),20%)};
+  --color-link-wiki-hs: var(--primary-hs);
+  --color-link-wiki-l: calc(var(--primary-l) + 20%);
+  --color-link-wiki-hover: #{hsl.lighten(var(--primary),40%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: #c7254e; // optional
+  --color-search: #c0d6df;
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $color-search;
-  $bgcolor-list-hover: lighten($primary, 70%);
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: var(--color-search);
+  --bgcolor-list-hover: #{hsl.lighten(var(--primary), 70%)};
+  // --color-list-active: var(--color-reversal);
+  // --bgcolor-list-active: var(--primary);
 
   // Navbar
-  $bgcolor-navbar: #2a2929;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-h: 0;
+  --bgcolor-navbar-s: 1%;
+  --bgcolor-navbar-l: 16%;
+  --bgcolor-navbar-hs: 0,1%;
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
 
   // Logo colors
-  $bgcolor-logo: $themecolor;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+  --bgcolor-logo: var(--primary);
+  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 10%),calc(var(--bgcolor-navbar-l) + 15%));
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
-  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  --bgcolor-sidebar: var(--primary);
+  --bgcolor-sidebar-hs: var(--primary-hs);
+  --bgcolor-sidebar-l: var(--primary-l);
+
+  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+
   // Sidebar resize button
-  $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: #209fd8;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  --color-resize-button: var(--color-reversal);
+  --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
+  --bgcolor-resize-button-hs: 199,74%;
+  --bgcolor-resize-button-l: 49%;
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+
   // Sidebar contents
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: #f1fcff;
+  --color-sidebar-context: var(--color-global);
+  --color-sidebar-context-hs: var(--color-global-hs);
+  --color-sidebar-context-l: var(--color-global-l);
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 193,100%;
+  --bgcolor-sidebar-context-l: 97%;
+
   // Sidebar list group
-  // $bgcolor-sidebar-list-group: #; // optional
+  // --bgcolor-sidebar-list-group: #; // optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-300;
-  $bordercolor-inline-code: #ccc8c8; // optional
+  --border-color-theme: var(--accentcolor);
+  --bordercolor-inline-code: #ccc8c8; // optional
 
   // admin theme box
-  $color-theme-color-box: lighten($primary, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
   // Navs {
   .nav-tabs {
-    border-bottom: $border-color-theme 1px solid;
+    border-bottom: var(--accentcolor) 1px solid;
     .nav-link {
       &:hover {
-        border-color: lighten($border-color-theme, 10%);
+        border-color: #{hsl.lighten(var(--accentcolor),10%)};
         border-bottom: none;
       }
       &.active {
@@ -90,99 +117,129 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(var(--primary), #{hsl.lighten(var(--primary), 65%)}, #{hsl.lighten(var(--primary), 70%)});
     }
   }
 }
 
 :root[data-theme='dark'] {
   // Theme colors
-  $themecolor: #00587a;
-  $themedark: #061f2f;
-  $accentcolor: #16617d;
-  $subthemecolor: #c1f1f0;
-
-  $primary: #0090c8;
-  $dark: #031018;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 197,100%;
+  --primary-l: 39%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+  --accentcolor-hs: 203,78%;
+  --accentcolor-l: 35%;
 
   // Background colors
-  $bgcolor-global: $themedark;
-  $bgcolor-navbar: #27343b;
-  $bgcolor-inline-code: #1f1f22; //optional
-  $bgcolor-card: darken($themedark, 5%);
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 203,77%;
+  --bgcolor-global-l: 10%;
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-hs: 201,20%;
+  --bgcolor-navbar-l: 19%;
+  --bgcolor-inline-code: #1f1f22; //optional
+  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
+  --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors
-  $color-global: #d3d4d4;
-  $color-reversal: $gray-100;
-  $color-link: #97d1f0;
-  $color-link-hover: darken($color-link, 12%);
-  $color-link-wiki: lighten($primary, 20%);
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: $subthemecolor;
-  $color-inline-code: #c7254e; // optional
-  $color-search: #000102;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 180,1%;
+  --color-global-l: 83%;
+  --color-reversal: #{$gray-100};
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 201,75%;
+  --color-link-l: 77%;
+  --color-link-hover: #{hsl.darken(var(--color-link), 12%)};
+  --color-link-wiki: #{hsl.lighten(var(--primary),20%)};
+  --color-link-wiki-hs: var(--primary-hs);
+  --color-link-wiki-l: calc(var(--primary-l) + 20%);
+  --color-link-wiki-hover: #{hsl.lighten(var(--primary),40%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: #c7254e; // optional
+  --color-search: #000102;
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $accentcolor;
-  // $bgcolor-list-hover: lighten($bgcolor-global, 3%);
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: #16617d;
+  // --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
+  // --color-list-active: var(--color-reversal);
+  // --bgcolor-list-active: var(--primary);
 
   // Navbar
-  $bgcolor-navbar: #2a2929;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-h: 0;
+  --bgcolor-navbar-s: 1%;
+  --bgcolor-navbar-l: 16%;
+  --bgcolor-navbar-hs:var(--bgcolor-navbar-h),var(--bgcolor-navbar-s);
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
 
   // Logo colors
-  $bgcolor-logo: #13191c;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
-  // $fillcolor-logo-mark: #4e5a60;
+  --bgcolor-logo: #13191c;
+  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 10%),calc(var(--bgcolor-navbar-l) + 15%));
+  // --fillcolor-logo-mark: #4e5a60;
 
   // Sidebar
-  $bgcolor-sidebar: $accentcolor;
-  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
+  --bgcolor-sidebar-hs: 196,70%;
+  --bgcolor-sidebar-l: 29%;
+  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+
   // Sidebar resize button
-  $color-resize-button: $color-global;
-  $bgcolor-resize-button: $themecolor;
-  $color-resize-button-hover: $color-global;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  --color-resize-button: var(--color-global);
+  --bgcolor-resize-button: var(--primary);
+  --bgcolor-resize-button-hs: var(--primary-hs);
+  --bgcolor-resize-button-l: var(--primary-l);
+  --color-resize-button-hover: var(--color-global);
+  --bgcolor-resize-button-hover: #{hsl.darken(var(--primary), 5%)};
+
   // Sidebar contents
-  $bgcolor-sidebar-context: darken($bgcolor-sidebar, 13%);
-  $color-sidebar-context: $color-global;
+  --bgcolor-sidebar-context: #{hsl.darken(var(--bgcolor-sidebar), 13%)};
+  --bgcolor-sidebar-context-hs: var(--bgcolor-sidebar-hs);
+  --bgcolor-sidebar-context-l: calc(var(--bgcolor-sidebar-l) - 13%);
+  --color-sidebar-context: var(--color-global);
+  --color-sidebar-context-hs: var(--color-global-hs);
+  --color-sidebar-context-l: var(--color-global-l);
+
   // Sidebar list group
-  // $bgcolor-sidebar-list-group: #; // optional
+  // --bgcolor-sidebar-list-group: #; // optional
+
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: #146aa0;
-  $bordercolor-inline-code: #4d4d4d; // optional
+  --border-color-theme: var(--accentcolor);
+  --bordercolor-inline-code: #4d4d4d; // optional
 
   // admin theme box
-  $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
+  --color-theme-color-box: var(--primary);
 
   // Navs
   .nav-tabs {
-    border-bottom: $border-color-theme 1px solid;
+    border-bottom: var(--accentcolor) 1px solid;
     .nav-link {
       &:hover {
-        border-color: lighten($border-color-theme, 10%);
+        border-color: #{hsl.lighten(var(--accentcolor), 10%)};
         border-bottom: none;
       }
       &.active {
-        color: $color-link;
+        color: var(--color-link);
         background-color: transparent;
-        border-color: $border-color-theme;
+        border-color: var(--accentcolor);
       }
     }
   }
@@ -195,7 +252,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 30%)}, var(--primary), #{hsl.darken(var(--primary), 10%)}, #{hsl.darken(var(--primary), 20%)});
     }
   }
 }
