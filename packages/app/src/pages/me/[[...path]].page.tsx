@@ -30,7 +30,7 @@ import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from '../utils/commons';
 
 
