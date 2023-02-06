@@ -1,5 +1,4 @@
 import Link, { LinkProps } from 'next/link';
-import { Link as ScrollLink } from 'react-scroll';
 
 import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -42,9 +41,7 @@ export const NextLink = ({
   // when href is an anchor link
   if (isAnchorLink(href)) {
     return (
-      <Link href={href} shallow >
-        <a href={href} className={className}>{children}</a>
-      </Link>
+      <a href={href} className={className}>{children}</a>
     );
   }
 
