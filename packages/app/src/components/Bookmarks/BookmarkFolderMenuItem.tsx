@@ -43,7 +43,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: item._id });
       await mutateChildFolders();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -91,7 +91,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     onSelectedChild();
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
-      toastSuccess('Bookmark added to bookmark folder successfully');
+      toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       mutateParentFolders();
       mutateChildFolders();
       setSelectedItem(item._id);
@@ -101,7 +101,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     }
 
 
-  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders]);
+  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders, t]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (

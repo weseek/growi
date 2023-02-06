@@ -815,6 +815,7 @@
   },
   "bookmark_folder":{
     "bookmark_folder": "bookmark folder",
+    "bookmark": "bookmark",
     "delete_modal": {
       "modal_header_label": "Delete Bookmark Folder",
       "modal_body_description": "Delete this bookmark folder and its contents",

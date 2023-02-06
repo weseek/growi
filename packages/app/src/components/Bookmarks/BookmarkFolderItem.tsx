@@ -187,7 +187,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     try {
       await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: bookmarkFolder._id });
       await mutateChildBookmarkData();
-      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -198,25 +198,20 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: bookmarkFolder._id });
       mutateParentBookmarkFolder();
-      toastSuccess('Bookmark added to bookmark folder successfully');
+      toastSuccess(t('toaster.add_successed', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
 
-  }, [bookmarkFolder._id, mutateParentBookmarkFolder]);
+  }, [bookmarkFolder._id, mutateParentBookmarkFolder, t]);
 
 
   const isDroppable = (item: BookmarkFolderItemProps, targetRoot: string, targetLevel: number): boolean => {
     if (item.bookmarkFolder.parent === bookmarkFolder._id || item.bookmarkFolder._id === bookmarkFolder._id) {
       return false;
     }
-    if (item.root === targetRoot) {
-      if (item.level < targetLevel) {
-        return false;
-      }
-    }
-    return true;
+    return item.root !== targetRoot || item.level >= targetLevel;
   };
 
   const [, bookmarkFolderDropRef] = useDrop(() => ({

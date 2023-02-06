@@ -815,6 +815,7 @@
   },
   "bookmark_folder":{
     "bookmark_folder": "ブックマークフォルダ",
+    "bookmark": "ブックマーク",
     "delete_modal": {
       "modal_header_label": "ブックマークフォルダを削除",
       "modal_body_description": "このブックマーク フォルダとその内容を削除する",
