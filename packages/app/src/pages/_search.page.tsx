@@ -25,7 +25,7 @@ import { SearchPage } from '../components/SearchPage';
 
 import type { NextPageWithLayout } from './_app.page';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, CommonProps,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, CommonProps, useInitSidebarConfig,
 } from './utils/commons';
 
 
@@ -71,12 +71,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   useDrawioUri(props.drawioUri);
 
-  // UserUISettings
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // render config
   useRendererConfig(props.rendererConfig);
