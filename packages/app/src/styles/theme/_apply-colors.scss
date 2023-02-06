@@ -518,11 +518,9 @@ ul.pagination {
 /*
  * Preview for editing /Sidebar
  */
-body.editing-sidebar {
-  .page-editor-preview-body {
-    color: var(--color-sidebar-context);
-    background-color: var(--bgcolor-sidebar-context);
-  }
+.page-editor-preview-body.preview-sidebar {
+  color: var(--color-sidebar-context);
+  background-color: var(--bgcolor-sidebar-context);
 }
 
 /*

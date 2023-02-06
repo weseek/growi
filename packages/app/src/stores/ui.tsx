@@ -1,24 +1,24 @@
-import { RefObject, useCallback, useEffect } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 
 import {
-  isClient, isServer, pagePathUtils, Nullable, PageGrant,
+  isClient, isServer, pagePathUtils, type Nullable, PageGrant,
 } from '@growi/core';
-import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
+import { withUtils, type SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
-import { HtmlElementNode } from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import {
-  useSWRConfig, SWRResponse, Key,
+  useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { IFocusable } from '~/client/interfaces/focusable';
+import type { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { IPageGrantData } from '~/interfaces/page';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IPageGrantData } from '~/interfaces/page';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { UpdateDescCountData } from '~/interfaces/websocket';
+import type { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
