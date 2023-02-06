@@ -1,11 +1,9 @@
-import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { useTranslation } from 'next-i18next';
 import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -25,9 +23,9 @@ import {
 
 import { SearchPage } from '../components/SearchPage';
 
-import { NextPageWithLayout } from './_app.page';
+import type { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, CommonProps,
 } from './utils/commons';
 
 
