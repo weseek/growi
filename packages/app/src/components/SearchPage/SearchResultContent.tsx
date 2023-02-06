@@ -96,7 +96,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const scrollElement = scrollElementRef.current;
     if (scrollElement == null) return;
 
-    const observerCallback = (mutationRecords:MutationRecord[], thisObs: MutationObserver) => {
+    const observerCallback = (mutationRecords:MutationRecord[]) => {
       mutationRecords.forEach((record:MutationRecord) => {
         const target = record.target as HTMLElement;
 
