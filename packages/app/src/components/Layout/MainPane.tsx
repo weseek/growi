@@ -20,7 +20,7 @@ export const MainPane = (props: Props): JSX.Element => {
           <div id="content-main" className="content-main grw-container-convertible">
             { sideContents != null
               ? (
-                <div className="d-flex flex-column flex-lg-row">
+                <div className="d-flex flex-column flex-column-reverse flex-lg-row">
                   <div className="flex-grow-1 flex-basis-0 mw-0">
                     {children}
                   </div>

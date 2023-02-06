@@ -1,0 +1,56 @@
+name: Reusable build app container image workflow
+
+on:
+  workflow_call:
+    inputs:
+      source-version:
+        type: string
+        default: ${{ github.sha }}
+      image-name:
+        type: string
+        default: weseek/growi
+      tag-temporary:
+        type: string
+        default: latest
+    secrets:
+      AWS_ROLE_TO_ASSUME_FOR_OIDC:
+        required: true
+
+
+
+jobs:
+
+  build-image:
+    runs-on: ubuntu-latest
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: write
+
+    strategy:
+      matrix:
+        platform: [amd64, arm64]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ap-northeast-1
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
+        role-session-name: SessionForReleaseGROWI-RC
+
+    - name: Run CodeBuild
+      uses: dark-mechanicum/aws-codebuild@v1
+      with:
+        projectName: growi-official-image-builder
+      env:
+        CODEBUILD__sourceVersion: ${{ inputs.source-version }}
+        CODEBUILD__imageOverride: ${{ (matrix.platform == 'amd64' && 'aws/codebuild/standard:6.0') || 'aws/codebuild/amazonlinux2-aarch64-standard:2.0' }}
+        CODEBUILD__environmentTypeOverride: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
+        CODEBUILD__environmentVariablesOverride: '[
+          { "name": "IMAGE_TAG", "type": "PLAINTEXT", "value": "docker.io/${{ inputs.image-name }}:${{ inputs.tag-temporary }}-${{ matrix.platform }}" },
+          { "name": "IMAGE_TAG_GHCR", "type": "PLAINTEXT", "value": "ghcr.io/${{ inputs.image-name }}:${{ inputs.tag-temporary }}-${{ matrix.platform }}" }
+        ]'

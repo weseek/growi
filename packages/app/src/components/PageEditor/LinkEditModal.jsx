@@ -18,14 +18,18 @@ import validator from 'validator';
 import Linker from '~/client/models/Linker';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useCurrentPagePath } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
 
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';
 
 import Preview from './Preview';
 
+
 import styles from './LinkEditPreview.module.scss';
 
+
+const logger = loggerFactory('growi:components:LinkEditModal');
 
 class LinkEditModal extends React.PureComponent {
 
@@ -96,17 +100,24 @@ class LinkEditModal extends React.PureComponent {
     // create url from link, add dummy origin if link is not valid url.
     // ex-1. link = 'https://growi.org/' -> url = 'https://growi.org/' (case-1,4)
     // ex-2. link = 'hoge' -> url = 'http://example.com/hoge' (case-2,3,5)
-    const url = new URL(link, 'http://example.com');
-    const isUrl = url.origin !== 'http://example.com';
-
+    let isFqcn = false;
     let isUseRelativePath = false;
-    let reshapedLink = link;
+    let url;
+    try {
+      const url = new URL(link, 'http://example.com');
+      isFqcn = url.origin !== 'http://example.com';
+    }
+    catch (err) {
+      logger.debug(err);
+    }
 
-    // if case-1, reshapedLink becomes page path
-    reshapedLink = this.convertUrlToPathIfPageUrl(reshapedLink, url);
+    // case-1: when link is this growi's page url, return pathname only
+    let reshapedLink = url != null && url.origin === window.location.origin
+      ? decodeURIComponent(url.pathname)
+      : link;
 
     // case-3
-    if (!isUrl && !reshapedLink.startsWith('/') && reshapedLink !== '') {
+    if (!isFqcn && !reshapedLink.startsWith('/') && reshapedLink !== '') {
       isUseRelativePath = true;
       const rootPath = this.getRootPath(type);
       reshapedLink = path.resolve(rootPath, reshapedLink);
@@ -116,12 +127,6 @@ class LinkEditModal extends React.PureComponent {
       linkInputValue: reshapedLink,
       isUseRelativePath,
     });
-  }
-
-  // return path name of link if link is this growi page url, else return original link.
-  convertUrlToPathIfPageUrl(link, url) {
-    // when link is this growi's page url, url.origin === window.location.origin and return path name
-    return url.origin === window.location.origin ? decodeURI(url.pathname) : link;
   }
 
   cancel() {
@@ -161,11 +166,11 @@ class LinkEditModal extends React.PureComponent {
     let previewError = '';
 
     if (path.startsWith('/')) {
-      const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
-      const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
-      const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
-
       try {
+        const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
+        const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
+        const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
+
         const { data } = await apiv3Get('/page', { path: pathWithoutFragment, page_id: pageId });
         const { page } = data;
         markdown = page.revision.body;

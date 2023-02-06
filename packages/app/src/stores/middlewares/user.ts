@@ -1,8 +1,7 @@
 import { Middleware, SWRHook } from 'swr';
 
-import { IUserHasId } from '~/interfaces/user';
-
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { IUserHasId } from '~/interfaces/user';
 
 export const checkAndUpdateImageUrlCached: Middleware = (useSWRNext: SWRHook) => {
   return (key, fetcher, config) => {

@@ -4035,6 +4035,30 @@ class PageService {
     return pages;
   }
 
+  /**
+   * Find all pages in trash page
+   */
+  async findAllTrashPages(user: IUserHasId, userGroups = null): Promise<PageDocument[]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    // https://regex101.com/r/KYZWls/1
+    // ex. /trash/.*
+    const regexp = new RegExp('^/trash\\/.*$');
+    const queryBuilder = new PageQueryBuilder(Page.find({ path: { $regex: regexp } }), true);
+
+    await queryBuilder.addViewerCondition(user, userGroups);
+
+    const pages = await queryBuilder
+      .addConditionToSortPagesByAscPath()
+      .query
+      .lean()
+      .exec();
+
+    await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
+
+    return pages;
+  }
+
   async findAncestorsChildrenByPathAndViewer(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 

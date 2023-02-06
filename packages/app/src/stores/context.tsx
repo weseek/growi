@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -36,8 +36,8 @@ export const useConfidential = (initialData?: string): SWRResponse<string, Error
   return useContextSWR('confidential', initialData);
 };
 
-export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
-  return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<Nullable<IUserHasId>, Error> => {
+  return useContextSWR('currentUser', initialData);
 };
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
@@ -209,6 +209,10 @@ export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<
   return useStaticSWR('isCustomizedLogoUploaded', initialData);
 };
 
+export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<ColorScheme, Error> => {
+  return useContextSWR('forcedColorScheme', initialData);
+};
+
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('growiCloudUri', initialData);
 };
@@ -226,12 +230,12 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
  *********************************************************** */
 
 export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
 
   return useSWRImmutable(
-    ['isGuestUser', currentUser],
-    (key: Key, currentUser: IUser) => currentUser == null,
-    { fallbackData: currentUser == null },
+    isLoading ? null : ['isGuestUser', currentUser?._id],
+    ([, currentUserId]) => currentUserId == null,
+    { fallbackData: currentUser?._id == null },
   );
 };
 
@@ -243,7 +247,7 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     ['isEditable', isGuestUser, isForbidden, isNotCreatable, isIdenticalPath],
-    (key: Key, isGuestUser: boolean, isForbidden: boolean, isNotCreatable: boolean, isIdenticalPath: boolean) => {
+    ([, isGuestUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
       return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser);
     },
   );

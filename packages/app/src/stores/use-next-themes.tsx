@@ -1,35 +1,30 @@
-import { isClient } from '@growi/core';
+import { isClient, ColorScheme } from '@growi/core';
 import { ThemeProvider, useTheme } from 'next-themes';
 import { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types';
 
+import { useForcedColorScheme } from './context';
+
 export const Themes = {
-  light: 'light',
-  dark: 'dark',
-  system: 'system',
+  ...ColorScheme,
+  SYSTEM: 'system',
 } as const;
 export type Themes = typeof Themes[keyof typeof Themes];
-
-export const ResolvedThemes = {
-  light: Themes.light,
-  dark: Themes.dark,
-} as const;
-export type ResolvedThemes = typeof ResolvedThemes[keyof typeof ResolvedThemes];
-export const ColorScheme = ResolvedThemes;
-export type ColorScheme = ResolvedThemes;
 
 
 const ATTRIBUTE = 'data-theme';
 
 export const NextThemesProvider: React.FC<ThemeProviderProps> = (props) => {
-  return <ThemeProvider {...props} attribute={ATTRIBUTE} />;
+  const { data: forcedColorScheme } = useForcedColorScheme();
+
+  return <ThemeProvider {...props} forcedTheme={forcedColorScheme} attribute={ATTRIBUTE} />;
 };
 
 type UseThemeExtendedProps = Omit<UseThemeProps, 'theme'|'resolvedTheme'> & {
   theme: Themes,
-  resolvedTheme: ResolvedThemes,
+  resolvedTheme: ColorScheme,
   useOsSettings: boolean,
   isDarkMode: boolean,
-  resolvedThemeByAttributes?: ResolvedThemes,
+  resolvedThemeByAttributes?: ColorScheme,
 }
 
 export const useNextThemes = (): UseThemeProps & UseThemeExtendedProps => {
@@ -37,9 +32,9 @@ export const useNextThemes = (): UseThemeProps & UseThemeExtendedProps => {
 
   return Object.assign(props, {
     theme: props.theme as Themes,
-    resolvedTheme: props.resolvedTheme as ResolvedThemes,
-    useOsSettings: props.theme === Themes.system,
-    isDarkMode: props.resolvedTheme === ResolvedThemes.dark,
-    resolvedThemeByAttributes: isClient() ? document.documentElement.getAttribute(ATTRIBUTE) as ResolvedThemes : undefined,
+    resolvedTheme: props.resolvedTheme as ColorScheme,
+    useOsSettings: props.theme === Themes.SYSTEM,
+    isDarkMode: props.resolvedTheme === ColorScheme.DARK,
+    resolvedThemeByAttributes: isClient() ? document.documentElement.getAttribute(ATTRIBUTE) as ColorScheme : undefined,
   });
 };

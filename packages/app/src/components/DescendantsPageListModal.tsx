@@ -1,8 +1,9 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -19,15 +20,9 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 
 import styles from './DescendantsPageListModal.module.scss';
 
-const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
-  const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
-  return <DescendantsPageList {...props}/>;
-};
+const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
 
-const PageTimeline = (): JSX.Element => {
-  const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
-  return <PageTimeline />;
-};
+const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
 
 export const DescendantsPageListModal = (): JSX.Element => {
   const { t } = useTranslation();
@@ -38,6 +33,15 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const { data: isSharedUser } = useIsSharedUser();
 
   const { data: status, close } = useDescendantsPageListModal();
+
+  const { events } = useRouter();
+
+  useEffect(() => {
+    events.on('routeChangeStart', close);
+    return () => {
+      events.off('routeChangeStart', close);
+    };
+  }, [close, events]);
 
   const navTabMapping = useMemo(() => {
     return {

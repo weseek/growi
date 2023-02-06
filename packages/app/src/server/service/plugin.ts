@@ -33,9 +33,16 @@ function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
   return JSON.parse(manifestStr);
 }
 
+
+type FindThemePluginResult = {
+  growiPlugin: GrowiPlugin,
+  themeMetadata: GrowiThemeMetadata,
+  themeHref: string,
+}
+
 export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<string>
-  retrieveThemeHref(theme: string): Promise<string | undefined>
+  findThemePlugin(theme: string): Promise<FindThemePluginResult | null>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
   downloadNotExistPluginRepositories(): Promise<void>
 }
@@ -322,8 +329,7 @@ export class PluginService implements IPluginService {
     return growiPlugins.meta.name;
   }
 
-  async retrieveThemeHref(theme: string): Promise<string | undefined> {
-
+  async findThemePlugin(theme: string): Promise<FindThemePluginResult | null> {
     const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
 
     let matchedPlugin: GrowiPlugin | undefined;
@@ -349,15 +355,20 @@ export class PluginService implements IPluginService {
       logger.error(`Could not find the theme '${theme}' from GrowiPlugin documents.`, e);
     }
 
+    if (matchedPlugin == null || matchedThemeMetadata == null) {
+      return null;
+    }
+
+    let themeHref;
     try {
-      if (matchedPlugin != null && matchedThemeMetadata != null) {
-        const manifest = await retrievePluginManifest(matchedPlugin);
-        return `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
-      }
+      const manifest = retrievePluginManifest(matchedPlugin);
+      themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
     }
     catch (e) {
       logger.error(`Could not read manifest file for the theme '${theme}'`, e);
     }
+
+    return { growiPlugin: matchedPlugin, themeMetadata: matchedThemeMetadata, themeHref };
   }
 
   async retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries> {

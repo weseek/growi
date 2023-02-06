@@ -1,8 +1,85 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.5](https://github.com/weseek/growi/compare/v6.0.4...v6.0.5) - 2023-01-30
+
+### 🚀 Improvement
+
+- imprv: Override process for CommonSanitizeOptions (#7305) @miya
+
+### 🐛 Bug Fixes
+
+- fix:  Request to "/_api/v3/personal-settings"  occurs when in guest mode (#7307) @miya
+- fix: Undeleteable trash pages when clicked empty trash button bug (#7250) @jam411
+- fix: Guest users are able to move to pages that require authentication (#7300) @miya
+- fix: Modal does not close after clicking on path in DescendantsPageListModal (#7291) @miya
+- fix: GrowiContextualSubNavigation style is broken (#7304) @jam411
+- fix: Markdown in the editor reverted when save with shortcut (#7301) @yukendev
+
+## [v6.0.4](https://github.com/weseek/growi/compare/v6.0.3...v6.0.4) - 2023-01-25
+
+### 🐛 Bug Fixes
+
+- fix: Invalid URL in markdown breaks browser (#7292) @yuki-takei
+- fix: Previous editing markdown remains after changing page (#7285) @yukendev
+
+### 🧰 Maintenance
+
+- ci(deps): bump ua-parser-js from 0.7.31 to 0.7.33 (#7293) @dependabot
+
+## [v6.0.3](https://github.com/weseek/growi/compare/v6.0.2...v6.0.3) - 2023-01-24
+
+### 💎 Features
+
+- feat: GROWI to GROWI transfer (#6727) @hakumizuki
+- feat: Use configured xss custom whitelist (#7252) @miya
+- imprv: UI admin g2g transfer advanced options (#7261) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Do not retrieve page data using API in shared page (#7240) @miya
+- imprv: Use CSS variables (#7093) @yuki-takei
+- imprv: Do not request /pages.getPageTag when on a shared page (#7214) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Share link management button is not available (#7286) @yuki-takei
+- fix: Color for blinked section (#7287) @ayaka0417
+- fix: Error toaster appears after renaming (#7276) @miya
+- fix: Search Tag From Tag Sidebar Correctly (#7282) @yukendev
+- fix: Ignore backslash in page path (#7284) @yuki-takei
+- fix: Bug in Page Tree Selected Item Background Color (#7272) @yukendev
+- fix: Type guard comment.createdAt (#7281) @hakumizuki
+- fix: Color of login form (#7275) @ayaka0417
+- fix: Body of shared page is not displayed (#7270) @miya
+- fix: Refactor uri decoding in getServerSideProps (#7268) @yukendev
+- fix: Cannot login with LDAP unless local strategy is enabled (#7259) @miya
+- fix: Skeleton color (#7264) @ayaka0417
+- fix: Refactor axios date serializer config (#7249) @yukendev
+- fix: DeletePageModal shows an incorrect label when open (#7224) @yukendev
+- fix: Page path is not displayed in browser tab on shared page (#7243) @miya
+- fix: Lsx encode prefix twice (#7239) @yuki-takei
+- fix: Initial value of the page grant respects the parent page's one (#7232) @yukendev
+
+### 🧰 Maintenance
+
+- support: Build container images with AWS CodeBuild (#7258) @yuki-takei
+
+## [v6.0.2](https://github.com/weseek/growi/compare/v6.0.1...v6.0.2) - 2023-01-10
+
+### 🐛 Bug Fixes
+
+- fix: Attaching page title as initial header section (#7228) @yukendev
+- fix: Update PageTree data after saving page (#7227) @yukendev
+- fix: Lsx "filter" and "except" options does not work (#7226) @yuki-takei
+- fix: Omit remark-growi-directive shortcuts (#7225) @yuki-takei
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump textlint-rule-no-doubled-joshi from 4.0.0 to 4.0.1 (#7222) @dependabot
 
 ## [v6.0.1](https://github.com/weseek/growi/compare/v6.0.0...v6.0.1) - 2023-01-07
 

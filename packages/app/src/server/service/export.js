@@ -231,6 +231,8 @@ class ExportService {
     // send terminate event
     this.emitTerminateEvent(addedZipFileStat);
 
+    return addedZipFileStat;
+
     // TODO: remove broken zip file
   }
 
@@ -242,13 +244,15 @@ class ExportService {
     this.currentProgressingStatus = new ExportProgressingStatus(collections);
     await this.currentProgressingStatus.init();
 
+    let zipFileStat;
     try {
-      await this.exportCollectionsToZippedJson(collections);
+      zipFileStat = await this.exportCollectionsToZippedJson(collections);
     }
     finally {
       this.currentProgressingStatus = null;
     }
 
+    return zipFileStat;
   }
 
   /**
@@ -351,7 +355,7 @@ class ExportService {
 
     await streamToPromise(archive);
 
-    logger.info(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
+    logger.info(`zipped GROWI data into ${zipFile} (${archive.pointer()} bytes)`);
 
     // delete json files
     for (const { from } of configs) {

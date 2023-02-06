@@ -47,15 +47,15 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
 
   const followOsCheckboxModifiedHandler = useCallback((isChecked: boolean) => {
     if (isChecked) {
-      setTheme(Themes.system);
+      setTheme(Themes.SYSTEM);
     }
     else {
-      setTheme(resolvedTheme ?? Themes.light);
+      setTheme(resolvedTheme ?? Themes.LIGHT);
     }
   }, [resolvedTheme, setTheme]);
 
   const userPreferenceSwitchModifiedHandler = useCallback((isDarkMode: boolean) => {
-    setTheme(isDarkMode ? Themes.dark : Themes.light);
+    setTheme(isDarkMode ? Themes.DARK : Themes.LIGHT);
   }, [setTheme]);
 
   /* eslint-disable react/prop-types */

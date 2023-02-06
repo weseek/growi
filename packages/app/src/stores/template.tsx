@@ -48,7 +48,7 @@ yyyy/mm/dd (予定、時間は追って連絡)`,
 ];
 
 export const useTemplates = (): SWRResponse<ITemplate[], Error> => {
-  return useSWR<ITemplate[], Error>(
+  return useSWR(
     'templates',
     () => [
       ...presetTemplates,
