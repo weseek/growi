@@ -4,7 +4,6 @@ import { IPageHasId, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
-import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { useDescendantsPageListModal } from '~/stores/modal';
 
 import CountBadge from './Common/CountBadge';
@@ -57,7 +56,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       {/* Comments */}
       { !isTopPagePath && (
         <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-          <Link to={'page-comments'} offset={-100} {...DEFAULT_AUTO_SCROLL_OPTS}>
+          <Link to={'page-comments'} offset={-120}>
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
