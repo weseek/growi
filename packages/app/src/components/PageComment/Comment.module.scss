@@ -1,3 +1,4 @@
+@use '../../styles/variables' as var;
 @use '../../styles/bootstrap/init' as bs;
 @use './_comment-inheritance';
 
@@ -10,9 +11,9 @@
 
   .page-comment {
     position: relative;
-    padding-top: 70px;
-    margin-top: -70px;
     pointer-events: none;
+
+    scroll-margin-top: var.$grw-scroll-margin-top-in-view;
 
     // user name
     .page-comment-creator {
