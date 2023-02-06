@@ -255,11 +255,20 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
     const page = await save();
-    if (page != null) {
-      updateStateAfterSave?.();
-      toastSuccess(t('toaster.save_succeeded'));
+    if (page == null) {
+      return;
     }
-  }, [editorMode, save, t, updateStateAfterSave]);
+
+    if (isNotFound) {
+      await router.push(`/${page._id}#edit`);
+    }
+    else {
+      updateStateAfterSave?.();
+    }
+    toastSuccess(t('toaster.save_succeeded'));
+    mutateEditorMode(EditorMode.Editor);
+
+  }, [editorMode, isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
   /**
