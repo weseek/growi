@@ -16,7 +16,7 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -218,6 +218,7 @@ const PageEditor = React.memo((): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error);
       if (error.code === 'conflict') {
+        toastWarning('(TBD) resolve conflict');
         // pageContainer.setState({
         //   remoteRevisionId: error.data.revisionId,
         //   remoteRevisionBody: error.data.revisionBody,
