@@ -10,7 +10,9 @@ import * as nextI18NextConfig from '^/config/next-i18next.config';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed } from '~/stores/ui';
+import {
+  useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed
+} from '~/stores/ui';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
