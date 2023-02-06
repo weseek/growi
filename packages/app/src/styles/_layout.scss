@@ -71,38 +71,6 @@ body.not-found-page .grw-container-convertible {
   top: calc(100px + 4px + 20px);
 }
 
-.grw-fab {
-  position: fixed;
-  right: 1.5rem;
-  bottom: 3rem;
-  z-index: bs.$zindex-fixed;
-
-  transition: all 200ms linear;
-
-  .btn-create-page {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-
-    box-shadow: 2px 3px 6px #0000005d;
-    svg {
-      width: 28px;
-      height: 28px;
-    }
-  }
-
-  .btn-scroll-to-top {
-    width: 40px;
-    height: 40px;
-
-    opacity: 0.4;
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-}
-
 // printable style
 @media print {
   body {

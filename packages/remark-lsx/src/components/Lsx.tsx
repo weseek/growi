@@ -8,7 +8,6 @@ import { LsxContext } from './lsx-context';
 
 import styles from './Lsx.module.scss';
 
-
 type Props = {
   children: React.ReactNode,
   className?: string,
@@ -22,9 +21,10 @@ type Props = {
   except?: string,
 
   isImmutable?: boolean,
+  isSharedPage?: boolean,
 };
 
-export const Lsx = React.memo(({
+const LsxSubstance = React.memo(({
   prefix,
   num, depth, sort, reverse, filter, except,
   isImmutable,
@@ -89,6 +89,25 @@ export const Lsx = React.memo(({
       {contents}
     </div>
   );
+});
+LsxSubstance.displayName = 'LsxSubstance';
+
+const LsxDisabled = React.memo((): JSX.Element => {
+  return (
+    <div className="text-muted">
+      <i className="fa fa-fw fa-info-circle"></i>
+      <small>lsx is not available on the share link page</small>
+    </div>
+  );
+});
+LsxDisabled.displayName = 'LsxDisabled';
+
+export const Lsx = React.memo((props: Props): JSX.Element => {
+  if (props.isSharedPage) {
+    return <LsxDisabled />;
+  }
+
+  return <LsxSubstance {...props} />;
 });
 Lsx.displayName = 'Lsx';
 

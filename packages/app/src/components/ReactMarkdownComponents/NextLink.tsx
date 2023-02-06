@@ -3,16 +3,25 @@ import { Link as ScrollLink } from 'react-scroll';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { useSiteUrl } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
+
+
+const logger = loggerFactory('growi:components:NextLink');
 
 const isAnchorLink = (href: string): boolean => {
   return href.toString().length > 0 && href[0] === '#';
 };
 
 const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
-  const baseUrl = new URL(siteUrl ?? 'https://example.com');
-  const hrefUrl = new URL(href, baseUrl);
-
-  return baseUrl.host !== hrefUrl.host;
+  try {
+    const baseUrl = new URL(siteUrl ?? 'https://example.com');
+    const hrefUrl = new URL(href, baseUrl);
+    return baseUrl.host !== hrefUrl.host;
+  }
+  catch (err) {
+    logger.debug(err);
+    return false;
+  }
 };
 
 type Props = Omit<LinkProps, 'href'> & {

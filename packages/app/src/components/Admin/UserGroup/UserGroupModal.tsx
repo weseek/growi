@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { Ref } from '@growi/core';
-import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -13,7 +12,7 @@ import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  buttonLabel?: TFunctionResult,
+  buttonLabel?: string,
   onClickSubmit?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void

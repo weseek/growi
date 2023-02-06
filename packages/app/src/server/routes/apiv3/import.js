@@ -1,10 +1,13 @@
 import { ErrorV3 } from '@growi/core';
-import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
+
+import overwriteParamsAttachmentFilesChunks from './overwrite-params/attachmentFiles.chunks';
+import overwriteParamsPages from './overwrite-params/pages';
+import overwriteParamsRevisions from './overwrite-params/revisions';
 
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
@@ -51,23 +54,23 @@ const router = express.Router();
 /**
  * generate overwrite params with overwrite-params/* modules
  * @param {string} collectionName
- * @param {object} req Request Object
+ * @param {string} operatorUserId Operator user id
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
  */
-const generateOverwriteParams = (collectionName, req, options) => {
+export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
   switch (collectionName) {
     case 'pages':
-      return require('./overwrite-params/pages')(req, options);
+      return overwriteParamsPages(operatorUserId, options);
     case 'revisions':
-      return require('./overwrite-params/revisions')(req, options);
+      return overwriteParamsRevisions(operatorUserId, options);
     case 'attachmentFiles.chunks':
-      return require('./overwrite-params/attachmentFiles.chunks')(req, options);
+      return overwriteParamsAttachmentFilesChunks(operatorUserId, options);
     default:
       return {};
   }
 };
 
-module.exports = (crowi) => {
+export default function route(crowi) {
   const { growiBridgeService, importService, socketIoService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
@@ -282,7 +285,7 @@ module.exports = (crowi) => {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user._id, options);
 
       importSettingsMap[collectionName] = importSettings;
     });
@@ -292,6 +295,7 @@ module.exports = (crowi) => {
      */
     try {
       importService.import(collections, importSettingsMap);
+
       const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
       activityEvent.emit('update', res.locals.activity._id, parameters);
     }
@@ -352,9 +356,9 @@ module.exports = (crowi) => {
       return res.apiv3(data);
     }
     catch {
-      const msg = 'the version of this growi and the growi that exported the data are not met';
-      const varidationErr = 'versions-are-not-met';
-      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
+      const msg = 'The version of this GROWI and the uploaded GROWI data are not the same';
+      const validationErr = 'versions-are-not-met';
+      return res.apiv3Err(new ErrorV3(msg, validationErr), 500);
     }
   });
 
@@ -384,4 +388,4 @@ module.exports = (crowi) => {
   });
 
   return router;
-};
+}

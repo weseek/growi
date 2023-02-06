@@ -56,6 +56,9 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
       node.page.isTarget = true;
     }
+    else {
+      node.page.isTarget = false;
+    }
     return node;
   });
 };

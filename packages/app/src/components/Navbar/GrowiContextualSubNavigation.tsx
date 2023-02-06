@@ -24,10 +24,10 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
+  useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -35,6 +35,7 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import { NotAvailable } from '../NotAvailable';
 import { NotAvailableForNow } from '../NotAvailableForNow';
 import { Skeleton } from '../Skeleton';
 
@@ -140,17 +141,20 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         {t('attachment_data')}
       </DropdownItem>
 
-      <DropdownItem
-        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
-        disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
-        data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
-        className="grw-page-control-dropdown-item"
-      >
-        <span className="grw-page-control-dropdown-icon">
-          <ShareLinkIcon />
-        </span>
-        {t('share_links.share_link_management')}
-      </DropdownItem>
+      { !isGuestUser && !isSharedUser && (
+        <NotAvailable isDisabled={isLinkSharingDisabled ?? false} title="Disabled by admin">
+          <DropdownItem
+            onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
+            data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
+            className="grw-page-control-dropdown-item"
+          >
+            <span className="grw-page-control-dropdown-icon">
+              <ShareLinkIcon />
+            </span>
+            {t('share_links.share_link_management')}
+          </DropdownItem>
+        </NotAvailable>
+      ) }
     </>
   );
 };
@@ -184,7 +188,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 };
 
 type GrowiContextualSubNavigationProps = {
-  currentPage?: IPagePopulatedToShowRevision,
+  currentPage?: IPagePopulatedToShowRevision | null,
   isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
@@ -196,7 +200,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
@@ -216,10 +220,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
-  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
 
   // eslint-disable-next-line max-len
   const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
@@ -380,7 +384,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                 ) }
               </div>
             ) }
-            {isAbleToShowPageEditorModeManager && (
+            {isAbleToChangeEditorMode && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
                 isBtnDisabled={isGuestUser}
@@ -423,21 +427,19 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     : currentPage?.path;
 
   return (
-    <div data-testid="grw-contextual-sub-nav">
-      <GrowiSubNavigation
-        pagePath={pagePath}
-        pageId={currentPage?._id}
-        showDrawerToggler={isDrawerMode}
-        showTagLabel={isAbleToShowTagLabel}
-        isGuestUser={isGuestUser}
-        isDrawerMode={isDrawerMode}
-        isCompactMode={isCompactMode}
-        tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
-        tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
-        rightComponent={RightComponent}
-        additionalClasses={['container-fluid']}
-      />
-    </div>
+    <GrowiSubNavigation
+      pagePath={pagePath}
+      pageId={currentPage?._id}
+      showDrawerToggler={isDrawerMode}
+      showTagLabel={isAbleToShowTagLabel}
+      isGuestUser={isGuestUser}
+      isDrawerMode={isDrawerMode}
+      isCompactMode={isCompactMode}
+      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
+      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
+      rightComponent={RightComponent}
+      additionalClasses={['container-fluid']}
+    />
   );
 };
 

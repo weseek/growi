@@ -18,9 +18,9 @@ import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager } from '~/stores/page-listing';
+import { mutatePageList, mutatePageTree } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
-import { useFullTextSearchTermManager } from '~/stores/search';
+import { mutateSearching } from '~/stores/search';
 
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
@@ -28,6 +28,8 @@ import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
 import { ROOT_ELEM_ID as RevisionLoaderRoomElemId, RevisionLoaderProps } from '../Page/RevisionLoader';
 import { ROOT_ELEM_ID as PageCommentRootElemId, PageCommentProps } from '../PageComment';
 import { PageContentFooterProps } from '../PageContentFooter';
+
+import styles from './SearchResultContent.module.scss';
 
 
 const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
@@ -88,11 +90,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const [isRevisionLoaded, setRevisionLoaded] = useState(false);
   const [isPageCommentLoaded, setPageCommentLoaded] = useState(false);
-
-  // for mutation
-  const { advance: advancePt } = usePageTreeTermManager();
-  const { advance: advanceFts } = useFullTextSearchTermManager();
-  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
@@ -165,23 +162,23 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
-      advancePt();
-      advanceFts();
-      advanceDpl();
+      mutatePageTree();
+      mutateSearching();
+      mutatePageList();
     };
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
+  }, [openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 
-      advancePt();
-      advanceFts();
-      advanceDpl();
+      mutatePageTree();
+      mutateSearching();
+      mutatePageList();
     };
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
-  }, [advanceDpl, advanceFts, advancePt, openRenameModal, t]);
+  }, [openRenameModal, t]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
@@ -195,10 +192,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     else {
       toastSuccess(t('deleted_pages', { path }));
     }
-    advancePt();
-    advanceFts();
-    advanceDpl();
-  }, [advanceDpl, advanceFts, advancePt, t]);
+    mutatePageTree();
+    mutateSearching();
+    mutatePageList();
+  }, [t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
@@ -242,7 +239,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   return (
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
-      <div className="grw-subnav-append-shadow-container">
+      <div className={`${styles['grw-subnav-append-shadow-container']} grw-subnav-append-shadow-container`}>
         <GrowiSubNavigation
           pagePath={page.path}
           pageId={page._id}

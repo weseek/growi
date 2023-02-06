@@ -11,7 +11,7 @@ import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+import { mutatePageTree } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
@@ -228,9 +228,6 @@ export const usePageDeleteModalForBulkDeletion = (
 
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  // for PageTree mutation
-  const { advance: advancePt } = usePageTreeTermManager();
-
   return () => {
     if (data == null) {
       return;
@@ -260,7 +257,7 @@ export const usePageDeleteModalForBulkDeletion = (
         else {
           toastSuccess(t('deleted_pages_completely', { path }));
         }
-        advancePt();
+        mutatePageTree();
 
         if (onDeleted != null) {
           onDeleted(...args);
