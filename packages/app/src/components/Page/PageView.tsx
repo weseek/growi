@@ -1,4 +1,7 @@
-import React, { useEffect, useMemo } from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
+
 
 import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
@@ -13,9 +16,11 @@ import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 
+
 import type { CommentsProps } from '../Comments';
 import { MainPane } from '../Layout/MainPane';
 import { PageAlerts } from '../PageAlert/PageAlerts';
+import { ROOT_ELEM_ID as PageCommentRootElemId } from '../PageComment';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
@@ -47,6 +52,27 @@ type Props = {
 }
 
 export const PageView = (props: Props): JSX.Element => {
+
+  const commentsContainerRef = useRef<HTMLDivElement>(null);
+
+  const [isCommentsLoaded, setCommentsLoaded] = useState(false);
+
+  // ***************************  Auto Scroll  ***************************
+  useEffect(() => {
+    // do nothing if hash is empty
+    const { hash } = window.location;
+    if (hash.length === 0) {
+      return;
+    }
+
+    const targetId = hash.slice(1);
+
+    const target = document.getElementById(targetId);
+    target?.scrollIntoView();
+
+  }, [isCommentsLoaded]);
+  // *******************************  end  *******************************
+
   const {
     pagePath, initialPage, rendererConfig,
   } = props;
@@ -96,7 +122,9 @@ export const PageView = (props: Props): JSX.Element => {
   const footerContents = !isIdenticalPathPage && !isNotFound
     ? (
       <>
-        <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} />
+        <div id="comments-container" ref={commentsContainerRef}>
+          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} />
+        </div>
         { isUsersHomePagePath && (
           <UsersHomePageFooter creatorId={page.creator._id}/>
         ) }
