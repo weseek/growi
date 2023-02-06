@@ -20,7 +20,6 @@ import { registerGrowiFacade } from '~/utils/growi-facade';
 import type { CommentsProps } from '../Comments';
 import { MainPane } from '../Layout/MainPane';
 import { PageAlerts } from '../PageAlert/PageAlerts';
-import { ROOT_ELEM_ID as PageCommentRootElemId } from '../PageComment';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
@@ -57,22 +56,6 @@ export const PageView = (props: Props): JSX.Element => {
 
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
 
-  // ***************************  Auto Scroll  ***************************
-  useEffect(() => {
-    // do nothing if hash is empty
-    const { hash } = window.location;
-    if (hash.length === 0) {
-      return;
-    }
-
-    const targetId = hash.slice(1);
-
-    const target = document.getElementById(targetId);
-    target?.scrollIntoView();
-
-  }, [isCommentsLoaded]);
-  // *******************************  end  *******************************
-
   const {
     pagePath, initialPage, rendererConfig,
   } = props;
@@ -100,6 +83,22 @@ export const PageView = (props: Props): JSX.Element => {
       },
     });
   }, [mutateRendererOptions]);
+
+  // ***************************  Auto Scroll  ***************************
+  useEffect(() => {
+    // do nothing if hash is empty
+    const { hash } = window.location;
+    if (hash.length === 0) {
+      return;
+    }
+
+    const targetId = hash.slice(1);
+
+    const target = document.getElementById(targetId);
+    target?.scrollIntoView();
+
+  }, [isCommentsLoaded]);
+  // *******************************  end  *******************************
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
