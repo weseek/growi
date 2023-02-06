@@ -707,7 +707,7 @@ Expand / compress button bookmark list on users page
     color: $body-color;
     background-color: $body-bg;
     &.active {
-      background-color: darken($body-bg, 12%),
+      background-color: hsl.darken($body-bg, 12%),
     }
   }
 }

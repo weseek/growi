@@ -30,6 +30,8 @@
   $color-dropdown-link-active: var(--color-dropdown-link-active,var(--color-reversal));
   $bgcolor-dropdown-link-hover: hsl.darken(var(--bgcolor-global),15%);
   $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
+  $body-bg: var(--bgcolor-global);
+  $body-color: var(--color-global);
 
   // override bootstrap variables
   $text-muted: $gray-500;
@@ -284,7 +286,7 @@
         hsl.darken($body-bg, 24%)
       );
       .grw-foldertree-triangle-btn {
-        @include mixins.button-outline-svg-icon-variant($gray-400, $primary);
+        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
       }
     }
     .page-list > .grw-bookmarks-list-container > .list-group {
@@ -309,7 +311,7 @@
         }
       }
       .grw-bookmark-folder-menu-item {
-        @include mixins.button-outline-svg-icon-variant($gray-400, $primary);
+        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
         .grw-bookmark-folder-menu-item-title {
           color: $body-color
         }
