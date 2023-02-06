@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import { GrowiWikiType, IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
+import { GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 import { IUserHasId } from '~/interfaces/user';
@@ -34,6 +34,10 @@ class QuestionnaireService {
     const wikiMode = this.crowi.configManager.getConfig('crowi', 'security:wikiMode');
     const wikiType = wikiMode === 'private' ? GrowiWikiType.closed : GrowiWikiType.open;
 
+    const activeExternalAccountTypes: GrowiExternalAuthProviderType[] = Object.values(GrowiExternalAuthProviderType).filter((type) => {
+      return this.crowi.configManager.getConfig('crowi', `security:passport-${type}:isEnabled`);
+    });
+
     return {
       version: this.crowi.version,
       osInfo: {
@@ -49,7 +53,7 @@ class QuestionnaireService {
       currentActiveUsersCount,
       wikiType,
       attachmentType: this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
-      activeExternalAccountTypes: undefined, // TODO: set actual value
+      activeExternalAccountTypes,
       deploymentType: this.crowi.configManager.getConfig('crowi', 'app:deploymentType'),
     };
   }
