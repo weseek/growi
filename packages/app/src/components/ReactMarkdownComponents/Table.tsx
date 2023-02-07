@@ -10,7 +10,7 @@ export const Table = React.memo((props: TableProps): JSX.Element => {
   const { children, className } = props;
 
   return (
-    <table className={`${className}`}>
+    <table className={className}>
       {children}
     </table>
   );
