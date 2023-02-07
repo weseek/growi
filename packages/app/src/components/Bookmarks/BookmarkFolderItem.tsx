@@ -198,7 +198,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: bookmarkFolder._id });
       mutateParentBookmarkFolder();
-      toastSuccess(t('toaster.add_successed', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
