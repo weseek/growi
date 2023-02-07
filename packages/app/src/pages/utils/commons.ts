@@ -99,6 +99,7 @@ export const getNextI18NextConfig = async(
 
   // detect locale from browser accept language
   const detectLocaleFromBrowserAcceptLanguage = () => {
+    // get the header accept-language
     // ex. "ja,ar-SA;q=0.8,en;q=0.6,en-CA;q=0.4,en-US;q=0.2"
     const acceptLanguages = headers['accept-language'];
 
@@ -106,12 +107,12 @@ export const getNextI18NextConfig = async(
       return Lang.en_US;
     }
 
-    // ex. {'1': 'ja','0.8': 'ar-SA','0.6': 'en','0.4': 'en-CA','0.2': 'en-US'}
     // 1. trim blank spaces.
     // 2. separate by ,.
     // 3. if "lang;q=x", then { 'x', 'lang' } to add to the associative array.
-    //    if "lang" has no weight x (";q=x"), add it to the associative array with key = 1.
-    const acceptLanguagesArray = acceptLanguages
+    //    if "lang" has no weight x (";q=x"), add it with key = 1.
+    // ex. {'1': 'ja','0.8': 'ar-SA','0.6': 'en','0.4': 'en-CA','0.2': 'en-US'}
+    const acceptLanguagesDict = acceptLanguages
       .replace(/\s+/g, '')
       .split(',')
       .map(item => item.split(/\s*;\s*q\s*=\s*/))
@@ -120,15 +121,15 @@ export const getNextI18NextConfig = async(
         return acc;
       }, {});
 
-    // ex. [ 'ja', 'ar-SA', 'en', 'en-CA', 'en-US' ]
     // create an array of sorted languages in descending order.
-    const sortedLanguages = Object.keys(acceptLanguagesArray)
+    // ex. [ 'ja', 'ar-SA', 'en', 'en-CA', 'en-US' ]
+    const sortedAcceptLanguagesArray = Object.keys(acceptLanguagesDict)
       .sort((a, b) => b.localeCompare(a))
-      .map(item => acceptLanguagesArray[item]);
+      .map(item => acceptLanguagesDict[item]);
 
     // it return the first language that matches 'en', 'ja' or 'zh.
     // if no matching language is found, it returns Lang.en_US as a default.
-    for (const lang of sortedLanguages) {
+    for (const lang of sortedAcceptLanguagesArray) {
       if (lang.includes('en')) return Lang.en_US;
       if (lang.includes('ja')) return Lang.ja_JP;
       if (lang.includes('zh')) return Lang.zh_CN;
