@@ -15,8 +15,7 @@
     "test": ""
   },
   "dependencies": {
-    "@growi/core": "^6.0.6-RC.0",
-    "swr": "^1.3.0"
+    "@growi/core": "^6.0.6-RC.0"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
