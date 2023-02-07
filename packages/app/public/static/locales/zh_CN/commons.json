@@ -16,7 +16,8 @@
     "update_failed": "Failed to update {{target}}",
     "delete_succeeded": "Succeeded to delete {{target}}",
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
-    "remove_share_link": "Succeeded to remove {{count}} share links"
+    "remove_share_link": "Succeeded to remove {{count}} share links",
+    "add_succeeded": "Succeeded to add {{target}}"
   },
   "alert": {
     "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",

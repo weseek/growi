@@ -60,7 +60,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
       await mutateBookmarkFolderData();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -73,7 +73,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
 
       mutateBookmarkInfo();
-      toastSuccess('Bookmark added to bookmark folder successfully');
+      toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -81,7 +81,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
     mutateBookmarkFolderData();
     setSelectedItem(itemId);
-  }, [currentPage?._id, mutateBookmarkFolderData, mutateBookmarkInfo]);
+  }, [currentPage?._id, mutateBookmarkFolderData, mutateBookmarkInfo, t]);
 
   const renderBookmarkMenuItem = useCallback(() => {
     return (

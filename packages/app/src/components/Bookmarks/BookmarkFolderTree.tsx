@@ -18,6 +18,8 @@ const BookmarkFolderTree = (): JSX.Element => {
               key={item._id}
               bookmarkFolder={item}
               isOpen={false}
+              level={0}
+              root={item._id}
             />
           );
         })}

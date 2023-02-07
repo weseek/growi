@@ -1,16 +1,18 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
+import { useDrag } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-
+import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -20,18 +22,29 @@ type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
   onRenamed: () => void,
-  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void
+  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void,
+  parentFolder: BookmarkFolderItems
 }
 
 const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const {
-    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem,
+    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem, parentFolder,
   } = props;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
+  const [parentId, setParentId] = useState(parentFolder._id);
+  const { mutate: mutateParentBookmarkData } = useSWRxBookamrkFolderAndChild();
+  const { mutate: mutateChildFolderData } = useSWRxBookamrkFolderAndChild(parentId);
+
+
+  useEffect(() => {
+    if (parentId != null) {
+      mutateChildFolderData();
+    }
+  }, [parentId, mutateChildFolderData]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
@@ -94,45 +107,66 @@ const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteMenuItem(pageToDelete);
   }, [bookmarkedPage, onClickDeleteMenuItem]);
 
+  const [, bookmarkItemDragRef] = useDrag({
+    type: 'BOOKMARK',
+    item: bookmarkedPage,
+    end: () => {
+      if (parentFolder.parent == null) {
+        mutateParentBookmarkData();
+      }
+      if (parentId != null) {
+        setParentId(parentFolder.parent);
+        mutateChildFolderData();
+      }
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
+    }),
+  });
+
+
   return (
-    <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
-      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-5 d-flex align-items-center" id={bookmarkItemId}>
-        { isRenameInputShown ? (
-          <ClosableTextInput
-            value={nodePath.basename(bookmarkedPage.path ?? '')}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={pressEnterForRenameHandler}
-            inputValidator={inputValidator}
-          />
-        ) : (
-          <a href={`/${bookmarkedPage._id}`} className="grw-foldertree-title-anchor flex-grow-1 pr-3">
-            <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
-          </a>
-        )}
-        <PageItemControl
-          pageId={bookmarkedPage._id}
-          isEnableActions
-          forceHideMenuItems={[MenuItemType.DUPLICATE]}
-          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-          onClickRenameMenuItem={renameMenuItemClickHandler}
-          onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        >
-          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-            <i className="icon-options fa fa-rotate-90 p-1"></i>
-          </DropdownToggle>
-        </PageItemControl>
-        <UncontrolledTooltip
-          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-          autohide={false}
-          placement="right"
-          target={bookmarkItemId}
-          fade={false}
-        >
-          { formerPagePath !== null ? `${formerPagePath}/` : '/' }
-        </UncontrolledTooltip>
-      </li>
-    </div>
+    <li
+      className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
+      key={bookmarkedPage._id} ref={(c) => { bookmarkItemDragRef(c) }}
+      id={bookmarkItemId}
+    >
+      {isRenameInputShown ? (
+        <ClosableTextInput
+          value={nodePath.basename(bookmarkedPage.path ?? '')}
+          placeholder={t('Input page name')}
+          onClickOutside={() => { setRenameInputShown(false) }}
+          onPressEnter={pressEnterForRenameHandler}
+          inputValidator={inputValidator}
+        />
+      ) : (
+        <a href={`/${bookmarkedPage._id}`} className="grw-foldertree-title-anchor flex-grow-1 pr-3">
+          <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
+        </a>
+      )}
+      <PageItemControl
+        pageId={bookmarkedPage._id}
+        isEnableActions
+        forceHideMenuItems={[MenuItemType.DUPLICATE]}
+        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+        onClickRenameMenuItem={renameMenuItemClickHandler}
+        onClickDeleteMenuItem={deleteMenuItemClickHandler}
+      >
+        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+          <i className="icon-options fa fa-rotate-90 p-1"></i>
+        </DropdownToggle>
+      </PageItemControl>
+      <UncontrolledTooltip
+        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+        autohide={false}
+        placement="right"
+        target={bookmarkItemId}
+        fade={false}
+      >
+        {formerPagePath !== null ? `${formerPagePath}/` : '/'}
+      </UncontrolledTooltip>
+    </li>
   );
 };
 

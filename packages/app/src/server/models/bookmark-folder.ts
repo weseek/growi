@@ -10,6 +10,7 @@ import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
+import bookmark from './bookmark';
 import { InvalidParentBookmarkFolderError } from './errors';
 
 
@@ -162,6 +163,5 @@ Promise<BookmarkFolderDocument> {
   const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
   return bookmarkFolder;
 };
-
 
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);

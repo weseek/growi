@@ -818,6 +818,7 @@
   },
   "bookmark_folder":{
     "bookmark_folder": "书签文件夹",
+    "bookmark": "书签",
     "delete_modal": {
       "modal_header_label": "删除书签文件夹",
       "modal_body_description": "删除此书签文件夹及其内容",
