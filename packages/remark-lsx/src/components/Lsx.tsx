@@ -37,9 +37,9 @@ const LsxSubstance = React.memo(({
     return new LsxContext(prefix, options);
   }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const { data, error } = useSWRxNodeTree(lsxContext, isImmutable);
+  const { data, error, isLoading: _isLoading } = useSWRxNodeTree(lsxContext, isImmutable);
 
-  const isLoading = data === undefined;
+  const isLoading = _isLoading || data === undefined;
   const hasError = error != null;
   const errorMessage = error?.message;
 
