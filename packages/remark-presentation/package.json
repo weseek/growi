@@ -15,7 +15,8 @@
     "test": ""
   },
   "dependencies": {
-    "@growi/core": "^6.0.6-RC.0"
+    "@growi/core": "^6.0.6-RC.0",
+    "@splidejs/react-splide": "^0.7.12"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
