@@ -6,6 +6,7 @@ import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
+import * as presentation from '@growi/remark-presentation';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import type { NormalComponents } from 'react-markdown/lib/complex-types';
@@ -285,6 +286,32 @@ export const generateSimpleViewOptions = (
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
+  }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
+export const generatePresentationViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  const options = generateSimpleViewOptions(config, pagePath);
+
+  options.remarkPlugins.push(
+    presentation.remarkPlugin,
+  );
+
+  // add sanitize option for presentation
+  const sanitizePlugin = options.rehypePlugins.find(rehypePlugin => isSanitizePlugin(rehypePlugin)) as SanitizePlugin | undefined;
+  if (sanitizePlugin != null) {
+    const sanitizeOptions = sanitizePlugin[1];
+    sanitizePlugin[1] = deepmerge(
+      sanitizeOptions,
+      presentation.sanitizeOption,
+    );
   }
 
   if (config.isEnabledXssPrevention) {
