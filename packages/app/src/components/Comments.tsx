@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { type IRevisionHasId, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import type { PageCommentProps } from '~/components/PageComment';
+import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage } from '~/stores/page';
 
@@ -22,15 +22,46 @@ export type CommentsProps = {
   pageId: string,
   pagePath: string,
   revision: IRevisionHasId,
+  onLoaded?: () => void,
 }
 
 export const Comments = (props: CommentsProps): JSX.Element => {
 
-  const { pageId, pagePath, revision } = props;
+  const {
+    pageId, pagePath, revision, onLoaded,
+  } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
+
+  const pageCommentParentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const parent = pageCommentParentRef.current;
+    if (parent == null) return;
+
+    const observerCallback = (mutationRecords:MutationRecord[]) => {
+      mutationRecords.forEach((record:MutationRecord) => {
+        const target = record.target as HTMLElement;
+
+        for (const child of Array.from(target.children)) {
+          const childId = (child as HTMLElement).id;
+          if (childId === PageCommentRootElemId) {
+            onLoaded?.();
+            break;
+          }
+        }
+
+      });
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(parent, { childList: true });
+    return () => {
+      observer.disconnect();
+    };
+  }, [onLoaded]);
 
   const isTopPagePath = isTopPage(pagePath);
 
@@ -41,29 +72,27 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   return (
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
       <div className="container-lg">
-        <div className="page-comments">
-          <div id="page-comments-list" className="page-comments-list">
-            <PageComment
+        <div id="page-comments-list" className="page-comments-list" ref={pageCommentParentRef}>
+          <PageComment
+            pageId={pageId}
+            pagePath={pagePath}
+            revision={revision}
+            currentUser={currentUser}
+            isReadOnly={false}
+            titleAlign="left"
+            hideIfEmpty={false}
+          />
+        </div>
+        { !isDeleted && (
+          <div id="page-comment-write">
+            <CommentEditor
               pageId={pageId}
-              pagePath={pagePath}
-              revision={revision}
-              currentUser={currentUser}
-              isReadOnly={false}
-              titleAlign="left"
-              hideIfEmpty={false}
+              isForNewComment
+              onCommentButtonClicked={mutate}
+              revisionId={revision._id}
             />
           </div>
-          { !isDeleted && (
-            <div id="page-comment-write">
-              <CommentEditor
-                pageId={pageId}
-                isForNewComment
-                onCommentButtonClicked={mutate}
-                revisionId={revision._id}
-              />
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

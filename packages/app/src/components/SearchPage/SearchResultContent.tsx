@@ -11,9 +11,9 @@ import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
-import { IPageWithSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
+import type { IPageWithSearchMeta } from '~/interfaces/search';
+import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
@@ -22,12 +22,12 @@ import { mutatePageList, mutatePageTree } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
-import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
-import { ROOT_ELEM_ID as RevisionLoaderRoomElemId, RevisionLoaderProps } from '../Page/RevisionLoader';
-import { ROOT_ELEM_ID as PageCommentRootElemId, PageCommentProps } from '../PageComment';
-import { PageContentFooterProps } from '../PageContentFooter';
+import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
+import type { SubNavButtonsProps } from '../Navbar/SubNavButtons';
+import { ROOT_ELEM_ID as RevisionLoaderRoomElemId, type RevisionLoaderProps } from '../Page/RevisionLoader';
+import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '../PageComment';
+import type { PageContentFooterProps } from '../PageContentFooter';
 
 import styles from './SearchResultContent.module.scss';
 
@@ -96,7 +96,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const scrollElement = scrollElementRef.current;
     if (scrollElement == null) return;
 
-    const observerCallback = (mutationRecords:MutationRecord[], thisObs: MutationObserver) => {
+    const observerCallback = (mutationRecords:MutationRecord[]) => {
       mutationRecords.forEach((record:MutationRecord) => {
         const target = record.target as HTMLElement;
 

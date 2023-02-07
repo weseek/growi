@@ -484,9 +484,11 @@ module.exports = (crowi) => {
       const userData = await User.findById(id);
       await userData.makeAdmin();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -529,9 +531,11 @@ module.exports = (crowi) => {
       const userData = await User.findById(id);
       await userData.removeFromAdmin();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -581,9 +585,11 @@ module.exports = (crowi) => {
       const userData = await User.findById(id);
       await userData.statusActivate();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_ACTIVATE });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -625,9 +631,11 @@ module.exports = (crowi) => {
       const userData = await User.findById(id);
       await userData.statusSuspend();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_DEACTIVATE });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -672,9 +680,11 @@ module.exports = (crowi) => {
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
