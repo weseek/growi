@@ -16,7 +16,7 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -218,6 +218,7 @@ const PageEditor = React.memo((): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error);
       if (error.code === 'conflict') {
+        toastWarning('(TBD) resolve conflict');
         // pageContainer.setState({
         //   remoteRevisionId: error.data.revisionId,
         //   remoteRevisionBody: error.data.revisionBody,
@@ -255,11 +256,20 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
     const page = await save();
-    if (page != null) {
-      updateStateAfterSave?.();
-      toastSuccess(t('toaster.save_succeeded'));
+    if (page == null) {
+      return;
     }
-  }, [editorMode, save, t, updateStateAfterSave]);
+
+    if (isNotFound) {
+      await router.push(`/${page._id}#edit`);
+    }
+    else {
+      updateStateAfterSave?.();
+    }
+    toastSuccess(t('toaster.save_succeeded'));
+    mutateEditorMode(EditorMode.Editor);
+
+  }, [editorMode, isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
   /**

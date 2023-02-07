@@ -2,6 +2,8 @@ import React, {
   useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
 
+import path from 'path';
+
 import { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -175,13 +177,11 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
         return;
       }
 
-      const path = pathOrPathsToDelete;
-
       if (isCompletely) {
-        toastSuccess(t('deleted_pages_completely', { path }));
+        toastSuccess(t('deleted_pages_completely', { path: pathOrPathsToDelete }));
       }
       else {
-        toastSuccess(t('deleted_pages', { path }));
+        toastSuccess(t('deleted_pages', { path: pathOrPathsToDelete }));
       }
 
       mutatePageTree();
@@ -191,7 +191,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
       if (currentPagePath === pathOrPathsToDelete) {
         mutateCurrentPage();
-        router.push(`/trash${pathOrPathsToDelete}`);
+        router.push(isCompletely ? path.dirname(pathOrPathsToDelete) : `/trash${pathOrPathsToDelete}`);
       }
     };
 
