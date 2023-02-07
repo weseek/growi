@@ -37,18 +37,13 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     rendererOptions, pageId, revisionId, lazy, onRevisionLoaded,
   } = props;
 
-  const { trigger: mutatePageRevision } = useSWRMUTxPageRevision(pageId, revisionId);
+  const {
+    data: pageRevisionData, trigger: mutatePageRevision, isMutating, error,
+  } = useSWRMUTxPageRevision(pageId, revisionId);
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [markdown, setMarkdown] = useState<string>('');
 
   const loadData = useCallback(async() => {
-    if (!isLoaded && !isLoading) {
-      setIsLoading(true);
-    }
-
-    // load data with REST API
     try {
       const pageRevision = await mutatePageRevision();
 
@@ -70,12 +65,8 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
         setMarkdown(errorMessages.join('\n'));
       }
     }
-    finally {
-      setIsLoaded(true);
-      setIsLoading(false);
-    }
 
-  }, [isLoaded, isLoading, mutatePageRevision, onRevisionLoaded, t]);
+  }, [mutatePageRevision, onRevisionLoaded, t]);
 
   useEffect(() => {
     if (!lazy) {
@@ -91,6 +82,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   };
 
   /* ----- before load ----- */
+  const isLoaded = pageRevisionData != null && !isMutating && error == null;
   if (lazy && !isLoaded) {
     return (
       <Waypoint onPositionChange={onWaypointChange} bottomOffset="-100px" />
@@ -98,7 +90,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   }
 
   /* ----- loading ----- */
-  if (isLoading) {
+  if (isMutating) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
