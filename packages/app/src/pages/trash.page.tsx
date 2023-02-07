@@ -25,7 +25,7 @@ import {
 
 import type { NextPageWithLayout } from './_app.page';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps, useInitSidebarConfig,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -58,12 +58,8 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentPageId(null);
   useCurrentPathname('/trash');
 
-  // UserUISettings
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
 
