@@ -1,1 +1,1 @@
-// export {  } from './Splide';
+export * from './Slide';

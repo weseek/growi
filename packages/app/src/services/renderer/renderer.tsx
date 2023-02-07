@@ -298,20 +298,29 @@ export const generatePresentationViewOptions = (
     config: RendererConfig,
     pagePath: string,
 ): RendererOptions => {
+  // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
 
-  options.remarkPlugins.push(
+  const { remarkPlugins, rehypePlugins, components } = options;
+
+  remarkPlugins.push(
     presentation.remarkPlugin,
   );
 
   // add sanitize option for presentation
-  const sanitizePlugin = options.rehypePlugins.find(rehypePlugin => isSanitizePlugin(rehypePlugin)) as SanitizePlugin | undefined;
+  const sanitizePlugin = rehypePlugins.find(rehypePlugin => isSanitizePlugin(rehypePlugin)) as SanitizePlugin | undefined;
   if (sanitizePlugin != null) {
     const sanitizeOptions = sanitizePlugin[1];
     sanitizePlugin[1] = deepmerge(
       sanitizeOptions,
       presentation.sanitizeOption,
     );
+  }
+
+  // add presentation components
+  if (components != null) {
+    components.slides = presentation.Slides;
+    components.slide = presentation.Slide;
   }
 
   if (config.isEnabledXssPrevention) {
