@@ -43,7 +43,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
           <i className="icon-note"></i>
         </button>
       )}
-      <table className={`${className}`}>
+      <table className={className}>
         {children}
       </table>
     </div>
