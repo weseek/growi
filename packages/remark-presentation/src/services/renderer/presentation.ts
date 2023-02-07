@@ -1,38 +1,65 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Plugin } from 'unified';
-import type { Parent } from 'unist';
+import type { Parent, Node } from 'unist';
 import { findAfter } from 'unist-util-find-after';
-import { visitParents } from 'unist-util-visit-parents';
+import { visit, EXIT } from 'unist-util-visit';
 
+
+function wrapAllChildrenWithSlides(rootNode: Parent): void {
+  const slides = {
+    type: 'slides',
+    children: rootNode.children,
+    data: {
+      hName: 'slides',
+    },
+  };
+
+  rootNode.children = [slides];
+}
+
+function wrapWithSlide(parentNode: Parent, startElem: Node, endElem: Node | null): void {
+  const siblings = parentNode.children;
+
+  const startIndex = siblings.indexOf(startElem);
+  const endIndex = endElem != null ? siblings.indexOf(endElem) : undefined;
+
+  const between = siblings.slice(
+    startIndex,
+    endIndex,
+  );
+
+  const slide = {
+    type: 'slide',
+    children: between,
+    data: {
+      hName: 'slide',
+    },
+  };
+
+  siblings.splice(startIndex, between.length, slide);
+}
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visitParents(
+    // wrap with <slides>
+    visit(tree, (node) => {
+      if (node.type === 'root') {
+        const rootNode = node as Parent;
+        wrapAllChildrenWithSlides(rootNode);
+
+        return [EXIT];
+      }
+    });
+
+    // wrap with <slide>
+    visit(
       tree,
       node => node.type === 'heading',
-      (node, ancestors) => {
-        const parent = ancestors.slice(-1)[0] as Parent;
-
+      (node, index, parent: Parent) => {
         const startElem = node;
         const endElem = findAfter(parent, startElem, node => node.type === 'heading');
 
-        const startIndex = parent.children.indexOf(startElem);
-        const endIndex = endElem != null ? parent.children.indexOf(endElem) : undefined;
-
-        const between = parent.children.slice(
-          startIndex,
-          endIndex,
-        );
-
-        const section = {
-          type: 'slide',
-          children: between,
-          data: {
-            hName: 'slide',
-          },
-        };
-
-        parent.children.splice(startIndex, section.children.length, section);
+        wrapWithSlide(parent, startElem, endElem);
       },
     );
   };
@@ -40,5 +67,5 @@ export const remarkPlugin: Plugin = function() {
 
 
 export const sanitizeOption: SanitizeOption = {
-  tagNames: ['slide'],
+  tagNames: ['slides', 'slide'],
 };
