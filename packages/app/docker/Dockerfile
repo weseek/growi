@@ -102,6 +102,7 @@ COPY packages/hackmd packages/hackmd
 COPY packages/remark-drawio packages/remark-drawio
 COPY packages/remark-growi-directive packages/remark-growi-directive
 COPY packages/remark-lsx packages/remark-lsx
+COPY packages/remark-presentation packages/remark-presentation
 COPY packages/ui packages/ui
 COPY packages/core packages/core
 COPY packages/app packages/app
