@@ -1,15 +1,15 @@
-import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
+import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
   DevidedPagePath, Lang, AllLang,
 } from '@growi/core';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { SSRConfig, UserConfig } from 'next-i18next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
