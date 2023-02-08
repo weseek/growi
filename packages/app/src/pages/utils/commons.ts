@@ -1,13 +1,18 @@
-import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
+import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
   DevidedPagePath, Lang, AllLang,
 } from '@growi/core';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { SSRConfig, UserConfig } from 'next-i18next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import {
+  useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+} from '~/stores/ui';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -138,4 +143,13 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
     .replace('{{sitename}}', props.appTitle)
     .replace('{{pagepath}}', pagePath)
     .replace('{{pagename}}', dPagePath.latter);
+};
+
+export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettings?: IUserUISettings): void => {
+  // UserUISettings
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 };

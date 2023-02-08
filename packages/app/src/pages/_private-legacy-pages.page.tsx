@@ -23,7 +23,7 @@ import {
 } from '~/stores/ui';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -67,12 +67,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 
   useDrawioUri(props.drawioUri);
 
-  // UserUISettings
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // render config
   useRendererConfig(props.rendererConfig);

@@ -100,7 +100,7 @@ const useSWRxLsxResponse = (
 ): SWRResponse<LsxResponse, Error> => {
   return useSWR(
     ['/_api/lsx', pagePath, options, isImmutable],
-    (endpoint, pagePath, options) => {
+    ([endpoint, pagePath, options]) => {
       return axios.get(endpoint, {
         params: {
           pagePath,
@@ -109,6 +109,7 @@ const useSWRxLsxResponse = (
       }).then(result => result.data as LsxResponse);
     },
     {
+      keepPreviousData: true,
       revalidateIfStale: !isImmutable,
       revalidateOnFocus: !isImmutable,
       revalidateOnReconnect: !isImmutable,
@@ -122,22 +123,23 @@ type LsxNodeTree = {
 }
 
 export const useSWRxNodeTree = (lsxContext: LsxContext, isImmutable?: boolean): SWRResponse<LsxNodeTree, Error> => {
-  const { data, error } = useSWRxLsxResponse(lsxContext.pagePath, lsxContext.options, isImmutable);
-
-  const isLoading = data === undefined && error == null;
+  const {
+    data, error, isLoading, isValidating,
+  } = useSWRxLsxResponse(lsxContext.pagePath, lsxContext.options, isImmutable);
 
   return useSWR(
-    !isLoading ? ['lsxNodeTree', lsxContext.pagePath, lsxContext.options, isImmutable, data, error] : null,
-    (key, pagePath, options, isImmutable, data) => {
+    !isLoading && !isValidating ? ['lsxNodeTree', lsxContext.pagePath, lsxContext.options, isImmutable, data, error] : null,
+    ([, pagePath, , , data]) => {
       if (data === undefined || error != null) {
         throw error;
       }
       return {
-        nodeTree: generatePageNodeTree(pagePath, data.pages),
+        nodeTree: generatePageNodeTree(pagePath, data?.pages),
         toppageViewersCount: data.toppageViewersCount,
       };
     },
     {
+      keepPreviousData: true,
       revalidateIfStale: !isImmutable,
       revalidateOnFocus: !isImmutable,
       revalidateOnReconnect: !isImmutable,

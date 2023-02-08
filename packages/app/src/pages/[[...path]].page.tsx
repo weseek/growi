@@ -21,7 +21,6 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import RevisionRenderer from '~/components/Page/RevisionRenderer';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -32,7 +31,6 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
@@ -65,7 +63,7 @@ import {
 
 import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
 } from './utils/commons';
 
 
@@ -201,12 +199,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
 
-  // UserUISettings
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // page
   useIsLatestRevision(props.isLatestRevision);
@@ -270,7 +264,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data);
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
@@ -298,10 +292,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitleForPage(props, pagePath);
 
-  // TODO: show SSR body
-  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
-  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
-
   return (
     <>
       <Head>
@@ -325,9 +315,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
           pageView={
             <PageView
               pagePath={pagePath}
-              page={pageWithMeta?.data}
-              // TODO: show SSR body
-              // ssrBody={ssrBody}
+              initialPage={pageWithMeta?.data}
+              rendererConfig={props.rendererConfig}
             />
           }
         />
