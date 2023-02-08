@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
+import { GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 import { IUserHasId } from '~/interfaces/user';
@@ -30,7 +30,13 @@ class QuestionnaireService {
 
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
-    const attachmentType = this.crowi.configManager.getConfig('crowi', 'app:fileUploadType');
+
+    const wikiMode = this.crowi.configManager.getConfig('crowi', 'security:wikiMode');
+    const wikiType = wikiMode === 'private' ? GrowiWikiType.closed : GrowiWikiType.open;
+
+    const activeExternalAccountTypes: GrowiExternalAuthProviderType[] = Object.values(GrowiExternalAuthProviderType).filter((type) => {
+      return this.crowi.configManager.getConfig('crowi', `security:passport-${type}:isEnabled`);
+    });
 
     return {
       version: this.crowi.version,
@@ -40,15 +46,15 @@ class QuestionnaireService {
         arch: os.arch(),
         totalmem: os.totalmem(),
       },
-      appSiteUrl, // TODO: set only if allowed (see: https://dev.growi.org/6385911e1632aa30f4dae6a4#mdcont-%E5%8C%BF%E5%90%8D%E5%8C%96%E3%81%8C%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3)
+      appSiteUrl: this.crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
       appSiteUrlHashed,
-      type: 'cloud', // TODO: set actual value
+      type: this.crowi.configManager.getConfig('crowi', 'app:serviceType'),
       currentUsersCount,
       currentActiveUsersCount,
-      wikiType: 'open', // TODO: set actual value
-      attachmentType,
-      activeExternalAccountTypes: undefined, // TODO: set actual value
-      deploymentType: undefined, // TODO: set actual value
+      wikiType,
+      attachmentType: this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
+      activeExternalAccountTypes,
+      deploymentType: this.crowi.configManager.getConfig('crowi', 'app:deploymentType'),
     };
   }
 
