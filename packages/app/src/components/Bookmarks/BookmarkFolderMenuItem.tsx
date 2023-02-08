@@ -6,7 +6,7 @@ import {
   DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
@@ -19,12 +19,12 @@ import TriangleIcon from '../Icons/TriangleIcon';
 import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 
 
-type Props ={
+type Props = {
   item: BookmarkFolderItems
   onSelectedChild: () => void
   isSelected: boolean
 }
-const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
+const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   const {
     item, isSelected, onSelectedChild,
   } = props;
@@ -81,9 +81,20 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     setIsOpen(true);
   }, []);
 
-  const toggleHandler = useCallback(() => {
-    setIsOpen(!isOpen);
-  }, [isOpen]);
+  // Delete folder handler
+  const onClickDeleteHandler = useCallback(async(e, item) => {
+    e.stopPropagation();
+    try {
+      await apiv3Delete(`/bookmark-folder/${item._id}`);
+      mutateParentFolders();
+      mutateBookmarkInfo();
+      setIsOpen(false);
+      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [mutateBookmarkInfo, mutateParentFolders, t]);
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
@@ -99,16 +110,14 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     catch (err) {
       toastError(err);
     }
-
-
   }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders, t]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (
       <>
-        { childFolders != null && (
+        {childFolders != null && (
           <DropdownMenu className='m-0'>
-            { isCreateAction ? (
+            {isCreateAction ? (
               <div className='mx-2' onClick={e => e.stopPropagation()}>
                 <BookmarkFolderNameInput
                   onClickOutside={() => setIsCreateAction(false)}
@@ -116,13 +125,13 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
                 />
               </div>
             ) : (
-              <DropdownItem toggle={false} onClick={e => onClickNewBookmarkFolder(e) } className='grw-bookmark-folder-menu-item'>
-                <FolderIcon isOpen={false}/>
+              <DropdownItem toggle={false} onClick={e => onClickNewBookmarkFolder(e)} className='grw-bookmark-folder-menu-item'>
+                <FolderIcon isOpen={false} />
                 <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
               </DropdownItem>
             )}
 
-            { currentChildFolders && currentChildFolders?.length > 0 && (<DropdownItem divider />)}
+            {currentChildFolders && currentChildFolders?.length > 0 && (<DropdownItem divider />)}
 
             {currentChildFolders?.map(child => (
               <div key={child._id} >
@@ -146,35 +155,51 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   }, [childFolders, currentChildFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, selectedItem, t]);
 
   return (
-    <UncontrolledDropdown
-      direction="right"
-      className='d-flex justify-content-between'
-      isOpen={isOpen}
-      toggle={toggleHandler}
-      onMouseLeave={onMouseLeaveHandler}
-    >
-      <div className='d-flex justify-content-start grw-bookmark-folder-menu-item-title'>
-        <input
-          type="radio"
-          checked={isSelected}
-          name="bookmark-folder-menu-item"
-          id={`bookmark-folder-menu-item-${item._id}`}
-          onChange={e => e.stopPropagation()}
-          onClick={e => e.stopPropagation()}
-        />
-        <label htmlFor={`bookmark-folder-menu-item-${item._id}`} className='p-2 m-0'>
-          {item.name}
-        </label>
-      </div>
-      <DropdownToggle
-        color="transparent"
-        onClick={e => e.stopPropagation()}
-        onMouseEnter={onMouseEnterHandler}
+    <>
+      <UncontrolledDropdown
+        direction="right"
+        className='d-flex justify-content-between '
+        isOpen={isOpen}
+        // toggle={toggleHandler}
+        onMouseLeave={onMouseLeaveHandler}
       >
-        { childFolders && childFolders?.length > 0 && <TriangleIcon/> }
-      </DropdownToggle>
-      { renderBookmarkSubMenuItem() }
-    </UncontrolledDropdown >
+        <div className='d-flex justify-content-start grw-bookmark-folder-menu-item-title'>
+          <input
+            type="radio"
+            checked={isSelected}
+            name="bookmark-folder-menu-item"
+            id={`bookmark-folder-menu-item-${item._id}`}
+            onChange={e => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
+          />
+          <label htmlFor={`bookmark-folder-menu-item-${item._id}`} className='p-2 m-0'>
+            {item.name}
+          </label>
+        </div>
+
+        <DropdownToggle
+          className="text-danger ml-auto"
+          color="transparent"
+          onClick={e => onClickDeleteHandler(e, item)}
+        >
+          <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
+        </DropdownToggle>
+        <DropdownToggle
+          color="transparent"
+          onClick={e => e.stopPropagation()}
+          onMouseEnter={onMouseEnterHandler}
+        >
+          {childFolders && childFolders?.length > 0
+            ? <TriangleIcon />
+            : (
+              <i className="icon-plus d-block pl-0" />
+            )}
+        </DropdownToggle>
+        {renderBookmarkSubMenuItem()}
+
+      </UncontrolledDropdown >
+    </>
   );
 };
+
 export default BookmarkFolderMenuItem;
