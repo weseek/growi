@@ -3,17 +3,14 @@ import React from 'react';
 import { IUserHasId } from '@growi/core';
 import { Link as ScrollLink } from 'react-scroll';
 
-import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 
 import styles from './ContentLinkButtons.module.scss';
 
-const OFFSET = -120;
-
 const BookMarkLinkButton = React.memo(() => {
 
   return (
-    <ScrollLink to="bookmarks-list" offset={OFFSET} {...DEFAULT_AUTO_SCROLL_OPTS}>
+    <ScrollLink to="bookmarks-list" offset={-120}>
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm px-2"
@@ -30,7 +27,7 @@ BookMarkLinkButton.displayName = 'BookMarkLinkButton';
 const RecentlyCreatedLinkButton = React.memo(() => {
 
   return (
-    <ScrollLink to="recently-created-list" offset={OFFSET} {...DEFAULT_AUTO_SCROLL_OPTS}>
+    <ScrollLink to="recently-created-list" offset={-120}>
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm px-3"
