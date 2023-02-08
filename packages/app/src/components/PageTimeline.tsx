@@ -32,7 +32,6 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
       <div className="card-body">
         { rendererOptions != null && (
           <RevisionLoader
-            lazy
             rendererOptions={rendererOptions}
             pageId={page._id}
             revisionId={page.revision}
