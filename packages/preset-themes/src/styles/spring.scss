@@ -136,22 +136,24 @@
 
   // login and register
   .nologin {
-    background: unset !important;
-    background-image: url('../images/spring/spring.svg');
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
+    .page-wrapper{
+      background-color: #fff0f5;
+      background-image: url('../images/spring/spring.svg');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
 
-    .nologin-header,
-    .nologin-dialog {
-      background-color: rgba(black, 0.1);
-      a.link-switch {
-        color: var(--color-global);
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+        a.link-switch {
+          color: var(--color-global);
+        }
       }
-    }
 
-    .grw-external-auth-form {
-      border-color: var(--secondary) !important;
+      .grw-external-auth-form {
+        border-color: var(--secondary);
+      }
     }
   }
 

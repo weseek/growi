@@ -3,28 +3,6 @@
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-.growi:not(.login-page) {
-  // add background-image
-  .page-editor-preview-container {
-    background-image: url('/images/themes/antarctic/bg.svg');
-    background-attachment: fixed;
-    background-position: center center;
-    background-size: cover;
-  }
-}
-
-.nologin {
-  background: unset !important;
-  background-image: url('/images/themes/antarctic/topimage.svg');
-  background-attachment: fixed;
-  background-position: center center;
-  background-size: cover;
-}
-
-.grw-navbar {
-  border-bottom: #ffd700 4px solid;
-}
-
 //== Light Mode
 //
 :root[data-theme='light'] {
@@ -159,14 +137,33 @@
     }
   }
 
-  // login and register
-  .nologin {
-    .nologin-dialog a.link-switch {
-      color: rgba(black, 0.5);
+  .growi:not(.login-page) {
+    // add background-image
+    .page-editor-preview-container {
+      background-image: url('/images/themes/antarctic/bg.svg');
+      background-attachment: fixed;
+      background-position: center center;
+      background-size: cover;
     }
+  }
 
-    .grw-external-auth-form {
-      border-color: #aaa !important;
+  .nologin {
+    .page-wrapper {
+      background-image: url('../images/antarctic/topimage.svg');
+      background-attachment: fixed;
+      background-position: center center;
+      background-size: cover;
+
+      .nologin-dialog .link-switch {
+        color: rgba(black, 0.5);
+      }
+      .grw-external-auth-form {
+        border-color: #aaa;
+      }
     }
+  }
+
+  .grw-navbar {
+    border-bottom: #ffd700 4px solid;
   }
 }
