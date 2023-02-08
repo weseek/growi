@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
-import { Splide, SplideSlide } from '@splidejs/react-splide';
-import '@splidejs/splide/css';
+import { Marp } from '@marp-team/marp-core';
+import Head from 'next/head';
 
 
 type SlidesProps = {
@@ -9,7 +9,16 @@ type SlidesProps = {
 }
 
 export const Slides = (props: SlidesProps): JSX.Element => {
-  return <Splide>{props.children}</Splide>;
+  const marp = new Marp();
+  const { css } = marp.render('', { htmlAsArray: true });
+  return (
+    <>
+      <Head>
+        <style>{css}</style>
+      </Head>
+      <div className="marpit">{props.children}</div>
+    </>
+  );
 };
 
 type SlideProps = {
@@ -17,5 +26,11 @@ type SlideProps = {
 }
 
 export const Slide = (props: SlideProps): JSX.Element => {
-  return <SplideSlide>{props.children}</SplideSlide>;
+  return (
+    <svg data-marpit-svg viewBox="0 0 1280 960">
+      <foreignObject width="1280" height="960">
+        <section>{props.children}</section>
+      </foreignObject>
+    </svg>
+  );
 };
