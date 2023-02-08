@@ -145,23 +145,22 @@
 
   // login and register
   .nologin {
-    background: unset !important;
     .page-wrapper{
       background-image: url('../images/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
-    }
-    .nologin-header,
-    .nologin-dialog {
-      background-color: rgba(black, 0.1) !important;
-      a.link-switch  {
-        color: #{hsl.darken(var(--color-global),10%)};
-      }
-    }
 
-    .grw-external-auth-form {
-      border-color: #993439 !important;
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+        a.link-switch  {
+          color: #{hsl.darken(var(--color-global),10%)};
+        }
+      }
+      .grw-external-auth-form {
+        border-color: #993439;
+      }
     }
   }
 
@@ -341,24 +340,23 @@
 
   // login and register
   .nologin {
-    background: unset !important;
     .page-wrapper{
       background-image: url('../images/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
-    }
-    .nologin-header,
-    .nologin-dialog {
-      background-color: rgba(black, 0.1) !important;
-    }
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+      }
 
-    .link-switch {
-      color: var(--color-global)!important;
-    }
+      .link-switch {
+        color: var(--color-global);
+      }
 
-    .grw-external-auth-form {
-      border-color: var(--accentcolor) !important;
+      .grw-external-auth-form {
+        border-color: var(--accentcolor);
+      }
     }
   }
 }

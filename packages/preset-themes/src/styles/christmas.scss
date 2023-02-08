@@ -144,8 +144,6 @@
 
   // login page
   .nologin {
-    background: unset !important;
-
     .input-group {
       .input-group-text {
         color: $gray-700;
@@ -157,16 +155,17 @@
       }
     }
 
-    .nologin-header,
-    .nologin-dialog {
-      background-color: rgba(#ccc, 0.5) !important;
-      a.link-switch {
-        color: #bd3425;
+    .page-wrapper{
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(#ccc, 0.5);
+        a.link-switch {
+          color: #bd3425;
+        }
       }
-    }
-
-    .grw-external-auth-form {
-      border-color: #aaa !important;
+      .grw-external-auth-form {
+        border-color: #aaa;
+      }
     }
   }
 
