@@ -2,7 +2,6 @@
 import type { ComponentType } from 'react';
 
 import { isClient } from '@growi/core';
-import * as presentation from '@growi/presentation';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
@@ -300,28 +299,6 @@ export const generatePresentationViewOptions = (
 ): RendererOptions => {
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
-
-  const { remarkPlugins, rehypePlugins, components } = options;
-
-  remarkPlugins.push(
-    presentation.remarkPlugin,
-  );
-
-  // add sanitize option for presentation
-  const sanitizePlugin = rehypePlugins.find(rehypePlugin => isSanitizePlugin(rehypePlugin)) as SanitizePlugin | undefined;
-  if (sanitizePlugin != null) {
-    const sanitizeOptions = sanitizePlugin[1];
-    sanitizePlugin[1] = deepmerge(
-      sanitizeOptions,
-      presentation.sanitizeOption,
-    );
-  }
-
-  // add presentation components
-  if (components != null) {
-    components.slides = presentation.Slides;
-    components.slide = presentation.Slide;
-  }
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
