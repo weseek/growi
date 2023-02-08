@@ -2,11 +2,11 @@
 import type { ComponentType } from 'react';
 
 import { isClient } from '@growi/core';
+import * as presentation from '@growi/presentation';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
-import * as presentation from '@growi/remark-presentation';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import type { NormalComponents } from 'react-markdown/lib/complex-types';

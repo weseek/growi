@@ -99,10 +99,10 @@ COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/preset-themes packages/preset-themes
 COPY packages/slack packages/slack
 COPY packages/hackmd packages/hackmd
+COPY packages/presentation packages/presentation
 COPY packages/remark-drawio packages/remark-drawio
 COPY packages/remark-growi-directive packages/remark-growi-directive
 COPY packages/remark-lsx packages/remark-lsx
-COPY packages/remark-presentation packages/remark-presentation
 COPY packages/ui packages/ui
 COPY packages/core packages/core
 COPY packages/app packages/app
