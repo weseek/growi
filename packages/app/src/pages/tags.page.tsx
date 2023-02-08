@@ -27,7 +27,7 @@ import {
 
 import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -72,11 +72,8 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   useRendererConfig(props.rendererConfig);
 
