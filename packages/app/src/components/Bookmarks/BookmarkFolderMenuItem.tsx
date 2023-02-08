@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
   DropdownItem,
-  DropdownMenu, DropdownToggle, UncontrolledDropdown,
+  DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip,
 } from 'reactstrap';
 
 import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
@@ -178,6 +178,7 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         </div>
 
         <DropdownToggle
+          id={`bookmark-delete-button-${item._id}`}
           className="text-danger ml-auto"
           color="transparent"
           onClick={e => onClickDeleteHandler(e, item)}
@@ -198,6 +199,15 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         {renderBookmarkSubMenuItem()}
 
       </UncontrolledDropdown >
+      <UncontrolledTooltip
+        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+        autohide={false}
+        placement="top"
+        target={`bookmark-delete-button-${item._id}`}
+        fade={false}
+      >
+        {t('bookmark_folder.delete')}
+      </UncontrolledTooltip>
     </>
   );
 };

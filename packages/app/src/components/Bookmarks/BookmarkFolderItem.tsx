@@ -1,5 +1,5 @@
 import {
-  FC, useCallback, useEffect, useState, useMemo,
+  FC, useCallback, useEffect, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -51,13 +51,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  const childCount = useMemo((): number => {
-    if (currentChildren != null && currentChildren.length > children.length) {
-      return currentChildren.length;
-    }
-    return children.length;
-  }, [children.length, currentChildren]);
 
   useEffect(() => {
     if (childBookmarkFolderData != null) {
@@ -312,9 +305,9 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             <div className='grw-foldertree-title-anchor pl-2' >
               <p className={'text-truncate m-auto '}>{name}</p>
             </div>
-            {hasChildren() && (
+            {bookmarks.length > 0 && (
               <div className="grw-foldertree-count-wrapper">
-                <CountBadge count={childCount} />
+                <CountBadge count={bookmarks.length} />
               </div>
             )}
           </>
