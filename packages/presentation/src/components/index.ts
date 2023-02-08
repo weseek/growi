@@ -1,2 +1,2 @@
-export * from './Presentation';
+export * from './PresentationWithSpectacle';
 export * from './Slide';

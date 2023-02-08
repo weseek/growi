@@ -38,12 +38,12 @@ const PagePresentationModal = (): JSX.Element => {
       unmountOnClose={false}
     >
       <ModalBody className="modal-body">
-        { markdown != null && (
-          // <ReactMarkdown {...rendererOptions}>
-          //   {markdown}
-          // </ReactMarkdown>
-          <Presentation markdown={markdown} />
-        )}
+        {/* { markdown != null && (
+          <ReactMarkdown {...rendererOptions}>
+            {markdown}
+          </ReactMarkdown>
+        )} */}
+        <Presentation>{markdown}</Presentation>
       </ModalBody>
     </Modal>
   );
