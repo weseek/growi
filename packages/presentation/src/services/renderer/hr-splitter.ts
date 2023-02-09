@@ -35,6 +35,10 @@ export const remarkPlugin: Plugin = function() {
       tree,
       node => node.type !== 'thematicBreak',
       (node, index, parent: Parent) => {
+        if (parent == null || parent.type !== 'root') {
+          return;
+        }
+
         const startElem = node;
         const endElem = findAfter(parent, startElem, node => node.type === 'thematicBreak');
 
