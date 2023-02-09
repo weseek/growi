@@ -27,6 +27,11 @@ function wrapWithSection(parentNode: Parent, startElem: Node, endElem: Node | nu
   siblings.splice(startIndex, between.length, section);
 }
 
+function removeElement(parentNode: Parent, elem: Node): void {
+  const siblings = parentNode.children;
+  siblings.splice(siblings.indexOf(elem), 1);
+}
+
 export const remarkPlugin: Plugin = function() {
 
   return (tree) => {
@@ -43,6 +48,11 @@ export const remarkPlugin: Plugin = function() {
         const endElem = findAfter(parent, startElem, node => node.type === 'thematicBreak');
 
         wrapWithSection(parent, startElem, endElem);
+
+        // remove <hr>
+        if (endElem != null) {
+          removeElement(parent, endElem);
+        }
       },
     );
   };
