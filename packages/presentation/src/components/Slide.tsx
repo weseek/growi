@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Marp } from '@marp-team/marp-core';
+// import { Marp } from '@marp-team/marp-core';
 import Head from 'next/head';
 
 
@@ -9,12 +9,12 @@ type SlidesProps = {
 }
 
 export const Slides = (props: SlidesProps): JSX.Element => {
-  const marp = new Marp();
-  const { css } = marp.render('', { htmlAsArray: true });
+  // const marp = new Marp();
+  // const { css } = marp.render('', { htmlAsArray: true });
   return (
     <>
       <Head>
-        <style>{css}</style>
+        {/* <style>{css}</style> */}
       </Head>
       <div className="marpit">{props.children}</div>
     </>
