@@ -35,9 +35,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     rendererOptions, pageId, revisionId, onRevisionLoaded,
   } = props;
 
-  const {
-    data: pageRevisionData, trigger: mutatePageRevision, isMutating, error,
-  } = useSWRMUTxPageRevision(pageId, revisionId);
+  const { trigger: mutatePageRevision, isMutating } = useSWRMUTxPageRevision(pageId, revisionId);
 
   const [markdown, setMarkdown] = useState<string>('');
 
@@ -70,7 +68,6 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     loadData();
   }, [loadData]);
 
-  /* ----- loading ----- */
   if (isMutating) {
     return (
       <div className="wiki">
