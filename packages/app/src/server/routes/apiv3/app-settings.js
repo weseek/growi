@@ -645,7 +645,7 @@ module.exports = (crowi) => {
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
 
       const responseParams = {
-        fileUploadType: crowi.configManager.getConfig('crowi', 'f'),
+        fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
       };
 
       if (fileUploadType === 'gcs') {
