@@ -68,7 +68,7 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 };
 
 const baseSanitizeSchema = {
-  tagNames: ['iframe'],
+  tagNames: ['iframe', 'section'],
   attributes: {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
     '*': ['class', 'className', 'style'],
