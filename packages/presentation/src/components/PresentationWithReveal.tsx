@@ -22,7 +22,9 @@ export const Presentation = (props: Props): JSX.Element => {
 
   useEffect(() => {
     if (children != null) {
-      Reveal.initialize(revealOptions);
+      const deck = new Reveal(revealOptions);
+      deck.initialize()
+        .then(() => deck.slide(0)); // navigate to the first slide
     }
   }, [children, revealOptions]);
 
