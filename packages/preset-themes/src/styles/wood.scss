@@ -172,16 +172,18 @@
   .nologin {
     background: unset !important;
 
-    .nologin-header,
-    .nologin-dialog {
-      background-color: rgba(black, 0.1);
-      a.link-switch {
-        color: rgba(black, 0.5);
+    .page-wrapper{
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+        a.link-switch {
+          color: rgba(black, 0.5);
+        }
       }
-    }
 
-    .grw-external-auth-form {
-      border-color: #aaa !important;
+      .grw-external-auth-form {
+        border-color: #aaa;
+      }
     }
   }
 
