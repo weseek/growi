@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import Reveal from 'reveal.js';
 
 import * as hrSplitter from '../services/renderer/hr-splitter';
+
 
 type Props = {
   rendererOptions: ReactMarkdownOptions,
@@ -13,14 +15,22 @@ type Props = {
 export const Presentation = (props: Props): JSX.Element => {
   const { rendererOptions, children } = props;
 
+  useEffect(() => {
+    if (children != null) {
+      Reveal.initialize();
+    }
+  }, [children]);
+
   rendererOptions.remarkPlugins?.push(hrSplitter.remarkPlugin);
 
   return (
-    <>
-      { children == null
-        ? <section>No contents</section>
-        : <ReactMarkdown {...rendererOptions}>{children}</ReactMarkdown>
-      }
-    </>
+    <div className="reveal">
+      <div className="slides">
+        { children == null
+          ? <section>No contents</section>
+          : <ReactMarkdown {...rendererOptions}>{children}</ReactMarkdown>
+        }
+      </div>
+    </div>
   );
 };
