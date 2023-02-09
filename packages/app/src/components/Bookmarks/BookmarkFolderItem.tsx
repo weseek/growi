@@ -8,7 +8,6 @@ import { DropdownToggle } from 'reactstrap';
 
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
@@ -299,11 +298,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             <div className='grw-foldertree-title-anchor pl-2' >
               <p className={'text-truncate m-auto '}>{name}</p>
             </div>
-            {bookmarks.length > 0 && (
-              <div className="grw-foldertree-count-wrapper">
-                <CountBadge count={bookmarks.length} />
-              </div>
-            )}
           </>
         )
 
