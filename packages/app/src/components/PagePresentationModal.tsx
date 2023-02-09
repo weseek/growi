@@ -37,6 +37,9 @@ const PagePresentationModal = (): JSX.Element => {
       className={`grw-presentation-modal ${styles['grw-presentation-modal']} grw-body-only-modal-expanded`}
       unmountOnClose={false}
     >
+      <button className="close" type="button" aria-label="close" onClick={closePresentationModal}>
+        <span className="text-white" aria-hidden>×</span>
+      </button>
       <ModalBody className="modal-body">
         {/* { markdown != null && (
           <ReactMarkdown {...rendererOptions}>

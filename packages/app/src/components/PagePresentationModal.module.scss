@@ -1,4 +1,24 @@
 .grw-presentation-modal :global {
+  .close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1;
+
+    span {
+      display: inline-block;
+      width: 3rem;
+      height: 3rem;
+      font-size: 3rem;
+      line-height: 3rem;
+    }
+  }
+
   .modal-body {
+    padding: 0;
+  }
+  .modal-content {
+    background-color: transparent;
+    border-radius: 0;
   }
 }
