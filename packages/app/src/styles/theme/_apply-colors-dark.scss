@@ -581,8 +581,10 @@
     }
   }
 
-  .page-comments-row {
-    background: var(--bgcolor-subnav);
+  .page-comment-form .comment-form-main {
+    &:before {
+      border-right-color: var(--bgcolor-global);
+    }
   }
 
   /*
