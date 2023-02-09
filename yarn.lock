@@ -18665,9 +18665,9 @@ react-lifecycles-compat@^3.0.4:
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 react-markdown@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-8.0.3.tgz#e8aba0d2f5a1b2124d476ee1fff9448a2f57e4b3"
-  integrity sha512-We36SfqaKoVNpN1QqsZwWSv/OZt5J15LNgTLWynwAN5b265hrQrsjMtlRNwUvS+YyR3yDM8HpTNc4pK9H/Gc0A==
+  version "8.0.5"
+  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-8.0.5.tgz#c9a70a33ca9aeeafb769c6582e7e38843b9d70ad"
+  integrity sha512-jGJolWWmOWAvzf+xMdB9zwStViODyyFQhNB/bwCerbBKmrTmgmA599CGiOlP58OId1IMoIRsA8UdI1Lod4zb5A==
   dependencies:
     "@types/hast" "^2.0.0"
     "@types/prop-types" "^15.0.0"
@@ -18680,7 +18680,7 @@ react-markdown@^8.0.3:
     remark-parse "^10.0.0"
     remark-rehype "^10.0.0"
     space-separated-tokens "^2.0.0"
-    style-to-object "^0.3.0"
+    style-to-object "^0.4.0"
     unified "^10.0.0"
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
@@ -20833,6 +20833,11 @@ reveal.js@^4.3.1:
   resolved "https://registry.yarnpkg.com/reveal.js/-/reveal.js-4.3.1.tgz#24a63300cff92cf5cbdd40a46f5d3699614d49ca"
   integrity sha512-1kyEnWeUkaCdBdX//XXq9dtBK95ppvIlSwlHelrP8/wrX6LcsYp4HT9WTFoFEOUBfVqkm8C2aHQ367o+UKfcxw==
 
+reveal.js@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/reveal.js/-/reveal.js-4.4.0.tgz#bff589987a842d99bc8f6eb9b2b59f6d9941bf87"
+  integrity sha512-jIV6C9V2NEUjGzU8L6dUFGpk1KJmq7/EzP2fOW67ggc2c0Cp/PdprWxZ9Qgp46F0T2ZWDCjQ1p3Ytzy5jA6a2w==
+
 rewire@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/rewire/-/rewire-5.0.0.tgz#c4e6558206863758f6234d8f11321793ada2dbff"
@@ -22277,6 +22282,13 @@ style-to-object@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/style-to-object/-/style-to-object-0.3.0.tgz#b1b790d205991cc783801967214979ee19a76e46"
   integrity sha512-CzFnRRXhzWIdItT3OmF8SQfWyahHhjq3HwcMNCNLn+N7klOOqPjMeG/4JSu77D7ypZdGvSzvkrbyeTMizz2VrA==
+  dependencies:
+    inline-style-parser "0.1.1"
+
+style-to-object@^0.4.0:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/style-to-object/-/style-to-object-0.4.1.tgz#53cf856f7cf7f172d72939d9679556469ba5de37"
+  integrity sha512-HFpbb5gr2ypci7Qw+IOhnP2zOU7e77b+rzM+wTzXzfi1PrtBCX0E7Pk4wL4iTLnhzZ+JgEGAhX81ebTg/aYjQw==
   dependencies:
     inline-style-parser "0.1.1"
 
