@@ -140,7 +140,6 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
           <input
             className="form-control"
             type="text"
-            defaultValue={props.s3SecretAccessKey || ''}
             onChange={(e) => {
               props?.onChangeS3SecretAccessKey(e.target.value);
             }}
