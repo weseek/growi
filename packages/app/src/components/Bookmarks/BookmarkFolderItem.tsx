@@ -6,23 +6,22 @@ import { useTranslation } from 'next-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
-import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import { onDeletedBookmarkFolderFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
-import { usePageDeleteModal } from '~/stores/modal';
+import { useBookmarkFolderDeleteModal, usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import BookmarkFolderItemControl from './BookmarkFolderItemControl';
 import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 import BookmarkItem from './BookmarkItem';
-import DeleteBookmarkFolderModal from './DeleteBookmarkFolderModal';
 
 
 type BookmarkFolderItemProps = {
@@ -47,10 +46,10 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const { mutate: mutateParentBookmarkFolder } = useSWRxBookamrkFolderAndChild(parent);
   const [isRenameAction, setIsRenameAction] = useState<boolean>(false);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
-  const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
   useEffect(() => {
     if (childBookmarkFolderData != null) {
@@ -114,19 +113,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   }, [mutateChildBookmarkData, t, targetFolder]);
 
-  // Delete Fodler handler
-  const onClickDeleteButtonHandler = useCallback(async() => {
-    try {
-      await apiv3Delete(`/bookmark-folder/${folderId}`);
-      setIsDeleteFolderModalShown(false);
-      loadParent();
-      mutateBookmarkInfo();
-      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [folderId, loadParent, mutateBookmarkInfo, t]);
 
   const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
@@ -262,12 +248,20 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, []);
 
   const onClickDeleteHandler = useCallback(() => {
-    setIsDeleteFolderModalShown(true);
-  }, []);
+    const bookmarkFolderDeleteHandler: onDeletedBookmarkFolderFunction = (folderId) => {
+      if (typeof folderId !== 'string') {
+        return;
+      }
+      loadParent();
+      mutateBookmarkInfo();
+      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+    };
 
-  const onDeleteFolderModalClose = useCallback(() => {
-    setIsDeleteFolderModalShown(false);
-  }, []);
+    if (bookmarkFolder == null) {
+      return;
+    }
+    openDeleteBookmarkFolderModal(bookmarkFolder, { onDeleted: bookmarkFolderDeleteHandler });
+  }, [bookmarkFolder, loadParent, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
 
 
   return (
@@ -350,11 +344,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       {
         renderBookmarkItem()
       }
-      <DeleteBookmarkFolderModal
-        bookmarkFolder={bookmarkFolder}
-        isOpen={isDeleteFolderModalShown}
-        onClickDeleteButton={onClickDeleteButtonHandler}
-        onModalClose={onDeleteFolderModalClose} />
     </div>
   );
 };
