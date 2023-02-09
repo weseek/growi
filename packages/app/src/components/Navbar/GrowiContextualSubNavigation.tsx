@@ -84,13 +84,11 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
-  const hrefForPresentationModal = `${pageId}/?presentation=1`;
-
   return (
     <>
       {/* Presentation */}
       <DropdownItem
-        onClick={() => openPresentationModal(hrefForPresentationModal)}
+        onClick={() => openPresentationModal()}
         data-testid="open-presentation-modal-btn"
         className="grw-page-control-dropdown-item"
       >

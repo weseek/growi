@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Presentation } from '@growi/presentation';
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
@@ -19,7 +19,7 @@ const PagePresentationModal = (): JSX.Element => {
   const { data: presentationModalData, close: closePresentationModal } = usePagePresentationModal();
 
   const { data: currentPage } = useSWRxCurrentPage();
-  // const { data: rendererOptions } = usePresentationViewOptions();
+  const { data: rendererOptions } = usePresentationViewOptions();
 
   const isOpen = presentationModalData?.isOpened ?? false;
 
@@ -43,7 +43,9 @@ const PagePresentationModal = (): JSX.Element => {
             {markdown}
           </ReactMarkdown>
         )} */}
-        <Presentation>{markdown}</Presentation>
+        { rendererOptions != null && (
+          <Presentation rendererOptions={rendererOptions as ReactMarkdownOptions}>{markdown}</Presentation>
+        ) }
       </ModalBody>
     </Modal>
   );
