@@ -1,4 +1,14 @@
+@use '~/styles/_modal';
+
 .grw-presentation-modal :global {
+
+  @include modal.expand-modal-fullscreen(false, false, 0px);
+
+  .modal-content {
+    background-color: transparent;
+    border-radius: 0;
+  }
+
   .close {
     position: absolute;
     top: 1rem;
@@ -14,11 +24,4 @@
     }
   }
 
-  .modal-body {
-    padding: 0;
-  }
-  .modal-content {
-    background-color: transparent;
-    border-radius: 0;
-  }
 }

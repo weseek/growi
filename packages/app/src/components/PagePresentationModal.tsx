@@ -34,7 +34,7 @@ const PagePresentationModal = (): JSX.Element => {
       isOpen={isOpen}
       toggle={closePresentationModal}
       data-testid="page-presentation-modal"
-      className={`grw-presentation-modal ${styles['grw-presentation-modal']} grw-body-only-modal-expanded`}
+      className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
       unmountOnClose={false}
     >
       <button className="close" type="button" aria-label="close" onClick={closePresentationModal}>
