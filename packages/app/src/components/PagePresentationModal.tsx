@@ -44,7 +44,15 @@ const PagePresentationModal = (): JSX.Element => {
           </ReactMarkdown>
         )} */}
         { rendererOptions != null && (
-          <Presentation rendererOptions={rendererOptions as ReactMarkdownOptions}>{markdown}</Presentation>
+          <Presentation
+            rendererOptions={rendererOptions as ReactMarkdownOptions}
+            revealOptions={{
+              embedded: true,
+              hash: true,
+            }}
+          >
+            {markdown}
+          </Presentation>
         ) }
       </ModalBody>
     </Modal>

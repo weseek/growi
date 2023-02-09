@@ -4695,6 +4695,11 @@
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.0.tgz#2b35eccfcee7d38cd72ad99232fbd58bffb3c84d"
   integrity sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==
 
+"@types/reveal.js@^4.4.1":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@types/reveal.js/-/reveal.js-4.4.1.tgz#970e29b6ed6c07ad693797d5157ba2fb3e94840c"
+  integrity sha512-oMcIAaP9rFCODHdGC2RM71cbBGOPc4prolkPEN98LUQm9b64ePjNpD/Fb2b/oep2w0XDN4aYCdUmip6kuLEJBg==
+
 "@types/rewire@^2.5.28":
   version "2.5.28"
   resolved "https://registry.yarnpkg.com/@types/rewire/-/rewire-2.5.28.tgz#ff34de38c4269fe74e2597195d4918c25d42ebad"
