@@ -17,7 +17,10 @@ export const Presentation = (props: Props): JSX.Element => {
 
   useEffect(() => {
     if (children != null) {
-      Reveal.initialize();
+      Reveal.initialize({
+        hash: true,
+        pageNumber: true,
+      });
     }
   }, [children]);
 
