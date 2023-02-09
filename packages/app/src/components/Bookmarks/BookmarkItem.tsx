@@ -13,6 +13,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -38,13 +39,15 @@ const BookmarkItem = (props: Props): JSX.Element => {
   const [parentId, setParentId] = useState(parentFolder._id);
   const { mutate: mutateParentBookmarkData } = useSWRxBookamrkFolderAndChild();
   const { mutate: mutateChildFolderData } = useSWRxBookamrkFolderAndChild(parentId);
-
+  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
 
   useEffect(() => {
+    mutatePageInfo();
     if (parentId != null) {
       mutateChildFolderData();
     }
-  }, [parentId, mutateChildFolderData]);
+    mutateParentBookmarkData();
+  }, [parentId, mutateChildFolderData, mutatePageInfo, mutateParentBookmarkData]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
@@ -111,13 +114,7 @@ const BookmarkItem = (props: Props): JSX.Element => {
     type: 'BOOKMARK',
     item: bookmarkedPage,
     end: () => {
-      if (parentFolder.parent == null) {
-        mutateParentBookmarkData();
-      }
-      if (parentId != null) {
-        setParentId(parentFolder.parent);
-        mutateChildFolderData();
-      }
+      setParentId(parentFolder.parent);
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -148,6 +145,7 @@ const BookmarkItem = (props: Props): JSX.Element => {
       <PageItemControl
         pageId={bookmarkedPage._id}
         isEnableActions
+        pageInfo={fetchedPageInfo}
         forceHideMenuItems={[MenuItemType.DUPLICATE]}
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
         onClickRenameMenuItem={renameMenuItemClickHandler}

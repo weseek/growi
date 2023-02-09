@@ -3,9 +3,10 @@ import { useCallback, useMemo } from 'react';
 import { SWRResponse } from 'swr';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
 
@@ -579,4 +580,44 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+/*
+* BookmarkFolderDeleteModal
+*/
+export type IDeleteBookmarkFolderModalOption = {
+  onDeleted?: onDeletedBookmarkFolderFunction,
+}
+
+type DeleteBookmarkFolderModalStatus = {
+  isOpened: boolean,
+  bookmarkFolder?: BookmarkFolderItems,
+  opts?: IDeleteBookmarkFolderModalOption,
+}
+
+type DeleteModalBookmarkFolderStatusUtils = {
+  open(
+    bookmarkFolder?: BookmarkFolderItems,
+    opts?: IDeleteBookmarkFolderModalOption,
+  ): Promise<DeleteBookmarkFolderModalStatus | undefined>,
+  close(): Promise<DeleteBookmarkFolderModalStatus | undefined>,
+}
+
+export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalStatus):
+ SWRResponse<DeleteBookmarkFolderModalStatus, Error> & DeleteModalBookmarkFolderStatusUtils => {
+  const initialData: DeleteBookmarkFolderModalStatus = {
+    isOpened: false,
+  };
+  const swrResponse = useStaticSWR<DeleteBookmarkFolderModalStatus, Error>('deleteBookmarkFolderModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (
+        bookmarkFolder?: BookmarkFolderItems,
+        opts?: IDeleteBookmarkFolderModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, bookmarkFolder, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
 };

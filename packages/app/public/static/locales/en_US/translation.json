@@ -823,7 +823,8 @@
       "modal_footer_button": "Delete Folder"
     },
     "input_placeholder": "Input folder name",
-    "new_folder": "New Folder"
+    "new_folder": "New Folder",
+    "delete": "Delete Folder"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",

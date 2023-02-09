@@ -3,14 +3,16 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import {
   DropdownItem,
-  DropdownMenu, DropdownToggle, UncontrolledDropdown,
+  DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip,
 } from 'reactstrap';
 
-import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import FolderIcon from '../Icons/FolderIcon';
@@ -37,6 +39,7 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
@@ -82,19 +85,22 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   }, []);
 
   // Delete folder handler
-  const onClickDeleteHandler = useCallback(async(e, item) => {
+  const onClickDeleteHandler = useCallback(async(e) => {
     e.stopPropagation();
-    try {
-      await apiv3Delete(`/bookmark-folder/${item._id}`);
-      mutateParentFolders();
+    const bookmarkFolderDeleteHandler: onDeletedBookmarkFolderFunction = (folderId) => {
+      if (typeof folderId !== 'string') {
+        return;
+      }
       mutateBookmarkInfo();
-      setIsOpen(false);
+      mutateParentFolders();
       toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+    };
+
+    if (item == null) {
+      return;
     }
-    catch (err) {
-      toastError(err);
-    }
-  }, [mutateBookmarkInfo, mutateParentFolders, t]);
+    openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
+  }, [item, mutateBookmarkInfo, mutateParentFolders, openDeleteBookmarkFolderModal, t]);
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
@@ -178,9 +184,10 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         </div>
 
         <DropdownToggle
+          id={`bookmark-delete-button-${item._id}`}
           className="text-danger ml-auto"
           color="transparent"
-          onClick={e => onClickDeleteHandler(e, item)}
+          onClick={e => onClickDeleteHandler(e)}
         >
           <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
         </DropdownToggle>
@@ -198,6 +205,15 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         {renderBookmarkSubMenuItem()}
 
       </UncontrolledDropdown >
+      <UncontrolledTooltip
+        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+        autohide={false}
+        placement="top"
+        target={`bookmark-delete-button-${item._id}`}
+        fade={false}
+      >
+        {t('bookmark_folder.delete')}
+      </UncontrolledTooltip>
     </>
   );
 };

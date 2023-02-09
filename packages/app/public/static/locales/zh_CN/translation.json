@@ -826,7 +826,8 @@
       "modal_footer_button": "删除文件夹"
     },
     "input_placeholder": "输入文件夹名称",
-    "new_folder": "新建文件夹"
+    "new_folder": "新建文件夹",
+    "delete": "删除文件夹"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",
