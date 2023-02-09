@@ -1,4 +1,3 @@
-import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
 
 import { i18n } from '^/config/next-i18next.config';
@@ -8,6 +7,8 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
+import { ErrorV3 } from '@growi/core';
 
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
@@ -252,7 +253,6 @@ module.exports = (crowi) => {
       s3CustomEndpoint: crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
       s3Bucket: crowi.configManager.getConfig('crowi', 'aws:s3Bucket'),
       s3AccessKeyId: crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
-      s3SecretAccessKey: crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
       s3ReferenceFileWithRelayMode: crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode'),
 
       gcsUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'gcs:useOnlyEnvVarsForSomeOptions'),
@@ -630,17 +630,22 @@ module.exports = (crowi) => {
       requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
       requestParams['aws:s3Bucket'] = req.body.s3Bucket;
       requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
-      requestParams['aws:s3SecretAccessKey'] = req.body.s3SecretAccessKey;
       requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
     }
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+
+      const s3SecretAccessKey = req.body.s3SecretAccessKey;
+      if (fileUploadType === 'aws' && s3SecretAccessKey != null && s3SecretAccessKey.trim() !== '') {
+        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'aws:s3SecretAccessKey': s3SecretAccessKey }, true);
+      }
+
       await crowi.setUpFileUpload(true);
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
 
       const responseParams = {
-        fileUploadType: crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
+        fileUploadType: crowi.configManager.getConfig('crowi', 'f'),
       };
 
       if (fileUploadType === 'gcs') {
@@ -655,7 +660,6 @@ module.exports = (crowi) => {
         responseParams.s3CustomEndpoint = crowi.configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
         responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
         responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
-        responseParams.s3SecretAccessKey = crowi.configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
         responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
       }
       const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
