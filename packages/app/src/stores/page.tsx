@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import type {
-  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
+  IPageInfoForEntity, IPagePopulatedToShowRevision, IRevisionHasPageId, Nullable,
 } from '@growi/core';
 import { isClient, pagePathUtils } from '@growi/core';
 import useSWR, { Key, SWRResponse } from 'swr';
@@ -146,7 +146,7 @@ export const useSWRxPageRevisions = (
 
 export const useSWRxInfinitePageRevisions = (
     pageId: string | null | undefined,
-) : SWRInfiniteResponse<(IRevisionsForPagination), Error> => {
+) : SWRInfiniteResponse<IRevisionHasPageId[], Error> => {
   const LIMIT = 10;
   const getKey = (page: number) => {
     return `/revisions/list?pageId=${pageId}&page=${page + 1}&limit=${LIMIT}`;
@@ -154,11 +154,9 @@ export const useSWRxInfinitePageRevisions = (
   return useSWRInfinite(
     getKey,
     (endpoint: string) => apiv3Get(endpoint).then((response) => {
-      const revisions = {
-        revisions: response.data.docs,
-        totalCounts: response.data.totalDocs,
-      };
-      return revisions;
+      return response.data.docs.map((data) => {
+        return data;
+      });
     }),
     {
       revalidateFirstPage: false,

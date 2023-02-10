@@ -3,13 +3,15 @@ import React from 'react';
 import { IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
+import { useSWRxInfinitePageRevisions } from '~/stores/page';
+
+import InfiniteScroll from '../Sidebar/InfiniteScroll';
+
 import { Revision } from './Revision';
 
 import styles from './PageRevisionTable.module.scss';
 
 type PageRevisionTAble = {
-  revisions: IRevisionHasId[],
-  pagingLimit: number,
   sourceRevision: IRevisionHasId,
   targetRevision: IRevisionHasId,
   currentPageId: string,
@@ -22,14 +24,23 @@ type PageRevisionTAble = {
 export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   const { t } = useTranslation();
 
+  const REVISIONS_PER_PAGE = 10;
+
   const {
-    revisions, pagingLimit, sourceRevision, targetRevision, currentPageId, currentPagePath,
+    sourceRevision, targetRevision, currentPageId, currentPagePath,
     onChangeSourceInvoked, onChangeTargetInvoked, onClose,
   } = props;
 
-  const revisionCount = revisions.length;
-  const latestRevision = revisions[0];
-  const oldestRevision = revisions[revisions.length - 1];
+  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId);
+
+  const { data: revisionsData } = swrInifiniteResponse;
+  const revisions = revisionsData && revisionsData[0];
+  const oldestRevision = revisions && revisions[revisions.length - 1];
+
+
+  const isEmpty = revisionsData?.[0].length === 0;
+  const isReachingEnd = isEmpty
+   || (revisionsData && revisionsData[revisionsData.length - 1]?.length < REVISIONS_PER_PAGE);
 
   const renderRow = (revision: IRevisionHasId, previousRevision: IRevisionHasId, latestRevision: IRevisionHasId,
       isOldestRevision: boolean, hasDiff: boolean) => {
@@ -118,23 +129,6 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
     );
   };
 
-  const revisionList = revisions.map((revision, idx) => {
-    // Returns null because the last revision is for the bottom diff display
-    if (idx === pagingLimit) {
-      return null;
-    }
-
-    // if it is the first revision, show full text as diff text
-    const previousRevision = (idx + 1 < revisionCount) ? revisions[idx + 1] : revision;
-
-    const isOldestRevision = revision === oldestRevision;
-
-    // set 'true' if undefined for backward compatibility
-    const hasDiff = revision.hasDiffToPrev !== false;
-
-    return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
-  });
-
   return (
     <table className={`${styles['revision-history-table']} table revision-history-table`}>
       <thead>
@@ -145,7 +139,25 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
         </tr>
       </thead>
       <tbody className="overflow-auto d-block">
-        {revisionList}
+        {revisions && (
+          <InfiniteScroll
+            swrInifiniteResponse={swrInifiniteResponse}
+            isReachingEnd= {isReachingEnd}
+          >
+            {pageRevisions => pageRevisions.map((revision, idx) => {
+
+              const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
+
+              const isOldestRevision = revision === oldestRevision;
+              const latestRevision = revisions[0];
+
+              // set 'true' if undefined for backward compatibility
+              const hasDiff = revision.hasDiffToPrev !== false;
+              return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+
+            })}
+          </InfiniteScroll>
+        )}
       </tbody>
     </table>
   );

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { IRevisionHasPageId } from '@growi/core';
 
 import { useCurrentPageId } from '~/stores/context';
-import { useSWRxPageRevisions, useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath, useSWRxInfinitePageRevisions } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';
@@ -13,28 +13,29 @@ const logger = loggerFactory('growi:PageHistory');
 
 export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
-  const [activePage, setActivePage] = useState(1);
-
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const { data: revisionsData, mutate: mutatePageRevisions } = useSWRxPageRevisions(activePage, 10, currentPageId);
+  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId);
+  const { data: revisionsData, mutate: mutatePageRevisions } = swrInifiniteResponse;
+
 
   const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
   const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
 
+  const latestRevision = revisionsData != null ? revisionsData[0][0] : null;
+
   useEffect(() => {
-    if (revisionsData != null) {
-      setSourceRevision(revisionsData.revisions[0]);
-      setTargetRevision(revisionsData.revisions[0]);
+    if (latestRevision != null) {
+      setSourceRevision(latestRevision);
+      setTargetRevision(latestRevision);
     }
-  }, [revisionsData]);
+  }, [latestRevision]);
 
   useEffect(() => {
     mutatePageRevisions();
   });
 
-  const pagingLimit = 10;
 
   if (revisionsData == null || sourceRevision == null || targetRevision == null || currentPageId == null || currentPagePath == null) {
     return (
@@ -47,8 +48,6 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className="revision-history" data-testid="page-history">
       <PageRevisionTable
-        revisions={revisionsData.revisions}
-        pagingLimit={pagingLimit}
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
         currentPageId={currentPageId}
