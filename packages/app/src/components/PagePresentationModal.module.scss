@@ -13,7 +13,7 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    z-index: 1;
+    z-index: 110; // over ".reveal .slides"
     color: var(--color-global);
 
     span {
