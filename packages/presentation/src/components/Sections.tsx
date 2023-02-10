@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
-import * as hrSplitter from '../services/renderer/hr-splitter';
+import * as extractSections from '../services/renderer/extract-sections';
 
 import './Sections.global.scss';
 
@@ -33,7 +33,7 @@ type SectionsProps = {
 export const Sections = (props: SectionsProps): JSX.Element => {
   const { rendererOptions, children } = props;
 
-  rendererOptions.remarkPlugins?.push(hrSplitter.remarkPlugin);
+  rendererOptions.remarkPlugins?.push(extractSections.remarkPlugin);
 
   const { css } = marp.render('', { htmlAsArray: true });
 
