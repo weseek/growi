@@ -54,16 +54,14 @@ const QuestionnaireSettings = (): JSX.Element => {
   return (
     <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
-        システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。
-        <br />
-        <br />
+        <div className="mb-4">システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。</div>
         <span>
-          <span className="text-info mr-2"><i className="icon-info icon-fw"></i>送信される情報について</span>
-          {/* eslint-disable-next-line max-len */}
-          <a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html#%E3%82%A2%E3%83%B3%E3%82%B1%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A" rel="noreferrer" target="_blank" className="d-inline">詳細<i className="icon-share-alt"></i></a>
-          <br />
-          アンケートの回答と合わせて、GROWI の改善に必要な最小限の情報を合わせて収集します。<br />
-          収集されるデータにユーザーの個人情報は含まれません。<br />
+          <div className="mb-2">
+            <span className="text-info mr-2"><i className="icon-info icon-fw"></i>送信される情報について</span>
+            {/* eslint-disable-next-line max-len */}
+            <a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html#%E3%82%A2%E3%83%B3%E3%82%B1%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A" rel="noreferrer" target="_blank" className="d-inline">詳細<i className="icon-share-alt"></i></a>
+          </div>
+          アンケートの回答と合わせて、GROWI の改善に必要な情報を収集します。収集されるデータにユーザーの個人情報は含まれません。<br />
           私たちはそれらを活用し、最大限ユーザーの体験を向上させるよう努めます。
         </span>
       </p>
