@@ -14,6 +14,7 @@ import styles from './Presentation.module.scss';
 
 const baseRevealOptions: Reveal.Options = {
   disableLayout: true,
+  slideNumber: 'c/t',
 };
 
 type Props = {
@@ -31,6 +32,10 @@ export const Presentation = (props: Props): JSX.Element => {
       deck.initialize()
         .then(() => deck.slide(0)); // navigate to the first slide
     }
+
+    return function cleanup() {
+      Reveal?.destroy?.();
+    };
   }, [children, revealOptions]);
 
   return (
