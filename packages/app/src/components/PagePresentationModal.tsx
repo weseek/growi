@@ -1,5 +1,6 @@
 import React from 'react';
 
+import type { PresentationProps } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import {
@@ -16,7 +17,7 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import styles from './PagePresentationModal.module.scss';
 
 
-const Presentation = dynamic(() => import('@growi/presentation').then(mod => mod.Presentation), {
+const Presentation = dynamic<PresentationProps>(() => import('@growi/presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
     <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>

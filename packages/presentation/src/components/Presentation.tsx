@@ -17,12 +17,12 @@ const baseRevealOptions: Reveal.Options = {
   slideNumber: 'c/t',
 };
 
-type Props = {
+export type PresentationProps = {
   options: PresentationOptions,
   children?: string,
 }
 
-export const Presentation = (props: Props): JSX.Element => {
+export const Presentation = (props: PresentationProps): JSX.Element => {
   const { options, children } = props;
   const { revealOptions } = options;
 
