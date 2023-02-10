@@ -50,15 +50,14 @@ const QuestionnaireSettings = (): JSX.Element => {
   return (
     <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
-        {t('admin:app_setting.questionnaire_settings_explanation')}
-        <br />
-        <br />
+        <div className="mb-4">{t('admin:app_setting.questionnaire_settings_explanation')}</div>
         <span>
-          <span className="text-info mr-2"><i className="icon-info icon-fw"></i>{t('admin:app_setting.about_data_sent')}</span>
-          <a href={t('admin:app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
-            {t('admin:app_setting.learn_more')} <i className="icon-share-alt"></i>
-          </a>
-          <br />
+          <div className="mb-2">
+            <span className="text-info mr-2"><i className="icon-info icon-fw"></i>{t('admin:app_setting.about_data_sent')}</span>
+            <a href={t('admin:app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
+              {t('admin:app_setting.learn_more')} <i className="icon-share-alt"></i>
+            </a>
+          </div>
           {t('admin:app_setting.other_info_will_be_sent')}<br />
           {t('admin:app_setting.we_will_use_the_data_to_improve_growi')}
         </span>
