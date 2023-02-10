@@ -4,8 +4,8 @@ import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
+import type { PresentationOptions } from '../consts';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Sections.global.scss';
@@ -26,14 +26,15 @@ const marp = new Marp({
 
 
 type SectionsProps = {
-  rendererOptions: ReactMarkdownOptions,
+  options: PresentationOptions,
   children?: string,
 }
 
 export const Sections = (props: SectionsProps): JSX.Element => {
-  const { rendererOptions, children } = props;
+  const { options, children } = props;
+  const { rendererOptions, isDarkMode } = options;
 
-  rendererOptions.remarkPlugins?.push(extractSections.remarkPlugin);
+  rendererOptions.remarkPlugins?.push([extractSections.remarkPlugin, { isDarkMode }]);
 
   const { css } = marp.render('', { htmlAsArray: true });
 

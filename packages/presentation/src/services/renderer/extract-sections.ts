@@ -5,7 +5,7 @@ import { findAfter } from 'unist-util-find-after';
 import { visit } from 'unist-util-visit';
 
 
-function wrapWithSection(parentNode: Parent, startElem: Node, endElem: Node | null): void {
+function wrapWithSection(parentNode: Parent, startElem: Node, endElem: Node | null, isDarkMode?: boolean): void {
   const siblings = parentNode.children;
 
   const startIndex = siblings.indexOf(startElem);
@@ -21,6 +21,9 @@ function wrapWithSection(parentNode: Parent, startElem: Node, endElem: Node | nu
     children: between,
     data: {
       hName: 'section',
+      hProperties: {
+        className: isDarkMode ? 'invert' : '',
+      },
     },
   };
 
@@ -32,7 +35,12 @@ function removeElement(parentNode: Parent, elem: Node): void {
   siblings.splice(siblings.indexOf(elem), 1);
 }
 
-export const remarkPlugin: Plugin = function() {
+export type ExtractSectionsPluginParams = {
+  isDarkMode?: boolean,
+}
+
+export const remarkPlugin: Plugin<[ExtractSectionsPluginParams]> = (options) => {
+  const { isDarkMode } = options;
 
   return (tree) => {
     // wrap with <section>
@@ -47,7 +55,7 @@ export const remarkPlugin: Plugin = function() {
         const startElem = node;
         const endElem = findAfter(parent, startElem, node => node.type === 'thematicBreak');
 
-        wrapWithSection(parent, startElem, endElem);
+        wrapWithSection(parent, startElem, endElem, isDarkMode);
 
         // remove <hr>
         if (endElem != null) {

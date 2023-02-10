@@ -10,6 +10,7 @@ import {
 import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 
 import styles from './PagePresentationModal.module.scss';
@@ -26,6 +27,8 @@ const Presentation = dynamic(() => import('@growi/presentation').then(mod => mod
 const PagePresentationModal = (): JSX.Element => {
 
   const { data: presentationModalData, close: closePresentationModal } = usePagePresentationModal();
+
+  const { isDarkMode } = useNextThemes();
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePresentationViewOptions();
@@ -51,10 +54,13 @@ const PagePresentationModal = (): JSX.Element => {
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
         { rendererOptions != null && (
           <Presentation
-            rendererOptions={rendererOptions as ReactMarkdownOptions}
-            revealOptions={{
-              embedded: true,
-              hash: true,
+            options={{
+              rendererOptions: rendererOptions as ReactMarkdownOptions,
+              revealOptions: {
+                embedded: true,
+                hash: true,
+              },
+              isDarkMode,
             }}
           >
             {markdown}

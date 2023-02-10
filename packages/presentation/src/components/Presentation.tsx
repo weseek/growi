@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import Reveal from 'reveal.js';
+
+import type { PresentationOptions } from '../consts';
 
 import { MARP_CONTAINER_CLASS_NAME, Sections } from './Sections';
 
@@ -16,13 +17,13 @@ const baseRevealOptions: Reveal.Options = {
 };
 
 type Props = {
-  rendererOptions: ReactMarkdownOptions,
-  revealOptions?: Reveal.Options,
+  options: PresentationOptions,
   children?: string,
 }
 
 export const Presentation = (props: Props): JSX.Element => {
-  const { rendererOptions, revealOptions, children } = props;
+  const { options, children } = props;
+  const { revealOptions } = options;
 
   useEffect(() => {
     if (children != null) {
@@ -35,7 +36,7 @@ export const Presentation = (props: Props): JSX.Element => {
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
       <div className="slides d-flex justify-content-center align-items-center">
-        <Sections rendererOptions={rendererOptions}>{children}</Sections>
+        <Sections options={options}>{children}</Sections>
       </div>
     </div>
   );
