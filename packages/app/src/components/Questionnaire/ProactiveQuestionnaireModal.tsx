@@ -28,7 +28,7 @@ const QuestionnaireCompletionModal = (props: ModalProps): JSX.Element => {
         <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
           <div className="text-center">
             <h2 className="my-4">{t('questionnaire.title')}</h2>
-            <p className="mb-1">{t('questionnaire.successfully_submit')}</p>
+            <p className="mb-1">{t('questionnaire.successfully_submitted')}</p>
             <p>{t('questionnaire.thanks_for_answering')}</p>
           </div>
           <div className="text-center my-3">
