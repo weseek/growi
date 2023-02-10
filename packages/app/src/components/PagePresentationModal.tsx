@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Presentation } from '@growi/presentation';
+import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import {
   Modal, ModalBody,
@@ -13,6 +13,17 @@ import { usePresentationViewOptions } from '~/stores/renderer';
 
 
 import styles from './PagePresentationModal.module.scss';
+
+
+const Presentation = dynamic(() => import('@growi/presentation').then(mod => mod.Presentation), {
+  ssr: false,
+  loading: () => (
+    <div className="d-flex justify-content-center align-items-center h-100">
+      <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
+    </div>
+  ),
+});
+
 
 const PagePresentationModal = (): JSX.Element => {
 
@@ -41,11 +52,6 @@ const PagePresentationModal = (): JSX.Element => {
         <span className="text-white" aria-hidden>×</span>
       </button>
       <ModalBody className="modal-body">
-        {/* { markdown != null && (
-          <ReactMarkdown {...rendererOptions}>
-            {markdown}
-          </ReactMarkdown>
-        )} */}
         { rendererOptions != null && (
           <Presentation
             rendererOptions={rendererOptions as ReactMarkdownOptions}
