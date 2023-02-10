@@ -3,7 +3,15 @@
   // workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
   &:global(.reveal) :global {
     .slides {
+      inset: 50% auto auto 50%;
+      width: 1280px;
+      height: 700px;
       text-align: unset;
+      transform: translate(-50%, -50%);
+
+      section {
+        position: absolute;
+      }
     }
     .controls {
       bottom: 24px;
