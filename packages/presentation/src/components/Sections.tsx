@@ -27,6 +27,9 @@ export const Sections = (props: SectionsProps): JSX.Element => {
       new Element('div', { class: 'slides' }),
     ],
     inlineSVG: false,
+    emoji: undefined,
+    html: false,
+    math: false,
   });
   const { css } = marp.render('', { htmlAsArray: true });
 
