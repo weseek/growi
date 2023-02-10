@@ -46,7 +46,7 @@ const PagePresentationModal = (): JSX.Element => {
       className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
     >
       <button className="close" type="button" aria-label="close" onClick={closePresentationModal}>
-        <span className="text-white" aria-hidden>×</span>
+        <span aria-hidden>×</span>
       </button>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
         { rendererOptions != null && (
