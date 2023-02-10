@@ -813,11 +813,11 @@
   "questionnaire": {
     "title": "改善服务的GROWI调查表",
     "successfully_submit": "问卷已经发出。",
-    "thanks_for_answer": "非常感谢您完成问卷调查。",
+    "thanks_for_answering": "非常感谢您完成问卷调查。",
     "more_satisfied_services": "我们希望让使用GROWI的人更加满意",
     "strive_to_improve_services": "我们将利用你的反馈来改善我们的服务。",
     "satisfaction_with_growi": "对GROWI的满意程度",
-    "history_of_growi_use": "GROWI的使用历史",
+    "history_of_growi_usage": "GROWI的使用历史",
     "position": "职业类型",
     "occupation": "职位",
     "comment_on_growi": "关于GROWI的评论",

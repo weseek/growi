@@ -42,7 +42,7 @@ const OtherSettings = (): JSX.Element => {
 
   return (
     <>
-      <h2 className="border-bottom my-4">アンケート設定</h2>
+      <h2 className="border-bottom my-4">{t('questionnaire.settings')}</h2>
 
       {isLoadingCurrentUser && <div className="text-muted text-center mb-5">
         <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
@@ -62,14 +62,14 @@ const OtherSettings = (): JSX.Element => {
                   disabled={!growiIsQuestionnaireEnabled}
                 />
                 <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
-                アンケートを有効にする
+                  {t('questionnaire.enable_questionnaire')}
                 </label>
               </span>
               <p className="form-text text-muted small">
-                GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。
+                {t('questionnaire.personal_settings_supplementary_explanation')}
               </p>
               {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-toggle">
-                管理者によってアンケートは無効化されています
+                {t('questionnaire.disabled_by_admin')}
               </UncontrolledTooltip> }
             </div>
           )}
@@ -90,7 +90,7 @@ const OtherSettings = (): JSX.Element => {
             </button>
           </span>
           {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-btn">
-            管理者によってアンケートは無効化されています
+            {t('questionnaire.disabled_by_admin')}
           </UncontrolledTooltip>}
         </div>
       </div>

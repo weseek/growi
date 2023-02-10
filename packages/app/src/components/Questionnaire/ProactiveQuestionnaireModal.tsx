@@ -29,7 +29,7 @@ const QuestionnaireCompletionModal = (props: ModalProps): JSX.Element => {
           <div className="text-center">
             <h2 className="my-4">{t('questionnaire.title')}</h2>
             <p className="mb-1">{t('questionnaire.successfully_submit')}</p>
-            <p>{t('questionnaire.thanks_for_answer')}</p>
+            <p>{t('questionnaire.thanks_for_answering')}</p>
           </div>
           <div className="text-center my-3">
             <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={onClose}>{t('Close')}</span>
@@ -55,16 +55,16 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
     const {
       satisfaction: { value: satisfaction },
       lengthOfExperience: { value: lengthOfExperience },
-      position: { value: position },
       occupation: { value: occupation },
+      position: { value: position },
       commentText: { value: commentText },
     } = formData;
 
     const sendValues = {
       satisfaction: Number(satisfaction),
       lengthOfExperience,
-      position,
       occupation,
+      position,
       commentText,
     };
 
@@ -104,7 +104,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
                 </select>
               </div>
               <div className="form-group row mt-3">
-                <label className="col-sm-5 col-form-label" htmlFor="lengthOfExperience">{t('questionnaire.history_of_growi_use')}</label>
+                <label className="col-sm-5 col-form-label" htmlFor="lengthOfExperience">{t('questionnaire.history_of_growi_usage')}</label>
                 <select
                   name="lengthOfExperience"
                   id="lengthOfExperience"
@@ -120,12 +120,12 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
                 </select>
               </div>
               <div className="form-group row mt-3">
-                <label className="col-sm-5 col-form-label" htmlFor="position">{t('questionnaire.position')}</label>
-                <input className="col-sm-7 form-control" type="text" name="position" id="position" />
-              </div>
-              <div className="form-group row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="occupation">{t('questionnaire.occupation')}</label>
                 <input className="col-sm-7 form-control" type="text" name="occupation" id="occupation" />
+              </div>
+              <div className="form-group row mt-3">
+                <label className="col-sm-5 col-form-label" htmlFor="position">{t('questionnaire.position')}</label>
+                <input className="col-sm-7 form-control" type="text" name="position" id="position" />
               </div>
               <div className="form-group row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="commentText">{t('questionnaire.comment_on_growi')}</label>
