@@ -35,10 +35,9 @@ export const Sections = (props: SectionsProps): JSX.Element => {
       <Head>
         <style>{css}</style>
       </Head>
-      { children == null
-        ? <section><h2>No contents</h2></section>
-        : <ReactMarkdown {...rendererOptions}>{children}</ReactMarkdown>
-      }
+      <ReactMarkdown {...rendererOptions}>
+        { children ?? '## No Contents' }
+      </ReactMarkdown>
     </>
   );
 };
