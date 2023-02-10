@@ -58,7 +58,7 @@ const QuestionnaireSettings = (): JSX.Element => {
         <br />
         <br />
         <span>
-          <span className="text-info mr-2"><i className="icon-info icon-fw"></i>送信されるデータについて</span>
+          <span className="text-info mr-2"><i className="icon-info icon-fw"></i>送信される情報について</span>
           {/* eslint-disable-next-line max-len */}
           <a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html#%E3%82%A2%E3%83%B3%E3%82%B1%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A" rel="noreferrer" target="_blank" className="d-inline">詳細情報<i className="icon-share-alt"></i></a>
           <br />
