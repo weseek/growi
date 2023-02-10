@@ -70,7 +70,7 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
 
   const page = pageBySWR ?? initialPage;
-  const isNotFound = isNotFoundMeta || page == null;
+  const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomePagePath = isUsersHomePage(pagePath);
 
   // register to facade
