@@ -391,7 +391,7 @@
     "bucket_name": "バケット名",
     "custom_endpoint": "カスタムエンドポイント",
     "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
-    "s3_secret_access_key_input_description": "設定値が保存されていても表示されません",
+    "s3_secret_access_key_input_description": "設定値は非表示です",
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",

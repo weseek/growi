@@ -383,7 +383,7 @@
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
-    "s3_secret_access_key_input_description": "Setting values are not displayed even if they are saved",
+    "s3_secret_access_key_input_description": "Setting value is hidden",
     "load_plugins": "Load plugins",
     "enable": "Enable",
     "disable": "Disable",
