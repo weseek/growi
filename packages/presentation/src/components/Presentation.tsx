@@ -6,6 +6,8 @@ import Reveal from 'reveal.js';
 import { MARP_CONTAINER_CLASS_NAME, Sections } from './Sections';
 
 import 'reveal.js/dist/reveal.css';
+import './Presentation.global.scss';
+
 import styles from './Presentation.module.scss';
 
 

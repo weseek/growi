@@ -1,11 +1,6 @@
 .grw-presentation {
 
   // workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
-  &:global(.reveal-viewport) {
-    background-color: var(--bgcolor-global);
-  }
-
-  // workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
   &:global(.reveal) :global {
     .slides {
       text-align: unset;
