@@ -18,9 +18,7 @@ import styles from './PagePresentationModal.module.scss';
 const Presentation = dynamic(() => import('@growi/presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
-    <div className="d-flex justify-content-center align-items-center h-100">
-      <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
-    </div>
+    <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
   ),
 });
 
@@ -46,12 +44,11 @@ const PagePresentationModal = (): JSX.Element => {
       toggle={closePresentationModal}
       data-testid="page-presentation-modal"
       className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
-      unmountOnClose={false}
     >
       <button className="close" type="button" aria-label="close" onClick={closePresentationModal}>
         <span className="text-white" aria-hidden>×</span>
       </button>
-      <ModalBody className="modal-body">
+      <ModalBody className="modal-body d-flex justify-content-center align-items-center">
         { rendererOptions != null && (
           <Presentation
             rendererOptions={rendererOptions as ReactMarkdownOptions}

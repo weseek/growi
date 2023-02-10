@@ -27,7 +27,7 @@ export const Presentation = (props: Props): JSX.Element => {
 
   return (
     <div className={`reveal ${CONTAINER_CLASS_NAME}`}>
-      <div className="slides">
+      <div className="slides d-flex justify-content-center align-items-center">
         <Sections rendererOptions={rendererOptions}>{children}</Sections>
       </div>
     </div>
