@@ -8,12 +8,14 @@ import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
 import * as hrSplitter from '../services/renderer/hr-splitter';
 
+import './Sections.global.scss';
 
-export const CONTAINER_CLASS_NAME = 'marpit';
+export const MARP_CONTAINER_CLASS_NAME = 'marpit';
+
 
 const marp = new Marp({
   container: [
-    new Element('div', { class: CONTAINER_CLASS_NAME }),
+    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
     new Element('div', { class: 'slides' }),
   ],
   inlineSVG: false,

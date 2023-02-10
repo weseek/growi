@@ -55,7 +55,6 @@ const PagePresentationModal = (): JSX.Element => {
             revealOptions={{
               embedded: true,
               hash: true,
-              disableLayout: true,
             }}
           >
             {markdown}
