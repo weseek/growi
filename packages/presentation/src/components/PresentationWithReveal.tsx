@@ -5,8 +5,7 @@ import Reveal from 'reveal.js';
 
 
 import 'reveal.js/dist/reveal.css';
-import 'reveal.js/dist/theme/black.css';
-import { Sections } from './Sections';
+import { CONTAINER_CLASS_NAME, Sections } from './Sections';
 
 
 type Props = {
@@ -27,7 +26,7 @@ export const Presentation = (props: Props): JSX.Element => {
   }, [children, revealOptions]);
 
   return (
-    <div className="reveal">
+    <div className={`reveal ${CONTAINER_CLASS_NAME}`}>
       <div className="slides">
         <Sections rendererOptions={rendererOptions}>{children}</Sections>
       </div>

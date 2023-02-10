@@ -1,11 +1,15 @@
 import React from 'react';
 
-// import { Marp } from '@marp-team/marp-core';
+import { Marp } from '@marp-team/marp-core';
+import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
 import * as hrSplitter from '../services/renderer/hr-splitter';
+
+
+export const CONTAINER_CLASS_NAME = 'marpit';
 
 type SectionsProps = {
   rendererOptions: ReactMarkdownOptions,
@@ -17,15 +21,22 @@ export const Sections = (props: SectionsProps): JSX.Element => {
 
   rendererOptions.remarkPlugins?.push(hrSplitter.remarkPlugin);
 
-  // const marp = new Marp();
-  // const { css } = marp.render('', { htmlAsArray: true });
+  const marp = new Marp({
+    container: [
+      new Element('div', { class: CONTAINER_CLASS_NAME }),
+      new Element('div', { class: 'slides' }),
+    ],
+    inlineSVG: false,
+  });
+  const { css } = marp.render('', { htmlAsArray: true });
+
   return (
     <>
       <Head>
-        {/* <style>{css}</style> */}
+        <style>{css}</style>
       </Head>
       { children == null
-        ? <section>No contents</section>
+        ? <section><h2>No contents</h2></section>
         : <ReactMarkdown {...rendererOptions}>{children}</ReactMarkdown>
       }
     </>
