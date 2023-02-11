@@ -135,34 +135,11 @@ export const useSWRxPageInfo = (
   return swrResult;
 };
 
-const useSWRxPageRevision = (revisionId: Ref<IRevision>): SWRResponse<IRevisionHasId> => {
-  const key = `/revisions/${revisionId}`;
-
-  return useSWR(key, null, {
-    keepPreviousData: true,
-  });
-};
-
-export const useSWRMUTxPageRevision = (pageId: string, revisionId: Ref<IRevision>): SWRMutationResponse<IRevisionHasId> => {
-  const key = `/revisions/${revisionId}`;
-
-  const { data: pageRevisionData } = useSWRxPageRevision(revisionId);
-
-  const fetcher = useCallback(async() => {
-    if (pageRevisionData != null) {
-      return pageRevisionData;
-    }
-
-    const res = await apiv3Get<{ revision: IRevisionHasId }>(`/revisions/${revisionId}`, { pageId });
-    return res.data.revision;
-  }, [pageId, pageRevisionData, revisionId]);
-
-  return useSWRMutation(
+export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>): SWRResponse<IRevisionHasId> => {
+  const key = [`/revisions/${revisionId}`, pageId, revisionId];
+  return useSWRImmutable(
     key,
-    fetcher,
-    {
-      populateCache: true,
-    },
+    () => apiv3Get<{ revision: IRevisionHasId }>(`/revisions/${revisionId}`, { pageId }).then(response => response.data.revision),
   );
 };
 
