@@ -13,6 +13,10 @@ import styles from './Presentation.module.scss';
 
 
 const baseRevealOptions: Reveal.Options = {
+  // adjust size to the marp preset size
+  width: 1280,
+  height: 720,
+  maxScale: 1.2,
   slideNumber: 'c/t',
 };
 
