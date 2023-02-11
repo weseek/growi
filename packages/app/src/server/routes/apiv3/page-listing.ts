@@ -106,7 +106,7 @@ const routerFactory = (crowi: Crowi): Router => {
   // eslint-disable-next-line max-len
   router.get('/info', accessTokenParser, loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const {
-      pageIds: pageIdsObj, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
+      pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;
 
     const attachBookmarkCount: boolean = attachBookmarkCountParam === 'true';
@@ -118,8 +118,7 @@ const routerFactory = (crowi: Crowi): Router => {
     const pageService: PageService = crowi.pageService!;
 
     try {
-      const pageIds = Object.values(pageIdsObj ?? {});
-      const pages = pageIds != null && pageIds.length > 0
+      const pages = pageIds != null
         ? await Page.findByIdsAndViewer(pageIds as string[], req.user, null, true)
         : await Page.findByPathAndViewer(path as string, req.user, null, false, true);
 
