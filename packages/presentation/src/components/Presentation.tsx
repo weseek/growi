@@ -13,7 +13,6 @@ import styles from './Presentation.module.scss';
 
 
 const baseRevealOptions: Reveal.Options = {
-  disableLayout: true,
   slideNumber: 'c/t',
 };
 
