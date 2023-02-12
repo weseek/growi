@@ -496,6 +496,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   else {
     props.isNotFound = page.isEmpty;
     props.isNotCreatable = false;
+    props.isForbidden = false;
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;

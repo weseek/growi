@@ -31,6 +31,13 @@ function bracketlinkProcessor(body) {
   return body.replace(oldBracketLinkRegExp, '[[$1]]');
 }
 
+// processor for MIGRATION_TYPE=custom
+function customProcessor(body) {
+  // ADD YOUR PROCESS HERE!
+  // https://github.com/weseek/growi/discussions/7180
+  return body;
+}
+
 // ===========================================
 // define processors
 // ===========================================
@@ -55,6 +62,9 @@ function getProcessorArray(migrationType) {
       break;
     case 'v6':
       oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor];
+      break;
+    case 'custom':
+      oldFormatProcessors = [customProcessor];
       break;
     default:
       oldFormatProcessors = [];

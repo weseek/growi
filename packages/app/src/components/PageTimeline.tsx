@@ -32,7 +32,6 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
       <div className="card-body">
         { rendererOptions != null && (
           <RevisionLoader
-            lazy
             rendererOptions={rendererOptions}
             pageId={page._id}
             revisionId={page.revision}
@@ -55,7 +54,7 @@ export const PageTimeline = (): JSX.Element => {
 
   const handlePage = useCallback(async(selectedPage: number) => {
     if (currentPagePath == null) { return }
-    const res = await apiv3Get('/pages/list', { path: currentPagePath, selectedPage });
+    const res = await apiv3Get('/pages/list', { path: currentPagePath, page: selectedPage });
     setTotalPageItems(res.data.totalCount);
     setPages(res.data.pages);
     setLimit(res.data.limit);

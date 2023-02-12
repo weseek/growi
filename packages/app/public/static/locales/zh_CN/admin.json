@@ -391,6 +391,7 @@
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "输入对象存储服务（如MinIO）端点的URL，MinIO具有与S3兼容的API。如果为空，则使用Amazon S3。",
+    "s3_secret_access_key_input_description": "设定的值被隐藏。",
     "load_plugins": "加载插件",
     "enable": "启用",
     "disable": "停用",

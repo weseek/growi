@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { Ref, IRevision, IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import { Waypoint } from 'react-waypoint';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { RendererOptions } from '~/services/renderer/renderer';
@@ -16,7 +15,6 @@ export type RevisionLoaderProps = {
   rendererOptions: RendererOptions,
   pageId: string,
   revisionId: Ref<IRevision>,
-  lazy?: boolean,
   onRevisionLoaded?: (revision: IRevisionHasId) => void,
 }
 
@@ -34,7 +32,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    rendererOptions, pageId, revisionId, lazy, onRevisionLoaded,
+    rendererOptions, pageId, revisionId, onRevisionLoaded,
   } = props;
 
   const [isLoading, setIsLoading] = useState<boolean>();
@@ -69,24 +67,8 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   }, [isLoaded, isLoading, onRevisionLoaded, pageId, revisionId]);
 
   useEffect(() => {
-    if (!lazy) {
-      loadData();
-    }
-  }, [lazy, loadData]);
-
-  const onWaypointChange = (event) => {
-    if (event.currentPosition === Waypoint.above || event.currentPosition === Waypoint.inside) {
-      loadData();
-    }
-    return;
-  };
-
-  /* ----- before load ----- */
-  if (lazy && !isLoaded) {
-    return (
-      <Waypoint onPositionChange={onWaypointChange} bottomOffset="-100px" />
-    );
-  }
+    loadData();
+  }, [loadData]);
 
   /* ----- loading ----- */
   if (isLoading) {
