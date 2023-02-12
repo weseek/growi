@@ -260,7 +260,7 @@ describe('QuestionnaireCronService', () => {
     crowi.questionnaireCronService.stopCron(); // jest will not finish until cronjob stops
   });
 
-  test('Job execution should save quesionnaire orders, delete outdated ones, and update skipped answer status', async() => {
+  test('Job execution should save(update) quesionnaire orders, delete outdated ones, and update skipped answer statuses', async() => {
     // testing the cronjob from schedule has untrivial overhead, so test job execution in place
     await crowi.questionnaireCronService.executeJob();
 
