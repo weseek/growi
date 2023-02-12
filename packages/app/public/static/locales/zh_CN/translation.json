@@ -841,7 +841,7 @@
       "one_month_to_three_months": "超过1个月但少于3个月",
       "less_than_one_month": "不到1个月"
     },
-    "personal_settings_supplementary_explanation": "将展示改进 GROWI 的问卷。 如果您有其他反馈，可以从用户图标下拉菜单中发送。",
+    "personal_settings_explanation": "将展示改进 GROWI 的问卷。 如果您有其他反馈，可以从用户图标下拉菜单中发送。",
     "enable_questionnaire": "启用问卷",
     "disabled_by_admin": "问卷已被管理员禁用"
   },

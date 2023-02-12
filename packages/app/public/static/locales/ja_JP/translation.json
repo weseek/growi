@@ -840,7 +840,7 @@
       "one_month_to_three_months": "1ヶ月以上3ヶ月未満",
       "less_than_one_month": "1ヶ月未満"
     },
-    "personal_settings_supplementary_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
+    "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
     "enable_questionnaire": "アンケートを有効にする",
     "disabled_by_admin": "管理者によってアンケートは無効化されています"
   },

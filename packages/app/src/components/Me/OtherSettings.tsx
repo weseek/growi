@@ -66,7 +66,7 @@ const OtherSettings = (): JSX.Element => {
                 </label>
               </span>
               <p className="form-text text-muted small">
-                {t('questionnaire.personal_settings_supplementary_explanation')}
+                {t('questionnaire.personal_settings_explanation')}
               </p>
               {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-toggle">
                 {t('questionnaire.disabled_by_admin')}

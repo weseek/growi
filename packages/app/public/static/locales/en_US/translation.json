@@ -842,7 +842,7 @@
       "one_month_to_three_months": "More than 1 month but less than 3 months",
       "less_than_one_month": "Less than 1 month"
     },
-    "personal_settings_supplementary_explanation": "Questionnaires for improving GROWI will be shown. If you have other feedbacks, you can send them from the user icon dropdown.",
+    "personal_settings_explanation": "Questionnaires for improving GROWI will be shown. If you have other feedbacks, you can send them from the user icon dropdown.",
     "enable_questionnaire": "Enable questionnaire",
     "disabled_by_admin": "Questionnaire is disabled by admin"
   },
