@@ -119,6 +119,8 @@ const routerFactory = (crowi: Crowi): Router => {
     const pageService: PageService = crowi.pageService!;
 
     try {
+      // see: https://github.com/expressjs/body-parser/issues/289
+      // If an array of 20 or more is included in req.query, it is converted to an object with the index as a key, so the client passes JSON.stringify values
       const parsedPageIds = JSON.parse(pageIds as string);
 
       const pages = parsedPageIds != null && parsedPageIds.length > 0
