@@ -102,13 +102,12 @@ export const useSWRxPageInfoForList = (
 ): SWRResponse<Record<string, IPageInfoForListing>, Error> & PageInfoInjector => {
 
   const shouldFetch = (pageIds != null && pageIds.length > 0) || path != null;
-  const stringifiedPageIds = JSON.stringify(pageIds);
 
   const swrResult = useSWRImmutable(
-    shouldFetch ? ['/page-listing/info', stringifiedPageIds, path, attachBookmarkCount, attachShortBody] : null,
-    ([endpoint, stringifiedPageIds, path, attachBookmarkCount, attachShortBody]) => {
+    shouldFetch ? ['/page-listing/info', pageIds, path, attachBookmarkCount, attachShortBody] : null,
+    ([endpoint, pageIds, path, attachBookmarkCount, attachShortBody]) => {
       return apiv3Get(endpoint, {
-        pageIds: stringifiedPageIds, path, attachBookmarkCount, attachShortBody,
+        pageIds, path, attachBookmarkCount, attachShortBody,
       }).then(response => response.data);
     },
   );
