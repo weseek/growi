@@ -1,3 +1,7 @@
+import mongoose from 'mongoose';
+
+import { StatusType } from '../../../src/interfaces/questionnaire/questionnaire-answer-status';
+import QuestionnaireAnswerStatus from '../../../src/server/models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
 import { getInstance } from '../setup-crowi';
 
@@ -229,16 +233,34 @@ describe('QuestionnaireCronService', () => {
       },
     ]);
 
+    await QuestionnaireAnswerStatus.insertMany([
+      {
+        user: new mongoose.Types.ObjectId(),
+        questionnaireOrderId: '63a8354837e7aa378e16f0b1',
+        status: StatusType.skipped,
+      },
+      {
+        user: new mongoose.Types.ObjectId(),
+        questionnaireOrderId: '63a8354837e7aa378e16f0b1',
+        status: StatusType.answered,
+      },
+      {
+        user: new mongoose.Types.ObjectId(),
+        questionnaireOrderId: '63a8354837e7aa378e16f0b1',
+        status: StatusType.not_answered,
+      },
+    ]);
+
     crowi.setupCron();
 
     spyAxiosGet.mockResolvedValue(mockResponse);
   });
 
   afterAll(() => {
-    crowi.questionnaireCronService.stopCron();
+    crowi.questionnaireCronService.stopCron(); // jest will not finish until cronjob stops
   });
 
-  test('Job execution should save quesionnaire orders and delete outdated ones', async() => {
+  test('Job execution should save quesionnaire orders, delete outdated ones, and update skipped answer status', async() => {
     // testing the cronjob from schedule has untrivial overhead, so test job execution in place
     await crowi.questionnaireCronService.executeJob();
 
@@ -315,5 +337,7 @@ describe('QuestionnaireCronService', () => {
         __v: 0,
       },
     ]);
+
+    expect((await QuestionnaireAnswerStatus.find({ status: StatusType.not_answered })).length).toEqual(2);
   });
 });
