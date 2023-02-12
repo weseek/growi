@@ -1,3 +1,5 @@
+import { type } from 'os';
+
 import { ErrorV3 } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
@@ -35,7 +37,7 @@ const validator = {
     query('path').isString(),
   ], 'id or path is required'),
   pageIdsOrPathRequired: oneOf([
-    query('pageIds').isArray(),
+    query('pageIds').isString(),
     query('path').isString(),
   ], 'pageIds or path is required'),
   infoParams: [
@@ -108,7 +110,6 @@ const routerFactory = (crowi: Crowi): Router => {
     const {
       pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;
-
     const attachBookmarkCount: boolean = attachBookmarkCountParam === 'true';
     const attachShortBody: boolean = attachShortBodyParam === 'true';
 
@@ -118,8 +119,10 @@ const routerFactory = (crowi: Crowi): Router => {
     const pageService: PageService = crowi.pageService!;
 
     try {
-      const pages = pageIds != null
-        ? await Page.findByIdsAndViewer(pageIds as string[], req.user, null, true)
+      const parsedPageIds = JSON.parse(pageIds as string);
+
+      const pages = parsedPageIds != null && parsedPageIds.length > 0
+        ? await Page.findByIdsAndViewer(parsedPageIds as string[], req.user, null, true)
         : await Page.findByPathAndViewer(path as string, req.user, null, false, true);
 
       const foundIds = pages.map(page => page._id);
