@@ -5,3 +5,8 @@ export const Lang = {
 } as const;
 export const AllLang = Object.values(Lang);
 export type Lang = typeof Lang[keyof typeof Lang];
+export const acceptLangMap = {
+  en: Lang.en_US,
+  ja: Lang.ja_JP,
+  zh: Lang.zh_CN,
+};
