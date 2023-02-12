@@ -16,6 +16,12 @@ const nodeCron = require('node-cron');
 
 axiosRetry(axios, { retries: 3 });
 
+/**
+ * manage cronjob which
+ *  1. fetches QuestionnaireOrders from questionnaire server
+ *  2. updates QuestionnaireOrder collection to only contain ones that exist in the fetched list and is not finished
+ *  3. changes QuestionnaireAnswerStatuses which are 'skipped' to 'not_answered'
+ */
 class QuestionnaireCronService {
 
   crowi: any;
@@ -32,7 +38,9 @@ class QuestionnaireCronService {
     const maxHoursUntilRequest = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
 
     const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
-    this.cronJob = this.questionnaireOrderGetCron(cronSchedule, maxSecondsUntilRequest);
+
+    this.cronJob?.stop();
+    this.cronJob = this.generateCronJob(cronSchedule, maxSecondsUntilRequest);
     this.cronJob.start();
   }
 
@@ -40,34 +48,39 @@ class QuestionnaireCronService {
     this.cronJob.stop();
   }
 
-  private questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number) {
+  async executeJob(): Promise<void> {
     const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-    const saveOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
+    // save questionnaires that are not finished (doesn't have to be started)
+    const saveUnfinishedOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
       const currentDate = new Date(Date.now());
-      // save questionnaires that are not finished (doesn't have to be started)
-      const nonFinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
-      await QuestionnaireOrder.insertMany(nonFinishedOrders);
+      const unfinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
+      await QuestionnaireOrder.insertMany(unfinishedOrders);
+    };
+    const changeSkippedAnswerStatusToNotAnswered = async() => {
+      await QuestionnaireAnswerStatus.updateMany(
+        { status: StatusType.skipped },
+        { status: StatusType.not_answered },
+      );
     };
 
+    const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
+    const questionnaireOrders: IQuestionnaireOrder[] = response.data.questionnaireOrders;
+
+    // reset QuestionnaireOrder collection and save unfinished ones that exist on questionnaire server
+    await QuestionnaireOrder.deleteMany();
+    await saveUnfinishedOrders(questionnaireOrders);
+
+    await changeSkippedAnswerStatusToNotAnswered();
+  }
+
+  private generateCronJob(cronSchedule: string, maxSecondsUntilRequest: number) {
     return nodeCron.schedule(cronSchedule, async() => {
       // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
       const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
       await sleep(secToSleep * 1000);
 
       try {
-        const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
-        const questionnaireOrders: IQuestionnaireOrder[] = response.data.questionnaireOrders;
-
-        // Reset status (denied => not_answered)
-        await QuestionnaireAnswerStatus.updateMany(
-          { status: StatusType.denied },
-          { status: StatusType.not_answered },
-        );
-
-        // Cleanup
-        await QuestionnaireOrder.deleteMany();
-
-        await saveOrders(questionnaireOrders);
+        this.executeJob();
       }
       catch (e) {
         logger.error(e);
