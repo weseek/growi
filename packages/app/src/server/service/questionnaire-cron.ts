@@ -19,7 +19,7 @@ axiosRetry(axios, { retries: 3 });
 /**
  * manage cronjob which
  *  1. fetches QuestionnaireOrders from questionnaire server
- *  2. updates QuestionnaireOrder collection to only contain ones that exist in the fetched list and is not finished
+ *  2. updates QuestionnaireOrder collection to contain only the ones that exist in the fetched list and is not finished (doesn't have to be started)
  *  3. changes QuestionnaireAnswerStatuses which are 'skipped' to 'not_answered'
  */
 class QuestionnaireCronService {
@@ -49,13 +49,18 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
-    const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-    // save questionnaires that are not finished (doesn't have to be started)
+    const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
+      const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+      const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
+      return response.data.questionnaireOrders;
+    };
+
     const saveUnfinishedOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
       const currentDate = new Date(Date.now());
       const unfinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
       await QuestionnaireOrder.insertMany(unfinishedOrders);
     };
+
     const changeSkippedAnswerStatusToNotAnswered = async() => {
       await QuestionnaireAnswerStatus.updateMany(
         { status: StatusType.skipped },
@@ -63,8 +68,7 @@ class QuestionnaireCronService {
       );
     };
 
-    const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
-    const questionnaireOrders: IQuestionnaireOrder[] = response.data.questionnaireOrders;
+    const questionnaireOrders: IQuestionnaireOrder[] = await fetchQuestionnaireOrders();
 
     // reset QuestionnaireOrder collection and save unfinished ones that exist on questionnaire server
     await QuestionnaireOrder.deleteMany();
