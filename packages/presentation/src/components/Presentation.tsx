@@ -40,7 +40,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const { revealOptions } = options;
 
   useEffect(() => {
-    let deck;
+    let deck: Reveal.Api;
     if (children != null) {
       deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
       deck.initialize()
