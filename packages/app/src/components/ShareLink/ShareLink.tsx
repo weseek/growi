@@ -64,6 +64,7 @@ const ShareLink = (): JSX.Element => {
           className="btn btn-outline-secondary d-block mx-auto px-5"
           type="button"
           onClick={toggleShareLinkFormHandler}
+          data-testid="btn-sharelink-toggleform"
         >
           {isOpenShareLinkForm ? t('Close') : t('New')}
         </button>

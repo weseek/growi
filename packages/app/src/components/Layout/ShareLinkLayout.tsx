@@ -28,7 +28,7 @@ export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
       <GrowiNavbar isGlobalSearchHidden={true} />
 
       <div className="page-wrapper d-flex d-print-block">
-        <div className="flex-fill mw-0" style={{ position: 'relative' }}>
+        <div className="flex-fill mw-0">
           {children}
         </div>
       </div>

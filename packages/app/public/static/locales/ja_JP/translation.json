@@ -57,6 +57,7 @@
   "Presentation Mode": "プレゼンテーション",
   "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Not available in this version": "このバージョンでは利用できません",
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
@@ -79,7 +80,9 @@
   "View diff": "差分を表示",
   "No diff": "差分なし",
   "User ID": "ユーザーID",
+  "User Settings": "ユーザー設定",
   "User Information": "ユーザー情報",
+  "User Activation": "ユーザーアクティベーション",
   "Basic Info": "ユーザーの基本情報",
   "Name": "名前",
   "Email": "メールアドレス",
@@ -164,6 +167,8 @@
     "no_page_list": "このページの配下にはページが存在しません。"
   },
   "installer": {
+    "tab": "アカウント作成",
+    "title": "インストーラー",
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
@@ -549,6 +554,7 @@
     "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
   },
   "search_result": {
+    "title": "検索",
     "result_meta": "検索結果:",
     "deletion_mode_btn_lavel": "ページを指定して削除",
     "cancel": "キャンセル",
@@ -604,6 +610,7 @@
     }
   },
   "login": {
+    "title": "ログイン",
     "sign_in_error": "ログインエラー",
     "registration_successful": "登録が完了しました。管理者の承認をお待ちください。",
     "Setup": "セットアップ",
@@ -611,6 +618,7 @@
     "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"
   },
   "invited": {
+    "title": "招待",
     "discription_heading": "アカウント作成",
     "discription": "招待を受け取ったメールアドレスでアカウントを作成します"
   },
@@ -796,5 +804,12 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "タグの編集",
+    "done": "完了",
+    "tags_input": {
+      "tag_name": "タグ名"
+    }
   }
 }

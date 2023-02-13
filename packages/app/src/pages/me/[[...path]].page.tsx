@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { IUserHasId } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
+  GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -28,10 +28,10 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
-} from '../utils/commons';
 import { NextPageWithLayout } from '../_app.page';
+import {
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
+} from '../utils/commons';
 
 
 const logger = loggerFactory('growi:pages:me');
@@ -97,12 +97,8 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useCsrfToken(props.csrfToken);
 
-  // UserUISettings
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // page
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -111,7 +107,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, targetPage.title);
 
   return (
     <>
@@ -185,9 +181,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }

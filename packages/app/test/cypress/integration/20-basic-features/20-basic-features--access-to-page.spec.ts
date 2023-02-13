@@ -29,14 +29,15 @@ context('Access to page', () => {
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    // hide fab // disable fab for sticky-events warning
-    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab
+    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -50,6 +51,7 @@ context('Access to page', () => {
 
     cy.get('.math').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
@@ -64,6 +66,61 @@ context('Access to page', () => {
 
     cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
+  })
+
+  it('View and Edit contents are successfully loaded', () => {
+    const body1 = 'hello';
+    cy.visit('/Sandbox/testForUseEditingMarkdown');
+
+    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('@pageEditorModeManager').within(() => {
+        cy.get('button:nth-child(2)').click();
+      });
+      // until
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    })
+
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+
+    // check edited contents after save
+    cy.get('.CodeMirror').type(body1);
+    cy.get('.CodeMirror').contains(body1);
+    cy.get('.page-editor-preview-body').contains(body1);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').click();
+    cy.get('.wiki').should('be.visible');
+    cy.get('.wiki').children().first().should('have.text', body1);
+  })
+
+  it('Editing contents are successfully loaded with shortcut key', () => {
+    const body2 = ' world!';
+    const savePageShortcutKey = '{ctrl+s}';
+
+    cy.visit('/Sandbox/testForUseEditingMarkdown');
+
+    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('@pageEditorModeManager').within(() => {
+        cy.get('button:nth-child(2)').click();
+      });
+      // until
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    })
+
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+
+    // check editing contents with shortcut key
+    cy.get('.CodeMirror-line').children().first().invoke('text').then((text) => {
+      cy.get('.CodeMirror').type(body2);
+      cy.get('.CodeMirror').contains(text+body2);
+      cy.get('.page-editor-preview-body').contains(text+body2);
+      cy.get('.CodeMirror').type(savePageShortcutKey);
+      cy.get('.CodeMirror').contains(text+body2);
+      cy.get('.page-editor-preview-body').contains(text+body2);
+    })
   })
 
   it('/user/admin is successfully loaded', () => {

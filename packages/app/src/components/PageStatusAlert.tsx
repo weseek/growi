@@ -9,7 +9,7 @@ import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
@@ -39,7 +39,8 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
-  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
+  const { data: pageData } = useSWRxCurrentPage();
+  const { trigger: mutatePageData } = useSWRMUTxCurrentPage();
   const revision = pageData?.revision;
 
   const refreshPage = useCallback(async() => {

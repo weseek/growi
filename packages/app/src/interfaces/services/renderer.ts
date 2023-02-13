@@ -1,9 +1,7 @@
 import { XssOptionConfig } from '~/services/xss/xssOption';
 
-import { RehypeSanitizeOptionConfig } from '../rehype';
-
-
 export type RendererConfig = {
+  isSharedPage?: boolean
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
@@ -12,4 +10,4 @@ export type RendererConfig = {
 
   plantumlUri: string | null,
   blockdiagUri: string | null,
-} & XssOptionConfig & RehypeSanitizeOptionConfig;
+} & XssOptionConfig;

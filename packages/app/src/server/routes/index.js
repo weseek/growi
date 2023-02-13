@@ -3,6 +3,7 @@ import express from 'express';
 
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import * as loginFormValidator from '../middlewares/login-form-validator';
@@ -30,6 +31,7 @@ module.exports = function(crowi, app) {
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
+  const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
   const rateLimiter = require('../middlewares/rate-limiter')();
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -105,6 +107,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testEsaAPI);
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
+
+  app.get('/attachment/brand-logo' , certifyBrandLogo, loginRequired, attachment.api.getBrandLogo);
 
   /*
    * Routes below are unavailable when maintenance mode

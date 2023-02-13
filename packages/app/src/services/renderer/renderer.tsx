@@ -1,26 +1,26 @@
 // allow only types to import from react
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
 
 import { isClient } from '@growi/core';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
-import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
-import { NormalComponents } from 'react-markdown/lib/complex-types';
-import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
+import type { NormalComponents } from 'react-markdown/lib/complex-types';
+import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
+import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-import { HtmlElementNode } from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
-import { PluggableList, Pluggable, PluginTuple } from 'unified';
+import type { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
@@ -29,7 +29,8 @@ import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
-import { RendererConfig } from '~/interfaces/services/renderer';
+import { RehypeSanitizeOption } from '~/interfaces/rehype';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
@@ -66,15 +67,31 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
     | undefined
 };
 
+const baseSanitizeSchema = {
+  tagNames: ['iframe'],
+  attributes: {
+    iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
+    '*': ['class', 'className', 'style'],
+  },
+};
+
 const commonSanitizeOption: SanitizeOption = deepmerge(
-  sanitizeDefaultSchema,
+  rehypeSanitizeDefaultSchema,
+  baseSanitizeSchema,
   {
     clobberPrefix: 'mdcont-',
-    attributes: {
-      '*': ['class', 'className', 'style'],
-    },
   },
 );
+
+let isInjectedCustomSanitaizeOption = false;
+
+const injectCustomSanitizeOption = (config: RendererConfig) => {
+  if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    commonSanitizeOption.tagNames = deepmerge(baseSanitizeSchema.tagNames, config.tagWhiteList ?? []);
+    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
+    isInjectedCustomSanitaizeOption = true;
+  }
+};
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
@@ -111,6 +128,10 @@ const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
       pukiwikiLikeLinker,
       growiDirective,
     ],
+    remarkRehypeOptions: {
+      clobberPrefix: 'mdcont-',
+      allowDangerousHtml: true,
+    },
     rehypePlugins: [
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
@@ -139,13 +160,17 @@ export const generateViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
+  }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -159,7 +184,7 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -190,6 +215,11 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
+
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
@@ -205,6 +235,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options);
   }
+
   return options;
 };
 
@@ -221,7 +252,7 @@ export const generateSimpleViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
@@ -234,6 +265,11 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
+
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
@@ -244,7 +280,7 @@ export const generateSimpleViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
@@ -263,6 +299,59 @@ export const generateSimpleViewOptions = (
   return options;
 };
 
+export const generateSSRViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  const options = generateCommonOptions(pagePath);
+
+  const { remarkPlugins, rehypePlugins, components } = options;
+
+  // add remark plugins
+  remarkPlugins.push(
+    math,
+    xsvToTable.remarkPlugin,
+    lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
+  );
+
+  const isEnabledLinebreaks = config.isEnabledLinebreaks;
+
+  if (isEnabledLinebreaks) {
+    remarkPlugins.push(breaks);
+  }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
+  }
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
+    : () => {};
+
+  // add rehype plugins
+  rehypePlugins.push(
+    slug,
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    rehypeSanitizePlugin,
+    katex,
+  );
+
+  // add components
+  if (components != null) {
+    components.lsx = LsxImmutable;
+    components.table = Table;
+  }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
 export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
@@ -271,7 +360,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
@@ -279,6 +368,10 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
+  }
+
+  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+    injectCustomSanitizeOption(config);
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
@@ -292,7 +385,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     addLineNumberAttribute.rehypePlugin,
     rehypeSanitizePlugin,
     katex,

@@ -447,12 +447,16 @@ module.exports = function(crowi) {
 
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
-    const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
+    const activeUsers = await this.countActiveUsers();
     if (userUpperLimit <= activeUsers) {
       return true;
     }
 
     return false;
+  };
+
+  userSchema.statics.countActiveUsers = async function() {
+    return this.countListByStatus(STATUS_ACTIVE);
   };
 
   userSchema.statics.countListByStatus = async function(status) {

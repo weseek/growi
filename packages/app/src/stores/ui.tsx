@@ -1,24 +1,24 @@
-import { RefObject, useCallback, useEffect } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 
 import {
-  isClient, isServer, pagePathUtils, Nullable, PageGrant,
+  isClient, isServer, pagePathUtils, type Nullable, PageGrant,
 } from '@growi/core';
-import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
+import { withUtils, type SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
-import { HtmlElementNode } from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import {
-  useSWRConfig, SWRResponse, Key, Fetcher,
+  useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { IFocusable } from '~/client/interfaces/focusable';
+import type { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { IPageGrantData } from '~/interfaces/page';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IPageGrantData } from '~/interfaces/page';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { UpdateDescCountData } from '~/interfaces/websocket';
+import type { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
@@ -79,16 +79,11 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-// TODO: Enable `editing-sidebar` class
-// https://redmine.weseek.co.jp/issues/111527
-const getClassNamesByEditorMode = (editorMode: EditorMode | undefined /* , isSidebar = false */): string[] => {
+const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[] => {
   const classNames: string[] = [];
   switch (editorMode) {
     case EditorMode.Editor:
       classNames.push('editing', 'builtin-editor');
-      // if (isSidebar) {
-      //   classNames.push('editing-sidebar');
-      // }
       break;
     case EditorMode.HackMD:
       classNames.push('editing', 'hackmd');
@@ -140,10 +135,8 @@ export const determineEditorModeByHash = (): EditorMode => {
   }
 };
 
-// TODO: Enable `editing-sidebar` class somehow
-// https://redmine.weseek.co.jp/issues/111527
 type EditorModeUtils = {
-  getClassNamesByEditorMode: (/* isEditingSidebar: boolean */) => string[],
+  getClassNamesByEditorMode: () => string[],
 }
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
@@ -155,7 +148,7 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const swrResponse = useSWRImmutable<EditorMode>(
+  const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
     null,
     { fallbackData: initialData },
@@ -171,11 +164,8 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
     return mutateOriginal(editorMode, shouldRevalidate);
   }, [isEditable, mutateOriginal]);
 
-  // TODO: Enable `editing-sidebar` class
-  // https://redmine.weseek.co.jp/issues/111527
-  // construct getClassNamesByEditorMode method
-  const getClassNames = useCallback((/* isEditingSidebar: boolean */) => {
-    return getClassNamesByEditorMode(swrResponse.data /* , isEditingSidebar */);
+  const getClassNames = useCallback(() => {
+    return getClassNamesByEditorMode(swrResponse.data);
   }, [swrResponse.data]);
 
   return Object.assign(swrResponse, {
@@ -199,8 +189,8 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
       const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
       // initialize
-      if (cache.get(key) == null) {
-        mutate(key, !mql.matches);
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: !mql.matches });
       }
 
       return () => {
@@ -227,8 +217,8 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
       const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
       // initialize
-      if (cache.get(key) == null) {
-        mutate(key, !mql.matches);
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: !mql.matches });
       }
 
       return () => {
@@ -260,7 +250,7 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWit
     },
   };
 
-  return withUtils(swrResponse, utils);
+  return withUtils<PreferDrawerModeByUserUtils>(swrResponse, utils);
 
 };
 
@@ -286,29 +276,36 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
+  const condition = editorMode != null && preferDrawerModeByUser != null && preferDrawerModeOnEditByUser != null && isDeviceSmallerThanMd != null;
 
-  const calcDrawerMode: Fetcher<boolean> = (
-      key: Key, editorMode: EditorMode, preferDrawerModeByUser: boolean, preferDrawerModeOnEditByUser: boolean, isDeviceSmallerThanMd: boolean,
+  const calcDrawerMode = (
+      endpoint: string,
+      editorMode: EditorMode,
+      preferDrawerModeByUser: boolean,
+      preferDrawerModeOnEditByUser: boolean,
+      isDeviceSmallerThanMd: boolean,
   ): boolean => {
-
     // get preference on view or edit
     const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
-    return isDeviceSmallerThanMd || preferDrawerMode;
+    return isDeviceSmallerThanMd ?? preferDrawerMode ?? false;
   };
 
   const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
   const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
-  const useFallbackData = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
-  const fallbackOption = useFallbackData
-    ? { fallbackData: true }
-    : { fallback: calcDrawerMode };
+  const isDrawerModeFixed = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
 
   return useSWRImmutable(
     condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
-    calcDrawerMode,
-    fallbackOption,
+    // calcDrawerMode,
+    key => calcDrawerMode(...key),
+    condition
+      ? {
+        fallbackData: isDrawerModeFixed
+          ? true
+          : calcDrawerMode('isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd),
+      }
+      : undefined,
   );
 };
 
@@ -321,7 +318,7 @@ type SidebarConfigOption = {
 }
 
 export const useSWRxSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
-  const swrResponse = useSWRImmutable<ISidebarConfig>(
+  const swrResponse = useSWRImmutable(
     '/customize-setting/sidebar',
     endpoint => apiv3Get(endpoint).then(result => result.data),
   );
@@ -439,8 +436,7 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId, isPageExist, isEmptyPage, isTrashPage, isSharedUser],
-    // eslint-disable-next-line max-len
-    (key: string, pageId: string, isPageExist: boolean, isTrashPage: boolean, isSharedUser: boolean) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
+    ([, , isPageExist, isEmptyPage, isTrashPage, isSharedUser]) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
   );
 };
 
@@ -465,15 +461,15 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
-  const key = 'isAbleToShowPageEditorModeManager';
+export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToChangeEditorMode';
   const { data: isEditable } = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 
   const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, isEditable, isSharedUser],
     () => !!isEditable && !isSharedUser,
   );
 };

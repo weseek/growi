@@ -2,9 +2,9 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
+import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import { tags, attrs } from '~/services/xss/recommended-whitelist';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -16,18 +16,21 @@ class WhiteListInput extends React.Component {
     this.tagWhiteList = React.createRef();
     this.attrWhiteList = React.createRef();
 
+    this.tags = sanitizeDefaultSchema.tagNames;
+    this.attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
+
     this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
     this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
   }
 
   onClickRecommendTagButton() {
-    this.tagWhiteList.current.value = tags;
-    this.props.adminMarkDownContainer.setState({ tagWhiteList: tags });
+    this.tagWhiteList.current.value = this.tags;
+    this.props.adminMarkDownContainer.setState({ tagWhiteList: this.tags });
   }
 
   onClickRecommendAttrButton() {
-    this.attrWhiteList.current.value = attrs;
-    this.props.adminMarkDownContainer.setState({ attrWhiteList: attrs });
+    this.attrWhiteList.current.value = this.attrs;
+    this.props.adminMarkDownContainer.setState({ attrWhiteList: this.attrs });
   }
 
   render() {

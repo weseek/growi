@@ -1,4 +1,4 @@
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
 import type { InAppNotificationStatuses, IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 import { parseSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
@@ -15,10 +15,11 @@ export const useSWRxInAppNotifications = <Data, Error>(
   limit: number,
   offset?: number,
   status?: InAppNotificationStatuses,
+  config?: SWRConfiguration,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
     ['/in-app-notification/list', limit, offset, status],
-    endpoint => apiv3Get(endpoint, { limit, offset, status }).then((response) => {
+    ([endpoint]) => apiv3Get(endpoint, { limit, offset, status }).then((response) => {
       const inAppNotificationPaginateResult = response.data as inAppNotificationPaginateResult;
       inAppNotificationPaginateResult.docs.forEach((doc) => {
         try {
@@ -30,6 +31,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
       });
       return inAppNotificationPaginateResult;
     }),
+    config,
   );
 };
 
@@ -37,7 +39,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
 export const useSWRxInAppNotificationStatus = <Data, Error>(
 ): SWRResponse<number, Error> => {
   return useSWR(
-    ['/in-app-notification/status'],
+    '/in-app-notification/status',
     endpoint => apiv3Get(endpoint).then(response => response.data.count),
   );
 };

@@ -120,7 +120,7 @@ export const BasicInfoSettings = (): JSX.Element => {
                     checked={personalSettingsInfo?.lang === locale}
                     onChange={() => changePersonalSettingsHandler({ lang: locale })}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
                 </div>
               );
             })

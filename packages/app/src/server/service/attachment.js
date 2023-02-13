@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import { AttachmentType } from '../interfaces/attachment';
+
 const fs = require('fs');
 
 const mongoose = require('mongoose');
@@ -35,7 +37,7 @@ class AttachmentService {
     let attachment;
     try {
       attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size, attachmentType);
-      await fileUploadService.uploadFile(fileStream, attachment);
+      await fileUploadService.uploadAttachment(fileStream, attachment);
       await attachment.save();
     }
     catch (err) {
@@ -75,6 +77,15 @@ class AttachmentService {
     await attachment.remove();
 
     return;
+  }
+
+  async isBrandLogoExist() {
+    const Attachment = this.crowi.model('Attachment');
+
+    const query = { attachmentType: AttachmentType.BRAND_LOGO };
+    const count = await Attachment.countDocuments(query);
+
+    return count >= 1;
   }
 
 }

@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -23,7 +23,7 @@ type Props = {
   allControl: React.ReactNode,
 }
 
-const SearchControl: FC <Props> = React.memo((props: Props) => {
+const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const {
     isSearchServiceReachable,
@@ -65,6 +65,10 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
   useEffect(() => {
     invokeSearch();
   }, [invokeSearch]);
+
+  useEffect(() => {
+    setKeyword(initialSearchConditions.keyword ?? '');
+  }, [initialSearchConditions.keyword]);
 
   return (
     <div className="position-sticky sticky-top shadow-sm">
@@ -118,7 +122,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
             </div>
             <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
               <div className="border rounded px-2 py-1 mr-3">
-                <div className="custom-control custom-checkbox custom-checkbox-primary">
+                <div className="custom-control custom-checkbox custom-checkbox-succsess">
                   <input
                     className="custom-control-input mr-2"
                     type="checkbox"
@@ -132,7 +136,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
                 </div>
               </div>
               <div className="border rounded px-2 py-1">
-                <div className="custom-control custom-checkbox custom-checkbox-primary">
+                <div className="custom-control custom-checkbox custom-checkbox-succsess">
                   <input
                     className="custom-control-input mr-2"
                     type="checkbox"

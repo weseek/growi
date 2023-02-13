@@ -29,6 +29,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# Terraform
+**/.terraform/*
+# *.tfstate
+*.tfstate.*
+
 # IDE, dev #
 .idea
 *.orig

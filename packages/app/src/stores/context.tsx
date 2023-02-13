@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -36,8 +36,8 @@ export const useConfidential = (initialData?: string): SWRResponse<string, Error
   return useContextSWR('confidential', initialData);
 };
 
-export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
-  return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<Nullable<IUserHasId>, Error> => {
+  return useContextSWR('currentUser', initialData);
 };
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
@@ -56,6 +56,10 @@ export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Erro
   return useContextSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
 
+export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
+};
+
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
@@ -72,8 +76,8 @@ export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Err
   return useContextSWR<boolean, Error>('isSharedUser', initialData);
 };
 
-export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('shareLinkId', initialData);
+export const useShareLinkId = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR('shareLinkId', initialData);
 };
 
 export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
@@ -197,8 +201,16 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
   return useContextSWR('CustomizeTitle', initialData);
 };
 
-export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('customizedLogoSrc', initialData);
+export const useIsDefaultLogo = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isDefaultLogo', initialData);
+};
+
+export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isCustomizedLogoUploaded', initialData);
+};
+
+export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<ColorScheme, Error> => {
+  return useContextSWR('forcedColorScheme', initialData);
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
@@ -218,24 +230,25 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
  *********************************************************** */
 
 export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
 
   return useSWRImmutable(
-    ['isGuestUser', currentUser],
-    (key: Key, currentUser: IUser) => currentUser == null,
-    { fallbackData: currentUser == null },
+    isLoading ? null : ['isGuestUser', currentUser?._id],
+    ([, currentUserId]) => currentUserId == null,
+    { fallbackData: currentUser?._id == null },
   );
 };
 
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isForbidden } = useIsForbidden();
+  const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isIdenticalPath } = useIsIdenticalPath();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isForbidden, isIdenticalPath],
-    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
-      return (!isForbidden && !isIdenticalPath && !isGuestUser);
+    ['isEditable', isGuestUser, isForbidden, isNotCreatable, isIdenticalPath],
+    ([, isGuestUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
+      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser);
     },
   );
 };

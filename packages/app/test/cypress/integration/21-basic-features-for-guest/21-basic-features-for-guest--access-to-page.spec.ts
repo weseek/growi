@@ -14,8 +14,8 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox#Headers');
     cy.waitUntilSkeletonDisappear();
 
-    // hide fab // disable fab for sticky-events warning
-    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab
+    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated

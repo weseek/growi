@@ -1,118 +1,142 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 // == Define Bootstrap theme colors
 //
 
 // colors for overriding bootstrap $theme-colors
-// $secondary: #;
-// $info: #;
-// $success: #;
-// $warning: #;
-// $danger: #;
-// $light: #;
-// $dark: #;
-
-// .grw-navbar {
-//   border-bottom: $accentcolor 4px solid;
-// }
+// --info: #;
+// --success: #;
+// --warning: #;
+// --danger: #;
+// --light: #;
+// --dark: #;
 
 //== Light Mode
 //
 :root[data-theme='light'] {
   // Theme colors
-  $themecolor: #eaab20;
-  $themelight: #efe2cf;
-  $subthemecolor: #231e1d;
-  $third-main-color: #f0c05a;
-  $accentcolor: #993439;
-
-  $primary: $themecolor;
-  // $secondary: $subthemecolor;
-  $secondary: $third-main-color;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 41,83%;
+  --primary-l: 52%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 41,83%;
+  --secondary-l: 65%;
+  --subthemecolor: hsl(var(--subthemecolor-hs),var(--subthemecolor-l));
+  --subthemecolor-hs: 10,9%;
+  --subthemecolor-l: 13%;
 
   // Background colors
-  $bgcolor-global: lighten($themelight, 10%);
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: $gray-100;
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  $bgcolor-keyword-highlighted: $grw-marker-green;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 36,50%;
+  --bgcolor-global-l: 97%;
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{$gray-100};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
+  --bgcolor-keyword-highlighted: $grw-marker-green;
 
   // Font colors
-  $color-global: $subthemecolor;
-  $color-reversal: white;
-  $color-link: $accentcolor;
-  $color-link-hover: lighten($accentcolor, 10%);
-  $color-link-wiki: $accentcolor;
-  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e; // optional
+  --color-global: var(--subthemecolor);
+  --color-global-hs: var(--subthemecolor-hs);
+  --color-global-l: var(--subthemecolor-l);
+  --color-reversal: white;
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 357,49%;
+  --color-link-l: 40%;
+  --color-link-hover: #{hsl.lighten(var(--color-link), 10%)};
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hs: var(--color-link-hs);
+  --color-link-wiki-l: var(--color-link-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 10%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: #c7254e; // optional
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: lighten($themecolor, 10%);
-  // $bgcolor-list-hover: darken($bgcolor-list, 2%);
-  // $color-list-active: $bgcolor-global;
-  // $bgcolor-list-active: $accentcolor;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: #{hsl.lighten(var(--primary), 10%)};
+  // --bgcolor-list-hover: #{hsl.darken(var(--bgcolor-list), 2%)};
+  // --color-list-active: var(--bgcolor-global);
+  // --bgcolor-list-active: var(--color-link);
 
   // Navbar
-  $bgcolor-navbar: $third-main-color;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #90a555 0%, #a84be6 50%, #eaab20 100%);
+  --bgcolor-navbar: var(--secondary);
+  --bgcolor-navbar-hs: var(--secondary-hs);
+  --bgcolor-navbar-l: var(--secondary-l);
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, #90a555 0%, #a84be6 50%, #eaab20 100%);
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+  --bgcolor-logo: var(--bgcolor-navbar);
+  --fillcolor-logo-mark: #{lighten(desaturate($gray-100, 10%), 15%)};
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
+  --bgcolor-sidebar: var(--primary);
+  --bgcolor-sidebar-hs: var(--primary-hs);
+  --bgcolor-sidebar-l: var(--primary-l);
+
   // Sidebar resize button
-  $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: $subthemecolor;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 10%);
+  --color-resize-button: var(--color-reversal);
+  --bgcolor-resize-button: var(--subthemecolor);
+  --bgcolor-resize-button-hs: var(--subthemecolor-hs);
+  --bgcolor-resize-button-l: var(--subthemecolor-l);
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 10%)};
+
   // Sidebar contents
-  $color-sidebar-context: $accentcolor;
-  $bgcolor-sidebar-context: lighten($themelight, 8%);
+  --color-sidebar-context: var(--color-link);
+  --color-sidebar-context-hs: var(--color-link-hs);
+  --color-sidebar-context-l: var(--color-link-l);
+  --bgcolor-sidebar-context: #{hsl.darken(var(--bgcolor-global), 2%)};
+  --bgcolor-sidebar-context-hs: var(--bgcolor-global-hs);
+  --bgcolor-sidebar-context-l: calc(var(--bgcolor-global-l) - 2%);
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: lighten($themelight, 10%);
+  --bgcolor-sidebar-list-group: #{hsl.lighten(var(--bgcolor-global), 10%)};
+
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   // Icon colors
-  $color-editor-icons: $accentcolor;
+  --color-editor-icons: var(--color-link);
 
   // Border colors
-  $border-color-theme: lighten($subthemecolor, 40%);
-  $bordercolor-inline-code: #ccc8c8; // optional
+  --border-color-theme: #{hsl.lighten(var(--subthemecolor), 40%)};
+  --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $growi-blue;
+  --bgcolor-dropdown-link-active: #{$growi-blue};
 
   // admin theme box
-  $color-theme-color-box: darken($primary, 5%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  --color-theme-color-box: #{hsl.darken(var(--primary), 5%)};
 
   &, body {
     background-image: url('../images/hufflepuff/badger-light3.png');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
   }
 
   // Button
   .btn.btn-outline-primary {
-    @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 50%), darken($primary, 50%), lighten($primary, 20%));
+    @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 50%)}, #{hsl.darken(var(--primary), 50%)}, #{hsl.lighten(var(--primary), 20%)});
   }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 70%), lighten($primary, 5%), lighten($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 70%)}, #{hsl.lighten(var(--primary), 5%)}, #{hsl.lighten(var(--primary), 20%)});
     }
   }
 
   .growi:not(.login-page) {
     // add background-image
     .page-editor-preview-container {
-      background-image: url('../images/themes/hufflepuff/badger-light3.png');
+      background-image: url('../images/hufflepuff/badger-light3.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -121,40 +145,37 @@
 
   // login and register
   .nologin {
-    #page-wrapper {
-      background-color: $themelight;
-      background-image: url('../images/themes/hufflepuff/badger-light.png');
+    .page-wrapper{
+      background-image: url('../images/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
-    }
 
-    .noLogin-header,
-    .noLogin-dialog {
-      background-color: rgba(black, 0.1);
-    }
-
-    .link-switch {
-      color: $color-global;
-    }
-
-    .grw-external-auth-form {
-      border-color: $accentcolor !important;
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+        a.link-switch  {
+          color: #{hsl.darken(var(--color-global),10%)};
+        }
+      }
+      .grw-external-auth-form {
+        border-color: #993439;
+      }
     }
   }
 
   .table {
-    background-color: $bgcolor-global;
+    background-color: var(--bgcolor-global);
   }
 
   .card-timeline > .card-header {
-    background-color: $third-main-color;
+    background-color: var(--secondary);
   }
 
   .nav.nav-tabs {
     > .nav-item {
       > .nav-link.active {
-        color: $subthemecolor;
+        color: #231e1d;
       }
     }
   }
@@ -162,101 +183,128 @@
 
 :root[data-theme='dark'] {
   // Theme colors
-  $themecolor: #eaab20;
-  $themedark: #3d3f38;
-  $subthemecolor: #231e1d;
-  $third-main-color: #967224;
-  $accentcolor: #993439;
-
-  $primary: darken($themecolor, 10%);
-  $secondary: $third-main-color;
-  $dark: #031018;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 41,83%;
+  --primary-l: 62%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 41,61%;
+  --secondary-l: 36%;
+  --subthemecolor: hsl(var(--subthemecolor-hs),var(--subthemecolor-l));
+  --subthemecolor-hs: 10,9%;
+  --subthemecolor-l: 13%;
+  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+  --accentcolor-hs: 357,49%;
+  --accentcolor-l: 40%;
 
   // Background colors
-  $bgcolor-global: $themedark;
-  // $bgcolor-navbar: #27343b;
-  $bgcolor-inline-code: $subthemecolor;
-  $bgcolor-card: darken($themedark, 5%);
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  $bgcolor-keyword-highlighted: darken($grw-marker-cyan, 40%);
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 77,6%;
+  --bgcolor-global-l: 23%;
+  // --bgcolor-navbar: #27343b;
+  --bgcolor-inline-code: var(--subthemecolor);
+  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 50%)};
+  --bgcolor-keyword-highlighted: #{darken($grw-marker-cyan, 40%)};
 
   // Font colors
-  $color-global: #efe2cf;
-  $color-reversal: $gray-100;
-  $color-link: lighten($themecolor, 20%);
-  $color-link-hover: lighten($color-link, 10%);
-  $color-link-wiki: lighten($primary, 20%);
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: $themecolor;
-  // $color-inline-code: #c7254e; // optional
-  // $color-search: #000102;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 36,50%;
+  --color-global-l: 87%;
+  --color-reversal: #{$gray-100};
+  --color-link: #{hsl.lighten(var(--primary), 30%)};
+  --color-link-hs: var(--primary-hs);
+  --color-link-l: calc(var(--primary-l) + 30%);
+  --color-link-hover: #{hsl.lighten(var(--primary), 40%)};
+  --color-link-wiki: #{hsl.lighten(var(--primary), 20%)};
+  --color-link-wiki-hs: var(--primary-hs);
+  --color-link-wiki-l: calc(var(--primary-l) + 20%);
+  --color-link-wiki-hover: #{hsl.lighten(var(--primary), 50%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: #{hsl.lighten(var(--primary), 10%)};
+  // --color-inline-code: #c7254e; // optional
+  // --color-search: #000102;
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $accentcolor;
-  // $bgcolor-list-hover: lighten($bgcolor-global, 3%);
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: var(--accentcolor);
+  // --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global), 3%)};
+  // --color-list-active: var(--color-reversal);
+  // --bgcolor-list-active: var(--primary);
 
   // Navbar
-  $bgcolor-navbar: $third-main-color;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
+  --bgcolor-navbar: var(--secondary);
+  --bgcolor-navbar-hs: var(--secondary-hs);
+  --bgcolor-navbar-l: var(--secondary-l);
+  --bgcolor-search-top-dropdown: #{hsl.lighten(var(--primary), 10%)};
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: calc(var(--primary-l) + 10%);
+  --border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
 
   // Logo colors
-  $bgcolor-logo: #13191c;
-  $fillcolor-logo-mark: white;
+  --bgcolor-logo: #13191c;
+  --fillcolor-logo-mark: white;
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
-  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #cc951e; // optional
+  --bgcolor-sidebar: #{hsl.lighten(var(--primary), 10%)};
+  --bgcolor-sidebar-hs: var(--primary-hs);
+  --bgcolor-sidebar-l: calc(var(--primary-l) + 10%);
+  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #cc951e; // optional
+
   // Sidebar resize button
-  $color-resize-button: $color-global;
-  $bgcolor-resize-button: $accentcolor;
-  $color-resize-button-hover: $color-global;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 7%);
+  --color-resize-button: var(--color-global);
+  --bgcolor-resize-button: var(--accentcolor);
+  --bgcolor-resize-button-hs: var(--accentcolor-hs);
+  --bgcolor-resize-button-l: var(--accentcolor-l);
+  --color-resize-button-hover: var(--color-global);
+  --bgcolor-resize-button-hover: #{hsl.darken(var(--accentcolor), 7%)};
+
   // Sidebar contents
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: lighten($themedark, 5%);
+  --color-sidebar-context: var(--color-link);
+  --color-sidebar-context-hs: var(--color-link-hs);
+  --color-sidebar-context-l: var(--color-link-l);
+  --bgcolor-sidebar-context: #{hsl.lighten(var(--bgcolor-global), 5%)};
+  --bgcolor-sidebar-context-hs: var(--bgcolor-global-hs);
+  --bgcolor-sidebar-context-l: calc(var(--bgcolor-global-l) + 5%);
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: lighten($subthemecolor, 5%);
+  --bgcolor-sidebar-list-group: #{hsl.lighten(var(--subthemecolor), 5%)};
+
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   // Icon colors
-  $color-editor-icons: $themecolor;
+  --color-editor-icons: #{hsl.lighten(var(--primary), 10%)};
 
   // Border colors
-  $border-color-theme: darken($themecolor, 25%);
-  $bordercolor-inline-code: #4d4d4d; // optional
-
-  // Dropdown colors
-  $color-dropdown-link-active: $color-reversal;
-  $color-dropdown-link-hover: $color-global;
+  --border-color-theme: #{hsl.darken(var(--primary), 15%)};
+  --bordercolor-inline-code: #4d4d4d; // optional
 
   // admin theme box
-  $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
+  --color-theme-color-box: var(--primary);
 
   &, body {
     background-image: url('../images/hufflepuff/badger-dark.jpg');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
   }
 
   // Navs
   .nav-tabs {
-    border-bottom: $border-color-theme 1px solid;
+    border-bottom: var(--border-color-theme) 1px solid;
     .nav-link {
       &:hover {
-        border-color: lighten($border-color-theme, 10%);
+        border-color: #{hsl.darken(var(--primary), 5%)};
         border-bottom: none;
       }
       &.active {
-        color: $color-link;
+        color: var(--color-link);
         background-color: transparent;
-        border-color: $border-color-theme;
+        border-color: var(--border-color-theme);
       }
     }
   }
@@ -268,22 +316,22 @@
 
   // Button
   .btn.btn-outline-primary {
-    @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 40%), lighten($primary, 15%), darken($primary, 10%), darken($primary, 30%));
+    @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 40%)}, #{hsl.lighten(var(--primary), 15%)}, #{hsl.darken(var(--primary), 10%)}, #{hsl.darken(var(--primary), 30%)});
   }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 40%), lighten($primary, 15%), darken($primary, 0%), darken($primary, 30%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 40%)}, #{hsl.lighten(var(--primary), 15%)}, #{hsl.darken(var(--primary), 10%)}, #{hsl.darken(var(--primary), 30%)});
     }
   }
 
   .card-timeline > .card-header {
-    background-color: $accentcolor;
+    background-color: var(--accentcolor);
   }
 
   .growi:not(.login-page) {
     // add background-image
     .page-editor-preview-container {
-      background-image: url('../images/themes/hufflepuff/badger-dark.jpg');
+      background-image: url('../images/hufflepuff/badger-dark.jpg');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -292,25 +340,23 @@
 
   // login and register
   .nologin {
-    #page-wrapper {
-      background-color: $themedark;
-      background-image: url('../images/themes/hufflepuff/badger-light.png');
+    .page-wrapper{
+      background-image: url('../images/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
-    }
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+      }
 
-    .noLogin-header,
-    .noLogin-dialog {
-      background-color: rgba(black, 0.1);
-    }
+      .link-switch {
+        color: var(--color-global);
+      }
 
-    .link-switch {
-      color: $color-global;
-    }
-
-    .grw-external-auth-form {
-      border-color: $accentcolor !important;
+      .grw-external-auth-form {
+        border-color: var(--accentcolor);
+      }
     }
   }
 }

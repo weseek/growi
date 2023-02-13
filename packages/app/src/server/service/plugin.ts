@@ -9,7 +9,7 @@ import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
 import {
-  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
+  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta, GrowiPluginMeta,
 } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
@@ -33,28 +33,43 @@ function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
   return JSON.parse(manifestStr);
 }
 
+
+type FindThemePluginResult = {
+  growiPlugin: GrowiPlugin,
+  themeMetadata: GrowiThemeMetadata,
+  themeHref: string,
+}
+
 export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<string>
-  retrieveThemeHref(theme: string): Promise<string | undefined>
+  findThemePlugin(theme: string): Promise<FindThemePluginResult | null>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
   downloadNotExistPluginRepositories(): Promise<void>
 }
 
 export class PluginService implements IPluginService {
 
+  /*
+  * Downloading a non-existent repository to the file system
+  */
   async downloadNotExistPluginRepositories(): Promise<void> {
     try {
-      // check all growi plugin documents
+      // find all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
       const growiPlugins = await GrowiPlugin.find({});
+
+      // if not exists repository in file system, download latest plugin repository
       for await (const growiPlugin of growiPlugins) {
         const pluginPath = path.join(pluginStoringPath, growiPlugin.installedPath);
+        const organizationName = path.join(pluginStoringPath, growiPlugin.organizationName);
         if (fs.existsSync(pluginPath)) {
-          // if exists repository, do nothing
           continue;
         }
         else {
-          // if not exists repository, download latest plugin repository
+          if (!fs.existsSync(organizationName)) {
+            fs.mkdirSync(organizationName);
+          }
+
           // TODO: imprv Document version and repository version possibly different.
           const ghUrl = new URL(growiPlugin.origin.url);
           const ghPathname = ghUrl.pathname;
@@ -68,8 +83,24 @@ export class PluginService implements IPluginService {
           const ghOrganizationName = match[1];
           const ghReposName = match[2];
 
-          // download github repository to local file system
-          await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+          const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
+          const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+          const unzippedPath = pluginStoringPath;
+          const unzippedReposPath = path.join(pluginStoringPath, `${ghReposName}-${ghBranch}`);
+
+          try {
+            // download github repository to local file system
+            await this.download(requestUrl, zipFilePath);
+            await this.unzip(zipFilePath, unzippedPath);
+            fs.renameSync(unzippedReposPath, pluginPath);
+          }
+          catch (err) {
+            // clean up, documents are not operated
+            if (fs.existsSync(unzippedReposPath)) await fs.promises.rm(unzippedReposPath, { recursive: true });
+            if (fs.existsSync(pluginPath)) await fs.promises.rm(pluginPath, { recursive: true });
+            logger.error(err);
+          }
+
           continue;
         }
       }
@@ -79,36 +110,74 @@ export class PluginService implements IPluginService {
     }
   }
 
+  /*
+  * Install a plugin from URL and save it in the DB and file system.
+  */
   async install(origin: GrowiPluginOrigin): Promise<string> {
+    const ghUrl = new URL(origin.url);
+    const ghPathname = ghUrl.pathname;
+    // TODO: Branch names can be specified.
+    const ghBranch = 'main';
+
+    const match = ghPathname.match(githubReposIdPattern);
+    if (ghUrl.hostname !== 'github.com' || match == null) {
+      throw new Error('GitHub repository URL is invalid.');
+    }
+
+    const ghOrganizationName = match[1];
+    const ghReposName = match[2];
+    const installedPath = `${ghOrganizationName}/${ghReposName}`;
+
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
+    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+    const unzippedPath = pluginStoringPath;
+    const unzippedReposPath = path.join(pluginStoringPath, `${ghReposName}-${ghBranch}`);
+    const temporaryReposPath = path.join(pluginStoringPath, ghReposName);
+    const reposStoringPath = path.join(pluginStoringPath, `${installedPath}`);
+    const organizationPath = path.join(pluginStoringPath, ghOrganizationName);
+
+
+    let plugins: GrowiPlugin<GrowiPluginMeta>[];
+
     try {
-    // download
-      const ghUrl = new URL(origin.url);
-      const ghPathname = ghUrl.pathname;
-      // TODO: Branch names can be specified.
-      const ghBranch = 'main';
+      // download github repository to file system's temporary path
+      await this.download(requestUrl, zipFilePath);
+      await this.unzip(zipFilePath, unzippedPath);
+      fs.renameSync(unzippedReposPath, temporaryReposPath);
 
-      const match = ghPathname.match(githubReposIdPattern);
-      if (ghUrl.hostname !== 'github.com' || match == null) {
-        throw new Error('GitHub repository URL is invalid.');
-      }
+      // detect plugins
+      plugins = await PluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
 
-      const ghOrganizationName = match[1];
-      const ghReposName = match[2];
-      const installedPath = `${ghOrganizationName}/${ghReposName}`;
+      if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
 
-      // download github repository to local file system
-      await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+      // remove the old repository from the storing path
+      if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
 
-      // delete old document
+      // move new repository from temporary path to storing path.
+      fs.renameSync(temporaryReposPath, reposStoringPath);
+    }
+    catch (err) {
+      // clean up
+      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
+      if (fs.existsSync(unzippedReposPath)) await fs.promises.rm(unzippedReposPath, { recursive: true });
+      if (fs.existsSync(temporaryReposPath)) await fs.promises.rm(temporaryReposPath, { recursive: true });
+      logger.error(err);
+      throw err;
+    }
+
+    try {
+      // delete plugin documents if these exist
       await this.deleteOldPluginDocument(installedPath);
 
-      // save plugin metadata
-      const plugins = await PluginService.detectPlugins(origin, installedPath);
+      // save new plugins metadata
       await this.savePluginMetaData(plugins);
 
       return plugins[0].meta.name;
     }
     catch (err) {
+      // clean up
+      if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
+      await this.deleteOldPluginDocument(installedPath);
       logger.error(err);
       throw err;
     }
@@ -119,72 +188,46 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
-  private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
+  // !! DO NOT USE WHERE NOT SSRF GUARDED !! -- 2022.12.26 ryoji-s
+  private async download(requestUrl: string, filePath: string): Promise<void> {
+    return new Promise<void>((resolve, rejects) => {
+      axios({
+        method: 'GET',
+        url: requestUrl,
+        responseType: 'stream',
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            const file = fs.createWriteStream(filePath);
+            res.data.pipe(file)
+              .on('close', () => file.close())
+              .on('finish', () => {
+                return resolve();
+              });
+          }
+          else {
+            rejects(res.status);
+          }
+        }).catch((err) => {
+          logger.error(err);
+          // eslint-disable-next-line prefer-promise-reject-errors
+          rejects('Filed to download file.');
+        });
+    });
+  }
 
-    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
-    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
-    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
+  private async unzip(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike): Promise<void> {
+    try {
+      const stream = fs.createReadStream(zipFilePath);
+      const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
 
-    const downloadFile = async(requestUrl: string, filePath: string) => {
-      return new Promise<void>((resolve, rejects) => {
-        axios({
-          method: 'GET',
-          url: requestUrl,
-          responseType: 'stream',
-        })
-          .then((res) => {
-            if (res.status === 200) {
-              const file = fs.createWriteStream(filePath);
-              res.data.pipe(file)
-                .on('close', () => file.close())
-                .on('finish', () => {
-                  return resolve();
-                });
-            }
-            else {
-              rejects(res.status);
-            }
-          }).catch((err) => {
-            logger.error(err);
-            // eslint-disable-next-line prefer-promise-reject-errors
-            rejects('Filed to download file.');
-          });
-      });
-    };
-
-    const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
-      try {
-        const stream = fs.createReadStream(zipFilePath);
-        const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
-        const deleteZipFile = (path: fs.PathLike) => fs.unlinkSync(path);
-
-        await streamToPromise(unzipStream);
-        deleteZipFile(zipFilePath);
-      }
-      catch (err) {
-        logger.error(err);
-        throw new Error('Filed to unzip.');
-      }
-    };
-
-    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
-      try {
-        // if repository already exists, delete old repository before rename path
-        if (fs.existsSync(newPath)) await fs.promises.rm(newPath, { recursive: true });
-        // rename repository
-        fs.renameSync(oldPath, newPath);
-      }
-      catch (err) {
-        logger.error(err);
-        throw new Error('Filed to rename path.');
-      }
-    };
-
-    await downloadFile(requestUrl, zipFilePath);
-    await unzip(zipFilePath, unzippedPath);
-    await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
-
-    return;
+      await streamToPromise(unzipStream);
+      await fs.promises.rm(zipFilePath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Filed to unzip.');
+    }
   }
 
   private async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
@@ -192,9 +235,9 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.insertMany(plugins);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  private static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
-    const packageJsonPath = path.resolve(pluginStoringPath, installedPath, 'package.json');
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, max-len
+  private static async detectPlugins(origin: GrowiPluginOrigin, ghOrganizationName: string, ghReposName: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
+    const packageJsonPath = path.resolve(pluginStoringPath, ghReposName, 'package.json');
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
     const { growiPlugin } = packageJson;
@@ -211,7 +254,7 @@ export class PluginService implements IPluginService {
     if (growiPlugin.isMonorepo && growiPlugin.packages != null) {
       const plugins = await Promise.all(
         growiPlugin.packages.map(async(subPackagePath) => {
-          const subPackageInstalledPath = path.join(installedPath, subPackagePath);
+          const subPackageInstalledPath = path.join(ghReposName, subPackagePath);
           return this.detectPlugins(origin, subPackageInstalledPath, packageJson);
         }),
       );
@@ -223,7 +266,8 @@ export class PluginService implements IPluginService {
     }
     const plugin = {
       isEnabled: true,
-      installedPath,
+      installedPath: `${ghOrganizationName}/${ghReposName}`,
+      organizationName: ghOrganizationName,
       origin,
       meta: {
         name: growiPlugin.name ?? packageName,
@@ -285,8 +329,7 @@ export class PluginService implements IPluginService {
     return growiPlugins.meta.name;
   }
 
-  async retrieveThemeHref(theme: string): Promise<string | undefined> {
-
+  async findThemePlugin(theme: string): Promise<FindThemePluginResult | null> {
     const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
 
     let matchedPlugin: GrowiPlugin | undefined;
@@ -312,15 +355,20 @@ export class PluginService implements IPluginService {
       logger.error(`Could not find the theme '${theme}' from GrowiPlugin documents.`, e);
     }
 
+    if (matchedPlugin == null || matchedThemeMetadata == null) {
+      return null;
+    }
+
+    let themeHref;
     try {
-      if (matchedPlugin != null && matchedThemeMetadata != null) {
-        const manifest = await retrievePluginManifest(matchedPlugin);
-        return `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
-      }
+      const manifest = retrievePluginManifest(matchedPlugin);
+      themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
     }
     catch (e) {
       logger.error(`Could not read manifest file for the theme '${theme}'`, e);
     }
+
+    return { growiPlugin: matchedPlugin, themeMetadata: matchedThemeMetadata, themeHref };
   }
 
   async retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries> {

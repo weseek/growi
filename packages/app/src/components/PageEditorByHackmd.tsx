@@ -24,7 +24,10 @@ import {
 import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
-import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+} from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   EditorMode,
@@ -67,7 +70,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { returnPathForURL } = pathUtils;
 
   // pageData
-  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
+  const { data: pageData } = useSWRxCurrentPage();
+  const { trigger: mutatePageData } = useSWRMUTxCurrentPage();
   const revision = pageData?.revision;
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -127,6 +131,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
       else {
         updateStateAfterSave?.();
         mutateIsHackmdDraftUpdatingInRealtime(false);
+
+        // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
+        mutatePageTree();
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -258,6 +265,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
       updateStateAfterSave?.();
       mutateTagsInfo();
 
+      // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
+      mutatePageTree();
+
       mutateIsEnabledUnsavedWarning(false);
 
       logger.debug('success to save');
@@ -268,8 +278,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave,
-      saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, mutateIsEnabledUnsavedWarning, t]);
+  // eslint-disable-next-line max-len
+  }, [currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, mutateIsEnabledUnsavedWarning, t]);
 
   /**
    * onChange event of HackmdEditor handler

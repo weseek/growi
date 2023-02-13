@@ -1,98 +1,106 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
-@use './bootstrap/init' as bs;
-
-// == Define Bootstrap theme colors
-//
-
-// colors for overriding bootstrap $theme-colors
-// $secondary: #;
-// $info: #;
-// $success: #;
-// $warning: #;
-// $danger: #;
-// $light: #;
-// $dark: #;
-
-$themecolor: #ffb8c6;
-$themelight: #fff0f5;
-$subthemecolor: #67a856;
-$third-main-color: antiquewhite;
-$accentcolor: #e08dbc;
-
-.grw-navbar {
-  border-bottom: $accentcolor 4px solid;
-}
+@use './theme/mixins/hsl-button';
+@use './theme/hsl-functions' as hsl;
 
 //== Light Mode
 //
-:root {
-  $primary: $themecolor;
-  $secondary: $accentcolor;
+:root[data-theme='light'] {
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 348,100%;
+  --primary-l: 86%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 326,57%;
+  --secondary-l: 72%;
 
   // Background colors
-  $bgcolor-global: white;
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: $gray-50;
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  $bgcolor-keyword-highlighted: $grw-marker-cyan;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 0,0%;
+  --bgcolor-global-l: 100%;
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{$gray-50};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 50%)};
+  --bgcolor-keyword-highlighted: #{$grw-marker-cyan};
 
   // Font colors
-  $color-global: black;
-  $color-reversal: white;
-  $color-link: $subthemecolor;
-  $color-link-hover: lighten($subthemecolor, 10%);
-  $color-link-wiki: $subthemecolor;
-  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
-  $color-link-nabvar: $bgcolor-global;
-  $color-inline-code: #c7254e; // optional
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 0,0%;
+  --color-global-l: 0%;
+  --color-reversal: white;
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 108,32%;
+  --color-link-l: 50%;
+  --color-link-hover: #{hsl.lighten(var(--color-link), 10%)};
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hs: var(--color-link-hs);
+  --color-link-wiki-l: var(--color-link-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 10%)};
+  --color-link-nabvar: var(--bgcolor-global);
+  --color-inline-code: #c7254e; // optional
 
   // List Group colors
   // $color-list: $color-global;
-  $bgcolor-list: $themelight;
-  $color-list-hover: lighten($accentcolor, 20%);
-  $bgcolor-list-hover: darken($bgcolor-list, 2%);
-  $color-list-active: $bgcolor-global;
-  $bgcolor-list-active: $accentcolor;
+  --bgcolor-list: #fff0f5;
+  --color-list-hover: #{hsl.lighten(var(--secondary), 20%)};
+  --bgcolor-list-hover: #{darken(#fff0f5, 2%)};
+  --color-list-active: var(--bgcolor-global);
+  --bgcolor-list-active: var(--secondary);
 
   // Navbar
-  $bgcolor-navbar: #d3687c;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #cbe682 0%, #4ad6e8 50%, #ea42f0 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-hs: 349,55%;
+  --bgcolor-navbar-l: 62%;
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, #cbe682 0%, #4ad6e8 50%, #ea42f0 100%);
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
+  --bgcolor-logo: var(--bgcolor-navbar);
+  --fillcolor-logo-mark: #{lighten(desaturate($gray-100, 10%), 15%)};
 
   // Sidebar
-  $bgcolor-sidebar: $themecolor;
+  --bgcolor-sidebar: var(--primary);
+  --bgcolor-sidebar-hs: var(--primary-hs);
+  --bgcolor-sidebar-l: var(--primary-l);
+
   // Sidebar resize button
-  $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: $subthemecolor;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  --color-resize-button: var(--color-reversal);
+  --bgcolor-resize-button: var(--color-link);
+  --bgcolor-resize-button-hs: var(--color-link-hs);
+  --bgcolor-resize-button-l: var(--color-link-l);
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--color-link), 5%)};
+
   // Sidebar contents
-  $color-sidebar-context: $subthemecolor;
-  $bgcolor-sidebar-context: #fdfffe;
+  --color-sidebar-context: var(--color-link);
+  --color-sidebar-context-hs: var(--color-link-hs);
+  --color-sidebar-context-l: var(--color-link-l);
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 150,100%;
+  --bgcolor-sidebar-context-l: 100%;
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #fafbff; // optional
+  --bgcolor-sidebar-list-group: #fafbff; // optional
+
+  // Subnavigation
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
-  $bordercolor-inline-code: #ccc8c8; // optional
+  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $growi-blue;
+  --bgcolor-dropdown-link-active: #{$growi-blue};
 
   // admin theme box
-  $color-theme-color-box: darken($primary, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  --color-theme-color-box: #{hsl.darken(var(--primary), 20%)};
 
   &, body {
     background-image: url('../images/spring/spring02.svg');
@@ -101,21 +109,25 @@ $accentcolor: #e08dbc;
     background-size: cover;
   }
 
+  .grw-navbar {
+    border-bottom: var(--secondary) 4px solid;
+  }
+
   //Button
   // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.
   .btn.btn-outline-primary {
-    @include bs.button-outline-variant($accentcolor, $accentcolor, lighten($accentcolor, 20%), $accentcolor);
+    @include hsl-button.button-outline-variant(var(--secondary), var(--secondary), #{hsl.lighten(var(--secondary), 20%)}, var(--secondary));
   }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 50%)}, #{hsl.lighten(var(--primary), 5%)}, #{hsl.lighten(var(--primary), 10%)});
     }
   }
 
   .growi:not(.login-page) {
     // add background-image
     .page-editor-preview-container {
-      background-image: url('/images/themes/spring/spring02.svg');
+      background-image: url('../images/spring/spring02.svg');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -124,58 +136,57 @@ $accentcolor: #e08dbc;
 
   // login and register
   .nologin {
-    #page-wrapper {
-      background-color: $themelight;
-      background-image: url('/images/themes/spring/spring.svg');
+    .page-wrapper{
+      background-color: #fff0f5;
+      background-image: url('../images/spring/spring.svg');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
-    }
 
-    .noLogin-header,
-    .noLogin-dialog {
-      background-color: rgba(black, 0.1);
-    }
+      .nologin-header,
+      .nologin-dialog {
+        background-color: rgba(black, 0.1);
+        a.link-switch {
+          color: var(--color-global);
+        }
+      }
 
-    .link-switch {
-      color: $color-global;
-    }
-
-    .grw-external-auth-form {
-      border-color: $accentcolor !important;
+      .grw-external-auth-form {
+        border-color: var(--secondary);
+      }
     }
   }
 
   .table {
-    background-color: $bgcolor-global;
+    background-color: var(--bgcolor-global);
   }
 
   /*
     Cards
   */
   .card-timeline > .card-header {
-    background-color: $third-main-color;
+    background-color: antiquewhite;
   }
 
   .admin-bot-card {
     .grw-botcard-title-active {
-      color: $color-reversal;
+      color: var(--color-reversal);
     }
   }
 
   h1,
   h2 {
-    color: $subthemecolor;
+    color: var(--color-link);
 
     svg {
-      fill: $subthemecolor;
+      fill: var(--color-link);
     }
   }
 
   .nav.nav-tabs {
     > .nav-item {
       > .nav-link.active {
-        color: $subthemecolor;
+        color: var(--color-link);
       }
     }
   }

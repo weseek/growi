@@ -391,6 +391,7 @@
     "bucket_name": "バケット名",
     "custom_endpoint": "カスタムエンドポイント",
     "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
+    "s3_secret_access_key_input_description": "設定値は非表示です",
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
@@ -856,6 +857,22 @@
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "g2g_data_transfer": {
+    "transfer_data_to_another_growi": "このGROWIのデータを別GROWIへ移行する",
+    "advanced_options": "詳細オプション",
+    "start_transfer": "移行を開始する",
+    "paste_transfer_key": "移行キーをここにペースト"
+  },
+  "plugins": {
+    "plugins": "プラグイン",
+    "plugin_installer": "プラグインインストーラー",
+    "repository_url": "URL",
+    "description": "リポジトリのURLの入力してください。",
+    "plugin_card": "プラグインカード",
+    "plugin_is_not_installed": "プラグインがインストールされていません",
+    "install": "インストール",
+    "delete": "削除"
+  },
   "cloud_setting_management": {
     "to_cloud_settings": "GROWI.cloud の管理画面へ"
   },
@@ -1021,6 +1038,11 @@
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+  },
+  "g2g": {
+    "transfer_success": "G2G移行が完了しました",
+    "error_generate_growi_archive": "GROWI アーカイブファイルの作成に失敗しました",
+    "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
   },
   "toaster": {
     "give_user_admin": "{{username}}を管理者に設定しました",

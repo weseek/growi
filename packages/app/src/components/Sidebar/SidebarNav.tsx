@@ -1,4 +1,6 @@
-import React, { FC, memo, useCallback } from 'react';
+import React, {
+  FC, memo, useCallback, useEffect, useState,
+} from 'react';
 
 import Link from 'next/link';
 
@@ -80,12 +82,16 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser();
 
-  const isAdmin = currentUser?.admin;
+  const [isAdmin, setAdmin] = useState(false);
 
   const { onItemSelected } = props;
 
+  useEffect(() => {
+    setAdmin(currentUser?.admin === true);
+  }, [currentUser?.admin]);
+
   return (
-    <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
+    <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`} data-vrt-blackout-sidebar-nav>
       <div className="grw-sidebar-nav-primary-container">
         {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />

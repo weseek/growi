@@ -1,6 +1,5 @@
-import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -24,9 +23,9 @@ import {
 
 import { SearchPage } from '../components/SearchPage';
 
-import { NextPageWithLayout } from './_app.page';
+import type { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, CommonProps, useInitSidebarConfig,
 } from './utils/commons';
 
 
@@ -57,6 +56,8 @@ type Props = CommonProps & {
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   const { userUISettings } = props;
 
+  const { t } = useTranslation();
+
   // commons
   useCsrfToken(props.csrfToken);
 
@@ -70,12 +71,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   useDrawioUri(props.drawioUri);
 
-  // UserUISettings
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // render config
   useRendererConfig(props.rendererConfig);
@@ -88,7 +85,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('search_result.title'));
 
   return (
     <>
@@ -154,9 +151,10 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 

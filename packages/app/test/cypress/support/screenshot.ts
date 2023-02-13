@@ -1,4 +1,9 @@
+import { BlackoutGroup } from "./blackout";
+
 Cypress.Screenshot.defaults({
-  blackout: ['[data-hide-in-vrt=true]'],
+  blackout: [
+    ...BlackoutGroup.BASIS,
+    ...BlackoutGroup.SIDEBAR_NAV,
+  ],
   capture: 'viewport',
 })

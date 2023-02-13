@@ -8,7 +8,6 @@ import { LsxContext } from './lsx-context';
 
 import styles from './Lsx.module.scss';
 
-
 type Props = {
   children: React.ReactNode,
   className?: string,
@@ -19,27 +18,28 @@ type Props = {
   sort?: string,
   reverse?: string,
   filter?: string,
+  except?: string,
 
   isImmutable?: boolean,
+  isSharedPage?: boolean,
 };
 
-export const Lsx = React.memo(({
+const LsxSubstance = React.memo(({
   prefix,
-  num, depth, sort, reverse, filter,
+  num, depth, sort, reverse, filter, except,
   isImmutable,
-  ...props
 }: Props): JSX.Element => {
 
   const lsxContext = useMemo(() => {
     const options = {
-      num, depth, sort, reverse, filter,
+      num, depth, sort, reverse, filter, except,
     };
     return new LsxContext(prefix, options);
-  }, [depth, filter, num, prefix, reverse, sort]);
+  }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const { data, error } = useSWRxNodeTree(lsxContext, isImmutable);
+  const { data, error, isLoading: _isLoading } = useSWRxNodeTree(lsxContext, isImmutable);
 
-  const isLoading = data === undefined;
+  const isLoading = _isLoading || data === undefined;
   const hasError = error != null;
   const errorMessage = error?.message;
 
@@ -89,6 +89,25 @@ export const Lsx = React.memo(({
       {contents}
     </div>
   );
+});
+LsxSubstance.displayName = 'LsxSubstance';
+
+const LsxDisabled = React.memo((): JSX.Element => {
+  return (
+    <div className="text-muted">
+      <i className="fa fa-fw fa-info-circle"></i>
+      <small>lsx is not available on the share link page</small>
+    </div>
+  );
+});
+LsxDisabled.displayName = 'LsxDisabled';
+
+export const Lsx = React.memo((props: Props): JSX.Element => {
+  if (props.isSharedPage) {
+    return <LsxDisabled />;
+  }
+
+  return <LsxSubstance {...props} />;
 });
 Lsx.displayName = 'Lsx';
 

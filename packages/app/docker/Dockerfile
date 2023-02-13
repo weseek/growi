@@ -1,7 +1,5 @@
 # syntax = docker/dockerfile:1.4
 
-ARG flavor=default
-
 
 ##
 ## packages-json-picker
@@ -30,11 +28,15 @@ ENV nodeModulesGrowiPackagesDir ${optDir}/node_modules/@growi
 # expect a string seperated by commas (e.g. "A,B")
 ENV removeNodeModulesSymlinkPaths ${nodeModulesGrowiPackagesDir}/slackbot-proxy
 
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y python3 build-essential;
+
 # copy files
 COPY --from=packages-json-picker ${optDir} .
 
-# setup
-RUN yarn config set network-timeout 300000
+# setup (with network-timeout = 1 hour)
+RUN yarn config set network-timeout 3600000
 RUN npx -y lerna bootstrap -- --frozen-lockfile
 
 # remove unnecessary symlinks
@@ -63,9 +65,9 @@ RUN tar -cf node_modules.tar \
 
 
 ##
-## prebuilder-default
+## prebuilder
 ##
-FROM node:16-slim AS prebuilder-default
+FROM node:16-slim AS prebuilder
 
 ENV optDir /opt
 
@@ -80,20 +82,11 @@ RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
 
-##
-## prebuilder-nocdn
-##
-FROM prebuilder-default AS prebuilder-nocdn
-
-# add dotenv file for NO_CDN
-COPY packages/app/docker/nocdn/.env.production.local ${optDir}/packages/app/
-
-
 
 ##
 ## builder
 ##
-FROM prebuilder-${flavor} AS builder
+FROM prebuilder AS builder
 
 ENV optDir /opt
 
@@ -102,16 +95,16 @@ WORKDIR ${optDir}
 # ignore eslint and stylelint
 COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
 # copy all related packages
-COPY packages/app packages/app
-COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
+COPY packages/preset-themes packages/preset-themes
 COPY packages/slack packages/slack
-COPY packages/ui packages/ui
+COPY packages/hackmd packages/hackmd
 COPY packages/remark-drawio packages/remark-drawio
 COPY packages/remark-growi-directive packages/remark-growi-directive
 COPY packages/remark-lsx packages/remark-lsx
-COPY packages/hackmd packages/hackmd
-COPY packages/preset-themes packages/preset-themes
+COPY packages/ui packages/ui
+COPY packages/core packages/core
+COPY packages/app packages/app
 
 # build
 RUN yarn lerna run build

@@ -9,14 +9,15 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { useDrawioUri } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
+import loggerFactory from '~/utils/logger';
 
 import { DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
+const logger = loggerFactory('growi:components:DrawioModal');
 
 const headerColor = '#334455';
 const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
@@ -37,7 +38,12 @@ const drawioConfig = {
 
 export const DrawioModal = (): JSX.Element => {
   const { data: drawioUri } = useDrawioUri();
-  const { data: personalSettingsInfo } = usePersonalSettings();
+  const { data: personalSettingsInfo } = usePersonalSettings({
+    // make immutable
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
   const isOpened = drawioModalData?.isOpened ?? false;
@@ -47,7 +53,14 @@ export const DrawioModal = (): JSX.Element => {
       return undefined;
     }
 
-    const url = new URL(drawioUri);
+    let url;
+    try {
+      url = new URL(drawioUri);
+    }
+    catch (err) {
+      logger.debug(err);
+      return undefined;
+    }
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', '1');

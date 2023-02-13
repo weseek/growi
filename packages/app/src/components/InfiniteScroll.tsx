@@ -5,8 +5,8 @@ import React, {
 import type { SWRInfiniteResponse } from 'swr/infinite';
 
 type Props<T> = {
-  swrInifiniteResponse : SWRInfiniteResponse<T>
-  children: React.ReactChild | ((item: T) => React.ReactNode),
+  swrInifiniteResponse: SWRInfiniteResponse<T>
+  children: React.ReactNode,
   loadingIndicator?: React.ReactNode
   endingIndicator?: React.ReactNode
   isReachingEnd?: boolean
@@ -38,10 +38,10 @@ const LoadingIndicator = (): React.ReactElement => {
   );
 };
 
-const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
+const InfiniteScroll = <E,>(props: Props<E>): React.ReactElement<Props<E>> => {
   const {
     swrInifiniteResponse: {
-      setSize, data, isValidating,
+      setSize, isValidating,
     },
     children,
     loadingIndicator,
@@ -57,20 +57,19 @@ const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
     if (intersecting && !isValidating && !isReachingEnd) {
       setSize(size => size + 1);
     }
-  }, [setSize, intersecting]);
+  }, [setSize, intersecting, isValidating, isReachingEnd]);
 
   return (
     <>
-      {typeof children === 'function' ? data?.map(item => children(item)) : children}
-      {isLoadingIndicatorShown && (
-        <div style={{ position: 'relative' }}>
-          <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
-          {isReachingEnd
-            ? endingIndicator
-            : loadingIndicator || <LoadingIndicator />
-          }
-        </div>
-      )}
+      {children}
+
+      <div style={{ position: 'relative' }}>
+        <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
+        {isReachingEnd
+          ? endingIndicator
+          : loadingIndicator || <LoadingIndicator />
+        }
+      </div>
     </>
   );
 };

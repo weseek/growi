@@ -53,6 +53,7 @@ const growiPluginOriginSchema = new Schema<GrowiPluginOrigin>({
 const growiPluginSchema = new Schema<GrowiPluginDocument, GrowiPluginModel>({
   isEnabled: { type: Boolean },
   installedPath: { type: String },
+  organizationName: { type: String },
   origin: growiPluginOriginSchema,
   meta: growiPluginMetaSchema,
 });

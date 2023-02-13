@@ -133,6 +133,16 @@ module.exports = function(crowi, app) {
     return res.apiv3({ redirectTo, userStatus: req.user.status });
   };
 
+  const isEnableLoginWithLocalOrLdap = (req, res, next) => {
+    if (!passportService.isLocalStrategySetup && !passportService.isLdapStrategySetup) {
+      logger.error('LocalStrategy and LdapStrategy has not been set up');
+      const error = new ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LocalStrategy and LdapStrategy' });
+      return next(error);
+    }
+
+    return next();
+  };
+
   const cannotLoginErrorHadnler = (req, res, next) => {
     // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
     const err = new ErrorV3('message.sign_in_failure');
@@ -328,7 +338,7 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      return res.apiv3Err(new ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LocalStrategy' }), 405);
+      return next();
     }
 
     if (!req.form.isValid) {
@@ -585,6 +595,7 @@ module.exports = function(crowi, app) {
 
   return {
     cannotLoginErrorHadnler,
+    isEnableLoginWithLocalOrLdap,
     loginFailure,
     loginFailureForExternalAccount,
     loginWithLdap,

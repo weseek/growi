@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { useEditorModeClassName } from '../../client/services/layout';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
@@ -43,7 +42,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
             <Sidebar />
           </div>
 
-          <div className="flex-fill mw-0" style={{ position: 'relative' }}>
+          <div className="flex-fill mw-0">
             <AlertSiteUrlUndefined />
             {children}
           </div>
@@ -66,15 +65,5 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>
-  );
-};
-
-export const BasicLayoutWithEditorMode = ({ children }: Props): JSX.Element => {
-  const className = useEditorModeClassName();
-
-  return (
-    <BasicLayout className={className}>
-      {children}
-    </BasicLayout>
   );
 };

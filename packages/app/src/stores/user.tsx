@@ -9,10 +9,14 @@ export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], E
   const distinctUserIds = userIds.length > 0 ? Array.from(new Set(userIds)).sort() : [];
   return useSWR(
     distinctUserIds.length > 0 ? ['/users/list', distinctUserIds] : null,
-    (endpoint, userIds) => apiv3Get(endpoint, { userIds: userIds.join(',') }).then((response) => {
+    ([endpoint, userIds]) => apiv3Get(endpoint, { userIds: userIds.join(',') }).then((response) => {
       return response.data.users;
     }),
-    { use: [checkAndUpdateImageUrlCached] },
+    {
+      use: [checkAndUpdateImageUrlCached],
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 
@@ -39,7 +43,7 @@ type usernameResult = {
 export const useSWRxUsernames = (q: string, offset?: number, limit?: number, options?: usernameRequestOptions): SWRResponse<usernameResult, Error> => {
   return useSWRImmutable(
     (q != null && q.trim() !== '') ? ['/users/usernames', q, offset, limit, options] : null,
-    (endpoint, q, offset, limit, options) => apiv3Get(endpoint, {
+    ([endpoint, q, offset, limit, options]) => apiv3Get(endpoint, {
       q, offset, limit, options,
     }).then(result => result.data),
   );

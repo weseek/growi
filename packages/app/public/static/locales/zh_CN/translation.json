@@ -56,7 +56,8 @@
   "No_attachments_yet": "暂无附件",
 	"Presentation Mode": "演示文稿",
   "The end": "结束",
-  "Not available for guest": "Not available for guest",
+  "Not available for guest": "不提供给客人",
+  "Not available in this version": "此版本中不提供",
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
@@ -85,6 +86,7 @@
 	"My Drafts": "My Drafts",
 	"User Settings": "用户设置",
 	"User Information": "用户信息",
+  "User Activation": "用户激活",
 	"Basic Info": "基础信息",
 	"Name": "姓名",
 	"Email": "邮箱",
@@ -157,6 +159,7 @@
   "not_allowed_to_see_this_page": "你不能看到这个页面",
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
+  "copied_to_clipboard": "它已复制到剪贴板。",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -170,6 +173,8 @@
     "no_page_list": "There are no pages under this page."
   },
 	"installer": {
+    "tab": "创建账户",
+    "title": "安装",
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
 		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
@@ -554,6 +559,7 @@
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"search_result": {
+    "title": "搜索",
 		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",
 		"cancel": "取消",
@@ -609,6 +615,7 @@
     }
   },
 	"login": {
+    "title": "登录",
 		"sign_in_error": "登录错误",
 		"registration_successful": "注册成功。请等待管理员批准",
 		"Setup": "安装程序",
@@ -616,6 +623,7 @@
     "set_env_var_for_logs": "(请设置环境变量 <code>DEBUG=crowi:service:PassportService</code> 以获得日志。)"
 	},
   "invited": {
+    "invited": "邀请函",
     "discription_heading": "创建账户",
     "discription": "用被邀请的电子邮件地址创建一个你的账户"
   },
@@ -801,5 +809,12 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",
     "go_to_settings": "进入设置，启用该功能"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "编辑标签",
+    "done": "完毕",
+    "tags_input": {
+      "tag_name": "标签名称"
+    }
   }
 }

@@ -24,7 +24,7 @@ const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-
 const BULK_IMPORT_SIZE = 100;
 
 
-class ImportSettings {
+export class ImportSettings {
 
   constructor(mode) {
     this.mode = mode || 'insert';
@@ -183,13 +183,6 @@ class ImportService {
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isImportPagesCollection = collections.includes('pages');
-    const shouldNormalizePages = isV5Compatible && isImportPagesCollection;
-
-    // set isV5Compatible to false
-    if (shouldNormalizePages) await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': false });
-
     // process serially so as not to waste memory
     const promises = collections.map((collectionName) => {
       const importSettings = importSettingsMap[collectionName];
@@ -207,11 +200,16 @@ class ImportService {
       }
     }
 
-    // run normalizeAllPublicPages
-    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
-
     this.currentProgressingStatus = null;
     this.emitTerminateEvent();
+
+    await this.crowi.configManager.loadConfigs();
+
+    const currentIsV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isImportPagesCollection = collections.includes('pages');
+    const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
+
+    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
   }
 
   /**
@@ -396,7 +394,7 @@ class ImportService {
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
       // FOR EXAMPLE
-      // ../../src/server/views/admin/markdown.html
+      // ../../src/server/example.html
       if (fileName.match(/(\.\.\/|\.\.\\)/)) {
         logger.error('File path is not appropriate.', fileName);
         return;
@@ -509,14 +507,14 @@ class ImportService {
   /**
    * validate using meta.json
    * to pass validation, all the criteria must be met
-   *   - ${version of this growi} === ${version of growi that exported data}
+   *   - ${version of this GROWI} === ${version of GROWI that exported data}
    *
    * @memberOf ImportService
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
     if (meta.version !== this.crowi.version) {
-      throw new Error('the version of this growi and the growi that exported the data are not met');
+      throw new Error('The version of this GROWI and the uploaded GROWI data are not the same');
     }
 
     // TODO: check if all migrations are completed

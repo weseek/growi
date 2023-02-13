@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 
 import dateFnsFormat from 'date-fns/format';
-import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
@@ -9,7 +8,7 @@ import { IUserGroupHasId } from '~/interfaces/user';
 type Props = {
   userGroup: IUserGroupHasId,
   selectableParentUserGroups?: IUserGroupHasId[],
-  submitButtonLabel: TFunctionResult;
+  submitButtonLabel: string;
   onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
 };
 
