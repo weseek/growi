@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Ref, IRevision, IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { RendererOptions } from '~/services/renderer/renderer';
+import { useSWRxPageRevision } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
@@ -35,42 +35,36 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     rendererOptions, pageId, revisionId, onRevisionLoaded,
   } = props;
 
-  const [isLoading, setIsLoading] = useState<boolean>();
-  const [isLoaded, setIsLoaded] = useState<boolean>();
+  const { data: pageRevision, isLoading, error } = useSWRxPageRevision(pageId, revisionId);
+
   const [markdown, setMarkdown] = useState<string>('');
-  const [errors, setErrors] = useState<any | null>();
-
-  const loadData = useCallback(async() => {
-    if (!isLoaded && !isLoading) {
-      setIsLoading(true);
-    }
-
-    // load data with REST API
-    try {
-      const res = await apiv3Get(`/revisions/${revisionId}`, { pageId });
-
-      setMarkdown(res.data?.revision?.body);
-      setErrors(null);
-
-      if (onRevisionLoaded != null) {
-        onRevisionLoaded(res.data.revision);
-      }
-    }
-    catch (errors) {
-      setErrors(errors);
-    }
-    finally {
-      setIsLoaded(true);
-      setIsLoading(false);
-    }
-
-  }, [isLoaded, isLoading, onRevisionLoaded, pageId, revisionId]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    if (pageRevision != null) {
+      setMarkdown(pageRevision?.body ?? '');
 
-  /* ----- loading ----- */
+      if (onRevisionLoaded != null) {
+        onRevisionLoaded(pageRevision);
+      }
+    }
+
+  }, [onRevisionLoaded, pageRevision]);
+
+  useEffect(() => {
+    if (error != null) {
+      const isForbidden = error != null && error[0].code === 'forbidden-page';
+      if (isForbidden) {
+        setMarkdown(`<i class="icon-exclamation p-1"></i>${t('not_allowed_to_see_this_page')}`);
+      }
+      else {
+        const errorMessages = error.map((error) => {
+          return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
+        });
+        setMarkdown(errorMessages.join('\n'));
+      }
+    }
+  }, [error, t]);
+
   if (isLoading) {
     return (
       <div className="wiki">
@@ -79,18 +73,6 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
         </div>
       </div>
     );
-  }
-
-  /* ----- after load ----- */
-  const isForbidden = errors != null && errors[0].code === 'forbidden-page';
-  if (isForbidden) {
-    setMarkdown(`<i class="icon-exclamation p-1"></i>${t('not_allowed_to_see_this_page')}`);
-  }
-  else if (errors != null) {
-    const errorMessages = errors.map((error) => {
-      return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
-    });
-    setMarkdown(errorMessages.join('\n'));
   }
 
   return (
