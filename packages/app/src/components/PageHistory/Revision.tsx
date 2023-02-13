@@ -6,6 +6,9 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
+import { useCurrentPageId } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
+
 import UserDate from '../User/UserDate';
 import { Username } from '../User/Username';
 
@@ -13,8 +16,6 @@ import styles from './Revision.module.scss';
 
 type RevisionProps = {
   revision: IRevisionHasId,
-  currentPageId: string,
-  currentPagePath: string,
   isLatestRevision: boolean,
   hasDiff: boolean,
   onClose: () => void,
@@ -24,8 +25,11 @@ export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revision, currentPageId, currentPagePath, isLatestRevision, hasDiff, onClose,
+    revision, isLatestRevision, hasDiff, onClose,
   } = props;
+
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const { returnPathForURL } = pathUtils;
 
@@ -69,11 +73,13 @@ export const Revision = (props: RevisionProps): JSX.Element => {
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
-            <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)} prefetch={false}>
-              <a className="ml-xl-3" onClick={onClose}>
-                <i className="icon-login"></i> {t('Go to this version')}
-              </a>
-            </Link>
+            {currentPagePath && currentPageId && (
+              <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)} prefetch={false}>
+                <a className="ml-xl-3" onClick={onClose}>
+                  <i className="icon-login"></i> {t('Go to this version')}
+                </a>
+              </Link>
+            )}
           </div>
         </div>
       </div>

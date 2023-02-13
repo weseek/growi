@@ -1,23 +1,21 @@
-import React from 'react';
+import React, {
+  useEffect, useState,
+} from 'react';
 
-import { IRevisionHasId } from '@growi/core';
+import { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
+import { useCurrentPageId } from '~/stores/context';
 import { useSWRxInfinitePageRevisions } from '~/stores/page';
 
-import InfiniteScroll from '../Sidebar/InfiniteScroll';
+import InfiniteScroll from '../InfiniteScroll';
+import { RevisionComparer } from '../RevisionComparer/RevisionComparer';
 
 import { Revision } from './Revision';
 
 import styles from './PageRevisionTable.module.scss';
 
 type PageRevisionTAble = {
-  sourceRevision: IRevisionHasId,
-  targetRevision: IRevisionHasId,
-  currentPageId: string,
-  currentPagePath: string,
-  onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
-  onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
   onClose: () => void,
 }
 
@@ -27,10 +25,11 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   const REVISIONS_PER_PAGE = 10;
 
   const {
-    sourceRevision, targetRevision, currentPageId, currentPagePath,
-    onChangeSourceInvoked, onChangeTargetInvoked, onClose,
+    onClose,
   } = props;
 
+
+  const { data: currentPageId } = useCurrentPageId();
   const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId);
 
   const { data: revisionsData } = swrInifiniteResponse;
@@ -42,7 +41,28 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   const isReachingEnd = isEmpty
    || (revisionsData && revisionsData[revisionsData.length - 1]?.length < REVISIONS_PER_PAGE);
 
-  const renderRow = (revision: IRevisionHasId, previousRevision: IRevisionHasId, latestRevision: IRevisionHasId,
+
+  const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
+  const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
+  const latestRevision = revisionsData != null ? revisionsData[0][0] : null;
+
+
+  useEffect(() => {
+    if (latestRevision != null) {
+      setSourceRevision(latestRevision);
+      setTargetRevision(latestRevision);
+    }
+  }, [latestRevision]);
+
+  const onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
+    setSourceRevision(revision);
+  };
+  const onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
+    setTargetRevision(revision);
+  };
+
+
+  const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
       isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;
@@ -63,8 +83,6 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
           <div className="d-lg-flex">
             <Revision
               revision={revision}
-              currentPageId={currentPageId}
-              currentPagePath={currentPagePath}
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
@@ -130,36 +148,46 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   };
 
   return (
-    <table className={`${styles['revision-history-table']} table revision-history-table`}>
-      <thead>
-        <tr className="d-flex">
-          <th className="col">{t('page_history.revision')}</th>
-          <th className="col-1">{t('page_history.comparing_source')}</th>
-          <th className="col-2">{t('page_history.comparing_target')}</th>
-        </tr>
-      </thead>
-      <tbody className="overflow-auto d-block">
-        {revisions && (
-          <InfiniteScroll
-            swrInifiniteResponse={swrInifiniteResponse}
-            isReachingEnd= {isReachingEnd}
-          >
-            {pageRevisions => pageRevisions.map((revision, idx) => {
+    <>
+      <table className={`${styles['revision-history-table']} table revision-history-table`}>
+        <thead>
+          <tr className="d-flex">
+            <th className="col">{t('page_history.revision')}</th>
+            <th className="col-1">{t('page_history.comparing_source')}</th>
+            <th className="col-2">{t('page_history.comparing_target')}</th>
+          </tr>
+        </thead>
+        <tbody className="overflow-auto d-block">
+          {revisions && (
+            <InfiniteScroll
+              swrInifiniteResponse={swrInifiniteResponse}
+              isReachingEnd={isReachingEnd}
+              isLoadingIndicatorShown ={false}
+            >
+              {pageRevisions => pageRevisions.map((revision, idx) => {
 
-              const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
+                const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
 
-              const isOldestRevision = revision === oldestRevision;
-              const latestRevision = revisions[0];
+                const isOldestRevision = revision === oldestRevision;
+                const latestRevision = revisions[0];
 
-              // set 'true' if undefined for backward compatibility
-              const hasDiff = revision.hasDiffToPrev !== false;
-              return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+                // set 'true' if undefined for backward compatibility
+                const hasDiff = revision.hasDiffToPrev !== false;
+                return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+              })}
+            </InfiniteScroll>
+          )}
+        </tbody>
+      </table>
 
-            })}
-          </InfiniteScroll>
-        )}
-      </tbody>
-    </table>
+      { sourceRevision && targetRevision && (
+        <RevisionComparer
+          sourceRevision={sourceRevision}
+          targetRevision={targetRevision}
+          onClose={onClose}
+        />)
+      }
+    </>
   );
 
 };

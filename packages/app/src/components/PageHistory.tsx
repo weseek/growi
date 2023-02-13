@@ -7,7 +7,6 @@ import { useCurrentPagePath, useSWRxInfinitePageRevisions } from '~/stores/page'
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';
-import { RevisionComparer } from './RevisionComparer/RevisionComparer';
 
 const logger = loggerFactory('growi:PageHistory');
 
@@ -48,19 +47,6 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className="revision-history" data-testid="page-history">
       <PageRevisionTable
-        sourceRevision={sourceRevision}
-        targetRevision={targetRevision}
-        currentPageId={currentPageId}
-        currentPagePath={currentPagePath}
-        onChangeSourceInvoked={setSourceRevision}
-        onChangeTargetInvoked={setTargetRevision}
-        onClose={onClose}
-      />
-      <RevisionComparer
-        sourceRevision={sourceRevision}
-        targetRevision={targetRevision}
-        currentPageId={currentPageId}
-        currentPagePath={currentPagePath}
         onClose={onClose}
       />
     </div>

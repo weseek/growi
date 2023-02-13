@@ -14,8 +14,8 @@ import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
+import InfiniteScroll from '../InfiniteScroll';
 
-import InfiniteScroll from './InfiniteScroll';
 import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
 import RecentChangesContentSkeleton from './Skeleton/RecentChangesContentSkeleton';
 

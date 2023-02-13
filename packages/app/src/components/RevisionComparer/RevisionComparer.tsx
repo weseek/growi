@@ -7,6 +7,9 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
+import { useCurrentPageId } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
+
 import { RevisionDiff } from '../PageHistory/RevisionDiff';
 
 import styles from './RevisionComparer.module.scss';
@@ -23,8 +26,6 @@ const DropdownItemContents = ({ title, contents }) => (
 type RevisionComparerProps = {
   sourceRevision: IRevisionHasPageId
   targetRevision: IRevisionHasPageId
-  currentPageId?: string
-  currentPagePath: string
   onClose: () => void
 }
 
@@ -32,10 +33,12 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
 
   const {
-    sourceRevision, targetRevision, currentPageId, currentPagePath, onClose,
+    sourceRevision, targetRevision, onClose,
   } = props;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
