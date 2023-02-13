@@ -8,7 +8,7 @@ import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import type { PresentationOptions } from '../consts';
 import * as extractSections from '../services/renderer/extract-sections';
 
-import './Sections.global.scss';
+import './Slides.global.scss';
 
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
@@ -25,12 +25,12 @@ const marp = new Marp({
 });
 
 
-type SectionsProps = {
+type Props = {
   options: PresentationOptions,
   children?: string,
 }
 
-export const Sections = (props: SectionsProps): JSX.Element => {
+export const Slides = (props: Props): JSX.Element => {
   const { options, children } = props;
   const { rendererOptions, isDarkMode } = options;
 
