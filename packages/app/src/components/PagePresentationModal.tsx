@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation';
 import dynamic from 'next/dynamic';
@@ -34,6 +34,10 @@ const PagePresentationModal = (): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePresentationViewOptions();
 
+  const requestFullscreen = useCallback(() => {
+    document.documentElement.requestFullscreen();
+  }, []);
+
   const isOpen = presentationModalData?.isOpened ?? false;
 
   if (!isOpen) {
@@ -49,9 +53,14 @@ const PagePresentationModal = (): JSX.Element => {
       data-testid="page-presentation-modal"
       className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
     >
-      <button className="close" type="button" aria-label="close" onClick={closePresentationModal}>
-        <span aria-hidden>×</span>
-      </button>
+      <div className="grw-presentation-controls d-flex">
+        <button className="close btn-fullscreen" type="button" aria-label="fullscreen" onClick={requestFullscreen}>
+          <i className="ti ti-fullscreen" aria-hidden></i>
+        </button>
+        <button className="close btn-close" type="button" aria-label="close" onClick={closePresentationModal}>
+          <i className="ti ti-close" aria-hidden></i>
+        </button>
+      </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
         { rendererOptions != null && (
           <Presentation
