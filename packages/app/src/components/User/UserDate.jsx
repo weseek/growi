@@ -25,7 +25,7 @@ export default class UserDate extends React.Component {
 }
 
 UserDate.propTypes = {
-  dateTime: PropTypes.instanceOf(Date).isRequired,
+  dateTime: PropTypes.string.isRequired,
   format: PropTypes.string,
   className: PropTypes.string,
 };

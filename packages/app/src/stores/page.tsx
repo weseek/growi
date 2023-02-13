@@ -60,7 +60,7 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
 
   return useSWRMutation(
     key,
-    async () => {
+    async() => {
       return apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
         .then(result => result.data.page)
         .catch((errs) => {
@@ -105,9 +105,9 @@ export const mutateAllPageInfo = (): Promise<void[]> => {
 };
 
 export const useSWRxPageInfo = (
-  pageId: string | null | undefined,
-  shareLinkId?: string | null,
-  initialData?: IPageInfoForEntity,
+    pageId: string | null | undefined,
+    shareLinkId?: string | null,
+    initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation> => {
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
@@ -145,9 +145,9 @@ export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>):
 };
 
 export const useSWRxPageRevisions = (
-  page: number, // page number of pagination
-  limit: number, // max number of pages in one paginate
-  pageId: string | null | undefined,
+    page: number, // page number of pagination
+    limit: number, // max number of pages in one paginate
+    pageId: string | null | undefined,
 ): SWRResponse<IRevisionsForPagination, Error> => {
 
   return useSWRImmutable(
@@ -165,7 +165,7 @@ export const useSWRxPageRevisions = (
 };
 
 export const useSWRxInfinitePageRevisions = (
-  pageId: string | null | undefined,
+    pageId: string | null | undefined,
 ): SWRInfiniteResponse<IRevisionHasPageId[], Error> => {
   const LIMIT = 10;
   const getKey = (page: number) => {
@@ -189,7 +189,7 @@ export const useSWRxInfinitePageRevisions = (
  * Grant normalization fetching hooks
  */
 export const useSWRxIsGrantNormalized = (
-  pageId: string | null | undefined,
+    pageId: string | null | undefined,
 ): SWRResponse<IResIsGrantNormalized, Error> => {
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -206,7 +206,7 @@ export const useSWRxIsGrantNormalized = (
 };
 
 export const useSWRxApplicableGrant = (
-  pageId: string | null | undefined,
+    pageId: string | null | undefined,
 ): SWRResponse<IRecordApplicableGrant, Error> => {
 
   return useSWRImmutable(

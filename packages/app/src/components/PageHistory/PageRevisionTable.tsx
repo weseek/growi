@@ -28,11 +28,10 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
     onClose,
   } = props;
 
-
   const { data: currentPageId } = useCurrentPageId();
   const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId);
 
-  const { data: revisionsData } = swrInifiniteResponse;
+  const { data: revisionsData, isLoading } = swrInifiniteResponse;
   const revisions = revisionsData && revisionsData[0];
   const oldestRevision = revisions && revisions[revisions.length - 1];
 
@@ -149,36 +148,42 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
 
   return (
     <>
-      <table className={`${styles['revision-history-table']} table revision-history-table`}>
-        <thead>
-          <tr className="d-flex">
-            <th className="col">{t('page_history.revision')}</th>
-            <th className="col-1">{t('page_history.comparing_source')}</th>
-            <th className="col-2">{t('page_history.comparing_target')}</th>
-          </tr>
-        </thead>
-        <tbody className="overflow-auto d-block">
-          {revisions && (
-            <InfiniteScroll
-              swrInifiniteResponse={swrInifiniteResponse}
-              isReachingEnd={isReachingEnd}
-              isLoadingIndicatorShown ={false}
-            >
-              {pageRevisions => pageRevisions.map((revision, idx) => {
+      { !isLoading ? (
+        <table className={`${styles['revision-history-table']} table revision-history-table`}>
+          <thead>
+            <tr className="d-flex">
+              <th className="col">{t('page_history.revision')}</th>
+              <th className="col-1">{t('page_history.comparing_source')}</th>
+              <th className="col-2">{t('page_history.comparing_target')}</th>
+            </tr>
+          </thead>
+          <tbody className="overflow-auto d-block">
+            {revisions && (
+              <InfiniteScroll
+                swrInifiniteResponse={swrInifiniteResponse}
+                isReachingEnd={isReachingEnd}
+                isLoadingIndicatorShown ={false}
+              >
+                { revisionsData != null && revisionsData.map(apiResult => apiResult).flat()
+                  .map((revision, idx) => {
+                    const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
 
-                const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
+                    const isOldestRevision = revision === oldestRevision;
+                    const latestRevision = revisions[0];
 
-                const isOldestRevision = revision === oldestRevision;
-                const latestRevision = revisions[0];
-
-                // set 'true' if undefined for backward compatibility
-                const hasDiff = revision.hasDiffToPrev !== false;
-                return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
-              })}
-            </InfiniteScroll>
-          )}
-        </tbody>
-      </table>
+                    // set 'true' if undefined for backward compatibility
+                    const hasDiff = revision.hasDiffToPrev !== false;
+                    return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+                  })
+                }
+              </InfiniteScroll>
+            )}
+          </tbody>
+        </table>) : (
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      )}
 
       { sourceRevision && targetRevision && (
         <RevisionComparer

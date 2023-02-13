@@ -38,7 +38,7 @@ const LoadingIndicator = (): React.ReactElement => {
   );
 };
 
-const InfiniteScroll = <E,>(props: Props<E>): React.ReactElement<Props<E>> => {
+const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
   const {
     swrInifiniteResponse: {
       setSize, isValidating,
@@ -63,13 +63,15 @@ const InfiniteScroll = <E,>(props: Props<E>): React.ReactElement<Props<E>> => {
     <>
       {children}
 
-      <div style={{ position: 'relative' }}>
-        <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
-        {isReachingEnd
-          ? endingIndicator
-          : loadingIndicator || <LoadingIndicator />
-        }
-      </div>
+      { isLoadingIndicatorShown && (
+        <div style={{ position: 'relative' }}>
+          <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
+          {isReachingEnd
+            ? endingIndicator
+            : loadingIndicator || <LoadingIndicator />
+          }
+        </div>
+      )}
     </>
   );
 };
