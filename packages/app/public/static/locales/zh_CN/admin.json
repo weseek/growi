@@ -763,7 +763,7 @@
     "reset_password": "重置密码",
     "reset_password_modal": {
       "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
-      "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
+      "password_reset_message": "The temporary password was sent to the below user and strongly recommend to change another one immediately.",
       "send_new_password": "Please send the new password to the user.",
       "target_user": "Target User",
       "new_password": "New Password"
