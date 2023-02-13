@@ -54,7 +54,7 @@ const QuestionnaireSettings = (): JSX.Element => {
   return (
     <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
-        <div className="mb-4">システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。</div>
+        <div className="mb-4">システム全体でアンケート機能を有効/無効にします。有効の場合、各ユーザーはユーザー設定ページの「その他の設定」から個別にアンケート機能を有効/無効にできます。</div>
         <span>
           <div className="mb-2">
             <span className="text-info mr-2"><i className="icon-info icon-fw"></i>送信される情報について</span>
