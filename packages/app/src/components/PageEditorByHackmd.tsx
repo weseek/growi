@@ -24,8 +24,10 @@ import {
 import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
-import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+import {
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+} from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   EditorMode,
@@ -64,12 +66,12 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: grantData } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
   const saveOrUpdate = useSaveOrUpdate();
-  const { advance: advancePt } = usePageTreeTermManager();
 
   const { returnPathForURL } = pathUtils;
 
   // pageData
-  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
+  const { data: pageData } = useSWRxCurrentPage();
+  const { trigger: mutatePageData } = useSWRMUTxCurrentPage();
   const revision = pageData?.revision;
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -131,7 +133,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         mutateIsHackmdDraftUpdatingInRealtime(false);
 
         // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
-        advancePt();
+        mutatePageTree();
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -141,7 +143,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, pageId, currentPagePath, isNotFound, mutateEditorMode, router, updateStateAfterSave, mutateIsHackmdDraftUpdatingInRealtime, advancePt]);
+  }, [editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, pageId, currentPagePath, isNotFound, mutateEditorMode, router, updateStateAfterSave, mutateIsHackmdDraftUpdatingInRealtime]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -264,7 +266,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutateTagsInfo();
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
-      advancePt();
+      mutatePageTree();
 
       mutateIsEnabledUnsavedWarning(false);
 
@@ -276,9 +278,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [
-    currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave,
-    saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, advancePt, mutateIsEnabledUnsavedWarning, t]);
+  // eslint-disable-next-line max-len
+  }, [currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, mutateIsEnabledUnsavedWarning, t]);
 
   /**
    * onChange event of HackmdEditor handler

@@ -18,7 +18,7 @@ import { useCurrentUser } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
-import { usePageTreeTermManager, useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useSWRxSearch,
 } from '~/stores/search';
@@ -213,13 +213,12 @@ const PrivateLegacyPages = (): JSX.Element => {
   });
 
   const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
-  const { advance: advancePt } = usePageTreeTermManager();
 
   const searchInvokedHandler = useCallback((_keyword: string) => {
     mutateMigrationStatus();
     setKeyword(_keyword);
     setOffset(0);
-  }, []);
+  }, [mutateMigrationStatus]);
 
   const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModal();
   const { data: socket } = useGlobalSocket();
@@ -245,7 +244,7 @@ const PrivateLegacyPages = (): JSX.Element => {
       socket?.off(SocketEventName.PageMigrationSuccess);
       socket?.off(SocketEventName.PageMigrationError);
     };
-  }, [socket]);
+  }, [socket, t]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -315,10 +314,10 @@ const PrivateLegacyPages = (): JSX.Element => {
         closeModal();
         mutateMigrationStatus();
         mutate();
-        advancePt();
+        mutatePageTree();
       },
     );
-  }, [data, mutate, openModal, closeModal, mutateMigrationStatus]);
+  }, [data, openModal, t, closeModal, mutateMigrationStatus, mutate]);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
     setOffset(0);
@@ -381,7 +380,8 @@ const PrivateLegacyPages = (): JSX.Element => {
         {isAdmin && renderOpenModalButton()}
       </div>
     );
-  }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
+  // eslint-disable-next-line max-len
+  }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isAdmin, isControlEnabled, renderOpenModalButton, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
     return (
@@ -455,7 +455,7 @@ const PrivateLegacyPages = (): JSX.Element => {
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
             setOpenConvertModal(false);
             mutate();
-            advancePt();
+            mutatePageTree();
           }
           catch (errs) {
             if (errs.length === 1) {

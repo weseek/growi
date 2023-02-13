@@ -6,7 +6,7 @@ import urljoin from 'url-join';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentPageId } from '~/stores/context';
 import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
@@ -179,7 +179,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
 
 export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => Promise<void>) | undefined => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
-  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);

@@ -6,11 +6,14 @@ import { useRouter } from 'next/router';
 import { Element } from 'react-markdown/lib/rehype-filter';
 
 import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
 
 import { NextLink } from './NextLink';
 
 import styles from './Header.module.scss';
 
+
+const logger = loggerFactory('growi:components:Header');
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -67,8 +70,14 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
   const activateByHash = useCallback((url: string) => {
-    const hash = (new URL(url, 'https://example.com')).hash.slice(1);
-    setActive(hash === id);
+    try {
+      const hash = (new URL(url, 'https://example.com')).hash.slice(1);
+      setActive(hash === id);
+    }
+    catch (err) {
+      logger.debug(err);
+      setActive(false);
+    }
   }, [id]);
 
   // init
@@ -76,12 +85,25 @@ export const Header = (props: HeaderProps): JSX.Element => {
     activateByHash(window.location.href);
   }, [activateByHash]);
 
-  // update isActive when hash is changed
+  // update isActive when hash is changed by next router
   useEffect(() => {
     router.events.on('hashChangeComplete', activateByHash);
 
     return () => {
       router.events.off('hashChangeComplete', activateByHash);
+    };
+  }, [activateByHash, router.events]);
+
+  // update isActive when hash is changed
+  useEffect(() => {
+    const activeByHashWrapper = (e: HashChangeEvent) => {
+      activateByHash(e.newURL);
+    };
+
+    window.addEventListener('hashchange', activeByHashWrapper);
+
+    return () => {
+      window.removeEventListener('hashchange', activeByHashWrapper);
     };
   }, [activateByHash, router.events]);
 

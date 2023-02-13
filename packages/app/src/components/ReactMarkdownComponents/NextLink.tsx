@@ -1,18 +1,25 @@
 import Link, { LinkProps } from 'next/link';
-import { Link as ScrollLink } from 'react-scroll';
 
-import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { useSiteUrl } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
+
+
+const logger = loggerFactory('growi:components:NextLink');
 
 const isAnchorLink = (href: string): boolean => {
   return href.toString().length > 0 && href[0] === '#';
 };
 
 const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
-  const baseUrl = new URL(siteUrl ?? 'https://example.com');
-  const hrefUrl = new URL(href, baseUrl);
-
-  return baseUrl.host !== hrefUrl.host;
+  try {
+    const baseUrl = new URL(siteUrl ?? 'https://example.com');
+    const hrefUrl = new URL(href, baseUrl);
+    return baseUrl.host !== hrefUrl.host;
+  }
+  catch (err) {
+    logger.debug(err);
+    return false;
+  }
 };
 
 type Props = Omit<LinkProps, 'href'> & {
@@ -33,13 +40,8 @@ export const NextLink = ({
 
   // when href is an anchor link
   if (isAnchorLink(href)) {
-    const to = href.slice(1);
     return (
-      <Link href={href} scroll={false}>
-        <ScrollLink href={href} to={to} className={className} offset={-100} {...DEFAULT_AUTO_SCROLL_OPTS}>
-          {children}
-        </ScrollLink>
-      </Link>
+      <a href={href} className={className}>{children}</a>
     );
   }
 

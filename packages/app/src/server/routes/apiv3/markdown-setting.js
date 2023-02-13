@@ -24,9 +24,6 @@ const validator = {
     body('adminPreferredIndentSize').isIn([2, 4]),
     body('isIndentSizeForced').isBoolean(),
   ],
-  presentationSetting: [
-    body('pageBreakSeparator').isInt().not().isEmpty(),
-  ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
@@ -123,8 +120,6 @@ module.exports = (crowi) => {
       isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
       adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
       isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-      pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
-      pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
       xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
       tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
@@ -207,59 +202,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating indent';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-indent-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
-   *    /markdown-setting/presentation:
-   *      put:
-   *        tags: [MarkDownSetting]
-   *        operationId: updatePresentationMarkdownSetting
-   *        summary: /markdown-setting/presentation
-   *        description: Update presentation
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/PresentationParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update presentation setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/PresentationParams'
-   */
-  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
-    if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
-      return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
-    }
-
-    const requestPresentationParams = {
-      'markdown:presentation:pageBreakSeparator': req.body.pageBreakSeparator,
-      'markdown:presentation:pageBreakCustomSeparator': req.body.pageBreakCustomSeparator,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestPresentationParams);
-      const presentationParams = {
-        pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
-        pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator') || '',
-      };
-
-      const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_PRESENTATION_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({ presentationParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating presentation';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
     }
 
   });

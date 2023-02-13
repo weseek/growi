@@ -2,10 +2,8 @@ import React, {
   FC, memo, useMemo, useRef,
 } from 'react';
 
-import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -17,7 +15,6 @@ import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
-import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { GlobalSearchProps } from './GlobalSearch';

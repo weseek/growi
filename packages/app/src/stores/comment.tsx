@@ -20,7 +20,7 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
 
   const swrResponse = useSWR(
     shouldFetch ? ['/comments.get', pageId] : null,
-    (endpoint, pageId) => apiGet(endpoint, { page_id: pageId }).then((response:IResponseComment) => response.comments),
+    ([endpoint, pageId]) => apiGet(endpoint, { page_id: pageId }).then((response:IResponseComment) => response.comments),
   );
 
   const update = async(comment: string, revisionId: string, commentId: string) => {

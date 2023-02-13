@@ -30,6 +30,8 @@
     &:first-child {
       margin-top: 0;
     }
+
+    scroll-margin-top: var.$grw-scroll-margin-top-in-view;
   }
 
   h1 {
