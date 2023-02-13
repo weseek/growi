@@ -1,14 +1,13 @@
-import type { IncomingHttpHeaders } from 'http';
-
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
-  DevidedPagePath, Lang, AllLang, acceptLangMap,
+  DevidedPagePath, Lang, AllLang,
 } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
+import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -90,55 +89,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
 
   return { props };
 };
-
-/**
- * It return the first language that matches acceptLangMap keys from sorted accept languages array
- * @param sortedAcceptLanguagesArray
- */
-const getPreferredLanguage = (sortedAcceptLanguagesArray: string[]): Lang => {
-  for (const lang of sortedAcceptLanguagesArray) {
-    const matchingLang = Object.keys(acceptLangMap).find(key => lang.includes(key));
-    if (matchingLang) return acceptLangMap[matchingLang];
-  }
-  return nextI18NextConfig.defalutLang;
-};
-
-/**
-  * Detect locale from browser accept language
-  * @param headers
-  */
-const detectLocaleFromBrowserAcceptLanguage = (headers: IncomingHttpHeaders) => {
-  // 1. get the header accept-language
-  // ex. "ja,ar-SA;q=0.8,en;q=0.6,en-CA;q=0.4,en-US;q=0.2"
-  const acceptLanguages = headers['accept-language'];
-
-  if (acceptLanguages == null) {
-    return nextI18NextConfig.defalutLang;
-  }
-
-  // 1. trim blank spaces.
-  // 2. separate by ,.
-  // 3. if "lang;q=x", then { 'x', 'lang' } to add to the associative array.
-  //    if "lang" has no weight x (";q=x"), add it with key = 1.
-  // ex. {'1': 'ja','0.8': 'ar-SA','0.6': 'en','0.4': 'en-CA','0.2': 'en-US'}
-  const acceptLanguagesDict = acceptLanguages
-    .replace(/\s+/g, '')
-    .split(',')
-    .map(item => item.split(/\s*;\s*q\s*=\s*/))
-    .reduce((acc, [key, value = '1']) => {
-      acc[value] = key;
-      return acc;
-    }, {});
-
-  // 1. create an array of sorted languages in descending order.
-  // ex. [ 'ja', 'ar-SA', 'en', 'en-CA', 'en-US' ]
-  const sortedAcceptLanguagesArray = Object.keys(acceptLanguagesDict)
-    .sort((x, y) => y.localeCompare(x))
-    .map(item => acceptLanguagesDict[item]);
-
-  return getPreferredLanguage(sortedAcceptLanguagesArray);
-};
-
 
 export const getNextI18NextConfig = async(
     // 'serverSideTranslations' method should be given from Next.js Page

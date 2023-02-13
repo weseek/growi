@@ -7,9 +7,9 @@ import I18NextLocalStorageBackend from 'i18next-localstorage-backend';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-export const defalutLang = Lang.en_US;
+export const defaultLang = Lang.en_US;
 export const i18n = {
-  defaultLocale: defalutLang,
+  defaultLocale: defaultLang,
   locales: AllLang,
 };
 export const defaultNS = 'translation';
