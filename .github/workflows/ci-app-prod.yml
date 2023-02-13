@@ -15,6 +15,7 @@ on:
       - packages/codemirror-textlint/**
       - packages/core/**
       - packages/preset-themes/**
+      - packages/presentation/**
       - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**

@@ -68,7 +68,7 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 };
 
 const baseSanitizeSchema = {
-  tagNames: ['iframe'],
+  tagNames: ['iframe', 'section'],
   attributes: {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
     '*': ['class', 'className', 'style'],
@@ -292,6 +292,19 @@ export const generateSimpleViewOptions = (
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
+export const generatePresentationViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  // based on simple view options
+  const options = generateSimpleViewOptions(config, pagePath);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
