@@ -24,19 +24,25 @@ export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHa
   );
 };
 
-export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => {
-  return useSWR(
-    '/pages/recent',
-    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
-  );
-};
-export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
-  const getKey = (page: number): string => {
-    return `/pages/recent?offset=${page + 1}`;
-  };
+
+type RecentApiResult = {
+  pages: IPageHasId[],
+  totalCount: number,
+  offset: number,
+}
+export const useSWRINFxRecentlyUpdated = (limit: number) : SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
-    getKey,
-    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
+    (pageIndex, previousPageData) => {
+      if (previousPageData != null && previousPageData.pages.length === 0) return null;
+
+      if (pageIndex === 0 || previousPageData == null) {
+        return ['/pages/recent', undefined, limit];
+      }
+
+      const offset = previousPageData.offset + limit;
+      return ['/pages/recent', offset, limit];
+    },
+    ([endpoint, offset, limit]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit }).then(response => response.data),
     {
       revalidateFirstPage: false,
       revalidateAll: false,

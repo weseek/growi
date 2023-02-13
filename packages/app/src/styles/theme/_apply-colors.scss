@@ -567,14 +567,11 @@ ul.pagination {
 /*
  * GROWI comment form
  */
-.page-comments {
+.page-comments-row {
+  background: var(--bgcolor-subnav);
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
     background-color: var(--bgcolor-global);
-
-    &:before {
-      border-right-color: var(--bgcolor-global);
-    }
 
     .nav.nav-tabs {
       > li > a.active {

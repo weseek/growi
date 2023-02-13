@@ -1,4 +1,7 @@
-import React, { useEffect, useMemo } from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
+
 
 import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
@@ -12,6 +15,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
+
 
 import type { CommentsProps } from '../Comments';
 import { MainPane } from '../Layout/MainPane';
@@ -47,6 +51,11 @@ type Props = {
 }
 
 export const PageView = (props: Props): JSX.Element => {
+
+  const commentsContainerRef = useRef<HTMLDivElement>(null);
+
+  const [isCommentsLoaded, setCommentsLoaded] = useState(false);
+
   const {
     pagePath, initialPage, rendererConfig,
   } = props;
@@ -61,7 +70,7 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
 
   const page = pageBySWR ?? initialPage;
-  const isNotFound = isNotFoundMeta || page == null;
+  const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomePagePath = isUsersHomePage(pagePath);
 
   // register to facade
@@ -74,6 +83,22 @@ export const PageView = (props: Props): JSX.Element => {
       },
     });
   }, [mutateRendererOptions]);
+
+  // ***************************  Auto Scroll  ***************************
+  useEffect(() => {
+    // do nothing if hash is empty
+    const { hash } = window.location;
+    if (hash.length === 0) {
+      return;
+    }
+
+    const targetId = hash.slice(1);
+
+    const target = document.getElementById(targetId);
+    target?.scrollIntoView();
+
+  }, [isCommentsLoaded]);
+  // *******************************  end  *******************************
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
@@ -96,7 +121,9 @@ export const PageView = (props: Props): JSX.Element => {
   const footerContents = !isIdenticalPathPage && !isNotFound
     ? (
       <>
-        <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} />
+        <div id="comments-container" ref={commentsContainerRef}>
+          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} />
+        </div>
         { isUsersHomePagePath && (
           <UsersHomePageFooter creatorId={page.creator._id}/>
         ) }

@@ -6,7 +6,6 @@ import { animateScroll } from 'react-scroll';
 import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
 
-import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useIsAbleToChangeEditorMode } from '~/stores/ui';
@@ -96,7 +95,7 @@ export const Fab = (): JSX.Element => {
 
   const ScrollToTopButton = useCallback(() => {
     const clickHandler = () => {
-      animateScroll.scrollToTop(DEFAULT_AUTO_SCROLL_OPTS);
+      animateScroll.scrollToTop({ duration: 200 });
     };
 
     return (
