@@ -54,14 +54,16 @@ const QuestionnaireSettings = (): JSX.Element => {
   return (
     <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
-        システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。<br />
-        送信されるデータにユーザーの個人情報は一切含まれません。
-        <div>
-          {/* eslint-disable-next-line max-len */}
-          詳しくは<a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html" rel="noreferrer" target="_blank" className="d-inline"> GROWI Docs &quot;アンケート設定&quot; <i className="icon-share-alt"></i></a>を参照ください。
-        </div>
-        <br />
-        GROWI の改善にご協力お願いします。
+        <div className="mb-4">システム全体でアンケート機能を有効/無効にします。有効の場合、各ユーザーはユーザー設定ページの「その他の設定」から個別にアンケート機能を有効/無効にできます。</div>
+        <span>
+          <div className="mb-2">
+            <span className="text-info mr-2"><i className="icon-info icon-fw"></i>送信される情報について</span>
+            {/* eslint-disable-next-line max-len */}
+            <a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html#%E3%82%A2%E3%83%B3%E3%82%B1%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A" rel="noreferrer" target="_blank" className="d-inline">詳細<i className="icon-share-alt"></i></a>
+          </div>
+          アンケートの回答と合わせて、GROWI の改善に必要な情報を送信します。送信されるデータにユーザーの個人情報は含まれません。<br />
+          私たちはそれらを活用し、最大限ユーザーの体験を向上させるよう努めます。
+        </span>
       </p>
 
       {isLoading && <div className="text-muted text-center mb-5">
