@@ -391,6 +391,7 @@
     "bucket_name": "バケット名",
     "custom_endpoint": "カスタムエンドポイント",
     "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
+    "s3_secret_access_key_input_description": "設定値は非表示です",
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
@@ -414,19 +415,6 @@
       "indentSize_desc": "既定のインデント幅を指定します。",
       "disallow_indent_change": "ユーザによるインデント幅変更を許可しない",
       "disallow_indent_change_desc": "ユーザにデフォルトのインデント幅の使用を強制します。"
-    },
-    "presentation_header": "プレゼンテーション設定",
-    "presentation_desc": "プレゼンテーションの設定を変更できます。",
-    "presentation_options": {
-      "page_break_setting": "改頁を設定する",
-      "preset_one_separator": "プリセット 1",
-      "preset_one_separator_desc": "連続した空行3行で改頁します",
-      "preset_one_separator_value": "\\n\\n\\n",
-      "preset_two_separator": "プリセット 2",
-      "preset_two_separator_desc": "連続したハイフン5つで改頁します",
-      "preset_two_separator_value": "-----",
-      "custom_separator": "カスタム",
-      "custom_separator_desc": "正規表現を設定できます"
     },
     "xss_header": "XSS(Cross Site Scripting)対策設定",
     "xss_desc": "マークダウンテキスト内の HTML タグの扱いを設定し、悪意のあるプログラムからの攻撃を防ぎます",

@@ -246,11 +246,10 @@ export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRRespons
 */
 type PresentationModalStatus = {
   isOpened: boolean,
-  href?: string
 }
 
 type PresentationModalStatusUtils = {
-  open(href: string): Promise<PresentationModalStatus | undefined>
+  open(): Promise<PresentationModalStatus | undefined>
   close(): Promise<PresentationModalStatus | undefined>
 }
 
@@ -258,13 +257,13 @@ export const usePagePresentationModal = (
     status?: PresentationModalStatus,
 ): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
   const initialData: PresentationModalStatus = {
-    isOpened: false, href: '?presentation=1',
+    isOpened: false,
   };
   const swrResponse = useStaticSWR<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (href: string) => swrResponse.mutate({ isOpened: true, href }),
+    open: () => swrResponse.mutate({ isOpened: true }, { revalidate: true }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
