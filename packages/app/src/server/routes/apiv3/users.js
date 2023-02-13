@@ -872,12 +872,7 @@ module.exports = (crowi) => {
         },
       });
 
-      // return email only
-      const { email } = user;
-      const serializedUser = serializeUserSecurely(user);
-      serializedUser.email = email;
-
-      return res.apiv3({ user: serializedUser });
+      return res.apiv3({});
     }
     catch (err) {
       const msg = 'Error occurred during password reset request procedure.';
