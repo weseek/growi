@@ -16,13 +16,12 @@ const ACCEPT_LANG_MAP = {
   zh: Lang.zh_CN,
 };
 
-
 export const getDiagramsNetLangCode = (lang) => {
   return DIAGRAMS_NET_LANG_MAP[lang];
 };
 
 /**
- * It return the first language that matches acceptLangMap keys from sorted accept languages array
+ * It return the first language that matches ACCEPT_LANG_MAP keys from sorted accept languages array
  * @param sortedAcceptLanguagesArray
  */
 const getPreferredLanguage = (sortedAcceptLanguagesArray: string[]): Lang => {
