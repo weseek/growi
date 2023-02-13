@@ -62,6 +62,8 @@ export type IDataGROWIInfo = {
   attachmentInfo: {
     /** File storage type */
     type: string;
+    /** File storage type of env var */
+    typeOfEnv?: string
     /** Whether the storage is writable */
     writable: boolean;
     /** Bucket name (S3 and GCS only) */
@@ -271,6 +273,14 @@ export class G2GTransferPusherService implements Pusher {
         canTransfer: false,
         // TODO: i18n for reason
         reason: 'File upload is not configured for src GROWI.',
+      };
+    }
+
+    if (destGROWIInfo.attachmentInfo.typeOfEnv === 'none') {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: 'File upload is not configured for dest GROWI',
       };
     }
 
@@ -540,6 +550,7 @@ export class G2GTransferReceiverService implements Receiver {
 
     const attachmentInfo = {
       type: configManager.getConfig('crowi', 'app:fileUploadType'),
+      typeOfEnv: configManager.getConfigFromEnvVars('crowi', 'app:fileUploadType'),
       writable: isWritable,
       bucket: undefined,
       customEndpoint: undefined, // for S3
