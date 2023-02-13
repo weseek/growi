@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.10...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.10](https://github.com/weseek/growi/compare/v5.1.9...v5.1.10) - 2023-02-13
+
+### 🐛 Bug Fixes
+
+- fix: Omit S3 credentials from the response for /_api/v3/app-settings (v5) (#7378) @miya
 
 ## [v5.1.9](https://github.com/weseek/growi/compare/v5.1.8...v5.1.9) - 2023-02-01
 
