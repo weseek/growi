@@ -26,10 +26,11 @@ type Props = Omit<LinkProps, 'href'> & {
   children: React.ReactNode,
   href?: string,
   className?: string,
+  'data-toggle'?: string
 };
 
 export const NextLink = ({
-  href, children, className, ...props
+  href, children, className, 'data-toggle': dataToggle, ...props
 }: Props): JSX.Element => {
 
   const { data: siteUrl } = useSiteUrl();
@@ -41,7 +42,7 @@ export const NextLink = ({
   // when href is an anchor link
   if (isAnchorLink(href)) {
     return (
-      <a href={href} className={className}>{children}</a>
+      <a href={href} className={className} data-toggle={dataToggle}>{children}</a>
     );
   }
 
