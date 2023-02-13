@@ -1,3 +1,3 @@
 export type {
-  IRevision, IRevisionsForPagination, IRevisionOnConflict, HasRevisionShortbody,
+  IRevision, IRevisionHasId, IRevisionsForPagination, IRevisionOnConflict, HasRevisionShortbody,
 } from '@growi/core';
