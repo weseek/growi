@@ -71,7 +71,9 @@ const baseSanitizeSchema = {
   tagNames: ['iframe'],
   attributes: {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
-    '*': ['class', 'className', 'style'],
+    // The special value 'data*' as a property name can be used to allow all data properties.
+    // see: https://github.com/syntax-tree/hast-util-sanitize/
+    '*': ['class', 'className', 'style', 'data*'],
   },
 };
 
