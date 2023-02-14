@@ -153,8 +153,6 @@ export const defaultMarkdownConfigs: { [key: string]: any } = {
   'markdown:isEnabledLinebreaksInComments': true,
   'markdown:adminPreferredIndentSize': 4,
   'markdown:isIndentSizeForced': false,
-  'markdown:presentation:pageBreakSeparator': 1,
-  'markdown:presentation:pageBreakCustomSeparator': undefined,
 };
 
 export const defaultNotificationConfigs: { [key: string]: any } = {
@@ -207,8 +205,6 @@ schema.statics.getLocalconfig = function(crowi) {
     isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
     adminPreferredIndentSize: crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-    pageBreakSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
-    pageBreakCustomSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
     isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
     isAllReplyShown: crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),

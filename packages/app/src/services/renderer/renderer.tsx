@@ -68,10 +68,12 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 };
 
 const baseSanitizeSchema = {
-  tagNames: ['iframe'],
+  tagNames: ['iframe', 'section'],
   attributes: {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
-    '*': ['class', 'className', 'style'],
+    // The special value 'data*' as a property name can be used to allow all data properties.
+    // see: https://github.com/syntax-tree/hast-util-sanitize/
+    '*': ['class', 'className', 'style', 'data*'],
   },
 };
 
@@ -87,7 +89,7 @@ let isInjectedCustomSanitaizeOption = false;
 
 const injectCustomSanitizeOption = (config: RendererConfig) => {
   if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = deepmerge(baseSanitizeSchema.tagNames, config.tagWhiteList ?? []);
+    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhiteList ?? []);
     commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
     isInjectedCustomSanitaizeOption = true;
   }
@@ -292,6 +294,19 @@ export const generateSimpleViewOptions = (
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
+export const generatePresentationViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  // based on simple view options
+  const options = generateSimpleViewOptions(config, pagePath);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);

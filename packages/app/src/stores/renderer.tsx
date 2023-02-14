@@ -6,7 +6,7 @@ import useSWR, { type SWRResponse } from 'swr';
 import {
   type RendererOptions,
   generateSimpleViewOptions, generatePreviewOptions,
-  generateViewOptions, generateTocOptions,
+  generateViewOptions, generateTocOptions, generatePresentationViewOptions,
 } from '~/services/renderer/renderer';
 import { getGrowiFacade } from '~/utils/growi-facade';
 
@@ -157,6 +157,25 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
     {
       keepPreviousData: true,
       fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
+
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  return useSWR(
+    isAllDataValid
+      ? ['presentationViewOptions', currentPagePath, rendererConfig]
+      : null,
+    ([, currentPagePath, rendererConfig]) => generatePresentationViewOptions(rendererConfig, currentPagePath),
+    {
+      fallbackData: isAllDataValid ? generatePresentationViewOptions(rendererConfig, currentPagePath) : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
