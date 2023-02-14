@@ -70,17 +70,12 @@ module.exports = function(crowi, app) {
   app.use((req, res, next) => {
     const now = new Date();
     // for datez
-
-    const Page = crowi.model('Page');
-    const User = crowi.model('User');
-    const Config = mongoose.model('Config');
     app.set('tzoffset', crowi.appService.getTzoffset());
 
     res.locals.req = req;
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
-    res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
     next();
   });
