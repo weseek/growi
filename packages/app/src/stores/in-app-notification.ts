@@ -19,7 +19,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
     ['/in-app-notification/list', limit, offset, status],
-    endpoint => apiv3Get(endpoint, { limit, offset, status }).then((response) => {
+    ([endpoint]) => apiv3Get(endpoint, { limit, offset, status }).then((response) => {
       const inAppNotificationPaginateResult = response.data as inAppNotificationPaginateResult;
       inAppNotificationPaginateResult.docs.forEach((doc) => {
         try {
@@ -39,7 +39,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
 export const useSWRxInAppNotificationStatus = <Data, Error>(
 ): SWRResponse<number, Error> => {
   return useSWR(
-    ['/in-app-notification/status'],
+    '/in-app-notification/status',
     endpoint => apiv3Get(endpoint).then(response => response.data.count),
   );
 };

@@ -1,11 +1,6 @@
 @use './variables' as var;
 @use './bootstrap/init' as bs;
 
-body {
-  overflow-y: scroll !important;
-  overscroll-behavior-y: none;
-}
-
 .dynamic-layout-root:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
 }

@@ -1,6 +1,7 @@
 import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import mongoose from 'mongoose';
+import qs from 'qs';
 
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
@@ -30,6 +31,10 @@ module.exports = function(crowi, app) {
 
   const env = crowi.node_env;
 
+  // see: https://qiita.com/nazomikan/items/9458d591a4831480098d
+  // Cannot set a custom query parser after app.use() has been called: https://github.com/expressjs/express/issues/3454
+  app.set('query parser', str => qs.parse(str, { arrayLimit: Infinity }));
+
   app.use(compression());
 
 
@@ -54,7 +59,6 @@ module.exports = function(crowi, app) {
   catch (err) {
     logger.error(err);
   }
-
 
   app.use(helmet({
     contentSecurityPolicy: false,

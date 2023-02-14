@@ -1,34 +1,32 @@
 import React from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
 
-import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
+import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
 } from '../stores/context';
 
-import { NextPageWithLayout } from './_app.page';
+import type { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps, useInitSidebarConfig,
 } from './utils/commons';
-import { useTranslation } from 'next-i18next';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
@@ -60,23 +58,15 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentPageId(null);
   useCurrentPathname('/trash');
 
-  // UserUISettings
-  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
 
   useRendererConfig(props.rendererConfig);
 
-  const { t } = useTranslation();
-
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
-
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
 
   const title = generateCustomTitleForPage(props, '/trash');
 
@@ -85,7 +75,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
+      <div className="dynamic-layout-root">
         <header className="py-0 position-relative">
           <GrowiSubNavigation
             pagePath="/trash"
@@ -109,9 +99,9 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 TrashPage.getLayout = function getLayout(page) {
   return (
     <>
-      <BasicLayoutWithEditorMode>
+      <BasicLayout>
         {page}
-      </BasicLayoutWithEditorMode>
+      </BasicLayout>
       <EmptyTrashModal />
       <PutbackPageModal />
     </>

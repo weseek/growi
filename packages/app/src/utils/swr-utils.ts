@@ -1,9 +1,13 @@
-import { ProviderConfiguration, PublicConfiguration } from 'swr/dist/types';
+import { isServer } from '@growi/core';
 
-export type SWRConfigValue = Partial<PublicConfiguration> & Partial<ProviderConfiguration> & {
-  provider?: (cache) => any | undefined,
-};
-
-export const swrGlobalConfiguration: SWRConfigValue = {
-  errorRetryCount: 1,
-};
+export const swrGlobalConfiguration = Object.assign(
+  {
+    errorRetryCount: 1,
+  },
+  // set the request scoped cache provider in server
+  isServer()
+    ? {
+      provider: (cache: any) => new Map<string, any>(cache),
+    }
+    : {},
+);

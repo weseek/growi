@@ -4,8 +4,6 @@ import { IPageHasId, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
-import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
-import { useCurrentPathname } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 
 import CountBadge from './Common/CountBadge';
@@ -20,27 +18,26 @@ const { isTopPage, isUsersHomePage } = pagePathUtils;
 
 
 export type PageSideContentsProps = {
-  page?: IPageHasId,
+  page: IPageHasId,
   isSharedUser?: boolean,
 }
 
 export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: currentPathname } = useCurrentPathname();
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
   const { page, isSharedUser } = props;
 
-  const pagePath = page?.path ?? currentPathname;
-  const isTopPagePath = isTopPage(pagePath ?? '');
-  const isUsersHomePagePath = isUsersHomePage(pagePath ?? '');
+  const pagePath = page.path;
+  const isTopPagePath = isTopPage(pagePath);
+  const isUsersHomePagePath = isUsersHomePage(pagePath);
 
   return (
     <>
       {/* Page list */}
       <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-        { pagePath != null && !isSharedUser && (
+        { !isSharedUser && (
           <button
             type="button"
             className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
@@ -57,9 +54,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       </div>
 
       {/* Comments */}
-      { page != null && !isTopPagePath && (
+      { !isTopPagePath && (
         <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-          <Link to={'page-comments'} offset={-100} {...DEFAULT_AUTO_SCROLL_OPTS}>
+          <Link to={'page-comments'} offset={-120}>
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"

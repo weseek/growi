@@ -8,7 +8,7 @@ import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 
-const logger = loggerFactory('growi:routes:apiv3:user-group');
+const logger = loggerFactory('growi:routes:apiv3:users');
 
 const express = require('express');
 
@@ -133,6 +133,19 @@ module.exports = (crowi) => {
     query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
     query('options').optional().isString().withMessage('options must be string'),
   ];
+
+  // express middleware
+  const certifyUserOperationOtherThenYourOwn = (req, res, next) => {
+    const { id } = req.params;
+
+    if (req.user._id.toString() === id) {
+      const msg = 'This API is not available for your own users';
+      logger.error(msg);
+      return res.apiv3Err(new ErrorV3(msg), 400);
+    }
+
+    next();
+  };
 
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
@@ -471,9 +484,11 @@ module.exports = (crowi) => {
       const userData = await User.findById(id);
       await userData.makeAdmin();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -509,16 +524,18 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.removeFromAdmin();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -568,9 +585,11 @@ module.exports = (crowi) => {
       const userData = await User.findById(id);
       await userData.statusActivate();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_ACTIVATE });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -605,16 +624,18 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of deactivate user
    */
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
       await userData.statusSuspend();
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_DEACTIVATE });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);
@@ -649,7 +670,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -659,9 +680,11 @@ module.exports = (crowi) => {
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
 
+      const serializedUserData = serializeUserSecurely(userData);
+
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
-      return res.apiv3({ userData });
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error('Error', err);

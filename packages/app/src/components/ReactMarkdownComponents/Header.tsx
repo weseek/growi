@@ -85,12 +85,25 @@ export const Header = (props: HeaderProps): JSX.Element => {
     activateByHash(window.location.href);
   }, [activateByHash]);
 
-  // update isActive when hash is changed
+  // update isActive when hash is changed by next router
   useEffect(() => {
     router.events.on('hashChangeComplete', activateByHash);
 
     return () => {
       router.events.off('hashChangeComplete', activateByHash);
+    };
+  }, [activateByHash, router.events]);
+
+  // update isActive when hash is changed
+  useEffect(() => {
+    const activeByHashWrapper = (e: HashChangeEvent) => {
+      activateByHash(e.newURL);
+    };
+
+    window.addEventListener('hashchange', activeByHashWrapper);
+
+    return () => {
+      window.removeEventListener('hashchange', activeByHashWrapper);
     };
   }, [activateByHash, router.events]);
 

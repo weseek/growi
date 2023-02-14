@@ -1,5 +1,7 @@
+import assert from 'assert';
+
 import { Nullable, HasObjectId } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { Arguments, mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
@@ -13,78 +15,74 @@ import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
-import { useCurrentPagePath } from './page';
-import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
-  return useSWR<IPageHasId[], Error>(
+  return useSWR(
     path != null ? ['/page', path, findAll] : null,
-    (endpoint, path, findAll) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
+    ([endpoint, path, findAll]) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
   );
 };
 
-export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => {
-  return useSWR(
-    '/pages/recent',
-    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
-  );
-};
-export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
-  const getKey = (page: number) => {
-    return `/pages/recent?offset=${page + 1}`;
-  };
+
+type RecentApiResult = {
+  pages: IPageHasId[],
+  totalCount: number,
+  offset: number,
+}
+export const useSWRINFxRecentlyUpdated = (limit: number) : SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
-    getKey,
-    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
+    (pageIndex, previousPageData) => {
+      if (previousPageData != null && previousPageData.pages.length === 0) return null;
+
+      if (pageIndex === 0 || previousPageData == null) {
+        return ['/pages/recent', undefined, limit];
+      }
+
+      const offset = previousPageData.offset + limit;
+      return ['/pages/recent', offset, limit];
+    },
+    ([endpoint, offset, limit]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit }).then(response => response.data),
     {
       revalidateFirstPage: false,
       revalidateAll: false,
     },
   );
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (
-    path: string | null, pageNumber?: number, termNumber?: number, limit?: number,
-): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
-  let key;
-  // if path not exist then the key is null
-  if (path == null) {
-    key = null;
-  }
-  else {
-    const pageListPath = `/pages/list?path=${path}&page=${pageNumber ?? 1}`;
-    // if limit exist then add it as query string
-    const requestPath = limit == null ? pageListPath : `${pageListPath}&limit=${limit}`;
-    key = [requestPath, termNumber];
-  }
-
-  return useSWR(
-    key,
-    (endpoint: string) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
-      return {
-        items: response.data.pages,
-        totalCount: response.data.totalCount,
-        limit: response.data.limit,
-      };
-    }),
+export const mutatePageList = async(): Promise<void[]> => {
+  return mutate(
+    key => Array.isArray(key) && key[0] === '/pages/list',
   );
 };
 
-export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
-};
+export const useSWRxPageList = (
+    path: string | null, pageNumber?: number, limit?: number,
+): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+  return useSWR(
+    path == null
+      ? null
+      : ['/pages/list', path, pageNumber, limit],
+    ([endpoint, path, pageNumber, limit]) => {
+      const args = Object.assign(
+        { path, page: pageNumber ?? 1 },
+        // if limit exist then add it as query string
+        (limit != null) ? { limit } : {},
+      );
 
-export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number, limit?:number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
-
-  const path = currentPagePath == null || termNumber == null
-    ? null
-    : currentPagePath;
-
-  return useSWRxPageList(path, pageNumber, termNumber, limit);
+      return apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint, args)
+        .then((response) => {
+          return {
+            items: response.data.pages,
+            totalCount: response.data.totalCount,
+            limit: response.data.limit,
+          };
+        });
+    },
+    {
+      keepPreviousData: true,
+    },
+  );
 };
 
 
@@ -105,9 +103,9 @@ export const useSWRxPageInfoForList = (
 
   const shouldFetch = (pageIds != null && pageIds.length > 0) || path != null;
 
-  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
+  const swrResult = useSWRImmutable(
     shouldFetch ? ['/page-listing/info', pageIds, path, attachBookmarkCount, attachShortBody] : null,
-    (endpoint, pageIds, path, attachBookmarkCount, attachShortBody) => {
+    ([endpoint, pageIds, path, attachBookmarkCount, attachShortBody]) => {
       return apiv3Get(endpoint, {
         pageIds, path, attachBookmarkCount, attachShortBody,
       }).then(response => response.data);
@@ -133,10 +131,6 @@ export const useSWRxPageInfoForList = (
   };
 };
 
-export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'pageTreeTermManager');
-};
-
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
   return useSWRImmutable(
     '/page-listing/root',
@@ -145,27 +139,41 @@ export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
         rootPage: response.data.rootPage,
       };
     }),
+    {
+      keepPreviousData: true,
+    },
   );
+};
+
+const MUTATION_ID_FOR_PAGETREE = 'pageTree';
+const keyMatcherForPageTree = (key: Arguments): boolean => {
+  return Array.isArray(key) && key[0] === MUTATION_ID_FOR_PAGETREE;
+};
+export const mutatePageTree = async(): Promise<undefined[]> => {
+  return mutate(keyMatcherForPageTree);
 };
 
 export const useSWRxPageAncestorsChildren = (
     path: string | null,
 ): SWRResponse<AncestorsChildrenResult, Error> => {
-  const { data: termNumber } = usePageTreeTermManager();
+  const key = path ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/ancestors-children', path] : null;
 
-  // HACKME: Consider using global mutation from useSWRConfig and not to use term number -- 2022/12/08 @hakumizuki
-  const prevTermNumber = termNumber ? termNumber - 1 : 0;
-  const prevSWRRes = useSWRImmutable(path ? [`/page-listing/ancestors-children?path=${path}`, prevTermNumber] : null);
+  // take care of the degration
+  // see: https://github.com/weseek/growi/pull/7038
+
+  if (key != null) {
+    assert(keyMatcherForPageTree(key));
+  }
 
   return useSWRImmutable(
-    path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
+    key,
+    ([, endpoint, path]) => apiv3Get(endpoint, { path }).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
     {
-      fallbackData: prevSWRRes.data, // avoid data to be undefined due to the termNumber to change
+      keepPreviousData: true,
     },
   );
 };
@@ -173,15 +181,22 @@ export const useSWRxPageAncestorsChildren = (
 export const useSWRxPageChildren = (
     id?: string | null,
 ): SWRResponse<ChildrenResult, Error> => {
-  const { data: termNumber } = usePageTreeTermManager();
+  const key = id ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/children', id] : null;
+
+  if (key != null) {
+    assert(keyMatcherForPageTree(key));
+  }
 
   return useSWR(
-    id ? [`/page-listing/children?id=${id}`, termNumber] : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
+    key,
+    ([, endpoint, id]) => apiv3Get(endpoint, { id }).then((response) => {
       return {
         children: response.data.children,
       };
     }),
+    {
+      keepPreviousData: true,
+    },
   );
 };
 
