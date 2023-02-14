@@ -10,7 +10,9 @@
       "inputs": [
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
-        "src/**/*.css", "src/**/*.scss"
+        "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
       ]
     }
   },

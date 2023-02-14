@@ -3,7 +3,7 @@
   "description": "GROWI preset themes",
   "version": "6.0.7-RC.0",
   "license": "MIT",
-  "main": "dist/libs/index.js",
+  "main": "dist/libs/preset-themes.umd.js",
   "files": [
     "dist"
   ],

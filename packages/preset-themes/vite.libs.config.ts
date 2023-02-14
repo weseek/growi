@@ -8,12 +8,7 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       name: 'preset-themes-libs',
-      formats: ['cjs'],
-    },
-    rollupOptions: {
-      output: {
-        entryFileNames: '[name].js',
-      },
+      formats: ['umd'],
     },
   },
 });
