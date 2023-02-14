@@ -397,7 +397,7 @@
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
     "questionnaire_settings": "アンケート設定",
-    "questionnaire_settings_explanation": "システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。",
+    "questionnaire_settings_explanation": "システム全体でアンケート機能を有効/無効にします。有効の場合、各ユーザーはユーザー設定ページの「その他の設定」から個別にアンケート機能を有効/無効にできます。",
     "about_data_sent": "送信される情報について",
     "docs_link": "https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html#%E3%82%A2%E3%83%B3%E3%82%B1%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A",
     "learn_more": "詳細",
