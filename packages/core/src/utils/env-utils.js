@@ -5,13 +5,6 @@
  * @returns {boolean}
  * @memberof envUtils
  */
-function toBoolean(value) {
+export function toBoolean(value) {
   return /^(true|1)$/i.test(value);
 }
-
-/**
- * @namespace envUtils
- */
-module.exports = {
-  toBoolean,
-};
