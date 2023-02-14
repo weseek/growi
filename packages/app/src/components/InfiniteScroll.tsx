@@ -11,7 +11,6 @@ type Props<T> = {
   endingIndicator?: React.ReactNode
   isReachingEnd?: boolean
   offset?: number
-  isLoadingIndicatorShown?: boolean
 }
 
 const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
@@ -48,7 +47,6 @@ const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
     endingIndicator,
     isReachingEnd,
     offset = 0,
-    isLoadingIndicatorShown = true,
   } = props;
 
   const [intersecting, ref] = useIntersection<HTMLDivElement>();
@@ -62,16 +60,13 @@ const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
   return (
     <>
       {children}
-
-      { isLoadingIndicatorShown && (
-        <div style={{ position: 'relative' }}>
-          <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
-          {isReachingEnd
-            ? endingIndicator
-            : loadingIndicator || <LoadingIndicator />
-          }
-        </div>
-      )}
+      <div style={{ position: 'relative' }}>
+        <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
+        {isReachingEnd
+          ? endingIndicator
+          : loadingIndicator || <LoadingIndicator />
+        }
+      </div>
     </>
   );
 };

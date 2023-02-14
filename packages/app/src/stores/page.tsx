@@ -164,20 +164,31 @@ export const useSWRxPageRevisions = (
   );
 };
 
+
+/*
+ * SWR Infinite for page revision list
+ */
+type SWRInfinitePageRevisionsResponse = {
+  revisions: IRevisionHasPageId[],
+  totalCount: number,
+  offset: number,
+}
+
 export const useSWRxInfinitePageRevisions = (
     pageId: string | null | undefined,
-): SWRInfiniteResponse<IRevisionHasPageId[], Error> => {
-  const LIMIT = 10;
-  const getKey = (page: number) => {
-    return `/revisions/list?pageId=${pageId}&page=${page + 1}&limit=${LIMIT}`;
-  };
+    limit: number,
+): SWRInfiniteResponse<SWRInfinitePageRevisionsResponse, Error> => {
   return useSWRInfinite(
-    getKey,
-    (endpoint: string) => apiv3Get(endpoint).then((response) => {
-      return response.data.docs.map((data) => {
-        return data;
-      });
-    }),
+    (pageIndex, previousRevisionData) => {
+      if (previousRevisionData != null && previousRevisionData.revisions.length === 0) return null;
+
+      if (pageIndex === 0 || previousRevisionData == null) {
+        return ['/revisions/list', pageId, undefined, limit];
+      }
+      const offset = previousRevisionData.offset + limit;
+      return ['/revisions/list', pageId, offset, limit];
+    },
+    ([endpoint, pageId, offset, limit]) => apiv3Get<SWRInfinitePageRevisionsResponse>(endpoint, { pageId, offset, limit }).then(response => response.data),
     {
       revalidateFirstPage: false,
       revalidateAll: false,

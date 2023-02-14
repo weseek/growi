@@ -1,25 +1,24 @@
 import React, {
-  useEffect, useState,
+  useEffect, useRef, useState,
 } from 'react';
 
 import { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPageId } from '~/stores/context';
-import { useSWRxInfinitePageRevisions } from '~/stores/page';
+import { useCurrentPagePath, useSWRxInfinitePageRevisions } from '~/stores/page';
 
-import InfiniteScroll from '../InfiniteScroll';
 import { RevisionComparer } from '../RevisionComparer/RevisionComparer';
 
 import { Revision } from './Revision';
 
 import styles from './PageRevisionTable.module.scss';
 
-type PageRevisionTAble = {
+type PageRevisionTableProps = {
   onClose: () => void,
 }
 
-export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
+export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
   const { t } = useTranslation();
 
   const REVISIONS_PER_PAGE = 10;
@@ -29,21 +28,26 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   } = props;
 
   const { data: currentPageId } = useCurrentPageId();
-  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId);
+  const { data: currentPagePath } = useCurrentPagePath();
+  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId, REVISIONS_PER_PAGE);
 
-  const { data: revisionsData, isLoading } = swrInifiniteResponse;
-  const revisions = revisionsData && revisionsData[0];
+  const {
+    data, size, error, setSize, isValidating,
+  } = swrInifiniteResponse;
+
+  const revisions = data && data[0].revisions;
   const oldestRevision = revisions && revisions[revisions.length - 1];
 
-
-  const isEmpty = revisionsData?.[0].length === 0;
-  const isReachingEnd = isEmpty
-   || (revisionsData && revisionsData[revisionsData.length - 1]?.length < REVISIONS_PER_PAGE);
-
+  // First load
+  const isLoadingInitialData = !data && !error;
+  const isLoadingMore = isLoadingInitialData
+    || (isValidating && data && typeof data[size - 1] === 'undefined');
+  const isReachingEnd = !!(data && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
 
   const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
   const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
-  const latestRevision = revisionsData != null ? revisionsData[0][0] : null;
+  const latestRevision = data != null ? data[0].revisions[0] : null;
+  const tbodyRef = useRef<HTMLTableSectionElement>(null);
 
 
   useEffect(() => {
@@ -52,6 +56,30 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
       setTargetRevision(latestRevision);
     }
   }, [latestRevision]);
+
+  useEffect(() => {
+    // Apply ref to tbody
+    const tbody = tbodyRef.current;
+    const handleScroll = () => {
+      const offset = 30; // Threshold before scroll actually reaching the end
+      if (tbody) {
+        // Scroll end
+        const isEnd = tbody.scrollTop + tbody.clientHeight + offset >= tbody.scrollHeight;
+        if (isEnd && !isLoadingMore && !isReachingEnd) {
+          setSize(size + 1);
+        }
+      }
+    };
+    if (tbody) {
+      tbody.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (tbody) {
+        tbody.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [isLoadingMore, isReachingEnd, setSize, size]);
+
 
   const onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
     setSourceRevision(revision);
@@ -84,6 +112,8 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
               revision={revision}
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
+              currentPageId={currentPageId}
+              currentPagePath={currentPagePath}
               key={`revision-history-rev-${revisionId}`}
               onClose={onClose}
             />
@@ -148,47 +178,36 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
 
   return (
     <>
-      { !isLoading ? (
-        <table className={`${styles['revision-history-table']} table revision-history-table`}>
-          <thead>
-            <tr className="d-flex">
-              <th className="col">{t('page_history.revision')}</th>
-              <th className="col-1">{t('page_history.comparing_source')}</th>
-              <th className="col-2">{t('page_history.comparing_target')}</th>
-            </tr>
-          </thead>
-          <tbody className="overflow-auto d-block">
-            {revisions && (
-              <InfiniteScroll
-                swrInifiniteResponse={swrInifiniteResponse}
-                isReachingEnd={isReachingEnd}
-                isLoadingIndicatorShown ={false}
-              >
-                { revisionsData != null && revisionsData.map(apiResult => apiResult).flat()
-                  .map((revision, idx) => {
-                    const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
+      <table className={`${styles['revision-history-table']} table revision-history-table`}>
+        <thead>
+          <tr className="d-flex">
+            <th className="col">{t('page_history.revision')}</th>
+            <th className="col-1">{t('page_history.comparing_source')}</th>
+            <th className="col-2">{t('page_history.comparing_target')}</th>
+          </tr>
+        </thead>
+        <tbody className="overflow-auto d-block" ref={tbodyRef}>
+          { revisions && data != null && data.map(apiResult => apiResult.revisions).flat()
+            .map((revision, idx) => {
+              const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
 
-                    const isOldestRevision = revision === oldestRevision;
-                    const latestRevision = revisions[0];
+              const isOldestRevision = revision === oldestRevision;
+              const latestRevision = revisions[0];
 
-                    // set 'true' if undefined for backward compatibility
-                    const hasDiff = revision.hasDiffToPrev !== false;
-                    return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
-                  })
-                }
-              </InfiniteScroll>
-            )}
-          </tbody>
-        </table>) : (
-        <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-        </div>
-      )}
+              // set 'true' if undefined for backward compatibility
+              const hasDiff = revision.hasDiffToPrev !== false;
+              return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+            })
+          }
+        </tbody>
+      </table>
 
       { sourceRevision && targetRevision && (
         <RevisionComparer
           sourceRevision={sourceRevision}
           targetRevision={targetRevision}
+          currentPageId={currentPageId}
+          currentPagePath={currentPagePath}
           onClose={onClose}
         />)
       }

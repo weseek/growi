@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 
-import { IRevisionHasPageId, pagePathUtils } from '@growi/core';
+import { IRevisionHasPageId, Nullable, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
-
-import { useCurrentPageId } from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
 
 import { RevisionDiff } from '../PageHistory/RevisionDiff';
 
@@ -26,6 +23,8 @@ const DropdownItemContents = ({ title, contents }) => (
 type RevisionComparerProps = {
   sourceRevision: IRevisionHasPageId
   targetRevision: IRevisionHasPageId
+  currentPageId: Nullable<string> | undefined
+  currentPagePath: Nullable<string> | undefined
   onClose: () => void
 }
 
@@ -33,12 +32,11 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
 
   const {
-    sourceRevision, targetRevision, onClose,
+    sourceRevision, targetRevision, onClose, currentPageId, currentPagePath,
   } = props;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);

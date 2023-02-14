@@ -1,13 +1,10 @@
 import React from 'react';
 
-import { IRevisionHasId, pathUtils } from '@growi/core';
+import { IRevisionHasId, Nullable, pathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
-
-import { useCurrentPageId } from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
 
 import UserDate from '../User/UserDate';
 import { Username } from '../User/Username';
@@ -18,6 +15,8 @@ type RevisionProps = {
   revision: IRevisionHasId,
   isLatestRevision: boolean,
   hasDiff: boolean,
+  currentPageId: Nullable<string> | undefined,
+  currentPagePath: Nullable<string> | undefined,
   onClose: () => void,
 }
 
@@ -25,11 +24,8 @@ export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revision, isLatestRevision, hasDiff, onClose,
+    revision, isLatestRevision, hasDiff, onClose, currentPageId, currentPagePath,
   } = props;
-
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
 
   const { returnPathForURL } = pathUtils;
 
