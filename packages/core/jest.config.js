@@ -7,7 +7,9 @@ const MODULE_NAME_MAPPING = {
 
 module.exports = {
 
-  preset: 'ts-jest/presets/js-with-ts',
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': '@swc/jest',
+  },
 
   moduleNameMapper: MODULE_NAME_MAPPING,
 
@@ -54,7 +56,7 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   testMatch: [
-    '**/src/**/__tests__/**/*.[jt]s?(x)',
-    '**/src/**/?(*.)+(spec|test).[tj]s?(x)',
+    '**/test/**/__tests__/**/*.[jt]s?(x)',
+    '**/test/**/?(*.)+(spec|test).[jt]s?(x)',
   ],
 };
