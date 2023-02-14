@@ -17,9 +17,8 @@
     "build:types": "tsc -p tsconfig.build.json",
     "build:js": "vite build",
     "clean": "npx -y shx rm -rf dist types",
-    "dev": "run-p dev:*",
+    "dev": "vite build --mode dev",
     "dev:types": "yarn build:types",
-    "dev:js": "yarn build:js --mode dev",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"

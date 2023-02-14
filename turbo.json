@@ -2,7 +2,7 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "@growi/app#dev": {
-      "dependsOn": ["^dev"],
+      "dependsOn": ["^dev", "^dev:types"],
       "outputs": ["dist/**", ".next/**"]
     },
     "dev": {
@@ -11,6 +11,15 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
+      ]
+    },
+    "dev:types": {
+      "outputs": ["types/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
         "tsconfig*.json",
         "vite*.ts"
       ]
