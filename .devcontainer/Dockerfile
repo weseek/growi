@@ -14,9 +14,9 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 RUN mkdir -p /workspace/growi/node_modules
-RUN mkdir -p /workspace/growi/packages/app/node_modules
-RUN mkdir -p /workspace/growi/packages/slackbot-proxy/node_modules
-RUN mkdir -p /workspace/growi/packages/app/.next
+RUN mkdir -p /workspace/growi/apps/app/node_modules
+RUN mkdir -p /workspace/growi/apps/slackbot-proxy/node_modules
+RUN mkdir -p /workspace/growi/apps/app/.next
 
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
