@@ -466,7 +466,7 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
   const { user } = req;
   const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
 
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  const userUISettings = user == null ? req.session.uiSettings : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
     props.userUISettings = userUISettings.toObject();
   }

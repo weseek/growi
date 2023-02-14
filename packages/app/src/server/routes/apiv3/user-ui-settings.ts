@@ -38,7 +38,7 @@ module.exports = (crowi) => {
     };
 
     if (user == null) {
-      req.uiSettings = updateData;
+      req.session.uiSettings = updateData;
       return res.apiv3(updateData);
     }
 
