@@ -31,7 +31,6 @@ yarn-error.log*
 
 # Terraform
 **/.terraform/*
-# *.tfstate
 *.tfstate.*
 
 # IDE, dev #

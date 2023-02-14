@@ -11,10 +11,10 @@ test/cypress/videos
 /build/
 /dist/
 /transpiled/
-# /public/static/js
-# /public/static/styles
-# /public/uploads
-# /tmp/
+/public/static/js
+/public/static/styles
+/public/uploads
+/tmp/
 
 # transpiled configuration files for production build
 /config/next-i18next.config.js
