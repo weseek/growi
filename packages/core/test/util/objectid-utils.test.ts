@@ -1,6 +1,6 @@
 import ObjectId from 'bson-objectid';
 
-import { isValidObjectId } from '../../utils/objectid-utils';
+import { isValidObjectId } from '~/utils/objectid-utils';
 
 describe('isValidObjectId', () => {
 
