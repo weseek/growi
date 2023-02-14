@@ -118,7 +118,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return;
 
-  }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
+  }, [passwordForLogin, redirectTo, resetLoginErrors, router, usernameForLogin]);
 
   // separate errors based on error code
   const separateErrorsBasedOnErrorCode = useCallback((errors: IErrorV3[]) => {
