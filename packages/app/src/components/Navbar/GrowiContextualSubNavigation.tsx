@@ -19,7 +19,7 @@ import {
   useCurrentPageId, useCurrentPathname, useIsNotFound,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
-import { usePageTagsForEditors } from '~/stores/editor';
+import { usePageTagsForEditors, useEditingMarkdown } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -228,6 +228,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
 
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const path = currentPage?.path ?? currentPathname;
@@ -285,11 +287,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   }, [currentPathname, router]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
-    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
-      router.push(toPath);
+    const duplicatedHandler: OnDuplicatedFunction = async(fromPath, toPath) => {
+      await router.push(toPath);
+      mutateEditingMarkdown(revision?.body);
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
-  }, [openDuplicateModal, router]);
+  }, [mutateEditingMarkdown, openDuplicateModal, revision?.body, router]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
