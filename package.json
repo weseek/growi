@@ -53,8 +53,8 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@swc/core": "^1.2.239",
-    "@swc/helpers": "^0.4.7",
+    "@swc/core": "^1.3.35",
+    "@swc/helpers": "^0.4.14",
     "@testing-library/cypress": "^8.0.2",
     "@types/css-modules": "^1.0.2",
     "@types/jest": "^26.0.22",
@@ -89,8 +89,9 @@
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~4.7",
-    "vite": "^3.2.5",
+    "typescript": "~4.9",
+    "unplugin-swc": "^1.3.2",
+    "vite": "^4.1.1",
     "yargs": "^17.3.1"
   },
   "engines": {
