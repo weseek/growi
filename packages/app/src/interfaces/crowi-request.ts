@@ -12,4 +12,7 @@ export interface CrowiRequest<U extends IUser = IUserHasId> extends Request {
   // provided by csurf
   csrfToken: () => string,
 
+  session?: {
+    redirectTo: string,
+  },
 }
