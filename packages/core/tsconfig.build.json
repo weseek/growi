@@ -2,12 +2,15 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "dist",
-    "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
     "sourceMap": false,
+
     "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./types",
 
     "baseUrl": ".",
     "paths": {

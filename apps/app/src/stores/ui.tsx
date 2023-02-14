@@ -1,9 +1,9 @@
 import { type RefObject, useCallback, useEffect } from 'react';
 
 import {
-  isClient, isServer, pagePathUtils, type Nullable, PageGrant,
+  isClient, isServer, pagePathUtils, PageGrant, withUtils,
 } from '@growi/core';
-import { withUtils, type SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
+import type { Nullable, SWRResponseWithUtils } from '@growi/core';
 import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';

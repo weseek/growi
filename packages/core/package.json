@@ -7,20 +7,29 @@
     "growi"
   ],
   "main": "dist/core.umd.js",
-  "module": "dist/core.mjs",
+  "types": "types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "scripts": {
-    "build": "tsc && vite build",
-    "clean": "npx -y shx rm -rf dist",
-    "dev": "vite build --mode dev -w",
-    "dev:nowatch": "vite build --mode dev",
+    "build": "run-p build:*",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:js": "vite build",
+    "clean": "npx -y shx rm -rf dist types",
+    "dev": "run-p dev:*",
+    "dev:types": "yarn build:types -w",
+    "dev:js": "yarn build:js --mode dev -w",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
   },
+  "dependencies": {
+    "bson-objectid": "^2.0.4",
+    "escape-string-regexp": "^5.0.0"
+  },
   "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0"
+    "eslint-plugin-regex": "^1.8.0",
+    "swr": "^2.0.3"
   }
 }

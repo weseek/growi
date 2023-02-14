@@ -9,5 +9,8 @@ export default defineConfig({
       name: 'core-libs',
       formats: ['umd'],
     },
+    rollupOptions: {
+      external: ['swr'],
+    },
   },
 });

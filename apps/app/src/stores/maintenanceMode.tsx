@@ -1,4 +1,4 @@
-import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
+import { withUtils, type SWRResponseWithUtils } from '@growi/core';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 

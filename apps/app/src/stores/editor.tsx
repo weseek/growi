@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { Nullable, withUtils, SWRResponseWithUtils } from '@growi/core';
+import { Nullable, withUtils, type SWRResponseWithUtils } from '@growi/core';
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 

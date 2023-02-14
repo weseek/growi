@@ -39,11 +39,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
-    /* default path aliases */
-    "baseUrl": ".",
-    "paths": {
-      "@growi/*": ["packages/*/src"],
-    }
   },
   "exclude": [
     "node_modules",
