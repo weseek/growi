@@ -36,6 +36,13 @@ module.exports = (crowi) => {
       preferDrawerModeByUser: settings.preferDrawerModeByUser,
       preferDrawerModeOnEditByUser: settings.preferDrawerModeOnEditByUser,
     };
+
+    if (user == null) {
+      req.uiSettings = updateData;
+      return res.apiv3(updateData);
+    }
+
+
     // remove the keys that have null value
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] == null) {
