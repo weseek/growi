@@ -34,13 +34,14 @@ type LoginFormProps = {
   objOfIsExternalAuthEnableds?: any,
   isMailerSetup?: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
+  redirectTo?: string,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
   const {
-    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
+    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled, redirectTo,
     isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
@@ -95,14 +96,18 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
-      const { redirectTo, userStatus } = res.data;
+      const { userStatus } = res.data;
 
-      if (redirectTo != null) {
-        return router.push(redirectTo);
+      if (userStatus === USER_STATUS.INVITED) {
+        router.push('/invited');
       }
 
       if (userStatus !== USER_STATUS.ACTIVE) {
         window.location.href = '/';
+      }
+
+      if (redirectTo != null) {
+        return router.push(redirectTo);
       }
 
       return router.push('/');

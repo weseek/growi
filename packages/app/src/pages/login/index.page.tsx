@@ -35,6 +35,7 @@ type Props = CommonProps & {
   isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
+  redirectTo?: string,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -65,6 +66,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
         externalAccountLoginError={props.externalAccountLoginError}
+        redirectTo={props.redirectTo}
       />
     </NoLoginLayout>
   );
@@ -108,6 +110,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     passportService,
   } = crowi;
 
+  props.redirectTo = req.session?.redirectTo;
   props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
   props.isMailerSetup = mailService.isMailerSetup;
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
