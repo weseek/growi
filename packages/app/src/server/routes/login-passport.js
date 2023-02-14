@@ -124,13 +124,7 @@ module.exports = function(crowi, app) {
       return res.redirect('/');
     }
 
-    // check for redirection to '/invited'
-    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
-
-    // remove session.redirectTo
-    delete req.session.redirectTo;
-
-    return res.apiv3({ redirectTo, userStatus: req.user.status });
+    return res.apiv3({ userStatus: req.user.status });
   };
 
   const isEnableLoginWithLocalOrLdap = (req, res, next) => {
