@@ -34,6 +34,7 @@ yarn-error.log*
 *.tfstate.*
 
 # IDE, dev #
+.turbo
 .idea
 *.orig
 *.code-workspace

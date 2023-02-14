@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "@growi/app#dev": {
+      "dependsOn": ["^dev"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "dev": {
+      "outputs": ["dist/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
+        "src/**/*.css", "src/**/*.scss"
+      ]
+    }
+  },
+  "globalDependencies": [
+    "tsconfig.json"
+  ]
+}
