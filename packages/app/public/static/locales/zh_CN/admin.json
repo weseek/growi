@@ -397,7 +397,7 @@
     "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
     "note_for_the_only_env_option": "The GCS settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
     "questionnaire_settings": "问卷设置",
-    "questionnaire_settings_explanation": "这将在整个系统上启用/禁用问卷。 用户还可以从个人设置页面单独启用/禁用问卷。",
+    "questionnaire_settings_explanation": "这将在整个系统上启用/禁用问卷。 启用后，用户还可以在个人设置页面的“其他设置”中单独启用/禁用问卷调查。",
     "about_data_sent": "关于发送的信息",
     "docs_link": "https://docs.growi.org/en/admin-guide/management-cookbook/app-settings.html#questionnaire-settings",
     "learn_more": "细节",

@@ -389,7 +389,7 @@
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
     "questionnaire_settings": "Questionnaire settings",
-    "questionnaire_settings_explanation": "This will enable/disable questionnaires on the whole system. Users can also enable/disable questionnaires individually from personal settings page.",
+    "questionnaire_settings_explanation": "This will enable/disable questionnaires on the whole system. When enabled, users can also enable/disable questionnaires individually from \"Other Settings\" in the personal settings page.",
     "about_data_sent": "About information sent",
     "docs_link": "https://docs.growi.org/en/admin-guide/management-cookbook/app-settings.html#questionnaire-settings",
     "learn_more": "Learn more",
