@@ -6,16 +6,16 @@
   "keywords": [
     "growi"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/core.umd.js",
+  "module": "dist/core.mjs",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "run-p build:*",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
-    "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
+    "build": "tsc && vite build",
     "clean": "npx -y shx rm -rf dist",
+    "dev": "vite build --mode dev -w",
+    "dev:nowatch": "vite build --mode dev",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
