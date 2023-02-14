@@ -12,7 +12,7 @@ import type { NormalComponents } from 'react-markdown/lib/complex-types';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
+import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
@@ -67,13 +67,21 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
     | undefined
 };
 
-const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
+const baseSanitizeSchema = {
+  tagNames: ['iframe', 'section'],
+  attributes: {
+    iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
+    // The special value 'data*' as a property name can be used to allow all data properties.
+    // see: https://github.com/syntax-tree/hast-util-sanitize/
+    '*': ['class', 'className', 'style', 'data*'],
+  },
+};
 
 const commonSanitizeOption: SanitizeOption = deepmerge(
-  sanitizeDefaultSchema,
+  rehypeSanitizeDefaultSchema,
+  baseSanitizeSchema,
   {
     clobberPrefix: 'mdcont-',
-    attributes: commonSanitizeAttributes,
   },
 );
 
@@ -81,8 +89,8 @@ let isInjectedCustomSanitaizeOption = false;
 
 const injectCustomSanitizeOption = (config: RendererConfig) => {
   if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhiteList ?? []);
+    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
     isInjectedCustomSanitaizeOption = true;
   }
 };
@@ -286,6 +294,19 @@ export const generateSimpleViewOptions = (
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
+export const generatePresentationViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  // based on simple view options
+  const options = generateSimpleViewOptions(config, pagePath);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);

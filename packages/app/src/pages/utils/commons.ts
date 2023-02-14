@@ -7,6 +7,7 @@ import type { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
+import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -99,13 +100,12 @@ export const getNextI18NextConfig = async(
 ): Promise<SSRConfig> => {
 
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, user } = req;
+  const { crowi, user, headers } = req;
   const { configManager } = crowi;
 
   // determine language
-  const locale = user?.lang
-    ?? configManager.getConfig('crowi', 'app:globalLang') as Lang
-    ?? Lang.en_US;
+  const locale = user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {

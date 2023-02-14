@@ -85,12 +85,16 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     setActiveTab(activeTab);
   }, []);
 
+  // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
+  const slackChannelsDataString = slackChannelsData?.toString();
+  const initializeSlackEnabled = useCallback(() => {
+    setSlackChannels(slackChannelsDataString ?? '');
+    mutateIsSlackEnabled(false);
+  }, [mutateIsSlackEnabled, slackChannelsDataString]);
+
   useEffect(() => {
-    if (slackChannelsData != null) {
-      setSlackChannels(slackChannelsData.toString());
-      mutateIsSlackEnabled(false);
-    }
-  }, [mutateIsSlackEnabled, slackChannelsData]);
+    initializeSlackEnabled();
+  }, [initializeSlackEnabled]);
 
   const isSlackEnabledToggleHandler = (isSlackEnabled: boolean) => {
     mutateIsSlackEnabled(isSlackEnabled, false);
@@ -104,10 +108,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     setComment('');
     setActiveTab('comment_editor');
     setError(undefined);
+    initializeSlackEnabled();
     // reset value
     if (editorRef.current == null) { return }
     editorRef.current.setValue('');
-  }, []);
+  }, [initializeSlackEnabled]);
 
   const cancelButtonClickedHandler = useCallback(() => {
     // change state to not ready

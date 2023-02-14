@@ -12,7 +12,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import IndentForm from './IndentForm';
 import LineBreakForm from './LineBreakForm';
-import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
 const logger = loggerFactory('growi:MarkDown');
@@ -55,13 +54,6 @@ const MarkDownSettingContents = React.memo((props: Props): JSX.Element => {
         <CardBody className="px-0 py-2">{t('markdown_settings.indent_desc') }</CardBody>
       </Card>
       <IndentForm />
-
-      {/* Presentation Setting */}
-      <h2 className="admin-setting-header">{ t('markdown_settings.presentation_header') }</h2>
-      <Card className="card well my-3">
-        <CardBody className="px-0 py-2">{ t('markdown_settings.presentation_desc') }</CardBody>
-      </Card>
-      <PresentationForm />
 
       {/* XSS Setting */}
       <h2 className="admin-setting-header">{ t('markdown_settings.xss_header') }</h2>
