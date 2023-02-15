@@ -811,7 +811,6 @@
     "go_to_settings": "Go to settings to enable the feature"
   },
   "questionnaire": {
-    "feedback": "Feedback",
     "give_us_feedback": "Give us feedback for improvements",
     "thank_you_for_answering": "Thank you for answering",
     "additional_feedback": "Send us additional feedback from the user icon dropdown.",

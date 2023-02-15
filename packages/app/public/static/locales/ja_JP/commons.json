@@ -58,7 +58,8 @@
     "color_mode": "カラーモード",
     "sidebar_mode": "サイドバーモード",
     "sidebar_mode_editor": "サイドバーモード(編集時)",
-    "use_os_settings": "OS設定を利用する"
+    "use_os_settings": "OS設定を利用する",
+    "feedback": "ご意見・ご要望"
   },
 
   "copy_to_clipboard": {

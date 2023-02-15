@@ -12,8 +12,7 @@ import { useCurrentUser } from '~/stores/context';
 import ProactiveQuestionnaireModal from '../Questionnaire/ProactiveQuestionnaireModal';
 
 const PersonalDropdown = (): JSX.Element => {
-  const { t } = useTranslation();
-  const { t: tCommon } = useTranslation('commons');
+  const { t } = useTranslation('commons');
   const { data: currentUser } = useCurrentUser();
 
   const [isQuestionnaireModalOpen, setQuestionnaireModalOpen] = useState(false);
@@ -65,12 +64,12 @@ const PersonalDropdown = (): JSX.Element => {
           <div className="btn-group btn-block mt-2" role="group">
             <Link href={`/user/${currentUser.username}`}>
               <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-home">
-                <i className="icon-fw icon-home"></i>{tCommon('personal_dropdown.home')}
+                <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
               </a>
             </Link>
             <Link href="/me">
               <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-settings">
-                <i className="icon-fw icon-wrench"></i>{tCommon('personal_dropdown.settings')}
+                <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
               </a>
             </Link>
           </div>
@@ -79,12 +78,14 @@ const PersonalDropdown = (): JSX.Element => {
         <div className="dropdown-divider"></div>
 
         <button type="button" className="dropdown-item" onClick={() => setQuestionnaireModalOpen(true)}>
-          <i className="icon-fw icon-pencil"></i>{ t('questionnaire.feedback') }
+          <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
         </button>
 
         <div className="dropdown-divider"></div>
 
-        <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{tCommon('Sign out')}</button>
+        <button type="button" className="dropdown-item" onClick={logoutHandler}>
+          <i className="icon-fw icon-power"></i>{t('Sign out')}
+        </button>
       </div>
 
       <ProactiveQuestionnaireModal isOpen={isQuestionnaireModalOpen} onClose={() => setQuestionnaireModalOpen(false)} />
