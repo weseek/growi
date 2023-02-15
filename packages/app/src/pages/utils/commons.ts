@@ -37,8 +37,6 @@ export type CommonProps = {
 
 // eslint-disable-next-line max-len
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
-  const { model: mongooseModel } = await import('mongoose');
-
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
   const {
@@ -75,10 +73,10 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
   // retrieve UserUISettings
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-  const userUISettings = user == null
-    ? req.session.uiSettings
-    : await UserUISettings.findOne({ user: user._id }).exec();
+  const UserUISettings = crowi.model('UserUISettings') as UserUISettingsModel;
+  const userUISettings = user != null && UserUISettings != null
+    ? await UserUISettings.findOne({ user: user._id }).exec()
+    : req.session.uiSettings; // for guests
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
