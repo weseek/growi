@@ -11,7 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
@@ -37,6 +37,8 @@ export type CommonProps = {
 
 // eslint-disable-next-line max-len
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
+  const getModelSafely = await import('~/server/util/mongoose-utils').then(mod => mod.getModelSafely);
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
   const {
@@ -73,7 +75,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
   // retrieve UserUISettings
-  const UserUISettings = crowi.model('UserUISettings') as UserUISettingsModel;
+  const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
   const userUISettings = user != null && UserUISettings != null
     ? await UserUISettings.findOne({ user: user._id }).exec()
     : req.session.uiSettings; // for guests
