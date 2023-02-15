@@ -128,8 +128,10 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
                 <input className="col-sm-7 form-control" type="text" name="position" id="position" />
               </div>
               <div className="form-group row mt-3">
-                <label className="col-sm-5 col-form-label" htmlFor="commentText">{t('questionnaire.comment_on_growi')}</label>
-                <textarea className="col-sm-7 form-control" name="commentText" id="commentText" rows={5} />
+                <label className="col-sm-5 col-form-label" htmlFor="commentText">
+                  <span className="badge badge-primary mr-2">{t('Required')}</span>{t('questionnaire.comment_on_growi')}
+                </label>
+                <textarea className="col-sm-7 form-control" name="commentText" id="commentText" rows={5} required/>
               </div>
               <div className="text-center mt-5">
                 <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
