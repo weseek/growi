@@ -1,11 +1,28 @@
-.grw-presentation-modal :global {
-  .modal-body {
-    background: black;
+@use '~/styles/_modal';
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
+.grw-presentation-modal :global {
+
+  @include modal.expand-modal-fullscreen(false, false, 0px);
+
+  .modal-content {
+    background-color: transparent;
+    border-radius: 0;
   }
+
+  .grw-presentation-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 110; // over ".reveal .slides"
+  }
+
+  .close {
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    color: var(--color-global);
+    opacity: 0.3;
+  }
+
 }

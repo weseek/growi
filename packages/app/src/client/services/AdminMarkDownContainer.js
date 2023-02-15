@@ -24,8 +24,6 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledLinebreaksInComments: false,
       adminPreferredIndentSize: 4,
       isIndentSizeForced: false,
-      pageBreakSeparator: 1,
-      pageBreakCustomSeparator: '',
       isEnabledXss: false,
       xssOption: '',
       tagWhiteList: '',
@@ -55,8 +53,6 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
       adminPreferredIndentSize: markdownParams.adminPreferredIndentSize,
       isIndentSizeForced: markdownParams.isIndentSizeForced,
-      pageBreakSeparator: markdownParams.pageBreakSeparator,
-      pageBreakCustomSeparator: markdownParams.pageBreakCustomSeparator || '',
       isEnabledXss: markdownParams.isEnabledXss,
       xssOption: markdownParams.xssOption,
       tagWhiteList: markdownParams.tagWhiteList || '',
@@ -66,20 +62,6 @@ export default class AdminMarkDownContainer extends Container {
 
   setAdminPreferredIndentSize(adminPreferredIndentSize) {
     this.setState({ adminPreferredIndentSize });
-  }
-
-  /**
-   * Switch PageBreakSeparator
-   */
-  switchPageBreakSeparator(pageBreakSeparator) {
-    this.setState({ pageBreakSeparator });
-  }
-
-  /**
-   * Set PageBreakCustomSeparator
-   */
-  setPageBreakCustomSeparator(pageBreakCustomSeparator) {
-    this.setState({ pageBreakCustomSeparator });
   }
 
   /**
@@ -138,23 +120,6 @@ export default class AdminMarkDownContainer extends Container {
       tagWhiteList,
       attrWhiteList: attrWhiteList ?? '{}',
     });
-  }
-
-  /**
-   * Update Presentation Setting
-   */
-  async updatePresentationSetting() {
-
-    const response = await apiv3Put('/markdown-setting/presentation', {
-      pageBreakSeparator: this.state.pageBreakSeparator,
-      pageBreakCustomSeparator: this.state.pageBreakCustomSeparator,
-    });
-
-    this.setState({
-      pageBreakSeparator: response.data.presentationParams.pageBreakSeparator,
-      pageBreakCustomSeparator: response.data.presentationParams.pageBreakCustomSeparator,
-    });
-    return response;
   }
 
 }
