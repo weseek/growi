@@ -8,24 +8,17 @@ import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUser, IUserHasId } from '~/interfaces/user';
-import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCsrfToken, useCurrentUser, useDrawioUri, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
 } from '~/stores/context';
-import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
-  useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
 
 import { SearchPage } from '../components/SearchPage';
 
 import type { NextPageWithLayout } from './_app.page';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, CommonProps, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, CommonProps,
 } from './utils/commons';
 
 
@@ -38,11 +31,6 @@ type Props = CommonProps & {
 
   drawioUri: string | null,
 
-  // UI
-  userUISettings?: IUserUISettings
-  // Sidebar
-  sidebarConfig: ISidebarConfig,
-
   // Render config
   rendererConfig: RendererConfig,
 
@@ -54,8 +42,6 @@ type Props = CommonProps & {
 };
 
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
-  const { userUISettings } = props;
-
   const { t } = useTranslation();
 
   // commons
@@ -70,9 +56,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useDrawioUri(props.drawioUri);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // render config
   useRendererConfig(props.rendererConfig);
@@ -110,19 +93,6 @@ SearchResultPage.getLayout = function getLayout(page) {
     </>
   );
 };
-
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const { model: mongooseModel } = await import('mongoose');
-
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
 
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -190,7 +160,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 

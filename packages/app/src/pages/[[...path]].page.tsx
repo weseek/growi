@@ -59,7 +59,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage,
 } from './utils/commons';
 
 
@@ -175,11 +175,6 @@ type Props = CommonProps & {
   grantData?: IPageGrantData,
 
   rendererConfig: RendererConfig,
-
-  // UI
-  userUISettings?: IUserUISettings
-  // Sidebar
-  sidebarConfig: ISidebarConfig,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -195,9 +190,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // page
   useIsLatestRevision(props.isLatestRevision);
@@ -328,7 +320,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
 type LayoutProps = {
   children?: ReactNode
-  className?: string
 }
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
@@ -456,19 +447,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   props.pageWithMeta = pageWithMeta;
 }
 
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const { model: mongooseModel } = await import('mongoose');
-
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-
-  const userUISettings = user == null ? req.session.uiSettings : await UserUISettings.findOne({ user: user._id }).exec();
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject?.() ?? userUISettings;
-  }
-}
-
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -574,10 +552,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
-  props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
-  };
 }
 
 /**
@@ -630,7 +604,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
   }
 
-  await injectUserUISettings(context, props);
   await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
