@@ -12,9 +12,6 @@ import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
 } from '~/stores/context';
-import {
-  useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
-} from '~/stores/ui';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import { CommonProps } from './utils/commons';
@@ -53,20 +50,13 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
 
   const commonPageProps = pageProps as CommonProps;
+  // useInterceptorManager(new InterceptorManager());
   useAppTitle(commonPageProps.appTitle);
   useSiteUrl(commonPageProps.siteUrl);
   useConfidential(commonPageProps.confidential);
   useGrowiVersion(commonPageProps.growiVersion);
   useIsDefaultLogo(commonPageProps.isDefaultLogo);
   useForcedColorScheme(commonPageProps.forcedColorScheme);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  const { sidebarConfig, userUISettings } = commonPageProps;
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => page);

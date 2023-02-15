@@ -9,7 +9,12 @@ import Head from 'next/head';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { useDrawerMode } from '~/stores/ui';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import {
+  useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
@@ -20,7 +25,7 @@ import {
 
 import type { NextPageWithLayout } from './_app.page';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps, useInitSidebarConfig,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -33,6 +38,11 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   showPageLimitationXL: number,
+
+  // UI
+  userUISettings?: IUserUISettings
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
 
   rendererConfig: RendererConfig,
 };
@@ -47,6 +57,9 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchPage(false);
   useCurrentPageId(null);
   useCurrentPathname('/trash');
+
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
 
@@ -94,6 +107,20 @@ TrashPage.getLayout = function getLayout(page) {
     </>
   );
 };
+
+async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
+
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+
+  if (userUISettings != null) {
+    props.userUISettings = userUISettings.toObject();
+  }
+}
 
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -154,6 +181,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = user.toObject();
   }
+  await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 

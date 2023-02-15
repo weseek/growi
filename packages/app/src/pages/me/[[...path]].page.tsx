@@ -14,17 +14,23 @@ import { useRouter } from 'next/router';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhiteList, useShowPageLimitationXL, useRendererConfig,
 } from '~/stores/context';
+import {
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from '../utils/commons';
 
 
@@ -34,6 +40,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  userUISettings?: IUserUISettings
+  sidebarConfig: ISidebarConfig,
   rendererConfig: RendererConfig,
   showPageLimitationXL: number,
 
@@ -89,6 +97,9 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useCsrfToken(props.csrfToken);
 
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+
   // page
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -127,6 +138,17 @@ MePage.getLayout = function getLayout(page) {
     <BasicLayout>{page}</BasicLayout>
   );
 };
+
+async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
+
+  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  if (userUISettings != null) {
+    props.userUISettings = userUISettings.toObject();
+  }
+}
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -199,6 +221,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = userData.toObject();
   }
 
+  await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation', 'admin', 'commons']);
 
