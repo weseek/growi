@@ -5,4 +5,5 @@ export type PresentationOptions = {
   rendererOptions: ReactMarkdownOptions,
   revealOptions?: RevealOptions,
   isDarkMode?: boolean,
+  disableSeparationByHeader?: boolean,
 }
