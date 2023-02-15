@@ -287,7 +287,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
-  const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
+  const isEditModeWithPreferDrawerMode = editorMode !== EditorMode.View && preferDrawerModeOnEditByUser;
   const isDrawerModeFixed = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
 
   return useSWRImmutable(

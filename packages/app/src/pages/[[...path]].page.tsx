@@ -32,6 +32,7 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
+  useCurrentUser,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
@@ -52,6 +53,7 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
+import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 
@@ -69,7 +71,6 @@ declare global {
 
 
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
-const GrowiContextualSubNavigationSubstance = dynamic(() => import('../components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
@@ -84,7 +85,7 @@ const {
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & any, IPageInfoForEntity>;
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
@@ -182,13 +183,14 @@ type Props = CommonProps & {
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
-  // const { t } = useTranslation();
-  const router = useRouter();
-
   // register global EventEmitter
   if (isClient() && window.globalEmitter == null) {
     window.globalEmitter = new EventEmitter();
   }
+
+  const router = useRouter();
+
+  useCurrentUser(props.currentUser ?? null);
 
   // commons
   useEditorConfig(props.editorConfig);
@@ -236,7 +238,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
-  const { pageWithMeta, userUISettings } = props;
+  const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;

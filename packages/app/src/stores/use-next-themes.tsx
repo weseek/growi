@@ -24,17 +24,22 @@ type UseThemeExtendedProps = Omit<UseThemeProps, 'theme'|'resolvedTheme'> & {
   resolvedTheme: ColorScheme,
   useOsSettings: boolean,
   isDarkMode: boolean,
+  isForcedByGrowiTheme: boolean,
   resolvedThemeByAttributes?: ColorScheme,
 }
 
 export const useNextThemes = (): UseThemeProps & UseThemeExtendedProps => {
   const props = useTheme();
+  const { data: forcedColorScheme } = useForcedColorScheme();
+
+  const resolvedTheme = forcedColorScheme ?? props.resolvedTheme as ColorScheme;
 
   return Object.assign(props, {
     theme: props.theme as Themes,
-    resolvedTheme: props.resolvedTheme as ColorScheme,
+    resolvedTheme,
     useOsSettings: props.theme === Themes.SYSTEM,
-    isDarkMode: props.resolvedTheme === ColorScheme.DARK,
+    isDarkMode: resolvedTheme === ColorScheme.DARK,
+    isForcedByGrowiTheme: forcedColorScheme != null,
     resolvedThemeByAttributes: isClient() ? document.documentElement.getAttribute(ATTRIBUTE) as ColorScheme : undefined,
   });
 };
