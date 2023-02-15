@@ -468,7 +468,7 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
 
   const userUISettings = user == null ? req.session.uiSettings : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
+    props.userUISettings = userUISettings.toObject?.() ?? userUISettings;
   }
 }
 
