@@ -314,7 +314,7 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   const origin: IRevisionOnConflictWithStringDate = {
     revisionId: currentPage?.revision._id,
     revisionBody: currentPage?.revision.body,
-    createdAt: format(currentPage.updatedAt, 'yyyy/MM/dd HH:mm:ss'),
+    createdAt: format(new Date(currentPage.updatedAt), 'yyyy/MM/dd HH:mm:ss'),
     user: currentPage?.lastUpdateUser,
   };
   const latest: IRevisionOnConflictWithStringDate = {
