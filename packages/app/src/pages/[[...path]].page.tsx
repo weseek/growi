@@ -10,7 +10,7 @@ import type {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import {
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -31,25 +31,7 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useEditingMarkdown } from '~/stores/editor';
-import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
-import { useRedirectFrom } from '~/stores/page-redirect';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
-  useSelectedGrant,
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
-import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
-import loggerFactory from '~/utils/logger';
-
-import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
-import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
-import {
-  useCurrentUser,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
@@ -59,11 +41,24 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
-} from '../stores/context';
+} from '~/stores/context';
+import { useEditingMarkdown } from '~/stores/editor';
+import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useSelectedGrant } from '~/stores/ui';
+import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
+import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from './_app.page';
+import { BasicLayout } from '../components/Layout/BasicLayout';
+import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
+import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
+
+import type { NextPageWithLayout } from './_app.page';
+import type { CommonProps } from './utils/commons';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
 } from './utils/commons';
 
 
@@ -73,6 +68,8 @@ declare global {
 }
 
 
+const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
+const GrowiContextualSubNavigationSubstance = dynamic(() => import('../components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
@@ -87,7 +84,7 @@ const {
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & any, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
@@ -187,8 +184,6 @@ type Props = CommonProps & {
 const Page: NextPageWithLayout<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
-
-  const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
   if (isClient() && window.globalEmitter == null) {
@@ -466,9 +461,9 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
   const { user } = req;
   const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
 
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
+  const userUISettings = user == null ? req.session.uiSettings : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
+    props.userUISettings = userUISettings.toObject?.() ?? userUISettings;
   }
 }
 
@@ -530,7 +525,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager, aclService, slackNotificationService, mailService,
+    searchService, configManager, aclService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;

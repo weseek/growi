@@ -22,10 +22,9 @@ import type { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useIsEditable, useIsGuestUser,
+  useCurrentPageId, useIsEditable,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
-import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
 import { useStaticSWR } from './use-static-swr';
 
@@ -235,18 +234,14 @@ type PreferDrawerModeByUserUtils = {
 }
 
 export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferDrawerModeByUserUtils, boolean> => {
-  const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData);
 
   const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
       swrResponse.mutate(preferDrawerMode);
-
-      if (!isGuestUser) {
-        scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
-      }
+      scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
     },
   };
 
