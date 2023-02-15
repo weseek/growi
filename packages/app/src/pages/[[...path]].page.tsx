@@ -50,6 +50,7 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
+import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 
@@ -67,7 +68,6 @@ declare global {
 
 
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
-const GrowiContextualSubNavigationSubstance = dynamic(() => import('../components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
@@ -227,7 +227,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
-  const { pageWithMeta, userUISettings } = props;
+  const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
