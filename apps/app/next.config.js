@@ -21,7 +21,7 @@ const setupTranspileModules = () => {
 
   // define transpiled packages for '@growi/*'
   const packages = [
-    ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app', '@growi/core'] }),
+    ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app'] }),
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
     'react-markdown',
     'unified',

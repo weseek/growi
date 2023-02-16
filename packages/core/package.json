@@ -7,20 +7,17 @@
     "growi"
   ],
   "main": "dist/core.umd.js",
+  "module": "dist/core.mjs",
   "types": "types/index.d.ts",
   "files": [
     "dist",
     "types"
   ],
   "scripts": {
-    "build": "run-p build:*",
-    "build:js": "vite build",
-    "build:types": "tsc -p tsconfig.types.json",
+    "build": "vite build",
     "clean": "npx -y shx rm -rf dist types",
-    "dev": "run-p dev:*",
-    "dev:js": "vite build --mode dev",
-    "dev:types": "yarn build:types",
-    "watch": "run-p 'dev:js -w' 'dev:types -w --preserveWatchOutput'",
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w'",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
