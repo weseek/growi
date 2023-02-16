@@ -8,7 +8,7 @@ import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
     if (isEnabledUnsavedWarning) {
@@ -25,9 +25,11 @@ const UnsavedAlertDialog = (): JSX.Element => {
     if (isEnabledUnsavedWarning) {
     // eslint-disable-next-line no-alert
       window.alert(t('page_edit.changes_not_saved'));
+
+      mutateIsEnabledUnsavedWarning(false);
     }
     return;
-  }, [isEnabledUnsavedWarning, t]);
+  }, [isEnabledUnsavedWarning, mutateIsEnabledUnsavedWarning, t]);
 
   /*
   * Route changes by Browser
