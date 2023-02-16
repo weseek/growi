@@ -21,6 +21,7 @@ export default defineConfig({
         'next/head',
         'react-markdown',
         '@marp-team/marp-core', '@marp-team/marpit',
+        'reveal.js',
       ],
       output: {
         globals: {
