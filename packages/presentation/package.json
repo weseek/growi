@@ -4,11 +4,19 @@
   "description": "GROWI plugin for presentation",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
-  "main": "dist/index.js",
-  "files": ["dist"],
+  "module": "dist/presentation.mjs",
+  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "run-p build:*",
+    "build:js": "vite build",
     "clean": "npx -y shx rm -rf dist",
+    "dev": "run-p dev:*",
+    "dev:js": "vite build --mode dev",
+    "watch": "run-p 'dev:js -w'",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint": "run-p lint:*",
@@ -21,9 +29,12 @@
     "@marp-team/marp-core": "^3.4.2",
     "@types/reveal.js": "^4.4.1",
     "eslint-plugin-regex": "^1.8.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-markdown": "^8.0.3",
     "reveal.js": "^4.4.0"
+  },
+  "peerDependencies": {
+    "next": "~12.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
