@@ -71,8 +71,9 @@ const PageAccessoriesModal = (): JSX.Element => {
       const [sourceRevisionId, targetRevisionId] = queryParams.split('...');
       setSourceRevisionId(sourceRevisionId);
       setTargetRevisionId(targetRevisionId);
+      mutate({ isOpened: true });
     }
-  }, []);
+  }, [mutate]);
 
   const navTabMapping = useMemo(() => {
     const isOpened = status == null ? false : status.isOpened;

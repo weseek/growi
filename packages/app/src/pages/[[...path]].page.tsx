@@ -19,7 +19,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import ShowPageAccessoriesModal from '~/client/services/ShowPageAccessoriesModal';
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -325,7 +324,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <PageStatusAlert />
 
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
-        <ShowPageAccessoriesModal />
       </div>
     </>
   );
