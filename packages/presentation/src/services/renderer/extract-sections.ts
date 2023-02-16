@@ -37,33 +37,48 @@ function removeElement(parentNode: Parent, elem: Node): void {
 
 export type ExtractSectionsPluginParams = {
   isDarkMode?: boolean,
+  disableSeparationByHeader?: boolean,
 }
 
 export const remarkPlugin: Plugin<[ExtractSectionsPluginParams]> = (options) => {
-  const { isDarkMode } = options;
+  const { isDarkMode, disableSeparationByHeader } = options;
+
+  const startCondition = (node: Node) => {
+    if (!disableSeparationByHeader && node.type === 'heading') {
+      return true;
+    }
+    return node.type !== 'thematicBreak';
+  };
+  const endCondition = (node: Node) => {
+    if (!disableSeparationByHeader && node.type === 'heading') {
+      return true;
+    }
+    return node.type === 'thematicBreak';
+  };
 
   return (tree) => {
     // wrap with <section>
     visit(
       tree,
-      node => node.type !== 'thematicBreak',
+      startCondition,
       (node, index, parent: Parent) => {
         if (parent == null || parent.type !== 'root') {
           return;
         }
 
         const startElem = node;
-        const endElem = findAfter(parent, startElem, node => node.type === 'thematicBreak');
+        const endElem = findAfter(parent, startElem, endCondition);
 
         wrapWithSection(parent, startElem, endElem, isDarkMode);
 
         // remove <hr>
-        if (endElem != null) {
+        if (endElem != null && endElem.type === 'thematicBreak') {
           removeElement(parent, endElem);
         }
       },
     );
   };
+
 };
 
 

@@ -32,9 +32,15 @@ type Props = {
 
 export const Slides = (props: Props): JSX.Element => {
   const { options, children } = props;
-  const { rendererOptions, isDarkMode } = options;
+  const { rendererOptions, isDarkMode, disableSeparationByHeader } = options;
 
-  rendererOptions.remarkPlugins?.push([extractSections.remarkPlugin, { isDarkMode }]);
+  rendererOptions.remarkPlugins?.push([
+    extractSections.remarkPlugin,
+    {
+      isDarkMode,
+      disableSeparationByHeader,
+    },
+  ]);
 
   const { css } = marp.render('', { htmlAsArray: true });
 
