@@ -121,7 +121,7 @@ module.exports = function(crowi, app) {
     await crowi.activityService.createActivity(parameters);
 
     if (isExternalAccount) {
-      return res.redirect('/');
+      return res.redirect(res.locals.redirectTo ?? '/');
     }
 
     // check for redirection to '/invited'
@@ -131,6 +131,17 @@ module.exports = function(crowi, app) {
     delete req.session.redirectTo;
 
     return res.apiv3({ redirectTo, userStatus: req.user.status });
+  };
+
+  const injectRedirectTo = (req, res, next) => {
+
+    // Move "req.session.redirectTo" to "res.locals.redirectTo" because the session is regenerated when req.login() is called
+    const redirectTo = req.session.redirectTo;
+    if (redirectTo != null) {
+      res.locals.redirectTo = redirectTo;
+    }
+
+    next();
   };
 
   const isEnableLoginWithLocalOrLdap = (req, res, next) => {
@@ -595,6 +606,7 @@ module.exports = function(crowi, app) {
 
   return {
     cannotLoginErrorHadnler,
+    injectRedirectTo,
     isEnableLoginWithLocalOrLdap,
     loginFailure,
     loginFailureForExternalAccount,
