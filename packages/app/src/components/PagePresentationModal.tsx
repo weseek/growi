@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation';
+import { useFullScreen } from '@growi/ui';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-
 
 import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -30,13 +30,26 @@ const PagePresentationModal = (): JSX.Element => {
   const { data: presentationModalData, close: closePresentationModal } = usePagePresentationModal();
 
   const { isDarkMode } = useNextThemes();
+  const fullscreen = useFullScreen();
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePresentationViewOptions();
 
-  const requestFullscreen = useCallback(() => {
-    document.documentElement.requestFullscreen();
-  }, []);
+  const toggleFullscreenHandler = useCallback(() => {
+    if (fullscreen.active) {
+      fullscreen.exit();
+    }
+    else {
+      fullscreen.enter();
+    }
+  }, [fullscreen]);
+
+  const closeHandler = useCallback(() => {
+    if (fullscreen.active) {
+      fullscreen.exit();
+    }
+    closePresentationModal();
+  }, [fullscreen, closePresentationModal]);
 
   const isOpen = presentationModalData?.isOpened ?? false;
 
@@ -49,15 +62,15 @@ const PagePresentationModal = (): JSX.Element => {
   return (
     <Modal
       isOpen={isOpen}
-      toggle={closePresentationModal}
+      toggle={closeHandler}
       data-testid="page-presentation-modal"
       className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
     >
       <div className="grw-presentation-controls d-flex">
-        <button className="close btn-fullscreen" type="button" aria-label="fullscreen" onClick={requestFullscreen}>
-          <i className="ti ti-fullscreen" aria-hidden></i>
+        <button className="close btn-fullscreen" type="button" aria-label="fullscreen" onClick={toggleFullscreenHandler}>
+          <i className={`${fullscreen.active ? 'icon-size-actual' : 'icon-size-fullscreen'}`} aria-hidden></i>
         </button>
-        <button className="close btn-close" type="button" aria-label="close" onClick={closePresentationModal}>
+        <button className="close btn-close" type="button" aria-label="close" onClick={closeHandler}>
           <i className="ti ti-close" aria-hidden></i>
         </button>
       </div>
