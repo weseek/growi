@@ -16,7 +16,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react-markdown'],
+      external: ['react', 'react-dom', 'next/head', 'react-markdown'],
       output: {
         globals: {
           react: 'React',
