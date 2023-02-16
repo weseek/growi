@@ -1,9 +1,10 @@
 import assert from 'assert';
 
 import {
-  Key, SWRConfiguration, SWRResponse, useSWRConfig,
+  Key, SWRConfiguration, SWRResponse,
 } from 'swr';
-import useSWRImmutable from 'swr/immutable';
+
+import { useStaticSWR } from './use-static-swr';
 
 
 export function useContextSWR<Data, Error>(key: Key): SWRResponse<Data, Error>;
@@ -20,17 +21,9 @@ export function useContextSWR<Data, Error>(
 
   assert.notStrictEqual(configuration?.fetcher, null, 'useContextSWR does not support \'configuration.fetcher\'');
 
-  const { cache } = useSWRConfig();
-  const swrResponse = useSWRImmutable(key, null, {
-    ...configuration,
-    fallbackData: configuration?.fallbackData ?? cache.get(key)?.data,
-  });
+  const swrResponse = useStaticSWR(key, data, configuration);
 
-  // write data to cache directly
-  if (data !== undefined) {
-    cache.set(key, { ...cache.get(key), data });
-  }
-
+  // overwrite mutate
   const result = Object.assign(swrResponse, { mutate: () => { throw Error('mutate can not be used in context') } });
 
   return result;
