@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, IRevisionHasPageId, Nullable,
@@ -26,7 +26,7 @@ import {
 const { isPermalink: _isPermalink } = pagePathUtils;
 
 
-export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision | null): SWRResponse<IPagePopulatedToShowRevision | null> => {
+export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
   useEffect(() => {
@@ -44,14 +44,14 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision | 
   });
 };
 
-export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision | null> => {
+export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: shareLinkId } = useShareLinkId();
 
   // Get URL parameter for specific revisionId
-  let revisionId: string | undefined;
+  let revisionId: string|undefined;
   if (isClient()) {
     const urlParams = new URLSearchParams(window.location.search);
     const requestRevisionId = urlParams.get('revisionId');
@@ -119,7 +119,7 @@ export const useSWRxPageInfo = (
 
   const swrResult = useSWRImmutable(
     key,
-    ([endpoint, pageId, shareLinkId]: [string, string, string | null]) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
+    ([endpoint, pageId, shareLinkId]: [string, string, string|null]) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
 
@@ -190,7 +190,7 @@ export const useSWRxInfinitePageRevisions = (
     },
     ([endpoint, pageId, offset, limit]) => apiv3Get<SWRInfinitePageRevisionsResponse>(endpoint, { pageId, offset, limit }).then(response => response.data),
     {
-      revalidateFirstPage: false,
+      revalidateFirstPage: true,
       revalidateAll: false,
     },
   );
