@@ -95,6 +95,28 @@
     }
   },
 
+  "questionnaire_modal": {
+    "required": "Required",
+    "answer": "Answer",
+    "close": "Close",
+    "title": "GROWI questionnaire for service improvement",
+    "more_satisfied_services": "We hope that GROWI customers will be even more satisfied",
+    "strive_to_improve_services": "once we improve our services based on your feedback.",
+    "length_of_experience": {
+      "more_than_two_years": "More than 2 years",
+      "one_to_two_years": "More than 1 year but less than 2 years",
+      "six_months_to_one_year": "More than 6 months but less than 1 year",
+      "three_months_to_six_months": "More than 3 months but less than 6 months",
+      "one_month_to_three_months": "More than 1 month but less than 3 months",
+      "less_than_one_month": "Less than 1 month"
+    },
+    "satisfaction_with_growi": "Satisfaction with GROWI",
+    "history_of_growi_usage": "History of GROWI usage",
+    "occupation": "Occupation",
+    "position": "Position",
+    "comment_on_growi": "Comment on GROWI"
+  },
+
   "not_found_page": {
     "page_not_exist": "This page does not exist."
   },
