@@ -1,7 +1,7 @@
 import React from 'react';
 
-// import { Marp } from '@marp-team/marp-core';
-// import { Element } from '@marp-team/marpit';
+import { Marp } from '@marp-team/marp-core';
+import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
 import ReactMarkdown from 'react-markdown';
 
@@ -13,16 +13,16 @@ import './Slides.global.scss';
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
 
-// const marp = new Marp({
-//   container: [
-//     new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
-//     new Element('div', { class: 'slides' }),
-//   ],
-//   inlineSVG: false,
-//   emoji: undefined,
-//   html: false,
-//   math: false,
-// });
+const marp = new Marp({
+  container: [
+    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
+    new Element('div', { class: 'slides' }),
+  ],
+  inlineSVG: false,
+  emoji: undefined,
+  html: false,
+  math: false,
+});
 
 
 type Props = {
@@ -42,12 +42,12 @@ export const Slides = (props: Props): JSX.Element => {
     },
   ]);
 
-  // const { css } = marp.render('', { htmlAsArray: true });
+  const { css } = marp.render('', { htmlAsArray: true });
 
   return (
     <>
       <Head>
-        {/* <style>{css}</style> */}
+        <style>{css}</style>
       </Head>
       <ReactMarkdown {...rendererOptions}>
         { children ?? '## No Contents' }

@@ -16,7 +16,12 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'next/head', 'react-markdown'],
+      external: [
+        'react', 'react-dom',
+        'next/head',
+        'react-markdown',
+        '@marp-team/marp-core', '@marp-team/marpit',
+      ],
       output: {
         globals: {
           react: 'React',
