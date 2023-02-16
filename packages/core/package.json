@@ -14,11 +14,13 @@
   ],
   "scripts": {
     "build": "run-p build:*",
-    "build:types": "tsc -p tsconfig.build.json",
     "build:js": "vite build",
+    "build:types": "tsc -p tsconfig.types.json",
     "clean": "npx -y shx rm -rf dist types",
-    "dev": "vite build --mode dev",
+    "dev": "run-p dev:*",
+    "dev:js": "vite build --mode dev",
     "dev:types": "yarn build:types",
+    "watch": "run-p 'dev:js -w' 'dev:types -w --preserveWatchOutput'",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
