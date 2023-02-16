@@ -283,10 +283,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   // initialize mutateEditingMarkdown only once per page
-  // Put pageId in the dependency array to have mutateEditingMarkdown run when the page is duplicated
   useEffect(() => {
-    mutateEditingMarkdown(revisionBody);
-  }, [mutateEditingMarkdown, revisionBody, pageId]);
+    if (props.currentPathname != null) {
+      mutateEditingMarkdown(revisionBody);
+    }
+  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
