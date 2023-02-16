@@ -23,9 +23,11 @@ const UnsavedAlertDialog = (): JSX.Element => {
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
     if (isEnabledUnsavedWarning) {
-    // eslint-disable-next-line no-alert
+      // eslint-disable-next-line no-alert
       window.alert(t('page_edit.changes_not_saved'));
 
+      // Execute only when window.alert is displayed
+      // Do not execute when the dialog is displayed
       mutateIsEnabledUnsavedWarning(false);
     }
     return;
