@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 
-// import Reveal from 'reveal.js';
+import Reveal from 'reveal.js';
 
 import type { PresentationOptions } from '../consts';
 
 import { MARP_CONTAINER_CLASS_NAME, Slides } from './Slides';
 
-// import 'reveal.js/dist/reveal.css';
+import 'reveal.js/dist/reveal.css';
 import './Presentation.global.scss';
 
 import styles from './Presentation.module.scss';
@@ -40,20 +40,20 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const { revealOptions } = options;
 
   useEffect(() => {
-    // let deck: Reveal.Api;
-    // if (children != null) {
-    //   deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
-    //   deck.initialize()
-    //     .then(() => deck.slide(0)); // navigate to the first slide
+    let deck: Reveal.Api;
+    if (children != null) {
+      deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
+      deck.initialize()
+        .then(() => deck.slide(0)); // navigate to the first slide
 
-    //   deck.on('ready', removeAllHiddenElements);
-    //   deck.on('slidechanged', removeAllHiddenElements);
-    // }
+      deck.on('ready', removeAllHiddenElements);
+      deck.on('slidechanged', removeAllHiddenElements);
+    }
 
-    // return function cleanup() {
-    //   deck?.off('ready', removeAllHiddenElements);
-    //   deck?.off('slidechanged', removeAllHiddenElements);
-    // };
+    return function cleanup() {
+      deck?.off('ready', removeAllHiddenElements);
+      deck?.off('slidechanged', removeAllHiddenElements);
+    };
   }, [children, revealOptions]);
 
   return (

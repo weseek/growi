@@ -17,7 +17,7 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import styles from './PagePresentationModal.module.scss';
 
 
-const Presentation = dynamic<PresentationProps>(() => import('@growi/presentation').then(mod => mod.Presentation), {
+const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
     <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
