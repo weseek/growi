@@ -10,6 +10,8 @@ export const createRedirectToByUserStatus = (userStatus: IUserStatus): string | 
       return '/login/error/suspended';
     case USER_STATUS.INVITED:
       return '/invited';
+    case USER_STATUS.DELETED:
+      return '/login';
     default:
       return null;
   }
