@@ -22,13 +22,19 @@ const UnsavedAlertDialog = (): JSX.Element => {
   }, [isEnabledUnsavedWarning]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    // eslint-disable-next-line no-alert
-    const answer = window.confirm(t('page_edit.changes_not_saved'));
-    if (!answer) {
+    if (isEnabledUnsavedWarning) {
+      // eslint-disable-next-line no-alert
+      const answer = window.confirm(t('page_edit.changes_not_saved'));
+      if (!answer) {
       // eslint-disable-next-line no-throw-literal
-      throw 'Abort route';
+        throw 'Abort route';
+      }
     }
-  }, [t]);
+  }, [isEnabledUnsavedWarning, t]);
+
+  const onRouterChangeComplete = useCallback(() => {
+    mutateIsEnabledUnsavedWarning(false);
+  }, [mutateIsEnabledUnsavedWarning]);
 
   /*
   * Route changes by Browser
@@ -52,6 +58,14 @@ const UnsavedAlertDialog = (): JSX.Element => {
       router.events.off('routeChangeStart', alertUnsavedWarningByNextRouter);
     };
   }, [alertUnsavedWarningByNextRouter, router.events]);
+
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
 
 
   return <></>;
