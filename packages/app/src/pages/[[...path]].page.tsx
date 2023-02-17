@@ -283,6 +283,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   // initialize mutateEditingMarkdown only once per page
+  // need to include useCurrentPathname not useCurrentPagePath
   useEffect(() => {
     if (props.currentPathname != null) {
       mutateEditingMarkdown(revisionBody);
