@@ -6,6 +6,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
+import { createRedirectToByUserStatus } from '~/server/util/createRedirectToByUserStatus';
 import loggerFactory from '~/utils/logger';
 
 
@@ -16,7 +17,6 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
-  const User = crowi.model('User');
   const passportService = crowi.passportService;
 
   const activityEvent = crowi.event('activity');
@@ -120,17 +120,8 @@ module.exports = function(crowi, app) {
 
     await crowi.activityService.createActivity(parameters);
 
-
-    let redirectTo = '/';
-    if (req.user.status === User.STATUS_INVITED) {
-      redirectTo = '/invited';
-    }
-    else if (req.user.status !== User.STATUS_ACTIVE) {
-      redirectTo = '/';
-    }
-    else if (res.locals.redirectTo != null) {
-      redirectTo = res.locals.redirectTo;
-    }
+    const redirectToByUserStatus = createRedirectToByUserStatus(req.user.status);
+    const redirectTo = redirectToByUserStatus ?? res.locals.redirectTo ?? '/';
 
     if (isExternalAccount) {
       return res.redirect(redirectTo);
@@ -141,7 +132,8 @@ module.exports = function(crowi, app) {
 
   const injectRedirectTo = (req, res, next) => {
 
-    // Move "req.session.redirectTo" to "res.locals.redirectTo" because the session is regenerated when req.login() is called
+    // Move "req.session.redirectTo" to "res.locals.redirectTo"
+    // Because the session is regenerated when req.login() is called
     const redirectTo = req.session.redirectTo;
     if (redirectTo != null) {
       res.locals.redirectTo = redirectTo;
