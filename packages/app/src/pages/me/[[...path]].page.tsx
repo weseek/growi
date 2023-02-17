@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 
 import { IUserHasId } from '@growi/core';
-import { model as mongooseModel } from 'mongoose';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -14,23 +13,18 @@ import { useRouter } from 'next/router';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhiteList, useShowPageLimitationXL, useRendererConfig,
 } from '~/stores/context';
-import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
+import type { CommonProps } from '../utils/commons';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from '../utils/commons';
 
 
@@ -40,8 +34,6 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-  userUISettings?: IUserUISettings
-  sidebarConfig: ISidebarConfig,
   rendererConfig: RendererConfig,
   showPageLimitationXL: number,
 
@@ -139,17 +131,6 @@ MePage.getLayout = function getLayout(page) {
   );
 };
 
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
-
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -221,7 +202,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = userData.toObject();
   }
 
-  await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation', 'admin', 'commons']);
 
