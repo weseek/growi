@@ -1,11 +1,11 @@
-import { Ref, IUser } from '@growi/core';
+import type { Ref, IUser } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
 
 
 import { SidebarContentsType } from '~/interfaces/ui';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
