@@ -96,7 +96,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/google/callback'             , loginPassport.injectRedirectTo, loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailureForExternalAccount);
   app.get('/passport/github/callback'             , loginPassport.injectRedirectTo, loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailureForExternalAccount);
   app.get('/passport/oidc/callback'               , loginPassport.injectRedirectTo, loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
-  app.post('/passport/saml/callback'              , loginPassport.injectRedirectTo, addActivity, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
+  app.post('/passport/saml/callback'              , addActivity, loginPassport.injectRedirectTo, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
