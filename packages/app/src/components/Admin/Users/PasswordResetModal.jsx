@@ -54,7 +54,7 @@ class PasswordResetModal extends React.Component {
 
     return (
       <>
-        <p className="alert alert-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
+        <p className="text-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
         <p>
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
