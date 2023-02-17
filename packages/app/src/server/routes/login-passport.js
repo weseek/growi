@@ -120,17 +120,23 @@ module.exports = function(crowi, app) {
 
     await crowi.activityService.createActivity(parameters);
 
-    if (isExternalAccount) {
-      return res.redirect(res.locals.redirectTo ?? '/');
+
+    let redirectTo = '/';
+    if (req.user.status === User.STATUS_INVITED) {
+      redirectTo = '/invited';
+    }
+    else if (req.user.status !== User.STATUS_ACTIVE) {
+      redirectTo = '/';
+    }
+    else if (res.locals.redirectTo != null) {
+      redirectTo = res.locals.redirectTo;
     }
 
-    // check for redirection to '/invited'
-    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
+    if (isExternalAccount) {
+      return res.redirect(redirectTo);
+    }
 
-    // remove session.redirectTo
-    delete req.session.redirectTo;
-
-    return res.apiv3({ redirectTo, userStatus: req.user.status });
+    return res.apiv3({ redirectTo });
   };
 
   const injectRedirectTo = (req, res, next) => {
