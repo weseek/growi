@@ -28,7 +28,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
 
   const inputNamePrefix = 'question-';
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
   const sendAnswer = useCallback(async(answers: IAnswer[]) => {
     try {
@@ -112,8 +112,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
           <div className="text-center mb-2">
             <h2 className="my-4">{questionnaireOrderTitle}</h2>
-            <p className="mb-1">{t('questionnaire.more_satisfied_services')}</p>
-            <p>{t('questionnaire.strive_to_improve_services')}</p>
+            <p className="mb-1">{t('commons:questionnaire_modal.more_satisfied_services')}</p>
+            <p>{t('commons:questionnaire_modal.strive_to_improve_services')}</p>
           </div>
           <div className="container">
             <div className="row mt-4">

@@ -387,7 +387,17 @@
     "enable": "Enable",
     "disable": "Disable",
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
-    "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
+    "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
+    "questionnaire_settings": "Questionnaire settings",
+    "questionnaire_settings_explanation": "This will enable/disable questionnaires on the whole system. When enabled, users can also enable/disable questionnaires individually from \"Other Settings\" in the personal settings page.",
+    "about_data_sent": "About information sent",
+    "docs_link": "https://docs.growi.org/en/admin-guide/management-cookbook/app-settings.html#questionnaire-settings",
+    "learn_more": "Learn more",
+    "other_info_will_be_sent": "Along with the questionnaire answer, information necessary to improve GROWI will be sent. Personal user info will not be included in the data sent.",
+    "we_will_use_the_data_to_improve_growi": "We will use the data to improve GROWI experience as much as possible.",
+    "anonymize_app_site_url": "Anonymize app site URL in data sent",
+    "url_anonymization_explanation": "The app site URL included in the questionnaire answer will be anonymized. By enabling this, the GROWI application that sends the questionnaire answer will not be identified.",
+    "enable_questionnaire": "Enable questionnaire"
   },
   "markdown_settings": {
     "markdown_settings": "Markdown Settings",

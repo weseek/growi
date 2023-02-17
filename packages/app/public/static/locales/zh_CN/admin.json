@@ -395,7 +395,17 @@
     "enable": "启用",
     "disable": "停用",
     "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
-    "note_for_the_only_env_option": "The GCS settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
+    "note_for_the_only_env_option": "The GCS settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
+    "questionnaire_settings": "问卷设置",
+    "questionnaire_settings_explanation": "这将在整个系统上启用/禁用问卷。 启用后，用户还可以在个人设置页面的“其他设置”中单独启用/禁用问卷调查。",
+    "about_data_sent": "关于发送的信息",
+    "docs_link": "https://docs.growi.org/en/admin-guide/management-cookbook/app-settings.html#questionnaire-settings",
+    "learn_more": "细节",
+    "other_info_will_be_sent": "与问卷回答一起，将发送改进 GROWI 所需的信息。个人用户信息将不包含在发送的数据中。",
+    "we_will_use_the_data_to_improve_growi": "我们将使用这些数据尽可能地改善 GROWI 体验。",
+    "anonymize_app_site_url": "在发送的数据中匿名应用程序站点 URL",
+    "url_anonymization_explanation": "问卷答案中包含的应用站点URL将被匿名化，启用后将不会识别发送问卷答案的GROWI应用。",
+    "enable_questionnaire": "启用问卷"
   },
   "markdown_settings": {
     "markdown_settings": "Markdown设置",
