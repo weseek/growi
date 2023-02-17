@@ -97,7 +97,7 @@
 
   "questionnaire_modal": {
     "required": "Required",
-    "answer": "Answer",
+    "send": "Send",
     "close": "Close",
     "title": "GROWI questionnaire for service improvement",
     "more_satisfied_services": "We hope that GROWI customers will be even more satisfied",

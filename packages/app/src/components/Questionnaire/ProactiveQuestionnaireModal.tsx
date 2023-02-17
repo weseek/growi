@@ -134,7 +134,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
                 <textarea className="col-sm-7 form-control" name="commentText" id="commentText" rows={5} required/>
               </div>
               <div className="text-center mt-5">
-                <button type="submit" className="btn btn-primary">{t('questionnaire_modal.answer')}</button>
+                <button type="submit" className="btn btn-primary">{t('questionnaire_modal.send')}</button>
               </div>
               <div className="text-center my-3">
                 <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={onClose}>{t('questionnaire_modal.close')}</span>

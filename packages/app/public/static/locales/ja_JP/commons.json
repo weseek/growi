@@ -96,7 +96,7 @@
 
   "questionnaire_modal": {
     "required": "必須",
-    "answer": "回答する",
+    "send": "送信する",
     "close": "閉じる",
     "title": "GROWI サービス改善のためのアンケート",
     "more_satisfied_services": "GROWI をご利用の皆さまに更にご満足いただけるよう",
