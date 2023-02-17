@@ -5,8 +5,7 @@ import React, {
 import { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPageId } from '~/stores/context';
-import { useCurrentPagePath, useSWRxInfinitePageRevisions } from '~/stores/page';
+import { useSWRxInfinitePageRevisions } from '~/stores/page';
 
 import { RevisionComparer } from '../RevisionComparer/RevisionComparer';
 
@@ -15,7 +14,9 @@ import { Revision } from './Revision';
 import styles from './PageRevisionTable.module.scss';
 
 type PageRevisionTableProps = {
-  onClose: () => void,
+  currentPageId: string
+  currentPagePath: string
+  onClose: () => void
 }
 
 export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
@@ -24,11 +25,9 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   const REVISIONS_PER_PAGE = 10;
 
   const {
-    onClose,
+    onClose, currentPageId, currentPagePath,
   } = props;
 
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
   const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId, REVISIONS_PER_PAGE);
 
   const {

@@ -23,8 +23,8 @@ const DropdownItemContents = ({ title, contents }) => (
 type RevisionComparerProps = {
   sourceRevision: IRevisionHasPageId
   targetRevision: IRevisionHasPageId
-  currentPageId: Nullable<string> | undefined
-  currentPagePath: Nullable<string> | undefined
+  currentPageId?: string
+  currentPagePath: string
   onClose: () => void
 }
 
