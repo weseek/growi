@@ -28,10 +28,11 @@ type BookmarkFolderItemProps = {
   isOpen?: boolean
   level: number
   root: string
+  isUserHomePage?: boolean
 }
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const {
-    bookmarkFolder, isOpen: _isOpen = false, level, root,
+    bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
   } = props;
 
   const { t } = useTranslation();
@@ -221,11 +222,13 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
+            isUserHomePage ={isUserHomePage}
           />
         </div>
       );
     });
   };
+
 
   const renderBookmarkItem = () => {
     return isOpen && bookmarks?.map((bookmark) => {

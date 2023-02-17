@@ -6,8 +6,13 @@ import BookmarkFolderItem from './BookmarkFolderItem';
 import styles from './BookmarkFolderTree.module.scss';
 
 
-const BookmarkFolderTree = (): JSX.Element => {
+type BookmarkFolderTreeProps = {
+  isUserHomePage?: boolean
+}
+
+const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
   const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
+  const { isUserHomePage } = props;
 
   return (
     <>
@@ -20,6 +25,7 @@ const BookmarkFolderTree = (): JSX.Element => {
               isOpen={false}
               level={0}
               root={item._id}
+              isUserHomePage={isUserHomePage}
             />
           );
         })}

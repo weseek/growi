@@ -49,8 +49,21 @@ $grw-bookmark-item-padding-left: 45px;
         height: 40px;
       }
       .bookmark-item-list{
+        .picture {
+          width: 16px;
+          height: 16px;
+          vertical-align: text-bottom;
+
+          &.picture-md {
+            width: 20px;
+            height: 20px;
+          }
+        }
         min-width: 30px;
         height: 35px;
+        .grw-foldertree-control{
+          margin-left: auto;
+        }
       }
     }
   }

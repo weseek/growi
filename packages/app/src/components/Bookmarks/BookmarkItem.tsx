@@ -17,6 +17,7 @@ import { useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
+import { PageListItemS } from '../PageList/PageListItemS';
 
 
 type Props = {
@@ -122,14 +123,13 @@ const BookmarkItem = (props: Props): JSX.Element => {
     }),
   });
 
-
   return (
     <li
-      className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
+      className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
       key={bookmarkedPage._id} ref={(c) => { bookmarkItemDragRef(c) }}
       id={bookmarkItemId}
     >
-      {isRenameInputShown ? (
+      { isRenameInputShown ? (
         <ClosableTextInput
           value={nodePath.basename(bookmarkedPage.path ?? '')}
           placeholder={t('Input page name')}
@@ -137,24 +137,22 @@ const BookmarkItem = (props: Props): JSX.Element => {
           onPressEnter={pressEnterForRenameHandler}
           inputValidator={inputValidator}
         />
-      ) : (
-        <a href={`/${bookmarkedPage._id}`} className="grw-foldertree-title-anchor flex-grow-1 pr-3">
-          <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
-        </a>
-      )}
-      <PageItemControl
-        pageId={bookmarkedPage._id}
-        isEnableActions
-        pageInfo={fetchedPageInfo}
-        forceHideMenuItems={[MenuItemType.DUPLICATE]}
-        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-        onClickRenameMenuItem={renameMenuItemClickHandler}
-        onClickDeleteMenuItem={deleteMenuItemClickHandler}
-      >
-        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-          <i className="icon-options fa fa-rotate-90 p-1"></i>
-        </DropdownToggle>
-      </PageItemControl>
+      ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle}/>}
+      <div className='grw-foldertree-control'>
+        <PageItemControl
+          pageId={bookmarkedPage._id}
+          isEnableActions
+          pageInfo={fetchedPageInfo}
+          forceHideMenuItems={[MenuItemType.DUPLICATE]}
+          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+          onClickRenameMenuItem={renameMenuItemClickHandler}
+          onClickDeleteMenuItem={deleteMenuItemClickHandler}
+        >
+          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+            <i className="icon-options fa fa-rotate-90 p-1"></i>
+          </DropdownToggle>
+        </PageItemControl>
+      </div>
       <UncontrolledTooltip
         modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
         autohide={false}
