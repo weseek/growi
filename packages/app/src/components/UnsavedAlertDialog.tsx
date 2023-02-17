@@ -22,16 +22,13 @@ const UnsavedAlertDialog = (): JSX.Element => {
   }, [isEnabledUnsavedWarning]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    if (isEnabledUnsavedWarning) {
-      // eslint-disable-next-line no-alert
-      window.alert(t('page_edit.changes_not_saved'));
-
-      // Execute only when window.alert is displayed
-      // Do not execute when the dialog is displayed
-      mutateIsEnabledUnsavedWarning(false);
+    // eslint-disable-next-line no-alert
+    const answer = window.confirm(t('page_edit.changes_not_saved'));
+    if (!answer) {
+      // eslint-disable-next-line no-throw-literal
+      throw 'Abort route';
     }
-    return;
-  }, [isEnabledUnsavedWarning, mutateIsEnabledUnsavedWarning, t]);
+  }, [t]);
 
   /*
   * Route changes by Browser
