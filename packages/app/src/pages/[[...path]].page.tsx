@@ -272,9 +272,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   // initialize mutateEditingMarkdown only once per page
+  // need to include useCurrentPathname not useCurrentPagePath
   useEffect(() => {
-    mutateEditingMarkdown(revisionBody);
-  }, [mutateEditingMarkdown, revisionBody]);
+    if (props.currentPathname != null) {
+      mutateEditingMarkdown(revisionBody);
+    }
+  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
