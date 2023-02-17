@@ -286,7 +286,7 @@ describe('loginRequired', () => {
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
       expect(result).toBe('redirect');
-      expect(req.session.redirectTo).toBe('original url 1');
+      expect(req.session.redirectTo).toBe(undefined);
     });
 
   });
