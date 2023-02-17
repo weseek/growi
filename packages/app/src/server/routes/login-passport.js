@@ -6,7 +6,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
-import { createRedirectToByUserStatus } from '~/server/util/createRedirectToByUserStatus';
+import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
 
@@ -120,8 +120,8 @@ module.exports = function(crowi, app) {
 
     await crowi.activityService.createActivity(parameters);
 
-    const redirectToByUserStatus = createRedirectToByUserStatus(req.user.status);
-    const redirectTo = redirectToByUserStatus ?? res.locals.redirectTo ?? '/';
+    const redirectToForUnauthenticated = createRedirectToForUnauthenticated(req.user.status);
+    const redirectTo = redirectToForUnauthenticated ?? res.locals.redirectTo ?? '/';
 
     if (isExternalAccount) {
       return res.redirect(redirectTo);

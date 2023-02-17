@@ -1,4 +1,4 @@
-import { createRedirectToByUserStatus } from '~/server/util/createRedirectToByUserStatus';
+import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:login-required');
@@ -22,7 +22,7 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
         return next();
       }
 
-      const redirectTo = createRedirectToByUserStatus(req.user.status) ?? '/';
+      const redirectTo = createRedirectToForUnauthenticated(req.user.status) ?? '/login';
       return res.redirect(redirectTo);
     }
 

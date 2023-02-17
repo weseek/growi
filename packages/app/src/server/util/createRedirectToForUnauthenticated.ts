@@ -1,8 +1,7 @@
 import { USER_STATUS } from '~/interfaces/user';
 import type { IUserStatus } from '~/interfaces/user';
 
-// For unauthorized
-export const createRedirectToByUserStatus = (userStatus: IUserStatus): string | null => {
+export const createRedirectToForUnauthenticated = (userStatus: IUserStatus): string | null => {
   switch (userStatus) {
     case USER_STATUS.REGISTERED:
       return '/login/error/registered';
