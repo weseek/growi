@@ -831,25 +831,28 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: success resrt password
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    user:
-   *                      type: object
-   *                      description: Target user
    */
   router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
     const { appService, mailService } = crowi;
     const { id } = req.body;
 
+    let newPassword;
+    let user;
+
     try {
-      const [newPassword, user] = await Promise.all([
+      [newPassword, user] = await Promise.all([
         await User.resetPasswordByRandomString(id),
         await User.findById(id)]);
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_PASSWORD_RESET });
+    }
+    catch (err) {
+      const msg = 'Error occurred during password reset request procedure.';
+      logger.error(err);
+      return res.apiv3Err(`${msg} Cause: ${err}`);
+    }
 
+    try {
       await mailService.send({
         to: user.email,
         subject: 'Your password has been reset by the administrator',
@@ -865,7 +868,7 @@ module.exports = (crowi) => {
       return res.apiv3({});
     }
     catch (err) {
-      const msg = 'Error occurred during password reset request procedure.';
+      const msg = 'Error occurred during password reset send e-mail.';
       logger.error(err);
       return res.apiv3Err(`${msg} Cause: ${err}`);
     }
