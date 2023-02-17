@@ -9,21 +9,15 @@ import Head from 'next/head';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUser, IUserHasId } from '~/interfaces/user';
-import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCsrfToken, useCurrentUser, useDrawioUri, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
 } from '~/stores/context';
-import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
-  useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
 
+import type { CommonProps } from './utils/commons';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -37,11 +31,6 @@ type Props = CommonProps & {
 
   drawioUri: string | null,
 
-  // UI
-  userUISettings?: IUserUISettings
-  // Sidebar
-  sidebarConfig: ISidebarConfig,
-
   // Render config
   rendererConfig: RendererConfig,
 
@@ -49,8 +38,6 @@ type Props = CommonProps & {
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-
-  const { userUISettings } = props;
 
   const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
 
@@ -91,19 +78,6 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
     </>
   );
 };
-
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const { model: mongooseModel } = await import('mongoose');
-
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -168,7 +142,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
