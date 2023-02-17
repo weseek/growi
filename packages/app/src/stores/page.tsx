@@ -154,7 +154,7 @@ type SWRInfinitePageRevisionsResponse = {
 }
 
 export const useSWRxInfinitePageRevisions = (
-    pageId: string | null | undefined,
+    pageId: string,
     limit: number,
 ): SWRInfiniteResponse<SWRInfinitePageRevisionsResponse, Error> => {
   return useSWRInfinite(
