@@ -841,13 +841,6 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: success resrt password
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    user:
-   *                      type: object
-   *                      description: Target user
    */
   router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { appService, mailService } = crowi;
