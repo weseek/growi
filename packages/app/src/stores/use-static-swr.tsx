@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
-
 import assert from 'assert';
 
 import {
-  mutate, Key, SWRConfiguration, SWRResponse,
+  Key, SWRConfiguration, SWRResponse, useSWRConfig,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -22,14 +20,16 @@ export function useStaticSWR<Data, Error>(
 
   assert.notStrictEqual(configuration?.fetcher, null, 'useStaticSWR does not support \'configuration.fetcher\'');
 
-  const swrResponse = useSWRImmutable(key, null, configuration);
+  const { cache } = useSWRConfig();
+  const swrResponse = useSWRImmutable(key, null, {
+    ...configuration,
+    fallbackData: configuration?.fallbackData ?? cache.get(key)?.data,
+  });
 
-  // Do mutate with `data` from args
-  useEffect(() => {
-    if (data !== undefined) {
-      mutate(key, data);
-    }
-  }, [data, key]);
+  // write data to cache directly
+  if (data !== undefined) {
+    cache.set(key, { ...cache.get(key), data });
+  }
 
   return swrResponse;
 }
