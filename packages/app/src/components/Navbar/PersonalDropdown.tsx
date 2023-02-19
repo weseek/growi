@@ -77,7 +77,11 @@ const PersonalDropdown = (): JSX.Element => {
 
         <div className="dropdown-divider"></div>
 
-        <button type="button" className="dropdown-item" onClick={() => setQuestionnaireModalOpen(true)}>
+        <button
+          data-testid="grw-proactive-questionnaire-modal-toggle-btn"
+          type="button"
+          className="dropdown-item"
+          onClick={() => setQuestionnaireModalOpen(true)}>
           <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
         </button>
 
