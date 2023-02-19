@@ -10,7 +10,7 @@ import type {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import {
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -26,28 +26,8 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
-import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useEditingMarkdown } from '~/stores/editor';
-import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
-import { useRedirectFrom } from '~/stores/page-redirect';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
-import {
-  useSelectedGrant,
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
-import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
-import loggerFactory from '~/utils/logger';
-
-import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
-import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser,
   useIsLatestRevision,
@@ -59,11 +39,25 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
-} from '../stores/context';
+} from '~/stores/context';
+import { useEditingMarkdown } from '~/stores/editor';
+import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useSelectedGrant } from '~/stores/ui';
+import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
+import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from './_app.page';
+import { BasicLayout } from '../components/Layout/BasicLayout';
+import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
+import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
+import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
+
+import type { NextPageWithLayout } from './_app.page';
+import type { CommonProps } from './utils/commons';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
 } from './utils/commons';
 
 
@@ -73,6 +67,7 @@ declare global {
 }
 
 
+const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
@@ -177,30 +172,21 @@ type Props = CommonProps & {
   grantData?: IPageGrantData,
 
   rendererConfig: RendererConfig,
-
-  // UI
-  userUISettings?: IUserUISettings
-  // Sidebar
-  sidebarConfig: ISidebarConfig,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
-  // const { t } = useTranslation();
-  const router = useRouter();
-
-  const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
-
   // register global EventEmitter
   if (isClient() && window.globalEmitter == null) {
     window.globalEmitter = new EventEmitter();
   }
 
+  const router = useRouter();
+
+  useCurrentUser(props.currentUser ?? null);
+
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // page
   useIsLatestRevision(props.isLatestRevision);
@@ -241,7 +227,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
-  const { pageWithMeta, userUISettings } = props;
+  const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
@@ -286,9 +272,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   // initialize mutateEditingMarkdown only once per page
+  // need to include useCurrentPathname not useCurrentPagePath
   useEffect(() => {
-    mutateEditingMarkdown(revisionBody);
-  }, [mutateEditingMarkdown, revisionBody]);
+    if (props.currentPathname != null) {
+      mutateEditingMarkdown(revisionBody);
+    }
+  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
@@ -329,13 +318,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
-type LayoutProps = {
+type LayoutProps = Props & {
   children?: ReactNode
-  className?: string
 }
 
-const Layout = ({ children }: LayoutProps): JSX.Element => {
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   const className = useEditorModeClassName();
+
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   return (
     <BasicLayout className={className}>
@@ -344,12 +335,12 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   );
 };
 
-Page.getLayout = function getLayout(page) {
+Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
   return (
     <>
       <DrawioViewerScript />
 
-      <Layout>
+      <Layout {...page.props}>
         {page}
       </Layout>
       <UnsavedAlertDialog />
@@ -459,19 +450,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   props.pageWithMeta = pageWithMeta;
 }
 
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const { model: mongooseModel } = await import('mongoose');
-
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
-
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -530,7 +508,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager, aclService, slackNotificationService, mailService,
+    searchService, configManager, aclService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -577,10 +555,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
-  props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
-  };
 }
 
 /**
@@ -633,7 +607,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
   }
 
-  await injectUserUISettings(context, props);
   await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);

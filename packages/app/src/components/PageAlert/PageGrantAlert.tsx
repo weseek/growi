@@ -18,21 +18,21 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 2) {
         return (
           <>
-            <i className="icon-fw icon-link"></i><strong>{t('Anyone with the link')} only</strong>
+            <i className="icon-fw icon-link"></i><strong>{t('Anyone with the link')}</strong>
           </>
         );
       }
       if (pageData.grant === 4) {
         return (
           <>
-            <i className="icon-fw icon-lock"></i><strong>{t('Only me')} only</strong>
+            <i className="icon-fw icon-lock"></i><strong>{t('Only me')}</strong>
           </>
         );
       }
       if (pageData.grant === 5) {
         return (
           <>
-            <i className="icon-fw icon-organization"></i><strong>{pageData.grantedGroup.name} only</strong>
+            <i className="icon-fw icon-organization"></i><strong>{pageData.grantedGroup.name}</strong>
           </>
         );
       }

@@ -1,11 +1,9 @@
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
-
 import { debounce } from 'throttle-debounce';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { useIsGuestUser } from '~/stores/context';
 
 let settingsForBulk: Partial<IUserUISettings> = {};
 const _putUserUISettingsInBulk = (): Promise<AxiosResponse<IUserUISettings>> => {
@@ -33,11 +31,8 @@ type UserUISettingsUtil = {
   scheduleToPut: ScheduleToPutFunction | (() => void),
 }
 export const useUserUISettings = (): UserUISettingsUtil => {
-  const { data: isGuestUser } = useIsGuestUser();
 
   return {
-    scheduleToPut: isGuestUser
-      ? () => {}
-      : scheduleToPut,
+    scheduleToPut,
   };
 };

@@ -91,12 +91,12 @@ module.exports = function(crowi, app) {
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub, loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/saml'                        , loginPassport.loginWithSaml, loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
-  app.post('/passport/saml/callback'              , addActivity, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/oidc'                        , loginPassport.loginWithOidc,   loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/saml'                        , loginPassport.loginWithSaml,   loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/google/callback'             , loginPassport.injectRedirectTo, loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/github/callback'             , loginPassport.injectRedirectTo, loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/oidc/callback'               , loginPassport.injectRedirectTo, loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
+  app.post('/passport/saml/callback'              , addActivity, loginPassport.injectRedirectTo, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
