@@ -26,7 +26,7 @@ const OtherSettings = (): JSX.Element => {
       await apiv3Put('/personal-setting/questionnaire-settings', {
         isQuestionnaireEnabled,
       });
-      toastSuccess(t('toaster.update_successed', { target: 'アンケート設定', ns: 'commons' }));
+      toastSuccess(t('toaster.update_successed', { target: t('questionnaire.settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -52,7 +52,7 @@ const OtherSettings = (): JSX.Element => {
         <div className="offset-md-3 col-md-6 text-left">
           {!isLoadingCurrentUser && (
             <div className="custom-control custom-switch custom-checkbox-primary">
-              <span id="personal-questionnaire-settings-toggle">
+              <span id="grw-questionnaire-settings-toggle-wrapper">
                 <input
                   type="checkbox"
                   className="custom-control-input"
@@ -68,7 +68,7 @@ const OtherSettings = (): JSX.Element => {
               <p className="form-text text-muted small">
                 {t('questionnaire.personal_settings_explanation')}
               </p>
-              {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-toggle">
+              {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-toggle-wrapper">
                 {t('questionnaire.disabled_by_admin')}
               </UncontrolledTooltip> }
             </div>
@@ -78,8 +78,9 @@ const OtherSettings = (): JSX.Element => {
 
       <div className="row my-3">
         <div className="offset-4 col-5">
-          <span className="d-inline-block" id="personal-questionnaire-settings-btn">
+          <span className="d-inline-block" id="grw-questionnaire-settings-update-btn-wrapper">
             <button
+              data-testid="grw-questionnaire-settings-update-btn"
               type="button"
               className="btn btn-primary"
               onClick={onClickUpdateIsQuestionnaireEnabledHandler}
@@ -89,7 +90,7 @@ const OtherSettings = (): JSX.Element => {
               {t('Update')}
             </button>
           </span>
-          {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="personal-questionnaire-settings-btn">
+          {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-update-btn-wrapper">
             {t('questionnaire.disabled_by_admin')}
           </UncontrolledTooltip>}
         </div>

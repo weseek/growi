@@ -126,4 +126,13 @@ context('Access User settings', () => {
     cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-2`);
   });
+
+  it.only('Access Other setting', () => {
+    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(6) a').click();
+    cy.scrollTo('top');
+    cy.screenshot(`${ssPrefix}-other-setting-1`);
+    cy.getByTestid('grw-questionnaire-settings-update-btn').click();
+    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.screenshot(`${ssPrefix}-other-setting-2`);
+  });
 });
