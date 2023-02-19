@@ -1,6 +1,6 @@
-import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import { ReactNode } from 'react';
+
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -10,24 +10,18 @@ import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUser, IUserHasId } from '~/interfaces/user';
-import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCsrfToken, useCurrentUser, useDrawioUri, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
 } from '~/stores/context';
-import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
-  useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
 
 import { SearchPage } from '../components/SearchPage';
 
-import { NextPageWithLayout } from './_app.page';
+import type { NextPageWithLayout } from './_app.page';
+import type { CommonProps } from './utils/commons';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
 
@@ -40,11 +34,6 @@ type Props = CommonProps & {
 
   drawioUri: string | null,
 
-  // UI
-  userUISettings?: IUserUISettings
-  // Sidebar
-  sidebarConfig: ISidebarConfig,
-
   // Render config
   rendererConfig: RendererConfig,
 
@@ -56,8 +45,6 @@ type Props = CommonProps & {
 };
 
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
-  const { userUISettings } = props;
-
   const { t } = useTranslation();
 
   // commons
@@ -73,12 +60,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   useDrawioUri(props.drawioUri);
 
-  // UserUISettings
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
-  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
-  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // render config
   useRendererConfig(props.rendererConfig);
@@ -108,27 +91,29 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
+type LayoutProps = Props & {
+  children?: ReactNode
+}
+
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+
+  return (
+    <SearchResultLayout>
+      {children}
+    </SearchResultLayout>
+  );
+};
+
 SearchResultPage.getLayout = function getLayout(page) {
   return (
     <>
       <DrawioViewerScript />
-      <SearchResultLayout>{page}</SearchResultLayout>
+      <Layout {...page.props}>{page}</Layout>
     </>
   );
 };
-
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const { model: mongooseModel } = await import('mongoose');
-
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
 
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -196,7 +181,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 

@@ -24,21 +24,19 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
 
   return (
     <tr key={shareLinkId}>
-      <td>
-        <div className="d-flex">
-          <span className="mr-auto my-auto">{shareLinkId}</span>
+      <td className="d-flex justify-content-between align-items-center">
+        <span>{shareLinkId}</span>
 
-          { isRelatedPageExists && (
-            <CopyDropdown
-              pagePath={relatedPage.path}
-              dropdownToggleId={`copydropdown-${shareLinkId}`}
-              pageId={shareLinkId}
-              isShareLinkMode
-            >
-              Copy Link
-            </CopyDropdown>
-          ) }
-        </div>
+        { isRelatedPageExists && (
+          <CopyDropdown
+            pagePath={relatedPage.path}
+            dropdownToggleId={`copydropdown-${shareLinkId}`}
+            pageId={shareLinkId}
+            isShareLinkMode
+          >
+            Copy Link
+          </CopyDropdown>
+        ) }
       </td>
       { isAdmin && (
         <td>
@@ -48,9 +46,13 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
           }
         </td>
       ) }
-      <td>{shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
-      <td>{shareLink.description}</td>
-      <td>
+      <td style={{ verticalAlign: 'middle' }}>
+        {shareLink.description}
+      </td>
+      <td style={{ verticalAlign: 'middle' }}>
+        {shareLink.expiredAt && <span >{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}
+      </td>
+      <td style={{ maxWidth: '0', textAlign: 'center' }}>
         <button className="btn btn-outline-warning" type="button" onClick={onDelete}>
           <i className="icon-trash"></i>{t('Delete')}
         </button>
@@ -96,10 +98,10 @@ const ShareLinkList = (props: Props): JSX.Element => {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>{t('share_links.Share Link', { ns: 'commons' })}</th>
+            <th style={{ width: '350px' }}>{t('share_links.Share Link', { ns: 'commons' })}</th>
             {props.isAdmin && <th>{t('share_links.Page Path', { ns: 'commons' })}</th>}
-            <th>{t('share_links.expire', { ns: 'commons' })}</th>
             <th>{t('share_links.description', { ns: 'commons' })}</th>
+            <th style={{ width: '150px' }}>{t('share_links.expire', { ns: 'commons' })}</th>
             <th></th>
           </tr>
         </thead>

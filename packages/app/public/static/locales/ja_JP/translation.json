@@ -57,7 +57,6 @@
   "attachment_data": "添付データ",
   "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "プレゼンテーション",
-  "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Not available in this version": "このバージョンでは利用できません",
   "No users have liked this yet": "いいねをしているユーザーはいません",
@@ -332,7 +331,7 @@
     "notice": {
       "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"
     },
-    "changes_not_saved": "変更が保存されていない可能性があります。"
+    "changes_not_saved": "変更が保存されていない可能性があります。本当に移動しますか？"
   },
   "page_comment": {
     "display_the_page_when_posting_this_comment": "投稿時のページを表示する",

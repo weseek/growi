@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
-
 import assert from 'assert';
 
 import {
-  Key, SWRConfiguration, SWRResponse,
+  Key, SWRConfiguration, SWRResponse, useSWRConfig,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -22,40 +20,16 @@ export function useStaticSWR<Data, Error>(
 
   assert.notStrictEqual(configuration?.fetcher, null, 'useStaticSWR does not support \'configuration.fetcher\'');
 
-  const swrResponse = useSWRImmutable(key, null, configuration);
+  const { cache } = useSWRConfig();
+  const swrResponse = useSWRImmutable(key, null, {
+    ...configuration,
+    fallbackData: configuration?.fallbackData ?? cache.get(key)?.data,
+  });
 
-  // Do mutate with `data` from args
-  useEffect(() => {
-    if (data !== undefined) {
-      swrResponse.mutate(data);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]); // Only depends on `data`
+  // write data to cache directly
+  if (data !== undefined) {
+    cache.set(key, { ...cache.get(key), data });
+  }
 
   return swrResponse;
 }
-
-
-const ADVANCE_DELAY_MS = 800;
-
-export type ITermNumberManagerUtil = {
-  advance(): void,
-}
-
-export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  const swrResult = useStaticSWR<number, Error>(key, undefined, { fallbackData: 0 });
-
-  return {
-    ...swrResult,
-    advance: () => {
-      const { data: currentNum } = swrResult;
-      if (currentNum == null) {
-        return;
-      }
-
-      setTimeout(() => {
-        swrResult.mutate(currentNum + 1);
-      }, ADVANCE_DELAY_MS);
-    },
-  };
-};

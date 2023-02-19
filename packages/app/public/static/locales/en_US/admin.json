@@ -383,6 +383,7 @@
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
+    "s3_secret_access_key_input_description": "Setting value is hidden",
     "load_plugins": "Load plugins",
     "enable": "Enable",
     "disable": "Disable",
@@ -416,19 +417,6 @@
       "indentSize_desc": "Set the default indent size for the Markdown editor",
       "disallow_indent_change": "Disallow change of indent size by users",
       "disallow_indent_change_desc": "Force users to use ther default indent size."
-    },
-    "presentation_header": "Presentation setting",
-    "presentation_desc": "You can change presentation settings.",
-    "presentation_options": {
-      "page_break_setting": "Page break setting",
-      "preset_one_separator": "Preset 1",
-      "preset_one_separator_desc": "3 Blank lines",
-      "preset_one_separator_value": "\\n\\n\\n",
-      "preset_two_separator": "Preset 2",
-      "preset_two_separator_desc": "5 Hyphens",
-      "preset_two_separator_value": "-----",
-      "custom_separator": "Custom",
-      "custom_separator_desc": "Regular expression"
     },
     "xss_header": "Prevent XSS(cross site scripting) setting",
     "xss_desc": "You can change the handling of HTML tags in markdown text.",
@@ -763,9 +751,9 @@
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {
-      "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
-      "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
-      "send_new_password": "Please send the new password to the user.",
+      "reset_password_info": "When a password is reset, a newly password is sent to the target user.",
+      "password_reset_message": "The temporary password was sent to the below user and strongly recommend to change another one immediately.",
+      "reset_password_alert": "If the e-mail transmission fails, please make sure that e-mail settings are correct and reset password again.",
       "target_user": "Target User",
       "new_password": "New Password"
     },

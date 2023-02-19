@@ -23,7 +23,7 @@ type IDataAttachmentList = {
 export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: number): SWRResponseWithUtils<Util, IDataAttachmentList, Error> => {
   const shouldFetch = pageId != null && pageNumber != null;
 
-  const fetcher = useCallback(async(endpoint, pageId, pageNumber) => {
+  const fetcher = useCallback(async([endpoint, pageId, pageNumber]) => {
     const res = await apiv3Get<IResAttachmentList>(endpoint, { pageId, pageNumber });
     const resAttachmentList = res.data;
     const { paginateResult } = resAttachmentList;

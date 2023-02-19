@@ -108,7 +108,6 @@ export default class AdminAppContainer extends Container {
       s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
       s3Bucket: appSettingsParams.s3Bucket,
       s3AccessKeyId: appSettingsParams.s3AccessKeyId,
-      s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
       s3ReferenceFileWithRelayMode: appSettingsParams.s3ReferenceFileWithRelayMode,
 
       gcsUseOnlyEnvVars: appSettingsParams.gcsUseOnlyEnvVars,

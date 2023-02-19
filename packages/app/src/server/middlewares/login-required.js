@@ -1,3 +1,4 @@
+import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:login-required');
@@ -20,15 +21,9 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
         // Active の人だけ先に進める
         return next();
       }
-      if (req.user.status === User.STATUS_REGISTERED) {
-        return res.redirect('/login/error/registered');
-      }
-      if (req.user.status === User.STATUS_SUSPENDED) {
-        return res.redirect('/login/error/suspended');
-      }
-      if (req.user.status === User.STATUS_INVITED) {
-        return res.redirect('/invited');
-      }
+
+      const redirectTo = createRedirectToForUnauthenticated(req.user.status) ?? '/login';
+      return res.redirect(redirectTo);
     }
 
     // check the route config and ACL

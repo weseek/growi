@@ -83,6 +83,14 @@ const PageDeleteModal: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
 
+  // initialize when opening modal
+  useEffect(() => {
+    if (isOpened) {
+      setIsDeleteRecursively(true);
+      setIsDeleteCompletely(forceDeleteCompletelyMode);
+    }
+  }, [forceDeleteCompletelyMode, isOpened]);
+
   useEffect(() => {
     setIsDeleteCompletely(forceDeleteCompletelyMode);
   }, [forceDeleteCompletelyMode]);

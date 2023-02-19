@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -23,7 +23,7 @@ type Props = {
   allControl: React.ReactNode,
 }
 
-const SearchControl: FC <Props> = React.memo((props: Props) => {
+const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const {
     isSearchServiceReachable,

@@ -4,7 +4,7 @@ import React, {
 
 import { UserPicture } from '@growi/ui';
 import CodeMirror from 'codemirror/lib/codemirror';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -305,6 +305,10 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
     return <></>;
   }
 
+  const currentPageCreatedAtFixed = typeof currentPage.updatedAt === 'string'
+    ? parseISO(currentPage.updatedAt)
+    : currentPage.updatedAt;
+
   const request: IRevisionOnConflictWithStringDate = {
     revisionId: '',
     revisionBody: props.markdownOnEdit,
@@ -314,7 +318,7 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   const origin: IRevisionOnConflictWithStringDate = {
     revisionId: currentPage?.revision._id,
     revisionBody: currentPage?.revision.body,
-    createdAt: format(currentPage.updatedAt, 'yyyy/MM/dd HH:mm:ss'),
+    createdAt: format(currentPageCreatedAtFixed, 'yyyy/MM/dd HH:mm:ss'),
     user: currentPage?.lastUpdateUser,
   };
   const latest: IRevisionOnConflictWithStringDate = {

@@ -1,8 +1,84 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.6](https://github.com/weseek/growi/compare/v6.0.5...v6.0.6) - 2023-02-14
+
+### 💎 Features
+
+- feat: Presentation (#7367) @yuki-takei
+- feat: Detect i18n locale from browser accept languages (#7341) @jam411
+- feat: Server Side Rendering (#7352) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Allow iframe tag (#7368) @yuki-takei
+- imprv: User data serialization (#7355) @miya
+- imprv: Anchor link (#7354) @yuki-takei
+- imprv: classname for fluid layout (#7353) @yuki-takei
+- imprv: Disable lsx in shared page (#7333) @miya
+- imprv: Data mutation (#7336) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Make collapse work for anchor tags (#7381) @jam411
+- fix: Revision short body is not displayed on search results page (#7373) @miya
+- fix: Error when clicking on a page you are not authorized to view on the search results page (#7343) @miya
+- fix: Omit S3 credentials from the response for /_api/v3/app-settings (#7369) @miya
+- fix: Omit S3 credentials from the response for /_api/v3/app-settings (#7369) @miya
+- fix: Keep showing page restricted alert (#7371) @yukendev
+- fix: Recent changes and Timeline (#7366) @yuki-takei
+- fix: Login screen background (#7350) @ayaka0417
+- fix: Comment form background (#7365) @ayaka0417
+- fix: Scroll into view by anchor (#7360) @yuki-takei
+- fix: Routing after creating page with shortcut (#7359) @yuki-takei
+- fix: Border-color in edit mode (#7349) @ayaka0417
+- fix: Can't controll slack notification switch in editor (#7332) @yukendev
+- fix: Show load latest revision button when update drawio or table from view (#7324) @yukendev
+- fix: Can delete own user (#7321) @miya
+- fix: Request to "/_api/v3/page/is-grant-normalized" occurs when in guest mode (#7313) @miya
+
+### 🧰 Maintenance
+
+- support: create README.md for v6 migration (#7380) @yukendev
+- support: Bump SWR to v2.0.3 (#7362) @yuki-takei
+- feat: Refactor common processes in Next Page (#7357) @yukendev
+- support: Migrate Notation for v5 to v6 (#7326) @yukendev
+- ci(deps-dev): bump sass from 1.53.0 to 1.57.1 (#7223) @dependabot
+- ci(deps): bump amannn/action-semantic-pull-request from 4.2.0 to 5.0.2 (#7338) @dependabot
+- ci(deps): bump bakunyo/git-pr-release-action from 281e1fe424fac01f3992542266805e4202a22fe0 to master (#7340) @dependabot
+- ci(deps): bump docker/build-push-action from 2 to 4 (#7339) @dependabot
+- ci(deps): bump http-cache-semantics from 4.1.0 to 4.1.1 (#7344) @dependabot
+- support: Bump SWR to v2 (#7318) @yuki-takei
+- support: Add test for View and Edit contents when saving (#7323) @yukendev
+
+## [v6.0.5](https://github.com/weseek/growi/compare/v6.0.4...v6.0.5) - 2023-01-30
+
+### 🚀 Improvement
+
+- imprv: Override process for CommonSanitizeOptions (#7305) @miya
+
+### 🐛 Bug Fixes
+
+- fix:  Request to "/_api/v3/personal-settings"  occurs when in guest mode (#7307) @miya
+- fix: Undeleteable trash pages when clicked empty trash button bug (#7250) @jam411
+- fix: Guest users are able to move to pages that require authentication (#7300) @miya
+- fix: Modal does not close after clicking on path in DescendantsPageListModal (#7291) @miya
+- fix: GrowiContextualSubNavigation style is broken (#7304) @jam411
+- fix: Markdown in the editor reverted when save with shortcut (#7301) @yukendev
+
+## [v6.0.4](https://github.com/weseek/growi/compare/v6.0.3...v6.0.4) - 2023-01-25
+
+### 🐛 Bug Fixes
+
+- fix: Invalid URL in markdown breaks browser (#7292) @yuki-takei
+- fix: Previous editing markdown remains after changing page (#7285) @yukendev
+
+### 🧰 Maintenance
+
+- ci(deps): bump ua-parser-js from 0.7.31 to 0.7.33 (#7293) @dependabot
 
 ## [v6.0.3](https://github.com/weseek/growi/compare/v6.0.2...v6.0.3) - 2023-01-24
 
