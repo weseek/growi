@@ -136,7 +136,6 @@
   "edited this page": "さんがこのページを編集しました。",
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
-  "Questionnaire": "アンケート",
   "Disassociate": "連携解除",
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
@@ -811,7 +810,7 @@
   "questionnaire": {
     "give_us_feedback": "GROWI の改善のために、アンケートにご協力ください",
     "thank_you_for_answering": "ご回答ありがとうございます",
-    "additional_feedback": "その他ご意見ご要望はこちらからお願い致します。",
+    "additional_feedback": "その他ご意見ご要望はユーザーアイコンのドロップダウンからお願い致します。",
     "dont_show_again": "今後このアンケートを表示しない",
     "deny": "回答しない",
     "agree": "そう思う",
@@ -821,24 +820,11 @@
     "settings": "アンケート設定",
     "failed_to_send": "回答送信に失敗しました",
     "denied": "このアンケートは今後表示されません",
-    "title": "GROWI サービス改善のためのアンケート",
-    "successfully_submit": "アンケートの送信が完了しました。",
-    "thanks_for_answer": "アンケートのご回答誠にありがとうございました。",
-    "more_satisfied_services": "GROWI をご利用の皆さまに更にご満足いただけるよう",
-    "strive_to_improve_services": "皆さまからのご意見を参考にサービス改善に務めてまいります。",
-    "satisfaction_with_growi": "GROWI の満足度",
-    "history_of_growi_use": "GROWI の利用歴",
-    "position": "職種",
-    "occupation": "役職",
-    "comment_on_growi": "GROWI へのコメント",
-    "length_of_experience": {
-      "more_than_two_years": "2年以上",
-      "one_to_two_years": "1年以上2年未満",
-      "six_months_to_one_year": "6ヶ月以上1年未満",
-      "three_months_to_six_months": "3ヶ月以上6ヶ月未満",
-      "one_month_to_three_months": "1ヶ月以上3ヶ月未満",
-      "less_than_one_month": "1ヶ月未満"
-    }
+    "successfully_submitted": "アンケートの送信が完了しました。",
+    "thanks_for_answering": "アンケートのご回答誠にありがとうございました。",
+    "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
+    "enable_questionnaire": "アンケートを有効にする",
+    "disabled_by_admin": "管理者によってアンケートは無効化されています"
   },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",

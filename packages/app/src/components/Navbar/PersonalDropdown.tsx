@@ -78,12 +78,14 @@ const PersonalDropdown = (): JSX.Element => {
         <div className="dropdown-divider"></div>
 
         <button type="button" className="dropdown-item" onClick={() => setQuestionnaireModalOpen(true)}>
-          <i className="icon-fw icon-pencil"></i>{ t('Questionnaire') }
+          <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
         </button>
 
         <div className="dropdown-divider"></div>
 
-        <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{t('Sign out')}</button>
+        <button type="button" className="dropdown-item" onClick={logoutHandler}>
+          <i className="icon-fw icon-power"></i>{t('Sign out')}
+        </button>
       </div>
 
       <ProactiveQuestionnaireModal isOpen={isQuestionnaireModalOpen} onClose={() => setQuestionnaireModalOpen(false)} />

@@ -7,15 +7,11 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { useSWRxAppSettings } from '~/stores/admin/app-settings';
-import loggerFactory from '~/utils/logger';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const logger = loggerFactory('growi:questionnaireSettings');
-
 const QuestionnaireSettings = (): JSX.Element => {
-  // TODO: i18n
-  const { t } = useTranslation();
+  const { t } = useTranslation(['admin', 'commons']);
 
   const { data, error, mutate } = useSWRxAppSettings();
 
@@ -35,7 +31,7 @@ const QuestionnaireSettings = (): JSX.Element => {
         isQuestionnaireEnabled,
         isAppSiteUrlHashed,
       });
-      toastSuccess(t('toaster.update_successed', { target: 'アンケート設定', ns: 'commons' }));
+      toastSuccess(t('commons:toaster.update_successed', { target: t('app_setting.questionnaire_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -54,14 +50,17 @@ const QuestionnaireSettings = (): JSX.Element => {
   return (
     <div id="questionnaire-settings" className="mb-5">
       <p className="card well">
-        システム全体でアンケート機能を有効/無効にします。また、ユーザーは設定画面から個別にアンケート機能を有効/無効にできます。<br />
-        送信されるデータにユーザーの個人情報は一切含まれません。
-        <div>
-          {/* eslint-disable-next-line max-len */}
-          詳しくは<a href="https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html" rel="noreferrer" target="_blank" className="d-inline"> GROWI Docs &quot;アンケート設定&quot; <i className="icon-share-alt"></i></a>を参照ください。
-        </div>
-        <br />
-        GROWI の改善にご協力お願いします。
+        <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
+        <span>
+          <div className="mb-2">
+            <span className="text-info mr-2"><i className="icon-info icon-fw"></i>{t('app_setting.about_data_sent')}</span>
+            <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
+              {t('app_setting.learn_more')} <i className="icon-share-alt"></i>
+            </a>
+          </div>
+          {t('app_setting.other_info_will_be_sent')}<br />
+          {t('app_setting.we_will_use_the_data_to_improve_growi')}
+        </span>
       </p>
 
       {isLoading && <div className="text-muted text-center mb-5">
@@ -80,7 +79,7 @@ const QuestionnaireSettings = (): JSX.Element => {
                 onChange={onChangeIsQuestionnaireEnabledHandler}
               />
               <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
-                アンケートを有効にする
+                {t('app_setting.enable_questionnaire')}
               </label>
             </div>
           </div>
@@ -96,10 +95,10 @@ const QuestionnaireSettings = (): JSX.Element => {
                 disabled={!isQuestionnaireEnabled}
               />
               <label className="custom-control-label" htmlFor="isAppSiteUrlHashed">
-                サイト URL を匿名化して送信する
+                {t('app_setting.anonymize_app_site_url')}
               </label>
               <p className="form-text text-muted small">
-                アンケート回答データに含まれるサイト URL が匿名化されます。この設定を有効にすることで、アンケート回答データの送信元である GROWI アプリケーションが特定されなくなります。
+                {t('app_setting.url_anonymization_explanation')}
               </p>
             </div>
           </div>
