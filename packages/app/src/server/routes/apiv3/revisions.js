@@ -72,7 +72,7 @@ module.exports = (crowi) => {
   const validator = {
     retrieveRevisions: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('page').isInt({ min: 0 }).withMessage('page must be int'),
+      query('offset').if(value => value != null).isInt({ min: 0 }).withMessage('offset must be int'),
       query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
 
     ],
@@ -114,8 +114,7 @@ module.exports = (crowi) => {
     const pageId = req.query.pageId;
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const { isSharedPage } = req;
-
-    const selectedPage = parseInt(req.query.page) || 1;
+    const offset = req.query.offset || 0;
 
     // check whether accessible
     if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
@@ -128,7 +127,7 @@ module.exports = (crowi) => {
       const paginateResult = await Revision.paginate(
         { pageId: page._id },
         {
-          page: selectedPage,
+          offset,
           limit,
           sort: { createdAt: -1 },
           populate: 'author',
@@ -141,7 +140,13 @@ module.exports = (crowi) => {
         }
       });
 
-      return res.apiv3(paginateResult);
+      const result = {
+        revisions: paginateResult.docs,
+        totalCount: paginateResult.totalDocs,
+        offset: paginateResult.offset,
+      };
+
+      return res.apiv3(result);
     }
     catch (err) {
       const msg = 'Error occurred in getting revisions by poge id';
