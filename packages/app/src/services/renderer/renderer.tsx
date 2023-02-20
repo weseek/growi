@@ -23,6 +23,7 @@ import deepmerge from 'ts-deepmerge';
 import type { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 
+import { Attachment } from '~/components/ReactMarkdownComponents/Attachment';
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
@@ -40,6 +41,7 @@ import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import * as toc from './rehype-plugins/relocate-toc';
+import * as attachmentPlugin from './remark-plugins/attachment';
 import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as table from './remark-plugins/table';
@@ -166,6 +168,7 @@ export const generateViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -180,6 +183,7 @@ export const generateViewOptions = (
       commonSanitizeOption,
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -200,6 +204,7 @@ export const generateViewOptions = (
     components.lsx = Lsx;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -259,6 +264,7 @@ export const generateSimpleViewOptions = (
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     table.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -277,6 +283,7 @@ export const generateSimpleViewOptions = (
       commonSanitizeOption,
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -293,6 +300,7 @@ export const generateSimpleViewOptions = (
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -328,6 +336,7 @@ export const generateSSRViewOptions = (
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     table.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
 
   const isEnabledLinebreaks = config.isEnabledLinebreaks;
@@ -344,6 +353,7 @@ export const generateSSRViewOptions = (
     ? [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -359,6 +369,7 @@ export const generateSSRViewOptions = (
   if (components != null) {
     components.lsx = LsxImmutable;
     components.table = Table;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -380,6 +391,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     table.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -395,6 +407,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       lsxGrowiPlugin.sanitizeOption,
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -411,6 +424,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {
