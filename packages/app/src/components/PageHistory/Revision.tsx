@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IRevisionHasId, Nullable, pathUtils } from '@growi/core';
+import { IRevisionHasId, pathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -15,8 +15,8 @@ type RevisionProps = {
   revision: IRevisionHasId,
   isLatestRevision: boolean,
   hasDiff: boolean,
-  currentPageId: Nullable<string> | undefined,
-  currentPagePath: Nullable<string> | undefined,
+  currentPageId: string
+  currentPagePath: string
   onClose: () => void,
 }
 
@@ -69,13 +69,11 @@ export const Revision = (props: RevisionProps): JSX.Element => {
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
-            {currentPagePath && currentPageId && (
-              <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)} prefetch={false}>
-                <a className="ml-xl-3" onClick={onClose}>
-                  <i className="icon-login"></i> {t('Go to this version')}
-                </a>
-              </Link>
-            )}
+            <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)} prefetch={false}>
+              <a className="ml-xl-3" onClick={onClose}>
+                <i className="icon-login"></i> {t('Go to this version')}
+              </a>
+            </Link>
           </div>
         </div>
       </div>

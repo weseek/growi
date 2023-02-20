@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useCurrentPageId } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';
@@ -11,15 +13,24 @@ type PageHistoryProps = {
   targetRevisionId?: string
   onClose: () => void
 }
+
 export const PageHistory: React.FC<PageHistoryProps> = (props: PageHistoryProps) => {
   const { sourceRevisionId, targetRevisionId, onClose } = props;
+
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
+
   return (
     <div className="revision-history" data-testid="page-history">
-      <PageRevisionTable
-        sourceRevisionId={sourceRevisionId}
-        targetRevisionId={targetRevisionId}
-        onClose={onClose}
-      />
+      {currentPageId && currentPagePath && (
+        <PageRevisionTable
+          sourceRevisionId={sourceRevisionId}
+          targetRevisionId={targetRevisionId}
+          currentPageId={currentPageId}
+          currentPagePath={currentPagePath}
+          onClose={onClose}
+        />
+      )}
     </div>
   );
 };

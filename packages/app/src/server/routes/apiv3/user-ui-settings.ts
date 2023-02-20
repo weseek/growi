@@ -38,7 +38,14 @@ module.exports = (crowi) => {
     };
 
     if (user == null) {
-      req.session.uiSettings = updateData;
+      if (req.session.uiSettings == null) {
+        req.session.uiSettings = {};
+      }
+      Object.keys(updateData).forEach((setting) => {
+        if (updateData[setting] != null) {
+          req.session.uiSettings[setting] = updateData[setting];
+        }
+      });
       return res.apiv3(updateData);
     }
 

@@ -5,8 +5,7 @@ import React, {
 import { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPageId } from '~/stores/context';
-import { useCurrentPagePath, useSWRxInfinitePageRevisions } from '~/stores/page';
+import { useSWRxInfinitePageRevisions } from '~/stores/page';
 
 import { RevisionComparer } from '../RevisionComparer/RevisionComparer';
 
@@ -18,6 +17,8 @@ type PageRevisionTableProps = {
   sourceRevisionId?: string
   targetRevisionId?: string
   onClose: () => void,
+  currentPageId: string
+  currentPagePath: string
 }
 
 export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
@@ -26,15 +27,13 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   const REVISIONS_PER_PAGE = 10;
 
   const {
-    sourceRevisionId, targetRevisionId, onClose,
+    sourceRevisionId, targetRevisionId, onClose, currentPageId, currentPagePath,
   } = props;
-
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
 
   // Load all data if source revision id and target revision id not null
   const revisionPerPage = (sourceRevisionId != null && targetRevisionId != null) ? 0 : REVISIONS_PER_PAGE;
   const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId, revisionPerPage);
+
 
   const {
     data, size, error, setSize, isValidating,
@@ -106,7 +105,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
 
 
   const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
-      isOldestRevision: boolean, hasDiff: boolean) => {
+    isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;
 
@@ -203,7 +202,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
           </tr>
         </thead>
         <tbody className="overflow-auto d-block" ref={tbodyRef}>
-          { revisions && data != null && data.map(apiResult => apiResult.revisions).flat()
+          {revisions && data != null && data.map(apiResult => apiResult.revisions).flat()
             .map((revision, idx) => {
               const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
 
@@ -218,7 +217,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </tbody>
       </table>
 
-      { sourceRevision && targetRevision && (
+      {sourceRevision && targetRevision && (
         <RevisionComparer
           sourceRevision={sourceRevision}
           targetRevision={targetRevision}
