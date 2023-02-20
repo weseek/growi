@@ -105,7 +105,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
 
 
   const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
-    isOldestRevision: boolean, hasDiff: boolean) => {
+      isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;
 
