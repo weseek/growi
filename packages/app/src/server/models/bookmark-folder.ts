@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
 import monggoose, {
   Types, Document, Model, Schema,
@@ -32,6 +34,8 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string): Promise<BookmarkFolderDocument>
+  findBookmarksNotInFolders(folder: BookmarkFolderDocument): Promise<Types.ObjectId[]>
+  findAllBookmarksNotInFolders(userId: Types.ObjectId| string): Promise<Types.ObjectId[]>
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
@@ -162,6 +166,35 @@ Promise<BookmarkFolderDocument> {
   // Insert bookmark into bookmark folder
   const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
   return bookmarkFolder;
+};
+
+bookmarkFolderSchema.statics.findBookmarksNotInFolders = async function(folder: BookmarkFolderDocument): Promise<Types.ObjectId[]> {
+  const bookmarkIds = (folder.bookmarks || []).map(bookmark => bookmark._id);
+  const bookmarks = await Bookmark.find({ _id: { $nin: bookmarkIds } });
+  return bookmarks.map(bookmark => bookmark._id);
+};
+
+bookmarkFolderSchema.statics.findAllBookmarksNotInFolders = async function(userId: Types.ObjectId | string): Promise<Types.ObjectId[]> {
+  const folders = await this.find({ owner: userId }).populate('bookmarks');
+  const bookmarks: Types.ObjectId[] = [];
+  await Promise.all(folders.map(async(folder) => {
+    const bookmarks = await this.findBookmarksNotInFolders(folder);
+    if (bookmarks.length > 0) {
+      bookmarks.push(...bookmarks);
+    }
+    const childFolders = await this.find({ parent: folder }).populate('bookmarks');
+    if (childFolders.length > 0) {
+      const childResult = await this.findAllBookmarksNotInFolders(userId);
+      if (childResult.length > 0) {
+        bookmarks.push(...childResult);
+      }
+    }
+  }));
+
+  const usersBookmarks = await Bookmark.find({ user: userId });
+  // TODO : Filter bookmarks not in folders
+
+  return bookmarks;
 };
 
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);
