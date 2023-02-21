@@ -8,7 +8,7 @@ import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
     if (isEnabledUnsavedWarning) {
@@ -23,11 +23,19 @@ const UnsavedAlertDialog = (): JSX.Element => {
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
     if (isEnabledUnsavedWarning) {
-    // eslint-disable-next-line no-alert
-      window.alert(t('page_edit.changes_not_saved'));
+      // see: https://zenn.dev/qaynam/articles/c4794537a163d2
+      // eslint-disable-next-line no-alert
+      const answer = window.confirm(t('page_edit.changes_not_saved'));
+      if (!answer) {
+      // eslint-disable-next-line no-throw-literal
+        throw 'Abort route';
+      }
     }
-    return;
   }, [isEnabledUnsavedWarning, t]);
+
+  const onRouterChangeComplete = useCallback(() => {
+    mutateIsEnabledUnsavedWarning(false);
+  }, [mutateIsEnabledUnsavedWarning]);
 
   /*
   * Route changes by Browser
@@ -51,6 +59,14 @@ const UnsavedAlertDialog = (): JSX.Element => {
       router.events.off('routeChangeStart', alertUnsavedWarningByNextRouter);
     };
   }, [alertUnsavedWarningByNextRouter, router.events]);
+
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
 
 
   return <></>;

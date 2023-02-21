@@ -234,8 +234,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPageId(pageId ?? null);
-  useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
-  useRemoteRevisionId(pageWithMeta?.data.revision?._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
@@ -246,6 +244,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
+
+  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
+  const { mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -272,9 +273,17 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   // initialize mutateEditingMarkdown only once per page
+  // need to include useCurrentPathname not useCurrentPagePath
   useEffect(() => {
-    mutateEditingMarkdown(revisionBody);
-  }, [mutateEditingMarkdown, revisionBody]);
+    if (props.currentPathname != null) {
+      mutateEditingMarkdown(revisionBody);
+    }
+  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
+
+  useEffect(() => {
+    mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
+    mutateRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
+  }, [mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, pageWithMeta?.data.revision?._id, pageWithMeta?.data.revisionHackmdSynced]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
