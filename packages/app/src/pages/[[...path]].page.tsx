@@ -184,6 +184,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser ?? null);
 
+  // initialize editor setting
   useEditorSettings(props.editorSettings);
 
   // commons
