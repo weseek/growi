@@ -30,7 +30,7 @@ type EditorSettingsOperation = {
 // TODO: Enable localStorageMiddleware
 //   - Unabling localStorageMiddleware occurrs a flickering problem when loading theme.
 //   - see: https://github.com/weseek/growi/pull/6781#discussion_r1000285786
-export const useEditorSettings = (initialData?: any): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
+export const useEditorSettings = (initialData?: IEditorSettings): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
 
