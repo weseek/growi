@@ -8,7 +8,7 @@ GROWI Slackbot Proxy Server Official docker image
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`1.0.0`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/master/packages/slackbot-proxy/docker/Dockerfile)
+* [`1.0.0`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/master/apps/slackbot-proxy/docker/Dockerfile)
 
 
 What is GROWI Slackbot Proxy Server?

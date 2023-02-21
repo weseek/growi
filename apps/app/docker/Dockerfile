@@ -55,7 +55,7 @@ RUN tar -cf node_modules.tar \
 FROM deps-resolver AS deps-resolver-prod
 
 # remove unnecessary packages
-RUN rm -rf packages/slackbot-proxy
+RUN rm -rf apps/slackbot-proxy
 
 RUN npx -y lerna bootstrap -- --production
 # make artifacts

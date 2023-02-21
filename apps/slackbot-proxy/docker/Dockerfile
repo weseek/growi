@@ -47,7 +47,7 @@ ENV optDir /opt
 WORKDIR ${optDir}
 COPY ["package.json", "yarn.lock", "lerna.json", "./"]
 COPY ./packages/slack/package.json ./packages/slack/package.json
-COPY ./packages/slackbot-proxy/package.json ./packages/slackbot-proxy/package.json
+COPY ./apps/slackbot-proxy/package.json ./apps/slackbot-proxy/package.json
 
 RUN npx -y lerna bootstrap -- --production
 # make artifacts
@@ -77,7 +77,7 @@ RUN rm node_modules.tar
 COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
 # copy all related packages
 COPY packages/slack packages/slack
-COPY packages/slackbot-proxy packages/slackbot-proxy
+COPY apps/slackbot-proxy apps/slackbot-proxy
 
 # build
 RUN yarn lerna run build
@@ -86,9 +86,9 @@ RUN yarn lerna run build
 RUN tar -cf packages.tar \
   packages/slack/package.json \
   packages/slack/dist \
-  packages/slackbot-proxy/package.json \
-  packages/slackbot-proxy/.env \
-  packages/slackbot-proxy/dist
+  apps/slackbot-proxy/package.json \
+  apps/slackbot-proxy/.env \
+  apps/slackbot-proxy/dist
 
 
 
@@ -117,7 +117,7 @@ RUN tar -xf dependencies.tar
 RUN tar -xf packages.tar
 RUN rm dependencies.tar packages.tar
 
-WORKDIR ${appDir}/packages/slackbot-proxy
+WORKDIR ${appDir}/apps/slackbot-proxy
 
 EXPOSE 8080
 

@@ -51,7 +51,7 @@ jobs:
 
     - name: Remove unnecessary packages
       run: |
-        rm -rf packages/slackbot-proxy
+        rm -rf apps/slackbot-proxy
         rm -f "node_modules/@growi/slackbot-proxy"
 
     - name: Build
@@ -148,7 +148,7 @@ jobs:
 
     - name: Remove unnecessary packages
       run: |
-        rm -rf packages/slackbot-proxy
+        rm -rf apps/slackbot-proxy
         rm -f "node_modules/@growi/slackbot-proxy"
 
     - name: lerna bootstrap --production

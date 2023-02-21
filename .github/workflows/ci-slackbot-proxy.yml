@@ -11,8 +11,8 @@ on:
       - .eslint*
       - tsconfig.base.json
       - yarn.lock
-      - packages/slackbot-proxy/**
-      - '!packages/slackbot-proxy/docker/**'
+      - apps/slackbot-proxy/**
+      - '!apps/slackbot-proxy/docker/**'
       - packages/slack/**
 
 concurrency:
@@ -115,7 +115,7 @@ jobs:
         npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn dev:ci
-      working-directory: ./packages/slackbot-proxy
+      working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.development.local
         yarn dev:ci
@@ -189,7 +189,7 @@ jobs:
         echo -n "npm " && npm -v
         yarn list --production --depth=0
     - name: yarn start:prod:ci
-      working-directory: ./packages/slackbot-proxy
+      working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
         yarn start:prod:ci

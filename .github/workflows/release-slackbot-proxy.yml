@@ -20,7 +20,7 @@ jobs:
       uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
       with:
-        workingDir: packages/slackbot-proxy
+        workingDir: apps/slackbot-proxy
 
     - name: Docker meta
       id: meta
@@ -61,7 +61,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./packages/slackbot-proxy/docker/Dockerfile
+        file: ./apps/slackbot-proxy/docker/Dockerfile
         platforms: linux/amd64
         push: true
         builder: ${{ steps.buildx.outputs.name }}
@@ -87,7 +87,7 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         repository: weseek/growi-slackbot-proxy
-        readme-filepath: ./packages/slackbot-proxy/docker/README.md
+        readme-filepath: ./apps/slackbot-proxy/docker/README.md
 
 
   create-pr-for-next-rc:
@@ -118,7 +118,7 @@ jobs:
       uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
       with:
-        workingDir: packages/slackbot-proxy
+        workingDir: apps/slackbot-proxy
 
     - name: Commit
       uses: github-actions-x/commit@v2.9

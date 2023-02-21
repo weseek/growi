@@ -40,7 +40,7 @@
     "bump-versions:preminor": "node ./bin/github-actions/bump-versions -i preminor",
     "bump-versions:patch": "node ./bin/github-actions/bump-versions -i patch",
     "bump-versions:rc": "node ./bin/github-actions/bump-versions -i prerelease",
-    "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false"
+    "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d apps/slackbot-proxy --preid slackbot-proxy --update-dependencies false"
   },
   "dependencies": {
     "cross-env": "^7.0.0",
