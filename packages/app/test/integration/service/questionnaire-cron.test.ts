@@ -129,8 +129,6 @@ describe('QuestionnaireCronService', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
-    // reload
-    await crowi.setupConfigManager();
   });
 
   beforeEach(async() => {

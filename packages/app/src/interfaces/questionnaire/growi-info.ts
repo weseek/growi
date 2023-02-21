@@ -7,7 +7,7 @@ export const GrowiServiceType = {
   others: 'others',
 } as const;
 export const GrowiWikiType = { open: 'open', closed: 'closed' } as const;
-const GrowiAttachmentType = {
+export const GrowiAttachmentType = {
   aws: 'aws',
   gcs: 'gcs',
   gcp: 'gcp',
@@ -17,7 +17,7 @@ const GrowiAttachmentType = {
   local: 'local',
   none: 'none',
 } as const;
-const GrowiDeploymentType = {
+export const GrowiDeploymentType = {
   officialHelmChart: 'official-helm-chart',
   growiDockerCompose: 'growi-docker-compose',
   node: 'node',
@@ -33,8 +33,8 @@ export const GrowiExternalAuthProviderType = {
 
 export type GrowiServiceType = typeof GrowiServiceType[keyof typeof GrowiServiceType]
 type GrowiWikiType = typeof GrowiWikiType[keyof typeof GrowiWikiType]
-type GrowiAttachmentType = typeof GrowiAttachmentType[keyof typeof GrowiAttachmentType]
-type GrowiDeploymentType = typeof GrowiDeploymentType[keyof typeof GrowiDeploymentType]
+export type GrowiAttachmentType = typeof GrowiAttachmentType[keyof typeof GrowiAttachmentType]
+export type GrowiDeploymentType = typeof GrowiDeploymentType[keyof typeof GrowiDeploymentType]
 export type GrowiExternalAuthProviderType = typeof GrowiExternalAuthProviderType[keyof typeof GrowiExternalAuthProviderType]
 
 interface IGrowiOSInfo {
