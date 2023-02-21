@@ -48,16 +48,19 @@ jobs:
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-    - name: lerna bootstrap
+    - name: Install dependencies
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        yarn --frozen-lockfile
 
     - name: yarn lint
+      working-directory: ./apps/slackbot-proxy
       run: |
-        yarn lerna run lint --scope @growi/slack --scope @growi/slackbot-proxy
+        yarn lint
+
     - name: yarn test
+      working-directory: ./apps/slackbot-proxy
       run: |
-        yarn lerna run test --scope @growi/slack --scope @growi/slackbot-proxy
+        yarn test
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
