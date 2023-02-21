@@ -1,10 +1,29 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "@growi/remark-lsx#build": {
+      "dependsOn": ["@growi/ui#build"],
+      "outputs": ["dist/**", "types/**"]
+    },
+    "build": {
+      "outputs": ["dist/**", "types/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
+        "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
+      ]
+    },
+
     "@growi/app#dev": {
       "dependsOn": ["^dev"],
       "cache": false,
       "persistent": true
+    },
+    "@growi/app#dev:ci": {
+      "dependsOn": ["^dev"],
+      "cache": false
     },
     "dev": {
       "outputs": ["dist/**", "types/**"],
@@ -15,6 +34,19 @@
         "tsconfig*.json",
         "vite*.ts"
       ]
+    },
+
+    "@growi/app#lint": {
+      "dependsOn": ["^dev"]
+    },
+    "lint": {
+    },
+
+    "test": {
+    },
+
+    "clean": {
+      "cache": false
     }
   },
   "globalDependencies": [

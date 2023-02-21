@@ -13,7 +13,7 @@
   "scripts": {
     "build": "run-p build:*",
     "build:js": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "npx -y shx rm -rf dist types",
     "dev": "run-p dev:*",
     "dev:js": "vite build --mode dev",
     "watch": "run-p 'dev:js -w'",

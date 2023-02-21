@@ -31,7 +31,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -53,19 +53,14 @@ jobs:
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
+      - name: Install dependencies
         run: |
-          npx lerna bootstrap -- --frozen-lockfile
+          yarn --frozen-lockfile
 
-      - name: lerna run lint for dependent packages
+      - name: lint
+        working-directory: ./apps/app
         run: |
-          yarn lerna run lint --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/hackmd --scope @growi/preset-themes --scope @growi/remark-* --scope @growi/slack --scope @growi/ui
-      - name: build dependent packages
-        run: |
-          yarn lerna run build --scope @growi/preset-themes
-      - name: lerna run lint for app
-        run: |
-          yarn lerna run lint --scope @growi/app
+          turbo run lint
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -82,7 +77,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     services:
       mongodb:
@@ -110,13 +105,13 @@ jobs:
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
+      - name: Install dependencies
         run: |
-          npx lerna bootstrap -- --frozen-lockfile
+          yarn --frozen-lockfile
 
-      - name: lerna run test for plugins
+      - name: Test sub-packages
         run: |
-          yarn lerna run test --scope @growi/remark-*
+          turbo run test --filter=@growi/remark-*
 
       - name: Test app
         working-directory: ./packages/app
@@ -148,7 +143,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     services:
       mongodb:
@@ -177,12 +172,12 @@ jobs:
             dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
+      - name: Install dependencies
         run: |
-          npx lerna bootstrap -- --frozen-lockfile
+          yarn --frozen-lockfile
 
       - name: yarn dev:ci
-        working-directory: ./packages/app
+        working-directory: ./apps/app
         run: |
           cp config/ci/.env.local.for-ci .env.development.local
           yarn dev:ci
