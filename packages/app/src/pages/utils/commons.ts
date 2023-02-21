@@ -87,7 +87,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const EditorSettings = getModelSafely<EditorSettingsDocument>('EditorSettings');
   const editorSettings = user != null && EditorSettings != null
     ? await EditorSettings.findOne({ userId: user._id }).exec()
-    : {} as any; // TODO: typescriptize
+    : {} as any;
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
