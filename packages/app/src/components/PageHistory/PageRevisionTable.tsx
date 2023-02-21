@@ -14,9 +14,11 @@ import { Revision } from './Revision';
 import styles from './PageRevisionTable.module.scss';
 
 type PageRevisionTableProps = {
+  sourceRevisionId?: string
+  targetRevisionId?: string
+  onClose: () => void,
   currentPageId: string
   currentPagePath: string
-  onClose: () => void
 }
 
 export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
@@ -25,10 +27,13 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   const REVISIONS_PER_PAGE = 10;
 
   const {
-    onClose, currentPageId, currentPagePath,
+    sourceRevisionId, targetRevisionId, onClose, currentPageId, currentPagePath,
   } = props;
 
-  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId, REVISIONS_PER_PAGE);
+  // Load all data if source revision id and target revision id not null
+  const revisionPerPage = (sourceRevisionId != null && targetRevisionId != null) ? 0 : REVISIONS_PER_PAGE;
+  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId, revisionPerPage);
+
 
   const {
     data, size, error, setSize, isValidating,
@@ -41,20 +46,31 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   const isLoadingInitialData = !data && !error;
   const isLoadingMore = isLoadingInitialData
     || (isValidating && data && typeof data[size - 1] === 'undefined');
-  const isReachingEnd = !!(data && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
+  const isReachingEnd = (revisionPerPage === 0) || !!(data && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
 
   const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
   const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
-  const latestRevision = data != null ? data[0].revisions[0] : null;
+
   const tbodyRef = useRef<HTMLTableSectionElement>(null);
 
 
   useEffect(() => {
-    if (latestRevision != null) {
-      setSourceRevision(latestRevision);
-      setTargetRevision(latestRevision);
+    if (revisions != null) {
+      if (sourceRevisionId != null && targetRevisionId != null) {
+        const sourceRevision = revisions.filter(revision => revision._id === sourceRevisionId)[0];
+        const targetRevision = revisions.filter(revision => revision._id === targetRevisionId)[0];
+        setSourceRevision(sourceRevision);
+        setTargetRevision(targetRevision);
+      }
+      else {
+        const latestRevision = revisions != null ? revisions[0] : null;
+        if (latestRevision != null) {
+          setSourceRevision(latestRevision);
+          setTargetRevision(latestRevision);
+        }
+      }
     }
-  }, [latestRevision]);
+  }, [revisions, sourceRevisionId, targetRevisionId]);
 
   useEffect(() => {
     // Apply ref to tbody
@@ -186,7 +202,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
           </tr>
         </thead>
         <tbody className="overflow-auto d-block" ref={tbodyRef}>
-          { revisions && data != null && data.map(apiResult => apiResult.revisions).flat()
+          {revisions && data != null && data.map(apiResult => apiResult.revisions).flat()
             .map((revision, idx) => {
               const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
 
@@ -201,7 +217,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </tbody>
       </table>
 
-      { sourceRevision && targetRevision && (
+      {sourceRevision && targetRevision && (
         <RevisionComparer
           sourceRevision={sourceRevision}
           targetRevision={targetRevision}

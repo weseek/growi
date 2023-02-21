@@ -8,15 +8,26 @@ import { PageRevisionTable } from './PageHistory/PageRevisionTable';
 
 const logger = loggerFactory('growi:PageHistory');
 
-export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+type PageHistoryProps = {
+  sourceRevisionId?: string,
+  targetRevisionId?: string
+  onClose: () => void
+}
+
+export const PageHistory: React.FC<PageHistoryProps> = (props: PageHistoryProps) => {
+  const { sourceRevisionId, targetRevisionId, onClose } = props;
+
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
+
   return (
     <div className="revision-history" data-testid="page-history">
-      { currentPageId && currentPagePath && (
+      {currentPageId && currentPagePath && (
         <PageRevisionTable
+          sourceRevisionId={sourceRevisionId}
+          targetRevisionId={targetRevisionId}
           currentPageId={currentPageId}
-          currentPagePath = {currentPagePath}
+          currentPagePath={currentPagePath}
           onClose={onClose}
         />
       )}

@@ -27,6 +27,9 @@ const PageAccessoriesModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>(PageAccessoriesModalContents.PageHistory);
+  const [sourceRevisionId, setSourceRevisionId] = useState<string>();
+  const [targetRevisionId, setTargetRevisionId] = useState<string>();
+
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
   const { data: isSharedUser } = useIsSharedUser();
@@ -34,6 +37,19 @@ const PageAccessoriesModal = (): JSX.Element => {
   const { data: isLinkSharingDisabled } = useDisableLinkSharing();
 
   const { data: status, mutate, close } = usePageAccessoriesModal();
+
+  // Get string from 'compare' query params
+  const getQueryParam = () => {
+    const query: URLSearchParams = new URL(window.location.href).searchParams;
+    return query.get('compare');
+  };
+
+  // check if query string contains 2 strings like objectId separated by '...'
+  const isValidObjectIds = (queryParams) => {
+    // https://regex101.com/r/t3l36H/1
+    const regex = /^[0-9a-fA-F]{24}...[0-9a-fA-F]{24}?$/;
+    return regex.test(queryParams);
+  };
 
   // add event handler when opened
   useEffect(() => {
@@ -48,6 +64,17 @@ const PageAccessoriesModal = (): JSX.Element => {
     }, false);
   }, [mutate, status]);
 
+  // Set sourceRevisionId and targetRevisionId as state with valid object id string
+  useEffect(() => {
+    const queryParams = getQueryParam();
+    if (queryParams != null && isValidObjectIds(queryParams)) {
+      const [sourceRevisionId, targetRevisionId] = queryParams.split('...');
+      setSourceRevisionId(sourceRevisionId);
+      setTargetRevisionId(targetRevisionId);
+      mutate({ isOpened: true });
+    }
+  }, [mutate]);
+
   const navTabMapping = useMemo(() => {
     const isOpened = status == null ? false : status.isOpened;
     return {
@@ -57,7 +84,7 @@ const PageAccessoriesModal = (): JSX.Element => {
           if (!isOpened) {
             return <></>;
           }
-          return <PageHistory onClose={close}/>;
+          return <PageHistory onClose={close} sourceRevisionId={sourceRevisionId} targetRevisionId={targetRevisionId}/>;
         },
         i18n: t('History'),
         index: 0,
@@ -87,7 +114,7 @@ const PageAccessoriesModal = (): JSX.Element => {
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [status, t, close, isGuestUser, isSharedUser, isLinkSharingDisabled]);
+  }, [status, t, close, sourceRevisionId, targetRevisionId, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">

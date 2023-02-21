@@ -123,15 +123,21 @@ module.exports = (crowi) => {
 
     try {
       const page = await Page.findOne({ _id: pageId });
+      const queryOpts = {
+        offset,
+        sort: { createdAt: -1 },
+        populate: 'author',
+        pagination: false,
+      };
+
+      if (limit > 0) {
+        queryOpts.limit = limit;
+        queryOpts.pagination = true;
+      }
 
       const paginateResult = await Revision.paginate(
         { pageId: page._id },
-        {
-          offset,
-          limit,
-          sort: { createdAt: -1 },
-          populate: 'author',
-        },
+        queryOpts,
       );
 
       paginateResult.docs.forEach((doc) => {

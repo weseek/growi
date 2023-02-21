@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
 import type {
-  IPageInfoForEntity, IPagePopulatedToShowRevision, IRevisionHasPageId, Nullable,
+  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable, SWRInfinitePageRevisionsResponse,
 } from '@growi/core';
 import { Ref, isClient, pagePathUtils } from '@growi/core';
 import useSWR, { mutate, SWRResponse } from 'swr';
@@ -147,11 +147,6 @@ export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>):
 /*
  * SWR Infinite for page revision list
  */
-type SWRInfinitePageRevisionsResponse = {
-  revisions: IRevisionHasPageId[],
-  totalCount: number,
-  offset: number,
-}
 
 export const useSWRxInfinitePageRevisions = (
     pageId: string,
