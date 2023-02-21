@@ -11,6 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
@@ -30,10 +31,13 @@ export type CommonProps = {
   isDefaultLogo: boolean,
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
+  sidebarConfig: ISidebarConfig,
+  userUISettings?: IUserUISettings
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
+  const getModelSafely = await import('~/server/util/mongoose-utils').then(mod => mod.getModelSafely);
 
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
@@ -70,6 +74,12 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
+  // retrieve UserUISettings
+  const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
+  const userUISettings = user != null && UserUISettings != null
+    ? await UserUISettings.findOne({ user: user._id }).exec()
+    : req.session.uiSettings; // for guests
+
   const props: CommonProps = {
     namespacesRequired: ['translation'],
     currentPathname,
@@ -85,6 +95,11 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser,
     isDefaultLogo,
     forcedColorScheme,
+    sidebarConfig: {
+      isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+      isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    },
+    userUISettings: userUISettings?.toObject?.() ?? userUISettings,
   };
 
   return { props };

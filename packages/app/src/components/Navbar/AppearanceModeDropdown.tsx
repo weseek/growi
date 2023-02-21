@@ -25,7 +25,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   const { isAuthenticated } = props;
 
   const {
-    setTheme, resolvedTheme, useOsSettings, isDarkMode,
+    setTheme, resolvedTheme, useOsSettings, isDarkMode, isForcedByGrowiTheme,
   } = useNextThemes();
   const { data: isPreferDrawerMode, update: updatePreferDrawerMode } = usePreferDrawerModeByUser();
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
@@ -114,55 +114,60 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
 
         {/* sidebar mode */}
         {renderSidebarModeSwitch(false)}
-        {dropdownDivider}
 
         {/* side bar mode on editor */}
         {isAuthenticated && (
           <>
-            {renderSidebarModeSwitch(true)}
             {dropdownDivider}
+            {renderSidebarModeSwitch(true)}
           </>
         )}
 
         {/* color mode */}
-        <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
-        <form className="px-4">
-          <div className="form-row justify-content-center">
-            <div className="form-group col-auto d-flex align-items-center">
-              <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
-                <SunIcon />
-              </IconWithTooltip>
-              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
-                <input
-                  id="swUserPreference"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={isDarkMode}
-                  disabled={useOsSettings}
-                  onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
-                />
-                <label className="custom-control-label" htmlFor="swUserPreference"></label>
+        { !isForcedByGrowiTheme && (
+          <>
+            {dropdownDivider}
+            <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
+            <form className="px-4">
+              <div className="form-row justify-content-center">
+                <div className="form-group col-auto d-flex align-items-center">
+                  <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
+                    <SunIcon />
+                  </IconWithTooltip>
+                  <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+                    <input
+                      id="swUserPreference"
+                      className="custom-control-input"
+                      type="checkbox"
+                      checked={isDarkMode}
+                      disabled={useOsSettings}
+                      onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
+                    />
+                    <label className="custom-control-label" htmlFor="swUserPreference"></label>
+                  </div>
+                  <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
+                    <MoonIcon />
+                  </IconWithTooltip>
+                </div>
               </div>
-              <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
-                <MoonIcon />
-              </IconWithTooltip>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group col-auto">
-              <div className="custom-control custom-checkbox">
-                <input
-                  id="cbFollowOs"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={useOsSettings}
-                  onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
-                />
-                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
+              <div className="form-row">
+                <div className="form-group col-auto">
+                  <div className="custom-control custom-checkbox">
+                    <input
+                      id="cbFollowOs"
+                      className="custom-control-input"
+                      type="checkbox"
+                      checked={useOsSettings}
+                      onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
+                    />
+                    <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </form>
+            </form>
+          </>
+        ) }
+
       </div>
 
     </>

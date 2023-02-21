@@ -1,4 +1,5 @@
-import mongoose, {
+import mongoose from 'mongoose';
+import type {
   Model, Document, Schema, ConnectOptions,
 } from 'mongoose';
 

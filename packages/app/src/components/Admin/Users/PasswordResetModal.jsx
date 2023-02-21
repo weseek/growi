@@ -9,7 +9,6 @@ import {
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class PasswordResetModal extends React.Component {
 
@@ -17,7 +16,6 @@ class PasswordResetModal extends React.Component {
     super(props);
 
     this.state = {
-      temporaryPassword: [],
       isPasswordResetDone: false,
     };
 
@@ -27,9 +25,8 @@ class PasswordResetModal extends React.Component {
   async resetPassword() {
     const { t, userForPasswordResetModal } = this.props;
     try {
-      const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
-      const { newPassword } = res.data;
-      this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
+      await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
+      this.setState({ isPasswordResetDone: true });
     }
     catch (err) {
       toastError(err, t('toaster.failed_to_reset_password'));
@@ -42,8 +39,8 @@ class PasswordResetModal extends React.Component {
     return (
       <>
         <p>
-          {t('user_management.reset_password_modal.password_never_seen')}<br />
-          <span className="text-danger">{t('user_management.reset_password_modal.send_new_password')}</span>
+          {t('user_management.reset_password_modal.reset_password_info')}<br />
+          <span className="text-danger">{t('user_management.reset_password_modal.reset_password_alert')}</span>
         </p>
         <p>
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
@@ -57,12 +54,9 @@ class PasswordResetModal extends React.Component {
 
     return (
       <>
-        <p className="alert alert-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
+        <p className="text-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
         <p>
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
-        </p>
-        <p>
-          {t('user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
         </p>
       </>
     );
