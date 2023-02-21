@@ -9,8 +9,10 @@ import * as nextI18NextConfig from '^/config/next-i18next.config';
 
 import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { IEditorSettings } from '~/interfaces/editor-settings';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { EditorSettingsDocument } from '~/server/models/editor-settings';
 import { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -32,7 +34,8 @@ export type CommonProps = {
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
   sidebarConfig: ISidebarConfig,
-  userUISettings?: IUserUISettings
+  userUISettings?: IUserUISettings,
+  editorSettings?: IEditorSettings,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -80,6 +83,12 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     ? await UserUISettings.findOne({ user: user._id }).exec()
     : req.session.uiSettings; // for guests
 
+  // retrieve UserEditorSettings
+  const EditorSettings = getModelSafely<EditorSettingsDocument>('EditorSettings');
+  const editorSettings = user != null && EditorSettings != null
+    ? await EditorSettings.findOne({ userId: user._id }).exec()
+    : {} as any; // TODO: typescriptize
+
   const props: CommonProps = {
     namespacesRequired: ['translation'],
     currentPathname,
@@ -100,6 +109,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
       isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
     },
     userUISettings: userUISettings?.toObject?.() ?? userUISettings,
+    editorSettings: editorSettings?.toObject?.() ?? editorSettings,
   };
 
   return { props };

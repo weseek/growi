@@ -40,7 +40,7 @@ import {
   useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
-import { useEditingMarkdown } from '~/stores/editor';
+import { useEditingMarkdown, useEditorSettings } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
@@ -183,6 +183,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const router = useRouter();
 
   useCurrentUser(props.currentUser ?? null);
+
+  useEditorSettings(props.editorSettings);
 
   // commons
   useEditorConfig(props.editorConfig);
