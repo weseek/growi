@@ -72,6 +72,10 @@ $grw-bookmark-item-padding-left: 45px;
     > .grw-foldertree-item-container {
       > .list-group-item {
         padding-left: 0;
+      } &.grw-root-bookmarks{
+        .list-group-item.bookmark-item-list {
+          padding-left: $grw-foldertree-item-padding-left + 25;
+        }
       }
       > .list-group-item.bookmark-item-list {
         padding-left: $grw-bookmark-item-padding-left;

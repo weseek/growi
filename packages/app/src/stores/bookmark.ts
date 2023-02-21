@@ -22,15 +22,14 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
   );
 };
 
-export const useSWRxCurrentUserBookmarks = (pageNum?: Nullable<number>): SWRResponse<IPageHasId[], Error> => {
+export const useSWRxCurrentUserBookmarks = (): SWRResponse<IPageHasId[], Error> => {
   const { data: currentUser } = useCurrentUser();
-  const currentPage = pageNum ?? 1;
   const user = currentUser as IUserHasId;
   return useSWRImmutable(
     currentUser != null ? `/bookmarks/${user._id}` : null,
-    endpoint => apiv3Get(endpoint, { page: currentPage }).then((response) => {
-      const { paginationResult } = response.data;
-      return paginationResult.docs.map((item) => {
+    endpoint => apiv3Get(endpoint).then((response) => {
+      const { userRootBookmarks } = response.data;
+      return userRootBookmarks.map((item) => {
         return {
           ...item.page,
         };

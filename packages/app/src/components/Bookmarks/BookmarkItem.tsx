@@ -12,6 +12,7 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -25,7 +26,7 @@ type Props = {
   onUnbookmarked: () => void,
   onRenamed: () => void,
   onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void,
-  parentFolder: BookmarkFolderItems
+  parentFolder: BookmarkFolderItems | null
 }
 
 const BookmarkItem = (props: Props): JSX.Element => {
@@ -37,10 +38,11 @@ const BookmarkItem = (props: Props): JSX.Element => {
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const [parentId, setParentId] = useState(parentFolder._id);
+  const [parentId, setParentId] = useState(parentFolder?._id);
   const { mutate: mutateParentBookmarkData } = useSWRxBookamrkFolderAndChild();
   const { mutate: mutateChildFolderData } = useSWRxBookamrkFolderAndChild(parentId);
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
 
   useEffect(() => {
     mutatePageInfo();
@@ -115,7 +117,8 @@ const BookmarkItem = (props: Props): JSX.Element => {
     type: 'BOOKMARK',
     item: bookmarkedPage,
     end: () => {
-      setParentId(parentFolder.parent);
+      setParentId(parentFolder?.parent);
+      mutateUserBookmarks();
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
