@@ -11,7 +11,6 @@ describe('QuestionnaireService', () => {
 
   beforeAll(async() => {
     process.env.APP_SITE_URL = 'http://growi.test.jp';
-    process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'false';
     process.env.DEPLOYMENT_TYPE = 'growi-docker-compose';
     process.env.SAML_ENABLED = 'true';
     crowi = await getInstance();
@@ -51,12 +50,26 @@ describe('QuestionnaireService', () => {
 
       expect(growiInfo).toEqual({
         activeExternalAccountTypes: ['saml', 'github'],
-        appSiteUrl: 'http://growi.test.jp',
+        appSiteUrl: null,
         attachmentType: 'aws',
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',
         version: crowi.version,
         wikiType: 'open',
+      });
+    });
+
+    describe('When url hash settings is off', () => {
+      beforeEach(async() => {
+        process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'false';
+        await crowi.setupConfigManager();
+      });
+
+      test('Should return app url string', async() => {
+        const growiInfo = await crowi.questionnaireService.getGrowiInfo();
+        expect(growiInfo.appSiteUrl).toBe('http://growi.test.jp');
+        expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
+        expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       });
     });
   });
