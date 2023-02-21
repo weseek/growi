@@ -1,5 +1,5 @@
-<%- username -%> created a new page under <%- path -%>.
+<%- username %> created a new page under <%- path %>.
 
 ----------------------
 
-Growi: <%- appTitle -%>
+Growi: <%- appTitle %>
