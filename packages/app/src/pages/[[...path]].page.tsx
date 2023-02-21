@@ -233,6 +233,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
+  useCurrentPageId(pageId ?? null);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
@@ -241,7 +242,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
-  const { mutate: mutatePageId } = useCurrentPageId(pageId ?? null);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -285,10 +285,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
     mutateRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
   }, [mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, pageWithMeta?.data.revision?._id, pageWithMeta?.data.revisionHackmdSynced]);
-
-  useEffect(() => {
-    mutatePageId(pageId ?? null);
-  }, [mutatePageId, pageId]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
