@@ -49,6 +49,12 @@
     "lint": {
     },
 
+    "@growi/app#test": {
+      "dependsOn": ["^dev"]
+    },
+    "@growi/slackbot-proxy#test": {
+      "dependsOn": ["@growi/slack#dev"]
+    },
     "test": {
     },
 

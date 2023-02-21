@@ -5,8 +5,8 @@
 const MODULE_NAME_MAPPING = {
   '^\\^/(.+)$': '<rootDir>/$1',
   '^~/(.+)$': '<rootDir>/src/$1',
-  '^@growi/([^/]+)$': '<rootDir>/../$1/src',
-  '^@growi/([^/]+)/(.+)$': '<rootDir>/../$1/src/$2',
+  '^@growi/([^/]+)$': '<rootDir>/../../packages/$1/src',
+  '^@growi/([^/]+)/(.+)$': '<rootDir>/../../packages/$1/src/$2',
 };
 
 module.exports = {
