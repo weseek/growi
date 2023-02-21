@@ -32,18 +32,15 @@
   "scripts": {
     "start": "yarn app:server",
     "prestart": "yarn app:build",
-    "app:build": "yarn lerna run build",
-    "app:server": "yarn lerna run server --scope @growi/app",
-    "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
-    "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",
+    "app:build": "turbo run build --filter @growi/app",
+    "app:server": "cd apps/app && yarn server",
+    "slackbot-proxy:build": "turbo run build --filter @growi/slackbot-proxy",
+    "slackbot-proxy:server": "cd apps/slackbot-proxy && yarn start:prod",
     "bump-versions:premajor": "node ./bin/github-actions/bump-versions -i premajor",
     "bump-versions:preminor": "node ./bin/github-actions/bump-versions -i preminor",
     "bump-versions:patch": "node ./bin/github-actions/bump-versions -i patch",
     "bump-versions:rc": "node ./bin/github-actions/bump-versions -i prerelease",
-    "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false",
-    "//// scripts for backward compatibility": "",
-    "build:prod": "echo !!! CAUTION !!! ==> The script 'build:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:build",
-    "server:prod": "echo !!! CAUTION !!! ==> The script 'server:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:server"
+    "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false"
   },
   "dependencies": {
     "cross-env": "^7.0.0",
