@@ -242,7 +242,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
-
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
