@@ -1,7 +1,7 @@
-import { Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 import createError from 'http-errors';
 
-import { RequestFromGrowi } from '../interfaces/request-between-growi-and-proxy';
+import type { RequestFromGrowi } from '../interfaces/request-between-growi-and-proxy';
 import loggerFactory from '../utils/logger';
 
 const logger = loggerFactory('@growi/slack:middlewares:verify-growi-to-slack-request');

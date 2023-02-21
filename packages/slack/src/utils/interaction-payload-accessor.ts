@@ -1,7 +1,7 @@
 import assert from 'assert';
 
-import { IChannel } from '../interfaces/channel';
-import { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
+import type { IChannel } from '../interfaces/channel';
+import type { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
 
 import loggerFactory from './logger';
 

@@ -1,4 +1,4 @@
-import { AuthorizeResult } from '@slack/oauth';
+import type { AuthorizeResult } from '@slack/oauth';
 
 import { InteractionPayloadAccessor } from '../utils/interaction-payload-accessor';
 

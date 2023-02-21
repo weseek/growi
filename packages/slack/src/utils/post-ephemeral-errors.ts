@@ -1,4 +1,4 @@
-import { WebAPICallResult } from '@slack/web-api';
+import type { WebAPICallResult } from '@slack/web-api';
 
 import { markdownSectionBlock } from './block-kit-builder';
 import { respond } from './response-url';

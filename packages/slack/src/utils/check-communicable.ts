@@ -1,8 +1,8 @@
 
 import { WebClient } from '@slack/web-api';
-import axios, { AxiosError } from 'axios';
+import axios, { type AxiosError } from 'axios';
 
-import { ConnectionStatus } from '../interfaces/connection-status';
+import type { ConnectionStatus } from '../interfaces/connection-status';
 
 import { markdownSectionBlock } from './block-kit-builder';
 import { requiredScopes } from './required-scopes';
