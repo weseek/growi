@@ -11,7 +11,7 @@ import { visit } from 'unist-util-visit';
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except', 'isSharedPage'];
 
-const { addHeadingSlash, hasHeadingSlash } = pathUtils;
+const { hasHeadingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 

@@ -24,10 +24,10 @@ export interface SearchResolver {
   resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]>
 }
 
-export interface SearchDelegator<T = unknown, KEY extends AllTermsKey = AllTermsKey, QTERMS = unknown> {
+export interface SearchDelegator<T = unknown, KEY extends AllTermsKey = AllTermsKey, QTERMS = QueryTerms> {
   name?: SearchDelegatorName
   search(data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<T>>
-  isTermsNormalized(terms: Partial<QueryTerms>): terms is QTERMS,
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is Partial<QTERMS>,
   validateTerms(terms: QueryTerms): UnavailableTermsKey<KEY>[],
 }
 
