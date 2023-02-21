@@ -1,8 +1,35 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.7](https://github.com/weseek/growi/compare/v6.0.6...v6.0.7) - 2023-02-21
+
+### 💎 Features
+
+- feat: Manage guest ui setting with session (#7401) @yukendev
+- feat: Manage guest sidebar mode with session (#7393) @yukendev
+
+### 🚀 Improvement
+
+- imprv: UnsavedAlertDialog and page transition when next routing (#7400) @miya
+- imprv: PasswordResetModal styles and ejs format (#7404) @jam411
+- imprv: Initialize UserUISettings (#7397) @yuki-takei
+- imprv: Presentation behavior (#7399) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: PageStatusAlert is displayed on unnecessary pages (#7413) @miya
+- fix: PageStatusAlert does not disappear after loading latest revision (#7412) @miya
+- fix: Unable to transition requested page after login (#7402) @miya
+- fix: Page body is blank when opening editor after duplicating page (#7394) @miya
+- fix: Error when pressing the conflict resolution button on PageStatusAlert (#7395) @miya
+- fix: mono-blue subnavigation color (#7398) @ayaka0417
+- imprv: Add send email to user feat to `/reset-password` endpoint v6 (#7356) @jam411
+- fix: Behavior when color schema is forced by GROWI themes (#7391) @yuki-takei
+- fix: Sidebar mode on editor doesn't work in HackMD tab (#7396) @yuki-takei
+- fix: Can't controll slack notification button in comment editor (#7389) @yukendev
 
 ## [v6.0.6](https://github.com/weseek/growi/compare/v6.0.5...v6.0.6) - 2023-02-14
 
