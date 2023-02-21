@@ -2,11 +2,12 @@ import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-const SUPPORTED_ATTRIBUTES = ['url', 'attachmentName'];
+const SUPPORTED_ATTRIBUTES = ['url', 'attachmentName', 'attachmentId'];
 
-const isAttachmentLink = (url: unknown) => {
+const isAttachmentLink = (url: string) => {
   // https://regex101.com/r/9qZhiK/1
-  return url === new RegExp(/^\/(attachment)\/([^/^\n]+)$/);
+  const attachmentUrlFormat = new RegExp(/^\/(attachment)\/([^/^\n]+)$/);
+  return url.match(attachmentUrlFormat);
 };
 
 export const remarkPlugin: Plugin = () => {
@@ -14,12 +15,14 @@ export const remarkPlugin: Plugin = () => {
     // TODO: do not use any for node.children[0].value
     visit(tree, (node: any) => {
       if (node.type === 'link') {
-        if (!isAttachmentLink(node.url)) {
+        if (isAttachmentLink(node.url)) {
+          const pathName = node.url.split('/');
           const data = node.data ?? (node.data = {});
           data.hName = 'attachment';
           data.hProperties = {
             url: node.url,
             attachmentName: node.children[0].value,
+            attachmentId: pathName[2],
           };
 
           // omit position to fix the key regardless of its position

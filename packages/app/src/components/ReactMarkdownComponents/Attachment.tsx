@@ -4,6 +4,7 @@ type AttachmentProps = {
   className?: string,
   url: string,
   attachmentName: string,
+  attachmentId: string,
 }
 
 export const Attachment = React.memo((props: AttachmentProps): JSX.Element => {
