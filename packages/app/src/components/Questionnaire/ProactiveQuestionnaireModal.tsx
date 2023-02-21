@@ -77,6 +77,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
   return (
     <>
       <Modal
+        data-testid="grw-proactive-questionnaire-modal"
         size="lg"
         isOpen={isOpen}
         toggle={onClose}
