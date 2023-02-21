@@ -1,7 +1,7 @@
 import assert from 'assert';
-import { ChatPostEphemeralResponse, WebClient } from '@slack/web-api';
 
-import { respond, RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
+import { respond, type RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
+import { type ChatPostEphemeralResponse, WebClient } from '@slack/web-api';
 
 
 import { SlackCommandHandlerError } from '../../models/vo/slack-command-handler-error';

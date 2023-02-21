@@ -1,14 +1,17 @@
-import urljoin from 'url-join';
-import {
+import { type GrowiBotEvent, generateLastUpdateMrkdwn } from '@growi/slack';
+import type {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';
-import { GrowiBotEvent, generateLastUpdateMrkdwn } from '@growi/slack';
-import { SlackEventHandler } from './base-event-handler';
-import {
+import urljoin from 'url-join';
+
+import type { EventActionsPermission } from '~/server/interfaces/slack-integration/events';
+import loggerFactory from '~/utils/logger';
+
+import type {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
 } from '../../interfaces/slack-integration/link-shared-unfurl';
-import loggerFactory from '~/utils/logger';
-import { EventActionsPermission } from '~/server/interfaces/slack-integration/events';
+
+import { SlackEventHandler } from './base-event-handler';
 
 const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');
 

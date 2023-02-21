@@ -1,6 +1,5 @@
+import { type RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
 import ExtensibleCustomError from 'extensible-custom-error';
-
-import { RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
 
 export const generateDefaultRespondBodyForInternalServerError = (message: string): RespondBodyForResponseUrl => {
   return {

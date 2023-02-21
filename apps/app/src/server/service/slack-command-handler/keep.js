@@ -2,7 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackBotService:keep');
 const {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
+  inputBlock, actionsBlock, buttonElement, markdownSectionBlock,
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
 const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');

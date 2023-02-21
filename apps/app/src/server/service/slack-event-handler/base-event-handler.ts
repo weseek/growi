@@ -1,5 +1,5 @@
-import { WebClient } from '@slack/web-api';
-import { GrowiBotEvent } from '@growi/slack';
+import type { GrowiBotEvent } from '@growi/slack';
+import type { WebClient } from '@slack/web-api';
 
 import { EventActionsPermission } from '../../interfaces/slack-integration/events';
 

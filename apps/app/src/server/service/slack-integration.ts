@@ -1,6 +1,8 @@
+import type {
+  GrowiCommand, RespondUtil, GrowiBotEvent,
+} from '@growi/slack';
 import {
-  generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
-  RespondUtil, GrowiBotEvent,
+  generateWebClient, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
 } from '@growi/slack';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 import { IncomingWebhookSendArguments } from '@slack/webhook';
