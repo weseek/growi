@@ -10,8 +10,8 @@ on:
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
       - yarn.lock
-      - packages/app/**
-      - '!packages/app/docker/**'
+      - apps/app/**
+      - '!apps/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
       - packages/preset-themes/**
@@ -29,8 +29,8 @@ on:
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
       - yarn.lock
-      - packages/app/**
-      - '!packages/app/docker/**'
+      - apps/app/**
+      - '!apps/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
       - packages/preset-themes/**

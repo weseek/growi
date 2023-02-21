@@ -65,7 +65,7 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
@@ -78,10 +78,10 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
-        path: packages/app/test/cypress
+        path: apps/app/test/cypress
 
     - name: Run reg-suit
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         yarn reg:run
 

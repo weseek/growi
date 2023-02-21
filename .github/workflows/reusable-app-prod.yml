@@ -40,7 +40,7 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
@@ -65,12 +65,12 @@ jobs:
       run: |
         tar -zcf production.tar.gz \
           package.json \
-          packages/app/.next \
-          packages/app/config \
-          packages/app/public \
-          packages/app/resource \
-          packages/app/tmp \
-          packages/app/.env.production* \
+          apps/app/.next \
+          apps/app/config \
+          apps/app/public \
+          apps/app/resource \
+          apps/app/tmp \
+          apps/app/.env.production* \
           packages/*/package.json \
           packages/*/dist
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
@@ -86,8 +86,8 @@ jobs:
       with:
         name: Bundle Analyzing Report
         path: |
-          packages/app/.next/analyze/client.html
-          packages/app/.next/analyze/server.html
+          apps/app/.next/analyze/client.html
+          apps/app/.next/analyze/server.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -140,7 +140,7 @@ jobs:
           **/node_modules
         key: node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYmdHM }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
           node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
           node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYm }}
@@ -165,7 +165,7 @@ jobs:
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
     - name: yarn server:ci
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
         yarn server:ci
@@ -228,7 +228,7 @@ jobs:
         path: |
           **/node_modules
           ~/.cache/Cypress
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
         restore-keys: |
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}
@@ -257,19 +257,19 @@ jobs:
         echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
     - name: Copy dotenv file for automatic installation
       if: ${{ matrix.spec-group != '10' }}
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
     - name: Copy dotenv file for automatic installation with allowing guest mode
       if: ${{ matrix.spec-group == '21' }}
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
@@ -277,7 +277,7 @@ jobs:
       uses: cypress-io/github-action@v3
       with:
         browser: chrome
-        working-directory: ./packages/app
+        working-directory: ./apps/app
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         start: yarn server
         wait-on: 'http://localhost:3000'
@@ -292,8 +292,8 @@ jobs:
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: |
-          packages/app/test/cypress/screenshots
-          packages/app/test/cypress/videos
+          apps/app/test/cypress/screenshots
+          apps/app/test/cypress/videos
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

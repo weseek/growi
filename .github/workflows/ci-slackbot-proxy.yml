@@ -50,6 +50,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        yarn global add turbo
         yarn --frozen-lockfile
 
     - name: yarn lint

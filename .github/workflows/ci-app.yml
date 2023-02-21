@@ -10,8 +10,8 @@ on:
       - .eslint*
       - tsconfig.base.json
       - yarn.lock
-      - packages/app/**
-      - '!packages/app/docker/**'
+      - apps/app/**
+      - '!apps/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
       - packages/preset-themes/**
@@ -43,24 +43,34 @@ jobs:
           cache-dependency-path: '**/yarn.lock'
 
       - name: Cache/Restore node_modules
-        id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
+      - name: Cache/Restore dist and types
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/dist
+            **/types
+          key: dist-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+          restore-keys: |
+            dist-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            dist-${{ runner.OS }}-node${{ matrix.node-version }}-
+
       - name: Install dependencies
         run: |
+          yarn global add turbo
           yarn --frozen-lockfile
 
-      - name: lint
-        working-directory: ./apps/app
+      - name: Lint
         run: |
-          turbo run lint
+          turbo run lint --filter=!@growi/slackbot-proxy
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -100,23 +110,19 @@ jobs:
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
+          yarn global add turbo
           yarn --frozen-lockfile
 
-      - name: Test sub-packages
+      - name: Test
         run: |
-          turbo run test --filter=@growi/remark-*
-
-      - name: Test app
-        working-directory: ./packages/app
-        run: |
-          yarn test:ci --selectProjects unit server ; yarn test:ci --selectProjects server-v5
+          turbo run test --filter=!@growi/slackbot-proxy
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
@@ -125,7 +131,7 @@ jobs:
         with:
           name: Coverage Report
           path: |
-            packages/app/coverage
+            apps/app/coverage
             packages/remark-growi-directive/coverage
 
       - name: Slack Notification
@@ -166,21 +172,22 @@ jobs:
         with:
           path: |
             **/node_modules
-            ${{ github.workspace }}/packages/app/.next/cache
-          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+            ${{ github.workspace }}/apps/app/.next/cache
+          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
             dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
+          yarn global add turbo
           yarn --frozen-lockfile
 
       - name: yarn dev:ci
         working-directory: ./apps/app
         run: |
           cp config/ci/.env.local.for-ci .env.development.local
-          yarn dev:ci
+          turbo run dev:ci
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 

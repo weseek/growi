@@ -105,7 +105,7 @@ COPY packages/remark-growi-directive packages/remark-growi-directive
 COPY packages/remark-lsx packages/remark-lsx
 COPY packages/ui packages/ui
 COPY packages/core packages/core
-COPY packages/app packages/app
+COPY apps/app apps/app
 
 # build
 RUN yarn lerna run build
@@ -113,13 +113,13 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar -cf packages.tar \
   package.json \
-  packages/app/.next \
-  packages/app/config \
-  packages/app/public \
-  packages/app/resource \
-  packages/app/tmp \
-  packages/app/.env.production* \
-  packages/app/next.config.js \
+  apps/app/.next \
+  apps/app/config \
+  apps/app/public \
+  apps/app/resource \
+  apps/app/tmp \
+  apps/app/.env.production* \
+  apps/app/next.config.js \
   packages/*/package.json \
   packages/*/dist
 
@@ -157,10 +157,10 @@ RUN tar -xf node_modules.tar
 RUN tar -xf packages.tar
 RUN rm node_modules.tar packages.tar
 
-COPY --chown=node:node --chmod=700 packages/app/docker/docker-entrypoint.sh /
+COPY --chown=node:node --chmod=700 apps/app/docker/docker-entrypoint.sh /
 
 USER root
-WORKDIR ${appDir}/packages/app
+WORKDIR ${appDir}/apps/app
 
 VOLUME /data
 EXPOSE 3000
