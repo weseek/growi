@@ -38,7 +38,6 @@ export const useEditorSettings = (initialData?: any): SWRResponseWithUtils<Edito
     isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
     ([endpoint]) => apiv3Get(endpoint).then(result => result.data),
     {
-      // use: [localStorageMiddleware], // store to localStorage for initialization fastly
       fallbackData: initialData,
     },
   );
