@@ -16,13 +16,17 @@
       ]
     },
 
+    "@growi/app#dev:migrate": {
+      "outputs": ["tmp/cache/migration-status.out"],
+      "inputs": ["src/migration/*.js"]
+    },
     "@growi/app#dev": {
-      "dependsOn": ["^dev"],
+      "dependsOn": ["^dev", "@growi/app#dev:migrate"],
       "cache": false,
       "persistent": true
     },
     "@growi/app#dev:ci": {
-      "dependsOn": ["^dev"],
+      "dependsOn": ["^dev", "@growi/app#dev:migrate"],
       "cache": false
     },
     "dev": {
