@@ -3,9 +3,9 @@ const path = require('path');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const dirPath = isProduction ? '.' : '../dist';
-const stylesJSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/styles.js`));
-const agentJSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/agent.js`));
-const stylesCSSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/styles.css`));
+const stylesJSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/hackmd-styles.mjs`));
+const agentJSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/hackmd-agent.mjs`));
+const stylesCSSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/style.css`));
 
 // export to app as string
 module.exports = {

@@ -12,7 +12,7 @@
 
       "@growi/codemirror-textlint": ["../../packages/codemirror-textlint/src"],
       // "@growi/core": ["../../packages/core/src"],
-      "@growi/hackmd": ["../../packages/hackmd/src"],
+      // "@growi/hackmd": ["../../packages/hackmd/src"],
       // "@growi/presentation": ["../../packages/presentation/src"],
       // "@growi/preset-themes": ["../../packages/preset-themes/src"],
       "@growi/remark-drawio": ["../../packages/remark-drawio/src"],

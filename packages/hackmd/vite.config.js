@@ -1,20 +1,22 @@
-import { resolve } from 'path';
-
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 
+// https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [
+    dts({ outputDir: 'types' }),
+  ],
   build: {
-    rollupOptions: {
-      input: {
-        styles: resolve(__dirname, 'src/hackmd-styles.js'),
-        agent: resolve(__dirname, 'src/hackmd-agent.js'),
-        stylesCSS: resolve(__dirname, 'src/styles.scss'),
-      },
-      output: {
-        entryFileNames: '[name].js',
-        assetFileNames: '[name].css',
-      },
+    outDir: 'dist',
+    lib: {
+      entry: [
+        'src/hackmd-styles.js',
+        'src/hackmd-agent.js',
+        'src/style.scss',
+      ],
+      name: 'hackmd-libs',
+      formats: ['es'],
     },
   },
 });
