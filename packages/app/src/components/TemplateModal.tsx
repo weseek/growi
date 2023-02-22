@@ -9,6 +9,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import { useTemplateModal } from '~/stores/modal';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useTemplates } from '~/stores/template';
 
@@ -40,17 +41,11 @@ const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioBu
   );
 };
 
-
-type Props = {
-  isOpen: boolean,
-  onClose: () => void,
-  onSubmit?: (markdown: string) => void,
-}
-
-export const TemplateModal = (props: Props): JSX.Element => {
+export const TemplateModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { isOpen, onClose, onSubmit } = props;
+  // const { isOpen, onClose, onSubmit } = props;
+  const { data: templateModalStatus, close } = useTemplateModal();
 
   const { data: rendererOptions } = usePreviewOptions();
   const { data: templates } = useTemplates();
@@ -58,22 +53,23 @@ export const TemplateModal = (props: Props): JSX.Element => {
   const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
 
   const submitHandler = useCallback((template?: ITemplate) => {
-    if (onSubmit == null || template == null) {
-      onClose();
+    if (templateModalStatus == null) { return }
+    if (templateModalStatus.onSubmit == null || template == null) {
+      close();
       return;
     }
 
-    onSubmit(template.markdown);
-    onClose();
-  }, [onClose, onSubmit]);
+    templateModalStatus.onSubmit(template.markdown);
+    close();
+  }, [close, templateModalStatus]);
 
-  if (templates == null) {
+  if (templates == null || templateModalStatus == null) {
     return <></>;
   }
 
   return (
-    <Modal className="link-edit-modal" isOpen={isOpen} toggle={onClose} size="lg" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+    <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         Template
       </ModalHeader>
 
@@ -105,7 +101,7 @@ export const TemplateModal = (props: Props): JSX.Element => {
 
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={onClose}>
+        <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>
         <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={() => submitHandler(selectedTemplate)} disabled={selectedTemplate == null}>
