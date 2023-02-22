@@ -10,6 +10,7 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '@swc/jest',
   },
+  transformIgnorePatterns: [],
 
   moduleNameMapper: MODULE_NAME_MAPPING,
 
