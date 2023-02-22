@@ -72,7 +72,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const router = useRouter();
 
   const { data: isNotFound } = useIsNotFound();
-  const { data: pageId } = useCurrentPageId();
+  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
@@ -205,7 +205,7 @@ const PageEditor = React.memo((): JSX.Element => {
     try {
       const { page } = await saveOrUpdate(
         markdownToSave.current,
-        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
+        { pageId: currentPage?._id, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
         options,
       );
 
@@ -318,6 +318,8 @@ const PageEditor = React.memo((): JSX.Element => {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
+        await mutateCurrentPageId(res.page._id);
+        await mutateCurrentPage();
       }
     }
     catch (e) {
@@ -327,7 +329,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateGrant, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
