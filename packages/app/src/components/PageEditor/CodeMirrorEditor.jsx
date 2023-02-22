@@ -873,7 +873,6 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showTemplateModal() {
-    // this.setState({ isTemplateModalOpened: true });
     const onSubmit = templateText => this.setValue(templateText);
     this.props.onClickTemplateBtn(onSubmit);
   }
@@ -1160,11 +1159,6 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        {/* <TemplateModal
-          isOpen={this.state.isTemplateModalOpened}
-          onClose={() => this.setState({ isTemplateModalOpened: false })}
-          onSubmit={templateText => this.setValue(templateText) }
-        /> */}
       </div>
     );
   }

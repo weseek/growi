@@ -44,7 +44,6 @@ const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioBu
 export const TemplateModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  // const { isOpen, onClose, onSubmit } = props;
   const { data: templateModalStatus, close } = useTemplateModal();
 
   const { data: rendererOptions } = usePreviewOptions();
