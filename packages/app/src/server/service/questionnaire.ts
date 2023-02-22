@@ -1,7 +1,9 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import { GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
+import {
+  GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
+} from '~/interfaces/questionnaire/growi-info';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 import { IUserHasId } from '~/interfaces/user';
@@ -38,6 +40,15 @@ class QuestionnaireService {
       return this.crowi.configManager.getConfig('crowi', `security:passport-${type}:isEnabled`);
     });
 
+    const typeStr = this.crowi.configManager.getConfig('crowi', 'app:serviceType');
+    const type = Object.values(GrowiServiceType).includes(typeStr) ? typeStr : null;
+
+    const attachmentTypeStr = this.crowi.configManager.getConfig('crowi', 'app:fileUploadType');
+    const attachmentType = Object.values(GrowiAttachmentType).includes(attachmentTypeStr) ? attachmentTypeStr : null;
+
+    const deploymentTypeStr = this.crowi.configManager.getConfig('crowi', 'app:deploymentType');
+    const deploymentType = Object.values(GrowiDeploymentType).includes(deploymentTypeStr) ? deploymentTypeStr : null;
+
     return {
       version: this.crowi.version,
       osInfo: {
@@ -48,13 +59,13 @@ class QuestionnaireService {
       },
       appSiteUrl: this.crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
       appSiteUrlHashed,
-      type: this.crowi.configManager.getConfig('crowi', 'app:serviceType'),
+      type,
       currentUsersCount,
       currentActiveUsersCount,
       wikiType,
-      attachmentType: this.crowi.configManager.getConfig('crowi', 'app:fileUploadType'),
+      attachmentType,
       activeExternalAccountTypes,
-      deploymentType: this.crowi.configManager.getConfig('crowi', 'app:deploymentType'),
+      deploymentType,
     };
   }
 
