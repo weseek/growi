@@ -13,8 +13,7 @@
     "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
     "clean": "npx -y shx rm -rf dist",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
-    "lint": "npm-run-all -p lint:*",
-    "test": "jest --verbose"
+    "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
     "@growi/core": "^6.0.8-RC.0"

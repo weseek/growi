@@ -16,8 +16,7 @@
     "clean": "npx -y shx rm -rf dist",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
-    "lint": "run-p lint:*",
-    "test": ""
+    "lint": "run-p lint:*"
   },
   "dependencies": {
     "@growi/core": "^6.0.8-RC.0",

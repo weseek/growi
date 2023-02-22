@@ -58,9 +58,9 @@ jobs:
           path: |
             **/dist
             **/types
-          key: dist-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
-            dist-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
@@ -120,9 +120,9 @@ jobs:
           path: |
             **/dist
             **/types
-          key: dist-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
-            dist-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
@@ -175,17 +175,16 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules and next cache files
+      - name: Cache/Restore node_modules
         id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
             **/node_modules
-            ${{ github.workspace }}/apps/app/.next/cache
-          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
-            dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist and types
         uses: actions/cache@v3
@@ -193,9 +192,19 @@ jobs:
           path: |
             **/dist
             **/types
-          key: dist-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
-            dist-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+      - name: Cache/Restore next cache files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/apps/app/.next/cache
+          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+          restore-keys: |
+            dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
