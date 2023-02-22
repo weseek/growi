@@ -3,8 +3,10 @@
   "version": "6.0.8-RC.0",
   "description": "GROWI js and css files to use hackmd",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "types/hackmd-styles.d.ts",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "build": "vite build",
     "clean": "npx -y shx rm -rf dist types",

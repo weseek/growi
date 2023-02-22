@@ -11,12 +11,19 @@ export default defineConfig({
     outDir: 'dist',
     lib: {
       entry: [
-        'src/hackmd-styles.js',
+        'src/index.ts',
+        'src/hackmd-styles.ts',
         'src/hackmd-agent.js',
         'src/style.scss',
       ],
       name: 'hackmd-libs',
-      formats: ['es'],
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: [
+        'node:fs',
+        'node:path',
+      ],
     },
   },
 });
