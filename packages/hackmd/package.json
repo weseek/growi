@@ -13,8 +13,7 @@
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w'",
     "lint:js": "eslint **/*.{js,ts}",
-    "lint": "npm-run-all -p lint:*",
-    "test": "jest --verbose"
+    "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {},
   "devDependencies": {
