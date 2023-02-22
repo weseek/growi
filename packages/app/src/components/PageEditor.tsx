@@ -238,7 +238,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
   }, [
     currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
-    currentPagePath, currentRevisionId, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser
+    currentPagePath, currentRevisionId, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
   ]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
