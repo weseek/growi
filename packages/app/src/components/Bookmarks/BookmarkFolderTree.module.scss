@@ -1,1 +1,13 @@
 @use '~/styles/molecules/bookmark-folder-tree';
+
+.grw-folder-tree-container :global {
+  .grw-drop-item-area {
+    min-height: 90vh;
+    padding: 1rem;
+    .grw-accept-drop-item {
+      padding: 0.5rem;
+      border-style: dashed;
+      border-width: 0.15rem;
+    }
+  }
+}

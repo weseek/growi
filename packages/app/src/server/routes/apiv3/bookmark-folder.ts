@@ -20,7 +20,7 @@ const validator = {
   ],
   bookmarkPage: [
     body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
-    body('folderId').isMongoId().withMessage('Folder ID must be a valid mongo ID'),
+    body('folderId').optional({ nullable: true }).isMongoId().withMessage('Folder ID must be a valid mongo ID'),
   ],
 };
 

@@ -31,3 +31,10 @@ export interface BookmarkFolderItems {
   children: this[]
   bookmarks: BookmarkedPage[]
 }
+
+export const DRAG_ITEM_TYPE = {
+  FOLDER: 'FOLDER',
+  BOOKMARK: 'BOOKMARK',
+} as const;
+
+export type DragItemType = typeof DRAG_ITEM_TYPE[keyof typeof DRAG_ITEM_TYPE];

@@ -29,8 +29,8 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): Promise<BookmarkFolderDocument>
   findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): Promise<BookmarkFolderItems[]>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
-  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): Promise<BookmarkFolderDocument>
-  insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string): Promise<BookmarkFolderDocument>
+  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null): Promise<BookmarkFolderDocument>
+  insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null): Promise<BookmarkFolderDocument | null>
   findUserRootBookmarksItem(userId: Types.ObjectId| string): Promise<MyBookmarkList>
 }
 
@@ -136,12 +136,17 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFo
   return { deletedCount };
 };
 
-bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parentId: string):
+bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parentId: string | null):
  Promise<BookmarkFolderDocument> {
-  const parentFolder = await this.findById(parentId);
-  const updateFields = {
-    name, parent: parentFolder?._id || null,
+  const updateFields: {name: string, parent: Types.ObjectId | null} = {
+    name: '',
+    parent: null,
   };
+
+  updateFields.name = name;
+  const parentFolder = parentId ? await this.findById(parentId) : null;
+  updateFields.parent = parentFolder?._id ?? null;
+
   const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: updateFields }, { new: true });
   if (bookmarkFolder == null) {
     throw new Error('Update bookmark folder failed');
@@ -150,8 +155,8 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 };
 
-bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string):
-Promise<BookmarkFolderDocument> {
+bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null):
+Promise<BookmarkFolderDocument | null> {
 
   // Create bookmark or update existing
   const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: pageId, user: userId }, { page: pageId, user: userId }, { new: true, upsert: true });
@@ -160,8 +165,12 @@ Promise<BookmarkFolderDocument> {
   await this.updateMany({}, { $pull: { bookmarks:  bookmarkedPage._id } });
 
   // Insert bookmark into bookmark folder
-  const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
-  return bookmarkFolder;
+  if (folderId != null) {
+    const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
+    return bookmarkFolder;
+  }
+
+  return null;
 };
 
 bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function(userId: Types.ObjectId | string): Promise<MyBookmarkList> {

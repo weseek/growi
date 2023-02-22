@@ -2,8 +2,11 @@
 import { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useDrop } from 'react-dnd';
 
-import { toastSuccess } from '~/client/util/toastr';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
+import { DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
@@ -22,10 +25,11 @@ type BookmarkFolderTreeProps = {
 }
 
 const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
+  const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
   const { isUserHomePage } = props;
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
+  const { data: bookmarkFolderData, mutate: mutateParentBookmarkFolder } = useSWRxBookamrkFolderAndChild();
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
@@ -55,35 +59,93 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
   }, [mutateBookmarkInfo, mutateUserBookmarks, openDeleteModal, t]);
 
+  const itemDropHandler = async(item: any, dragType: string | null | symbol) => {
+    if (dragType === DRAG_ITEM_TYPE.FOLDER) {
+      try {
+        await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: null });
+        await mutateParentBookmarkFolder();
+        toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+      }
+      catch (err) {
+        toastError(err);
+      }
+    }
+    else {
+      try {
+        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: null });
+        await mutateUserBookmarks();
+        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      }
+      catch (err) {
+        toastError(err);
+      }
+    }
+
+  };
+  const isDroppable = (item: any, dragType: string | null | symbol) => {
+    if (dragType === DRAG_ITEM_TYPE.FOLDER) {
+      const isRootFolder = item.level === 0;
+      return !isRootFolder;
+    }
+    const isRootBookmark = item.parentFolder == null;
+    return !isRootBookmark;
+
+  };
+
+  const [{ isOver, canDrop }, dropRef] = useDrop(() => ({
+    accept: acceptedTypes,
+    drop: (item: any, monitor) => {
+      const dragType = monitor.getItemType();
+      itemDropHandler(item, dragType);
+    },
+    canDrop: (item: any, monitor) => {
+      const dragType = monitor.getItemType();
+      return isDroppable(item, dragType);
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
+      canDrop: monitor.canDrop(),
+    }),
+  }));
+
+
   return (
     <>
-      <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-3 pt-3`}>
-        {bookmarkFolderData?.map((item) => {
-          return (
-            <BookmarkFolderItem
-              key={item._id}
-              bookmarkFolder={item}
-              isOpen={false}
-              level={0}
-              root={item._id}
-              isUserHomePage={isUserHomePage}
-            />
-          );
-        })}
-        {userBookmarks?.map(page => (
-          <div key={page._id} className="grw-foldertree-item-container grw-root-bookmarks">
-            <BookmarkItem
-              bookmarkedPage={page}
-              key={page._id}
-              onUnbookmarked={onUnbookmarkHandler}
-              onRenamed={mutateUserBookmarks}
-              onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
-              parentFolder={null}
-            />
+      <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
+        <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
+          {bookmarkFolderData?.map((item) => {
+            return (
+              <BookmarkFolderItem
+                key={item._id}
+                bookmarkFolder={item}
+                isOpen={false}
+                level={0}
+                root={item._id}
+                isUserHomePage={isUserHomePage}
+              />
+            );
+          })}
+          {userBookmarks?.map(page => (
+            <div key={page._id} className="grw-foldertree-item-container grw-root-bookmarks">
+              <BookmarkItem
+                bookmarkedPage={page}
+                key={page._id}
+                onUnbookmarked={onUnbookmarkHandler}
+                onRenamed={mutateUserBookmarks}
+                onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
+                parentFolder={null}
+              />
+            </div>
+          ))}
+        </ul>
+        { bookmarkFolderData && bookmarkFolderData.length > 0 && (
+          <div ref={(c) => { dropRef(c) }} className= 'grw-drop-item-area' >
+            { canDrop && isOver && (
+              <div className='grw-accept-drop-item' >{t('bookmark_folder.drop_item_here')}</div>
+            )}
           </div>
-        ))}
-      </ul>
-
+        ) }
+      </div>
     </>
   );
 

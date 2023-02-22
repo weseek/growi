@@ -79,6 +79,17 @@ $grw-sidebar-content-footer-height: 50px;
         margin-bottom: 3px;
       }
     }
+    .grw-folder-tree-container {
+      .grw-drop-item-area {
+        min-height: 25vh;
+        padding: 1rem;
+        .grw-accept-drop-item {
+          padding: 0.5rem;
+          border-style: dashed;
+          border-width: 0.15rem;
+        }
+      }
+    }
   }
 }
 

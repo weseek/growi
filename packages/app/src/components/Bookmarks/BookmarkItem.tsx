@@ -12,7 +12,6 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -42,7 +41,6 @@ const BookmarkItem = (props: Props): JSX.Element => {
   const { mutate: mutateParentBookmarkData } = useSWRxBookamrkFolderAndChild();
   const { mutate: mutateChildFolderData } = useSWRxBookamrkFolderAndChild(parentId);
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
-  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
 
   useEffect(() => {
     mutatePageInfo();
@@ -115,10 +113,9 @@ const BookmarkItem = (props: Props): JSX.Element => {
 
   const [, bookmarkItemDragRef] = useDrag({
     type: 'BOOKMARK',
-    item: bookmarkedPage,
+    item: { ...bookmarkedPage, parentFolder },
     end: () => {
       setParentId(parentFolder?.parent);
-      mutateUserBookmarks();
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),

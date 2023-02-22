@@ -1,4 +1,4 @@
-import { IUserHasId, Nullable } from '@growi/core';
+import { IUserHasId } from '@growi/core';
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
