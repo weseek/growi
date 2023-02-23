@@ -468,7 +468,10 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
-      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const grant = wikiMode === 'public' ? Page.GRANT_PUBLIC : Page.GRANT_OWNER;
+
+      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant });
       pageCreated = true;
       pageId = page._id;
     }
