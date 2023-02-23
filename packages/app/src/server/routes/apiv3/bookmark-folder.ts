@@ -22,6 +22,10 @@ const validator = {
     body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
     body('folderId').optional({ nullable: true }).isMongoId().withMessage('Folder ID must be a valid mongo ID'),
   ],
+  bookmark: [
+    body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
+    body('status').isBoolean().withMessage('status must be one of true or false'),
+  ],
 };
 
 module.exports = (crowi) => {
@@ -108,5 +112,16 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/update-bookmark', accessTokenParser, loginRequiredStrictly, validator.bookmark, async(req, res) => {
+    const { pageId, status } = req.body;
+    const userId = req.user?._id;
+    try {
+      const bookmarkFolder = await BookmarkFolder.updateBookmark(pageId, status, userId);
+      return res.apiv3({ bookmarkFolder });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
   return router;
 };

@@ -32,6 +32,7 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null): Promise<BookmarkFolderDocument | null>
   findUserRootBookmarksItem(userId: Types.ObjectId| string): Promise<MyBookmarkList>
+  updateBookmark(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId| string): Promise<BookmarkFolderDocument | null>
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
@@ -188,4 +189,23 @@ bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function(userId: 
   return userRootBookmarks;
 };
 
+bookmarkFolderSchema.statics.updateBookmark = async function(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId | string):
+Promise<BookmarkFolderDocument | null> {
+  // If isBookmarked
+  if (status) {
+    const bookmarkedPage = await Bookmark.findOne({ page: pageId });
+    const bookmarkFolder = await this.findOne({ owner: userId, bookmarks: { $in: [bookmarkedPage?._id] } });
+    if (bookmarkFolder != null) {
+      await this.updateOne({ owner: userId, _id: bookmarkFolder._id }, { $pull: { bookmarks:  bookmarkedPage?._id } });
+    }
+
+    if (bookmarkedPage) {
+      await bookmarkedPage.delete();
+    }
+    return bookmarkFolder;
+  }
+  // else , Add bookmark
+  await Bookmark.create({ page: pageId, user: userId });
+  return null;
+};
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);

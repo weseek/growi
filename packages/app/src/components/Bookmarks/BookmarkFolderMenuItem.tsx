@@ -6,11 +6,12 @@ import {
   DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip,
 } from 'reactstrap';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { unbookmark } from '~/client/services/page-operation';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
-import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -38,8 +39,11 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
+  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+
+  const isBookmarked = userBookmarkInfo?.isBookmarked;
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
@@ -104,19 +108,28 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
-    mutateBookmarkInfo();
     onSelectedChild();
     try {
-      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
-      toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      if (isBookmarked) {
+        await apiv3Put('/bookmark-folder/update-bookmark', { pageId: currentPage?._id, status: isBookmarked });
+        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
+        mutateUserBookmarks();
+      }
+      else {
+        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
+        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+        mutateUserBookmarks();
+      }
+
       mutateParentFolders();
       mutateChildFolders();
       setSelectedItem(item._id);
+      mutateBookmarkInfo();
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders, t]);
+  }, [mutateBookmarkInfo, onSelectedChild, isBookmarked, mutateChildFolders, currentPage?._id, mutateUserBookmarks, t, mutateParentFolders]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (
