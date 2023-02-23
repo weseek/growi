@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, ReactNode } from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -9,14 +9,8 @@ import Head from 'next/head';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
-import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxTagsList } from '~/stores/tag';
-import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
@@ -26,8 +20,9 @@ import {
 } from '../stores/context';
 
 import { NextPageWithLayout } from './_app.page';
+import type { CommonProps } from './utils/commons';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -37,12 +32,6 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-
-  // ui
-  userUISettings?: IUserUISettings
-
-  // sidebar
-  sidebarConfig: ISidebarConfig,
 
   rendererConfig: RendererConfig,
 };
@@ -115,25 +104,24 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   );
 };
 
-TagPage.getLayout = function getLayout(page) {
-  return (
-    <BasicLayout>{page}</BasicLayout>
-  );
+type LayoutProps = Props & {
+  children?: ReactNode
+}
+
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+
+  return <BasicLayout>{children}</BasicLayout>;
 };
 
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const { model: mongooseModel } = await import('mongoose');
-
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-
-  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
+TagPage.getLayout = function getLayout(page) {
+  return (
+    <Layout {...page.props}>
+      {page}
+    </Layout>
+  );
+};
 
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -194,7 +182,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 

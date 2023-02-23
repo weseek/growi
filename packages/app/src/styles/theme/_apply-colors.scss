@@ -360,6 +360,14 @@ ul.pagination {
   }
 }
 
+.grw-page-accessories-modal,.grw-descendants-page-list-modal {
+  .modal-header {
+    .close {
+      color: #{hsl.contrast(var(--bgcolor-global))};
+    }
+  }
+}
+
 .grw-custom-nav-tab {
   .nav-item {
     &:hover,

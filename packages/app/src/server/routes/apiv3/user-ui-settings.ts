@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:routes:apiv3:user-ui-settings');
 const router = express.Router();
 
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
 
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
@@ -25,7 +24,7 @@ module.exports = (crowi) => {
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  router.put('/', loginRequiredStrictly, validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
+  router.put('/', validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
     const { user } = req;
     const { settings } = req.body;
 
@@ -37,6 +36,20 @@ module.exports = (crowi) => {
       preferDrawerModeByUser: settings.preferDrawerModeByUser,
       preferDrawerModeOnEditByUser: settings.preferDrawerModeOnEditByUser,
     };
+
+    if (user == null) {
+      if (req.session.uiSettings == null) {
+        req.session.uiSettings = {};
+      }
+      Object.keys(updateData).forEach((setting) => {
+        if (updateData[setting] != null) {
+          req.session.uiSettings[setting] = updateData[setting];
+        }
+      });
+      return res.apiv3(updateData);
+    }
+
+
     // remove the keys that have null value
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] == null) {
