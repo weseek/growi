@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
@@ -19,11 +19,16 @@ import { IRevision, IRevisionHasId, IRevisionsForPagination } from '~/interfaces
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import {
-  useCurrentPageId, useCurrentPathname, useShareLinkId, useIsGuestUser, useIsNotFound,
+  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsNotFound,
 } from './context';
+import { useStaticSWR } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
+
+export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+};
 
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { IRevisionHasPageId } from '@growi/core';
 
-import { useCurrentPageId } from '~/stores/context';
-import { useSWRxPageRevisions, useCurrentPagePath } from '~/stores/page';
+import { useSWRxPageRevisions, useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';

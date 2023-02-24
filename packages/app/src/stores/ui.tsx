@@ -22,10 +22,10 @@ import type { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useIsEditable,
+  useIsEditable,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
-import { useCurrentPagePath, useIsTrashPage } from './page';
+import { useCurrentPagePath, useIsTrashPage, useCurrentPageId } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;

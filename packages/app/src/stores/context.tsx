@@ -1,5 +1,5 @@
-import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
-import { Key, SWRResponse } from 'swr';
+import type { ColorScheme, IUserHasId } from '@growi/core';
+import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
@@ -42,10 +42,6 @@ export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR('currentPathname', initialData);
-};
-
-export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {

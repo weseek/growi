@@ -36,13 +36,13 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSelectedGrant } from '~/stores/ui';

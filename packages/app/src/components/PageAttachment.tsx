@@ -5,8 +5,8 @@ import React, {
 import { HasObjectId, IAttachment } from '@growi/core';
 
 import { useSWRxAttachments } from '~/stores/attachment';
-import { useCurrentPageId, useIsGuestUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useIsGuestUser } from '~/stores/context';
+import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 
 import { DeleteAttachmentModal } from './PageAttachment/DeleteAttachmentModal';
 import { PageAttachmentList } from './PageAttachment/PageAttachmentList';

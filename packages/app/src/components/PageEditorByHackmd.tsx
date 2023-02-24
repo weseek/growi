@@ -16,7 +16,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useCurrentPageId, useCurrentPathname, useHackmdUri, useIsNotFound,
+  useCurrentPathname, useHackmdUri, useIsNotFound,
 } from '~/stores/context';
 import {
   useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -25,7 +25,7 @@ import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
