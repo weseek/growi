@@ -5,8 +5,12 @@
 const MODULE_NAME_MAPPING = {
   '^\\^/(.+)$': '<rootDir>/$1',
   '^~/(.+)$': '<rootDir>/src/$1',
-  '^@growi/([^/]+)$': '<rootDir>/../../packages/$1/src',
-  '^@growi/([^/]+)/(.+)$': '<rootDir>/../../packages/$1/src/$2',
+  '^@growi/codemirror-textlint$': '<rootDir>/../../packages/codemirror-textlint/src',
+  '^@growi/remark-drawio$': '<rootDir>/../../packages/remark-drawio/src',
+  '^@growi/remark-growi-directive$': '<rootDir>/../../packages/remark-growi-directive/src',
+  '^@growi/remark-lsx$': '<rootDir>/../../packages/remark-drawio/src',
+  '^@growi/remark-lsx/(.+)$': '<rootDir>/../../packages/remark-lsx/src/$1',
+  '^@growi/ui$': '<rootDir>/../../packages/ui/src',
 };
 
 module.exports = {
