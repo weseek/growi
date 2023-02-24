@@ -56,10 +56,6 @@ export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, E
   return useContextSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
 
-export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
-};
-
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
   return useContextSWR<string[], Error>('templateTagData', initialData);
 };

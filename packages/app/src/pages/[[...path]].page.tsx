@@ -31,7 +31,7 @@ import type { PageRedirectModel } from '~/server/models/page-redirect';
 import {
   useCurrentUser,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsSharedUser,
+  useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
@@ -42,7 +42,9 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId } from '~/stores/page';
+import {
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound,
+} from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSelectedGrant } from '~/stores/ui';
@@ -194,7 +196,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
-  useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.isNotCreatable);
   useRedirectFrom(props.redirectFrom ?? null);
   useIsSharedUser(false); // this page cann't be routed for '/share'
@@ -239,6 +240,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+
+  const { mutate: mutateIsNotFound } = useIsNotFound();
 
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
 
@@ -290,6 +293,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);
   }, [mutateCurrentPageId, pageId]);
+
+  useEffect(() => {
+    mutateIsNotFound(props.isNotFound);
+  }, [mutateIsNotFound, props.isNotFound]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 

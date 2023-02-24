@@ -18,9 +18,7 @@ import { IRevision, IRevisionHasId, IRevisionsForPagination } from '~/interfaces
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import {
-  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsNotFound,
-} from './context';
+import { useCurrentPathname, useShareLinkId, useIsGuestUser } from './context';
 import { useStaticSWR } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -28,6 +26,10 @@ const { isPermalink: _isPermalink } = pagePathUtils;
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+};
+
+export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {

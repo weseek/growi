@@ -22,7 +22,7 @@ import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
   useCurrentPathname, useIsEnabledAttachTitleHeader, useTemplateBodyData,
-  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -32,7 +32,7 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -77,7 +77,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: isNotFound } = useIsNotFound();
+  const { data: isNotFound, mutate: mutateIsNotFound } = useIsNotFound();
   const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
@@ -330,6 +330,7 @@ const PageEditor = React.memo((): JSX.Element => {
         mutateGrant(res.page.grant);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
+        await mutateIsNotFound(false);
       }
     }
     catch (e) {
@@ -339,7 +340,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsNotFound, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
