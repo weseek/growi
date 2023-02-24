@@ -215,7 +215,7 @@ const PageEditor = React.memo((): JSX.Element => {
     try {
       const { page } = await saveOrUpdate(
         markdownToSave.current,
-        { pageId: currentPage?._id, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
+        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
         options,
       );
 
