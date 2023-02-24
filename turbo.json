@@ -1,8 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
-    "@growi/remark-lsx#build": {
-      "dependsOn": ["@growi/ui#build"],
+    "@growi/app#build": {
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", "types/**"]
     },
     "build": {

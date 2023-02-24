@@ -2,7 +2,6 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "module": "esnext",
     "strict": false,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
