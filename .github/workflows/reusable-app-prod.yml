@@ -82,12 +82,14 @@ jobs:
           package.json \
           apps/app/.next \
           apps/app/config \
+          apps/app/dist \
           apps/app/public \
           apps/app/resource \
           apps/app/tmp \
           apps/app/.env.production* \
-          packages/*/package.json \
-          packages/*/dist
+          apps/app/package.json \
+          packages/*/dist \
+          packages/*/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
