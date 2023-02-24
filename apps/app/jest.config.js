@@ -16,16 +16,15 @@ module.exports = {
   // Indicates whether each individual test should be reported during the run
   verbose: true,
 
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
 
   projects: [
     {
       displayName: 'unit',
 
-      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
       transform: {
         '^.+\\.(t|j)sx?$': '@swc/jest',
       },
-
       // transform ESM to CJS (includes all packages in node_modules)
       transformIgnorePatterns: [],
 
@@ -43,7 +42,6 @@ module.exports = {
     {
       displayName: 'server',
 
-      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
       transform: {
         '^.+\\.(t|j)sx?$': '@swc-node/jest',
       },
@@ -65,7 +63,6 @@ module.exports = {
     {
       displayName: 'server-v5',
 
-      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
       transform: {
         '^.+\\.(t|j)sx?$': '@swc-node/jest',
       },
