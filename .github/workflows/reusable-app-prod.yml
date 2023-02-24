@@ -34,29 +34,43 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Install turbo
+      run: |
+        yarn global add turbo
+
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
     - name: Cache/Restore node_modules
       id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: lerna bootstrap
+    - name: Install dependencies
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        yarn --frozen-lockfile
 
-    - name: Remove unnecessary packages
-      run: |
-        rm -rf apps/slackbot-proxy
-        rm -f "node_modules/@growi/slackbot-proxy"
+    - name: Cache/Restore dist and types
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/dist
+          **/types
+        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        restore-keys: |
+          dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Build
       run: |
-        yarn lerna run build
+        turbo run build
       env:
         ANALYZE_BUNDLE_SIZE: 1
 
@@ -126,34 +140,29 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
-    - name: Get Date
-      id: get-date
+    - name: Install turbo
       run: |
-        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")" >> $GITHUB_OUTPUT
-        echo "dateYm=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
+        yarn global add turbo
 
-    - name: Cache/Restore node_modules (not reused)
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
+    - name: Cache/Restore node_modules
       id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-        key: node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYmdHM }}
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
-          node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYm }}
-          node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: Remove unnecessary packages
+    - name: Install dependencies
       run: |
-        rm -rf apps/slackbot-proxy
-        rm -f "node_modules/@growi/slackbot-proxy"
-
-    - name: lerna bootstrap --production
-      run: |
-        npx lerna bootstrap -- --production
+        yarn --production
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3
@@ -222,24 +231,38 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
-    - name: Cache/Restore dependencies
+    - name: Install turbo
+      run: |
+        yarn global add turbo
+
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-          ~/.cache/Cypress
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}
+          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: lerna bootstrap
+    - name: Install dependencies
       run: |
-        npx lerna bootstrap -- --production
+        yarn --production
 
-    - name: lerna add packages needed for CI
-      run: |
-        npx lerna add yargs
+    - name: Cache/Restore Cypress files
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/Cypress
+        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3
