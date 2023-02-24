@@ -3,6 +3,7 @@
 import nodePath from 'path';
 
 import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
+import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -21,7 +22,7 @@ import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } fr
 
 const { addTrailingSlash, normalizePath } = pathUtils;
 const {
-  isTopPage, collectAncestorPaths, hasSlash,
+  isTopPage, hasSlash,
 } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');

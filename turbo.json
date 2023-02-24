@@ -40,6 +40,18 @@
       ]
     },
 
+    "watch": {
+      "outputs": ["dist/**", "types/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
+        "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
+      ],
+      "persistent": true
+    },
+
     "@growi/app#lint": {
       "dependsOn": ["^dev"]
     },

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 
-import { isServer } from '@growi/core';
+import { isServer } from '@growi/core/dist/utils/browser-utils';
 
 const isCurrentDirRoot = isServer() && fs.existsSync('./next.config.js');
 

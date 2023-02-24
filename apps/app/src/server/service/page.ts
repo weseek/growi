@@ -1,11 +1,14 @@
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
-import {
-  pagePathUtils, pathUtils, Ref, HasObjectId,
-  IUserHasId, PageStatus,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, PageGrant,
+import type {
+  Ref, HasObjectId, IUserHasId,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
+import {
+  pagePathUtils, pathUtils, PageGrant, PageStatus,
+} from '@growi/core';
+import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -40,7 +43,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  collectAncestorPaths, isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
+  isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;

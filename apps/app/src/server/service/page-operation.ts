@@ -1,4 +1,5 @@
 import { pagePathUtils } from '@growi/core';
+import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionType, PageActionStage,
@@ -11,7 +12,7 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 const logger = loggerFactory('growi:services:page-operation');
 
 const {
-  isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage, collectAncestorPaths,
+  isEitherOfPathAreaOverlap, isPathAreaOverlap, isTrashPage,
 } = pagePathUtils;
 const AUTO_UPDATE_INTERVAL_SEC = 5;
 
