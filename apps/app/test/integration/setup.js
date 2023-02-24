@@ -5,6 +5,7 @@
  * are NOT available in setup scripts
  *********************************************************** */
 
+const gc = require('expose-gc/function');
 const mongoose = require('mongoose');
 
 const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
@@ -20,6 +21,7 @@ beforeAll(async() => {
 
 afterAll(async() => {
   await mongoose.disconnect();
+  gc();
 });
 
 module.exports = {};
