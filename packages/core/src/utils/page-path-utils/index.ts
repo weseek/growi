@@ -1,17 +1,11 @@
-import nodePath from 'path';
-
 import escapeStringRegexp from 'escape-string-regexp';
 
-import { isValidObjectId } from './objectid-utils';
-import { addTrailingSlash } from './path-utils';
+import { isValidObjectId } from '../objectid-utils';
+import { addTrailingSlash } from '../path-utils';
 
-/**
- * Whether path is the top page
- * @param path
- */
-export const isTopPage = (path: string): boolean => {
-  return path === '/';
-};
+import { isTopPage as _isTopPage } from './is-top-page';
+
+export const isTopPage = _isTopPage;
 
 /**
  * Whether path is the top page of users
@@ -185,20 +179,6 @@ export const generateEditorPath = (...paths: string[]): string => {
   catch (err) {
     throw new Error('Invalid path format');
   }
-};
-
-/**
- * returns ancestors paths
- * @param {string} path
- * @param {string[]} ancestorPaths
- * @returns {string[]}
- */
-export const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) return ancestorPaths;
-
-  const parentPath = nodePath.dirname(path);
-  ancestorPaths.push(parentPath);
-  return collectAncestorPaths(parentPath, ancestorPaths);
 };
 
 /**

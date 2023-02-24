@@ -6,8 +6,8 @@
   "keywords": [
     "growi"
   ],
-  "main": "dist/core.umd.js",
-  "module": "dist/core.mjs",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "types/index.d.ts",
   "files": [
     "dist",

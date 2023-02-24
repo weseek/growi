@@ -1,3 +1,6 @@
+import path from 'path';
+
+import glob from 'glob';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -9,14 +12,19 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     lib: {
-      entry: 'src/index.ts',
+      entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts')),
       name: 'core-libs',
-      formats: ['es', 'umd'],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+      },
       external: [
         'bson-objectid',
         'swr',
+        /^node:.*/,
       ],
     },
   },
