@@ -3,7 +3,11 @@
   "pipeline": {
     "@growi/app#build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "types/**"]
+      "outputs": [".next/**", "config/**", "dist/**"]
+    },
+    "@growi/slackbot-proxy#build": {
+      "dependsOn": ["@growi/slack#build"],
+      "outputs": ["dist/**"]
     },
     "build": {
       "outputs": ["dist/**", "types/**"],
