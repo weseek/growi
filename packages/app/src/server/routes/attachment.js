@@ -468,7 +468,10 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
-      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
+      const isAclEnabled = crowi.aclService.isAclEnabled();
+      const grant = isAclEnabled ? Page.GRANT_OWNER : Page.GRANT_PUBLIC;
+
+      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant });
       pageCreated = true;
       pageId = page._id;
     }
