@@ -6,8 +6,8 @@ import { useDrop } from 'react-dnd';
 
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
@@ -24,12 +24,18 @@ type BookmarkFolderTreeProps = {
   isUserHomePage?: boolean
 }
 
+type DragItemDataType = {
+  bookmarkFolder: BookmarkFolderItems
+  level: number
+  parentFolder: BookmarkFolderItems | null
+ } & IPageHasId
+
 const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
   const { isUserHomePage } = props;
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: bookmarkFolderData, mutate: mutateParentBookmarkFolder } = useSWRxBookamrkFolderAndChild();
+  const { data: bookmarkFolderData, mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
@@ -55,15 +61,16 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
       }
       mutateUserBookmarks();
       mutateBookmarkInfo();
+      mutateBookamrkData();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  }, [mutateBookmarkInfo, mutateUserBookmarks, openDeleteModal, t]);
+  }, [mutateBookmarkInfo, mutateBookamrkData, mutateUserBookmarks, openDeleteModal, t]);
 
-  const itemDropHandler = async(item: any, dragType: string | null | symbol) => {
+  const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {
     if (dragType === DRAG_ITEM_TYPE.FOLDER) {
       try {
         await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: null });
-        await mutateParentBookmarkFolder();
+        await mutateBookamrkData();
         toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
       }
       catch (err) {
@@ -82,7 +89,7 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
     }
 
   };
-  const isDroppable = (item: any, dragType: string | null | symbol) => {
+  const isDroppable = (item: DragItemDataType, dragType: string | null | symbol) => {
     if (dragType === DRAG_ITEM_TYPE.FOLDER) {
       const isRootFolder = item.level === 0;
       return !isRootFolder;
@@ -94,11 +101,11 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
 
   const [{ isOver, canDrop }, dropRef] = useDrop(() => ({
     accept: acceptedTypes,
-    drop: (item: any, monitor) => {
+    drop: (item: DragItemDataType, monitor) => {
       const dragType = monitor.getItemType();
       itemDropHandler(item, dragType);
     },
-    canDrop: (item: any, monitor) => {
+    canDrop: (item: DragItemDataType, monitor) => {
       const dragType = monitor.getItemType();
       return isDroppable(item, dragType);
     },

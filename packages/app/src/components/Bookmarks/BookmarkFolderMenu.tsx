@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -29,41 +29,17 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { children } = props;
   const [isCreateAction, setIsCreateAction] = useState(false);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolderData } = useSWRxBookamrkFolderAndChild();
-  const [updateParent, setUpdateParent] = useState<string|null>(null);
-  const { mutate: mutateChildBookmarkFolderData } = useSWRxBookamrkFolderAndChild(updateParent);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const isBookmarked = userBookmarkInfo?.isBookmarked;
   const [isOpen, setIsOpen] = useState(false);
-  const [bookmarkData, setBookmarkData] = useState<BookmarkFolderItems[]>([]);
-
-
-  useEffect(() => {
-    if (updateParent) {
-      mutateBookmarkFolderData();
-      mutateChildBookmarkFolderData();
-    }
-  }, [mutateBookmarkFolderData, mutateChildBookmarkFolderData, updateParent]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setBookmarkData([]);
-    }
-    else if (bookmarkFolders != null) {
-      setBookmarkData(bookmarkFolders);
-    }
-  }, [bookmarkFolders, isOpen]);
 
   const toggleBookmarkHandler = useCallback(async() => {
 
     try {
-      const res = await apiv3Put('/bookmark-folder/update-bookmark', { pageId: currentPage?._id, status: isBookmarked });
-      const { bookmarkFolder } = res.data;
-      if (bookmarkFolder != null) {
-        setUpdateParent(bookmarkFolder.parent);
-      }
+      await apiv3Put('/bookmark-folder/update-bookmark', { pageId: currentPage?._id, status: isBookmarked });
       toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
     }
     catch (err) {
@@ -85,8 +61,8 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const toggleHandler = useCallback(() => {
     setIsOpen(!isOpen);
     mutateBookmarkFolderData();
-    if (isOpen && bookmarkData != null) {
-      bookmarkData?.forEach((bookmarkFolder) => {
+    if (isOpen && bookmarkFolders != null) {
+      bookmarkFolders?.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
           if (bookmark.page._id === currentPage?._id) {
             if (bookmark.page._id === currentPage?._id) {
@@ -96,15 +72,15 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
         });
       });
     }
-  }, [bookmarkData, currentPage?._id, isOpen, mutateBookmarkFolderData]);
+  }, [bookmarkFolders, currentPage?._id, isOpen, mutateBookmarkFolderData]);
 
 
   const isBookmarkFolderExists = useCallback((): boolean => {
-    if (bookmarkData && bookmarkData.length > 0) {
+    if (bookmarkFolders && bookmarkFolders.length > 0) {
       return true;
     }
     return false;
-  }, [bookmarkData]);
+  }, [bookmarkFolders]);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
@@ -168,7 +144,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
           {isBookmarkFolderExists() && (
             <>
               <DropdownItem divider />
-              {bookmarkData?.map(folder => (
+              {bookmarkFolders?.map(folder => (
                 <div key={folder._id}>
                   <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
                     <BookmarkFolderMenuItem

@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
 
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
@@ -54,18 +55,11 @@ module.exports = (crowi) => {
   });
 
   // List bookmark folders and child
-  router.get('/list/:parentId?', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { parentId } = req.params;
-    const _parentId = parentId ?? null;
+  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+
     try {
-      const bookmarkFolders = await BookmarkFolder.findFolderAndChildren(req.user?._id, _parentId);
-      const bookmarkFolderItems = bookmarkFolders.map(bookmarkFolder => ({
-        _id: bookmarkFolder._id,
-        name: bookmarkFolder.name,
-        parent: bookmarkFolder.parent,
-        children: bookmarkFolder.children,
-        bookmarks: bookmarkFolder.bookmarks,
-      }));
+      const bookmarkFolderItems = await BookmarkFolder.findFolderAndChildren(req.user?._id);
+
       return res.apiv3({ bookmarkFolderItems });
     }
     catch (err) {
