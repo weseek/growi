@@ -1,6 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "@growi/ui#build": {
+      "dependsOn": ["@growi/core#build"],
+      "outputs": ["dist/**", "types/**"]
+    },
+    "@growi/remark-lsx#build": {
+      "dependsOn": ["@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "outputs": ["dist/**", "types/**"]
+    },
     "@growi/app#build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "config/**", "dist/**"]
