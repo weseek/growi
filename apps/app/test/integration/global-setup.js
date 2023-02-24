@@ -5,8 +5,6 @@
  * are NOT available in setup scripts
  *********************************************************** */
 
-import 'tsconfig-paths/register';
-
 import mongoose from 'mongoose';
 
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
