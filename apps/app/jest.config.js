@@ -1,6 +1,5 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
-// https://kulshekhar.github.io/ts-jest/user/config/
 
 const MODULE_NAME_MAPPING = {
   '^\\^/(.+)$': '<rootDir>/$1',
@@ -17,18 +16,18 @@ module.exports = {
   // Indicates whether each individual test should be reported during the run
   verbose: true,
 
-  preset: 'ts-jest/presets/js-with-ts',
 
   projects: [
     {
       displayName: 'unit',
 
-      preset: 'ts-jest/presets/js-with-ts',
+      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc/jest',
+      },
 
-      // transform ESM to CJS
-      transformIgnorePatterns: [
-        '/node_modules/(?!remark-gfm)/',
-      ],
+      // transform ESM to CJS (includes all packages in node_modules)
+      transformIgnorePatterns: [],
 
       rootDir: '.',
       roots: ['<rootDir>'],
@@ -44,7 +43,10 @@ module.exports = {
     {
       displayName: 'server',
 
-      preset: 'ts-jest/presets/js-with-ts',
+      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc-node/jest',
+      },
 
       rootDir: '.',
       roots: ['<rootDir>'],
@@ -63,7 +65,10 @@ module.exports = {
     {
       displayName: 'server-v5',
 
-      preset: 'ts-jest/presets/js-with-ts',
+      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+      transform: {
+        '^.+\\.(t|j)sx?$': '@swc-node/jest',
+      },
 
       rootDir: '.',
       roots: ['<rootDir>'],
