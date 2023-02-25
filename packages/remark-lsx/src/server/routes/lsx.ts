@@ -1,8 +1,6 @@
+import { OptionParser } from '@growi/core/dist/plugin';
+import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
 import createError, { isHttpError } from 'http-errors';
-
-const { pathUtils, pagePathUtils, customTagUtils } = require('@growi/core');
-
-const { OptionParser } = customTagUtils;
 
 
 const DEFAULT_PAGES_NUM = 50;
@@ -103,7 +101,7 @@ class Lsx {
       throw createError(400, 'filter option require value in regular expression.');
     }
 
-    let filterPath = '';
+    let filterPath;
     if (optionsFilter.charAt(0) === '^') {
       // move '^' to the first of path
       filterPath = new RegExp(`^${addTrailingSlash(pagePath)}${optionsFilter.slice(1, optionsFilter.length)}`);
@@ -159,9 +157,10 @@ class Lsx {
 
 }
 
-module.exports = (crowi, app) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const routesFactory = (crowi, app): any => {
   const Page = crowi.model('Page');
-  const actions = {};
+  const actions: any = {};
 
   /**
    *
