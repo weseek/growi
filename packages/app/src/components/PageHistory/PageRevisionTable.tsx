@@ -45,8 +45,8 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   // First load
   const isLoadingInitialData = !data && !error;
   const isLoadingMore = isLoadingInitialData
-    || (isValidating && data && typeof data[size - 1] === 'undefined');
-  const isReachingEnd = (revisionPerPage === 0) || !!(data && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
+    || (isValidating && data != null && typeof data[size - 1] === 'undefined');
+  const isReachingEnd = (revisionPerPage === 0) || !!(data != null && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
 
   const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
   const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
@@ -202,7 +202,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
           </tr>
         </thead>
         <tbody className="overflow-auto d-block" ref={tbodyRef}>
-          {revisions && data != null && data.map(apiResult => apiResult.revisions).flat()
+          {revisions != null && data != null && data.map(apiResult => apiResult.revisions).flat()
             .map((revision, idx) => {
               const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
 
@@ -217,7 +217,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </tbody>
       </table>
 
-      {sourceRevision && targetRevision && (
+      {sourceRevision != null && targetRevision != null && (
         <RevisionComparer
           sourceRevision={sourceRevision}
           targetRevision={targetRevision}

@@ -22,7 +22,7 @@ export const PageHistory: React.FC<PageHistoryProps> = (props: PageHistoryProps)
 
   return (
     <div className="revision-history" data-testid="page-history">
-      {currentPageId && currentPagePath && (
+      {currentPageId != null && currentPagePath != null && (
         <PageRevisionTable
           sourceRevisionId={sourceRevisionId}
           targetRevisionId={targetRevisionId}
