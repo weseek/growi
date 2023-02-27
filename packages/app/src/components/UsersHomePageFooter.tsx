@@ -2,8 +2,9 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
@@ -25,7 +26,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const { creatorId } = props;
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
+  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild();
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {

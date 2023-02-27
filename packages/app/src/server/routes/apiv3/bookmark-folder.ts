@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
 
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
@@ -20,7 +21,11 @@ const validator = {
   ],
   bookmarkPage: [
     body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
-    body('folderId').isMongoId().withMessage('Folder ID must be a valid mongo ID'),
+    body('folderId').optional({ nullable: true }).isMongoId().withMessage('Folder ID must be a valid mongo ID'),
+  ],
+  bookmark: [
+    body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
+    body('status').isBoolean().withMessage('status must be one of true or false'),
   ],
 };
 
@@ -50,18 +55,11 @@ module.exports = (crowi) => {
   });
 
   // List bookmark folders and child
-  router.get('/list/:parentId?', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { parentId } = req.params;
-    const _parentId = parentId ?? null;
+  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+
     try {
-      const bookmarkFolders = await BookmarkFolder.findFolderAndChildren(req.user?._id, _parentId);
-      const bookmarkFolderItems = bookmarkFolders.map(bookmarkFolder => ({
-        _id: bookmarkFolder._id,
-        name: bookmarkFolder.name,
-        parent: bookmarkFolder.parent,
-        children: bookmarkFolder.children,
-        bookmarks: bookmarkFolder.bookmarks,
-      }));
+      const bookmarkFolderItems = await BookmarkFolder.findFolderAndChildren(req.user?._id);
+
       return res.apiv3({ bookmarkFolderItems });
     }
     catch (err) {
@@ -108,5 +106,16 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/update-bookmark', accessTokenParser, loginRequiredStrictly, validator.bookmark, async(req, res) => {
+    const { pageId, status } = req.body;
+    const userId = req.user?._id;
+    try {
+      const bookmarkFolder = await BookmarkFolder.updateBookmark(pageId, status, userId);
+      return res.apiv3({ bookmarkFolder });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
   return router;
 };

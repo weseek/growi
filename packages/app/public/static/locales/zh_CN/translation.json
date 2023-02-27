@@ -826,7 +826,10 @@
     },
     "input_placeholder": "输入文件夹名称",
     "new_folder": "新建文件夹",
-    "delete": "删除文件夹"
+    "delete": "删除文件夹",
+    "drop_item_here": "将项目放在这里",
+    "cancel_bookmark": "取消收藏此页面",
+    "bookmark_this_page": "收藏此页"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",

@@ -6,11 +6,11 @@ import {
   DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip,
 } from 'reactstrap';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
-import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -32,19 +32,24 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   } = props;
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [currentChildFolders, setCurrentChildFolders] = useState<BookmarkFolderItems[]>();
-  const { data: childFolders, mutate: mutateChildFolders } = useSWRxBookamrkFolderAndChild(item._id);
-  const { mutate: mutateParentFolders } = useSWRxBookamrkFolderAndChild(item.parent);
+  const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
+  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+
+  const isBookmarked = userBookmarkInfo?.isBookmarked;
+
+  const hasChildren = useCallback((): boolean => {
+    return item.children.length > 0;
+  }, [item.children.length]);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: item._id });
-      await mutateChildFolders();
+      await mutateBookamrkData();
       setIsCreateAction(false);
       toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
@@ -52,23 +57,19 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       toastError(err);
     }
 
-  }, [item, mutateChildFolders, t]);
-
+  }, [item, mutateBookamrkData, t]);
 
   useEffect(() => {
-    if (isOpen && childFolders != null) {
-      mutateChildFolders();
-      setCurrentChildFolders(childFolders);
-    }
-    currentChildFolders?.forEach((bookmarkFolder) => {
-      bookmarkFolder.bookmarks.forEach((bookmark) => {
-        if (bookmark.page._id === currentPage?._id) {
-          setSelectedItem(bookmarkFolder._id);
-        }
+    if (isOpen) {
+      item.children?.forEach((bookmarkFolder) => {
+        bookmarkFolder.bookmarks.forEach((bookmark) => {
+          if (bookmark.page._id === currentPage?._id) {
+            setSelectedItem(bookmarkFolder._id);
+          }
+        });
       });
-    });
-
-  }, [childFolders, currentChildFolders, currentPage?._id, isOpen, item, mutateChildFolders, mutateParentFolders]);
+    }
+  }, [currentPage?._id, isOpen, item.children]);
 
   const onClickNewBookmarkFolder = useCallback((e) => {
     e.stopPropagation();
@@ -92,7 +93,7 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         return;
       }
       mutateBookmarkInfo();
-      mutateParentFolders();
+      mutateBookamrkData();
       toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     };
 
@@ -100,28 +101,32 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       return;
     }
     openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [item, mutateBookmarkInfo, mutateParentFolders, openDeleteBookmarkFolderModal, t]);
+  }, [item, mutateBookamrkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
-    mutateBookmarkInfo();
     onSelectedChild();
     try {
+      if (isBookmarked) {
+        await apiv3Put('/bookmark-folder/update-bookmark', { pageId: currentPage?._id, status: isBookmarked });
+      }
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
-      toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
-      mutateParentFolders();
-      mutateChildFolders();
+      const toaster = isBookmarked ? 'toaster.update_successed' : 'toaster.add_succeeded';
+      toastSuccess(t(toaster, { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      mutateUserBookmarks();
+      mutateBookamrkData();
       setSelectedItem(item._id);
+      mutateBookmarkInfo();
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders, t]);
+  }, [onSelectedChild, isBookmarked, mutateBookamrkData, mutateBookmarkInfo, currentPage?._id, mutateUserBookmarks, t]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (
       <>
-        {childFolders != null && (
+        {isOpen && (
           <DropdownMenu className='m-0'>
             {isCreateAction ? (
               <div className='mx-2' onClick={e => e.stopPropagation()}>
@@ -137,11 +142,10 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
               </DropdownItem>
             )}
 
-            {currentChildFolders && currentChildFolders?.length > 0 && (<DropdownItem divider />)}
+            {hasChildren() && (<DropdownItem divider />)}
 
-            {currentChildFolders?.map(child => (
+            {item.children?.map(child => (
               <div key={child._id} >
-
                 <div
                   className='dropdown-item grw-bookmark-folder-menu-item'
                   tabIndex={0} role="menuitem"
@@ -158,7 +162,15 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         )}
       </>
     );
-  }, [childFolders, currentChildFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, selectedItem, t]);
+  }, [hasChildren,
+      isCreateAction,
+      isOpen, item.children,
+      onClickChildMenuItemHandler,
+      onClickNewBookmarkFolder,
+      onPressEnterHandlerForCreate,
+      t,
+      selectedItem,
+  ]);
 
   return (
     <>
@@ -196,7 +208,7 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
           onClick={e => e.stopPropagation()}
           onMouseEnter={onMouseEnterHandler}
         >
-          {childFolders && childFolders?.length > 0
+          {hasChildren()
             ? <TriangleIcon />
             : (
               <i className="icon-plus d-block pl-0" />

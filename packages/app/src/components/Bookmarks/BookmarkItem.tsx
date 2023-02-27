@@ -10,7 +10,7 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { BookmarkFolderItems, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -25,7 +25,7 @@ type Props = {
   onUnbookmarked: () => void,
   onRenamed: () => void,
   onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void,
-  parentFolder: BookmarkFolderItems
+  parentFolder: BookmarkFolderItems | null
 }
 
 const BookmarkItem = (props: Props): JSX.Element => {
@@ -37,18 +37,12 @@ const BookmarkItem = (props: Props): JSX.Element => {
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const [parentId, setParentId] = useState(parentFolder._id);
-  const { mutate: mutateParentBookmarkData } = useSWRxBookamrkFolderAndChild();
-  const { mutate: mutateChildFolderData } = useSWRxBookamrkFolderAndChild(parentId);
-  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+  const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
+  const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
 
   useEffect(() => {
-    mutatePageInfo();
-    if (parentId != null) {
-      mutateChildFolderData();
-    }
-    mutateParentBookmarkData();
-  }, [parentId, mutateChildFolderData, mutatePageInfo, mutateParentBookmarkData]);
+    mutateBookamrkData();
+  }, [mutateBookamrkData]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
@@ -112,10 +106,12 @@ const BookmarkItem = (props: Props): JSX.Element => {
   }, [bookmarkedPage, onClickDeleteMenuItem]);
 
   const [, bookmarkItemDragRef] = useDrag({
-    type: 'BOOKMARK',
-    item: bookmarkedPage,
-    end: () => {
-      setParentId(parentFolder.parent);
+    type: DRAG_ITEM_TYPE.BOOKMARK,
+    item: { ...bookmarkedPage, parentFolder },
+    end: (_, monitor) => {
+      if (monitor.getDropResult() != null) {
+        mutateBookamrkData();
+      }
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
