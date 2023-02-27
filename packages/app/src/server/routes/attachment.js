@@ -1,3 +1,4 @@
+import { pathUtils } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
@@ -452,6 +453,7 @@ module.exports = function(crowi, app) {
   api.add = async function(req, res) {
     let pageId = req.body.page_id || null;
     const pagePath = req.body.path || null;
+    const pageBody = req.body.page_body || null;
     let pageCreated = false;
 
     // check params
@@ -468,10 +470,12 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
+      const fixedPageBody = pageBody ?? pathUtils.attachTitleHeader(pagePath);
+
       const isAclEnabled = crowi.aclService.isAclEnabled();
       const grant = isAclEnabled ? Page.GRANT_OWNER : Page.GRANT_PUBLIC;
 
-      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant });
+      page = await crowi.pageService.create(pagePath, fixedPageBody, req.user, { grant });
       pageCreated = true;
       pageId = page._id;
     }
