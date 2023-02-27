@@ -109,15 +109,11 @@ const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
     try {
       if (isBookmarked) {
         await apiv3Put('/bookmark-folder/update-bookmark', { pageId: currentPage?._id, status: isBookmarked });
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
-        mutateUserBookmarks();
       }
-      else {
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
-        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
-        mutateUserBookmarks();
-      }
-
+      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
+      const toaster = isBookmarked ? 'toaster.update_successed' : 'toaster.add_succeeded';
+      toastSuccess(t(toaster, { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      mutateUserBookmarks();
       mutateBookamrkData();
       setSelectedItem(item._id);
       mutateBookmarkInfo();

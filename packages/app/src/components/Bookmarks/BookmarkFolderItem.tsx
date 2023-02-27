@@ -181,7 +181,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     return true;
   };
 
-  const [, dropRef] = useDrop(() => ({
+  const [{ isOver }, dropRef] = useDrop(() => ({
     accept: acceptedTypes,
     drop: (item: DragItemDataType, monitor) => {
       const itemType = monitor.getItemType();
@@ -192,8 +192,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       return isDroppable(item, root, level, itemType);
     },
     collect: monitor => ({
-      isFolderOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
-      isBookmarkOver: monitor.isOver() && monitor.canDrop(),
+      isOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
     }),
   }));
 
@@ -254,7 +253,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
       <li ref={(c) => { bookmarkFolderDragRef(c); dropRef(c) }}
-        className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
+        className={`${isOver ? 'grw-accept-drop-item' : ''} list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center`}
         onClick={loadChildFolder}
       >
         <div className="grw-triangle-container d-flex justify-content-center">

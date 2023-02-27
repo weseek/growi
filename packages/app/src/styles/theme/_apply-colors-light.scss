@@ -239,10 +239,10 @@
 
     // bookmark
     .grw-folder-tree-container {
-      .grw-drop-item-area {
+      .grw-drop-item-area, .grw-foldertree-item-container  {
         .grw-accept-drop-item {
-          background-color: hsl.darken(var(--bgcolor-sidebar-context), 10%);
-          border-color: hsl.darken(var(--bgcolor-sidebar-context), 30%);
+          background-color: hsl.darken(var(--bgcolor-sidebar-context), 10%) !important;
+          border-color: hsl.darken(var(--bgcolor-sidebar-context), 30%) !important;
         }
       }
     }
@@ -310,10 +310,10 @@
       );
     }
     .grw-folder-tree-container {
-      .grw-drop-item-area {
+      .grw-drop-item-area, .grw-foldertree-item-container  {
         .grw-accept-drop-item {
-          background-color: hsl.darken(var($body-bg), 10%);
-          border-color: hsl.darken(var($body-bg), 30%);
+          background-color: hsl.darken(var($body-bg), 10%) !important;
+          border-color: hsl.darken(var($body-bg), 30%) !important;
         }
       }
     }

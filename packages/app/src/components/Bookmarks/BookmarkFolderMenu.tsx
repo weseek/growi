@@ -36,29 +36,33 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const isBookmarked = userBookmarkInfo?.isBookmarked;
   const [isOpen, setIsOpen] = useState(false);
 
+
   const toggleBookmarkHandler = useCallback(async() => {
 
     try {
       await apiv3Put('/bookmark-folder/update-bookmark', { pageId: currentPage?._id, status: isBookmarked });
-      toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
 
-    mutateUserBookmarks();
-    mutateBookmarkInfo();
-    setSelectedItem(null);
-    mutateBookmarkFolderData();
-  }, [currentPage, isBookmarked, mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, t]);
 
+  }, [currentPage, isBookmarked]);
 
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
   }, []);
 
+  const onUnbookmarkHandler = useCallback(async() => {
+    await toggleBookmarkHandler();
+    mutateUserBookmarks();
+    mutateBookmarkInfo();
+    mutateBookmarkFolderData();
+    setSelectedItem(null);
+    toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+  }, [mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, t, toggleBookmarkHandler]);
 
-  const toggleHandler = useCallback(() => {
+  const toggleHandler = useCallback(async() => {
     setIsOpen(!isOpen);
     mutateBookmarkFolderData();
     if (isOpen && bookmarkFolders != null) {
@@ -72,7 +76,19 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
         });
       });
     }
-  }, [bookmarkFolders, currentPage?._id, isOpen, mutateBookmarkFolderData]);
+    if (!isOpen && !isBookmarked) {
+      try {
+        toggleBookmarkHandler();
+        mutateUserBookmarks();
+        mutateBookmarkInfo();
+        setSelectedItem(null);
+        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      }
+      catch (err) {
+        toastError(err);
+      }
+    }
+  }, [isOpen, mutateBookmarkFolderData, bookmarkFolders, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, t]);
 
 
   const isBookmarkFolderExists = useCallback((): boolean => {
@@ -97,17 +113,14 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
-      // Remove from root folder then move to selected folder
       if (isBookmarked) {
         await toggleBookmarkHandler();
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
       }
-      // Move to selected folder
-      else {
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
-        mutateBookmarkInfo();
-        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
-      }
+      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
+      const toaster = isBookmarked ? 'toaster.update_successed' : 'toaster.add_succeeded';
+      toastSuccess(t(toaster, { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+      mutateBookmarkInfo();
+      mutateUserBookmarks();
     }
     catch (err) {
       toastError(err);
@@ -115,19 +128,25 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
     mutateBookmarkFolderData();
     setSelectedItem(itemId);
-  }, [currentPage?._id, isBookmarked, mutateBookmarkFolderData, mutateBookmarkInfo, t, toggleBookmarkHandler]);
+  }, [currentPage?._id, isBookmarked, mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler, t]);
 
 
   const renderBookmarkMenuItem = (child ?:BookmarkFolderItems[]) => {
     if (!child) {
       return (
         <>
-          <DropdownItem toggle={false} onClick={toggleBookmarkHandler} className={`grw-bookmark-folder-menu-item ${isBookmarked ? 'text-danger' : ''}`}>
-            <i className="fa fa-bookmark"></i> <span className="mx-2 ">
-              { isBookmarked ? t('bookmark_folder.cancel_bookmark') : t('bookmark_folder.bookmark_this_page')}
-            </span>
-          </DropdownItem>
-          <DropdownItem divider />
+          { isBookmarked && (
+            <>
+              <DropdownItem toggle={false} onClick={onUnbookmarkHandler} className={'grw-bookmark-folder-menu-item text-danger'}>
+                <i className="fa fa-bookmark"></i> <span className="mx-2 ">
+                  {t('bookmark_folder.cancel_bookmark') }
+                </span>
+              </DropdownItem>
+              <DropdownItem divider />
+            </>)
+
+          }
+
           { isCreateAction ? (
             <div className='mx-2'>
               <BookmarkFolderNameInput

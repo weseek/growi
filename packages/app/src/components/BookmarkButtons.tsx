@@ -44,12 +44,8 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     if (isGuestUser) {
       return 'Not available for guest';
     }
-
-    if (bookmarkInfo?.isBookmarked) {
-      return 'tooltip.cancel_bookmark';
-    }
     return 'tooltip.bookmark';
-  }, [isGuestUser, bookmarkInfo]);
+  }, [isGuestUser]);
 
 
   return (
