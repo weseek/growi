@@ -14,6 +14,12 @@ type PageHistoryProps = {
   onClose: () => void
 }
 
+// Get string from 'compare' query params
+export const getQueryParam = (): string | null => {
+  const query: URLSearchParams = new URL(window.location.href).searchParams;
+  return query.get('compare');
+};
+
 export const PageHistory: React.FC<PageHistoryProps> = (props: PageHistoryProps) => {
   const { sourceRevisionId, targetRevisionId, onClose } = props;
 

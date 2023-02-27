@@ -17,7 +17,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 import PageAttachment from './PageAttachment';
-import { PageHistory } from './PageHistory';
+import { PageHistory, getQueryParam } from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
 import styles from './PageAccessoriesModal.module.scss';
@@ -38,12 +38,6 @@ const PageAccessoriesModal = (): JSX.Element => {
 
   const { data: status, mutate, close } = usePageAccessoriesModal();
 
-  // Get string from 'compare' query params
-  const getQueryParam = () => {
-    const query: URLSearchParams = new URL(window.location.href).searchParams;
-    return query.get('compare');
-  };
-
   // add event handler when opened
   useEffect(() => {
     if (status == null || status.onOpened != null) {
@@ -63,14 +57,16 @@ const PageAccessoriesModal = (): JSX.Element => {
     // https://regex101.com/r/YHTDsr/1
     const regex = /^([0-9a-f]{24})...([0-9a-f]{24})$/i;
 
-    if (queryParams == null || regex.test(queryParams)) {
+    if (queryParams == null || !regex.test(queryParams)) {
       return;
     }
 
     const matches = queryParams.match(regex);
+
     if (matches == null) {
       return;
     }
+
     const [, sourceRevisionId, targetRevisionId] = matches;
     setSourceRevisionId(sourceRevisionId);
     setTargetRevisionId(targetRevisionId);
