@@ -579,3 +579,32 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
     },
   });
 };
+
+
+/*
+ * TemplateModal
+ */
+type TemplateModalStatus = {
+  isOpened: boolean,
+  onSubmit?: (templateText: string) => void
+}
+
+type TemplateModalUtils = {
+  open(onSubmit: (templateText: string) => void): void,
+  close(): void,
+}
+
+export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
+
+  const initialStatus: TemplateModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: (onSubmit: (templateText: string) => void) => {
+      swrResponse.mutate({ isOpened: true, onSubmit });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
