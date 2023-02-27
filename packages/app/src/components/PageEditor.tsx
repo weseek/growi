@@ -323,7 +323,7 @@ const PageEditor = React.memo((): JSX.Element => {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
-        
+
         mutateIsEnabledUnsavedWarning(false);
         await router.push(`/${res.page._id}#edit`);
       }
