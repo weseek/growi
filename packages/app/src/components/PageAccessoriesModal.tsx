@@ -44,13 +44,6 @@ const PageAccessoriesModal = (): JSX.Element => {
     return query.get('compare');
   };
 
-  // check if query string contains 2 strings like objectId separated by '...'
-  const isValidObjectIds = (queryParams) => {
-    // https://regex101.com/r/t3l36H/1
-    const regex = /^[0-9a-fA-F]{24}...[0-9a-fA-F]{24}?$/;
-    return regex.test(queryParams);
-  };
-
   // add event handler when opened
   useEffect(() => {
     if (status == null || status.onOpened != null) {
@@ -67,12 +60,21 @@ const PageAccessoriesModal = (): JSX.Element => {
   // Set sourceRevisionId and targetRevisionId as state with valid object id string
   useEffect(() => {
     const queryParams = getQueryParam();
-    if (queryParams != null && isValidObjectIds(queryParams)) {
-      const [sourceRevisionId, targetRevisionId] = queryParams.split('...');
-      setSourceRevisionId(sourceRevisionId);
-      setTargetRevisionId(targetRevisionId);
-      mutate({ isOpened: true });
+    // https://regex101.com/r/YHTDsr/1
+    const regex = /^([0-9a-f]{24})...([0-9a-f]{24})$/i;
+
+    if (queryParams == null || regex.test(queryParams)) {
+      return;
     }
+
+    const matches = queryParams.match(regex);
+    if (matches == null) {
+      return;
+    }
+    const [, sourceRevisionId, targetRevisionId] = matches;
+    setSourceRevisionId(sourceRevisionId);
+    setTargetRevisionId(targetRevisionId);
+    mutate({ isOpened: true });
   }, [mutate]);
 
   const navTabMapping = useMemo(() => {
