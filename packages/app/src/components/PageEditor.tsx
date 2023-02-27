@@ -318,6 +318,16 @@ const PageEditor = React.memo((): JSX.Element => {
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
+      // when if created newly
+      if (res.pageCreated) {
+        logger.info('Page is created', res.page._id);
+        globalEmitter.emit('resetInitializedHackMdStatus');
+        mutateGrant(res.page.grant);
+        
+        mutateIsEnabledUnsavedWarning(false);
+        await router.push(`/${res.page._id}#edit`);
+      }
+
       let insertText = `[${fileName}](${attachment.filePathProxied})`;
       // when image
       if (attachment.fileFormat.startsWith('image/')) {
@@ -325,13 +335,6 @@ const PageEditor = React.memo((): JSX.Element => {
         insertText = `!${insertText}`;
       }
       editorRef.current.insertText(insertText);
-
-      // when if created newly
-      if (res.pageCreated) {
-        logger.info('Page is created', res.page._id);
-        globalEmitter.emit('resetInitializedHackMdStatus');
-        mutateGrant(res.page.grant);
-      }
     }
     catch (e) {
       logger.error('failed to upload', e);
@@ -340,7 +343,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateGrant, pageId]);
+  }, [currentPagePath, mutateGrant, pageId, router]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
