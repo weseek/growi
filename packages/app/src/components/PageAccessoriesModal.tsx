@@ -17,7 +17,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 import PageAttachment from './PageAttachment';
-import { PageHistory } from './PageHistory';
+import { PageHistory, getQueryParam } from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
 import styles from './PageAccessoriesModal.module.scss';
@@ -27,6 +27,9 @@ const PageAccessoriesModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>(PageAccessoriesModalContents.PageHistory);
+  const [sourceRevisionId, setSourceRevisionId] = useState<string>();
+  const [targetRevisionId, setTargetRevisionId] = useState<string>();
+
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
   const { data: isSharedUser } = useIsSharedUser();
@@ -48,6 +51,28 @@ const PageAccessoriesModal = (): JSX.Element => {
     }, false);
   }, [mutate, status]);
 
+  // Set sourceRevisionId and targetRevisionId as state with valid object id string
+  useEffect(() => {
+    const queryParams = getQueryParam();
+    // https://regex101.com/r/YHTDsr/1
+    const regex = /^([0-9a-f]{24})...([0-9a-f]{24})$/i;
+
+    if (queryParams == null || !regex.test(queryParams)) {
+      return;
+    }
+
+    const matches = queryParams.match(regex);
+
+    if (matches == null) {
+      return;
+    }
+
+    const [, sourceRevisionId, targetRevisionId] = matches;
+    setSourceRevisionId(sourceRevisionId);
+    setTargetRevisionId(targetRevisionId);
+    mutate({ isOpened: true });
+  }, [mutate]);
+
   const navTabMapping = useMemo(() => {
     const isOpened = status == null ? false : status.isOpened;
     return {
@@ -57,7 +82,7 @@ const PageAccessoriesModal = (): JSX.Element => {
           if (!isOpened) {
             return <></>;
           }
-          return <PageHistory onClose={close}/>;
+          return <PageHistory onClose={close} sourceRevisionId={sourceRevisionId} targetRevisionId={targetRevisionId}/>;
         },
         i18n: t('History'),
         index: 0,
@@ -87,7 +112,7 @@ const PageAccessoriesModal = (): JSX.Element => {
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [status, t, close, isGuestUser, isSharedUser, isLinkSharingDisabled]);
+  }, [status, t, close, sourceRevisionId, targetRevisionId, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">

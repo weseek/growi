@@ -1,11 +1,12 @@
 import { useEffect, useMemo } from 'react';
 
 import type {
-  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
+  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable, SWRInfinitePageRevisionsResponse,
 } from '@growi/core';
 import { Ref, isClient, pagePathUtils } from '@growi/core';
 import useSWR, { mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
+import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -14,7 +15,7 @@ import {
   IPageInfo, IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import { IRevision, IRevisionHasId, IRevisionsForPagination } from '~/interfaces/revision';
+import { IRevision, IRevisionHasId } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
@@ -150,22 +151,28 @@ export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>):
   );
 };
 
-export const useSWRxPageRevisions = (
-    page: number, // page number of pagination
-    limit: number, // max number of pages in one paginate
-    pageId: string | null | undefined,
-): SWRResponse<IRevisionsForPagination, Error> => {
+/*
+ * SWR Infinite for page revision list
+ */
 
-  return useSWRImmutable(
-    ['/revisions/list', pageId, page, limit],
-    ([endpoint, pageId, page, limit]) => {
-      return apiv3Get(endpoint, { pageId, page, limit }).then((response) => {
-        const revisions = {
-          revisions: response.data.docs,
-          totalCounts: response.data.totalDocs,
-        };
-        return revisions;
-      });
+export const useSWRxInfinitePageRevisions = (
+    pageId: string,
+    limit: number,
+): SWRInfiniteResponse<SWRInfinitePageRevisionsResponse, Error> => {
+  return useSWRInfinite(
+    (pageIndex, previousRevisionData) => {
+      if (previousRevisionData != null && previousRevisionData.revisions.length === 0) return null;
+
+      if (pageIndex === 0 || previousRevisionData == null) {
+        return ['/revisions/list', pageId, undefined, limit];
+      }
+      const offset = previousRevisionData.offset + limit;
+      return ['/revisions/list', pageId, offset, limit];
+    },
+    ([endpoint, pageId, offset, limit]) => apiv3Get<SWRInfinitePageRevisionsResponse>(endpoint, { pageId, offset, limit }).then(response => response.data),
+    {
+      revalidateFirstPage: true,
+      revalidateAll: false,
     },
   );
 };

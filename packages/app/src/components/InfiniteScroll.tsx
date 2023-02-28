@@ -5,11 +5,11 @@ import React, {
 import type { SWRInfiniteResponse } from 'swr/infinite';
 
 type Props<T> = {
-  swrInifiniteResponse : SWRInfiniteResponse<T>
+  swrInifiniteResponse: SWRInfiniteResponse<T>
   children: React.ReactNode,
   loadingIndicator?: React.ReactNode
   endingIndicator?: React.ReactNode
-  isReachingEnd?: boolean,
+  isReachingEnd?: boolean
   offset?: number
 }
 
@@ -59,8 +59,7 @@ const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
 
   return (
     <>
-      { children }
-
+      {children}
       <div style={{ position: 'relative' }}>
         <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
         {isReachingEnd
