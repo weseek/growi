@@ -30,7 +30,6 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import {
   useCurrentUser,
-  useIsLatestRevision,
   useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
@@ -43,7 +42,7 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound,
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -192,7 +191,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCsrfToken(props.csrfToken);
 
   // page
-  useIsLatestRevision(props.isLatestRevision);
   useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
@@ -246,6 +244,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -297,6 +296,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateIsNotFound(props.isNotFound);
   }, [mutateIsNotFound, props.isNotFound]);
+
+  useEffect(() => {
+    mutateIsLatestRevision(props.isLatestRevision);
+  }, [mutateIsLatestRevision, props.isLatestRevision]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 

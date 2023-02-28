@@ -153,10 +153,6 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
   return useContextSWR('isEnabledStaleNotification', initialData);
 };
 
-export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useContextSWR('isLatestRevision', initialData);
-};
-
 export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
   return useContextSWR<EditorConfig, Error>('editorConfig', initialData);
 };

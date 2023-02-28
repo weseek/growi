@@ -32,7 +32,7 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -98,6 +98,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
@@ -328,9 +329,10 @@ const PageEditor = React.memo((): JSX.Element => {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
+        mutateIsLatestRevision(true);
+        mutateIsNotFound(false);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
-        await mutateIsNotFound(false);
       }
     }
     catch (e) {
@@ -340,7 +342,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsNotFound, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, mutateIsNotFound, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {

@@ -29,6 +29,10 @@ export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nu
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
+export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isLatestRevision', initialData);
+};
+
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };

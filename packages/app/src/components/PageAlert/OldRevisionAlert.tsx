@@ -4,8 +4,7 @@ import { pathUtils } from '@growi/core';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
-import { useIsLatestRevision } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useIsLatestRevision } from '~/stores/page';
 
 export const OldRevisionAlert = (): JSX.Element => {
 
