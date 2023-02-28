@@ -32,3 +32,9 @@ export type IRevisionOnConflict = {
 export type HasRevisionShortbody = {
   revisionShortBody?: string,
 }
+
+export type SWRInfinitePageRevisionsResponse = {
+  revisions: IRevisionHasPageId[],
+  totalCount: number,
+  offset: number,
+}

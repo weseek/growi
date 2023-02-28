@@ -7,7 +7,7 @@ import nodePath from 'path';
 
 
 import {
-  IPageHasId, PageGrant, pathUtils,
+  IPageHasId, pathUtils,
 } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -25,15 +25,22 @@ import {
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
-  useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
   useIsConflict,
   useEditingMarkdown,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
-import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
+import {
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+} from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
+import {
+  useRemoteRevisionId,
+  useRemoteRevisionBody,
+  useRemoteRevisionLastUpdatedAt,
+  useRemoteRevisionLastUpdateUser,
+} from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -74,7 +81,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
@@ -90,7 +98,10 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
-  const { advance: advancePt } = usePageTreeTermManager();
+  const { mutate: mutateRemotePageId } = useRemoteRevisionId();
+  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
+  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
+  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -209,7 +220,7 @@ const PageEditor = React.memo((): JSX.Element => {
       );
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
-      advancePt();
+      mutatePageTree();
 
       return page;
     }
@@ -217,18 +228,18 @@ const PageEditor = React.memo((): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error);
       if (error.code === 'conflict') {
-        // pageContainer.setState({
-        //   remoteRevisionId: error.data.revisionId,
-        //   remoteRevisionBody: error.data.revisionBody,
-        //   remoteRevisionUpdateAt: error.data.createdAt,
-        //   lastUpdateUser: error.data.user,
-        // });
+        mutateRemotePageId(error.data.revisionId);
+        mutateRemoteRevisionId(error.data.revisionBody);
+        mutateRemoteRevisionLastUpdatedAt(error.data.createdAt);
+        mutateRemoteRevisionLastUpdateUser(error.data.user);
       }
       return null;
     }
 
-  // eslint-disable-next-line max-len
-  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId, advancePt]);
+  }, [
+    currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
+    currentPagePath, currentRevisionId, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
+  ]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -255,11 +266,20 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
     const page = await save();
-    if (page != null) {
-      updateStateAfterSave?.();
-      toastSuccess(t('toaster.save_succeeded'));
+    if (page == null) {
+      return;
     }
-  }, [editorMode, save, t, updateStateAfterSave]);
+
+    if (isNotFound) {
+      await router.push(`/${page._id}#edit`);
+    }
+    else {
+      updateStateAfterSave?.();
+    }
+    toastSuccess(t('toaster.save_succeeded'));
+    mutateEditorMode(EditorMode.Editor);
+
+  }, [editorMode, isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
   /**

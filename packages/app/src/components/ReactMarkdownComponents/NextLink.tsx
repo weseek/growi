@@ -1,7 +1,5 @@
 import Link, { LinkProps } from 'next/link';
-import { Link as ScrollLink } from 'react-scroll';
 
-import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
@@ -30,9 +28,10 @@ type Props = Omit<LinkProps, 'href'> & {
   className?: string,
 };
 
-export const NextLink = ({
-  href, children, className, ...props
-}: Props): JSX.Element => {
+export const NextLink = (props: Props): JSX.Element => {
+  const {
+    href, children, className, ...rest
+  } = props;
 
   const { data: siteUrl } = useSiteUrl();
 
@@ -40,29 +39,29 @@ export const NextLink = ({
     return <a className={className}>{children}</a>;
   }
 
+  // extract 'data-*' props
+  const dataAttributes = Object.fromEntries(
+    Object.entries(rest).filter(([key]) => key.startsWith('data-')),
+  );
+
   // when href is an anchor link
   if (isAnchorLink(href)) {
-    const to = href.slice(1);
     return (
-      <Link href={href} scroll={false}>
-        <ScrollLink href={href} to={to} className={className} offset={-100} {...DEFAULT_AUTO_SCROLL_OPTS}>
-          {children}
-        </ScrollLink>
-      </Link>
+      <a href={href} className={className} {...dataAttributes}>{children}</a>
     );
   }
 
   if (isExternalLink(href, siteUrl)) {
     return (
-      <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+      <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
         {children}&nbsp;<i className='icon-share-alt small'></i>
       </a>
     );
   }
 
   return (
-    <Link {...props} href={href} prefetch={false}>
-      <a href={href} className={className}>{children}</a>
+    <Link {...rest} href={href} prefetch={false}>
+      <a href={href} className={className} {...dataAttributes}>{children}</a>
     </Link>
   );
 };

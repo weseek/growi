@@ -391,6 +391,7 @@
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "输入对象存储服务（如MinIO）端点的URL，MinIO具有与S3兼容的API。如果为空，则使用Amazon S3。",
+    "s3_secret_access_key_input_description": "设定的值被隐藏。",
     "load_plugins": "加载插件",
     "enable": "启用",
     "disable": "停用",
@@ -414,19 +415,6 @@
       "indentSize_desc": "您可以更改Markdown编辑器的默认的缩进值。",
       "disallow_indent_change": "不允许用户更改缩进值",
       "disallow_indent_change_desc": "您可以不允许用户更改缩进值。"
-    },
-    "presentation_header": "演示文稿设置",
-    "presentation_desc": "您可以更改演示文稿设置。",
-    "presentation_options": {
-      "page_break_setting": "分页设置",
-      "preset_one_separator": "预设 1",
-      "preset_one_separator_desc": "3 空行",
-      "preset_one_separator_value": "\\n\\n\\n",
-      "preset_two_separator": "预设 2",
-      "preset_two_separator_desc": "5 连字符",
-      "preset_two_separator_value": "-----",
-      "custom_separator": "自定义",
-      "custom_separator_desc": "正则表达式"
     },
     "xss_header": "阻止XSS（跨站点脚本）设置",
     "xss_desc": "您可以更改标记文本中HTML标记的处理方式。",
@@ -761,9 +749,9 @@
     },
     "reset_password": "重置密码",
     "reset_password_modal": {
-      "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
-      "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
-      "send_new_password": "Please send the new password to the user.",
+      "reset_password_info": "When a password is reset, a newly password is sent to the target user.",
+      "password_reset_message": "The temporary password was sent to the below user and strongly recommend to change another one immediately.",
+      "reset_password_alert": "If the e-mail transmission fails, please make sure that e-mail settings are correct and reset password again.",
       "target_user": "Target User",
       "new_password": "New Password"
     },

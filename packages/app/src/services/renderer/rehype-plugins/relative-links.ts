@@ -17,6 +17,9 @@ const defaultHrefResolver: IHrefResolver = (relativeHref, basePath) => {
   return relativeUrl.pathname;
 };
 
+const isAnchorLink = (href: string): boolean => {
+  return href.toString().length > 0 && href[0] === '#';
+};
 
 export type RelativeLinksPluginParams = {
   pagePath?: string,
@@ -42,7 +45,7 @@ export const relativeLinks: Plugin<[RelativeLinksPluginParams]> = (options = {})
       }
 
       const href = anchor.properties.href;
-      if (href == null || typeof href !== 'string' || isAbsolute(href)) {
+      if (href == null || typeof href !== 'string' || isAbsolute(href) || isAnchorLink(href)) {
         return;
       }
 

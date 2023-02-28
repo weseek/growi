@@ -350,6 +350,14 @@ ul.pagination {
   }
 }
 
+.grw-page-accessories-modal,.grw-descendants-page-list-modal {
+  .modal-header {
+    .close {
+      color: #{hsl.contrast(var(--bgcolor-global))};
+    }
+  }
+}
+
 .grw-custom-nav-tab {
   .nav-item {
     &:hover,
@@ -496,32 +504,31 @@ ul.pagination {
  * GROWI Editor
  */
 .layout-root.editing {
-  .main {
-    background-color: hsl.darken(var(--bgcolor-global),2%);
+  background-color: hsl.darken(var(--bgcolor-global),2%);
 
+  &.builtin-editor {
     .page-editor-editor-container {
       border-right-color: var(--border-color-theme);
-
-      .navbar-editor {
-        background-color: var(--bgcolor-global); // same color with active tab
-        border-bottom-color: var(--border-color-theme);
-      }
-    }
-
-    .page-editor-preview-container {
-      background-color: var(--bgcolor-global);
     }
   }
+
+  .navbar-editor {
+    background-color: var(--bgcolor-global); // same color with active tab
+    border-bottom-color: var(--border-color-theme);
+  }
+
+  .page-editor-preview-container {
+    background-color: var(--bgcolor-global);
+  }
 }
+
 
 /*
  * Preview for editing /Sidebar
  */
-body.editing-sidebar {
-  .page-editor-preview-body {
-    color: var(--color-sidebar-context);
-    background-color: var(--bgcolor-sidebar-context);
-  }
+.page-editor-preview-body.preview-sidebar {
+  color: var(--color-sidebar-context);
+  background-color: var(--bgcolor-sidebar-context);
 }
 
 /*
@@ -568,14 +575,11 @@ body.editing-sidebar {
 /*
  * GROWI comment form
  */
-.page-comments {
+.page-comments-row {
+  background: var(--bgcolor-subnav);
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
     background-color: var(--bgcolor-global);
-
-    &:before {
-      border-right-color: var(--bgcolor-global);
-    }
 
     .nav.nav-tabs {
       > li > a.active {

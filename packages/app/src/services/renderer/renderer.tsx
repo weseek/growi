@@ -1,26 +1,26 @@
 // allow only types to import from react
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
 
 import { isClient } from '@growi/core';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
-import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
-import { NormalComponents } from 'react-markdown/lib/complex-types';
-import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
+import type { NormalComponents } from 'react-markdown/lib/complex-types';
+import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
+import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-import { HtmlElementNode } from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
-import { PluggableList, Pluggable, PluginTuple } from 'unified';
+import type { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
@@ -30,7 +30,7 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
-import { RendererConfig } from '~/interfaces/services/renderer';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
@@ -67,13 +67,21 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
     | undefined
 };
 
-const commonSanitizeAttributes = { '*': ['class', 'className', 'style'] };
+const baseSanitizeSchema = {
+  tagNames: ['iframe', 'section'],
+  attributes: {
+    iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
+    // The special value 'data*' as a property name can be used to allow all data properties.
+    // see: https://github.com/syntax-tree/hast-util-sanitize/
+    '*': ['class', 'className', 'style', 'data*'],
+  },
+};
 
 const commonSanitizeOption: SanitizeOption = deepmerge(
-  sanitizeDefaultSchema,
+  rehypeSanitizeDefaultSchema,
+  baseSanitizeSchema,
   {
     clobberPrefix: 'mdcont-',
-    attributes: commonSanitizeAttributes,
   },
 );
 
@@ -81,8 +89,8 @@ let isInjectedCustomSanitaizeOption = false;
 
 const injectCustomSanitizeOption = (config: RendererConfig) => {
   if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = config.tagWhiteList;
-    commonSanitizeOption.attributes = deepmerge(commonSanitizeAttributes, config.attrWhiteList ?? {});
+    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhiteList ?? []);
+    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
     isInjectedCustomSanitaizeOption = true;
   }
 };
@@ -122,6 +130,10 @@ const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
       pukiwikiLikeLinker,
       growiDirective,
     ],
+    remarkRehypeOptions: {
+      clobberPrefix: 'mdcont-',
+      allowDangerousHtml: true,
+    },
     rehypePlugins: [
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
@@ -174,7 +186,7 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -270,7 +282,7 @@ export const generateSimpleViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
@@ -282,6 +294,19 @@ export const generateSimpleViewOptions = (
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
+
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
+  return options;
+};
+
+export const generatePresentationViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+): RendererOptions => {
+  // based on simple view options
+  const options = generateSimpleViewOptions(config, pagePath);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
@@ -324,7 +349,8 @@ export const generateSSRViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    slug,
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
   );
@@ -374,7 +400,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     addLineNumberAttribute.rehypePlugin,
     rehypeSanitizePlugin,
     katex,

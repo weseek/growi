@@ -14,6 +14,8 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/preset-themes/**
+      - packages/presentation/**
       - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
@@ -31,6 +33,7 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/preset-themes/**
       - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**

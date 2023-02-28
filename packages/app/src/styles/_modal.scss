@@ -1,12 +1,15 @@
-@mixin expand-modal-fullscreen($hasModalHeader: true, $hasModalFooter: true) {
+@mixin expand-modal-fullscreen($hasModalHeader: true, $hasModalFooter: true, $margin: 1rem) {
   // full-screen modal
   width: auto;
   max-width: unset !important;
-  height: calc(100vh - 30px);
-  margin: 15px !important;
+  height: calc(100vh - $margin * 2);
+  margin: $margin !important;
 
   .modal-content {
-    height: calc(100vh - 30px);
+    height: calc(100vh - $margin * 2);
+  }
+  .modal-body {
+    padding: $margin;
   }
 
   // expand .modal-body (with calculating height)
@@ -14,14 +17,14 @@
     $modal-header: 54px;
     $modal-footer: 46px;
 
-    $margin: 0px;
+    $margin-body: 0px;
     @if $hasModalHeader {
-      $margin: $margin + $modal-header;
+      $margin-body: $margin-body + $modal-header;
     }
     @if $hasModalFooter {
-      $margin: $margin + $modal-footer;
+      $margin-body: $margin-body + $modal-footer;
     }
-    height: calc(100% - #{$margin});
+    height: calc(100% - #{$margin-body});
   }
 }
 

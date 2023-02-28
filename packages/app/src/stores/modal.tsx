@@ -245,11 +245,10 @@ export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRRespons
 */
 type PresentationModalStatus = {
   isOpened: boolean,
-  href?: string
 }
 
 type PresentationModalStatusUtils = {
-  open(href: string): Promise<PresentationModalStatus | undefined>
+  open(): Promise<PresentationModalStatus | undefined>
   close(): Promise<PresentationModalStatus | undefined>
 }
 
@@ -257,13 +256,13 @@ export const usePagePresentationModal = (
     status?: PresentationModalStatus,
 ): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
   const initialData: PresentationModalStatus = {
-    isOpened: false, href: '?presentation=1',
+    isOpened: false,
   };
   const swrResponse = useStaticSWR<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (href: string) => swrResponse.mutate({ isOpened: true, href }),
+    open: () => swrResponse.mutate({ isOpened: true }, { revalidate: true }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
@@ -574,6 +573,35 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   return Object.assign(swrResponse, {
     open: () => {
       swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
+
+
+/*
+ * TemplateModal
+ */
+type TemplateModalStatus = {
+  isOpened: boolean,
+  onSubmit?: (templateText: string) => void
+}
+
+type TemplateModalUtils = {
+  open(onSubmit: (templateText: string) => void): void,
+  close(): void,
+}
+
+export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
+
+  const initialStatus: TemplateModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: (onSubmit: (templateText: string) => void) => {
+      swrResponse.mutate({ isOpened: true, onSubmit });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });

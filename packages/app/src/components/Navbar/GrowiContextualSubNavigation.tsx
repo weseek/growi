@@ -24,7 +24,7 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
@@ -36,7 +36,6 @@ import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
-import { NotAvailableForNow } from '../NotAvailableForNow';
 import { Skeleton } from '../Skeleton';
 
 import type { AuthorInfoProps } from './AuthorInfo';
@@ -85,23 +84,19 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
-  const hrefForPresentationModal = `${pageId}/?presentation=1`;
-
   return (
     <>
       {/* Presentation */}
-      <NotAvailableForNow>
-        <DropdownItem
-          onClick={() => openPresentationModal(hrefForPresentationModal)}
-          data-testid="open-presentation-modal-btn"
-          className="grw-page-control-dropdown-item"
-        >
-          <i className="icon-fw grw-page-control-dropdown-icon">
-            <PresentationIcon />
-          </i>
-          { t('Presentation Mode') }
-        </DropdownItem>
-      </NotAvailableForNow>
+      <DropdownItem
+        onClick={() => openPresentationModal()}
+        data-testid="open-presentation-modal-btn"
+        className="grw-page-control-dropdown-item"
+      >
+        <i className="icon-fw grw-page-control-dropdown-icon">
+          <PresentationIcon />
+        </i>
+        { t('Presentation Mode') }
+      </DropdownItem>
 
       {/* Export markdown */}
       <DropdownItem
@@ -200,7 +195,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');

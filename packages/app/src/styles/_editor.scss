@@ -219,6 +219,16 @@
       padding: 18px 15px 0;
       overflow-y: scroll;
     }
+    // editing /Sidebar
+    .page-editor-preview-body.preview-sidebar {
+      width: 320px;
+      margin-right: auto;
+      margin-left: auto;
+
+      .wiki {
+        @extend %grw-custom-sidebar-content;
+      }
+    }
 
     .grw-editor-configuration-dropdown {
       .icon-container {
@@ -231,19 +241,6 @@
   }
 
   // .builtin-editor .tab-pane#edit
-
-  // editing /Sidebar
-  &.editing-sidebar {
-    .page-editor-preview-body {
-      width: 320px;
-      margin-right: auto;
-      margin-left: auto;
-
-      .wiki {
-        @extend %grw-custom-sidebar-content;
-      }
-    }
-  }
 
   &.hackmd {
     .hackmd-preinit,
