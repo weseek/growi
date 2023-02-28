@@ -80,17 +80,19 @@ export const Comment = (props: CommentProps): JSX.Element => {
     let className = 'page-comment flex-column';
 
     // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
-    let commentCreatedAt = comment.createdAt;
-    if (typeof commentCreatedAt === 'string') {
-      commentCreatedAt = parseISO(commentCreatedAt);
-    }
+    const commentCreatedAtFixed = typeof comment.createdAt === 'string'
+      ? parseISO(comment.createdAt)
+      : comment.createdAt;
+    const revisionCreatedAtFixed = typeof revisionCreatedAt === 'string'
+      ? parseISO(revisionCreatedAt)
+      : revisionCreatedAt;
 
     // Conditional for called from SearchResultContext
     if (revisionId != null && revisionCreatedAt != null) {
       if (comment.revision === revisionId) {
         className += ' page-comment-current';
       }
-      else if (commentCreatedAt.getTime() > revisionCreatedAt.getTime()) {
+      else if (commentCreatedAtFixed.getTime() > revisionCreatedAtFixed.getTime()) {
         className += ' page-comment-newer';
       }
       else {

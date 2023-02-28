@@ -20,15 +20,9 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 
 import styles from './DescendantsPageListModal.module.scss';
 
-const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
-  const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
-  return <DescendantsPageList {...props}/>;
-};
+const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
 
-const PageTimeline = (): JSX.Element => {
-  const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
-  return <PageTimeline />;
-};
+const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
 
 export const DescendantsPageListModal = (): JSX.Element => {
   const { t } = useTranslation();

@@ -1,6 +1,7 @@
-import React, { FC, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
@@ -9,12 +10,17 @@ import {
 import { IPagingResult } from '~/interfaces/paging-result';
 import { useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';
-import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page-listing';
+import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 
+import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
+import { DescendantsPageListProps } from './DescendantsPageList';
 import EmptyTrashButton from './EmptyTrashButton';
 import PageListIcon from './Icons/PageListIcon';
+
+
+const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
+
 
 const convertToIDataWithMeta = (page) => {
   return { data: page };
@@ -23,7 +29,7 @@ const convertToIDataWithMeta = (page) => {
 const useEmptyTrashButton = () => {
 
   const { data: limit } = useShowPageLimitationXL();
-  const { data: pagingResult, mutate: mutatePageLists } = useSWRxDescendantsPageListForCurrrentPath(1, limit);
+  const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
   const { t } = useTranslation();
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
 
@@ -59,7 +65,19 @@ const useEmptyTrashButton = () => {
   return emptyTrashButton;
 };
 
-export const TrashPageList: FC = () => {
+const DescendantsPageListForTrash = (): JSX.Element => {
+  const { data: limit } = useShowPageLimitationXL();
+
+  return (
+    <DescendantsPageList
+      path="/trash"
+      limit={limit}
+      forceHideMenuItems={[MenuItemType.RENAME]}
+    />
+  );
+};
+
+export const TrashPageList = (): JSX.Element => {
   const { t } = useTranslation();
   const emptyTrashButton = useEmptyTrashButton();
 
@@ -67,7 +85,7 @@ export const TrashPageList: FC = () => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: DescendantsPageListForCurrentPath,
+        Content: DescendantsPageListForTrash,
         i18n: t('page_list'),
         index: 0,
       },

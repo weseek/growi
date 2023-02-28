@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { RendererOptions } from '~/services/renderer/renderer';
-import { useEditorSettings } from '~/stores/editor';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 
@@ -22,12 +21,9 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
     markdown, pagePath,
   } = props;
 
-  const { data: editorSettings } = useEditorSettings();
-
-
   return (
     <div
-      className="page-editor-preview-body"
+      className={`page-editor-preview-body ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
       ref={ref}
       onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
         if (props.onScroll != null) {

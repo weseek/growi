@@ -1,49 +1,40 @@
 import React from 'react';
 
-import { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
-import {
+import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
-import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
-import RevisionRenderer from '~/components/Page/RevisionRenderer';
-import ShareLinkAlert from '~/components/Page/ShareLinkAlert';
-import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import type { ShareLinkPageContentsProps } from '~/components/ShareLink/ShareLinkPageContents';
+import { ShareLinkPageView } from '~/components/ShareLink/ShareLinkPageView';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { IShareLinkHasId } from '~/interfaces/share-link';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
-import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
-  useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage, useCurrentPathname,
+  useCurrentUser, useCurrentPageId, useRendererConfig, useIsSearchPage, useCurrentPathname, useIsNotFound,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from '../_app.page';
+import type { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
 
-const PageSideContents = dynamic<PageSideContentsProps>(() => import('~/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-// const Comments = dynamic(() => import('~/components/Comments').then(mod => mod.Comments), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
-
 type Props = CommonProps & {
   shareLinkRelatedPage?: IShareLinkRelatedPage,
   shareLink?: IShareLinkHasId,
+  isNotFound: boolean,
   isExpired: boolean,
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
@@ -73,16 +64,16 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
 // GrowiContextualSubNavigation for shared page
 // get page info from props not to send request 'GET /page' from client
 type GrowiContextualSubNavigationForSharedPageProps = {
-  currentPage?: IPagePopulatedToShowRevision,
+  page?: IPagePopulatedToShowRevision,
   isLinkSharingDisabled: boolean,
 }
 
 const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
-  const { currentPage, isLinkSharingDisabled } = props;
-  if (currentPage == null) { return <></> }
+  const { page, isLinkSharingDisabled } = props;
+
   return (
     <div data-testid="grw-contextual-sub-nav">
-      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+      <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled}/>
     </div>
   );
 };
@@ -90,6 +81,7 @@ const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavi
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentPathname(props.shareLink?.relatedPage.path);
   useIsSearchPage(false);
+  useIsNotFound(props.isNotFound);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
@@ -101,44 +93,11 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsContainerFluid(props.isContainerFluid);
 
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
-
-  const isNotFound = props.shareLink == null || props.shareLink.relatedPage == null || props.shareLink.relatedPage.isEmpty;
-  const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
-  const shareLink = props.shareLink;
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
 
   const pagePath = props.shareLinkRelatedPage?.path ?? '';
-  const revisionBody = props.shareLinkRelatedPage?.revision.body;
 
   const title = generateCustomTitleForPage(props, pagePath);
-
-  // TODO: show SSR body
-  // const rendererOptions = generateSSRViewOptions(props.rendererConfig, pagePath);
-  // const ssrBody = <RevisionRenderer rendererOptions={rendererOptions} markdown={revisionBody ?? ''} />;
-
-  const sideContents = shareLink != null
-    ? <PageSideContents page={shareLink.relatedPage} />
-    : <></>;
-
-  // const footerContents = shareLink != null && isPopulated(shareLink.relatedPage.revision)
-  //   ? (
-  //     <>
-  //       <Comments pageId={shareLink._id} pagePath={shareLink.relatedPage.path} revision={shareLink.relatedPage.revision} />
-  //     </>
-  //   )
-  //   : <></>;
-
-  const contents = (() => {
-    const ShareLinkPageContents = dynamic<ShareLinkPageContentsProps>(
-      () => import('~/components/ShareLink/ShareLinkPageContents').then(mod => mod.ShareLinkPageContents),
-      {
-        ssr: false,
-        // TODO: show SSR body
-        // loading: () => ssrBody,
-      },
-    );
-    return <ShareLinkPageContents page={props.shareLinkRelatedPage} />;
-  })();
 
   return (
     <>
@@ -148,50 +107,19 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          {isShowSharedPage
-          && <GrowiContextualSubNavigationForSharedPage currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
+          <GrowiContextualSubNavigationForSharedPage page={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <MainPane
-          sideContents={sideContents}
-          // footerContents={footerContents}
-        >
-          { props.disableLinkSharing && (
-            <div className="mt-4">
-              <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />
-            </div>
-          )}
-
-          { (isNotFound && !props.disableLinkSharing) && (
-            <div className="container-lg">
-              <h2 className="text-muted mt-4">
-                <i className="icon-ban" aria-hidden="true" />
-                <span> Page is not found</span>
-              </h2>
-            </div>
-          )}
-
-          { (props.isExpired && !props.disableLinkSharing && shareLink != null) && (
-            <div className="container-lg">
-              <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              <h2 className="text-muted mt-4">
-                <i className="icon-ban" aria-hidden="true" />
-                <span> Page is expired</span>
-              </h2>
-            </div>
-          )}
-
-          {(isShowSharedPage && shareLink != null) && (
-            <>
-              <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              <div className="mb-5">
-                { contents }
-              </div>
-            </>
-          )}
-        </MainPane>
+        <ShareLinkPageView
+          pagePath={pagePath}
+          rendererConfig={props.rendererConfig}
+          page={props.shareLinkRelatedPage}
+          shareLink={props.shareLink}
+          isExpired={props.isExpired}
+          disableLinkSharing={props.disableLinkSharing}
+        />
 
       </div>
     </>
@@ -210,7 +138,7 @@ SharedPage.getLayout = function getLayout(page) {
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const { configManager, searchService, xssService } = crowi;
+  const { configManager, searchService } = crowi;
 
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
 
@@ -221,6 +149,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
   props.rendererConfig = {
+    isSharedPage: true,
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
@@ -287,7 +216,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   try {
     const ShareLinkModel = crowi.model('ShareLink');
     const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
-    if (shareLink != null) {
+    if (shareLink == null) {
+      props.isNotFound = true;
+    }
+    else {
+      props.isNotFound = false;
       props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision();
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();

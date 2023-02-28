@@ -50,7 +50,6 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
 
   const commonPageProps = pageProps as CommonProps;
-  // useInterceptorManager(new InterceptorManager());
   useAppTitle(commonPageProps.appTitle);
   useSiteUrl(commonPageProps.siteUrl);
   useConfidential(commonPageProps.confidential);
@@ -67,7 +66,5 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
     </SWRConfig>
   );
 }
-
-// export default appWithTranslation(GrowiApp);
 
 export default appWithTranslation(GrowiApp, nextI18nConfig);

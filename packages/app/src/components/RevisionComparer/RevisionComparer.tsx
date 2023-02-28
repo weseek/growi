@@ -32,10 +32,11 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
 
   const {
-    sourceRevision, targetRevision, currentPageId, currentPagePath, onClose,
+    sourceRevision, targetRevision, onClose, currentPageId, currentPagePath,
   } = props;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);

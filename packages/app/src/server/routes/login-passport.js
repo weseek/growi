@@ -6,6 +6,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
+import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
 
@@ -16,7 +17,6 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
-  const User = crowi.model('User');
   const passportService = crowi.passportService;
 
   const activityEvent = crowi.event('activity');
@@ -120,17 +120,26 @@ module.exports = function(crowi, app) {
 
     await crowi.activityService.createActivity(parameters);
 
+    const redirectToForUnauthenticated = createRedirectToForUnauthenticated(req.user.status);
+    const redirectTo = redirectToForUnauthenticated ?? res.locals.redirectTo ?? '/';
+
     if (isExternalAccount) {
-      return res.redirect('/');
+      return res.redirect(redirectTo);
     }
 
-    // check for redirection to '/invited'
-    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
+    return res.apiv3({ redirectTo });
+  };
 
-    // remove session.redirectTo
-    delete req.session.redirectTo;
+  const injectRedirectTo = (req, res, next) => {
 
-    return res.apiv3({ redirectTo, userStatus: req.user.status });
+    // Move "req.session.redirectTo" to "res.locals.redirectTo"
+    // Because the session is regenerated when req.login() is called
+    const redirectTo = req.session.redirectTo;
+    if (redirectTo != null) {
+      res.locals.redirectTo = redirectTo;
+    }
+
+    next();
   };
 
   const isEnableLoginWithLocalOrLdap = (req, res, next) => {
@@ -595,6 +604,7 @@ module.exports = function(crowi, app) {
 
   return {
     cannotLoginErrorHadnler,
+    injectRedirectTo,
     isEnableLoginWithLocalOrLdap,
     loginFailure,
     loginFailureForExternalAccount,

@@ -1,31 +1,30 @@
-import { RefObject, useCallback, useEffect } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 
 import {
-  isClient, isServer, pagePathUtils, Nullable, PageGrant,
+  isClient, isServer, pagePathUtils, type Nullable, PageGrant,
 } from '@growi/core';
-import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
+import { withUtils, type SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
-import { HtmlElementNode } from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import {
-  useSWRConfig, SWRResponse, Key,
+  useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { IFocusable } from '~/client/interfaces/focusable';
+import type { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { IPageGrantData } from '~/interfaces/page';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IPageGrantData } from '~/interfaces/page';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { UpdateDescCountData } from '~/interfaces/websocket';
+import type { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useIsEditable, useIsGuestUser,
+  useCurrentPageId, useIsEditable,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
-import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
 import { useStaticSWR } from './use-static-swr';
 
@@ -79,16 +78,11 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-// TODO: Enable `editing-sidebar` class
-// https://redmine.weseek.co.jp/issues/111527
-const getClassNamesByEditorMode = (editorMode: EditorMode | undefined /* , isSidebar = false */): string[] => {
+const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[] => {
   const classNames: string[] = [];
   switch (editorMode) {
     case EditorMode.Editor:
       classNames.push('editing', 'builtin-editor');
-      // if (isSidebar) {
-      //   classNames.push('editing-sidebar');
-      // }
       break;
     case EditorMode.HackMD:
       classNames.push('editing', 'hackmd');
@@ -140,10 +134,8 @@ export const determineEditorModeByHash = (): EditorMode => {
   }
 };
 
-// TODO: Enable `editing-sidebar` class somehow
-// https://redmine.weseek.co.jp/issues/111527
 type EditorModeUtils = {
-  getClassNamesByEditorMode: (/* isEditingSidebar: boolean */) => string[],
+  getClassNamesByEditorMode: () => string[],
 }
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
@@ -171,11 +163,8 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
     return mutateOriginal(editorMode, shouldRevalidate);
   }, [isEditable, mutateOriginal]);
 
-  // TODO: Enable `editing-sidebar` class
-  // https://redmine.weseek.co.jp/issues/111527
-  // construct getClassNamesByEditorMode method
-  const getClassNames = useCallback((/* isEditingSidebar: boolean */) => {
-    return getClassNamesByEditorMode(swrResponse.data /* , isEditingSidebar */);
+  const getClassNames = useCallback(() => {
+    return getClassNamesByEditorMode(swrResponse.data);
   }, [swrResponse.data]);
 
   return Object.assign(swrResponse, {
@@ -245,18 +234,14 @@ type PreferDrawerModeByUserUtils = {
 }
 
 export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferDrawerModeByUserUtils, boolean> => {
-  const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData);
 
   const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
       swrResponse.mutate(preferDrawerMode);
-
-      if (!isGuestUser) {
-        scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
-      }
+      scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
     },
   };
 
@@ -302,7 +287,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
-  const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
+  const isEditModeWithPreferDrawerMode = editorMode !== EditorMode.View && preferDrawerModeOnEditByUser;
   const isDrawerModeFixed = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
 
   return useSWRImmutable(

@@ -10,16 +10,15 @@ import Link from 'next/link';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
-import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
+import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
+import InfiniteScroll from '../InfiniteScroll';
 
-import InfiniteScroll from './InfiniteScroll';
 import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
 import RecentChangesContentSkeleton from './Skeleton/RecentChangesContentSkeleton';
 
-import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
 
 
@@ -104,13 +103,14 @@ const RecentChanges = (): JSX.Element => {
 
   const PER_PAGE = 20;
   const { t } = useTranslation();
-  const swrInifinitexRecentlyUpdated = useSWRInifinitexRecentlyUpdated();
-  const { data: dataRecentlyUpdated, error, mutate: mutateRecentlyUpdated } = swrInifinitexRecentlyUpdated;
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE);
+  const {
+    data, mutate, isLoading,
+  } = swrInifinitexRecentlyUpdated;
 
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-  const isEmpty = dataRecentlyUpdated?.[0].length === 0;
-  const isLoading = error == null && dataRecentlyUpdated === undefined;
-  const isReachingEnd = isEmpty || (dataRecentlyUpdated && dataRecentlyUpdated[dataRecentlyUpdated.length - 1]?.length < PER_PAGE);
+  const isEmpty = data?.[0]?.pages.length === 0;
+  const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -132,7 +132,7 @@ const RecentChanges = (): JSX.Element => {
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
-        <SidebarHeaderReloadButton onClick={() => mutateRecentlyUpdated()}/>
+        <SidebarHeaderReloadButton onClick={() => mutate()}/>
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input
@@ -155,9 +155,10 @@ const RecentChanges = (): JSX.Element => {
                 swrInifiniteResponse={swrInifinitexRecentlyUpdated}
                 isReachingEnd={isReachingEnd}
               >
-                {pages => pages.map(
-                  page => <PageItem key={page._id} page={page} isSmall={isRecentChangesSidebarSmall} />,
-                )
+                { data != null && data.map(apiResult => apiResult.pages).flat()
+                  .map(page => (
+                    <PageItem key={page._id} page={page} isSmall={isRecentChangesSidebarSmall} />
+                  ))
                 }
               </InfiniteScroll>
             </ul>
