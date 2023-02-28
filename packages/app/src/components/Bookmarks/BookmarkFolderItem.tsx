@@ -31,7 +31,7 @@ type BookmarkFolderItemProps = {
   isUserHomePage?: boolean
 }
 
-type DragItemDataType = BookmarkFolderItemProps & IPageHasId;
+type DragItemDataType = BookmarkFolderItemProps & IPageHasId & { parentFolder: BookmarkFolderItems } ;
 
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
@@ -173,9 +173,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       }
       return item.root !== targetRoot || item.level >= targetLevel;
     }
-    const bookmarks = bookmarkFolder.bookmarks;
-    const isBookmarkExists = bookmarks.filter(bookmark => bookmark.page._id === item._id).length > 0;
-    if (isBookmarkExists) {
+    const isSameTarget = item.parentFolder && item.parentFolder._id === bookmarkFolder._id;
+    if (isSameTarget) {
       return false;
     }
     return true;
