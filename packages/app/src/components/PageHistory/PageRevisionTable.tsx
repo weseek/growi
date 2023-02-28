@@ -1,37 +1,110 @@
-import React from 'react';
+import React, {
+  useEffect, useRef, useState,
+} from 'react';
 
-import { IRevisionHasId } from '@growi/core';
+import { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+
+import { useSWRxInfinitePageRevisions } from '~/stores/page';
+
+import { RevisionComparer } from '../RevisionComparer/RevisionComparer';
 
 import { Revision } from './Revision';
 
 import styles from './PageRevisionTable.module.scss';
 
-type PageRevisionTAble = {
-  revisions: IRevisionHasId[],
-  pagingLimit: number,
-  sourceRevision: IRevisionHasId,
-  targetRevision: IRevisionHasId,
-  currentPageId: string,
-  currentPagePath: string,
-  onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
-  onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
+type PageRevisionTableProps = {
+  sourceRevisionId?: string
+  targetRevisionId?: string
   onClose: () => void,
+  currentPageId: string
+  currentPagePath: string
 }
 
-export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
+export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
   const { t } = useTranslation();
 
+  const REVISIONS_PER_PAGE = 10;
+
   const {
-    revisions, pagingLimit, sourceRevision, targetRevision, currentPageId, currentPagePath,
-    onChangeSourceInvoked, onChangeTargetInvoked, onClose,
+    sourceRevisionId, targetRevisionId, onClose, currentPageId, currentPagePath,
   } = props;
 
-  const revisionCount = revisions.length;
-  const latestRevision = revisions[0];
-  const oldestRevision = revisions[revisions.length - 1];
+  // Load all data if source revision id and target revision id not null
+  const revisionPerPage = (sourceRevisionId != null && targetRevisionId != null) ? 0 : REVISIONS_PER_PAGE;
+  const swrInifiniteResponse = useSWRxInfinitePageRevisions(currentPageId, revisionPerPage);
 
-  const renderRow = (revision: IRevisionHasId, previousRevision: IRevisionHasId, latestRevision: IRevisionHasId,
+
+  const {
+    data, size, error, setSize, isValidating,
+  } = swrInifiniteResponse;
+
+  const revisions = data && data[0].revisions;
+  const oldestRevision = revisions && revisions[revisions.length - 1];
+
+  // First load
+  const isLoadingInitialData = !data && !error;
+  const isLoadingMore = isLoadingInitialData
+    || (isValidating && data != null && typeof data[size - 1] === 'undefined');
+  const isReachingEnd = (revisionPerPage === 0) || !!(data != null && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
+
+  const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
+  const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
+
+  const tbodyRef = useRef<HTMLTableSectionElement>(null);
+
+
+  useEffect(() => {
+    if (revisions != null) {
+      if (sourceRevisionId != null && targetRevisionId != null) {
+        const sourceRevision = revisions.filter(revision => revision._id === sourceRevisionId)[0];
+        const targetRevision = revisions.filter(revision => revision._id === targetRevisionId)[0];
+        setSourceRevision(sourceRevision);
+        setTargetRevision(targetRevision);
+      }
+      else {
+        const latestRevision = revisions != null ? revisions[0] : null;
+        if (latestRevision != null) {
+          setSourceRevision(latestRevision);
+          setTargetRevision(latestRevision);
+        }
+      }
+    }
+  }, [revisions, sourceRevisionId, targetRevisionId]);
+
+  useEffect(() => {
+    // Apply ref to tbody
+    const tbody = tbodyRef.current;
+    const handleScroll = () => {
+      const offset = 30; // Threshold before scroll actually reaching the end
+      if (tbody) {
+        // Scroll end
+        const isEnd = tbody.scrollTop + tbody.clientHeight + offset >= tbody.scrollHeight;
+        if (isEnd && !isLoadingMore && !isReachingEnd) {
+          setSize(size + 1);
+        }
+      }
+    };
+    if (tbody) {
+      tbody.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (tbody) {
+        tbody.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [isLoadingMore, isReachingEnd, setSize, size]);
+
+
+  const onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
+    setSourceRevision(revision);
+  };
+  const onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
+    setTargetRevision(revision);
+  };
+
+
+  const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
       isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;
@@ -52,10 +125,10 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
           <div className="d-lg-flex">
             <Revision
               revision={revision}
-              currentPageId={currentPageId}
-              currentPagePath={currentPagePath}
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
+              currentPageId={currentPageId}
+              currentPagePath={currentPagePath}
               key={`revision-history-rev-${revisionId}`}
               onClose={onClose}
             />
@@ -118,36 +191,42 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
     );
   };
 
-  const revisionList = revisions.map((revision, idx) => {
-    // Returns null because the last revision is for the bottom diff display
-    if (idx === pagingLimit) {
-      return null;
-    }
-
-    // if it is the first revision, show full text as diff text
-    const previousRevision = (idx + 1 < revisionCount) ? revisions[idx + 1] : revision;
-
-    const isOldestRevision = revision === oldestRevision;
-
-    // set 'true' if undefined for backward compatibility
-    const hasDiff = revision.hasDiffToPrev !== false;
-
-    return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
-  });
-
   return (
-    <table className={`${styles['revision-history-table']} table revision-history-table`}>
-      <thead>
-        <tr className="d-flex">
-          <th className="col">{t('page_history.revision')}</th>
-          <th className="col-1">{t('page_history.comparing_source')}</th>
-          <th className="col-2">{t('page_history.comparing_target')}</th>
-        </tr>
-      </thead>
-      <tbody className="overflow-auto d-block">
-        {revisionList}
-      </tbody>
-    </table>
+    <>
+      <table className={`${styles['revision-history-table']} table revision-history-table`}>
+        <thead>
+          <tr className="d-flex">
+            <th className="col">{t('page_history.revision')}</th>
+            <th className="col-1">{t('page_history.comparing_source')}</th>
+            <th className="col-2">{t('page_history.comparing_target')}</th>
+          </tr>
+        </thead>
+        <tbody className="overflow-auto d-block" ref={tbodyRef}>
+          {revisions != null && data != null && data.map(apiResult => apiResult.revisions).flat()
+            .map((revision, idx) => {
+              const previousRevision = (idx + 1 < revisions?.length) ? revisions[idx + 1] : revision;
+
+              const isOldestRevision = revision === oldestRevision;
+              const latestRevision = revisions[0];
+
+              // set 'true' if undefined for backward compatibility
+              const hasDiff = revision.hasDiffToPrev !== false;
+              return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+            })
+          }
+        </tbody>
+      </table>
+
+      {sourceRevision != null && targetRevision != null && (
+        <RevisionComparer
+          sourceRevision={sourceRevision}
+          targetRevision={targetRevision}
+          currentPageId={currentPageId}
+          currentPagePath={currentPagePath}
+          onClose={onClose}
+        />)
+      }
+    </>
   );
 
 };

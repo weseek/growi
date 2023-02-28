@@ -74,6 +74,7 @@ const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() =
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
@@ -355,6 +356,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <DrawioModal />
       <HandsontableModal />
       <QuestionnaireModalManager />
+      <TemplateModal />
     </>
   );
 };
