@@ -1936,7 +1936,7 @@ class PageService {
   }
 
   // no need to separate Main Sub since it is devided into single page operations
-  async deleteMultiplePages(pagesToDelete, user, options): Promise<void> {
+  async deleteMultiplePages(pagesToDelete, user, options, activityParameters?): Promise<void> {
     const { isRecursively, isCompletely } = options;
 
     if (pagesToDelete.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
@@ -1948,7 +1948,7 @@ class PageService {
 
     if (isCompletely) {
       for await (const page of pages) {
-        await this.deleteCompletely(page, user, {}, isRecursively);
+        await this.deleteCompletely(page, user, {}, isRecursively, false, activityParameters);
       }
     }
     else {
