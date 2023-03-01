@@ -373,7 +373,6 @@
     .grw-folder-tree-container {
       .grw-drop-item-area , .grw-foldertree-item-container {
         .grw-accept-drop-item {
-          background-color: hsl.lighten(var(--bgcolor-sidebar-context), 10%) !important;
           border-color: hsl.lighten(var(--bgcolor-sidebar-context), 30%) !important;
         }
       }
@@ -440,7 +439,6 @@
     .grw-folder-tree-container {
       .grw-drop-item-area , .grw-foldertree-item-container {
         .grw-accept-drop-item {
-          background-color: hsl.lighten(var($body-bg), 10%) !important;
           border-color: hsl.lighten(var($body-bg), 30%) !important;
         }
       }

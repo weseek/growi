@@ -99,7 +99,7 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
 
   };
 
-  const [{ isOver, canDrop }, dropRef] = useDrop(() => ({
+  const [, dropRef] = useDrop(() => ({
     accept: acceptedTypes,
     drop: (item: DragItemDataType, monitor) => {
       const dragType = monitor.getItemType();
@@ -146,10 +146,13 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
           ))}
         </ul>
         { bookmarkFolderData && bookmarkFolderData.length > 0 && (
-          <div ref={(c) => { dropRef(c) }} className= 'grw-drop-item-area' >
-            { canDrop && isOver && (
-              <div className='grw-accept-drop-item' >{t('bookmark_folder.drop_item_here')}</div>
-            )}
+          <div ref={(c) => { dropRef(c) }} className= 'grw-drop-item-area '>
+            <div className="grw-accept-drop-item ">
+              <div className='d-flex flex-column align-items-center' >
+                {t('bookmark_folder.drop_item_here')}
+              </div>
+            </div>
+
           </div>
         ) }
       </div>
