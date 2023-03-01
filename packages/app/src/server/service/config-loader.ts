@@ -668,7 +668,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns: 'crowi',
     key: 'questionnaire:isAppSiteUrlHashed',
     type: ValueType.BOOLEAN,
-    default: true,
+    default: false,
   },
   SERVICE_TYPE: {
     ns: 'crowi',
