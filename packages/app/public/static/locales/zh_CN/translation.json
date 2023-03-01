@@ -821,8 +821,6 @@
     "settings": "问卷设置",
     "failed_to_send": "无法发送反馈",
     "denied": "问卷不会再显示",
-    "successfully_submitted": "问卷已经发出。",
-    "thanks_for_answering": "非常感谢您完成问卷调查。",
     "personal_settings_explanation": "将展示改进 GROWI 的问卷。 如果您有其他反馈，可以从用户图标下拉菜单中发送。",
     "enable_questionnaire": "启用问卷",
     "disabled_by_admin": "问卷已被管理员禁用"
