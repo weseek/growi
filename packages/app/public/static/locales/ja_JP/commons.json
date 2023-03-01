@@ -113,7 +113,9 @@
     "history_of_growi_usage": "GROWI の利用歴",
     "occupation": "職種",
     "position": "役職",
-    "comment_on_growi": "GROWI へのコメント"
+    "comment_on_growi": "GROWI へのコメント",
+    "successfully_submitted": "アンケートの送信が完了しました。",
+    "thanks_for_answering": "アンケートのご回答誠にありがとうございました。"
   },
 
   "not_found_page": {

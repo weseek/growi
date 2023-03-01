@@ -822,8 +822,6 @@
     "settings": "Questionnaire settings",
     "failed_to_send": "Failed to send feedback",
     "denied": "The questionnaire won't be shown again",
-    "successfully_submitted": "Your survey has been submitted.",
-    "thanks_for_answering": "Thank you very much for taking the time to complete the survey.",
     "personal_settings_explanation": "Questionnaires for improving GROWI will be shown. If you have other feedbacks, you can send them from the user icon dropdown.",
     "enable_questionnaire": "Enable questionnaire",
     "disabled_by_admin": "Questionnaire is disabled by admin"
