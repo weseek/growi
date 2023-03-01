@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-
 import { StatusType } from '../../../src/interfaces/questionnaire/questionnaire-answer-status';
 import QuestionnaireAnswerStatus from '../../../src/server/models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
@@ -50,7 +48,7 @@ describe('QuestionnaireService', () => {
 
       expect(growiInfo).toEqual({
         activeExternalAccountTypes: ['saml', 'github'],
-        appSiteUrl: null,
+        appSiteUrl: 'http://growi.test.jp',
         attachmentType: 'aws',
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',
@@ -59,15 +57,15 @@ describe('QuestionnaireService', () => {
       });
     });
 
-    describe('When url hash settings is off', () => {
+    describe('When url hash settings is on', () => {
       beforeEach(async() => {
-        process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'false';
+        process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'true';
         await crowi.setupConfigManager();
       });
 
       test('Should return app url string', async() => {
         const growiInfo = await crowi.questionnaireService.getGrowiInfo();
-        expect(growiInfo.appSiteUrl).toBe('http://growi.test.jp');
+        expect(growiInfo.appSiteUrl).toBe(null);
         expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
         expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       });

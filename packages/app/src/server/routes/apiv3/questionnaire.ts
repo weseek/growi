@@ -36,8 +36,8 @@ module.exports = (crowi: Crowi): Router => {
 
   const changeAnswerStatus = async(user, questionnaireOrderId, status) => {
     const result = await QuestionnaireAnswerStatus.updateOne({
-      user,
-      questionnaireOrderId,
+      user: { $eq: user },
+      questionnaireOrderId: { $eq: questionnaireOrderId },
     }, {
       status,
     }, { upsert: true });
