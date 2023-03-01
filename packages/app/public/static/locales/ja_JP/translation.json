@@ -820,8 +820,6 @@
     "settings": "アンケート設定",
     "failed_to_send": "回答送信に失敗しました",
     "denied": "このアンケートは今後表示されません",
-    "successfully_submitted": "アンケートの送信が完了しました。",
-    "thanks_for_answering": "アンケートのご回答誠にありがとうございました。",
     "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
     "enable_questionnaire": "アンケートを有効にする",
     "disabled_by_admin": "管理者によってアンケートは無効化されています"

@@ -114,7 +114,9 @@
     "history_of_growi_usage": "History of GROWI usage",
     "occupation": "Occupation",
     "position": "Position",
-    "comment_on_growi": "Comment on GROWI"
+    "comment_on_growi": "Comment on GROWI",
+    "successfully_submitted": "Your survey has been submitted.",
+    "thanks_for_answering": "Thank you very much for answering."
   },
 
   "not_found_page": {

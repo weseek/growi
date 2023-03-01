@@ -114,7 +114,9 @@
     "history_of_growi_usage": "GROWI的使用历史",
     "occupation": "职位",
     "position": "职业类型",
-    "comment_on_growi": "关于GROWI的评论"
+    "comment_on_growi": "关于GROWI的评论",
+    "successfully_submitted": "问卷已经发出。",
+    "thanks_for_answering": "非常感谢您完成问卷调查。"
   },
 
   "not_found_page": {
