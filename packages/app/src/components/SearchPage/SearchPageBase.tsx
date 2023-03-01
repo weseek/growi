@@ -153,6 +153,11 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     ? searchingKeyword.match(highlightKeywordsSplitter) ?? undefined
     : undefined;
 
+  // Delete double quotation marks if they are included before or after a string
+  const fixedHighlightKeywords = highlightKeywords != null
+    ? highlightKeywords.map(keyword => keyword.replace(/^"(.*)"$/, '$1'))
+    : undefined;
+
   return (
     <div className="content-main">
       <div className="search-result-base d-flex" data-testid="search-result-base">
@@ -203,7 +208,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
           { selectedPageWithMeta != null && (
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
-              highlightKeywords={highlightKeywords}
+              highlightKeywords={fixedHighlightKeywords}
               showPageControlDropdown={!isGuestUser}
               forceHideMenuItems={forceHideMenuItems}
             />
