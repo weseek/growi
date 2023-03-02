@@ -824,9 +824,8 @@
     "input_placeholder": "フォルダ名を入力してください`",
     "new_folder": "新しいフォルダ",
     "delete": "フォルダを削除",
-    "drop_item_here": "ここにアイテムをドロップ",
-    "cancel_bookmark": "このページのブックマークを解除",
-    "bookmark_this_page": "このページをブックマークして"
+    "drop_item_here": "ブックマークを解除",
+    "cancel_bookmark": "このページのブックマークを解除"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
