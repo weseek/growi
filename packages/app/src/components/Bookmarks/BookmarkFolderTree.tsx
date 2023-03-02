@@ -145,16 +145,16 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
             </div>
           ))}
         </ul>
-        { bookmarkFolderData && bookmarkFolderData.length > 0 && (
-          <div ref={(c) => { dropRef(c) }} className= 'grw-drop-item-area '>
-            <div className="grw-accept-drop-item ">
-              <div className='d-flex flex-column align-items-center' >
+        {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
+          <div ref={(c) => { dropRef(c) }} className="grw-drop-item-area">
+            <div className="grw-accept-drop-item">
+              <div className="d-flex flex-column align-items-center">
                 {t('bookmark_folder.drop_item_here')}
               </div>
             </div>
 
           </div>
-        ) }
+        )}
       </div>
     </>
   );
