@@ -1,4 +1,4 @@
-import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
+import { objectIdUtils } from '@growi/core';
 import monggoose, {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -66,7 +66,7 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
   }
   else {
     // Check if parent folder id is valid and parent folder exists
-    const isParentFolderIdValid = isValidObjectId(parent as string);
+    const isParentFolderIdValid = objectIdUtils.isValidObjectId(parent as string);
 
     if (!isParentFolderIdValid) {
       throw new InvalidParentBookmarkFolderError('Parent folder id is invalid');
