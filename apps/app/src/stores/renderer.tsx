@@ -3,11 +3,7 @@ import { useCallback } from 'react';
 import type { HtmlElementNode } from 'rehype-toc';
 import useSWR, { type SWRResponse } from 'swr';
 
-import {
-  type RendererOptions,
-  generateSimpleViewOptions, generatePreviewOptions,
-  generateViewOptions, generateTocOptions, generatePresentationViewOptions,
-} from '~/services/renderer/renderer';
+import type { RendererOptions } from '~/interfaces/renderer-options';
 import { getGrowiFacade } from '~/utils/growi-facade';
 
 
@@ -33,14 +29,17 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
     isAllDataValid
       ? ['viewOptions', currentPagePath, rendererConfig]
       : null,
-    ([, currentPagePath, rendererConfig]) => {
-      // determine options generator
-      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions ?? generateViewOptions;
-      return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
+    async([, currentPagePath, rendererConfig]) => {
+      const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions;
+      if (customGenerater != null) {
+        return customGenerater(currentPagePath, rendererConfig, storeTocNodeHandler);
+      }
+
+      const { generateViewOptions } = await import('~/client/services/renderer/renderer');
+      return generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler);
     },
     {
       keepPreviousData: true,
-      fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -58,10 +57,12 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
     isAllDataValid
       ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
       : null,
-    ([, , tocNode, rendererConfig]) => generateTocOptions(rendererConfig, tocNode),
+    async([, , tocNode, rendererConfig]) => {
+      const { generateTocOptions } = await import('~/client/services/renderer/renderer');
+      return generateTocOptions(rendererConfig, tocNode);
+    },
     {
       keepPreviousData: true,
-      fallbackData: isAllDataValid ? generateTocOptions(rendererConfig, tocNode) : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -78,14 +79,17 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
     isAllDataValid
       ? ['previewOptions', rendererConfig, currentPagePath]
       : null,
-    ([, rendererConfig, pagePath]) => {
-      // determine options generator
-      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions ?? generatePreviewOptions;
-      return optionsGenerator(rendererConfig, pagePath);
+    async([, rendererConfig, pagePath]) => {
+      const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions;
+      if (customGenerater != null) {
+        return customGenerater(rendererConfig, pagePath);
+      }
+
+      const { generatePreviewOptions } = await import('~/client/services/renderer/renderer');
+      generatePreviewOptions(rendererConfig, pagePath);
     },
     {
       keepPreviousData: true,
-      fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -102,20 +106,17 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
     isAllDataValid
       ? ['commentPreviewOptions', rendererConfig, currentPagePath]
       : null,
-    ([, rendererConfig, currentPagePath]) => generateSimpleViewOptions(
-      rendererConfig,
-      currentPagePath,
-      undefined,
-      rendererConfig.isEnabledLinebreaksInComments,
-    ),
-    {
-      keepPreviousData: true,
-      fallbackData: isAllDataValid ? generateSimpleViewOptions(
+    async([, rendererConfig, currentPagePath]) => {
+      const { generateSimpleViewOptions } = await import('~/client/services/renderer/renderer');
+      return generateSimpleViewOptions(
         rendererConfig,
         currentPagePath,
         undefined,
         rendererConfig.isEnabledLinebreaksInComments,
-      ) : undefined,
+      );
+    },
+    {
+      keepPreviousData: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -132,9 +133,11 @@ export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeyword
     isAllDataValid
       ? ['selectedPagePreviewOptions', rendererConfig, pagePath, highlightKeywords]
       : null,
-    ([, rendererConfig, pagePath, highlightKeywords]) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
+    async([, rendererConfig, pagePath, highlightKeywords]) => {
+      const { generateSimpleViewOptions } = await import('~/client/services/renderer/renderer');
+      return generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords);
+    },
     {
-      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords) : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -153,10 +156,12 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
     isAllDataValid
       ? ['customSidebarOptions', rendererConfig]
       : null,
-    ([, rendererConfig]) => generateSimpleViewOptions(rendererConfig, '/'),
+    async([, rendererConfig]) => {
+      const { generateSimpleViewOptions } = await import('~/client/services/renderer/renderer');
+      return generateSimpleViewOptions(rendererConfig, '/');
+    },
     {
       keepPreviousData: true,
-      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
@@ -173,9 +178,11 @@ export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error
     isAllDataValid
       ? ['presentationViewOptions', currentPagePath, rendererConfig]
       : null,
-    ([, currentPagePath, rendererConfig]) => generatePresentationViewOptions(rendererConfig, currentPagePath),
+    async([, currentPagePath, rendererConfig]) => {
+      const { generatePresentationViewOptions } = await import('~/client/services/renderer/renderer');
+      return generatePresentationViewOptions(rendererConfig, currentPagePath);
+    },
     {
-      fallbackData: isAllDataValid ? generatePresentationViewOptions(rendererConfig, currentPagePath) : undefined,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },

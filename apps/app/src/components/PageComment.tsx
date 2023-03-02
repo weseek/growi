@@ -7,7 +7,6 @@ import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { RendererOptions } from '~/services/renderer/renderer';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -20,6 +19,7 @@ import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
+import { RendererOptions } from '~/interfaces/renderer-options';
 
 export const ROOT_ELEM_ID = 'page-comments' as const;
 
