@@ -150,12 +150,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   }
 
   const highlightKeywords = searchingKeyword != null
-    ? searchingKeyword.match(highlightKeywordsSplitter) ?? undefined
-    : undefined;
-
-  // Delete double quotation marks if they are included before or after a string
-  const fixedHighlightKeywords = highlightKeywords != null
-    ? highlightKeywords.map(keyword => keyword.replace(/^"(.*)"$/, '$1'))
+    // Remove double quotation marks before and after a keyword if present
+    ? searchingKeyword.match(highlightKeywordsSplitter)?.map(keyword => keyword.replace(/^"(.*)"$/, '$1')) ?? undefined
     : undefined;
 
   return (
@@ -208,7 +204,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
           { selectedPageWithMeta != null && (
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
-              highlightKeywords={fixedHighlightKeywords}
+              highlightKeywords={highlightKeywords}
               showPageControlDropdown={!isGuestUser}
               forceHideMenuItems={forceHideMenuItems}
             />
