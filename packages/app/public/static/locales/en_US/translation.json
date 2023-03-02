@@ -825,8 +825,7 @@
     "new_folder": "New Folder",
     "delete": "Delete Folder",
     "drop_item_here": "Drag and drop item here",
-    "cancel_bookmark": "Un-bookmark this page",
-    "bookmark_this_page": "Bookmark this page"
+    "cancel_bookmark": "Un-bookmark this page"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
