@@ -67,8 +67,8 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   return {
     ...swrResponse,
     open: (
-      pages?: IPageToDeleteWithMeta[],
-      opts?: IDeleteModalOption,
+        pages?: IPageToDeleteWithMeta[],
+        opts?: IDeleteModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
     }),
@@ -108,8 +108,8 @@ export const useEmptyTrashModal = (status?: EmptyTrashModalStatus): SWRResponse<
   return {
     ...swrResponse,
     open: (
-      pages?: IPageToDeleteWithMeta[],
-      opts?: IEmptyTrashModalOption,
+        pages?: IPageToDeleteWithMeta[],
+        opts?: IEmptyTrashModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
     }),
@@ -150,8 +150,8 @@ export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRRespons
   return {
     ...swrResponse,
     open: (
-      page?: IPageForPageDuplicateModal,
-      opts?: IDuplicateModalOption,
+        page?: IPageForPageDuplicateModal,
+        opts?: IDuplicateModalOption,
     ) => swrResponse.mutate({ isOpened: true, page, opts }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
@@ -186,8 +186,8 @@ export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<Rena
   return {
     ...swrResponse,
     open: (
-      page?: IPageToRenameWithMeta,
-      opts?: IRenameModalOption,
+        page?: IPageToRenameWithMeta,
+        opts?: IRenameModalOption,
     ) => swrResponse.mutate({
       isOpened: true, page, opts,
     }),
@@ -232,7 +232,7 @@ export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRRespons
   return {
     ...swrResponse,
     open: (
-      page: IPageForPagePutBackModal, opts?: IPutBackPageModalOption,
+        page: IPageForPagePutBackModal, opts?: IPutBackPageModalOption,
     ) => swrResponse.mutate({
       isOpened: true, page, opts,
     }),
@@ -254,7 +254,7 @@ type PresentationModalStatusUtils = {
 }
 
 export const usePagePresentationModal = (
-  status?: PresentationModalStatus,
+    status?: PresentationModalStatus,
 ): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
   const initialData: PresentationModalStatus = {
     isOpened: false,
@@ -289,7 +289,7 @@ type PrivateLegacyPagesMigrationModalStatusUtils = {
 }
 
 export const usePrivateLegacyPagesMigrationModal = (
-  status?: PrivateLegacyPagesMigrationModalStatus,
+    status?: PrivateLegacyPagesMigrationModalStatus,
 ): SWRResponse<PrivateLegacyPagesMigrationModalStatus, Error> & PrivateLegacyPagesMigrationModalStatusUtils => {
   const initialData: PrivateLegacyPagesMigrationModalStatus = {
     isOpened: false,
@@ -321,7 +321,7 @@ type DescendantsPageListUtils = {
 }
 
 export const useDescendantsPageListModal = (
-  status?: DescendantsPageListModalStatus,
+    status?: DescendantsPageListModalStatus,
 ): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
 
   const initialData: DescendantsPageListModalStatus = { isOpened: false };
@@ -612,14 +612,14 @@ export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalS
   return {
     ...swrResponse,
     open: (
-      bookmarkFolder?: BookmarkFolderItems,
-      opts?: IDeleteBookmarkFolderModalOption,
+        bookmarkFolder?: BookmarkFolderItems,
+        opts?: IDeleteBookmarkFolderModalOption,
     ) => swrResponse.mutate({
       isOpened: true, bookmarkFolder, opts,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
-}
+};
 
 /*
  * TemplateModal
