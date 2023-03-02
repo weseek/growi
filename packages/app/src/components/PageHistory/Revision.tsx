@@ -13,10 +13,10 @@ import styles from './Revision.module.scss';
 
 type RevisionProps = {
   revision: IRevisionHasId,
-  currentPageId: string,
-  currentPagePath: string,
   isLatestRevision: boolean,
   hasDiff: boolean,
+  currentPageId: string
+  currentPagePath: string
   onClose: () => void,
 }
 
@@ -24,7 +24,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revision, currentPageId, currentPagePath, isLatestRevision, hasDiff, onClose,
+    revision, isLatestRevision, hasDiff, onClose, currentPageId, currentPagePath,
   } = props;
 
   const { returnPathForURL } = pathUtils;
