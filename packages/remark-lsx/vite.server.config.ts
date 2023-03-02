@@ -1,28 +1,24 @@
-import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
     dts({ outputDir: 'types' }),
   ],
   build: {
-    outDir: 'dist',
+    outDir: 'dist/server',
     lib: {
       entry: [
-        'src/components/index.ts',
-        'src/server/routes/index.ts',
-        'src/services/renderer/index.ts',
+        'src/server/index.ts',
       ],
       name: 'remark-lsx-libs',
-      formats: ['es', 'cjs'],
+      formats: ['cjs'],
     },
     rollupOptions: {
       output: {
         preserveModules: true,
-        preserveModulesRoot: 'src',
+        preserveModulesRoot: 'src/server',
       },
       external: [
         'axios',

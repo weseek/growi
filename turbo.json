@@ -6,7 +6,7 @@
       "outputs": ["dist/**", "types/**"]
     },
     "@growi/remark-lsx#build": {
-      "dependsOn": ["@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**", "types/**"]
     },
     "@growi/app#build": {

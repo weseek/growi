@@ -1,4 +1,4 @@
-import { routesFactory } from './lsx';
+import { routesFactory } from './routes/lsx';
 
 const loginRequiredFallback = (req, res) => {
   return res.status(403).send('login required');

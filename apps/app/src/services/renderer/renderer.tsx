@@ -4,8 +4,8 @@ import type { ComponentType } from 'react';
 import { isClient } from '@growi/core';
 import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
-import { Lsx, LsxImmutable } from '@growi/remark-lsx/dist/components';
-import * as lsxGrowiPlugin from '@growi/remark-lsx/dist/services/renderer';
+// eslint-disable-next-line import/extensions
+import * as lsxGrowiPlugin from '@growi/remark-lsx/dist/client/index.mjs';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import type { NormalComponents } from 'react-markdown/lib/complex-types';
@@ -197,7 +197,7 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = Lsx;
+    components.lsx = lsxGrowiPlugin.Lsx;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
   }
@@ -290,7 +290,7 @@ export const generateSimpleViewOptions = (
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
+    components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
@@ -357,7 +357,7 @@ export const generateSSRViewOptions = (
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
+    components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.table = Table;
   }
 
@@ -408,7 +408,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
+    components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.table = Table;
   }
