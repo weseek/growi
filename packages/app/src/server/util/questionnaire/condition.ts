@@ -1,13 +1,34 @@
 import { ICondition } from '~/interfaces/questionnaire/condition';
 import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
 import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
-import { IUserInfo } from '~/interfaces/questionnaire/user-info';
+import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
 
 
 const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {
-  const { user: { types } } = condition;
+  const { user: { types, daysSinceCreation } } = condition;
 
-  return types.includes(userInfo.type);
+  if (!types.includes(userInfo.type)) {
+    return false;
+  }
+
+  if (userInfo.type !== UserType.guest) {
+    const createdAt = userInfo.userCreatedAt;
+    const moreThanOrEqualTo = daysSinceCreation?.moreThanOrEqualTo;
+    const lessThanOrEqualTo = daysSinceCreation?.lessThanOrEqualTo;
+
+    const leftThresholdBool = !moreThanOrEqualTo || (() => {
+      const leftThreshold = new Date(Date.now() - 60 * 1000 * 60 * 24 * moreThanOrEqualTo);
+      return leftThreshold <= createdAt;
+    })();
+    const rightThresholdBool = !lessThanOrEqualTo || (() => {
+      const rightThreshold = new Date(Date.now() + 60 * 1000 * 60 * 24 * lessThanOrEqualTo);
+      return rightThreshold >= createdAt;
+    })();
+
+    return leftThresholdBool && rightThresholdBool;
+  }
+
+  return true;
 };
 
 const checkGrowiInfo = (condition: ICondition, growiInfo: IGrowiInfo): boolean => {

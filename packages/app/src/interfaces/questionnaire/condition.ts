@@ -5,6 +5,10 @@ import { UserType } from './user-info';
 
 interface UserCondition {
   types: UserType[] // user types to show questionnaire
+  daysSinceCreation?: {
+    moreThanOrEqualTo?: number
+    lessThanOrEqualTo?: number
+  }
 }
 
 interface GrowiCondition {
