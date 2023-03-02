@@ -871,8 +871,12 @@ module.exports = (crowi) => {
     }
 
     // run delete
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+    };
     const options = { isCompletely, isRecursively };
-    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options);
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options, activityParameters);
 
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
