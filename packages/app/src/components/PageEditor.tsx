@@ -311,6 +311,9 @@ const PageEditor = React.memo((): JSX.Element => {
       if (pageId != null) {
         formData.append('page_id', pageId);
       }
+      if (pageId == null && markdownToSave.current != null) {
+        formData.append('page_body', markdownToSave.current);
+      }
 
       res = await apiPostForm('/attachments.add', formData);
       const attachment = res.attachment;
