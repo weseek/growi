@@ -7,7 +7,6 @@ const MODULE_NAME_MAPPING = {
   '^@growi/codemirror-textlint$': '<rootDir>/../../packages/codemirror-textlint/src',
   '^@growi/remark-drawio$': '<rootDir>/../../packages/remark-drawio/src',
   '^@growi/remark-growi-directive$': '<rootDir>/../../packages/remark-growi-directive/src',
-  '^@growi/ui$': '<rootDir>/../../packages/ui/src',
 };
 
 module.exports = {
