@@ -26,7 +26,7 @@ describe('QuestionnaireService', () => {
       username: 'questionnaire test user',
       email: 'questionnaireTestUser@example.com',
       password: 'usertestpass',
-      createdAt: '2023-01-01',
+      createdAt: '2000-01-01',
     });
   });
 
@@ -80,7 +80,7 @@ describe('QuestionnaireService', () => {
 
       delete userInfo.userIdHash;
 
-      expect(userInfo).toEqual({ type: 'general', userCreatedAt: new Date('2023-01-01') });
+      expect(userInfo).toEqual({ type: 'general', userCreatedAt: new Date('2000-01-01') });
     });
 
     test('Should get correct user info when user is null', () => {
@@ -106,6 +106,10 @@ describe('QuestionnaireService', () => {
         condition: {
           user: {
             types: ['general'],
+            daysSinceCreation: {
+              moreThanOrEqualTo: 365,
+              lessThanOrEqualTo: 365 * 1000,
+            },
           },
           growi: {
             types: ['on-premise'],
@@ -183,6 +187,58 @@ describe('QuestionnaireService', () => {
             },
           },
         },
+        // for users that used GROWI for less than or equal to a year
+        {
+          ...questionnaireToBeShown,
+          _id: '63b8354837e7aa378e16f0b9',
+          condition: {
+            user: {
+              types: ['general'],
+              daysSinceCreation: {
+                lessThanOrEqualTo: 365,
+              },
+            },
+            growi: {
+              types: ['on-premise'],
+              versionRegExps: [crowi.version],
+            },
+          },
+        },
+        // for users that used GROWI for more than or equal to 1000 years
+        {
+          ...questionnaireToBeShown,
+          _id: '63b8354837e7aa378e16f0c1',
+          condition: {
+            user: {
+              types: ['general'],
+              daysSinceCreation: {
+                moreThanOrEqualTo: 365 * 1000,
+              },
+            },
+            growi: {
+              types: ['on-premise'],
+              versionRegExps: [crowi.version],
+            },
+          },
+        },
+        // for users that used GROWI for more than a month and less than 6 months
+        {
+          ...questionnaireToBeShown,
+          _id: '63b8354837e7aa378e16f0c2',
+          condition: {
+            user: {
+              types: ['general'],
+              daysSinceCreation: {
+                moreThanOrEqualTo: 30,
+                lessThanOrEqualTo: 30 * 6,
+              },
+            },
+            growi: {
+              types: ['on-premise'],
+              versionRegExps: [crowi.version],
+            },
+          },
+        },
       ]);
 
       await QuestionnaireAnswerStatus.insertMany([
@@ -231,6 +287,10 @@ describe('QuestionnaireService', () => {
           condition: {
             user: {
               types: ['general'],
+              daysSinceCreation: {
+                moreThanOrEqualTo: 365,
+                lessThanOrEqualTo: 365 * 1000,
+              },
             },
             growi: {
               types: ['on-premise'],
