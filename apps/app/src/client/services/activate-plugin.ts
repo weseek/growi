@@ -1,10 +1,5 @@
-import { isClient } from '@growi/core/dist/utils/browser-utils';
-
 import { initializeGrowiFacade, registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
-
-import { generateViewOptions, generatePreviewOptions } from './renderer/renderer';
-
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -21,10 +16,19 @@ const logger = loggerFactory('growi:cli:ActivatePluginService');
 
 export class ActivatePluginService {
 
-  static activateAll(): void {
+  static async activateAll(): Promise<void> {
     initializeGrowiFacade();
 
-    const { pluginActivators } = window;
+    // register renderer options to facade
+    const { generateViewOptions, generatePreviewOptions } = await import('./renderer/renderer');
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsGenerators: {
+          generateViewOptions,
+          generatePreviewOptions,
+        },
+      },
+    });
 
     if (pluginActivators == null) {
       return;
@@ -35,16 +39,4 @@ export class ActivatePluginService {
     });
   }
 
-}
-
-// register to facade
-if (isClient()) {
-  registerGrowiFacade({
-    markdownRenderer: {
-      optionsGenerators: {
-        generateViewOptions,
-        generatePreviewOptions,
-      },
-    },
-  });
 }

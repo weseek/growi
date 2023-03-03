@@ -1,5 +1,6 @@
 import assert from 'assert';
 
+import { isClient } from '@growi/core/dist/utils/browser-utils';
 import * as drawioPlugin from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
 import * as lsxGrowiPlugin from '@growi/remark-lsx/dist/client/index.mjs';
@@ -38,7 +39,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:cli:services:renderer');
 
 
-// assert(isClient(), 'This module must be loaded only from client modules.');
+assert(isClient(), 'This module must be loaded only from client modules.');
 
 
 export const generateViewOptions = (

@@ -14,7 +14,6 @@ import {
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
-import { registerGrowiFacade } from '~/utils/growi-facade';
 
 
 import type { CommentsProps } from '../Comments';
@@ -67,22 +66,12 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: isMobile } = useIsMobile();
 
   const { data: pageBySWR } = useSWRxCurrentPage();
-  const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
+  const { data: viewOptions } = useViewOptions();
 
   const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomePagePath = isUsersHomePage(pagePath);
 
-  // register to facade
-  useEffect(() => {
-    registerGrowiFacade({
-      markdownRenderer: {
-        optionsMutators: {
-          viewOptionsMutator: mutateRendererOptions,
-        },
-      },
-    });
-  }, [mutateRendererOptions]);
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
