@@ -97,12 +97,8 @@ context('Click page icons button', () => {
     cy.get('#bookmark-dropdown-btn').should('have.class', 'active');
 
     // Close toaster
-    cy.get('.Toastify__toast').should('be.visible').then(toast => {
-      cy.wrap(toast).within(() => {
-        cy.get('.Toastify__close-button').should('be.visible').click();
-        cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
-      });
-    });
+    cy.get('.Toastify__toast').should('be.visible').click({force: true});
+    cy.get('.Toastify__toast-container').should('not.exist');
 
     // position of the element is not fixed to be displayed, so the element is removed
     cy.get('body').then($body => {
@@ -134,12 +130,8 @@ context('Click page icons button', () => {
     cy.get('#bookmark-dropdown-btn').should('not.have.class', 'active');
 
     // Close toaster
-    cy.get('.Toastify__toast').should('be.visible').then(toast => {
-      cy.wrap(toast).within(() => {
-        cy.get('.Toastify__close-button').should('be.visible').click();
-        cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
-      });
-    });
+    cy.get('.Toastify__toast').should('be.visible').click({force: true});
+    cy.get('.Toastify__toast-container').should('not.exist');
 
     // position of the element is not fixed to be displayed, so the element is removed
     cy.get('body').then($body => {
