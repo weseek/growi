@@ -93,8 +93,8 @@ context('Click page icons button', () => {
     cy.collapseSidebar(true);
 
     // bookmark
-    cy.get('#bookmark-button').click({force: true});
-    cy.get('#bookmark-button').should('have.class', 'active');
+    cy.get('#bookmark-dropdown-btn').click({force: true});
+    cy.get('#bookmark-dropdown-btn').should('have.class', 'active');
 
     // position of the element is not fixed to be displayed, so the element is removed
     cy.get('body').then($body => {
@@ -120,8 +120,10 @@ context('Click page icons button', () => {
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}8-bookmarks-counter`) });
 
     // unbookmark
-    cy.get('#bookmark-button').click({force: true});
-    cy.get('#bookmark-button').should('not.have.class', 'active');
+    cy.get('#bookmark-dropdown-btn').click({force: true});
+    cy.get('.grw-bookmark-folder-menu').should('be.visible');
+    cy.get('.grw-bookmark-folder-menu-item').first().click({force: true});
+    cy.get('#bookmark-dropdown-btn').should('not.have.class', 'active');
 
     // position of the element is not fixed to be displayed, so the element is removed
     cy.get('body').then($body => {
