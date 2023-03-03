@@ -7,9 +7,8 @@ import {
   UncontrolledTooltip, Popover, PopoverBody, DropdownToggle,
 } from 'reactstrap';
 
-import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import { IBookmarkInfo } from '~/interfaces/bookmark-info';
 import { useIsGuestUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 import { IUser } from '../interfaces/user';
 
@@ -21,14 +20,13 @@ import styles from './BookmarkButtons.module.scss';
 interface Props {
   bookmarkedUsers?: IUser[]
   hideTotalNumber?: boolean
+  bookmarkInfo? : IBookmarkInfo
 }
 
 const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { data } = useSWRxCurrentPage();
-  const { data: bookmarkInfo } = useSWRBookmarkInfo(data?._id);
   const {
-    bookmarkedUsers, hideTotalNumber,
+    bookmarkedUsers, hideTotalNumber, bookmarkInfo,
   } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
