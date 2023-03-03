@@ -8,7 +8,6 @@ import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import { useIsNotFound } from '~/stores/context';
 import { useViewOptions } from '~/stores/renderer';
-import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import { MainPane } from '../Layout/MainPane';
@@ -42,18 +41,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
   const { data: isNotFoundMeta } = useIsNotFound();
 
-  const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
-
-  // register to facade
-  useEffect(() => {
-    registerGrowiFacade({
-      markdownRenderer: {
-        optionsMutators: {
-          viewOptionsMutator: mutateRendererOptions,
-        },
-      },
-    });
-  }, [mutateRendererOptions]);
+  const { data: viewOptions } = useViewOptions();
 
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 

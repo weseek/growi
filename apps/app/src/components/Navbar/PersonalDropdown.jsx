@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';

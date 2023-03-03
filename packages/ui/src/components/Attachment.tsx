@@ -2,7 +2,7 @@ import React from 'react';
 
 import { HasObjectId, IAttachment } from '@growi/core';
 
-import { UserPicture } from '../User/UserPicture';
+import { UserPicture } from './User/UserPicture';
 
 type AttachmentProps = {
   attachment: IAttachment & HasObjectId,

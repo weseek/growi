@@ -6,7 +6,7 @@
       "outputs": ["dist/**", "types/**"]
     },
     "@growi/remark-lsx#build": {
-      "dependsOn": ["@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**", "types/**"]
     },
     "@growi/app#build": {
@@ -31,6 +31,10 @@
     "@growi/app#dev:migrate": {
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migration/*.js"]
+    },
+    "@growi/remark-lsx#dev": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
+      "outputs": ["dist/**", "types/**"]
     },
     "@growi/app#dev": {
       "dependsOn": ["^dev", "@growi/app#dev:migrate"],

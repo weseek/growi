@@ -1,6 +1,4 @@
-import { customTagUtils, ParseRangeResult } from '@growi/core';
-
-const { OptionParser } = customTagUtils;
+import { OptionParser, type ParseRangeResult } from '@growi/core/dist/plugin';
 
 
 export class LsxContext {

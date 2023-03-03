@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';

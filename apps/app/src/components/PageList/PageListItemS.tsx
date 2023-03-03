@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
+import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 
 import { IPageHasId } from '~/interfaces/page';
 

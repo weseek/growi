@@ -47,7 +47,6 @@ import {
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
-import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 
@@ -103,7 +102,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
-  const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
+  const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
@@ -178,18 +177,6 @@ const PageEditor = React.memo((): JSX.Element => {
     };
     return optionsToSave;
   }, [grantData, isSlackEnabled, pageTags]);
-
-  // register to facade
-  useEffect(() => {
-    // for markdownRenderer
-    registerGrowiFacade({
-      markdownRenderer: {
-        optionsMutators: {
-          previewOptionsMutator: mutateRendererOptions,
-        },
-      },
-    });
-  }, [mutateRendererOptions]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;

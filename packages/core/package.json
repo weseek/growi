@@ -17,7 +17,7 @@
     "build": "vite build",
     "clean": "npx -y shx rm -rf dist types",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w'",
+    "watch": "yarn dev -w",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"

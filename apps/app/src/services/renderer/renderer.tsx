@@ -1,46 +1,28 @@
-// allow only types to import from react
-import type { ComponentType } from 'react';
-
-import { isClient } from '@growi/core';
-import * as drawioPlugin from '@growi/remark-drawio';
 import growiDirective from '@growi/remark-growi-directive';
-import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
-import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
-import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
-import type { NormalComponents } from 'react-markdown/lib/complex-types';
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
 import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
-import type { PluggableList, Pluggable, PluginTuple } from 'unified';
+import type { Pluggable, PluginTuple } from 'unified';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
-import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
-import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { Table } from '~/components/ReactMarkdownComponents/Table';
-import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
+import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import * as addClass from './rehype-plugins/add-class';
-import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attribute';
-import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
-import * as toc from './rehype-plugins/relocate-toc';
-import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
@@ -49,23 +31,10 @@ import * as xsvToTable from './remark-plugins/xsv-to-table';
 // import BlockdiagConfigurer from './markdown-it/blockdiag';
 
 
-const logger = loggerFactory('growi:util:GrowiRenderer');
+const logger = loggerFactory('growi:services:renderer');
 
 
 type SanitizePlugin = PluginTuple<[SanitizeOption]>;
-export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehypePlugins' | 'components' | 'children'> & {
-  remarkPlugins: PluggableList,
-  rehypePlugins: PluggableList,
-  components?:
-    | Partial<
-        Omit<NormalComponents, keyof SpecialComponents>
-        & SpecialComponents
-        & {
-          [elem: string]: ComponentType<any>,
-        }
-      >
-    | undefined
-};
 
 const baseSanitizeSchema = {
   tagNames: ['iframe', 'section'],
@@ -77,7 +46,7 @@ const baseSanitizeSchema = {
   },
 };
 
-const commonSanitizeOption: SanitizeOption = deepmerge(
+export const commonSanitizeOption: SanitizeOption = deepmerge(
   rehypeSanitizeDefaultSchema,
   baseSanitizeSchema,
   {
@@ -87,7 +56,7 @@ const commonSanitizeOption: SanitizeOption = deepmerge(
 
 let isInjectedCustomSanitaizeOption = false;
 
-const injectCustomSanitizeOption = (config: RendererConfig) => {
+export const injectCustomSanitizeOption = (config: RendererConfig): void => {
   if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
     commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhiteList ?? []);
     commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
@@ -114,7 +83,7 @@ const hasSanitizePlugin = (options: RendererOptions, shouldBeTheLastItem: boolea
     : rehypePlugins.some(rehypePlugin => isSanitizePlugin(rehypePlugin));
 };
 
-const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = true): void => {
+export const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = true): void => {
   if (hasSanitizePlugin(options, shouldBeTheLastItem)) {
     return;
   }
@@ -122,7 +91,7 @@ const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = tr
   throw new Error('The specified options does not have sanitize plugin in \'rehypePlugins\'');
 };
 
-const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
+export const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
       gfm,
@@ -149,170 +118,6 @@ const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   };
 };
 
-export const generateViewOptions = (
-    pagePath: string,
-    config: RendererConfig,
-    storeTocNode: (toc: HtmlElementNode) => void,
-): RendererOptions => {
-
-  const options = generateCommonOptions(pagePath);
-
-  const { remarkPlugins, rehypePlugins, components } = options;
-
-  // add remark plugins
-  remarkPlugins.push(
-    math,
-    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
-    drawioPlugin.remarkPlugin,
-    xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
-  );
-  if (config.isEnabledLinebreaks) {
-    remarkPlugins.push(breaks);
-  }
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )]
-    : () => {};
-
-  // add rehype plugins
-  rehypePlugins.push(
-    slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
-    rehypeSanitizePlugin,
-    katex,
-    [toc.rehypePluginStore, { storeTocNode }],
-  );
-
-  // add components
-  if (components != null) {
-    components.h1 = Header;
-    components.h2 = Header;
-    components.h3 = Header;
-    components.lsx = Lsx;
-    components.drawio = DrawioViewerWithEditButton;
-    components.table = TableWithEditButton;
-  }
-
-  if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options, false);
-  }
-  return options;
-};
-
-export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
-
-  const options = generateCommonOptions(undefined);
-
-  const { rehypePlugins } = options;
-
-  // add remark plugins
-  // remarkPlugins.push();
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      commonSanitizeOption,
-    )]
-    : () => {};
-
-  // add rehype plugins
-  rehypePlugins.push(
-    [toc.rehypePluginRestore, { tocNode }],
-    rehypeSanitizePlugin,
-  );
-
-  if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options);
-  }
-
-  return options;
-};
-
-export const generateSimpleViewOptions = (
-    config: RendererConfig,
-    pagePath: string,
-    highlightKeywords?: string | string[],
-    overrideIsEnabledLinebreaks?: boolean,
-): RendererOptions => {
-  const options = generateCommonOptions(pagePath);
-
-  const { remarkPlugins, rehypePlugins, components } = options;
-
-  // add remark plugins
-  remarkPlugins.push(
-    math,
-    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
-    drawioPlugin.remarkPlugin,
-    xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
-  );
-
-  const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
-
-  if (isEnabledLinebreaks) {
-    remarkPlugins.push(breaks);
-  }
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )]
-    : () => {};
-
-  // add rehype plugins
-  rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
-    [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
-    rehypeSanitizePlugin,
-    katex,
-  );
-
-  // add components
-  if (components != null) {
-    components.lsx = LsxImmutable;
-    components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
-  }
-
-  if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options, false);
-  }
-  return options;
-};
-
-export const generatePresentationViewOptions = (
-    config: RendererConfig,
-    pagePath: string,
-): RendererOptions => {
-  // based on simple view options
-  const options = generateSimpleViewOptions(config, pagePath);
-
-  if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options, false);
-  }
-  return options;
-};
 
 export const generateSSRViewOptions = (
     config: RendererConfig,
@@ -326,7 +131,6 @@ export const generateSSRViewOptions = (
   remarkPlugins.push(
     math,
     xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
     table.remarkPlugin,
   );
 
@@ -343,21 +147,18 @@ export const generateSSRViewOptions = (
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
     )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
   );
 
   // add components
   if (components != null) {
-    components.lsx = LsxImmutable;
     components.table = Table;
   }
 
@@ -366,67 +167,3 @@ export const generateSSRViewOptions = (
   }
   return options;
 };
-
-export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
-  const options = generateCommonOptions(pagePath);
-
-  const { remarkPlugins, rehypePlugins, components } = options;
-
-  // add remark plugins
-  remarkPlugins.push(
-    math,
-    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
-    drawioPlugin.remarkPlugin,
-    xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
-  );
-  if (config.isEnabledLinebreaks) {
-    remarkPlugins.push(breaks);
-  }
-
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      drawioPlugin.sanitizeOption,
-      addLineNumberAttribute.sanitizeOption,
-    )]
-    : () => {};
-
-  // add rehype plugins
-  rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
-    addLineNumberAttribute.rehypePlugin,
-    rehypeSanitizePlugin,
-    katex,
-  );
-
-  // add components
-  if (components != null) {
-    components.lsx = LsxImmutable;
-    components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
-  }
-
-  if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options, false);
-  }
-  return options;
-};
-
-// register to facade
-if (isClient()) {
-  registerGrowiFacade({
-    markdownRenderer: {
-      optionsGenerators: {
-        generateViewOptions,
-        generatePreviewOptions,
-      },
-    },
-  });
-}

@@ -13,7 +13,7 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "@growi/remark-lsx/*": ["../../packages/remark-lsx/dist/*"],
+      // "@growi/remark-lsx/*": ["../../packages/remark-lsx/dist/*"],
       "debug": ["./src/utils/logger/alias-for-debug"]
     }
   },

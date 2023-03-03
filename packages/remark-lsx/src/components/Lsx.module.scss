@@ -1,12 +1,4 @@
 .lsx :global {
-  page-list-ul > li > a:not(:hover) {
-    text-decoration: none;
-  }
-
-  .lsx-page-not-exist {
-    opacity: 0.6;
-  }
-
   // workaround
   // https://stackoverflow.com/a/57667536
   .lsx-blink {
