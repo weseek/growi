@@ -96,6 +96,12 @@ context('Click page icons button', () => {
     cy.get('#bookmark-dropdown-btn').click({force: true});
     cy.get('#bookmark-dropdown-btn').should('have.class', 'active');
 
+    // Close toaster
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
+
     // position of the element is not fixed to be displayed, so the element is removed
     cy.get('body').then($body => {
       if ($body.find('[data-testid="bookmark-button-tooltip"]').length > 0) {
@@ -124,6 +130,12 @@ context('Click page icons button', () => {
     cy.get('.grw-bookmark-folder-menu').should('be.visible');
     cy.get('.grw-bookmark-folder-menu-item').first().click({force: true});
     cy.get('#bookmark-dropdown-btn').should('not.have.class', 'active');
+
+    // Close toaster
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
 
     // position of the element is not fixed to be displayed, so the element is removed
     cy.get('body').then($body => {

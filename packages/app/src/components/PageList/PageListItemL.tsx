@@ -23,7 +23,7 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
@@ -89,6 +89,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
   const { mutate: mutateCurrentUserBookmark } = useSWRxCurrentUserBookmarks();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageData?._id);
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
@@ -126,6 +127,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
     mutateCurrentUserBookmark();
+    mutateBookmarkInfo();
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
