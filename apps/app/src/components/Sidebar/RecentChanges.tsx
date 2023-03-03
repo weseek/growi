@@ -3,7 +3,8 @@ import React, {
 } from 'react';
 
 import { DevidedPagePath, isPopulated } from '@growi/core';
-import { UserPicture, FootstampIcon } from '@growi/ui';
+import { FootstampIcon } from '@growi/ui/dist/components/FootstampIcon';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 

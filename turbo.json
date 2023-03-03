@@ -32,6 +32,10 @@
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migration/*.js"]
     },
+    "@growi/remark-lsx#dev": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
+      "outputs": ["dist/**", "types/**"]
+    },
     "@growi/app#dev": {
       "dependsOn": ["^dev", "@growi/app#dev:migrate"],
       "cache": false,

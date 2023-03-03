@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { IUser, pathUtils } from '@growi/core';
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';

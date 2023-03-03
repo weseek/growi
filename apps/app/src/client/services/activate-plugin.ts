@@ -1,5 +1,9 @@
-import { initializeGrowiFacade } from '~/utils/growi-facade';
+import { isClient } from '@growi/core/dist/utils/browser-utils';
+
+import { initializeGrowiFacade, registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
+
+import { generateViewOptions, generatePreviewOptions } from './renderer/renderer';
 
 
 declare global {
@@ -31,4 +35,16 @@ export class ActivatePluginService {
     });
   }
 
+}
+
+// register to facade
+if (isClient()) {
+  registerGrowiFacade({
+    markdownRenderer: {
+      optionsGenerators: {
+        generateViewOptions,
+        generatePreviewOptions,
+      },
+    },
+  });
 }

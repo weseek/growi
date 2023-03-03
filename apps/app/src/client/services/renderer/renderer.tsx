@@ -1,6 +1,5 @@
 import assert from 'assert';
 
-import { isClient } from '@growi/core';
 import * as drawioPlugin from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
 import * as lsxGrowiPlugin from '@growi/remark-lsx/dist/client/index.mjs';
@@ -30,7 +29,6 @@ import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
 } from '~/services/renderer/renderer';
-import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -40,7 +38,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:cli:services:renderer');
 
 
-assert(isClient(), 'This module must be loaded only from client modules.');
+// assert(isClient(), 'This module must be loaded only from client modules.');
 
 
 export const generateViewOptions = (
@@ -259,15 +257,3 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   }
   return options;
 };
-
-// register to facade
-if (isClient()) {
-  registerGrowiFacade({
-    markdownRenderer: {
-      optionsGenerators: {
-        generateViewOptions,
-        generatePreviewOptions,
-      },
-    },
-  });
-}

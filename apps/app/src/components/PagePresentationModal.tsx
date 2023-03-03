@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation';
-import { useFullScreen } from '@growi/ui';
+import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import {

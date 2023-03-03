@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { HasObjectId, IAttachment } from '@growi/core';
-import { Attachment } from '@growi/ui';
+import { Attachment } from '@growi/ui/dist/components/Attachment';
 import { useTranslation } from 'next-i18next';
 
 type Props = {

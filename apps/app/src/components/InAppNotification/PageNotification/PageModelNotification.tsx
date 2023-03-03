@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui';
+import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';

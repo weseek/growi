@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 
 import { HasObjectId, IAttachment } from '@growi/core';
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import {
   Button,
   Modal, ModalHeader, ModalBody, ModalFooter,

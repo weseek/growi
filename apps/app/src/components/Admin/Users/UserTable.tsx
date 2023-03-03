@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { IUserHasId } from '@growi/core';
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 

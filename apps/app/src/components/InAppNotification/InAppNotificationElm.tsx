@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { HasObjectId } from '@growi/core';
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';

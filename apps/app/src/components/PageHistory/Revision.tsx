@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { IRevisionHasId, pathUtils } from '@growi/core';
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
