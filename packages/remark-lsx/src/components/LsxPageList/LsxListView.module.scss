@@ -1,0 +1,7 @@
+@use '@growi/ui/src/styles/molecules/page_list';
+
+.page-list :global {
+  .page-list-ul > li > a:not(:hover) {
+    text-decoration: none;
+  }
+}
