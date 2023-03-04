@@ -6,6 +6,7 @@ import { Modal, ModalBody } from 'reactstrap';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { IAnswer } from '~/interfaces/questionnaire/answer';
+import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
@@ -36,6 +37,9 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         questionnaireOrderId: questionnaireOrder._id,
         answers,
       });
+      if (!currentUser) {
+        localStorage.setItem(questionnaireOrder._id, StatusType.answered);
+      }
       toastSuccess(
         <>
           <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
@@ -51,7 +55,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       logger.error(e);
       toastError(t('questionnaire.failed_to_send'));
     }
-  }, [questionnaireOrder._id, t]);
+  }, [questionnaireOrder._id, t, currentUser]);
 
   const submitHandler = useCallback(async(event) => {
     event.preventDefault();
@@ -63,8 +67,8 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
 
     sendAnswer(answers);
 
-    const shouldCloseToastor = true;
-    closeQuestionnaireModal(shouldCloseToastor);
+    const shouldCloseToast = true;
+    closeQuestionnaireModal(shouldCloseToast);
   }, [closeQuestionnaireModal, questionnaireOrder.questions, sendAnswer]);
 
   const denyBtnClickHandler = useCallback(async() => {
@@ -72,30 +76,36 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       apiv3Put('/questionnaire/deny', {
         questionnaireOrderId: questionnaireOrder._id,
       });
+      if (!currentUser) {
+        localStorage.setItem(questionnaireOrder._id, StatusType.denied);
+      }
       toastSuccess(t('questionnaire.denied'));
     }
     catch (e) {
       logger.error(e);
     }
-    const shouldCloseToastor = true;
-    closeQuestionnaireModal(shouldCloseToastor);
-  }, [closeQuestionnaireModal, questionnaireOrder._id, t]);
+    const shouldCloseToast = true;
+    closeQuestionnaireModal(shouldCloseToast);
+  }, [closeQuestionnaireModal, questionnaireOrder._id, t, currentUser]);
 
   // No showing toasts since not important
-  const closeBtnClickHandler = useCallback(async(shouldCloseToastor: boolean) => {
-    closeQuestionnaireModal(shouldCloseToastor);
+  const closeBtnClickHandler = useCallback(async(shouldCloseToast: boolean) => {
+    closeQuestionnaireModal(shouldCloseToast);
 
     try {
       await apiv3Put('/questionnaire/skip', {
         questionnaireOrderId: questionnaireOrder._id,
       });
+      if (!currentUser) {
+        localStorage.setItem(questionnaireOrder._id, StatusType.skipped);
+      }
     }
     catch (e) {
       logger.error(e);
     }
-  }, [closeQuestionnaireModal, questionnaireOrder._id]);
+  }, [closeQuestionnaireModal, questionnaireOrder._id, currentUser]);
 
-  const closeBtnClickHandlerClosingToastor = useCallback(async() => {
+  const closeBtnClickHandlerClosingToast = useCallback(async() => {
     closeBtnClickHandler(true);
   }, [closeBtnClickHandler]);
 
@@ -104,7 +114,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
   return (<Modal
     size="lg"
     isOpen={isOpened}
-    toggle={closeBtnClickHandlerClosingToastor}
+    toggle={closeBtnClickHandlerClosingToast}
     centered
   >
     <form onSubmit={submitHandler}>

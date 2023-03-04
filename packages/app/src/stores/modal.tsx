@@ -589,12 +589,12 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
 */
 type QuestionnaireModalStatuses = {
   openedQuestionnaireId: string | null,
-  closeToastor?: () => void | Promise<void>,
+  closeToast?: () => void | Promise<void>,
 }
 
 type QuestionnaireModalStatusUtils = {
-  open(string: string, closeToastor: () => void | Promise<void>): Promise<QuestionnaireModalStatuses | undefined>
-  close(shouldCloseToastor?: boolean): Promise<QuestionnaireModalStatuses | undefined>
+  open(string: string, closeToast: () => void | Promise<void>): Promise<QuestionnaireModalStatuses | undefined>
+  close(shouldCloseToast?: boolean): Promise<QuestionnaireModalStatuses | undefined>
 }
 
 export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRResponse<QuestionnaireModalStatuses, Error> & QuestionnaireModalStatusUtils => {
@@ -603,14 +603,14 @@ export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRR
 
   return {
     ...swrResponse,
-    open: (questionnaireOrderId: string, closeToastor: () => void | Promise<void>) => swrResponse.mutate({
+    open: (questionnaireOrderId: string, closeToast: () => void | Promise<void>) => swrResponse.mutate({
       openedQuestionnaireId: questionnaireOrderId,
-      closeToastor,
+      closeToast,
     }),
-    close: (shouldCloseToastor?: boolean) => {
-      if (shouldCloseToastor) {
-        swrResponse.data?.closeToastor?.();
-        if (swrResponse.data?.closeToastor === undefined) logger.debug('Tried to run `swrResponse.data?.closeToastor` but it was `undefined`');
+    close: (shouldCloseToast?: boolean) => {
+      if (shouldCloseToast) {
+        swrResponse.data?.closeToast?.();
+        if (swrResponse.data?.closeToast === undefined) logger.debug('Tried to run `swrResponse.data?.closeToast` but it was `undefined`');
       }
 
       return swrResponse.mutate({ openedQuestionnaireId: null });
