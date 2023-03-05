@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
@@ -13,7 +15,7 @@ const QuestionnaireModalManager = ():JSX.Element => {
   const { data: questionnaireOrders } = useSWRxQuestionnaireOrders();
   const { data: currentUser } = useCurrentUser();
 
-  const questionnaireOrdersToShow = (questionnaireOrders: IQuestionnaireOrderHasId[] | undefined) => {
+  const questionnaireOrdersToShow = useCallback((questionnaireOrders: IQuestionnaireOrderHasId[] | undefined) => {
     const guestQuestionnaireAnswerStorage = GuestQuestionnaireAnswerStatusService.getStorage();
     if (currentUser || !guestQuestionnaireAnswerStorage) {
       return questionnaireOrders;
@@ -23,7 +25,7 @@ const QuestionnaireModalManager = ():JSX.Element => {
       const localAnswerStatus = guestQuestionnaireAnswerStorage[questionnaireOrder._id];
       return !localAnswerStatus || localAnswerStatus.status === StatusType.not_answered;
     });
-  };
+  }, [currentUser]);
 
   return <>
     {questionnaireOrders?.map((questionnaireOrder) => {
