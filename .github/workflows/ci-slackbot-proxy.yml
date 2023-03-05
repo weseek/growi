@@ -44,7 +44,7 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
@@ -54,9 +54,9 @@ jobs:
       with:
         path: |
           **/dist
-        key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        key: dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
-          dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
+          dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -108,7 +108,7 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
