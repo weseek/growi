@@ -25,7 +25,7 @@ const getStorage = (): GuestQuestionnaireAnswerStatusStorage | null => {
     if (currentStorage) {
       const storageJson: GuestQuestionnaireAnswerStatusStorage = JSON.parse(currentStorage);
 
-      // delete status if outdated
+      // delete status if outdated to prevent localStorage expansion
       // change skipped to not_answered if different date than when skipped
       Object.keys(storageJson).forEach((key) => {
         const answerStatus = storageJson[key];
