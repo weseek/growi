@@ -955,9 +955,11 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
-schema.statics.removeByPath = async function(
-    userHomePagePath: string,
+schema.statics.removeUserHome = async function(
+    username: string,
 ): Promise<{ deleteManyResult: DeleteResult, findOneAndRemoveResult: PageDocument & HasObjectId | null }> {
+  const userHomePagePath = `/user/${username}`;
+
   // https://regex101.com/r/PY1tI5/1
   const regex = new RegExp(`^${userHomePagePath}/.+`);
 
