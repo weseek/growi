@@ -30,7 +30,7 @@ export class ActivatePluginService {
       },
     });
 
-    if (pluginActivators == null) {
+    if (!('pluginActivators' in window)) {
       return;
     }
 
