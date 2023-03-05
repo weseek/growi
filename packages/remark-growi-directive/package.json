@@ -16,10 +16,10 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "build": "yarn tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "clean": "npx -y shx rm -rf dist",
-    "tsc": "tsc -p tsconfig.build.json",
-    "tsc:w": "yarn tsc -w",
+    "dev": "yarn build",
+    "watch": "yarn tsc -w",
     "test": "cross-env NODE_ENV=test npm run test-coverage",
     "test-api": "tape --conditions development test/**.test.js",
     "test-coverage": "c8 --check-coverage --branches 100 --functions 100 --lines 100 --statements 100 --reporter lcov npm run test-api",
