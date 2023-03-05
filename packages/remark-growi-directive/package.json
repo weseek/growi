@@ -23,8 +23,8 @@
     "test": "cross-env NODE_ENV=test npm run test-coverage",
     "test-api": "tape --conditions development test/**.test.js",
     "test-coverage": "c8 --check-coverage --branches 100 --functions 100 --lines 100 --statements 100 --reporter lcov npm run test-api",
-    "lint": "eslint \"**/*.{cjs, js,jsx,ts,tsx}\"",
-    "lint:fix": "eslint \"**/*.{cjs, js,jsx,ts,tsx}\" --fix"
+    "lint": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\"",
+    "lint:fix": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\" --fix"
   },
   "dependencies": {
     "@types/mdast": "^3.0.0",

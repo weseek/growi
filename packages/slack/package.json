@@ -10,7 +10,7 @@
     "clean": "npx -y shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w",
-    "lint:js": "eslint **/*.{js,ts}",
+    "lint:js": "yarn eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {

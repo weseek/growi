@@ -17,7 +17,7 @@
     "dev:libs": "yarn build:libs --mode dev",
     "dev:themes": "yarn build:themes --mode dev",
     "watch": "run-p 'dev:libs -w' 'dev:themes -w",
-    "lint:eslint": "eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
+    "lint:eslint": "yarn eslint \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/**/*.scss",
     "lint": "run-p lint:*",
     "preview": "vite preview"
