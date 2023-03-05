@@ -16,9 +16,9 @@
     "preserver": "yarn cross-env NODE_ENV=production yarn migrate",
     "migrate": "node -r dotenv-flow/config node_modules/.bin/migrate-mongo up -f config/migrate-mongo-config.js",
     "//// for development": "",
-    "dev": "yarn cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --inspect --transpile-only src/server/app.ts",
+    "dev": "yarn cross-env NODE_ENV=development yarn swc-node --inspect --watch src/server/app.ts",
     "dev:analyze": "yarn cross-env ANALYZE=true yarn dev",
-    "dev:migrate-mongo": "yarn cross-env NODE_ENV=development yarn ts-node node_modules/.bin/migrate-mongo",
+    "dev:migrate-mongo": "yarn cross-env NODE_ENV=development yarn swc-node node_modules/.bin/migrate-mongo",
     "dev:migrate": "yarn dev:migrate:status > tmp/cache/migration-status.out && yarn dev:migrate:up",
     "dev:migrate:create": "yarn dev:migrate-mongo create -f config/migrate-mongo-config.js",
     "dev:migrate:status": "yarn dev:migrate-mongo status -f config/migrate-mongo-config.js",
@@ -37,11 +37,11 @@
     "jest:run": "cross-env NODE_ENV=test jest --passWithNoTests -- ",
     "reg:run": "reg-suit run",
     "//// misc": "",
-    "console": "yarn cross-env NODE_ENV=development yarn ts-node --experimental-repl-await src/server/console.js",
+    "console": "yarn cross-env NODE_ENV=development yarn swc-node --experimental-repl-await src/server/console.js",
     "swagger-jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
-    "ts-node": "node -r ts-node/register -r tsconfig-paths/register -r dotenv-flow/config"
+    "swc-node": "node -r @swc-node/register -r tsconfig-paths/register -r dotenv-flow/config"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM",
