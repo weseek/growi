@@ -20,9 +20,9 @@
         ],
         "console": "integratedTerminal",
         "cwd": "${fileDirname}",
-        "runtimeExecutable": "yarn",
+        "runtimeExecutable": "node",
         "runtimeArgs": [
-          "ts-node",
+          "-r", "@swc-node/register",
           "${file}"
         ]
       },

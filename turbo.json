@@ -45,6 +45,11 @@
       "dependsOn": ["^dev", "@growi/app#dev:migrate"],
       "cache": false
     },
+    "@growi/slackbot-proxy#dev": {
+      "dependsOn": ["@growi/slack#dev"],
+      "cache": false,
+      "persistent": true
+    },
     "dev": {
       "outputs": ["dist/**", "types/**"],
       "inputs": [

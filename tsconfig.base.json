@@ -38,16 +38,12 @@
 
     /* Experimental Options */
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true
 
   },
   "exclude": [
     "node_modules",
     "dist",
     "**/*.test.ts"
-  ],
-  "ts-node": {
-    "transpileOnly": true,
-    "swc": true
-  }
+  ]
 }
