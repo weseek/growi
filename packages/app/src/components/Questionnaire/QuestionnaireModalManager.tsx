@@ -23,7 +23,7 @@ const QuestionnaireModalManager = ():JSX.Element => {
 
     return questionnaireOrders?.filter((questionnaireOrder) => {
       const localAnswerStatus = guestQuestionnaireAnswerStorage[questionnaireOrder._id];
-      return !localAnswerStatus || localAnswerStatus.status === StatusType.not_answered;
+      return localAnswerStatus == null || localAnswerStatus.status === StatusType.not_answered;
     });
   }, [currentUser]);
 

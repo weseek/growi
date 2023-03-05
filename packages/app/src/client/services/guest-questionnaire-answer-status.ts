@@ -22,7 +22,7 @@ const daysUntilExpiration = 30;
 const getStorage = (): GuestQuestionnaireAnswerStatusStorage | null => {
   if (typeof window !== 'undefined') {
     const currentStorage = localStorage.getItem(storageKey);
-    if (currentStorage) {
+    if (currentStorage != null) {
       const storageJson: GuestQuestionnaireAnswerStatusStorage = JSON.parse(currentStorage);
 
       // delete status if outdated to prevent localStorage overflow
@@ -62,7 +62,7 @@ const setStatus = (questionnaireOrderId: string, status: StatusType): void => {
 
     const storage = getStorage();
 
-    if (storage) {
+    if (storage != null) {
       storage[questionnaireOrderId] = guestQuestionnaireAnswerStatus;
       localStorage.setItem(storageKey, JSON.stringify(storage));
     }
