@@ -54,12 +54,11 @@ jobs:
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Cache/Restore dist and types
+      - name: Cache/Restore dist
         uses: actions/cache@v3
         with:
           path: |
             **/dist
-            **/types
           key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
             dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
@@ -116,12 +115,11 @@ jobs:
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Cache/Restore dist and types
+      - name: Cache/Restore dist and
         uses: actions/cache@v3
         with:
           path: |
             **/dist
-            **/types
           key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
             dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
@@ -188,12 +186,11 @@ jobs:
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Cache/Restore dist and types
+      - name: Cache/Restore dist and
         uses: actions/cache@v3
         with:
           path: |
             **/dist
-            **/types
           key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
             dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
