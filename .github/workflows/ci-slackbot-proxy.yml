@@ -23,6 +23,60 @@ concurrency:
 
 jobs:
 
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+    - name: Cache/Restore dist
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/dist
+        key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        restore-keys: |
+          dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+    - name: Install dependencies
+      run: |
+        yarn global add turbo
+        yarn --frozen-lockfile
+
+    - name: Lint
+      run: |
+        turbo run lint --filter=@growi/slackbot-proxy
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi-bot-proxy - test (${{ matrix.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   launch-dev:
     runs-on: ubuntu-latest
 
