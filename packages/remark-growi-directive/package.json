@@ -56,8 +56,7 @@
     "to-vfile": "^7.0.0",
     "type-coverage": "^2.0.0",
     "typescript": "^4.0.0",
-    "unist-util-remove-position": "^4.0.0",
-    "xo": "^0.47.0"
+    "unist-util-remove-position": "^4.0.0"
   },
   "typeCoverage": {
     "atLeast": 100,
