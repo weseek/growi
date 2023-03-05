@@ -26,7 +26,7 @@
     "dev:migrate:down": "yarn dev:migrate-mongo down -f config/migrate-mongo-config.js",
     "cy:run": "cypress run --browser chrome",
     "//// for CI": "",
-    "dev:ci": "yarn dev --ci",
+    "dev:ci": "yarn cross-env NODE_ENV=development yarn swc-node src/server/app.ts --ci",
     "lint:typecheck": "npx -y tsc",
     "lint:eslint": "eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/**/*.scss",
