@@ -6,10 +6,9 @@
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
-  "types": "types/index.d.ts",
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist types",
+    "clean": "npx -y shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w",
     "lint:js": "eslint **/*.{js,ts}",

@@ -5,15 +5,13 @@
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
   "module": "dist/presentation.mjs",
-  "types": "types/index.d.ts",
   "files": [
-    "dist",
-    "types"
+    "dist"
   ],
   "scripts": {
     "build": "run-p build:*",
     "build:js": "vite build",
-    "clean": "npx -y shx rm -rf dist types",
+    "clean": "npx -y shx rm -rf dist",
     "dev": "run-p dev:*",
     "dev:js": "vite build --mode dev",
     "watch": "run-p 'dev:js -w",

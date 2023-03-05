@@ -6,7 +6,7 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     react(),
-    dts({ outputDir: 'types' }),
+    dts(),
   ],
   build: {
     outDir: 'dist/client',
