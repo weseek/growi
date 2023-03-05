@@ -1,3 +1,4 @@
+import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
@@ -13,12 +14,14 @@ const QuestionnaireModalManager = ():JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const questionnaireOrdersToShow = (questionnaireOrders: IQuestionnaireOrderHasId[] | undefined) => {
-    if (currentUser) {
+    const guestQuestionnaireAnswerStorage = GuestQuestionnaireAnswerStatusService.getStorage();
+    if (currentUser || !guestQuestionnaireAnswerStorage) {
       return questionnaireOrders;
     }
+
     return questionnaireOrders?.filter((questionnaireOrder) => {
-      const localAnswerStatus = localStorage.getItem(questionnaireOrder._id);
-      return !localAnswerStatus || localAnswerStatus === StatusType.not_answered;
+      const localAnswerStatus = guestQuestionnaireAnswerStorage[questionnaireOrder._id];
+      return !localAnswerStatus || localAnswerStatus.status === StatusType.not_answered;
     });
   };
 

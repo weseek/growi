@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess } from '~/client/util/toastr';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
@@ -38,7 +39,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
         questionnaireOrderId: questionnaireOrder._id,
       });
       if (!currentUser) {
-        localStorage.setItem(questionnaireOrder._id, StatusType.denied);
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.denied);
       }
       toastSuccess(t('questionnaire.denied'));
     }
@@ -56,7 +57,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
         questionnaireOrderId: questionnaireOrder._id,
       });
       if (!currentUser) {
-        localStorage.setItem(questionnaireOrder._id, StatusType.skipped);
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.skipped);
       }
     }
     catch (e) {

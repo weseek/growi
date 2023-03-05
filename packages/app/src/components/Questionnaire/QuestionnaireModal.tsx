@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalBody } from 'reactstrap';
 
+import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { IAnswer } from '~/interfaces/questionnaire/answer';
@@ -38,7 +39,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         answers,
       });
       if (!currentUser) {
-        localStorage.setItem(questionnaireOrder._id, StatusType.answered);
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.answered);
       }
       toastSuccess(
         <>
@@ -77,7 +78,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         questionnaireOrderId: questionnaireOrder._id,
       });
       if (!currentUser) {
-        localStorage.setItem(questionnaireOrder._id, StatusType.denied);
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.denied);
       }
       toastSuccess(t('questionnaire.denied'));
     }
@@ -97,7 +98,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         questionnaireOrderId: questionnaireOrder._id,
       });
       if (!currentUser) {
-        localStorage.setItem(questionnaireOrder._id, StatusType.skipped);
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.skipped);
       }
     }
     catch (e) {
