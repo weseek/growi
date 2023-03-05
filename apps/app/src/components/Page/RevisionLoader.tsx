@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import { Ref, IRevision, IRevisionHasId } from '@growi/core';
+import type { Ref, IRevision, IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { RendererOptions } from '~/services/renderer/renderer';
+import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRxPageRevision } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 

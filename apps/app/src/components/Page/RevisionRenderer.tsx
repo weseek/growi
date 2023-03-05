@@ -2,7 +2,7 @@ import React from 'react';
 
 import ReactMarkdown from 'react-markdown';
 
-import type { RendererOptions } from '~/services/renderer/renderer';
+import type { RendererOptions } from '~/interfaces/renderer-options';
 import loggerFactory from '~/utils/logger';
 
 

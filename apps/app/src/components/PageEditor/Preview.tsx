@@ -2,7 +2,7 @@ import React, {
   SyntheticEvent, RefObject,
 } from 'react';
 
-import { RendererOptions } from '~/services/renderer/renderer';
+import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 

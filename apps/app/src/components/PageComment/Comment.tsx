@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { IUser, pathUtils } from '@growi/core';
+import type { IUser } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils/page-utils';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
@@ -8,7 +9,8 @@ import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
 
-import { RendererOptions } from '~/services/renderer/renderer';
+import type { RendererOptions } from '~/interfaces/renderer-options';
+
 
 import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
