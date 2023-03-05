@@ -5,6 +5,7 @@
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
   "module": "dist/presentation.mjs",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],

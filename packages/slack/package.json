@@ -4,6 +4,7 @@
   "license": "MIT",
   "main": "dist/slack.umd.js",
   "module": "dist/slack.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "vite build",
     "clean": "npx -y shx rm -rf dist",

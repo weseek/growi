@@ -5,6 +5,7 @@
   "license": "MIT",
   "main": "dist/libs/preset-themes.umd.js",
   "module": "dist/libs/preset-themes.mjs",
+  "types": "dist/libs/index.d.ts",
   "files": [
     "dist"
   ],
