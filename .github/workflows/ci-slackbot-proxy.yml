@@ -10,6 +10,7 @@ on:
       - .github/workflows/ci-slackbot-proxy.yml
       - .eslint*
       - tsconfig.base.json
+      - turbo.json
       - yarn.lock
       - apps/slackbot-proxy/**
       - '!apps/slackbot-proxy/docker/**'

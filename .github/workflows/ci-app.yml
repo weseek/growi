@@ -9,13 +9,15 @@ on:
       - .github/workflows/ci-app.yml
       - .eslint*
       - tsconfig.base.json
+      - turbo.json
       - yarn.lock
       - apps/app/**
       - '!apps/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/preset-themes/**
+      - packages/hackmd/**
       - packages/presentation/**
+      - packages/preset-themes/**
       - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
