@@ -50,6 +50,10 @@
       "cache": false,
       "persistent": true
     },
+    "@growi/slackbot-proxy#dev:ci": {
+      "dependsOn": ["@growi/slack#dev"],
+      "cache": false
+    },
     "dev": {
       "outputs": ["dist/**", "types/**"],
       "inputs": [
