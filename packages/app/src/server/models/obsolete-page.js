@@ -672,13 +672,6 @@ export const getPageSchema = (crowi) => {
 
   };
 
-  pageSchema.statics.removeByPath = function(path) {
-    if (path == null) {
-      throw new Error('path is required');
-    }
-    return this.findOneAndRemove({ path }).exec();
-  };
-
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);

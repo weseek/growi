@@ -4,6 +4,7 @@ import nodePath from 'path';
 
 import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
+import { DeleteResult } from 'mongodb';
 import mongoose, {
   Schema, Model, Document, AnyObject,
 } from 'mongoose';
@@ -952,6 +953,22 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
     .exec();
 
   return ancestors[0];
+};
+
+schema.statics.removeUserHome = async function(
+    username: string,
+): Promise<{ deleteManyResult: DeleteResult, findOneAndRemoveResult: PageDocument & HasObjectId | null }> {
+  const userHomePagePath = `/user/${username}`;
+
+  // https://regex101.com/r/PY1tI5/1
+  const regex = new RegExp(`^${userHomePagePath}/.+`);
+
+  const [deleteManyResult, findOneAndRemoveResult] = await Promise.all([
+    this.deleteMany({ path: regex }),
+    this.findOneAndRemove({ path: userHomePagePath }),
+  ]);
+
+  return { deleteManyResult, findOneAndRemoveResult };
 };
 
 

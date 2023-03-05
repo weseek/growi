@@ -218,6 +218,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageRecursiveCompleteDeletionAuthority: this.state.currentPageRecursiveCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
+      isUserPageDeletionEnabled: this.state.isUserPageDeletionEnabled,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);

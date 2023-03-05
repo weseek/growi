@@ -672,13 +672,15 @@ module.exports = (crowi) => {
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
+    const isUserPageDeletionEnabled = crowi.configManager.getConfig('crowi', 'security:isUserPageDeletionEnabled');
 
     try {
       const userData = await User.findById(id);
+      const username = userData.username;
       await UserGroupRelation.remove({ relatedUser: userData });
       await userData.statusDelete();
       await ExternalAccount.remove({ user: userData });
-      await Page.removeByPath(`/user/${userData.username}`);
+      if (isUserPageDeletionEnabled) await Page.removeUserHome(username);
 
       const serializedUserData = serializeUserSecurely(userData);
 
