@@ -211,7 +211,7 @@ jobs:
           yarn global add turbo
           yarn --frozen-lockfile
 
-      - name: yarn dev:ci
+      - name: turbo run dev:ci
         working-directory: ./apps/app
         run: |
           cp config/ci/.env.local.for-ci .env.development.local
