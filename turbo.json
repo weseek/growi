@@ -77,6 +77,12 @@
       "persistent": true
     },
 
+    "@growi/ui#lint": {
+      "dependsOn": ["@growi/core#build"]
+    },
+    "@growi/remark-lsx#lint": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
+    },
     "@growi/app#lint": {
       "dependsOn": ["^dev"]
     },
