@@ -29,6 +29,11 @@ class Lsx {
     }
 
     const range = OptionParser.parseRange(optionsDepth);
+
+    if (range == null) {
+      return query;
+    }
+
     const start = range.start;
     const end = range.end;
 
@@ -70,6 +75,11 @@ class Lsx {
     }
 
     const range = OptionParser.parseRange(optionsNum);
+
+    if (range == null) {
+      return query;
+    }
+
     const start = range.start;
     const end = range.end;
 
