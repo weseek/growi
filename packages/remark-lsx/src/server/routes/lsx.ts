@@ -168,7 +168,7 @@ class Lsx {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const routesFactory = (crowi, app): any => {
+export const routesFactory = (crowi): any => {
   const Page = crowi.model('Page');
   const actions: any = {};
 
