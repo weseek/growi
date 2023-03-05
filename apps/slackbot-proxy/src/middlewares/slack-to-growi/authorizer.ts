@@ -77,31 +77,31 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeInteractionMiddleware');
   }
 
-    @Inject()
+  @Inject()
     installerService: InstallerService;
 
-    async use(@Req() req: SlackOauthReq, @Res() res:Res, @Next() next: Next): Promise<void|Res> {
+  async use(@Req() req: SlackOauthReq, @Res() res:Res, @Next() next: Next): Promise<void|Res> {
 
-      if (req.interactionPayload == null) {
-        return next(createError(400, 'The request has no payload.'));
-      }
-
-      const payload = req.interactionPayload;
-
-      // extract id from body.payload
-      const teamId = payload.team?.id;
-      const enterpriseId = payload.enterprise?.id;
-      const isEnterpriseInstall = payload.is_enterprise_install === 'true';
-
-      const query: InstallationQuery<boolean> = {
-        teamId,
-        enterpriseId,
-        isEnterpriseInstall,
-      };
-
-      const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
-      await commonMiddleware(req, res, next);
+    if (req.interactionPayload == null) {
+      return next(createError(400, 'The request has no payload.'));
     }
+
+    const payload = req.interactionPayload;
+
+    // extract id from body.payload
+    const teamId = payload.team?.id;
+    const enterpriseId = payload.enterprise?.id;
+    const isEnterpriseInstall = payload.is_enterprise_install === 'true';
+
+    const query: InstallationQuery<boolean> = {
+      teamId,
+      enterpriseId,
+      isEnterpriseInstall,
+    };
+
+    const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
+    await commonMiddleware(req, res, next);
+  }
 
 }
 @Middleware()
