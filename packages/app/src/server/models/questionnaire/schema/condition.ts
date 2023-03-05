@@ -7,6 +7,18 @@ import { UserType } from '~/interfaces/questionnaire/user-info';
 const conditionSchema = new Schema<ICondition>({
   user: {
     types: [{ type: String, enum: Object.values(UserType) }],
+    daysSinceCreation: {
+      moreThanOrEqualTo: { type: Number, min: 0 },
+      lessThanOrEqualTo: {
+        type: Number,
+        min: 0,
+        validate: [
+          function(value) {
+            return this.user.daysSinceCreation.moreThanOrEqualTo == null || this.user.daysSinceCreation.moreThanOrEqualTo <= value;
+          }, 'daysSinceCreation.lessThanOrEqualTo must be greater than moreThanOrEqualTo',
+        ],
+      },
+    },
   },
   growi: {
     types: [{ type: String, enum: Object.values(GrowiServiceType) }],
