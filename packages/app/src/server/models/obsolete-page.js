@@ -672,22 +672,6 @@ export const getPageSchema = (crowi) => {
 
   };
 
-  pageSchema.statics.removeByPath = async function(path) {
-    if (path == null) {
-      throw new Error('path is required');
-    }
-
-    // https://regex101.com/r/guaY11/1
-    const regex = new RegExp(`^${path}/.+$`);
-    const deleteManyPromise = this.deleteMany({ path: regex });
-    const findOneAndRemovePromise = this.findOneAndRemove({ path });
-
-    return await Promise.all([
-      deleteManyPromise,
-      findOneAndRemovePromise,
-    ]);
-  };
-
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
