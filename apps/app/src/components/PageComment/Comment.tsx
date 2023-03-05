@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import type { IUser } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils/page-utils';
+import * as pathUtils from '@growi/core/dist/utils/path-utils';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
