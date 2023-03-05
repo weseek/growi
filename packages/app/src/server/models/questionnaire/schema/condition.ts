@@ -14,7 +14,7 @@ const conditionSchema = new Schema<ICondition>({
         min: 0,
         validate: [
           function(value) {
-            return !this.user.daysSinceCreation.moreThanOrEqualTo || this.user.daysSinceCreation.moreThanOrEqualTo <= value;
+            return this.user.daysSinceCreation.moreThanOrEqualTo == null || this.user.daysSinceCreation.moreThanOrEqualTo <= value;
           }, 'daysSinceCreation.lessThanOrEqualTo must be greater than moreThanOrEqualTo',
         ],
       },

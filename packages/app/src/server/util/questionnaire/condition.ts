@@ -11,23 +11,29 @@ const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {
     return false;
   }
 
-  // Is "time passed since user creation" in between specified range?
+  // Check if "time passed since user creation" is between specified range
   if (userInfo.type !== UserType.guest) {
     const createdAt = userInfo.userCreatedAt;
     const moreThanOrEqualTo = daysSinceCreation?.moreThanOrEqualTo;
     const lessThanOrEqualTo = daysSinceCreation?.lessThanOrEqualTo;
     const currentDate = new Date();
 
-    const leftThresholdBool = !moreThanOrEqualTo || (() => {
+    const isValidLeftThreshold = (() => {
+      if (moreThanOrEqualTo == null) {
+        return true;
+      }
       const leftThreshold = new Date(createdAt.getTime() + 60 * 1000 * 60 * 24 * moreThanOrEqualTo);
       return leftThreshold <= currentDate;
     })();
-    const rightThresholdBool = !lessThanOrEqualTo || (() => {
+    const isValidRightThreshold = (() => {
+      if (lessThanOrEqualTo == null) {
+        return true;
+      }
       const rightThreshold = new Date(createdAt.getTime() + 60 * 1000 * 60 * 24 * lessThanOrEqualTo);
       return currentDate <= rightThreshold;
     })();
 
-    return leftThresholdBool && rightThresholdBool;
+    return isValidLeftThreshold && isValidRightThreshold;
   }
 
   return true;
