@@ -3,19 +3,23 @@
   "pipeline": {
     "@growi/ui#build": {
       "dependsOn": ["@growi/core#build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
     },
     "@growi/remark-lsx#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
     },
     "@growi/app#build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "config/**", "dist/**"]
+      "outputs": [".next/**", "config/**", "dist/**"],
+      "outputMode": "new-only"
     },
     "@growi/slackbot-proxy#build": {
       "dependsOn": ["@growi/slack#build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
     },
     "build": {
       "outputs": ["dist/**"],
@@ -25,16 +29,19 @@
         "src/**/*.css", "src/**/*.scss",
         "tsconfig*.json",
         "vite*.ts"
-      ]
+      ],
+      "outputMode": "new-only"
     },
 
     "@growi/app#dev:migrate": {
       "outputs": ["tmp/cache/migration-status.out"],
-      "inputs": ["src/migration/*.js"]
+      "inputs": ["src/migration/*.js"],
+      "outputMode": "new-only"
     },
     "@growi/remark-lsx#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
     },
     "@growi/app#dev": {
       "dependsOn": ["^dev", "@growi/app#dev:migrate"],
@@ -62,7 +69,8 @@
         "src/**/*.css", "src/**/*.scss",
         "tsconfig*.json",
         "vite*.ts"
-      ]
+      ],
+      "outputMode": "new-only"
     },
 
     "watch": {
@@ -93,12 +101,15 @@
     },
 
     "@growi/app#test": {
-      "dependsOn": ["^dev"]
+      "dependsOn": ["^dev"],
+      "outputMode": "new-only"
     },
     "@growi/slackbot-proxy#test": {
-      "dependsOn": ["@growi/slack#dev"]
+      "dependsOn": ["@growi/slack#dev"],
+      "outputMode": "new-only"
     },
     "test": {
+      "outputMode": "new-only"
     },
 
     "clean": {

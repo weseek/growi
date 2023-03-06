@@ -58,7 +58,6 @@
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
     "morgan": "^1.10.0",
-    "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.2.9"
   }
 }
