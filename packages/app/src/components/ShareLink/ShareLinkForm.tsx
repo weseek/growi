@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { useCurrentPageId } from '~/stores/context';
+import { useCurrentPageId } from '~/stores/page';
 
 
 const ExpirationType = {
