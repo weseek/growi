@@ -148,12 +148,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // wrap error elements which do not use dangerouslySetInnerHtml
   const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
-    errors.push(
-      new Error('foo'),
-      new Error('foo'),
-      new Error('foo'),
-    );
-
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">
