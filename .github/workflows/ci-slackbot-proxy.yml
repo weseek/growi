@@ -63,14 +63,6 @@ jobs:
         yarn global add turbo
         yarn --frozen-lockfile
 
-    - name: Show eslint version (./)
-      run: |
-        yarn eslint -v
-    - name: Show eslint version (./apps/slackbot-proxy)
-      working-directory: ./apps/slackbot-proxy
-      run: |
-        yarn eslint -v
-
     - name: Lint
       run: |
         turbo run lint --filter=@growi/slackbot-proxy
