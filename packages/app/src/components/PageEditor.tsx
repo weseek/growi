@@ -333,7 +333,6 @@ const PageEditor = React.memo((): JSX.Element => {
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
         mutateIsLatestRevision(true);
-        mutateIsNotFound(false);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
       }
