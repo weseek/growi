@@ -63,17 +63,21 @@ module.exports = async(phase, { defaultConfig }) => {
   /** @type {import('next').NextConfig} */
   const nextConfig = {
 
+    reactStrictMode: true,
+    poweredByHeader: false,
+    pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+    i18n,
+
+    // for build
     eslint: {
       ignoreDuringBuilds: true,
     },
-    reactStrictMode: true,
     typescript: {
       tsconfigPath: 'tsconfig.build.client.json',
     },
-    pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
-    transpilePackages: getTranspilePackages(),
-
-    i18n,
+    transpilePackages: phase !== PHASE_PRODUCTION_SERVER
+      ? getTranspilePackages()
+      : undefined,
 
     /** @param config {import('next').NextConfig} */
     webpack(config, options) {
