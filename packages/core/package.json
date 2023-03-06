@@ -21,9 +21,12 @@
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
   },
+  "// comments for dependencies": {
+    "escape-string-regexp": "5.0.0 or above exports only ESM"
+  },
   "dependencies": {
     "bson-objectid": "^2.0.4",
-    "escape-string-regexp": "^5.0.0"
+    "escape-string-regexp": "^4.0.0"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",

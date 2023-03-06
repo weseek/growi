@@ -22,6 +22,7 @@ export default defineConfig({
         preserveModulesRoot: 'src',
       },
       external: [
+        'escape-string-regexp',
         'bson-objectid',
         'swr',
         /^node:.*/,

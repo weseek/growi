@@ -1,4 +1,5 @@
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 
 import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
@@ -14,7 +15,6 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 
 const differenceInYears = require('date-fns/differenceInYears');
-const escapeStringRegexp = require('escape-string-regexp');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
