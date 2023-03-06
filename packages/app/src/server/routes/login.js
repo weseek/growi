@@ -28,8 +28,8 @@ module.exports = function(crowi, app) {
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
         template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
         vars: {
+          adminUser: admin,
           createdUser: userData,
-          admin,
           url: appService.getSiteUrl(),
           appTitle,
         },
