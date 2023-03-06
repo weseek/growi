@@ -7,6 +7,7 @@ import {
 } from 'reactstrap';
 
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { hasChildren } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
@@ -42,9 +43,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
 
   const isBookmarked = userBookmarkInfo?.isBookmarked;
 
-  const hasChildren = useCallback((): boolean => {
-    return item.children.length > 0;
-  }, [item.children.length]);
+  const childrenExists = hasChildren(item);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
@@ -143,7 +142,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
           </DropdownItem>
         )}
 
-        {hasChildren() && (<DropdownItem divider />)}
+        {childrenExists && (<DropdownItem divider />)}
 
         {item.children?.map(child => (
           <div key={child._id} >
@@ -161,14 +160,15 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         ))}
       </DropdownMenu>
     );
-  }, [hasChildren,
+  }, [isOpen,
       isCreateAction,
-      isOpen, item.children,
-      onClickChildMenuItemHandler,
-      onClickNewBookmarkFolder,
       onPressEnterHandlerForCreate,
       t,
+      childrenExists,
+      item.children,
+      onClickNewBookmarkFolder,
       selectedItem,
+      onClickChildMenuItemHandler,
   ]);
 
   return (
@@ -207,7 +207,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
           onClick={e => e.stopPropagation()}
           onMouseEnter={onMouseEnterHandler}
         >
-          {hasChildren()
+          {childrenExists
             ? <TriangleIcon />
             : (
               <i className="icon-plus d-block pl-0" />

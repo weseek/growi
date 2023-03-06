@@ -7,6 +7,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { hasChildren } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
@@ -57,9 +58,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
-  const hasChildren = useCallback((): boolean => {
-    return children != null && children.length > 0;
-  }, [children]);
+  const childrenExists = hasChildren(children);
+
 
   const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
@@ -98,11 +98,11 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
-    if (!isOpen && hasChildren()) {
+    if (!isOpen && childrenExists) {
       setIsOpen(true);
     }
     setIsCreateAction(true);
-  }, [hasChildren, isOpen]);
+  }, [childrenExists, isOpen]);
 
   const onClickDeleteBookmarkHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -257,7 +257,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         onClick={loadChildFolder}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
-          {hasChildren() && (
+          {childrenExists && (
             <button
               type="button"
               className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}

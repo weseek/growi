@@ -9,13 +9,14 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { inputValidator } from '~/client/util/input-validator-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
-import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
+import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
@@ -53,16 +54,6 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, []);
 
-  const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '' || title.trim() === '') {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.title_required'),
-      };
-    }
-
-    return null;
-  };
 
   const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
