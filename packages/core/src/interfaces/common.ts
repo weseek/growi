@@ -2,7 +2,7 @@
  * Common types and interfaces
  */
 
-import { HasObjectId } from './has-object-id';
+import type { HasObjectId } from './has-object-id';
 
 
 // Foreign key field
