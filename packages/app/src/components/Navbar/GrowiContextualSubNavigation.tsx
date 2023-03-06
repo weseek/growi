@@ -16,7 +16,7 @@ import {
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentPageId, useCurrentPathname, useIsNotFound,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -24,7 +24,9 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound,
+} from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,

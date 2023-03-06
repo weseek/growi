@@ -16,13 +16,13 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
-import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useCurrentPathname, useCurrentPageId, useIsEnabledAttachTitleHeader, useTemplateBodyData,
-  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
+  useCurrentPathname, useIsEnabledAttachTitleHeader, useTemplateBodyData,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -32,9 +32,15 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
+import {
+  useRemoteRevisionId,
+  useRemoteRevisionBody,
+  useRemoteRevisionLastUpdatedAt,
+  useRemoteRevisionLastUpdateUser,
+} from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -71,8 +77,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: isNotFound } = useIsNotFound();
-  const { data: pageId } = useCurrentPageId();
+  const { data: isNotFound, mutate: mutateIsNotFound } = useIsNotFound();
+  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
@@ -92,6 +98,11 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
+  const { mutate: mutateRemotePageId } = useRemoteRevisionId();
+  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
+  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
+  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -218,18 +229,18 @@ const PageEditor = React.memo((): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error);
       if (error.code === 'conflict') {
-        toastWarning('(TBD) resolve conflict');
-        // pageContainer.setState({
-        //   remoteRevisionId: error.data.revisionId,
-        //   remoteRevisionBody: error.data.revisionBody,
-        //   remoteRevisionUpdateAt: error.data.createdAt,
-        //   lastUpdateUser: error.data.user,
-        // });
+        mutateRemotePageId(error.data.revisionId);
+        mutateRemoteRevisionId(error.data.revisionBody);
+        mutateRemoteRevisionLastUpdatedAt(error.data.createdAt);
+        mutateRemoteRevisionLastUpdateUser(error.data.user);
       }
       return null;
     }
 
-  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
+  }, [
+    currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
+    currentPagePath, currentRevisionId, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
+  ]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -300,6 +311,9 @@ const PageEditor = React.memo((): JSX.Element => {
       if (pageId != null) {
         formData.append('page_id', pageId);
       }
+      if (pageId == null && markdownToSave.current != null) {
+        formData.append('page_body', markdownToSave.current);
+      }
 
       res = await apiPostForm('/attachments.add', formData);
       const attachment = res.attachment;
@@ -318,6 +332,9 @@ const PageEditor = React.memo((): JSX.Element => {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
+        mutateIsLatestRevision(true);
+        await mutateCurrentPageId(res.page._id);
+        await mutateCurrentPage();
       }
     }
     catch (e) {
@@ -327,7 +344,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateGrant, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, mutateIsNotFound, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {

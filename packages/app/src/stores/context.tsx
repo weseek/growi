@@ -1,5 +1,5 @@
-import type { ColorScheme, IUser, IUserHasId } from '@growi/core';
-import { Key, SWRResponse } from 'swr';
+import type { ColorScheme, IUserHasId } from '@growi/core';
+import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
@@ -44,10 +44,6 @@ export const useCurrentPathname = (initialData?: string): SWRResponse<string, Er
   return useContextSWR('currentPathname', initialData);
 };
 
-export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
-};
-
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
 };
@@ -58,10 +54,6 @@ export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Erro
 
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
-};
-
-export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
@@ -159,10 +151,6 @@ export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> 
 
 export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, any> => {
   return useContextSWR('isEnabledStaleNotification', initialData);
-};
-
-export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useContextSWR('isLatestRevision', initialData);
 };
 
 export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
