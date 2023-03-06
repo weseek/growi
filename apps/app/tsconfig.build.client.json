@@ -7,7 +7,6 @@
     "strict": false,
     "noFallthroughCasesInSwitch": true,
     "incremental": true,
-    "jsx": "preserve",
 
     "baseUrl": ".",
     "paths": {
