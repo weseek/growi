@@ -30,19 +30,20 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import {
   useCurrentUser,
-  useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsSharedUser,
+  useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
+import {
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision,
+} from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSelectedGrant } from '~/stores/ui';
@@ -73,6 +74,7 @@ const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() =
   .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
@@ -189,11 +191,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCsrfToken(props.csrfToken);
 
   // page
-  useIsLatestRevision(props.isLatestRevision);
   useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
-  useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.isNotCreatable);
   useRedirectFrom(props.redirectFrom ?? null);
   useIsSharedUser(false); // this page cann't be routed for '/share'
@@ -233,14 +233,18 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
-  useCurrentPageId(pageId ?? null);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
+  const { mutate: mutateIsNotFound } = useIsNotFound();
+
+  const { mutate: mutateCurrentPageId } = useCurrentPageId();
+
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -284,6 +288,18 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
     mutateRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
   }, [mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, pageWithMeta?.data.revision?._id, pageWithMeta?.data.revisionHackmdSynced]);
+
+  useEffect(() => {
+    mutateCurrentPageId(pageId ?? null);
+  }, [mutateCurrentPageId, pageId]);
+
+  useEffect(() => {
+    mutateIsNotFound(props.isNotFound);
+  }, [mutateIsNotFound, props.isNotFound]);
+
+  useEffect(() => {
+    mutateIsLatestRevision(props.isLatestRevision);
+  }, [mutateIsLatestRevision, props.isLatestRevision]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
@@ -353,6 +369,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <DescendantsPageListModal />
       <DrawioModal />
       <HandsontableModal />
+      <TemplateModal />
     </>
   );
 };

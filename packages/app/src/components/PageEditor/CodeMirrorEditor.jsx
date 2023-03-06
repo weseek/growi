@@ -11,10 +11,9 @@ import { throttle, debounce } from 'throttle-debounce';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
-import { useHandsontableModal, useDrawioModal } from '~/stores/modal';
+import { useHandsontableModal, useDrawioModal, useTemplateModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import { TemplateModal } from '../TemplateModal';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
@@ -873,7 +872,8 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showTemplateModal() {
-    this.setState({ isTemplateModalOpened: true });
+    const onSubmit = templateText => this.setValue(templateText);
+    this.props.onClickTemplateBtn(onSubmit);
   }
 
   // fold draw.io section (``` drawio ~ ```)
@@ -1158,11 +1158,6 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        <TemplateModal
-          isOpen={this.state.isTemplateModalOpened}
-          onClose={() => this.setState({ isTemplateModalOpened: false })}
-          onSubmit={templateText => this.setValue(templateText) }
-        />
       </div>
     );
   }
@@ -1187,6 +1182,7 @@ const CodeMirrorEditorMemoized = memo(CodeMirrorEditor);
 const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openDrawioModal } = useDrawioModal();
   const { open: openHandsontableModal } = useHandsontableModal();
+  const { open: openTemplateModal } = useTemplateModal();
 
   const openDrawioModalHandler = useCallback((drawioMxFile, onSave) => {
     openDrawioModal(drawioMxFile, onSave);
@@ -1196,11 +1192,16 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openHandsontableModal(markdownTable, editor, autoFormatMarkdownTable);
   }, [openHandsontableModal]);
 
+  const openTemplateModalHandler = useCallback((onSubmit) => {
+    openTemplateModal(onSubmit);
+  }, [openTemplateModal]);
+
   return (
     <CodeMirrorEditorMemoized
       ref={ref}
       onClickDrawioBtn={openDrawioModalHandler}
       onClickTableBtn={openTableModalHandler}
+      onClickTemplateBtn={openTemplateModalHandler}
       {...props}
     />
   );
