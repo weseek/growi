@@ -86,7 +86,7 @@
     },
 
     "@growi/ui#lint": {
-      "dependsOn": ["@growi/core#build"]
+      "dependsOn": ["@growi/core#dev"]
     },
     "@growi/remark-lsx#lint": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
