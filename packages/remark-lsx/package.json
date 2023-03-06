@@ -16,8 +16,8 @@
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
     "watch": "run-p watch:*",
-    "watch:client": "yarn dev:client -w",
-    "watch:server": "yarn dev:server -w",
+    "watch:client": "yarn dev:client -w --emptyOutDir=false",
+    "watch:server": "yarn dev:server -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint": "run-p lint:*"
