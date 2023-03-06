@@ -13,8 +13,8 @@ import {
 import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
-import { useCurrentPageId, useCurrentPathname, useCurrentUser } from '~/stores/context';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPathname, useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 import {
   useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
