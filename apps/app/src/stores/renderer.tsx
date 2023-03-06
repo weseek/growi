@@ -86,7 +86,7 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
       }
 
       const { generatePreviewOptions } = await import('~/client/services/renderer/renderer');
-      generatePreviewOptions(rendererConfig, pagePath);
+      return generatePreviewOptions(rendererConfig, pagePath);
     },
     {
       keepPreviousData: true,
