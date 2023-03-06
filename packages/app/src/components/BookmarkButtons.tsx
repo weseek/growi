@@ -12,7 +12,7 @@ import { useIsGuestUser } from '~/stores/context';
 
 import { IUser } from '../interfaces/user';
 
-import BookmarkFolderMenu from './Bookmarks/BookmarkFolderMenu';
+import { BookmarkFolderMenu } from './Bookmarks/BookmarkFolderMenu';
 import UserPictureList from './User/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
@@ -23,7 +23,7 @@ interface Props {
   bookmarkInfo? : IBookmarkInfo
 }
 
-const BookmarkButtons: FC<Props> = (props: Props) => {
+export const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const {
     bookmarkedUsers, hideTotalNumber, bookmarkInfo,
@@ -83,5 +83,3 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-export default BookmarkButtons;

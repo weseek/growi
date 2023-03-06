@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FolderPlusIcon = (): JSX.Element => (
+export const FolderPlusIcon = (): JSX.Element => (
   <svg
     width="18"
     height="18"
@@ -14,5 +14,3 @@ const FolderPlusIcon = (): JSX.Element => (
 
   </svg>
 );
-
-export default FolderPlusIcon;

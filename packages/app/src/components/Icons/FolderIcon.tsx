@@ -3,7 +3,7 @@ import React from 'react';
 type Props = {
   isOpen: boolean
 }
-const FolderIcon = (props: Props): JSX.Element => {
+export const FolderIcon = (props: Props): JSX.Element => {
   const { isOpen } = props;
 
   return (
@@ -35,5 +35,3 @@ const FolderIcon = (props: Props): JSX.Element => {
   );
 
 };
-
-export default FolderIcon;

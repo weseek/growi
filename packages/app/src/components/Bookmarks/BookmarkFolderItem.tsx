@@ -8,8 +8,8 @@ import { DropdownToggle } from 'reactstrap';
 
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import FolderIcon from '~/components/Icons/FolderIcon';
-import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { FolderIcon } from '~/components/Icons/FolderIcon';
+import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction, OnDeletedFunction } from '~/interfaces/ui';
@@ -18,9 +18,9 @@ import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal, usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-import BookmarkFolderItemControl from './BookmarkFolderItemControl';
-import BookmarkFolderNameInput from './BookmarkFolderNameInput';
-import BookmarkItem from './BookmarkItem';
+import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
+import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
+import { BookmarkItem } from './BookmarkItem';
 
 
 type BookmarkFolderItemProps = {
@@ -35,7 +35,7 @@ type DragItemDataType = {
   parentFolder: BookmarkFolderItems
 } & BookmarkFolderItemProps & IPageHasId
 
-const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
+export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
     bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
@@ -214,7 +214,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     });
   };
 
-
   const renderBookmarkItem = () => {
     return isOpen && bookmarks?.map((bookmark) => {
       return (
@@ -287,9 +286,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
               <p className={'text-truncate m-auto '}>{name}</p>
             </div>
           </>
-        )
-
-        }
+        )}
         <div className="grw-foldertree-control d-flex">
           <BookmarkFolderItemControl
             onClickRename={onClickRenameHandler}
@@ -308,9 +305,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           >
             <i className="icon-plus d-block p-0" />
           </button>
-
         </div>
-
       </li>
       {isCreateAction && (
         <div className="flex-fill">
@@ -329,5 +324,3 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     </div>
   );
 };
-
-export default BookmarkFolderItem;

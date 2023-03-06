@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TriangleIcon = (): JSX.Element => (
+export const TriangleIcon = (): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="12"
@@ -13,5 +13,3 @@ const TriangleIcon = (): JSX.Element => (
     </g>
   </svg>
 );
-
-export default TriangleIcon;

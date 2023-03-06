@@ -14,17 +14,17 @@ import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookma
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-import FolderIcon from '../Icons/FolderIcon';
+import { FolderIcon } from '../Icons/FolderIcon';
 
-import BookmarkFolderMenuItem from './BookmarkFolderMenuItem';
-import BookmarkFolderNameInput from './BookmarkFolderNameInput';
+import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
+import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 
 
 type Props = {
   children?: React.ReactNode
 }
 
-const BookmarkFolderMenu = (props: Props): JSX.Element => {
+export const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { children } = props;
   const [isCreateAction, setIsCreateAction] = useState(false);
@@ -66,12 +66,10 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     setIsOpen(!isOpen);
     mutateBookmarkFolderData();
     if (isOpen && bookmarkFolders != null) {
-      bookmarkFolders?.forEach((bookmarkFolder) => {
+      bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
           if (bookmark.page._id === currentPage?._id) {
-            if (bookmark.page._id === currentPage?._id) {
-              setSelectedItem(bookmarkFolder._id);
-            }
+            setSelectedItem(bookmarkFolder._id);
           }
         });
       });
@@ -92,10 +90,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
 
   const isBookmarkFolderExists = useCallback((): boolean => {
-    if (bookmarkFolders && bookmarkFolders.length > 0) {
-      return true;
-    }
-    return false;
+    return bookmarkFolders != null && bookmarkFolders.length > 0;
   }, [bookmarkFolders]);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -131,59 +126,94 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   }, [currentPage?._id, isBookmarked, mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler, t]);
 
 
-  const renderBookmarkMenuItem = (child ?:BookmarkFolderItems[]) => {
-    if (!child) {
+  const renderBookmarkMenuItem = (child?: BookmarkFolderItems[]) => {
+    const renderSubmenu = () => {
+      if (child == null) {
+        return <></>;
+      }
       return (
-        <>
-          { isBookmarked && (
-            <>
-              <DropdownItem toggle={false} onClick={onUnbookmarkHandler} className={'grw-bookmark-folder-menu-item text-danger'}>
-                <i className="fa fa-bookmark"></i> <span className="mx-2 ">
-                  {t('bookmark_folder.cancel_bookmark') }
-                </span>
-              </DropdownItem>
-              <DropdownItem divider />
-            </>)
-
-          }
-
-          { isCreateAction ? (
-            <div className='mx-2'>
-              <BookmarkFolderNameInput
-                onClickOutside={() => setIsCreateAction(false)}
-                onPressEnter={onPressEnterHandlerForCreate}
-              />
+        <div className="bookmark-folder-submenu">
+          {child.map(folder => (
+            <div key={folder._id}>
+              <div
+                className="dropdown-item grw-bookmark-folder-menu-item"
+                tabIndex={0}
+                role="menuitem"
+                onClick={() => onMenuItemClickHandler(folder._id)}
+              >
+                <BookmarkFolderMenuItem
+                  item={folder}
+                  isSelected={selectedItem === folder._id}
+                  onSelectedChild={() => setSelectedItem(null)}
+                />
+                {isOpen && renderSubmenu()}
+              </div>
             </div>
-          ) : (
-            <DropdownItem toggle={false} onClick={onClickNewBookmarkFolder} className='grw-bookmark-folder-menu-item'>
-              <FolderIcon isOpen={false}/>
-              <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
-            </DropdownItem>
-          )}
-          {isBookmarkFolderExists() && (
-            <>
-              <DropdownItem divider />
-              {bookmarkFolders?.map(folder => (
-                <div key={folder._id}>
-                  <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
-                    <BookmarkFolderMenuItem
-                      item={folder}
-                      isSelected={selectedItem === folder._id}
-                      onSelectedChild={() => setSelectedItem(null)}
-                    />
-                    {isOpen && (
-                      <div className="bookmark-folder-submenu">
-                        {renderBookmarkMenuItem(folder.children)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
-        </>
+          ))}
+        </div>
       );
-    }
+    };
+
+    return (
+      <>
+        {isBookmarked && (
+          <>
+            <DropdownItem
+              toggle={false}
+              onClick={onUnbookmarkHandler}
+              className={'grw-bookmark-folder-menu-item text-danger'}
+            >
+              <i className="fa fa-bookmark"></i>{' '}
+              <span className="mx-2 ">
+                {t('bookmark_folder.cancel_bookmark')}
+              </span>
+            </DropdownItem>
+            <DropdownItem divider />
+          </>
+        )}
+
+        {isCreateAction ? (
+          <div className="mx-2">
+            <BookmarkFolderNameInput
+              onClickOutside={() => setIsCreateAction(false)}
+              onPressEnter={onPressEnterHandlerForCreate}
+            />
+          </div>
+        ) : (
+          <DropdownItem
+            toggle={false}
+            onClick={onClickNewBookmarkFolder}
+            className="grw-bookmark-folder-menu-item"
+          >
+            <FolderIcon isOpen={false} />
+            <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
+          </DropdownItem>
+        )}
+
+        {isBookmarkFolderExists() && (
+          <>
+            <DropdownItem divider />
+            {bookmarkFolders?.map(folder => (
+              <div key={folder._id}>
+                <div
+                  className="dropdown-item grw-bookmark-folder-menu-item"
+                  tabIndex={0}
+                  role="menuitem"
+                  onClick={() => onMenuItemClickHandler(folder._id)}
+                >
+                  <BookmarkFolderMenuItem
+                    item={folder}
+                    isSelected={selectedItem === folder._id}
+                    onSelectedChild={() => setSelectedItem(null)}
+                  />
+                  {isOpen && renderSubmenu()}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+      </>
+    );
   };
 
   return (
@@ -202,5 +232,3 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     </UncontrolledDropdown>
   );
 };
-
-export default BookmarkFolderMenu;

@@ -4,13 +4,13 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import BookmarkFolderNameInput from '~/components/Bookmarks/BookmarkFolderNameInput';
-import BookmarkFolderTree from '~/components/Bookmarks/BookmarkFolderTree';
-import FolderPlusIcon from '~/components/Icons/FolderPlusIcon';
+import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNameInput';
+import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
+import { FolderPlusIcon } from '~/components/Icons/FolderPlusIcon';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 
-const BookmarkContents = (): JSX.Element => {
+export const BookmarkContents = (): JSX.Element => {
 
   const { t } = useTranslation();
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
@@ -68,5 +68,3 @@ const BookmarkContents = (): JSX.Element => {
     </>
   );
 };
-
-export default BookmarkContents;

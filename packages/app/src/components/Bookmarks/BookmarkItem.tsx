@@ -28,7 +28,7 @@ type Props = {
   parentFolder: BookmarkFolderItems | null
 }
 
-const BookmarkItem = (props: Props): JSX.Element => {
+export const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const {
     bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem, parentFolder,
@@ -161,5 +161,3 @@ const BookmarkItem = (props: Props): JSX.Element => {
     </li>
   );
 };
-
-export default BookmarkItem;

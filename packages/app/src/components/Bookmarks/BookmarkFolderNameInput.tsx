@@ -9,7 +9,7 @@ type Props = {
   value?: string
 }
 
-const BookmarkFolderNameInput = (props: Props): JSX.Element => {
+export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
   const {
     onClickOutside, onPressEnter, value,
   } = props;
@@ -38,6 +38,3 @@ const BookmarkFolderNameInput = (props: Props): JSX.Element => {
     </div>
   );
 };
-
-
-export default BookmarkFolderNameInput;
