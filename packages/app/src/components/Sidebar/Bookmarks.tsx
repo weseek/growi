@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 import { useIsGuestUser } from '~/stores/context';
 
-import BookamrkContents from './Bookmarks/BookmarkContents';
+import { BookmarkContents } from './Bookmarks/BookmarkContents';
 
-const Bookmarks = () : JSX.Element => {
+export const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -21,10 +21,8 @@ const Bookmarks = () : JSX.Element => {
           { t('Not available for guest') }
         </h4>
       ) : (
-        <BookamrkContents />
+        <BookmarkContents />
       )}
     </>
   );
 };
-
-export default Bookmarks;

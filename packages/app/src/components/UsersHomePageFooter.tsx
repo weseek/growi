@@ -10,11 +10,11 @@ import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
-import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
-import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
-import CompressIcon from './Icons/CompressIcon';
-import ExpandIcon from './Icons/ExpandIcon';
-import FolderPlusIcon from './Icons/FolderPlusIcon';
+import { BookmarkFolderNameInput } from './Bookmarks/BookmarkFolderNameInput';
+import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
+import { CompressIcon } from './Icons/CompressIcon';
+import { ExpandIcon } from './Icons/ExpandIcon';
+import { FolderPlusIcon } from './Icons/FolderPlusIcon';
 
 
 export type UsersHomePageFooterProps = {

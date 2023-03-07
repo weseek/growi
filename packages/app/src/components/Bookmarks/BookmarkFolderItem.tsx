@@ -7,9 +7,10 @@ import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { hasChildren } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import FolderIcon from '~/components/Icons/FolderIcon';
-import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { FolderIcon } from '~/components/Icons/FolderIcon';
+import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction, OnDeletedFunction } from '~/interfaces/ui';
@@ -18,9 +19,9 @@ import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal, usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-import BookmarkFolderItemControl from './BookmarkFolderItemControl';
-import BookmarkFolderNameInput from './BookmarkFolderNameInput';
-import BookmarkItem from './BookmarkItem';
+import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
+import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
+import { BookmarkItem } from './BookmarkItem';
 
 
 type BookmarkFolderItemProps = {
@@ -35,7 +36,7 @@ type DragItemDataType = {
   parentFolder: BookmarkFolderItems
 } & BookmarkFolderItemProps & IPageHasId
 
-const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
+export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
     bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
@@ -57,9 +58,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
-  const hasChildren = useCallback((): boolean => {
-    return children != null && children.length > 0;
-  }, [children]);
+  const childrenExists = hasChildren(children);
+
 
   const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
@@ -98,11 +98,11 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
-    if (!isOpen && hasChildren()) {
+    if (!isOpen && childrenExists) {
       setIsOpen(true);
     }
     setIsCreateAction(true);
-  }, [hasChildren, isOpen]);
+  }, [childrenExists, isOpen]);
 
   const onClickDeleteBookmarkHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -214,7 +214,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     });
   };
 
-
   const renderBookmarkItem = () => {
     return isOpen && bookmarks?.map((bookmark) => {
       return (
@@ -258,7 +257,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         onClick={loadChildFolder}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
-          {hasChildren() && (
+          {childrenExists && (
             <button
               type="button"
               className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
@@ -287,9 +286,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
               <p className={'text-truncate m-auto '}>{name}</p>
             </div>
           </>
-        )
-
-        }
+        )}
         <div className="grw-foldertree-control d-flex">
           <BookmarkFolderItemControl
             onClickRename={onClickRenameHandler}
@@ -308,9 +305,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           >
             <i className="icon-plus d-block p-0" />
           </button>
-
         </div>
-
       </li>
       {isCreateAction && (
         <div className="flex-fill">
@@ -329,5 +324,3 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     </div>
   );
 };
-
-export default BookmarkFolderItem;

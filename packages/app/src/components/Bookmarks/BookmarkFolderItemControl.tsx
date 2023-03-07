@@ -11,7 +11,7 @@ type BookmarkFolderItemControlProps = {
   onClickRename: () => void
   onClickDelete: () => void
 }
-const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps): JSX.Element => {
+export const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps): JSX.Element => {
   const { t } = useTranslation();
   const { children, onClickRename, onClickDelete } = props;
   const [isOpen, setIsOpen] = useState(false);
@@ -46,5 +46,3 @@ const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps): JSX.E
     </Dropdown>
   );
 };
-
-export default BookmarkFolderItemControl;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CompressIcon = ():JSX.Element => {
+export const CompressIcon = ():JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg"
       width="18"
@@ -15,5 +15,3 @@ const CompressIcon = ():JSX.Element => {
     </svg>
   );
 };
-
-export default CompressIcon;

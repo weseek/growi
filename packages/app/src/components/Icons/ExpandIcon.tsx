@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ExpandIcon = (): JSX.Element => {
+export const ExpandIcon = (): JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg"
       width="18"
@@ -16,5 +16,3 @@ const ExpandIcon = (): JSX.Element => {
     </svg>
   );
 };
-
-export default ExpandIcon;

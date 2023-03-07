@@ -11,10 +11,11 @@ import { DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { inputValidator } from '~/client/util/input-validator-utils';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
-import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
+import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemS } from './PageListItemS';
@@ -33,17 +34,6 @@ export const BookmarkList = (props:Props): JSX.Element => {
   } = props;
   const { t } = useTranslation();
   const [isRenameInputShown, setIsRenameInputShown] = useState(false);
-
-  const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '' || title.trim() === '') {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.title_required'),
-      };
-    }
-
-    return null;
-  };
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(page._id);

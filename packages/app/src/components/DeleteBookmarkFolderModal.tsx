@@ -8,7 +8,7 @@ import {
 
 import { apiv3Delete } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import FolderIcon from '~/components/Icons/FolderIcon';
+import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 
 
@@ -67,4 +67,4 @@ const DeleteBookmarkFolderModal: FC = () => {
   );
 };
 
-export default DeleteBookmarkFolderModal;
+export { DeleteBookmarkFolderModal };

@@ -14,8 +14,8 @@ import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-import BookmarkFolderItem from './BookmarkFolderItem';
-import BookmarkItem from './BookmarkItem';
+import { BookmarkFolderItem } from './BookmarkFolderItem';
+import { BookmarkItem } from './BookmarkItem';
 
 import styles from './BookmarkFolderTree.module.scss';
 
@@ -30,7 +30,7 @@ type DragItemDataType = {
   parentFolder: BookmarkFolderItems | null
  } & IPageHasId
 
-const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
+export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
   const { isUserHomePage } = props;
@@ -117,49 +117,42 @@ const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element => {
 
 
   return (
-    <>
-      <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
-        <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
-          {bookmarkFolderData?.map((item) => {
-            return (
-              <BookmarkFolderItem
-                key={item._id}
-                bookmarkFolder={item}
-                isOpen={false}
-                level={0}
-                root={item._id}
-                isUserHomePage={isUserHomePage}
-              />
-            );
-          })}
-          {userBookmarks?.map(page => (
-            <div key={page._id} className="grw-foldertree-item-container grw-root-bookmarks">
-              <BookmarkItem
-                bookmarkedPage={page}
-                key={page._id}
-                onUnbookmarked={onUnbookmarkHandler}
-                onRenamed={mutateUserBookmarks}
-                onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
-                parentFolder={null}
-              />
-            </div>
-          ))}
-        </ul>
-        {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
-          <div ref={(c) => { dropRef(c) }} className="grw-drop-item-area">
-            <div className="grw-accept-drop-item">
-              <div className="d-flex flex-column align-items-center">
-                {t('bookmark_folder.drop_item_here')}
-              </div>
-            </div>
-
+    <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
+      <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
+        {bookmarkFolderData?.map((item) => {
+          return (
+            <BookmarkFolderItem
+              key={item._id}
+              bookmarkFolder={item}
+              isOpen={false}
+              level={0}
+              root={item._id}
+              isUserHomePage={isUserHomePage}
+            />
+          );
+        })}
+        {userBookmarks?.map(page => (
+          <div key={page._id} className="grw-foldertree-item-container grw-root-bookmarks">
+            <BookmarkItem
+              bookmarkedPage={page}
+              key={page._id}
+              onUnbookmarked={onUnbookmarkHandler}
+              onRenamed={mutateUserBookmarks}
+              onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
+              parentFolder={null}
+            />
           </div>
-        )}
-      </div>
-    </>
+        ))}
+      </ul>
+      {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
+        <div ref={(c) => { dropRef(c) }} className="grw-drop-item-area">
+          <div className="grw-accept-drop-item">
+            <div className="d-flex flex-column align-items-center">
+              {t('bookmark_folder.drop_item_here')}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
-
-
 };
-
-export default BookmarkFolderTree;

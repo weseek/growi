@@ -13,7 +13,8 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { inputValidator } from '~/client/util/input-validator-utils';
+import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
@@ -25,7 +26,7 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import ClosableTextInput from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
@@ -370,16 +371,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '' || title.trim() === '') {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.title_required'),
-      };
-    }
-
-    return null;
-  };
 
   /**
    * Users do not need to know if all pages have been renamed.
