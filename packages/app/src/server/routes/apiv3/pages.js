@@ -1,6 +1,7 @@
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -202,6 +203,9 @@ module.exports = (crowi) => {
       body('isRecursively')
         .custom(v => v === 'true' || v === true || v == null)
         .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
+      body('isAnyoneWithTheLink')
+        .custom(v => v === 'true' || v === true || v == null)
+        .withMessage('The body property "isAnyoneWithTheLink" must be "true" or true. (Omit param for false)'),
     ],
     legacyPagesMigration: [
       body('convertPath').optional().isString().withMessage('convertPath must be a string'),
@@ -831,24 +835,32 @@ module.exports = (crowi) => {
   });
 
   router.post('/delete', accessTokenParser, loginRequiredStrictly, validator.deletePages, apiV3FormValidator, async(req, res) => {
-    const { pageIdToRevisionIdMap, isCompletely, isRecursively } = req.body;
+    const {
+      pageIdToRevisionIdMap, isCompletely, isRecursively, isAnyoneWithTheLink,
+    } = req.body;
+
     const pageIds = Object.keys(pageIdToRevisionIdMap);
 
     if (pageIds.length === 0) {
       return res.apiv3Err(new ErrorV3('Select pages to delete.', 'no_page_selected'), 400);
+    }
+    if (isAnyoneWithTheLink && pageIds.length !== 1) {
+      return res.apiv3Err(new ErrorV3('Only one restricted page can be selected', 'not_single_page'), 400);
     }
     if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
 
     let pagesToDelete;
-    const includeAnyoneWithTheLink = pageIds.length === 1;
     try {
-      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true, includeAnyoneWithTheLink);
+      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true, isAnyoneWithTheLink);
     }
     catch (err) {
       logger.error('Failed to find pages to delete.', err);
       return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
+    }
+    if (isAnyoneWithTheLink && pagesToDelete[0].grant !== PageGrant.GRANT_RESTRICTED) {
+      return res.apiv3Err(new ErrorV3('The page you tried to delete is not a restricted page'), 400);
     }
 
     let pagesCanBeDeleted;
