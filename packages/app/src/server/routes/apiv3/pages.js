@@ -842,8 +842,9 @@ module.exports = (crowi) => {
     }
 
     let pagesToDelete;
+    const includeAnyoneWithTheLink = pageIds.length === 1;
     try {
-      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true);
+      pagesToDelete = await Page.findByIdsAndViewer(pageIds, req.user, null, true, includeAnyoneWithTheLink);
     }
     catch (err) {
       logger.error('Failed to find pages to delete.', err);

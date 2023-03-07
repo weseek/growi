@@ -553,11 +553,13 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
 /*
  * Find pages by ID and viewer.
  */
-schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]> {
+schema.statics.findByIdsAndViewer = async function(
+    pageIds: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+): Promise<PageDocument[]> {
   const baseQuery = this.find({ _id: { $in: pageIds } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await queryBuilder.addViewerCondition(user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
 
   return queryBuilder.query.exec();
 };
