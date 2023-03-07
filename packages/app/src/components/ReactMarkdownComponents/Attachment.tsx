@@ -21,6 +21,7 @@ export const Attachment: React.FC<{
     return dataAttachments.attachments.find(item => item._id === attachmentId);
   }, [attachmentId, dataAttachments]);
 
+  // TODO: Call delete attachment modal.
   const handleAttachmentDelete = useCallback(async() => {
     if (attachment == null) {
       return;
@@ -45,15 +46,14 @@ export const Attachment: React.FC<{
 
   return (
     <div className="card my-3" style={{ width: 'fit-content' }}>
-      <div className="card-body">
+      <div className="card-body pr-0">
         <div className='row'>
-          {/* TODO: Design check */}
           <div className='col-2'>
-            <i className='icon-doc' style={{ fontSize: '2.7rem' }}/>
+            <div className='icon-doc' style={{ fontSize: '2.7rem', opacity: '0.5' }}/>
           </div>
           <div className='col-10'>
             <div>
-              <a href={attachment.downloadPathProxied}>{attachment.originalName}</a>
+              <a className='' href={attachment.downloadPathProxied}>{attachment.originalName}</a>
               <span className='ml-2'>
                 <a className="attachment-download" href={attachment.downloadPathProxied}>
                   <i className="icon-cloud-download" />
@@ -68,7 +68,7 @@ export const Attachment: React.FC<{
             <div>
               <UserPicture user={attachment.creator} size="sm"></UserPicture>
               {/* TODO: check locale */}
-              <span className='ml-2 text-muted'>{new Date(attachment.createdAt).toLocaleString('ja-JP')}</span>
+              <span className='ml-2 text-muted'>{new Date(attachment.createdAt).toLocaleString()}</span>
               <span className='border-left ml-2 pl-2 text-muted'>{prettyBytes(attachment.fileSize)}</span>
             </div>
           </div>
