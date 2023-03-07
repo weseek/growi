@@ -8,15 +8,14 @@ import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { inputValidator } from '~/client/util/input-validator-utils';
+import { renamePage } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
+import ClosableTextInput, { inputValidator } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
@@ -65,11 +64,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
 
     try {
       setRenameInputShown(false);
-      await apiv3Put('/pages/rename', {
-        pageId: bookmarkedPage._id,
-        revisionId: bookmarkedPage.revision,
-        newPagePath,
-      });
+      await renamePage(bookmarkedPage._id, bookmarkedPage.revision, newPagePath);
       onRenamed();
       toastSuccess(t('renamed_pages', { path: bookmarkedPage.path }));
     }

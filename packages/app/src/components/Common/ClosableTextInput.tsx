@@ -36,6 +36,9 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const createValidation = async(inputText: string) => {
     if (props.inputValidator != null) {
       const alertInfo = await props.inputValidator(inputText);
+      if (alertInfo && alertInfo.message != null) {
+        alertInfo.message = t(alertInfo?.message);
+      }
       setAlertInfo(alertInfo);
     }
   };
@@ -133,6 +136,16 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     </div>
   );
 });
+
+export const inputValidator = (title: string | null): AlertInfo | null => {
+  if (title == null || title === '' || title.trim() === '') {
+    return {
+      type: AlertType.WARNING,
+      message: 'form_validation.title_required',
+    };
+  }
+  return null;
+};
 
 ClosableTextInput.displayName = 'ClosableTextInput';
 

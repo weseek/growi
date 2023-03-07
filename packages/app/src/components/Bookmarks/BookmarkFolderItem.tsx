@@ -6,8 +6,9 @@ import { useTranslation } from 'next-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
-import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
-import { hasChildren } from '~/client/util/bookmark-utils';
+import {
+  addBookmarkToFolder, addNewFolder, hasChildren, updateBookmarkFolder,
+} from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
@@ -69,7 +70,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   // Rename  for bookmark folder handler
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
-      await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
+      await updateBookmarkFolder(folderId, folderName, parent);
       mutateBookmarkData();
       setIsRenameAction(false);
       toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
@@ -82,7 +83,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
+      await addNewFolder(folderName, targetFolder);
       setIsOpen(true);
       setIsCreateAction(false);
       mutateBookmarkData();
@@ -147,7 +148,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const itemDropHandler = async(item: DragItemDataType, dragItemType: string | symbol | null) => {
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
-        await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: bookmarkFolder._id });
+        await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id);
         mutateBookmarkData();
         toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
       }
@@ -157,7 +158,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
     else {
       try {
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: bookmarkFolder._id });
+        await addBookmarkToFolder(item._id, bookmarkFolder._id);
         mutateBookmarkData();
         await mutateUserBookmarks();
         toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));

@@ -13,7 +13,6 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { inputValidator } from '~/client/util/input-validator-utils';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
@@ -26,7 +25,7 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import ClosableTextInput from '../../Common/ClosableTextInput';
+import ClosableTextInput, { inputValidator } from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 

@@ -1,7 +1,6 @@
 import { useTranslation } from 'next-i18next';
 
-import { inputValidator } from '~/client/util/input-validator-utils';
-import ClosableTextInput from '~/components/Common/ClosableTextInput';
+import ClosableTextInput, { inputValidator } from '~/components/Common/ClosableTextInput';
 
 
 type Props = {

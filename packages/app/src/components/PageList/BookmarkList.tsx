@@ -11,11 +11,10 @@ import { DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { inputValidator } from '~/client/util/input-validator-utils';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
+import ClosableTextInput, { inputValidator } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemS } from './PageListItemS';
