@@ -38,7 +38,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
         questionnaireOrderId: questionnaireOrder._id,
         answers,
       });
-      if (!currentUser) {
+      if (currentUser == null) {
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.answered);
       }
       toastSuccess(
@@ -77,7 +77,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       apiv3Put('/questionnaire/deny', {
         questionnaireOrderId: questionnaireOrder._id,
       });
-      if (!currentUser) {
+      if (currentUser == null) {
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.denied);
       }
       toastSuccess(t('questionnaire.denied'));
@@ -97,7 +97,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       await apiv3Put('/questionnaire/skip', {
         questionnaireOrderId: questionnaireOrder._id,
       });
-      if (!currentUser) {
+      if (currentUser == null) {
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.skipped);
       }
     }

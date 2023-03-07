@@ -38,7 +38,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       await apiv3Put('/questionnaire/deny', {
         questionnaireOrderId: questionnaireOrder._id,
       });
-      if (!currentUser) {
+      if (currentUser == null) {
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.denied);
       }
       toastSuccess(t('questionnaire.denied'));
@@ -56,7 +56,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       await apiv3Put('/questionnaire/skip', {
         questionnaireOrderId: questionnaireOrder._id,
       });
-      if (!currentUser) {
+      if (currentUser == null) {
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.skipped);
       }
     }
