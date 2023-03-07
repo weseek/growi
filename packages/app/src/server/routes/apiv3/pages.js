@@ -860,7 +860,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
     }
     if (isAnyoneWithTheLink && pagesToDelete[0].grant !== PageGrant.GRANT_RESTRICTED) {
-      return res.apiv3Err(new ErrorV3('The page you tried to delete is not a restricted page'), 400);
+      return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
     let pagesCanBeDeleted;
