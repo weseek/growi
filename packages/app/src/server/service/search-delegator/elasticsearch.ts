@@ -751,7 +751,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         multi_match: {
           query: parsedKeywords.match.join(' '),
           type: 'most_fields',
-          fields: ['path.ja', 'path.en', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
+          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
         },
       };
       query.body.query.bool.must.push(q);
