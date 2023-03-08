@@ -2,8 +2,10 @@ import { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess } from '~/client/util/toastr';
+import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
@@ -36,12 +38,15 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       await apiv3Put('/questionnaire/deny', {
         questionnaireOrderId: questionnaireOrder._id,
       });
+      if (currentUser == null) {
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.denied);
+      }
       toastSuccess(t('questionnaire.denied'));
     }
     catch (e) {
       logger.error(e);
     }
-  }, [questionnaireOrder._id, t]);
+  }, [questionnaireOrder._id, t, currentUser]);
 
   // No showing toasts since not important
   const closeBtnClickHandler = useCallback(async() => {
@@ -51,11 +56,14 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       await apiv3Put('/questionnaire/skip', {
         questionnaireOrderId: questionnaireOrder._id,
       });
+      if (currentUser == null) {
+        GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.skipped);
+      }
     }
     catch (e) {
       logger.error(e);
     }
-  }, [questionnaireOrder._id]);
+  }, [questionnaireOrder._id, currentUser]);
 
   const questionnaireOrderShortTitle = lang === 'en_US' ? questionnaireOrder.shortTitle.en_US : questionnaireOrder.shortTitle.ja_JP;
 
