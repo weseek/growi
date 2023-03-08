@@ -7,8 +7,10 @@ import { useSWRxAttachments } from '~/stores/attachment';
 import { useCurrentPageId } from '~/stores/page';
 
 export const Attachment: React.FC<{
-  attachmentId: string
-}> = React.memo(({ attachmentId }) => {
+  attachmentId: string,
+  url: string,
+  attachmentName: string
+}> = React.memo(({ attachmentId, url, attachmentName }) => {
   const { data: pageId } = useCurrentPageId();
   // TODO: We need to be able to get it from all pages if there are a lot of attachments.
   const { data: dataAttachments, remove } = useSWRxAttachments(pageId, 1);
