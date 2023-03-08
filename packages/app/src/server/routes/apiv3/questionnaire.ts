@@ -1,8 +1,11 @@
 import { Router, Request } from 'express';
 import { body, validationResult } from 'express-validator';
 
+import { IAnswer } from '~/interfaces/questionnaire/answer';
 import { IProactiveQuestionnaireAnswer } from '~/interfaces/questionnaire/proactive-questionnaire-answer';
+import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
+import { IUserHasId } from '~/interfaces/user';
 import Crowi from '~/server/crowi';
 import ProactiveQuestionnaireAnswer from '~/server/models/questionnaire/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '~/server/models/questionnaire/questionnaire-answer';
@@ -115,12 +118,12 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const sendQuestionnaireAnswer = async(user, answers) => {
+    const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
-      const questionnaireAnswer = {
+      const questionnaireAnswer: IQuestionnaireAnswer = {
         growiInfo,
         userInfo,
         answers,
