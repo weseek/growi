@@ -1,4 +1,4 @@
-import { ITemplate } from './template';
+import type { ITemplate } from './template';
 
 export type GrowiFacade = {
   markdownRenderer?: {
