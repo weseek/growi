@@ -1,5 +1,5 @@
-import { HasObjectId } from './has-object-id';
-import { IUser } from './user';
+import type { HasObjectId } from './has-object-id';
+import type { IUser } from './user';
 
 export type IRevision = {
   body: string,
