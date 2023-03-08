@@ -2,7 +2,7 @@ import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-const SUPPORTED_ATTRIBUTES = ['url', 'attachmentName', 'attachmentId'];
+const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 
 const isAttachmentLink = (url: string) => {
   // https://regex101.com/r/9qZhiK/1
@@ -20,9 +20,9 @@ export const remarkPlugin: Plugin = () => {
           const data = node.data ?? (node.data = {});
           data.hName = 'attachment';
           data.hProperties = {
+            attachmentId: pathName[2],
             url: node.url,
             attachmentName: node.children[0].value,
-            attachmentId: pathName[2],
           };
 
           // omit position to fix the key regardless of its position
