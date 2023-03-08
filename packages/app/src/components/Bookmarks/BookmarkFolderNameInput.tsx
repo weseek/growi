@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
 
-import ClosableTextInput, { inputValidator } from '~/components/Common/ClosableTextInput';
+import { inputValidator, ValidationTarget } from '~/client/util/input-validator';
+import ClosableTextInput from '~/components/Common/ClosableTextInput';
 
 
 type Props = {
@@ -22,7 +23,7 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
         placeholder={t('bookmark_folder.input_placeholder')}
         onClickOutside={onClickOutside}
         onPressEnter={onPressEnter}
-        inputValidator={inputValidator}
+        validationTarget={ValidationTarget.FOLDER}
       />
     </div>
   );

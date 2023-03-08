@@ -13,6 +13,7 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { ValidationTarget } from '~/client/util/input-validator';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
@@ -25,7 +26,7 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import ClosableTextInput, { inputValidator } from '../../Common/ClosableTextInput';
+import ClosableTextInput from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
@@ -450,7 +451,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   placeholder={t('Input page name')}
                   onClickOutside={() => { setRenameInputShown(false) }}
                   onPressEnter={onPressEnterForRenameHandler}
-                  inputValidator={inputValidator}
+                  validationTarget={ValidationTarget.PAGE}
                 />
               </NotDraggableForClosableTextInput>
             </div>
@@ -522,7 +523,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               placeholder={t('Input page name')}
               onClickOutside={() => { setNewPageInputShown(false) }}
               onPressEnter={onPressEnterForCreateHandler}
-              inputValidator={inputValidator}
+              validationTarget={ValidationTarget.PAGE}
             />
           </NotDraggableForClosableTextInput>
         </div>

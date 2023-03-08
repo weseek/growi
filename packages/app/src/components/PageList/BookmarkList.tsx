@@ -11,10 +11,11 @@ import { DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { ValidationTarget } from '~/client/util/input-validator';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
-import ClosableTextInput, { inputValidator } from '../Common/ClosableTextInput';
+import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemS } from './PageListItemS';
@@ -88,7 +89,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
           placeholder={t('Input page name')}
           onClickOutside={() => { setIsRenameInputShown(false) }}
           onPressEnter={pressEnterForRenameHandler}
-          inputValidator={inputValidator}
+          validationTarget={ValidationTarget.PAGE}
         />
       ) : (
         <PageListItemS page={page} />

@@ -4,43 +4,33 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 
-export const AlertType = {
-  WARNING: 'warning',
-  ERROR: 'error',
-} as const;
-
-export type AlertType = typeof AlertType[keyof typeof AlertType];
-
-export type AlertInfo = {
-  type?: AlertType
-  message?: string
-}
+import { AlertInfo, AlertType, inputValidator } from '~/client/util/input-validator';
 
 type ClosableTextInputProps = {
   value?: string
   placeholder?: string
-  inputValidator?(text: string): AlertInfo | Promise<AlertInfo> | null
+  validationTarget?: string,
   onPressEnter?(inputText: string | null): void
   onClickOutside?(): void
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { validationTarget } = props;
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const [inputText, setInputText] = useState(props.value);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
   const [isAbleToShowAlert, setIsAbleToShowAlert] = useState(false);
   const [isComposing, setComposing] = useState(false);
 
+
   const createValidation = async(inputText: string) => {
-    if (props.inputValidator != null) {
-      const alertInfo = await props.inputValidator(inputText);
-      if (alertInfo && alertInfo.message != null) {
-        alertInfo.message = t(alertInfo?.message);
-      }
-      setAlertInfo(alertInfo);
+    const alertInfo = await inputValidator(inputText, validationTarget);
+    if (alertInfo && alertInfo.message != null && alertInfo.target != null) {
+      alertInfo.message = t(alertInfo.message, { target: t(alertInfo.target) });
     }
+    setAlertInfo(alertInfo);
   };
 
   const onChangeHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,16 +126,6 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     </div>
   );
 });
-
-export const inputValidator = (title: string | null): AlertInfo | null => {
-  if (title == null || title === '' || title.trim() === '') {
-    return {
-      type: AlertType.WARNING,
-      message: 'form_validation.title_required',
-    };
-  }
-  return null;
-};
 
 ClosableTextInput.displayName = 'ClosableTextInput';
 

@@ -9,13 +9,14 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
 import { renamePage } from '~/client/util/bookmark-utils';
+import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
-import ClosableTextInput, { inputValidator } from '../Common/ClosableTextInput';
+import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
@@ -117,7 +118,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
           placeholder={t('Input page name')}
           onClickOutside={() => { setRenameInputShown(false) }}
           onPressEnter={pressEnterForRenameHandler}
-          inputValidator={inputValidator}
+          validationTarget={ValidationTarget.PAGE}
         />
       ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle}/>}
       <div className='grw-foldertree-control'>
