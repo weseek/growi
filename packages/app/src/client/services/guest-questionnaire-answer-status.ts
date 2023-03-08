@@ -65,11 +65,12 @@ const setStatus = (questionnaireOrderId: string, status: StatusType): void => {
   if (storage != null) {
     storage[questionnaireOrderId] = guestQuestionnaireAnswerStatus;
     localStorage.setItem(storageKey, JSON.stringify(storage));
+    return;
   }
-  else {
-    const initialStorage: GuestQuestionnaireAnswerStatusStorage = { [questionnaireOrderId]: guestQuestionnaireAnswerStatus };
-    localStorage.setItem(storageKey, JSON.stringify(initialStorage));
-  }
+
+  const initialStorage: GuestQuestionnaireAnswerStatusStorage = { [questionnaireOrderId]: guestQuestionnaireAnswerStatus };
+  localStorage.setItem(storageKey, JSON.stringify(initialStorage));
+
 };
 
 export const GuestQuestionnaireAnswerStatusService = {

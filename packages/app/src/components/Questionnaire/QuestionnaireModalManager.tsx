@@ -17,7 +17,7 @@ const QuestionnaireModalManager = ():JSX.Element => {
 
   const questionnaireOrdersToShow = useCallback((questionnaireOrders: IQuestionnaireOrderHasId[] | undefined) => {
     const guestQuestionnaireAnswerStorage = GuestQuestionnaireAnswerStatusService.getStorage();
-    if (currentUser || !guestQuestionnaireAnswerStorage) {
+    if (currentUser != null || guestQuestionnaireAnswerStorage == null) {
       return questionnaireOrders;
     }
 
