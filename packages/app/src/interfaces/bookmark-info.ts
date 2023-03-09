@@ -37,4 +37,15 @@ export const DRAG_ITEM_TYPE = {
   BOOKMARK: 'BOOKMARK',
 } as const;
 
+type BookmarkDragItem = {
+  bookmarkFolder: BookmarkFolderItems
+  level: number
+  root: string
+}
+
+export type DragItemDataType = BookmarkDragItem & {
+  parentFolder: BookmarkFolderItems | null
+} & IPageHasId
+
+
 export type DragItemType = typeof DRAG_ITEM_TYPE[keyof typeof DRAG_ITEM_TYPE];

@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
-import { useDrag } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
@@ -11,7 +10,7 @@ import { unbookmark } from '~/client/services/page-operation';
 import { renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { BookmarkFolderItems, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -20,6 +19,7 @@ import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
+import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 type Props = {
   bookmarkedPage: IPageHasId,
@@ -40,6 +40,10 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
   const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
   const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+
+  const dragItem: Partial<DragItemDataType> = {
+    ...bookmarkedPage, parentFolder,
+  };
 
   useEffect(() => {
     mutateBookamrkData();
@@ -92,59 +96,51 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteMenuItem(pageToDelete);
   }, [bookmarkedPage, onClickDeleteMenuItem]);
 
-  const [, bookmarkItemDragRef] = useDrag({
-    type: DRAG_ITEM_TYPE.BOOKMARK,
-    item: { ...bookmarkedPage, parentFolder },
-    end: (_, monitor) => {
-      if (monitor.getDropResult() != null) {
-        mutateBookamrkData();
-      }
-    },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-      canDrag: monitor.canDrag(),
-    }),
-  });
-
   return (
-    <li
-      className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
-      key={bookmarkedPage._id} ref={(c) => { bookmarkItemDragRef(c) }}
-      id={bookmarkItemId}
+    <DragAndDropWrapper
+      item={dragItem}
+      type={[DRAG_ITEM_TYPE.BOOKMARK]}
+      useDragMode={true}
     >
-      { isRenameInputShown ? (
-        <ClosableTextInput
-          value={nodePath.basename(bookmarkedPage.path ?? '')}
-          placeholder={t('Input page name')}
-          onClickOutside={() => { setRenameInputShown(false) }}
-          onPressEnter={pressEnterForRenameHandler}
-          validationTarget={ValidationTarget.PAGE}
-        />
-      ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle}/>}
-      <div className='grw-foldertree-control'>
-        <PageItemControl
-          pageId={bookmarkedPage._id}
-          isEnableActions
-          pageInfo={fetchedPageInfo}
-          forceHideMenuItems={[MenuItemType.DUPLICATE]}
-          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-          onClickRenameMenuItem={renameMenuItemClickHandler}
-          onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        >
-          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-            <i className="icon-options fa fa-rotate-90 p-1"></i>
-          </DropdownToggle>
-        </PageItemControl>
-      </div>
-      <UncontrolledTooltip
-        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-        autohide={false}
-        placement="right"
-        target={bookmarkItemId}
-        fade={false}
+      <li
+        className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
+        key={bookmarkedPage._id}
+        id={bookmarkItemId}
       >
-        {formerPagePath !== null ? `${formerPagePath}/` : '/'}
-      </UncontrolledTooltip>
-    </li>
+        { isRenameInputShown ? (
+          <ClosableTextInput
+            value={nodePath.basename(bookmarkedPage.path ?? '')}
+            placeholder={t('Input page name')}
+            onClickOutside={() => { setRenameInputShown(false) }}
+            onPressEnter={pressEnterForRenameHandler}
+            validationTarget={ValidationTarget.PAGE}
+          />
+        ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle}/>}
+        <div className='grw-foldertree-control'>
+          <PageItemControl
+            pageId={bookmarkedPage._id}
+            isEnableActions
+            pageInfo={fetchedPageInfo}
+            forceHideMenuItems={[MenuItemType.DUPLICATE]}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
+          >
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+              <i className="icon-options fa fa-rotate-90 p-1"></i>
+            </DropdownToggle>
+          </PageItemControl>
+        </div>
+        <UncontrolledTooltip
+          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+          autohide={false}
+          placement="right"
+          target={bookmarkItemId}
+          fade={false}
+        >
+          {formerPagePath !== null ? `${formerPagePath}/` : '/'}
+        </UncontrolledTooltip>
+      </li>
+    </DragAndDropWrapper>
   );
 };

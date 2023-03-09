@@ -70,19 +70,21 @@ $grw-bookmark-item-padding-left: 45px;
   &:global{
     // To realize a hierarchical structure, set multiplied padding-left to each foldertree-item
     > .grw-foldertree-item-container {
-      > .list-group-item {
+      > .grw-drag-drop-container > .list-group-item {
         padding-left: 0;
-      } &.grw-root-bookmarks{
-        .list-group-item.bookmark-item-list {
-          padding-left: $grw-foldertree-item-padding-left + 25;
+      } &.grw-root-bookmarks {
+        .grw-drag-drop-container > .list-group-item.bookmark-item-list {
+          padding-left: $grw-foldertree-item-padding-left + 45;
         }
       }
-      > .list-group-item.bookmark-item-list {
-        padding-left: $grw-bookmark-item-padding-left;
+      .grw-drag-drop-container {
+        > .list-group-item.bookmark-item-list {
+          padding-left: $grw-bookmark-item-padding-left;
+        }
       }
       > .grw-foldertree-item-children {
         > .grw-foldertree-item-container {
-          > .list-group-item {
+          > .grw-drag-drop-container {
             padding-left: $grw-foldertree-item-padding-left;
           }
           > .list-group-item.bookmark-item-list {
@@ -90,7 +92,7 @@ $grw-bookmark-item-padding-left: 45px;
           }
           > .grw-foldertree-item-children {
             > .grw-foldertree-item-container {
-              > .list-group-item {
+              > .grw-drag-drop-container {
                 padding-left: $grw-foldertree-item-padding-left * 2;
               }
               > .list-group-item.bookmark-item-list {
@@ -98,7 +100,7 @@ $grw-bookmark-item-padding-left: 45px;
               }
               > .grw-foldertree-item-children {
                 > .grw-foldertree-item-container {
-                  > .list-group-item {
+                  > .grw-drag-drop-container {
                     padding-left: $grw-foldertree-item-padding-left * 3;
                   }
                   > .list-group-item.bookmark-item-list {
@@ -106,7 +108,7 @@ $grw-bookmark-item-padding-left: 45px;
                   }
                   > .grw-foldertree-item-children {
                     > .grw-foldertree-item-container {
-                      > .list-group-item {
+                      > .grw-drag-drop-container {
                         padding-left: $grw-foldertree-item-padding-left * 4;
                       }
                       > .list-group-item.bookmark-item-list {
@@ -114,7 +116,7 @@ $grw-bookmark-item-padding-left: 45px;
                       }
                       > .grw-foldertree-item-children {
                         > .grw-foldertree-item-container {
-                          > .list-group-item {
+                          > .grw-drag-drop-container {
                             padding-left: $grw-foldertree-item-padding-left * 5;
                           }
                           > .list-group-item.bookmark-item-list {
@@ -122,7 +124,7 @@ $grw-bookmark-item-padding-left: 45px;
                           }
                           > .grw-foldertree-item-children {
                             > .grw-foldertree-item-container {
-                              > .list-group-item {
+                              > .grw-drag-drop-container {
                                 padding-left: $grw-foldertree-item-padding-left * 6;
                               }
                               > .list-group-item.bookmark-item-list {
@@ -130,7 +132,7 @@ $grw-bookmark-item-padding-left: 45px;
                               }
                               > .grw-foldertree-item-children {
                                 > .grw-foldertree-item-container {
-                                  > .list-group-item {
+                                  > .grw-drag-drop-container {
                                     padding-left: $grw-foldertree-item-padding-left * 7;
                                   }
                                   > .list-group-item.bookmark-item-list {
@@ -138,7 +140,7 @@ $grw-bookmark-item-padding-left: 45px;
                                   }
                                   > .grw-foldertree-item-children {
                                     > .grw-foldertree-item-container {
-                                      > .list-group-item {
+                                      > .grw-drag-drop-container {
                                         padding-left: $grw-foldertree-item-padding-left * 8;
                                       }
                                       > .list-group-item.bookmark-item-list {
@@ -146,7 +148,7 @@ $grw-bookmark-item-padding-left: 45px;
                                       }
                                       > .grw-foldertree-item-children {
                                         > .grw-foldertree-item-container {
-                                          > .list-group-item {
+                                          > .grw-drag-drop-container {
                                             padding-left: $grw-foldertree-item-padding-left * 9;
                                           }
                                           > .list-group-item.bookmark-item-list {
@@ -154,7 +156,7 @@ $grw-bookmark-item-padding-left: 45px;
                                           }
                                           .grw-foldertree-item-children {
                                             > .grw-foldertree-item-container {
-                                              > .list-group-item {
+                                              > .grw-drag-drop-container {
                                                 padding-left: $grw-foldertree-item-padding-left * 10;
                                               }
                                               > .list-group-item.bookmark-item-list {
