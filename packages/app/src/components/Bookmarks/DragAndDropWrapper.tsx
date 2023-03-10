@@ -5,7 +5,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { DragItemDataType } from '~/interfaces/bookmark-info';
 
 type DragAndDropWrapperProps = {
-  item: Partial<DragItemDataType>
+  item?: Partial<DragItemDataType>
   type: string[]
   children: ReactNode
   useDragMode?: boolean

@@ -2,7 +2,6 @@
 import { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useDrop } from 'react-dnd';
 
 import { addBookmarkToFolder, updateBookmarkFolder } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
@@ -16,6 +15,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
+import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 import styles from './BookmarkFolderTree.module.scss';
 
@@ -99,23 +99,6 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
 
   };
 
-  const [, dropRef] = useDrop(() => ({
-    accept: acceptedTypes,
-    drop: (item: DragItemDataType, monitor) => {
-      const dragType = monitor.getItemType();
-      itemDropHandler(item, dragType);
-    },
-    canDrop: (item: DragItemDataType, monitor) => {
-      const dragType = monitor.getItemType();
-      return isDroppable(item, dragType);
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
-      canDrop: monitor.canDrop(),
-    }),
-  }));
-
-
   return (
     <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
       <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
@@ -145,13 +128,18 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
         ))}
       </ul>
       {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
-        <div ref={(c) => { dropRef(c) }} className="grw-drop-item-area">
-          <div className="grw-accept-drop-item">
+        <DragAndDropWrapper
+          useDropMode={true}
+          type={acceptedTypes}
+          onDropItem={itemDropHandler}
+          isDropable={isDroppable}
+        >
+          <div className="grw-drop-item-area">
             <div className="d-flex flex-column align-items-center">
               {t('bookmark_folder.drop_item_here')}
             </div>
           </div>
-        </div>
+        </DragAndDropWrapper>
       )}
     </div>
   );
