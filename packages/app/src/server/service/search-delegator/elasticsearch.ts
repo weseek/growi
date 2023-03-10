@@ -14,7 +14,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
+  SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey, DEFAULT_HIGHLIGHT_FRAGMENT_SIZE,
 } from '../../interfaces/search';
 import { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
@@ -945,7 +945,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     query.body.highlight = {
       fields: {
         '*': {
-          fragment_size: 150,
+          fragment_size: DEFAULT_HIGHLIGHT_FRAGMENT_SIZE,
           fragmenter: 'simple',
           pre_tags: ["<em class='highlighted-keyword'>"],
           post_tags: ['</em>'],
