@@ -329,7 +329,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
             <Link href="/admin/user-groups" prefetch={false}>
-              <a >{t('user_group_management.group_list')}</a>
+              {t('user_group_management.group_list')}
             </Link>
           </li>
           {
@@ -343,7 +343,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                   <span>{ancestorUserGroup.name}</span>
                 ) : (
                   <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
-                    <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
+                    {ancestorUserGroup.name}
                   </Link>
                 ) }
               </li>
