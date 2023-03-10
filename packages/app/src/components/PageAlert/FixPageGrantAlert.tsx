@@ -5,8 +5,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { PageGrant, IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';

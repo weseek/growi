@@ -7,8 +7,8 @@ import {
 } from 'reactstrap';
 
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
 import loggerFactory from '~/utils/logger';

@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 

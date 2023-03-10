@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import loggerFactory from '~/utils/logger';
 

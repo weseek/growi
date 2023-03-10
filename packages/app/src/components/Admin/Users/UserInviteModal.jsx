@@ -10,7 +10,7 @@ import {
 
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { toastSuccess, toastError, toastWarning } from '~/client/util/apiNotification';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';

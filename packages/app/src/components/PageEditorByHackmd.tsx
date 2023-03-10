@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {

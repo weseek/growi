@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import { IClearable } from '~/client/interfaces/clearable';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';

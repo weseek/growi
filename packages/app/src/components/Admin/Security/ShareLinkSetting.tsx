@@ -5,8 +5,8 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import PaginationWrapper from '../../PaginationWrapper';
 import ShareLinkList from '../../ShareLink/ShareLinkList';
