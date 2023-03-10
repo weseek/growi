@@ -22,7 +22,7 @@ export const OldRevisionAlert = (): JSX.Element => {
     <div className="alert alert-warning">
       <strong>{t('Warning')}: </strong> {t('page_page.notice.version')}
       <Link href={returnPathForURL(page.path, page._id)}>
-        <a><i className="icon-fw icon-arrow-right-circle"></i>{t('Show latest')}</a>
+        <i className="icon-fw icon-arrow-right-circle"></i>{t('Show latest')}
       </Link>
     </div>
   );

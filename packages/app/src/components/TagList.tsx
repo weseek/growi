@@ -40,13 +40,11 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
         <Link
           key={tag._id}
           href={`${url.pathname}${url.search}`}
+          className={tagListClasses}
+          prefetch={false}
         >
-          <a
-            className={tagListClasses}
-          >
-            <div className="text-truncate list-tag-name">{tag.name}</div>
-            <div className="ml-4 my-auto py-1 px-2 list-tag-count badge badge-secondary text-white">{tag.count}</div>
-          </a>
+          <div className="text-truncate list-tag-name">{tag.name}</div>
+          <div className="ml-4 my-auto py-1 px-2 list-tag-count badge badge-secondary text-white">{tag.count}</div>
         </Link>
       );
     });
