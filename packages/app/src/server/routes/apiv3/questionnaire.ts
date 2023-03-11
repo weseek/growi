@@ -94,12 +94,17 @@ module.exports = (crowi: Crowi): Router => {
         answeredAt: new Date(),
       };
 
-      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer)
-        .catch(async(err) => {
-          if (err.request != null) {
-            await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
-          }
-        });
+      try {
+        await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer);
+      }
+      catch (err) {
+        if (err.request != null) {
+          await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
+        }
+        else {
+          throw err;
+        }
+      }
     };
 
     const errors = validationResult(req);
@@ -130,12 +135,17 @@ module.exports = (crowi: Crowi): Router => {
         answeredAt: new Date(),
       };
 
-      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer)
-        .catch(async(err) => {
-          if (err.request != null) {
-            await QuestionnaireAnswer.create(questionnaireAnswer);
-          }
-        });
+      try {
+        await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+      }
+      catch (err) {
+        if (err.request != null) {
+          await QuestionnaireAnswer.create(questionnaireAnswer);
+        }
+        else {
+          throw err;
+        }
+      }
     };
 
     const errors = validationResult(req);
