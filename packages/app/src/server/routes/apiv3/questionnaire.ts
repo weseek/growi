@@ -1,8 +1,14 @@
 import { Router, Request } from 'express';
 import { body, validationResult } from 'express-validator';
 
+import { IAnswer } from '~/interfaces/questionnaire/answer';
+import { IProactiveQuestionnaireAnswer } from '~/interfaces/questionnaire/proactive-questionnaire-answer';
+import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
+import { IUserHasId } from '~/interfaces/user';
 import Crowi from '~/server/crowi';
+import ProactiveQuestionnaireAnswer from '~/server/models/questionnaire/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '~/server/models/questionnaire/questionnaire-answer';
 import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
@@ -55,7 +61,6 @@ module.exports = (crowi: Crowi): Router => {
     const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
     const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
-    // TODO: add condition
     try {
       const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
@@ -78,7 +83,7 @@ module.exports = (crowi: Crowi): Router => {
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
-      const body = {
+      const proactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
         satisfaction: req.body.satisfaction,
         lengthOfExperience: req.body.lengthOfExperience,
         position: req.body.position,
@@ -89,7 +94,17 @@ module.exports = (crowi: Crowi): Router => {
         answeredAt: new Date(),
       };
 
-      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, body);
+      try {
+        await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer);
+      }
+      catch (err) {
+        if (err.request != null) {
+          await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
+        }
+        else {
+          throw err;
+        }
+      }
     };
 
     const errors = validationResult(req);
@@ -108,19 +123,29 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const sendQuestionnaireAnswer = async(user, answers) => {
+    const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
-      const questionnaireAnswer = {
+      const questionnaireAnswer: IQuestionnaireAnswer = {
         growiInfo,
         userInfo,
         answers,
         answeredAt: new Date(),
       };
 
-      await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+      try {
+        await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+      }
+      catch (err) {
+        if (err.request != null) {
+          await QuestionnaireAnswer.create(questionnaireAnswer);
+        }
+        else {
+          throw err;
+        }
+      }
     };
 
     const errors = validationResult(req);
