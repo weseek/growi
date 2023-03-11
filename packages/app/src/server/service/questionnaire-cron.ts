@@ -6,6 +6,8 @@ import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
+import ProactiveQuestionnaireAnswer from '../models/questionnaire/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../models/questionnaire/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
 
@@ -49,8 +51,9 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
+    const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
-      const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
       const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
       return response.data.questionnaireOrders;
     };
@@ -68,7 +71,22 @@ class QuestionnaireCronService {
       );
     };
 
+    const resendQuestionnaireAnswers = async() => {
+      const questionnaireAnswers = await QuestionnaireAnswer.find();
+      const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find();
+      axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
+        .then(() => {
+          QuestionnaireAnswer.deleteMany();
+        });
+      axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
+        .then(() => {
+          ProactiveQuestionnaireAnswer.deleteMany();
+        });
+    };
+
     const questionnaireOrders: IQuestionnaireOrder[] = await fetchQuestionnaireOrders();
+
+    resendQuestionnaireAnswers();
 
     // reset QuestionnaireOrder collection and save unfinished ones that exist on questionnaire server
     await QuestionnaireOrder.deleteMany();
