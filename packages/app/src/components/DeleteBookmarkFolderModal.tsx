@@ -6,7 +6,7 @@ import {
   Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 
-import { apiv3Delete } from '~/client/util/apiv3-client';
+import { deleteBookmarkFolder } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
@@ -23,7 +23,7 @@ const DeleteBookmarkFolderModal: FC = () => {
     }
     if (deleteBookmarkFolderModalData.bookmarkFolder != null) {
       try {
-        await apiv3Delete(`/bookmark-folder/${deleteBookmarkFolderModalData.bookmarkFolder._id}`);
+        await deleteBookmarkFolder(deleteBookmarkFolderModalData.bookmarkFolder._id);
         const onDeleted = deleteBookmarkFolderModalData.opts?.onDeleted;
         if (onDeleted != null) {
           onDeleted(deleteBookmarkFolderModalData.bookmarkFolder._id);

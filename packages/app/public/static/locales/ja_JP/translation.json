@@ -157,8 +157,12 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください"
+    "title_required": "タイトルを入力してください",
+    "field_required": "{{target}}に値を入力してください"
   },
+  "page_name": "ページ名",
+  "folder_name": "フォルダ名",
+  "field": "フィールド",
   "not_creatable_page": {
     "could_not_creata_path": "パスを作成できませんでした。"
   },

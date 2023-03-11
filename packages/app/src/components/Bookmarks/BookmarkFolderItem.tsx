@@ -3,16 +3,18 @@ import {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
-import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
-import { hasChildren } from '~/client/util/bookmark-utils';
+import {
+  addBookmarkToFolder, addNewFolder, hasChildren, updateBookmarkFolder,
+} from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
-import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
-import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import {
+  BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
+} from '~/interfaces/bookmark-info';
+import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
@@ -22,6 +24,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
 import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 import { BookmarkItem } from './BookmarkItem';
+import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 
 type BookmarkFolderItemProps = {
@@ -31,10 +34,6 @@ type BookmarkFolderItemProps = {
   root: string
   isUserHomePage?: boolean
 }
-
-type DragItemDataType = {
-  parentFolder: BookmarkFolderItems
-} & BookmarkFolderItemProps & IPageHasId
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
@@ -60,7 +59,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const childrenExists = hasChildren(children);
 
-
   const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
     setTargetFolder(folderId);
@@ -69,7 +67,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   // Rename  for bookmark folder handler
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
-      await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
+      await updateBookmarkFolder(folderId, folderName, parent);
       mutateBookmarkData();
       setIsRenameAction(false);
       toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
@@ -82,7 +80,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
+      await addNewFolder(folderName, targetFolder);
       setIsOpen(true);
       setIsCreateAction(false);
       mutateBookmarkData();
@@ -128,28 +126,15 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     mutateBookmarkInfo();
   }, [mutateBookmarkInfo, mutateBookmarkData]);
 
-  const [, bookmarkFolderDragRef] = useDrag({
-    type: DRAG_ITEM_TYPE.FOLDER,
-    item: props,
-    end: (_item, monitor) => {
-      const dropResult = monitor.getDropResult();
-      if (dropResult != null) {
-        mutateBookmarkData();
-      }
-    },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-      canDrag: monitor.canDrag(),
-    }),
-  });
-
 
   const itemDropHandler = async(item: DragItemDataType, dragItemType: string | symbol | null) => {
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
-        await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: bookmarkFolder._id });
-        mutateBookmarkData();
-        toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+        if (item.bookmarkFolder != null) {
+          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id);
+          mutateBookmarkData();
+          toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+        }
       }
       catch (err) {
         toastError(err);
@@ -157,10 +142,12 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
     else {
       try {
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: bookmarkFolder._id });
-        mutateBookmarkData();
-        await mutateUserBookmarks();
-        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+        if (item != null) {
+          await addBookmarkToFolder(item._id, bookmarkFolder._id);
+          mutateBookmarkData();
+          await mutateUserBookmarks();
+          toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+        }
       }
       catch (err) {
         toastError(err);
@@ -168,12 +155,12 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
   };
 
-  const isDroppable = (item: DragItemDataType, targetRoot: string, targetLevel: number, type: string | null| symbol): boolean => {
+  const isDroppable = (item: DragItemDataType, type: string | null| symbol): boolean => {
     if (type === DRAG_ITEM_TYPE.FOLDER) {
       if (item.bookmarkFolder.parent === bookmarkFolder._id || item.bookmarkFolder._id === bookmarkFolder._id) {
         return false;
       }
-      return item.root !== targetRoot || item.level >= targetLevel;
+      return item.root !== root || item.level >= level;
     }
 
     if (item.parentFolder != null && item.parentFolder._id === bookmarkFolder._id) {
@@ -181,21 +168,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
     return true;
   };
-
-  const [{ isOver }, dropRef] = useDrop(() => ({
-    accept: acceptedTypes,
-    drop: (item: DragItemDataType, monitor) => {
-      const itemType = monitor.getItemType();
-      itemDropHandler(item, itemType);
-    },
-    canDrop: (item: DragItemDataType, monitor) => {
-      const itemType = monitor.getItemType();
-      return isDroppable(item, root, level, itemType);
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
-    }),
-  }));
 
 
   const renderChildFolder = () => {
@@ -252,61 +224,71 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
-      <li ref={(c) => { bookmarkFolderDragRef(c); dropRef(c) }}
-        className={`${isOver ? 'grw-accept-drop-item' : ''} list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center`}
-        onClick={loadChildFolder}
+      <DragAndDropWrapper
+        key={folderId}
+        type={acceptedTypes}
+        item={props}
+        useDragMode={true}
+        useDropMode={true}
+        onDropItem={itemDropHandler}
+        isDropable={isDroppable}
       >
-        <div className="grw-triangle-container d-flex justify-content-center">
-          {childrenExists && (
+        <li
+          className={' list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center'}
+          onClick={loadChildFolder}
+        >
+          <div className="grw-triangle-container d-flex justify-content-center">
+            {childrenExists && (
+              <button
+                type="button"
+                className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
+                onClick={loadChildFolder}
+              >
+                <div className="d-flex justify-content-center">
+                  <TriangleIcon />
+                </div>
+              </button>
+            )}
+          </div>
+          {
+            <div>
+              <FolderIcon isOpen={isOpen} />
+            </div>
+          }
+          {isRenameAction ? (
+            <BookmarkFolderNameInput
+              onClickOutside={() => setIsRenameAction(false)}
+              onPressEnter={onPressEnterHandlerForRename}
+              value={name}
+            />
+          ) : (
+            <>
+              <div className='grw-foldertree-title-anchor pl-2' >
+                <p className={'text-truncate m-auto '}>{name}</p>
+              </div>
+            </>
+          )}
+          <div className="grw-foldertree-control d-flex">
+            <BookmarkFolderItemControl
+              onClickRename={onClickRenameHandler}
+              onClickDelete={onClickDeleteHandler}
+            >
+              <div onClick={e => e.stopPropagation()}>
+                <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                  <i className="icon-options fa fa-rotate-90 p-1"></i>
+                </DropdownToggle>
+              </div>
+            </BookmarkFolderItemControl>
             <button
               type="button"
-              className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
-              onClick={loadChildFolder}
+              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+              onClick={onClickPlusButton}
             >
-              <div className="d-flex justify-content-center">
-                <TriangleIcon />
-              </div>
+              <i className="icon-plus d-block p-0" />
             </button>
-          )}
-        </div>
-        {
-          <div>
-            <FolderIcon isOpen={isOpen} />
           </div>
-        }
-        {isRenameAction ? (
-          <BookmarkFolderNameInput
-            onClickOutside={() => setIsRenameAction(false)}
-            onPressEnter={onPressEnterHandlerForRename}
-            value={name}
-          />
-        ) : (
-          <>
-            <div className='grw-foldertree-title-anchor pl-2' >
-              <p className={'text-truncate m-auto '}>{name}</p>
-            </div>
-          </>
-        )}
-        <div className="grw-foldertree-control d-flex">
-          <BookmarkFolderItemControl
-            onClickRename={onClickRenameHandler}
-            onClickDelete={onClickDeleteHandler}
-          >
-            <div onClick={e => e.stopPropagation()}>
-              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                <i className="icon-options fa fa-rotate-90 p-1"></i>
-              </DropdownToggle>
-            </div>
-          </BookmarkFolderItemControl>
-          <button
-            type="button"
-            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-            onClick={onClickPlusButton}
-          >
-            <i className="icon-plus d-block p-0" />
-          </button>
-        </div>
-      </li>
+        </li>
+      </DragAndDropWrapper>
       {isCreateAction && (
         <div className="flex-fill">
           <BookmarkFolderNameInput

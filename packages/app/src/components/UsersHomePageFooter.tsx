@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -15,6 +15,7 @@ import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
 import { CompressIcon } from './Icons/CompressIcon';
 import { ExpandIcon } from './Icons/ExpandIcon';
 import { FolderPlusIcon } from './Icons/FolderPlusIcon';
+import { addNewFolder } from '~/client/util/bookmark-utils';
 
 
 export type UsersHomePageFooterProps = {
@@ -30,7 +31,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
+      await addNewFolder(folderName, null);
       await mutateChildBookmarkData();
       setIsCreateAction(false);
       toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));

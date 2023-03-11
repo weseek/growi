@@ -155,8 +155,12 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required."
+    "title_required": "Title is required.",
+    "field_required": "{{target}} is required"
   },
+  "page_name": "Page name",
+  "folder_name": "Folder name",
+  "field": "field",
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
   },

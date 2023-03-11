@@ -11,7 +11,7 @@ import { DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { inputValidator } from '~/client/util/input-validator-utils';
+import { ValidationTarget } from '~/client/util/input-validator';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
@@ -89,7 +89,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
           placeholder={t('Input page name')}
           onClickOutside={() => { setIsRenameInputShown(false) }}
           onPressEnter={pressEnterForRenameHandler}
-          inputValidator={inputValidator}
+          validationTarget={ValidationTarget.PAGE}
         />
       ) : (
         <PageListItemS page={page} />

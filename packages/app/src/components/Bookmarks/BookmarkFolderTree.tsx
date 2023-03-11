@@ -2,9 +2,8 @@
 import { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useDrop } from 'react-dnd';
 
-import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { addBookmarkToFolder, updateBookmarkFolder } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
@@ -16,6 +15,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
+import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 import styles from './BookmarkFolderTree.module.scss';
 
@@ -69,7 +69,7 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
   const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {
     if (dragType === DRAG_ITEM_TYPE.FOLDER) {
       try {
-        await apiv3Put('/bookmark-folder', { bookmarkFolderId: item.bookmarkFolder._id, name: item.bookmarkFolder.name, parent: null });
+        await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, null);
         await mutateBookamrkData();
         toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
       }
@@ -79,7 +79,7 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
     }
     else {
       try {
-        await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: item._id, folderId: null });
+        await addBookmarkToFolder(item._id, null);
         await mutateUserBookmarks();
         toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       }
@@ -98,23 +98,6 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
     return !isRootBookmark;
 
   };
-
-  const [, dropRef] = useDrop(() => ({
-    accept: acceptedTypes,
-    drop: (item: DragItemDataType, monitor) => {
-      const dragType = monitor.getItemType();
-      itemDropHandler(item, dragType);
-    },
-    canDrop: (item: DragItemDataType, monitor) => {
-      const dragType = monitor.getItemType();
-      return isDroppable(item, dragType);
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
-      canDrop: monitor.canDrop(),
-    }),
-  }));
-
 
   return (
     <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
@@ -145,13 +128,18 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
         ))}
       </ul>
       {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
-        <div ref={(c) => { dropRef(c) }} className="grw-drop-item-area">
-          <div className="grw-accept-drop-item">
+        <DragAndDropWrapper
+          useDropMode={true}
+          type={acceptedTypes}
+          onDropItem={itemDropHandler}
+          isDropable={isDroppable}
+        >
+          <div className="grw-drop-item-area">
             <div className="d-flex flex-column align-items-center">
               {t('bookmark_folder.drop_item_here')}
             </div>
           </div>
-        </div>
+        </DragAndDropWrapper>
       )}
     </div>
   );
