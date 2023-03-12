@@ -75,12 +75,12 @@ class QuestionnaireCronService {
       const questionnaireAnswers = await QuestionnaireAnswer.find();
       const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find();
       axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
-        .then(() => {
-          QuestionnaireAnswer.deleteMany();
+        .then(async() => {
+          await QuestionnaireAnswer.deleteMany();
         });
       axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
-        .then(() => {
-          ProactiveQuestionnaireAnswer.deleteMany();
+        .then(async() => {
+          await ProactiveQuestionnaireAnswer.deleteMany();
         });
     };
 
