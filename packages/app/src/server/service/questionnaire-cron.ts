@@ -72,8 +72,10 @@ class QuestionnaireCronService {
     };
 
     const resendQuestionnaireAnswers = async() => {
-      const questionnaireAnswers = await QuestionnaireAnswer.find();
-      const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find();
+      const questionnaireAnswers = await QuestionnaireAnswer.find()
+        .select('-_id -answers._id  -growiInfo._id -userInfo._id');
+      const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
+        .select('-_id -growiInfo._id -userInfo._id');
       axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
         .then(async() => {
           await QuestionnaireAnswer.deleteMany();
