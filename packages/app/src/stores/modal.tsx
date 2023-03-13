@@ -345,7 +345,7 @@ export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[k
 
 type PageAccessoriesModalStatus = {
   isOpened: boolean,
-  onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
+  activatedContents?: PageAccessoriesModalContents,
 }
 
 type PageAccessoriesModalUtils = {
@@ -364,11 +364,10 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
       if (swrResponse.data == null) {
         return;
       }
-      swrResponse.mutate({ isOpened: true });
-
-      if (swrResponse.data.onOpened != null) {
-        swrResponse.data.onOpened(activatedContents);
-      }
+      swrResponse.mutate({
+        isOpened: true,
+        activatedContents,
+      });
     },
     close: () => {
       if (swrResponse.data == null) {

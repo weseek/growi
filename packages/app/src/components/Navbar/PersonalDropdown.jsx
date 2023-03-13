@@ -54,15 +54,19 @@ const PersonalDropdown = () => {
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
-            <Link href={`/user/${user.username}`}>
-              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-home">
-                <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
-              </a>
+            <Link
+              href={`/user/${user.username}`}
+              className="btn btn-sm btn-outline-secondary col"
+              data-testid="grw-personal-dropdown-menu-user-home"
+            >
+              <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
             </Link>
-            <Link href="/me">
-              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-settings">
-                <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
-              </a>
+            <Link
+              href="/me"
+              className="btn btn-sm btn-outline-secondary col"
+              data-testid="grw-personal-dropdown-menu-user-settings"
+            >
+              <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
             </Link>
           </div>
         </div>

@@ -42,10 +42,8 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
                     <div className="alert alert-warning mb-3">
                       <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
                     </div>
-                    <Link href="/forgot-password" prefetch={false}>
-                      <a className="link-switch">
-                        <i className="icon-key"></i> { t('forgot_password.forgot_password') }
-                      </a>
+                    <Link href="/forgot-password" className="link-switch" prefetch={false}>
+                      <i className="icon-key"></i> { t('forgot_password.forgot_password') }
                     </Link>
                   </div>
                 ) }

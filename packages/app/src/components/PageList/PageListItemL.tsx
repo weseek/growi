@@ -221,7 +221,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link href={returnPathForURL(pageData.path, pageData._id)} prefetch={false}>
+                    <Link legacyBehavior
+                      href={returnPathForURL(pageData.path, pageData._id)}
+                      prefetch={false}
+                    >
                       {shouldDangerouslySetInnerHTMLForPaths
                         ? (
                           <a
