@@ -1,3 +1,5 @@
+@use './bootstrap/init' as bs;
+
 .grw-page-path-hierarchical-link {
   .separator {
     margin-right: 0.2em;
@@ -9,6 +11,6 @@
   // overwrite link color
   &,
   a {
-    @extend .text-muted;
+    color: bs.$text-muted;
   }
 }
