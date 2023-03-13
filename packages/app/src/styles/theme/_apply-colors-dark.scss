@@ -373,16 +373,6 @@
         box-shadow: none !important;
       }
     }
-    // Recent Changes
-    .grw-recent-changes {
-      .list-group {
-        .list-group-item {
-          .grw-former-link-container a {
-            color: $gray-400;
-          }
-        }
-      }
-    }
     .private-legacy-pages-link {
       &:hover {
         background: var(--bgcolor-list-hover);
