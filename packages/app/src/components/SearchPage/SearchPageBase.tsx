@@ -150,7 +150,9 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   }
 
   const highlightKeywords = searchingKeyword != null
-    ? searchingKeyword.match(highlightKeywordsSplitter) ?? undefined
+    // Remove double quotation marks before and after a keyword if present
+    // https://regex101.com/r/4QKBwg/1
+    ? searchingKeyword.match(highlightKeywordsSplitter)?.map(keyword => keyword.replace(/^"(.*)"$/, '$1')) ?? undefined
     : undefined;
 
   return (
