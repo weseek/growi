@@ -50,7 +50,6 @@ services:
       dockerfile: ./Dockerfile
       args:
         - version=7.17.9
-    container_name: elasticsearch
     restart: unless-stopped
     ports:
       - 9200:9200
