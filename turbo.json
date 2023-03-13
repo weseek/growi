@@ -33,14 +33,19 @@
       "outputMode": "new-only"
     },
 
-    "@growi/app#dev:migrate": {
-      "outputs": ["tmp/cache/migration-status.out"],
-      "inputs": ["src/migration/*.js"],
-      "outputMode": "new-only"
-    },
     "@growi/remark-lsx#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/ui#dev": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/app#dev:migrate": {
+      "outputs": ["tmp/cache/migration-status.out"],
+      "inputs": ["src/migration/*.js"],
       "outputMode": "new-only"
     },
     "@growi/app#dev": {
