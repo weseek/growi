@@ -55,11 +55,13 @@ context('Access User settings', () => {
     cy.getByTestid('grw-user-settings').should('be.visible');
     cy.screenshot(`${ssPrefix}-user-information-1`);
     cy.getByTestid('grw-besic-info-settings-update-button').click();
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-user-information-2`);
 
-    cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
-    cy.get('.toast').should('not.exist');
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
   });
 
   it('Access External account', () => {
@@ -70,26 +72,30 @@ context('Access User settings', () => {
     cy.getByTestid('grw-associate-modal').should('be.visible');
     cy.screenshot(`${ssPrefix}-external-account-2`);
     cy.getByTestid('grw-associate-modal').find('.modal-footer button').click(); // click add button in modal form
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-external-account-3`);
-    cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
-    cy.get('.toast').should('not.exist');
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
     cy.getByTestid('grw-associate-modal').find('.close').click();
     cy.screenshot(`${ssPrefix}-external-account-4`);
 
-    cy.get('.toast').should('not.exist');
-  });
+      cy.get('.Toastify__toast').should('not.be.visible');
+    });
 
   it('Access Password setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(2) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-password-settings-1`);
     cy.getByTestid('grw-password-settings-update-button').click();
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-password-settings-2`);
 
-    cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
-    cy.get('.toast').should('not.exist');
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
   });
 
   it('Access API setting', () => {
@@ -98,11 +104,13 @@ context('Access User settings', () => {
     cy.screenshot(`${ssPrefix}-api-setting-1`);
     cy.getByTestid('grw-api-settings-update-button').click();
     cy.getByTestid('grw-api-settings-input').should('be.visible');
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-api-setting-2`);
 
-    cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
-    cy.get('.toast').should('not.exist');
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
   });
 
   it('Access Editor setting', () => {
@@ -111,11 +119,13 @@ context('Access User settings', () => {
     cy.getByTestid('grw-editor-settings').should('be.visible');
     cy.screenshot(`${ssPrefix}-editor-setting-1`);
     cy.getByTestid('grw-editor-settings-update-button').click();
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-editor-setting-2`);
 
-    cy.get('.toast-close-button').click({ multiple: true }); // close toast alert
-    cy.get('.toast').should('not.exist');
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
   });
 
   it('Access In-app notification setting', () => {
@@ -123,7 +133,7 @@ context('Access User settings', () => {
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-1`);
     cy.getByTestid('grw-in-app-notification-settings-update-button').click();
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-2`);
   });
 });
