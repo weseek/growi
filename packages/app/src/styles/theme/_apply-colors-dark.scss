@@ -261,6 +261,13 @@
     box-shadow: none !important;
   }
 
+  /**
+   * GROWI PagePathHierarchicalLink
+   */
+  .grw-page-path-text-muted-container .grw-page-path-hierarchical-link a {
+    color: $gray-400;
+  }
+
   /*
   * GROWI page list
   */
@@ -364,6 +371,16 @@
           background-color: hsl.lighten(var(--bgcolor-sidebar-context),34%);
         }
         box-shadow: none !important;
+      }
+    }
+    // Recent Changes
+    .grw-recent-changes {
+      .list-group {
+        .list-group-item {
+          .grw-former-link-container a {
+            color: $gray-400;
+          }
+        }
       }
     }
     .private-legacy-pages-link {
