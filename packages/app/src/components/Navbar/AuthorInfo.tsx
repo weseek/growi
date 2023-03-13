@@ -33,7 +33,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   const userLabel = user != null
     ? (
       <Link href={userPageRoot(user)} prefetch={false}>
-        <a>{user.name}</a>
+        {user.name}
       </Link>
     )
     : <i>Unknown</i>;

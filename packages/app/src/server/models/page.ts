@@ -57,7 +57,7 @@ type PaginatedPages = {
 export type CreateMethod = (path: string, body: string, user, options: PageCreateOptions) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
-  findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
+  findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
@@ -553,11 +553,13 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
 /*
  * Find pages by ID and viewer.
  */
-schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]> {
+schema.statics.findByIdsAndViewer = async function(
+    pageIds: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+): Promise<PageDocument[]> {
   const baseQuery = this.find({ _id: { $in: pageIds } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await queryBuilder.addViewerCondition(user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
 
   return queryBuilder.query.exec();
 };

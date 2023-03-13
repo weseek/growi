@@ -26,7 +26,7 @@ const PageAccessoriesModal = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>(PageAccessoriesModalContents.PageHistory);
+  const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>();
   const [sourceRevisionId, setSourceRevisionId] = useState<string>();
   const [targetRevisionId, setTargetRevisionId] = useState<string>();
 
@@ -38,18 +38,15 @@ const PageAccessoriesModal = (): JSX.Element => {
 
   const { data: status, mutate, close } = usePageAccessoriesModal();
 
-  // add event handler when opened
+  // activate tab when open
   useEffect(() => {
-    if (status == null || status.onOpened != null) {
-      return;
+    if (status == null) return;
+
+    const { isOpened, activatedContents } = status;
+    if (isOpened && activatedContents != null) {
+      setActiveTab(activatedContents);
     }
-    mutate({
-      ...status,
-      onOpened: (activatedContents) => {
-        setActiveTab(activatedContents);
-      },
-    }, false);
-  }, [mutate, status]);
+  }, [status]);
 
   // Set sourceRevisionId and targetRevisionId as state with valid object id string
   useEffect(() => {
@@ -74,14 +71,10 @@ const PageAccessoriesModal = (): JSX.Element => {
   }, [mutate]);
 
   const navTabMapping = useMemo(() => {
-    const isOpened = status == null ? false : status.isOpened;
     return {
       [PageAccessoriesModalContents.PageHistory]: {
         Icon: HistoryIcon,
         Content: () => {
-          if (!isOpened) {
-            return <></>;
-          }
           return <PageHistory onClose={close} sourceRevisionId={sourceRevisionId} targetRevisionId={targetRevisionId}/>;
         },
         i18n: t('History'),
@@ -91,9 +84,6 @@ const PageAccessoriesModal = (): JSX.Element => {
       [PageAccessoriesModalContents.Attachment]: {
         Icon: AttachmentIcon,
         Content: () => {
-          if (!isOpened) {
-            return <></>;
-          }
           return <PageAttachment />;
         },
         i18n: t('attachment_data'),
@@ -102,9 +92,6 @@ const PageAccessoriesModal = (): JSX.Element => {
       [PageAccessoriesModalContents.ShareLink]: {
         Icon: ShareLinkIcon,
         Content: () => {
-          if (!isOpened) {
-            return <></>;
-          }
           return <ShareLink />;
         },
         i18n: t('share_links.share_link_management'),
@@ -112,7 +99,7 @@ const PageAccessoriesModal = (): JSX.Element => {
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [status, t, close, sourceRevisionId, targetRevisionId, isGuestUser, isSharedUser, isLinkSharingDisabled]);
+  }, [t, close, sourceRevisionId, targetRevisionId, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">
