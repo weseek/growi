@@ -3,8 +3,12 @@ import React, { useMemo, useCallback } from 'react';
 import { UserPicture } from '@growi/ui';
 import prettyBytes from 'pretty-bytes';
 
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useCurrentPageId } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:attachmentDelete');
 
 export const Attachment: React.FC<{
   attachmentId: string,
@@ -31,12 +35,13 @@ export const Attachment: React.FC<{
 
     try {
       await remove({ attachment_id: attachment._id });
-      // TODO: success notification
+      toastSuccess(`Delete ${attachmentName}`);
     }
     catch (err) {
-      // TODO: error handling
+      toastError(err);
+      logger.error(err);
     }
-  }, [attachment, remove]);
+  }, [attachment, attachmentName, remove]);
 
   // TODO: update fo attachment is not found
   // TODO: fix hydration failed error
