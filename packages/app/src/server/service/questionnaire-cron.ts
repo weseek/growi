@@ -23,6 +23,7 @@ axiosRetry(axios, { retries: 3 });
  *  1. fetches QuestionnaireOrders from questionnaire server
  *  2. updates QuestionnaireOrder collection to contain only the ones that exist in the fetched list and is not finished (doesn't have to be started)
  *  3. changes QuestionnaireAnswerStatuses which are 'skipped' to 'not_answered'
+ *  4. resend QuestionnaireAnswers & ProactiveQuestionnaireAnswers which failed to send before
  */
 class QuestionnaireCronService {
 
@@ -76,6 +77,7 @@ class QuestionnaireCronService {
         .select('-_id -answers._id  -growiInfo._id -userInfo._id');
       const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
         .select('-_id -growiInfo._id -userInfo._id');
+
       axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
         .then(async() => {
           await QuestionnaireAnswer.deleteMany();
