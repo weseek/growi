@@ -11,9 +11,9 @@ import {
 
 import { IPageGrantData } from '~/interfaces/page';
 import {
-  useIsEditable, useCurrentPageId, useIsAclEnabled,
+  useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 

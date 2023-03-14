@@ -4,8 +4,7 @@ import { pathUtils } from '@growi/core';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
-import { useIsLatestRevision } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useIsLatestRevision } from '~/stores/page';
 
 export const OldRevisionAlert = (): JSX.Element => {
 
@@ -23,7 +22,7 @@ export const OldRevisionAlert = (): JSX.Element => {
     <div className="alert alert-warning">
       <strong>{t('Warning')}: </strong> {t('page_page.notice.version')}
       <Link href={returnPathForURL(page.path, page._id)}>
-        <a><i className="icon-fw icon-arrow-right-circle"></i>{t('Show latest')}</a>
+        <i className="icon-fw icon-arrow-right-circle"></i>{t('Show latest')}
       </Link>
     </div>
   );

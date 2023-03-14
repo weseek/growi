@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { useCurrentPageId } from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';

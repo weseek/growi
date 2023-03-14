@@ -154,10 +154,8 @@ export const GrowiNavbar = (props: Props): JSX.Element => {
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
-        <Link href="/" prefetch={false}>
-          <a className="grw-logo d-block">
-            <GrowiNavbarLogo isDefaultLogo={isDefaultLogo} />
-          </a>
+        <Link href="/" className="grw-logo d-block">
+          <GrowiNavbarLogo isDefaultLogo={isDefaultLogo} />
         </Link>
       </div>
 

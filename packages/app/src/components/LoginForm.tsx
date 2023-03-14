@@ -36,6 +36,7 @@ type LoginFormProps = {
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
+
   const router = useRouter();
 
   const {
@@ -71,7 +72,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
   }, []);
 
-  // functions
+  const tWithOpt = useCallback((key: string, opt?: any): string => {
+    if (typeof opt === 'object') {
+      return t(key, opt as object);
+    }
+    return t(key);
+  }, [t]);
+
   const handleLoginWithExternalAuth = useCallback((e) => {
     const auth = e.currentTarget.id;
 
@@ -133,11 +140,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return (
       <div className="alert alert-danger">
         {errors.map((err, index) => {
-          return <small key={index} dangerouslySetInnerHTML={{ __html: t(err.message, err.args) }}></small>;
+          return <small key={index} dangerouslySetInnerHTML={{ __html: tWithOpt(err.message, err.args) }}></small>;
         })}
       </div>
     );
-  }, [t]);
+  }, [tWithOpt]);
 
   // wrap error elements which do not use dangerouslySetInnerHtml
   const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
@@ -146,13 +153,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       <ul className="alert alert-danger">
         {errors.map((err, index) => {
           return (
-            <li key={index}>
-              {t(err.message, err.args)}<br/>
+            <li key={index} className={index > 0 ? 'mt-1' : ''}>
+              {tWithOpt(err.message, err.args)}
             </li>);
         })}
       </ul>
     );
-  }, [t]);
+  }, [tWithOpt]);
 
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;

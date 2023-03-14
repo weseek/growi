@@ -9,9 +9,9 @@ import dynamic from 'next/dynamic';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
-  useIsForbidden, useIsIdenticalPath, useIsNotCreatable, useIsNotFound,
+  useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
