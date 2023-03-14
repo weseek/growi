@@ -8,7 +8,7 @@ import * as toastr from 'toastr';
 
 import { apiPost } from '~/client/util/apiv1-client';
 
-// import { toastSuccess, toastError } from '~/client/util/apiNotification';
+// import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
 const GROUPS_PAGE = [

@@ -13,7 +13,7 @@ import {
 } from 'reactstrap';
 
 
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 import 'react-image-crop/dist/ReactCrop.css';
 

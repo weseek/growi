@@ -78,8 +78,8 @@ export const CustomNavDropdown = (props) => {
 };
 
 CustomNavDropdown.propTypes = {
-  activeTab: PropTypes.string.isRequired,
   navTabMapping: PropTypes.object.isRequired,
+  activeTab: PropTypes.string,
   onNavSelected: PropTypes.func,
 };
 
@@ -119,7 +119,7 @@ export const CustomNavTab = (props) => {
   }
 
   useEffect(() => {
-    if (activeTab === '') {
+    if (activeTab == null || activeTab === '') {
       return;
     }
 

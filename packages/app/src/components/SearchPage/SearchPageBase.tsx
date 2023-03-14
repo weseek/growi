@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess } from '~/client/util/toastr';
 import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
@@ -150,7 +150,9 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   }
 
   const highlightKeywords = searchingKeyword != null
-    ? searchingKeyword.match(highlightKeywordsSplitter) ?? undefined
+    // Remove double quotation marks before and after a keyword if present
+    // https://regex101.com/r/4QKBwg/1
+    ? searchingKeyword.match(highlightKeywordsSplitter)?.map(keyword => keyword.replace(/^"(.*)"$/, '$1')) ?? undefined
     : undefined;
 
   return (

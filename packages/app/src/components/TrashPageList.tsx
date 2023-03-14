@@ -3,7 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess } from '~/client/util/toastr';
 import {
   IPageHasId,
 } from '~/interfaces/page';

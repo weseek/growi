@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
@@ -364,7 +364,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
                 {t('hackmd.based_on_revision')}&nbsp;
                 { pageData != null && (
                   <Link href={urljoin(returnPathForURL(pageData.path, pageData._id), `?revisionId=${revisionIdHackmdSynced}`)} prefetch={false}>
-                    <a><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
+                    <span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span>
                   </Link>
                 )}
                 <div className="text-center mt-3">
