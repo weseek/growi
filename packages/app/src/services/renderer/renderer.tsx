@@ -27,7 +27,6 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -261,7 +260,7 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -295,7 +294,6 @@ export const generateSimpleViewOptions = (
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -330,7 +328,7 @@ export const generateSSRViewOptions = (
     math,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = config.isEnabledLinebreaks;
@@ -361,7 +359,6 @@ export const generateSSRViewOptions = (
   // add components
   if (components != null) {
     components.lsx = LsxImmutable;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -382,7 +379,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -413,7 +410,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {
