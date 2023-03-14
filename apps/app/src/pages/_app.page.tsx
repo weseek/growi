@@ -17,10 +17,10 @@ import { swrGlobalConfiguration } from '~/utils/swr-utils';
 import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
+import '^/dist/assets/vendor.css';
+import '~/styles/font-icons.scss';
 import '~/styles/style-app.scss';
-import '~/styles/theme/_apply-colors-light.scss';
-import '~/styles/theme/_apply-colors-dark.scss';
-import '~/styles/theme/_apply-colors.scss';
+import '^/dist/assets/apply-colors.css';
 
 const isDev = process.env.NODE_ENV === 'development';
 

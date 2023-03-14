@@ -5,6 +5,9 @@
 @use './mixins/hsl-button';
 @use './hsl-functions' as hsl;
 
+@import 'apply-colors-dark';
+@import 'apply-colors-light';
+
 //
 //== Apply to Bootstrap
 //
