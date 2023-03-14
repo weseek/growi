@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import Xss from '~/services/xss';
 
 class UserGroupUserFormByInput extends React.Component {

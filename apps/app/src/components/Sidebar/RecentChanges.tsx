@@ -71,10 +71,13 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
       return <></>;
     }
     return (
-      <Link key={tag.name} href={`/_search?q=tag:${tag.name}`} prefetch={false}>
-        <a className="grw-tag-label badge badge-secondary mr-2 small">
-          {tag.name}
-        </a>
+      <Link
+        key={tag.name}
+        href={`/_search?q=tag:${tag.name}`}
+        className="grw-tag-label badge badge-secondary mr-2 small"
+        prefetch={false}
+      >
+        {tag.name}
       </Link>
     );
   });

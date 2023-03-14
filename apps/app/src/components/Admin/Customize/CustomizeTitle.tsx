@@ -3,8 +3,8 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCustomizeTitle } from '~/stores/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';

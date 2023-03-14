@@ -8,7 +8,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { IExternalAccount } from '~/interfaces/external-account';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 

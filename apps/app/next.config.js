@@ -9,7 +9,7 @@ const { withSuperjson } = require('next-superjson');
 const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants');
 
 
-const setupTranspileModules = () => {
+const getTranspilePackages = () => {
   const eazyLogger = require('eazy-logger');
   const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
 
@@ -41,6 +41,8 @@ const setupTranspileModules = () => {
     'trough',
     'web-namespaces',
     'vfile',
+    'vfile-location',
+    'vfile-message',
     'zwitch',
     'emoticon',
     'direction', // for hast-util-select
@@ -51,7 +53,7 @@ const setupTranspileModules = () => {
   // logger.info('{bold:Listing scoped packages for transpiling:}');
   // logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
 
-  return require('next-transpile-modules')(packages);
+  return packages;
 };
 
 
@@ -61,21 +63,22 @@ module.exports = async(phase, { defaultConfig }) => {
 
   /** @type {import('next').NextConfig} */
   const nextConfig = {
-    // == DOES NOT WORK
-    // see: https://github.com/vercel/next.js/discussions/27876
-    // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
 
+    reactStrictMode: true,
+    poweredByHeader: false,
+    pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+    i18n,
+
+    // for build
     eslint: {
       ignoreDuringBuilds: true,
     },
-    reactStrictMode: true,
-    swcMinify: true,
     typescript: {
       tsconfigPath: 'tsconfig.build.client.json',
     },
-    pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
-
-    i18n,
+    transpilePackages: phase !== PHASE_PRODUCTION_SERVER
+      ? getTranspilePackages()
+      : undefined,
 
     /** @param config {import('next').NextConfig} */
     webpack(config, options) {
@@ -106,10 +109,9 @@ module.exports = async(phase, { defaultConfig }) => {
     return withSuperjson()(nextConfig);
   }
 
-  const withTM = setupTranspileModules();
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: phase === PHASE_PRODUCTION_BUILD || process.env.ANALYZE === 'true',
   });
 
-  return withBundleAnalyzer(withTM(withSuperjson()(nextConfig)));
+  return withBundleAnalyzer(withSuperjson()(nextConfig));
 };

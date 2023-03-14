@@ -16,7 +16,6 @@ import type { Pluggable } from 'unified';
 
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
-import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -90,6 +89,9 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
+    components.h4 = Header;
+    components.h5 = Header;
+    components.h6 = Header;
     components.lsx = lsxGrowiPlugin.Lsx;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
@@ -151,7 +153,7 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -185,7 +187,6 @@ export const generateSimpleViewOptions = (
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -219,7 +220,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -250,7 +251,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {

@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';

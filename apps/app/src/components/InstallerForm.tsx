@@ -7,8 +7,8 @@ import { useRouter } from 'next/router';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 
 const InstallerForm = memo((): JSX.Element => {
   const { t, i18n } = useTranslation();

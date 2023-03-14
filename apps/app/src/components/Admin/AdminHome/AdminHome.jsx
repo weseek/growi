@@ -6,7 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Tooltip } from 'reactstrap';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 

@@ -14,7 +14,6 @@ import type { Pluggable, PluginTuple } from 'unified';
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -24,7 +23,6 @@ import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
-import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -131,7 +129,7 @@ export const generateSSRViewOptions = (
   remarkPlugins.push(
     math,
     xsvToTable.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = config.isEnabledLinebreaks;
@@ -158,9 +156,8 @@ export const generateSSRViewOptions = (
   );
 
   // add components
-  if (components != null) {
-    components.table = Table;
-  }
+  // if (components != null) {
+  // }
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);

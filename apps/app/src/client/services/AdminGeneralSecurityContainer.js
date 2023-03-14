@@ -7,8 +7,8 @@ import {
 } from '~/interfaces/page-delete-config';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
-import { toastError } from '../util/apiNotification';
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+import { toastError } from '../util/toastr';
 
 /**
  * Service container for admin security page (SecuritySetting.jsx)

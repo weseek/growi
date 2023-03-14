@@ -3,8 +3,8 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:passwordReset');
@@ -81,9 +81,7 @@ const PasswordResetExecutionForm: FC = () => {
         <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value={t('forgot_password.reset_password')} type="submit" />
       </div>
       <Link href="/login" prefetch={false}>
-        <a>
-          <i className="icon-login mr-1"></i>{t('forgot_password.sign_in_instead')}
-        </a>
+        <i className="icon-login mr-1"></i>{t('forgot_password.sign_in_instead')}
       </Link>
     </form>
   );

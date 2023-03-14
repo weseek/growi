@@ -2,11 +2,13 @@ import React, {
   FC, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
+import { isPopulated, getIdForRef } from '@growi/core/dist/interfaces/common';
+import { type IRevisionHasId } from '@growi/core/dist/interfaces/revision';
 import { Button } from 'reactstrap';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastError } from '~/client/util/toastr';
+import { RendererOptions } from '~/interfaces/renderer-options';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -19,7 +21,6 @@ import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
-import { RendererOptions } from '~/interfaces/renderer-options';
 
 export const ROOT_ELEM_ID = 'page-comments' as const;
 

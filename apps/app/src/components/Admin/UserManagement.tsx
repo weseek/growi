@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 
 import PaginationWrapper from '../PaginationWrapper';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -123,11 +123,13 @@ const UserManagement = (props: UserManagementProps) => {
       ) }
       <p>
         <InviteUserControl />
-        <Link href="/admin/users/external-accounts" prefetch={false}>
-          <a className="btn btn-outline-secondary ml-2" role="button">
-            <i className="icon-user-follow mr-1" aria-hidden="true"></i>
-            {t('admin:user_management.external_account')}
-          </a>
+        <Link
+          href="/admin/users/external-accounts"
+          className="btn btn-outline-secondary ml-2"
+          role="button"
+        >
+          <i className="icon-user-follow mr-1" aria-hidden="true"></i>
+          {t('admin:user_management.external_account')}
         </Link>
       </p>
 

@@ -86,8 +86,8 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
         : encodeURI(pathUtils.removeTrailingSlash(pagePath));
 
       pagePathNode = (
-        <Link href={href} prefetch={false}>
-          <a className="page-list-link" href={href}>{pagePathNode}</a>
+        <Link href={href} prefetch={false} className="page-list-link">
+          {pagePathNode}
         </Link>
       );
     }

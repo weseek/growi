@@ -6,8 +6,8 @@ import {
 } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCurrentPageId } from '~/stores/page';
 
 

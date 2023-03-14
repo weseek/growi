@@ -11,8 +11,8 @@ import { useDrag, useDrop } from 'react-dnd';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
-import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
@@ -472,10 +472,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
               { page != null && page.path != null && page._id != null && (
-                <Link href={pathUtils.returnPathForURL(page.path, page._id)} prefetch={false}>
-                  <a className="grw-pagetree-title-anchor flex-grow-1">
-                    <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-                  </a>
+                <Link
+                  href={pathUtils.returnPathForURL(page.path, page._id)}
+                  className="grw-pagetree-title-anchor flex-grow-1"
+                  prefetch={false}
+                >
+                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
                 </Link>
               )}
             </>

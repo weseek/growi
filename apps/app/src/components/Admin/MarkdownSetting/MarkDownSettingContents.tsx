@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 

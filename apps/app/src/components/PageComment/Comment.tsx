@@ -165,9 +165,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
             <div className="page-comment-body">{commentBody}</div>
             <div className="page-comment-meta">
               <Link href={`#${commentId}`} prefetch={false}>
-                <a>
-                  <FormattedDistanceDate id={commentId} date={comment.createdAt} />
-                </a>
+                <FormattedDistanceDate id={commentId} date={comment.createdAt} />
               </Link>
               { isEdited && (
                 <>
@@ -176,10 +174,13 @@ export const Comment = (props: CommentProps): JSX.Element => {
                 </>
               ) }
               <span className="ml-2">
-                <Link href={urljoin(returnPathForURL(pagePath, pageId), revHref)} prefetch={false}>
-                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision">
-                    <HistoryIcon />
-                  </a>
+                <Link
+                  id={`page-comment-revision-${commentId}`}
+                  href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
+                  className="page-comment-revision"
+                  prefetch={false}
+                >
+                  <HistoryIcon />
                 </Link>
                 <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
                   {t('page_comment.display_the_page_when_posting_this_comment')}
