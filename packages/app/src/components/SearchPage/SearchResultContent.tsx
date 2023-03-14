@@ -10,7 +10,7 @@ import { DropdownItem } from 'reactstrap';
 
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess } from '~/client/util/toastr';
 import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';

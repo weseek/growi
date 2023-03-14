@@ -9,9 +9,9 @@ import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stor
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
+import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
 

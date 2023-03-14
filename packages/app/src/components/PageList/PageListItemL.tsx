@@ -14,7 +14,7 @@ import { CustomInput } from 'reactstrap';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
