@@ -29,7 +29,7 @@ class PasswordResetModal extends React.Component {
       this.setState({ isPasswordResetDone: true });
     }
     catch (err) {
-      toastError(`${err} ${t('toaster.failed_to_reset_password')}`);
+      toastError(err);
     }
   }
 
