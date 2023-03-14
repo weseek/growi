@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
+import { IProactiveQuestionnaireAnswer } from '../../../src/interfaces/questionnaire/proactive-questionnaire-answer';
+import { IQuestionnaireAnswer } from '../../../src/interfaces/questionnaire/questionnaire-answer';
 import { StatusType } from '../../../src/interfaces/questionnaire/questionnaire-answer-status';
+import ProactiveQuestionnaireAnswer from '../../../src/server/models/questionnaire/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../../../src/server/models/questionnaire/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../../../src/server/models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
 import { getInstance } from '../setup-crowi';
@@ -12,13 +16,18 @@ const spyAxiosGet = jest.spyOn<typeof axios, 'get'>(
   'get',
 );
 
+const spyAxiosPost = jest.spyOn<typeof axios, 'post'>(
+  axios,
+  'post',
+);
+
 describe('QuestionnaireCronService', () => {
   let crowi;
 
   const mockResponse = {
     data: {
       questionnaireOrders: [
-        // saved in db、not finished (user types is updated from the time it was saved)
+        // saved in db、not finished (user.types is updated from the time it was saved)
         {
           _id: '63a8354837e7aa378e16f0b1',
           shortTitle: {
@@ -249,16 +258,71 @@ describe('QuestionnaireCronService', () => {
       },
     ]);
 
+    const validQuestionnaireAnswer: IQuestionnaireAnswer = {
+      answers: [{
+        question: '63c6da88143e531d95346188',
+        value: '1',
+      }],
+      answeredAt: new Date(),
+      growiInfo: {
+        version: '1.0',
+        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        type: 'cloud',
+        currentUsersCount: 100,
+        currentActiveUsersCount: 50,
+        wikiType: 'open',
+        attachmentType: 'aws',
+      },
+      userInfo: {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: 'general',
+        userCreatedAt: new Date(),
+      },
+    };
+
+    await QuestionnaireAnswer.insertMany([
+      validQuestionnaireAnswer,
+      validQuestionnaireAnswer,
+      validQuestionnaireAnswer,
+    ]);
+
+    const validProactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
+      satisfaction: 1,
+      commentText: 'answer text',
+      growiInfo: {
+        version: '1.0',
+        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        type: 'cloud',
+        currentUsersCount: 100,
+        currentActiveUsersCount: 50,
+        wikiType: 'open',
+        attachmentType: 'aws',
+      },
+      userInfo: {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: 'general',
+        userCreatedAt: new Date(),
+      },
+      answeredAt: new Date(),
+    };
+
+    await ProactiveQuestionnaireAnswer.insertMany([
+      validProactiveQuestionnaireAnswer,
+      validProactiveQuestionnaireAnswer,
+      validProactiveQuestionnaireAnswer,
+    ]);
+
     crowi.setupCron();
 
     spyAxiosGet.mockResolvedValue(mockResponse);
+    spyAxiosPost.mockResolvedValue({ data: { result: 'success' } });
   });
 
   afterAll(() => {
     crowi.questionnaireCronService.stopCron(); // jest will not finish until cronjob stops
   });
 
-  test('Job execution should save(update) quesionnaire orders, delete outdated ones, and update skipped answer statuses', async() => {
+  test('Job execution should save(update) quesionnaire orders, delete outdated ones, update skipped answer statuses, and delete resent answers', async() => {
     // testing the cronjob from schedule has untrivial overhead, so test job execution in place
     await crowi.questionnaireCronService.executeJob();
 
@@ -337,5 +401,7 @@ describe('QuestionnaireCronService', () => {
     ]);
 
     expect((await QuestionnaireAnswerStatus.find({ status: StatusType.not_answered })).length).toEqual(2);
+    expect((await QuestionnaireAnswer.find()).length).toEqual(0);
+    expect((await ProactiveQuestionnaireAnswer.find()).length).toEqual(0);
   });
 });

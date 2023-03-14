@@ -6,6 +6,8 @@ import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
+import ProactiveQuestionnaireAnswer from '../models/questionnaire/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../models/questionnaire/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../models/questionnaire/questionnaire-answer-status';
 import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
 
@@ -21,6 +23,7 @@ axiosRetry(axios, { retries: 3 });
  *  1. fetches QuestionnaireOrders from questionnaire server
  *  2. updates QuestionnaireOrder collection to contain only the ones that exist in the fetched list and is not finished (doesn't have to be started)
  *  3. changes QuestionnaireAnswerStatuses which are 'skipped' to 'not_answered'
+ *  4. resend QuestionnaireAnswers & ProactiveQuestionnaireAnswers which failed to reach questionnaire server
  */
 class QuestionnaireCronService {
 
@@ -49,8 +52,9 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
+    const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
-      const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
       const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
       return response.data.questionnaireOrders;
     };
@@ -68,7 +72,25 @@ class QuestionnaireCronService {
       );
     };
 
+    const resendQuestionnaireAnswers = async() => {
+      const questionnaireAnswers = await QuestionnaireAnswer.find()
+        .select('-_id -answers._id  -growiInfo._id -userInfo._id');
+      const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
+        .select('-_id -growiInfo._id -userInfo._id');
+
+      axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
+        .then(async() => {
+          await QuestionnaireAnswer.deleteMany();
+        });
+      axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
+        .then(async() => {
+          await ProactiveQuestionnaireAnswer.deleteMany();
+        });
+    };
+
     const questionnaireOrders: IQuestionnaireOrder[] = await fetchQuestionnaireOrders();
+
+    resendQuestionnaireAnswers();
 
     // reset QuestionnaireOrder collection and save unfinished ones that exist on questionnaire server
     await QuestionnaireOrder.deleteMany();
