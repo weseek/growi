@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 
 type Props = {
-  className?: string,
   children?: ReactNode,
   sideContents?: ReactNode,
   footerContents?: ReactNode,
@@ -10,13 +9,13 @@ type Props = {
 
 export const MainPane = (props: Props): JSX.Element => {
   const {
-    className, children, sideContents, footerContents,
+    children, sideContents, footerContents,
   } = props;
 
   return (
     <>
       <div className="flex-grow-1">
-        <div id="main" className={`main ${className}`}>
+        <div id="main" className="main">
           <div id="content-main" className="content-main container-lg grw-container-convertible">
             { sideContents != null
               ? (
