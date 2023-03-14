@@ -160,6 +160,7 @@
     "react-dnd": "^14.0.5",
     "react-dnd-html5-backend": "^14.1.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^3.1.4",
     "react-i18next": "^12.2.0",
     "react-image-crop": "^8.3.0",
     "react-markdown": "^8.0.3",
