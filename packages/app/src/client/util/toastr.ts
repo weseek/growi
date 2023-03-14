@@ -37,7 +37,8 @@ export const toastWarning = (content: ToastContent, option: ToastOptions = toast
   toastrLegacy.warning(content, option);
 };
 
-
+// TODO: Delete legacy toastr if new toastr design completed.
+// see: https://redmine.weseek.co.jp/issues/117819
 const toastrLegacyOption = {
   error: {
     closeButton: true,
