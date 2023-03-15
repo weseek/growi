@@ -10,7 +10,7 @@ import {
 } from 'reactstrap';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 

@@ -28,7 +28,6 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -266,7 +265,7 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
     attachmentPlugin.remarkPlugin,
   );
 
@@ -302,7 +301,6 @@ export const generateSimpleViewOptions = (
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
     components.attachment = Attachment;
   }
 
@@ -338,7 +336,7 @@ export const generateSSRViewOptions = (
     math,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
     attachmentPlugin.remarkPlugin,
   );
 
@@ -371,7 +369,6 @@ export const generateSSRViewOptions = (
   // add components
   if (components != null) {
     components.lsx = LsxImmutable;
-    components.table = Table;
     components.attachment = Attachment;
   }
 
@@ -393,7 +390,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
     attachmentPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
@@ -426,7 +423,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
     components.attachment = Attachment;
   }
 

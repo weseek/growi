@@ -5,8 +5,8 @@ import React, {
 import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
 import { Button } from 'reactstrap';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastError } from '~/client/util/toastr';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 

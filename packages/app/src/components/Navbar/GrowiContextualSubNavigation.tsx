@@ -9,8 +9,8 @@ import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
@@ -269,7 +269,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       toastSuccess('updated tags successfully');
     }
     catch (err) {
-      toastError(err, 'fail to update tags');
+      toastError(err);
     }
 
   }, [currentPage, updateStateAfterSave]);

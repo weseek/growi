@@ -1,12 +1,9 @@
 @use './variables' as var;
 @use './bootstrap/init' as bs;
 
-.dynamic-layout-root:not(.growi-layout-fluid) .grw-container-convertible {
-  @extend .container-lg;
-}
-
 .dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
-  @extend .container-fluid;
+  width: 100%;
+  max-width: none;
 }
 
 .grw-bg-image-wrapper {
@@ -18,10 +15,6 @@
     object-fit: cover;
     object-position: bottom;
   }
-}
-
-body.not-found-page .grw-container-convertible {
-  @extend .container-lg;
 }
 
 .grw-modal-head {

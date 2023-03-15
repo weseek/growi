@@ -3,7 +3,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '../util/apiNotification';
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
