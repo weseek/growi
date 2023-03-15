@@ -5,8 +5,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxIsQuestionnaireEnabled } from '~/stores/questionnaire';
 

@@ -4,8 +4,8 @@ import {
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxAppSettings } from '~/stores/admin/app-settings';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
