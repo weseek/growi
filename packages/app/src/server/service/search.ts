@@ -5,7 +5,6 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageHasId } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import {
-  DEFAULT_HIGHLIGHT_FRAGMENT_SIZE,
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '~/server/interfaces/search';
 import loggerFactory from '~/utils/logger';
@@ -456,11 +455,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
-        const shouldHighlight = pathMatch != null ? DEFAULT_HIGHLIGHT_FRAGMENT_SIZE >= pathMatch[0].length : false;
-
         elasticSearchResult = {
           snippet: snippet != null && typeof snippet[0] === 'string' ? filterXss.process(snippet) : null,
-          highlightedPath: pathMatch != null && typeof pathMatch[0] === 'string' && shouldHighlight ? filterXss.process(pathMatch) : null,
+          highlightedPath: pathMatch != null && typeof pathMatch[0] === 'string' ? filterXss.process(pathMatch) : null,
           isHtmlInPath,
         };
       }

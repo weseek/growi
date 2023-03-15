@@ -50,5 +50,3 @@ export type MongoTermsKey = 'match' | 'not_match' | 'prefix' | 'not_prefix';
 // Query Terms types
 export type ESQueryTerms = Pick<QueryTerms, ESTermsKey>;
 export type MongoQueryTerms = Pick<QueryTerms, MongoTermsKey>;
-
-export const DEFAULT_HIGHLIGHT_FRAGMENT_SIZE = 250;
