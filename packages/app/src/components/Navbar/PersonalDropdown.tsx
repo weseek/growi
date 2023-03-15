@@ -63,7 +63,7 @@ const PersonalDropdown = (): JSX.Element => {
 
           <div className="btn-group btn-block mt-2" role="group">
             <Link
-              href={`/user/${user.username}`}
+              href={`/user/${currentUser.username}`}
               className="btn btn-sm btn-outline-secondary col"
               data-testid="grw-personal-dropdown-menu-user-home"
             >
