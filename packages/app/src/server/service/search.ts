@@ -3,7 +3,9 @@ import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageHasId } from '~/interfaces/page';
-import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
+import {
+  IFormattedSearchResult, IPageWithSearchMeta, ISearchResult, MAX_HIGHLITE_PAGE_PATH_FRAGMENT_SIZE,
+} from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -455,9 +457,12 @@ class SearchService implements SearchQueryParser, SearchResolver {
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
+        const highlightedPath = pathMatch != null && typeof pathMatch[0] === 'string' ? pathMatch[0] : null;
+        const shouldHighlight = highlightedPath != null && MAX_HIGHLITE_PAGE_PATH_FRAGMENT_SIZE >= pageData.path.length;
+
         elasticSearchResult = {
           snippet: snippet != null && typeof snippet[0] === 'string' ? filterXss.process(snippet) : null,
-          highlightedPath: pathMatch != null && typeof pathMatch[0] === 'string' ? filterXss.process(pathMatch) : null,
+          highlightedPath: shouldHighlight ? filterXss.process(highlightedPath) : null,
           isHtmlInPath,
         };
       }
