@@ -951,7 +951,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           fragment_size: 40,
         },
         'path.*': {
-          number_of_fragment: 1,
+          number_of_fragments: 1,
           fragment_size: MAX_HIGHLITE_PAGE_PATH_FRAGMENT_SIZE,
         },
       },
