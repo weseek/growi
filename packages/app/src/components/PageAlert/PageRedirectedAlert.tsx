@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { unlink } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { useCurrentPagePath } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 

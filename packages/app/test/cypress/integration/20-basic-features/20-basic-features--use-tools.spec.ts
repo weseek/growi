@@ -108,18 +108,20 @@ context('Modal for page operation', () => {
       cy.get('#template-type').next().find('button:eq(0)').click({force: true});
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
-    cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-template-for-children-error`);
-    cy.get('.toast-error').should('be.visible').click();
-    cy.get('.toast-error').should('not.exist');
+    cy.get('.Toastify__toast').should('be.visible').within(() => {
+      cy.get('.Toastify__close-button').should('be.visible').click();
+      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
+    });
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(1)').click({force: true});
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
-    cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible');
     cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`);
   });
@@ -309,7 +311,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
       cy.get('div.modal-footer > button').click();
     });
 
-    cy.get('.toast').should('be.visible').trigger('mouseover');
+    cy.get('.Toastify__toast').should('be.visible').trigger('mouseover');
     cy.get('.grw-taglabels-container > .grw-tag-labels > a').contains(tag).should('exist');
 
     cy.screenshot(`${ssPrefix}2-click-done`);

@@ -9,8 +9,8 @@ import {
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { isIPageInfoForEntity } from '~/interfaces/page';
 import { useSiteUrl, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageRenameModal } from '~/stores/modal';

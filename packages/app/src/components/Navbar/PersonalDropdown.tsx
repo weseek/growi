@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 
 import ProactiveQuestionnaireModal from '../Questionnaire/ProactiveQuestionnaireModal';
@@ -62,15 +62,19 @@ const PersonalDropdown = (): JSX.Element => {
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
-            <Link href={`/user/${currentUser.username}`}>
-              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-home">
-                <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
-              </a>
+            <Link
+              href={`/user/${user.username}`}
+              className="btn btn-sm btn-outline-secondary col"
+              data-testid="grw-personal-dropdown-menu-user-home"
+            >
+              <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
             </Link>
-            <Link href="/me">
-              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-settings">
-                <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
-              </a>
+            <Link
+              href="/me"
+              className="btn btn-sm btn-outline-secondary col"
+              data-testid="grw-personal-dropdown-menu-user-settings"
+            >
+              <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
             </Link>
           </div>
         </div>

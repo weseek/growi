@@ -74,7 +74,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
+        <div className="grw-container-convertible container-lg mb-5 pb-5" data-testid="tags-page">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
             <TagCloudBox tags={tagData} minSize={20} />

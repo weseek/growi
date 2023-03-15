@@ -5,8 +5,8 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { G2G_PROGRESS_STATUS, type G2GProgress } from '~/interfaces/g2g-transfer';
 import { useAdminSocket } from '~/stores/socket-io';
 

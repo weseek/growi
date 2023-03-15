@@ -6,7 +6,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useEditorSettings } from '~/stores/editor';
 
 

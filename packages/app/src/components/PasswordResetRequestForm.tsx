@@ -3,8 +3,8 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
 const PasswordResetRequestForm: FC = () => {
@@ -18,7 +18,7 @@ const PasswordResetRequestForm: FC = () => {
   const sendPasswordResetRequestMail = useCallback(async(e) => {
     e.preventDefault();
     if (email === '') {
-      toastError('err', t('forgot_password.email_is_required'));
+      toastError(t('forgot_password.email_is_required'));
       return;
     }
 
@@ -48,9 +48,7 @@ const PasswordResetRequestForm: FC = () => {
         </button>
       </div>
       <Link href='/login' prefetch={false}>
-        <a>
-          <i className="icon-login mr-1" />{t('forgot_password.return_to_login')}
-        </a>
+        <i className="icon-login mr-1" />{t('forgot_password.return_to_login')}
       </Link>
     </form>
   );

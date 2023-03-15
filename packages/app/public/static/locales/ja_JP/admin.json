@@ -1049,7 +1049,6 @@
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました",
     "install_plugin_success": "{{pluginName}}のインストールに成功しました",
     "activate_plugin_success": "{{pluginName}}を有効化しました",
     "deactivate_plugin_success": "{{pluginName}}を無効化しました",

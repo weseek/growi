@@ -55,13 +55,11 @@ const AdminNavigation = (props) => {
     const href = isRoot ? '/admin' : urljoin('/admin', menu);
 
     return (
-      <Link href={href}>
-        <a
-          href={href}
-          className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
-        >
-          <MenuLabel menu={menu} />
-        </a>
+      <Link
+        href={href}
+        className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
+      >
+        <MenuLabel menu={menu} />
       </Link>
     );
   };
