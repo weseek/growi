@@ -1,11 +1,24 @@
+import { useMemo } from 'react';
+
+import * as ReactDOMServer from 'react-dom/server';
 import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import styles from './CodeBlock.module.scss';
 
-
 export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
+
+  const removeHtmlTags = (text: string) => text.replace(/<[^>]*>/g, '');
+
+  const formattedCode = useMemo(() => {
+    if (typeof children[0] === 'string') {
+      return String(children).replace(/\n$/, '');
+    }
+    // Remove tags if highlighted by Elasticsearch
+    const staticMarkup = ReactDOMServer.renderToStaticMarkup(children);
+    return removeHtmlTags(staticMarkup);
+  }, [children]);
 
   if (inline) {
     return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
@@ -28,7 +41,7 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
         style={oneDark}
         language={lang}
       >
-        {String(children).replace(/\n$/, '')}
+        {formattedCode}
       </PrismAsyncLight>
     </>
   );
