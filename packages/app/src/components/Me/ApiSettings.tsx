@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
 
 

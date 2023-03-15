@@ -3,9 +3,9 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
-import { toastSuccess, toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
 import { apiv3Get } from '../util/apiv3-client';
+import { toastSuccess, toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -82,7 +82,7 @@ export default class AdminImportContainer extends Container {
     }
     catch (err) {
       logger.error(err);
-      toastError(err, 'Error occurred in importing pages from esa.io');
+      toastError(err);
     }
   }
 
@@ -96,7 +96,7 @@ export default class AdminImportContainer extends Container {
       toastSuccess('Test connection to esa success.');
     }
     catch (error) {
-      toastError(error, 'Test connection to esa failed.');
+      toastError(error);
     }
   }
 
@@ -111,7 +111,7 @@ export default class AdminImportContainer extends Container {
     }
     catch (err) {
       logger.error(err);
-      toastError(err, 'Errors');
+      toastError(err);
     }
   }
 
@@ -126,7 +126,7 @@ export default class AdminImportContainer extends Container {
     }
     catch (err) {
       logger.error(err);
-      toastError(err, 'Error occurred in importing pages from qiita:team');
+      toastError(err);
     }
   }
 
@@ -142,7 +142,7 @@ export default class AdminImportContainer extends Container {
     }
     catch (err) {
       logger.error(err);
-      toastError(err, 'Test connection to qiita:team failed.');
+      toastError(err);
     }
   }
 
@@ -157,7 +157,7 @@ export default class AdminImportContainer extends Container {
     }
     catch (err) {
       logger.error(err);
-      toastError(err, 'Errors');
+      toastError(err);
     }
   }
 

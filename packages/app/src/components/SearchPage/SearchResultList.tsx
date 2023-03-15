@@ -6,7 +6,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess } from '~/client/util/toastr';
 import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';

@@ -4,7 +4,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 

@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 

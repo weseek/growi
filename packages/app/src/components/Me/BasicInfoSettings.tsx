@@ -4,7 +4,7 @@ import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useRegistrationWhiteList } from '~/stores/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 

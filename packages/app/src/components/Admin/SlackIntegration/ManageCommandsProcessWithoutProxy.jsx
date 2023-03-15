@@ -5,9 +5,9 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
-import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 const logger = loggerFactory('growi:SlackIntegration:ManageCommandsProcess');
 

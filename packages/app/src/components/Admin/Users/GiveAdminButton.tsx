@@ -4,7 +4,7 @@ import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
