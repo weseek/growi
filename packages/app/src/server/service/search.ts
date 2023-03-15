@@ -4,12 +4,12 @@ import xss from 'xss';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageHasId } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
-import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
-} from '~/server/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import {
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
+} from '../interfaces/search';
 import NamedQuery from '../models/named-query';
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
