@@ -1,9 +1,8 @@
-import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
+import { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import styles from './CodeBlock.module.scss';
-
 
 export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
 
@@ -22,14 +21,24 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
       {name != null && (
         <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>
       )}
-      <PrismAsyncLight
-        className="code-highlighted"
-        PreTag="div"
-        style={oneDark}
-        language={lang}
-      >
-        {String(children).replace(/\n$/, '')}
-      </PrismAsyncLight>
+      {typeof children[0] !== 'string'
+        ? (
+          // Attach custom codeblock style if highlighted code by Elasticsearch
+          <div className={`code-highlighted code-block ${styles['code-block']}`}>
+            <code className={'language-text'}>
+              {children}
+            </code>
+          </div>
+        ) : (
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={lang}
+          >
+            {String(children).replace(/\n$/, '')}
+          </PrismAsyncLight>
+        )}
     </>
   );
 };
