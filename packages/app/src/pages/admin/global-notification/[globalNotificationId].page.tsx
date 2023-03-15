@@ -12,7 +12,7 @@ import { Container, Provider } from 'unstated';
 
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 

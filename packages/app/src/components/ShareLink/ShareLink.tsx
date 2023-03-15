@@ -4,8 +4,8 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCurrentPageId } from '~/stores/page';
 import { useSWRxSharelink } from '~/stores/share-link';
 

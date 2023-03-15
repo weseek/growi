@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';

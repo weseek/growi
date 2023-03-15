@@ -10,7 +10,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';

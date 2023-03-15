@@ -6,7 +6,7 @@ import * as toastr from 'toastr';
 
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
 
-// import { toastSuccess, toastError } from '~/client/util/apiNotification';
+// import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import ImportForm from './GrowiArchive/ImportForm';
 import UploadForm from './GrowiArchive/UploadForm';

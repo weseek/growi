@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxSidebarConfig } from '~/stores/ui';
 import { useNextThemes } from '~/stores/use-next-themes';
 

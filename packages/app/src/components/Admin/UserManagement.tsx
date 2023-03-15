@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 
 import PaginationWrapper from '../PaginationWrapper';
 import { withUnstatedContainers } from '../UnstatedUtils';

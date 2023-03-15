@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { NotifyType, TriggerEventType } from '~/client/interfaces/global-notification';
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
 import { useSWRxGlobalNotification } from '~/stores/global-notification';
 import loggerFactory from '~/utils/logger';

@@ -3,8 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
@@ -136,7 +136,7 @@ class ImportForm extends React.Component {
         isImported: false,
       });
 
-      toastError(err, 'Import process has failed.');
+      toastError(err);
     });
   }
 
@@ -316,7 +316,7 @@ class ImportForm extends React.Component {
       if (err.code === 'only_upsert_available') {
         toastError(t('admin:importer_management.error.only_upsert_available'));
       }
-      toastError(err, 'Import request failed.');
+      toastError(err);
     }
   }
 

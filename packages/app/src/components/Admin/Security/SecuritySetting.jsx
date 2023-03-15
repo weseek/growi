@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
