@@ -25,7 +25,7 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
         ? (
           // Attach custom codeblock style if highlighted code by Elasticsearch
           <div className={`code-highlighted code-block ${styles['code-block']}`}>
-            <code className={'language-text'}>
+            <code className={`language-${lang}`}>
               {children}
             </code>
           </div>
