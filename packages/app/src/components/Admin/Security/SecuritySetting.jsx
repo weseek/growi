@@ -361,7 +361,7 @@ class SecuritySetting extends React.Component {
                       type="checkbox"
                       className="custom-control-input"
                       id="isShowRestrictedByOwner"
-                      checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
+                      checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
                     <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
@@ -378,7 +378,7 @@ class SecuritySetting extends React.Component {
                       type="checkbox"
                       className="custom-control-input"
                       id="isShowRestrictedByGroup"
-                      checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                      checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
                     <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
