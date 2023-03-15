@@ -13,3 +13,23 @@
   border-radius: bs.$border-radius;
   opacity: 0.8;
 }
+
+// Match react-syntax-highlighter library's oneDark style
+.code-block {
+  padding: 1em;
+  margin: 0.5em 0px;
+  overflow: auto;
+  // text-shadow: rgba(0, 0, 0, 0.3) 0px 1px; // Comment out because it stands out when highlighted.
+  font-family:'Fira Code', 'Fira Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  hyphens: none;
+  line-height: 1.5;
+  color: rgb(171, 178, 191);
+  text-align: left;
+  word-break: normal;
+  tab-size: 2;
+  white-space: pre;
+  background-color: rgb(40, 44, 52);
+  border-radius: 0.3em;
+  word-spacing: normal;
+  direction: ltr;
+}
