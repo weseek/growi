@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { HasObjectId, IAttachment } from '@growi/core';
+import { HasObjectId, IAttachment, IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -43,7 +43,7 @@ export const AttachmentDeleteModal: React.FC<{
           <i className={iconByFormat(attachment.fileFormat)}></i> {attachment.originalName}
         </p>
         <p>
-          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator}></Username>
+          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator as IUser}></Username>
         </p>
         {content}
       </div>
