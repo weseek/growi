@@ -58,10 +58,11 @@ jobs:
       run: |
         yarn --frozen-lockfile
 
-    - name: Cache/Restore dist and
+    - name: Cache/Restore dist
       uses: actions/cache@v3
       with:
         path: |
+          **/.turbo
           **/dist
         key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |

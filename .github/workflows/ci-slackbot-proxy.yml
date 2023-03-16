@@ -53,6 +53,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
+          **/.turbo
           **/dist
         key: dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
@@ -113,10 +114,11 @@ jobs:
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-    - name: Cache/Restore dist and
+    - name: Cache/Restore dist
       uses: actions/cache@v3
       with:
         path: |
+          **/.turbo
           **/dist
         key: dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
@@ -202,10 +204,11 @@ jobs:
       run: |
         yarn --frozen-lockfile
 
-    - name: Cache/Restore dist and
+    - name: Cache/Restore dist
       uses: actions/cache@v3
       with:
         path: |
+          **/.turbo
           **/dist
         key: dist-slackbot-proxy-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
