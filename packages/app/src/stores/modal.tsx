@@ -607,3 +607,29 @@ export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & Te
     },
   });
 };
+
+/**
+ * AttachmentDeleteModal
+ */
+type AttachmentDeleteModalStatus = {
+  isOpened: boolean,
+}
+
+type AttachmentDeleteModalUtils = {
+  open(): void,
+  close(): void,
+}
+
+export const useAttachmentDeleteModal = (): SWRResponse<AttachmentDeleteModalStatus, Error> & AttachmentDeleteModalUtils => {
+  const initialStatus: AttachmentDeleteModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<AttachmentDeleteModalStatus, Error>('attachmentDeleteModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: () => {
+      swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
