@@ -12,7 +12,7 @@
       "outputMode": "new-only"
     },
     "@growi/app#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "@growi/app#styles-prebuilt"],
       "outputs": [".next/**", "config/**", "dist/**"],
       "outputMode": "new-only"
     },
@@ -48,13 +48,20 @@
       "inputs": ["src/migration/*.js"],
       "outputMode": "new-only"
     },
+    "@growi/app#dev:styles-prebuilt": {
+      "outputs": ["src/styles/prebuilt/**"],
+      "inputs": [
+        "src/styles/**/*.scss"
+      ],
+      "outputMode": "new-only"
+    },
     "@growi/app#dev": {
-      "dependsOn": ["^dev", "@growi/app#dev:migrate"],
+      "dependsOn": ["^dev", "@growi/app#dev:migrate", "@growi/app#dev:styles-prebuilt"],
       "cache": false,
       "persistent": true
     },
     "@growi/app#dev:ci": {
-      "dependsOn": ["^dev", "@growi/app#dev:migrate"],
+      "dependsOn": ["^dev", "@growi/app#dev:migrate", "@growi/app#dev:styles-prebuilt"],
       "cache": false
     },
     "@growi/slackbot-proxy#dev": {
