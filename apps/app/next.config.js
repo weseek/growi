@@ -5,6 +5,8 @@
  * See: https://github.com/vercel/next.js/discussions/35969#discussioncomment-2522954
  */
 
+const path = require('path');
+
 const { withSuperjson } = require('next-superjson');
 const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants');
 
@@ -93,7 +95,7 @@ module.exports = async(phase, { defaultConfig }) => {
       if (options.dev) {
         config.module.rules.push({
           test: /.(c|m)?js$/,
-          exclude: /node_modules/,
+          exclude: [/node_modules/, path.resolve(__dirname)],
           enforce: 'pre',
           use: ['source-map-loader'],
         });
