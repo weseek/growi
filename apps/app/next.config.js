@@ -10,18 +10,9 @@ const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/consta
 
 
 const getTranspilePackages = () => {
-  const eazyLogger = require('eazy-logger');
-  const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
+  const { listPrefixedPackages } = require('./src/utils/next.config.utils');
 
-  // setup logger
-  const logger = eazyLogger.Logger({
-    prefix: '[{green:next.config.js}] ',
-    useLevelPrefixes: false,
-  });
-
-  // define transpiled packages for '@growi/*'
   const packages = [
-    ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app'] }),
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
     'react-markdown',
     'unified',
@@ -50,6 +41,11 @@ const getTranspilePackages = () => {
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
+  // const eazyLogger = require('eazy-logger');
+  // const logger = eazyLogger.Logger({
+  //   prefix: '[{green:next.config.js}] ',
+  //   useLevelPrefixes: false,
+  // });
   // logger.info('{bold:Listing scoped packages for transpiling:}');
   // logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
 
@@ -92,6 +88,16 @@ module.exports = async(phase, { defaultConfig }) => {
       // This provides a way of excluding dependencies from the output bundles
       config.externals.push('dtrace-provider');
       config.externals.push('mongoose');
+
+      // extract sourcemap
+      if (options.dev) {
+        config.module.rules.push({
+          test: /.(c|m)?js$/,
+          exclude: /node_modules/,
+          enforce: 'pre',
+          use: ['source-map-loader'],
+        });
+      }
 
       // setup i18next-hmr
       if (!options.isServer && options.dev) {
