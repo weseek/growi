@@ -7,7 +7,7 @@ import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 
-import { toastError } from '../client/util/apiNotification';
+import { toastError } from '../client/util/toastr';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
 
@@ -50,7 +50,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
         }
       }
       catch (error) {
-        toastError(error, 'Error occurred when checking username');
+        toastError(error);
       }
     }, 500);
 
@@ -73,7 +73,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
       }
     }
     catch (err) {
-      toastError(err, 'Registration failed');
+      toastError(err);
       setDisableForm(false);
       setIsSuccessToRagistration(false);
     }

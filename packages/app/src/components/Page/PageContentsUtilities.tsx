@@ -4,7 +4,7 @@ import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
 import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useCurrentPageId } from '~/stores/context';
+import { useCurrentPageId } from '~/stores/page';
 
 
 export const PageContentsUtilities = (): null => {

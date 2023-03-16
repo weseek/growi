@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 

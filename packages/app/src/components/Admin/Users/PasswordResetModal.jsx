@@ -6,8 +6,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 
 
 class PasswordResetModal extends React.Component {
@@ -29,7 +29,7 @@ class PasswordResetModal extends React.Component {
       this.setState({ isPasswordResetDone: true });
     }
     catch (err) {
-      toastError(err, t('toaster.failed_to_reset_password'));
+      toastError(err);
     }
   }
 

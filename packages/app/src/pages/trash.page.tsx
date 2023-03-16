@@ -9,11 +9,12 @@ import Head from 'next/head';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import { useCurrentPageId } from '~/stores/page';
 import { useDrawerMode } from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser, useCurrentPageId, useCurrentPathname,
+  useCurrentUser, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
 } from '../stores/context';
@@ -77,7 +78,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           />
         </header>
 
-        <div className="content-main grw-container-convertible mb-5 pb-5">
+        <div className="content-main container-lg grw-container-convertible mb-5 pb-5">
           <TrashPageList />
         </div>
 

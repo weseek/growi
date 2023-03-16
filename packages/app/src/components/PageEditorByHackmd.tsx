@@ -11,12 +11,12 @@ import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useCurrentPageId, useCurrentPathname, useHackmdUri, useIsNotFound,
+  useCurrentPathname, useHackmdUri,
 } from '~/stores/context';
 import {
   useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -25,7 +25,7 @@ import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -364,7 +364,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
                 {t('hackmd.based_on_revision')}&nbsp;
                 { pageData != null && (
                   <Link href={urljoin(returnPathForURL(pageData.path, pageData._id), `?revisionId=${revisionIdHackmdSynced}`)} prefetch={false}>
-                    <a><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
+                    <span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span>
                   </Link>
                 )}
                 <div className="text-center mt-3">

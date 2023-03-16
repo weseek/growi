@@ -2,7 +2,7 @@ import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import loggerFactory from '~/utils/logger';
 

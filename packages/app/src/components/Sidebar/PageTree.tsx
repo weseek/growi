@@ -2,10 +2,8 @@ import React, { FC, memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import {
-  useCurrentPageId, useTargetAndAncestors, useIsGuestUser,
-} from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
+import { useTargetAndAncestors, useIsGuestUser } from '~/stores/context';
+import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';

@@ -20,7 +20,7 @@ export const Username = (props: UsernameProps): JSX.Element => {
 
   return (
     <Link href={href} prefetch={false}>
-      <a>{name} (@{username})</a>
+      {name}(@{username})
     </Link>
   );
 };

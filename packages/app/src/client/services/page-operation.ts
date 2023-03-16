@@ -4,15 +4,14 @@ import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
-import { useCurrentPageId } from '~/stores/context';
 import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
-import { useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
+import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
 

@@ -4,7 +4,7 @@ import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 

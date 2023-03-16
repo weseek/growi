@@ -60,7 +60,7 @@ export const NextLink = (props: Props): JSX.Element => {
   }
 
   return (
-    <Link {...rest} href={href} prefetch={false}>
+    <Link {...rest} href={href} prefetch={false} legacyBehavior>
       <a href={href} className={className} {...dataAttributes}>{children}</a>
     </Link>
   );

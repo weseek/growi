@@ -4,10 +4,10 @@ import { SlackbotType } from '@growi/slack';
 import { useTranslation } from 'next-i18next';
 
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import BotTypeCard from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';

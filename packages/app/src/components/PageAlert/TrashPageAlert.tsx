@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
 import { unlink } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage,
