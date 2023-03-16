@@ -61,10 +61,9 @@ export const Attachment: React.FC<{
     }
   }, [attachmentName, closeAttachmentDeleteModal, remove]);
 
-  // TODO: fix hydration failed error
   if (attachment == null) {
     return (
-      <div className='text-muted'>This attachment not found.</div>
+      <span className='text-muted'>This attachment not found.</span>
     );
   }
 
