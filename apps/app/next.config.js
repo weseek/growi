@@ -93,6 +93,16 @@ module.exports = async(phase, { defaultConfig }) => {
       config.externals.push('dtrace-provider');
       config.externals.push('mongoose');
 
+      // extract sourcemap
+      if (options.dev) {
+        config.module.rules.push({
+          test: /.(c|m)?js$/,
+          exclude: /node_modules/,
+          enforce: 'pre',
+          use: ['source-map-loader'],
+        });
+      }
+
       // setup i18next-hmr
       if (!options.isServer && options.dev) {
         const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
