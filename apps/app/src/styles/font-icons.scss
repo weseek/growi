@@ -1,0 +1,6 @@
+// DO NOT CHANGE THER OERDER OF font-awesome AND simple-line-icons.
+// font-familiy used in simple-line-icons has to be prioritized than the one used in font-awesome.
+@import 'font-awesome';
+@import 'simple-line-icons';
+@import 'material-icons/iconfont/filled';
+@import '@icon/themify-icons/themify-icons';

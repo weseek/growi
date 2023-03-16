@@ -4,7 +4,7 @@
   ],
   "customSyntax": "postcss-scss",
   "ignoreFiles": [
-    "src/styles/_override-bootstrap-variables.scss",
+    "src/styles/prebuilt/*.css",
     "src/linter-checker/test.scss"
   ],
   "rules": {
