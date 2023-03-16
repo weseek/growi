@@ -7,6 +7,10 @@ import { useNextThemes } from '~/stores/use-next-themes';
 
 import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
 
+
+import 'emoji-mart/css/emoji-mart.css';
+
+
 type Props = {
   onClose: () => void,
   onSelected: (emoji: string) => void,
