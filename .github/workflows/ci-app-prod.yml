@@ -9,6 +9,7 @@ on:
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
+      - turbo.json
       - yarn.lock
       - apps/app/**
       - '!apps/app/docker/**'
@@ -29,6 +30,7 @@ on:
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
       - yarn.lock
+      - turbo.json
       - apps/app/**
       - '!apps/app/docker/**'
       - packages/codemirror-textlint/**
