@@ -104,7 +104,7 @@
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
     "@growi/app#lint": {
-      "dependsOn": ["^dev"]
+      "dependsOn": ["^dev", "@growi/app#dev:styles-prebuilt"]
     },
     "@growi/slackbot-proxy#lint": {
       "dependsOn": ["@growi/slack#dev"]
