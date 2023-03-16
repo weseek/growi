@@ -44,5 +44,3 @@ export const SORT_ORDER = {
   ASC: 'asc',
 } as const;
 export type SORT_ORDER = typeof SORT_ORDER[keyof typeof SORT_ORDER];
-
-export const MAX_HIGHLITE_PAGE_PATH_FRAGMENT_SIZE = 250;
