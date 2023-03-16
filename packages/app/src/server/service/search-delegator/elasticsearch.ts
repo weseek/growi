@@ -9,7 +9,7 @@ import streamToPromise from 'stream-to-promise';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
-  IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER, MAX_HIGHLITE_PAGE_PATH_FRAGMENT_SIZE,
+  IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
@@ -951,8 +951,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           fragment_size: 40,
         },
         'path.*': {
-          number_of_fragments: 1,
-          fragment_size: MAX_HIGHLITE_PAGE_PATH_FRAGMENT_SIZE,
+          // No fragments are generated
+          // see: https://www.elastic.co/guide/en/elasticsearch/reference/current/highlighting.html#highlighting-settings
+          number_of_fragments: 0,
         },
       },
     };
