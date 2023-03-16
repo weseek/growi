@@ -11,6 +11,13 @@
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
+    "@growi/app#styles-prebuilt": {
+      "outputs": ["src/styles/prebuilt/**"],
+      "inputs": [
+        "src/styles/**/*.scss"
+      ],
+      "outputMode": "new-only"
+    },
     "@growi/app#build": {
       "dependsOn": ["^build", "@growi/app#styles-prebuilt"],
       "outputs": [".next/**", "config/**", "dist/**"],
