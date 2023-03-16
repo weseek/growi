@@ -24,7 +24,7 @@
     "Guest Users Access":"ゲストユーザーのアクセス",
     "always_hidden": "非表示 (固定)",
     "always_displayed": "表示 (固定)",
-    "displayed_or_hidden": "表示 / 非表示",
+    "displayed_or_hidden": "非表示 / 表示s",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
     "register_limitation": "登録の制限",
     "register_limitation_desc": "新しいユーザーを登録する方法を制限します。",
