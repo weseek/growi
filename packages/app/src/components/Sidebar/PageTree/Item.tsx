@@ -225,27 +225,31 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
-    accept: 'PAGE_TREE',
-    drop: pageItemDropHandler,
-    hover: (item, monitor) => {
-      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
-      if (monitor.isOver()) {
-        setTimeout(() => {
-          if (monitor.isOver()) {
-            setIsOpen(true);
-          }
-        }, 600);
-      }
-    },
-    canDrop: (item) => {
-      const { page: droppedPage } = item;
-      return isDroppable(droppedPage, page);
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver(),
+  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(
+    () => ({
+      accept: 'PAGE_TREE',
+      drop: pageItemDropHandler,
+      hover: (item, monitor) => {
+        // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
+        if (monitor.isOver()) {
+          setTimeout(() => {
+            if (monitor.isOver()) {
+              setIsOpen(true);
+            }
+          }, 600);
+        }
+      },
+      canDrop: (item) => {
+        const { page: droppedPage } = item;
+        return isDroppable(droppedPage, page);
+      },
+      collect: monitor => ({
+        isOver: monitor.isOver(),
+      }),
     }),
-  }));
+    [page],
+  );
+
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
