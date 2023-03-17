@@ -450,7 +450,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       const highlightData = data._highlight;
       if (highlightData != null) {
         const snippet = this.canShowSnippet(pageData, user, userGroups)
-          ? highlightData['body.en'] || highlightData['body.ja'] || highlightData['comments.en'] || highlightData['comments.ja']
+          ? highlightData.body || highlightData['body.en'] || highlightData['body.ja'] || highlightData['comments.en'] || highlightData['comments.ja']
           : null;
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
         const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
