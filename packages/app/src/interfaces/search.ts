@@ -5,7 +5,6 @@ export type IPageSearchMeta = {
   elasticSearchResult?: {
     snippet?: string | null;
     highlightedPath?: string | null;
-    isHtmlInPath: boolean;
   };
 }
 
