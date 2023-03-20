@@ -9,7 +9,8 @@ import styles from './CodeBlock.module.scss';
 export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
 
   const isHighlightedByElasticsearch = useMemo((): boolean => {
-    return !(children.every(item => typeof item === 'string') && children.length === 1);
+    const hasOnlyOneStringChild = children.length === 1 && typeof children[0] === 'string';
+    return !hasOnlyOneStringChild;
   }, [children]);
 
   if (inline) {
