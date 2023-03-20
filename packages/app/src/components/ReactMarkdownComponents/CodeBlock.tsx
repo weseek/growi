@@ -1,10 +1,16 @@
-import { CodeComponent } from 'react-markdown/lib/ast-to-react';
+import { useMemo } from 'react';
+
+import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import styles from './CodeBlock.module.scss';
 
 export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
+
+  const isHighlightedByElasticsearch = useMemo((): boolean => {
+    return !(children.every(item => typeof item === 'string') && children.length === 1);
+  }, [children]);
 
   if (inline) {
     return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
@@ -21,24 +27,22 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
       {name != null && (
         <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>
       )}
-      {typeof children[0] !== 'string'
-        ? (
-          // Attach custom codeblock style if highlighted code by Elasticsearch
-          <div className={`code-highlighted code-block ${styles['code-block']}`}>
-            <code className={`language-${lang}`}>
-              {children}
-            </code>
-          </div>
-        ) : (
-          <PrismAsyncLight
-            className="code-highlighted"
-            PreTag="div"
-            style={oneDark}
-            language={lang}
-          >
-            {String(children).replace(/\n$/, '')}
-          </PrismAsyncLight>
-        )}
+      {isHighlightedByElasticsearch ? (
+        <div className="code-highlighted" style={oneDark['pre[class*="language-"]']}>
+          <code className={`language-${lang}`} style={oneDark['code[class*="language-"]']}>
+            {children}
+          </code>
+        </div>
+      ) : (
+        <PrismAsyncLight
+          className="code-highlighted"
+          PreTag="div"
+          style={oneDark}
+          language={lang}
+        >
+          {String(children).replace(/\n$/, '')}
+        </PrismAsyncLight>
+      )}
     </>
   );
 };
