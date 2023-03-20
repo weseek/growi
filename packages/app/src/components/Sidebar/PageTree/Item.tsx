@@ -4,7 +4,9 @@ import React, {
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import {
+  pathUtils, pagePathUtils, Nullable, DevidedPagePath,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
@@ -19,7 +21,7 @@ import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
-import { useSWRxPageChildren } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -172,6 +174,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const pageItemDropHandler = async(item: ItemNode) => {
     const { page: droppedPage } = item;
+    const dpagePath = new DevidedPagePath(droppedPage.path, false, true);
+
+    // Check if droppedPage is direct descendant of root
+    const isDirectDescendantOfRoot = dpagePath.isFormerRoot;
 
     if (!isDroppable(droppedPage, page, true)) {
       return;
@@ -191,6 +197,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         isRenameRedirect: false,
         updateMetadata: true,
       });
+
+      // Mutate page tree if target is root or dropped item is direct descendant of root
+      if (page.parent === null || isDirectDescendantOfRoot) {
+        await mutatePageTree();
+      }
 
       await mutateChildren();
 
@@ -214,27 +225,31 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
-    accept: 'PAGE_TREE',
-    drop: pageItemDropHandler,
-    hover: (item, monitor) => {
-      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
-      if (monitor.isOver()) {
-        setTimeout(() => {
-          if (monitor.isOver()) {
-            setIsOpen(true);
-          }
-        }, 600);
-      }
-    },
-    canDrop: (item) => {
-      const { page: droppedPage } = item;
-      return isDroppable(droppedPage, page);
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver(),
+  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(
+    () => ({
+      accept: 'PAGE_TREE',
+      drop: pageItemDropHandler,
+      hover: (item, monitor) => {
+        // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
+        if (monitor.isOver()) {
+          setTimeout(() => {
+            if (monitor.isOver()) {
+              setIsOpen(true);
+            }
+          }, 600);
+        }
+      },
+      canDrop: (item) => {
+        const { page: droppedPage } = item;
+        return isDroppable(droppedPage, page);
+      },
+      collect: monitor => ({
+        isOver: monitor.isOver(),
+      }),
     }),
-  }));
+    [page],
+  );
+
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
