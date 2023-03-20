@@ -17,7 +17,7 @@ const InstallerForm = memo((): JSX.Element => {
 
   const [isValidUserName, setValidUserName] = useState(true);
   const [isSubmittingDisabled, setSubmittingDisabled] = useState(false);
-  const [currentLocale, setCurrentLocale] = useState('en_US');
+  const [currentLocale, setCurrentLocale] = useState(i18n.language);
 
   const checkUserName = useCallback(async(event) => {
     const axios = require('axios').create({
