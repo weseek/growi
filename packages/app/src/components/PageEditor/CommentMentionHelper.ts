@@ -1,20 +1,25 @@
-import i18n from 'i18next';
+import { Editor } from 'codemirror';
 import { debounce } from 'throttle-debounce';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
+
+type UsersListForHints = {
+  text: string
+  displayText: string
+}
 export default class CommentMentionHelper {
 
-  editor;
+  editor: Editor;
 
-  pattern: RegExp;
+  t;
 
-
-  constructor(editor) {
+  constructor(editor: Editor, t) {
     this.editor = editor;
+    this.t = t;
   }
 
-  getUsernamHint = () => {
+  getUsenameHint = (): void => {
     // Get word that contains `@` character at the begining
     const currentPos = this.editor.getCursor();
     const wordStart = this.editor.findWordAt(currentPos).anchor.ch - 1;
@@ -32,14 +37,14 @@ export default class CommentMentionHelper {
     }
 
     // Get username after `@` character and search username
-    const mention = searchMention.substr(1);
+    const mention = searchMention.slice(1);
     this.editor.showHint({
       completeSingle: false,
       hint: async() => {
         if (mention.length > 0) {
           const users = await this.getUsersList(mention);
           return {
-            list: users.length > 0 ? users : [{ text: '', displayText: i18n.t('page_comment.no_user_found') }],
+            list: users.length > 0 ? users : [{ text: '', displayText: this.t('page_comment.no_user_found') }],
             from: searchFrom,
             to: searchTo,
           };
@@ -48,15 +53,15 @@ export default class CommentMentionHelper {
     });
   };
 
-  getUsersList = async(q: string) => {
+  getUsersList = async(q: string): Promise<UsersListForHints[]> => {
     const limit = 20;
     const { data } = await apiv3Get('/users/usernames', { q, limit });
-    return data.activeUser.usernames.map(username => ({
+    return data.activeUser.usernames.map((username: string) => ({
       text: `@${username} `,
       displayText: username,
     }));
   };
 
-  showUsernameHint = debounce(800, () => this.getUsernamHint());
+  showUsernameHint = debounce(800, () => this.getUsenameHint());
 
 }
