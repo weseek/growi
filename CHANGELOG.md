@@ -1,8 +1,30 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.9](https://github.com/weseek/growi/compare/v6.0.8...v6.0.9) - 2023-03-14
+
+### 💎 Features
+
+- feat: Replaced with new toast (#7466) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Page path hierarchical link color (#7474) @yuki-takei
+- imprv: Add markdown header link (h4, h5, h6) (#7465) @miya
+- imprv: Include anyone with the link page in the deletion target (#7461) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Scrolling table in preview causes editor to scroll to row 1 (workaround) (#7473) @miya
+- fix: Internal server error when input wrong tag to markdown (#7471) @jam411
+- fix: Search results are not highlighted when searching for quoteted words (#7443) @miya
+
+### 🧰 Maintenance
+
+- support: Bump Next.js to v13 (#7458) @yuki-takei
 
 ## [v6.0.8](https://github.com/weseek/growi/compare/v6.0.7...v6.0.8) - 2023-03-06
 

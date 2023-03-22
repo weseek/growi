@@ -9,9 +9,9 @@ import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
@@ -77,6 +77,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
     }
     catch (err) {
       setIsRenameInputShown(true);
+      logger.error('failed to fetch data', err);
       toastError(err);
     }
   }, [onRenamed, page, t]);

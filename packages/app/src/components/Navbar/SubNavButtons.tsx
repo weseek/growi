@@ -6,7 +6,7 @@ import { DropdownItem } from 'reactstrap';
 import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';

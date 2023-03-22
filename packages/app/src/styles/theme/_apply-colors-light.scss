@@ -202,6 +202,12 @@
     box-shadow: none !important;
   }
 
+  /**
+   * GROWI PagePathHierarchicalLink
+   */
+  .grw-page-path-text-muted-container .grw-page-path-hierarchical-link a {
+    color: $gray-600;
+  }
   /*
   * GROWI Sidebar
   */

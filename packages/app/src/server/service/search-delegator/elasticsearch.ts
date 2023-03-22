@@ -943,12 +943,17 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   appendHighlight(query) {
     query.body.highlight = {
+      fragmenter: 'simple',
+      pre_tags: ["<em class='highlighted-keyword'>"],
+      post_tags: ['</em>'],
       fields: {
         '*': {
           fragment_size: 40,
-          fragmenter: 'simple',
-          pre_tags: ["<em class='highlighted-keyword'>"],
-          post_tags: ['</em>'],
+        },
+        'path.*': {
+          // No fragments are generated
+          // see: https://www.elastic.co/guide/en/elasticsearch/reference/current/highlighting.html#highlighting-settings
+          number_of_fragments: 0,
         },
       },
     };

@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Tooltip } from 'reactstrap';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 

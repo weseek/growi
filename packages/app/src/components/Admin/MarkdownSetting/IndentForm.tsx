@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
