@@ -1,28 +1,29 @@
-import path from 'path';
+const path = require('path');
 
-import { isServer, AllLang, Lang } from '@growi/core';
-import I18nextChainedBackend from 'i18next-chained-backend';
-import I18NextHttpBackend from 'i18next-http-backend';
-import I18NextLocalStorageBackend from 'i18next-localstorage-backend';
+const { isServer, AllLang, Lang } = require('@growi/core');
+const I18nextChainedBackend = require('i18next-chained-backend').default;
+const I18NextHttpBackend = require('i18next-http-backend');
+const I18NextLocalStorageBackend = require('i18next-localstorage-backend').default;
 
 const isDev = process.env.NODE_ENV === 'development';
 
-export const defaultLang = Lang.en_US;
-export const i18n = {
-  defaultLocale: defaultLang,
-  locales: AllLang,
-};
-export const defaultNS = 'translation';
-export const localePath = path.resolve('./public/static/locales');
-
-export const serializeConfig = false;
-export const use = isServer() ? [] : [I18nextChainedBackend];
-export const backend = {
-  backends: isServer() ? [] : [I18NextLocalStorageBackend, I18NextHttpBackend],
-  backendOptions: [
-    // options for i18next-localstorage-backend
-    { expirationTime: isDev ? 0 : 24 * 60 * 60 * 1000 }, // 1 day in production
-    // options for i18next-http-backend
-    { loadPath: '/static/locales/{{lng}}/{{ns}}.json' },
-  ],
+module.exports = {
+  defaultLang: Lang.en_US,
+  i18n: {
+    defaultLocale: Lang.en_US,
+    locales: AllLang,
+  },
+  defaultNS: 'translation',
+  localePath: path.resolve('./public/static/locales'),
+  serializeConfig: false,
+  use: isServer() ? [] : [I18nextChainedBackend],
+  backend: {
+    backends: isServer() ? [] : [I18NextLocalStorageBackend, I18NextHttpBackend],
+    backendOptions: [
+      // options for i18next-localstorage-backend
+      { expirationTime: isDev ? 0 : 24 * 60 * 60 * 1000 }, // 1 day in production
+      // options for i18next-http-backend
+      { loadPath: '/static/locales/{{lng}}/{{ns}}.json' },
+    ],
+  },
 };

@@ -1,19 +1,23 @@
 // workaround by https://github.com/martpie/next-transpile-modules/issues/143#issuecomment-817467144
 
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+const path = require('path');
 
 const nodeModulesPath = path.resolve(__dirname, '../../../../node_modules');
 
-type Opts = {
-  ignorePackageNames: string[],
-}
+/**
+ * @typedef { { ignorePackageNames: string[] } } Opts
+ */
 
-const defaultOpts: Opts = { ignorePackageNames: [] };
+/** @type {Opts} */
+const defaultOpts = { ignorePackageNames: [] };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const listScopedPackages = (scopes: string[], opts = defaultOpts) => {
-  const scopedPackages: string[] = [];
+/**
+ * @param scopes {string[]}
+ */
+exports.listScopedPackages = (scopes, opts = defaultOpts) => {
+  /** @type {string[]} */
+  const scopedPackages = [];
 
   fs.readdirSync(nodeModulesPath)
     .filter(name => scopes.includes(name))
@@ -36,9 +40,12 @@ export const listScopedPackages = (scopes: string[], opts = defaultOpts) => {
   return scopedPackages;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const listPrefixedPackages = (prefixes: string[], opts = defaultOpts) => {
-  const prefixedPackages: string[] = [];
+/**
+ * @param prefixes {string[]}
+ */
+exports.listPrefixedPackages = (prefixes, opts = defaultOpts) => {
+  /** @type {string[]} */
+  const prefixedPackages = [];
 
   fs.readdirSync(nodeModulesPath)
     .filter(name => prefixes.some(prefix => name.startsWith(prefix)))
