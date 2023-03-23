@@ -2,8 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { MyBookmarkList } from '~/interfaces/bookmark-info';
 import loggerFactory from '~/utils/logger';
 
@@ -43,7 +43,7 @@ export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in bookmark page list');
+      toastError(error);
     }
   }, [activePage, userId]);
 

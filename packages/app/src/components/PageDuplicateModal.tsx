@@ -8,8 +8,8 @@ import {
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { useIsSearchServiceReachable, useSiteUrl } from '~/stores/context';
 import { usePageDuplicateModal } from '~/stores/modal';
 

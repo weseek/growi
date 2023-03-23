@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
@@ -37,7 +37,7 @@ export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in recent created page list');
+      toastError(error);
     }
   }, [userId]);
 

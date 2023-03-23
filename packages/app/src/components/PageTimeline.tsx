@@ -26,7 +26,7 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
     <div className={`card card-timeline ${styles['card-timeline']}`}>
       <div className="card-header h4 p-3">
         <Link href={page.path} prefetch={false}>
-          <a>{page.path}</a>
+          {page.path}
         </Link>
       </div>
       <div className="card-body">

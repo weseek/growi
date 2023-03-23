@@ -1,9 +1,9 @@
-import { Ref } from './common';
-import { HasObjectId } from './has-object-id';
-import { IRevision, HasRevisionShortbody, IRevisionHasId } from './revision';
-import { SubscriptionStatusType } from './subscription';
-import { ITag } from './tag';
-import { IUser, IUserGroupHasId, IUserHasId } from './user';
+import type { Ref } from './common';
+import type { HasObjectId } from './has-object-id';
+import type { IRevision, HasRevisionShortbody, IRevisionHasId } from './revision';
+import type { SubscriptionStatusType } from './subscription';
+import type { ITag } from './tag';
+import type { IUser, IUserGroupHasId, IUserHasId } from './user';
 
 
 export type IPage = {

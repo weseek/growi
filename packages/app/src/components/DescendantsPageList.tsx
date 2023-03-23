@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess } from '~/client/util/toastr';
 import {
   IDataWithMeta,
   IPageHasId,

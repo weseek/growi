@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageId } from '~/stores/context';
+import { useCurrentPageId } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { useGlobalSocket } from '~/stores/websocket';
 

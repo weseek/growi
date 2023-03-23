@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-// import { toastSuccess, toastError } from '~/client/util/apiNotification';
+// import { toastSuccess, toastError } from '~/client/util/toastr';
 
 type ArchiveFilesTableMenuProps = {
   fileName: string,

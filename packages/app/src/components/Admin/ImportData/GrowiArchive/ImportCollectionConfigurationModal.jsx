@@ -13,7 +13,7 @@ import {
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 
-// import { toastSuccess, toastError } from '~/client/util/apiNotification';
+// import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
 class ImportCollectionConfigurationModal extends React.Component {

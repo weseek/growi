@@ -84,10 +84,11 @@ const SecurityManagementContents = () => {
       <div className="mb-5">
         <h2 className="border-bottom">{t('security_settings.xss_prevent_setting')}</h2>
         <div className="text-center">
-          <Link href="/admin/markdown/#preventXSS" prefetch={false}>
-            <a style={{ fontSize: 'large' }}>
-              <i className="fa-fw icon-login"></i> {t('security_settings.xss_prevent_setting_link')}
-            </a>
+          <Link
+            href="/admin/markdown/#preventXSS"
+            style={{ fontSize: 'large' }}
+          >
+            <i className="fa-fw icon-login"></i> {t('security_settings.xss_prevent_setting_link')}
           </Link>
         </div>
       </div>

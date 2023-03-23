@@ -23,7 +23,7 @@ export const PageContentFooter = (props: PageContentFooterProps): JSX.Element =>
 
   return (
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
-      <div className="grw-container-convertible">
+      <div className="container-lg grw-container-convertible">
         <div className="page-meta">
           <AuthorInfo user={creator as IUser} date={createdAt} mode="create" locate="footer" />
           <AuthorInfo user={lastUpdateUser as IUser} date={updatedAt} mode="update" locate="footer" />

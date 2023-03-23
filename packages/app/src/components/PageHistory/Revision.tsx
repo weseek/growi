@@ -13,10 +13,10 @@ import styles from './Revision.module.scss';
 
 type RevisionProps = {
   revision: IRevisionHasId,
-  currentPageId: string,
-  currentPagePath: string,
   isLatestRevision: boolean,
   hasDiff: boolean,
+  currentPageId: string
+  currentPagePath: string
   onClose: () => void,
 }
 
@@ -24,7 +24,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revision, currentPageId, currentPagePath, isLatestRevision, hasDiff, onClose,
+    revision, isLatestRevision, hasDiff, onClose, currentPageId, currentPagePath,
   } = props;
 
   const { returnPathForURL } = pathUtils;
@@ -69,10 +69,13 @@ export const Revision = (props: RevisionProps): JSX.Element => {
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
-            <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)} prefetch={false}>
-              <a className="ml-xl-3" onClick={onClose}>
-                <i className="icon-login"></i> {t('Go to this version')}
-              </a>
+            <Link
+              href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)}
+              className="ml-xl-3"
+              onClick={onClose}
+              prefetch={false}
+            >
+              <i className="icon-login"></i> {t('Go to this version')}
             </Link>
           </div>
         </div>

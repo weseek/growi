@@ -10,8 +10,8 @@ import { LazyRenderer } from '../Common/LazyRenderer';
 
 
 type Props = {
-  activeTab: string,
   navTabMapping: ICustomNavTabMappings,
+  activeTab?: string,
   additionalClassNames?: string[],
 }
 

@@ -345,7 +345,7 @@ export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[k
 
 type PageAccessoriesModalStatus = {
   isOpened: boolean,
-  onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
+  activatedContents?: PageAccessoriesModalContents,
 }
 
 type PageAccessoriesModalUtils = {
@@ -364,11 +364,10 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
       if (swrResponse.data == null) {
         return;
       }
-      swrResponse.mutate({ isOpened: true });
-
-      if (swrResponse.data.onOpened != null) {
-        swrResponse.data.onOpened(activatedContents);
-      }
+      swrResponse.mutate({
+        isOpened: true,
+        activatedContents,
+      });
     },
     close: () => {
       if (swrResponse.data == null) {
@@ -573,6 +572,35 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   return Object.assign(swrResponse, {
     open: () => {
       swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
+
+
+/*
+ * TemplateModal
+ */
+type TemplateModalStatus = {
+  isOpened: boolean,
+  onSubmit?: (templateText: string) => void
+}
+
+type TemplateModalUtils = {
+  open(onSubmit: (templateText: string) => void): void,
+  close(): void,
+}
+
+export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
+
+  const initialStatus: TemplateModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: (onSubmit: (templateText: string) => void) => {
+      swrResponse.mutate({ isOpened: true, onSubmit });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });

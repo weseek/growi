@@ -17,7 +17,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 import PageAttachment from './PageAttachment';
-import { PageHistory } from './PageHistory';
+import { PageHistory, getQueryParam } from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
 import styles from './PageAccessoriesModal.module.scss';
@@ -26,7 +26,10 @@ const PageAccessoriesModal = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>(PageAccessoriesModalContents.PageHistory);
+  const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>();
+  const [sourceRevisionId, setSourceRevisionId] = useState<string>();
+  const [targetRevisionId, setTargetRevisionId] = useState<string>();
+
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
   const { data: isSharedUser } = useIsSharedUser();
@@ -35,29 +38,44 @@ const PageAccessoriesModal = (): JSX.Element => {
 
   const { data: status, mutate, close } = usePageAccessoriesModal();
 
-  // add event handler when opened
+  // activate tab when open
   useEffect(() => {
-    if (status == null || status.onOpened != null) {
+    if (status == null) return;
+
+    const { isOpened, activatedContents } = status;
+    if (isOpened && activatedContents != null) {
+      setActiveTab(activatedContents);
+    }
+  }, [status]);
+
+  // Set sourceRevisionId and targetRevisionId as state with valid object id string
+  useEffect(() => {
+    const queryParams = getQueryParam();
+    // https://regex101.com/r/YHTDsr/1
+    const regex = /^([0-9a-f]{24})...([0-9a-f]{24})$/i;
+
+    if (queryParams == null || !regex.test(queryParams)) {
       return;
     }
-    mutate({
-      ...status,
-      onOpened: (activatedContents) => {
-        setActiveTab(activatedContents);
-      },
-    }, false);
-  }, [mutate, status]);
+
+    const matches = queryParams.match(regex);
+
+    if (matches == null) {
+      return;
+    }
+
+    const [, sourceRevisionId, targetRevisionId] = matches;
+    setSourceRevisionId(sourceRevisionId);
+    setTargetRevisionId(targetRevisionId);
+    mutate({ isOpened: true });
+  }, [mutate]);
 
   const navTabMapping = useMemo(() => {
-    const isOpened = status == null ? false : status.isOpened;
     return {
       [PageAccessoriesModalContents.PageHistory]: {
         Icon: HistoryIcon,
         Content: () => {
-          if (!isOpened) {
-            return <></>;
-          }
-          return <PageHistory onClose={close}/>;
+          return <PageHistory onClose={close} sourceRevisionId={sourceRevisionId} targetRevisionId={targetRevisionId}/>;
         },
         i18n: t('History'),
         index: 0,
@@ -66,9 +84,6 @@ const PageAccessoriesModal = (): JSX.Element => {
       [PageAccessoriesModalContents.Attachment]: {
         Icon: AttachmentIcon,
         Content: () => {
-          if (!isOpened) {
-            return <></>;
-          }
           return <PageAttachment />;
         },
         i18n: t('attachment_data'),
@@ -77,9 +92,6 @@ const PageAccessoriesModal = (): JSX.Element => {
       [PageAccessoriesModalContents.ShareLink]: {
         Icon: ShareLinkIcon,
         Content: () => {
-          if (!isOpened) {
-            return <></>;
-          }
           return <ShareLink />;
         },
         i18n: t('share_links.share_link_management'),
@@ -87,7 +99,7 @@ const PageAccessoriesModal = (): JSX.Element => {
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [status, t, close, isGuestUser, isSharedUser, isLinkSharingDisabled]);
+  }, [t, close, sourceRevisionId, targetRevisionId, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">

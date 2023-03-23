@@ -14,7 +14,7 @@ import { CustomInput } from 'reactstrap';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/toastr';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
@@ -221,7 +221,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link href={returnPathForURL(pageData.path, pageData._id)} prefetch={false}>
+                    <Link legacyBehavior
+                      href={returnPathForURL(pageData.path, pageData._id)}
+                      prefetch={false}
+                    >
                       {shouldDangerouslySetInnerHTMLForPaths
                         ? (
                           <a

@@ -6,7 +6,7 @@ import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';

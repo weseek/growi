@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageId } from '~/stores/context';
 import { useIsHackmdDraftUpdatingInRealtime } from '~/stores/hackmd';
+import { useCurrentPageId } from '~/stores/page';
 import { useGlobalSocket } from '~/stores/websocket';
 
 export const useHackmdDraftUpdatedEffect = (): void => {

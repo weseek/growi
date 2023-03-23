@@ -1,8 +1,50 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.9](https://github.com/weseek/growi/compare/v6.0.8...v6.0.9) - 2023-03-14
+
+### 💎 Features
+
+- feat: Replaced with new toast (#7466) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Page path hierarchical link color (#7474) @yuki-takei
+- imprv: Add markdown header link (h4, h5, h6) (#7465) @miya
+- imprv: Include anyone with the link page in the deletion target (#7461) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Scrolling table in preview causes editor to scroll to row 1 (workaround) (#7473) @miya
+- fix: Internal server error when input wrong tag to markdown (#7471) @jam411
+- fix: Search results are not highlighted when searching for quoteted words (#7443) @miya
+
+### 🧰 Maintenance
+
+- support: Bump Next.js to v13 (#7458) @yuki-takei
+
+## [v6.0.8](https://github.com/weseek/growi/compare/v6.0.7...v6.0.8) - 2023-03-06
+
+### 💎 Features
+
+- feat: Compare all page revisions on PageAccessoriesModal History tab (#7414) @jam411
+
+### 🚀 Improvement
+
+- imprv: Save the correct page body when uploading the attachment (#7432) @miya
+- imprv: Determine page grant considering wiki mode when creating a new page by uploading attachments (#7428) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Email is not sent to Admin user when the user is created at user registration restricted (#7454) @miya
+- fix: Error when trying to create a new page with attachments (#7424) @miya
+- fix: Unable to delete multiple pages (#7435) @miya
+- fix: PageDeleteModal warns even if you have delete permission (#7436) @miya
+- fix: Color of the close icon in modal header (#7419) @ayaka0417
+- fix: Behavior when conflicts occur when saving pages (#7425) @miya
 
 ## [v6.0.7](https://github.com/weseek/growi/compare/v6.0.6...v6.0.7) - 2023-02-21
 
