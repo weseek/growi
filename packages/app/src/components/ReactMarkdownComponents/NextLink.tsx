@@ -22,6 +22,11 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
   }
 };
 
+const isAttached = (href: string): boolean => {
+    return href.toString().startsWith('/attachment/');
+};
+
+
 type Props = Omit<LinkProps, 'href'> & {
   children: React.ReactNode,
   href?: string,
@@ -58,6 +63,20 @@ export const NextLink = (props: Props): JSX.Element => {
       </a>
     );
   }
+
+  // when href is an attachment file
+  if (isAttached(href)) {
+    const dlhref=href.toString().replace('/attachment/','/download/');
+    return (
+      <span>
+        <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
+        {children}
+        </a>&nbsp;
+        <a href={dlhref} className="attachment-download"><i className='icon-cloud-download'></i></a>
+      </span>
+    );
+  }
+
 
   return (
     <Link {...rest} href={href} prefetch={false} legacyBehavior>
