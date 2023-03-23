@@ -504,6 +504,11 @@
   /*
   * GROWI HandsontableModal
   */
+
+  .handsontable td {
+    color: black;
+  }
+
   .grw-hot-modal-navbar {
     background-color: var(--dark);
   }

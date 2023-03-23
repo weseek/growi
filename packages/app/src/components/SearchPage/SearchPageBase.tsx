@@ -127,7 +127,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   if (!isSearchServiceConfigured) {
     return (
-      <div className="grw-container-convertible">
+      <div className="container-lg grw-container-convertible">
         <div className="row mt-5">
           <div className="col text-muted">
             <h1>Search service is not configured in this system.</h1>
@@ -139,7 +139,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   if (!isSearchServiceReachable) {
     return (
-      <div className="grw-container-convertible">
+      <div className="container-lg grw-container-convertible">
         <div className="row mt-5">
           <div className="col text-muted">
             <h1>Search service occures errors. Please contact to administrators of this system.</h1>
