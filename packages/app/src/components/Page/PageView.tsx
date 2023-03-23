@@ -158,7 +158,7 @@ export const PageView = (props: Props): JSX.Element => {
       { specialContents }
       { specialContents == null && (
         <>
-          { isUsersHomePagePath && <UserInfo author={page?.creator} /> }
+          { (isUsersHomePagePath && page?.creator != null) && <UserInfo author={page.creator} /> }
           <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
             <Contents />
           </div>
