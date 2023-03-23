@@ -450,15 +450,14 @@ class SearchService implements SearchQueryParser, SearchResolver {
       const highlightData = data._highlight;
       if (highlightData != null) {
         const snippet = this.canShowSnippet(pageData, user, userGroups)
-          ? highlightData['body.en'] || highlightData['body.ja'] || highlightData['comments.en'] || highlightData['comments.ja']
+          // eslint-disable-next-line max-len
+          ? highlightData.body || highlightData['body.en'] || highlightData['body.ja'] || highlightData.comments || highlightData['comments.en'] || highlightData['comments.ja']
           : null;
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
-        const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
         elasticSearchResult = {
           snippet: snippet != null && typeof snippet[0] === 'string' ? filterXss.process(snippet) : null,
           highlightedPath: pathMatch != null && typeof pathMatch[0] === 'string' ? filterXss.process(pathMatch) : null,
-          isHtmlInPath,
         };
       }
 
