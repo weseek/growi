@@ -11,7 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { UserUISettingsDocument } from '~/server/models/user-ui-settings';
+import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
