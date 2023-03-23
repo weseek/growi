@@ -22,6 +22,12 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
   }
 };
 
+const isAttachmentLink = (href: string): boolean => {
+  // see: https://regex101.com/r/9qZhiK/1
+  const attachmentUrlFormat = new RegExp(/^\/(attachment)\/([^/^\n]+)$/);
+  return attachmentUrlFormat.test(href);
+};
+
 type Props = Omit<LinkProps, 'href'> & {
   children: React.ReactNode,
   href?: string,
@@ -56,6 +62,13 @@ export const NextLink = (props: Props): JSX.Element => {
       <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
         {children}&nbsp;<i className='icon-share-alt small'></i>
       </a>
+    );
+  }
+
+  // when href is an attachment link
+  if (isAttachmentLink(href)) {
+    return (
+      <a href={href} className={className} {...dataAttributes}>{children}</a>
     );
   }
 
