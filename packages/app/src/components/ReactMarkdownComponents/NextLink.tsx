@@ -22,10 +22,8 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
   }
 };
 
-const isAttachmentLink = (href: string): boolean => {
-  // see: https://regex101.com/r/9qZhiK/1
-  const attachmentUrlFormat = new RegExp(/^\/(attachment)\/([^/^\n]+)$/);
-  return attachmentUrlFormat.test(href);
+const isAttached = (href: string): boolean => {
+  return href.toString().startsWith('/attachment/');
 };
 
 type Props = Omit<LinkProps, 'href'> & {
@@ -65,10 +63,16 @@ export const NextLink = (props: Props): JSX.Element => {
     );
   }
 
-  // when href is an attachment link
-  if (isAttachmentLink(href)) {
+  // when href is an attachment file
+  if (isAttached(href)) {
+    const dlhref = href.toString().replace('/attachment/', '/download/');
     return (
-      <a href={href} className={className} {...dataAttributes}>{children}</a>
+      <span>
+        <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
+          {children}
+        </a>&nbsp;
+        <a href={dlhref} className="attachment-download"><i className='icon-cloud-download'></i></a>
+      </span>
     );
   }
 
