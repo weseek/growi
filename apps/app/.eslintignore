@@ -2,10 +2,8 @@
 /dist/**
 /transpiled/**
 /public/**
-/config/next-i18next.config.js
 /src/client/legacy/thirdparty-js/**
 /src/client/util/reveal/plugins/markdown.js
 /src/linter-checker/**
-/src/utils/next.config.utils.js
 /tmp/**
 /next-env.d.ts

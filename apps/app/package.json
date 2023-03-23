@@ -7,7 +7,6 @@
     "build": "run-p build:*",
     "start": "yarn next start",
     "build:client": "yarn next build",
-    "prebuild:client": "tsc -p tsconfig.build.next.config.json",
     "build:server": "yarn cross-env NODE_ENV=production tsc -p tsconfig.build.server.json && tsc-alias -p tsconfig.build.server-tsc-alias.json",
     "postbuild:server": "npx -y shx echo \"Listing files under transpiled\" && npx -y shx ls transpiled && npx -y shx mv transpiled/src dist && npx -y shx cp -r transpiled/config/* config && npx -y shx rm -rf transpiled",
     "clean": "npx -y shx rm -rf dist transpiled",
