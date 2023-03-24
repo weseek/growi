@@ -5,7 +5,6 @@ import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { Button } from 'reactstrap';
 import * as loadScript from 'simple-load-script';
 import { throttle, debounce } from 'throttle-debounce';
@@ -182,7 +181,6 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentDidMount() {
-    const { t } = this.props;
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
 
@@ -194,7 +192,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
     // initialize commentMentionHelper if comment editor is opened
     if (this.props.isComment) {
-      this.commentMentionHelper = new CommentMentionHelper(this.getCodeMirror(), t);
+      this.commentMentionHelper = new CommentMentionHelper(this.getCodeMirror());
     }
     this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
 
@@ -1183,8 +1181,6 @@ const CodeMirrorEditorMemoized = memo(CodeMirrorEditor);
 
 
 const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
-  const { t } = useTranslation();
-
   const { open: openDrawioModal } = useDrawioModal();
   const { open: openHandsontableModal } = useHandsontableModal();
   const { open: openTemplateModal } = useTemplateModal();
@@ -1207,7 +1203,6 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
       onClickDrawioBtn={openDrawioModalHandler}
       onClickTableBtn={openTableModalHandler}
       onClickTemplateBtn={openTemplateModalHandler}
-      t={t}
       {...props}
     />
   );

@@ -1,4 +1,5 @@
 import { Editor } from 'codemirror';
+import { i18n } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -12,11 +13,8 @@ export default class CommentMentionHelper {
 
   editor: Editor;
 
-  t;
-
-  constructor(editor: Editor, t) {
+  constructor(editor: Editor) {
     this.editor = editor;
-    this.t = t;
   }
 
   getUsenameHint = (): void => {
@@ -44,7 +42,7 @@ export default class CommentMentionHelper {
         if (mention.length > 0) {
           const users = await this.getUsersList(mention);
           return {
-            list: users.length > 0 ? users : [{ text: '', displayText: this.t('page_comment.no_user_found') }],
+            list: users.length > 0 ? users : [{ text: '', displayText: i18n?.t('page_comment.no_user_found') }],
             from: searchFrom,
             to: searchTo,
           };
