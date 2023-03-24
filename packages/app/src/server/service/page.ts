@@ -561,6 +561,12 @@ class PageService {
     const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
 
+    // Remove leaf empty pages if not moving to under the ex-target position
+    if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
+      // remove empty pages at leaf position
+      await Page.removeLeafEmptyPagesRecursively(page.parent);
+    }
+
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
@@ -3341,8 +3347,7 @@ class PageService {
 
     // Fill ancestors
     const aggregationPipeline: any[] = await this.buildPipelineToCreateEmptyPagesByUser(user, ancestorPaths);
-
-    await Page.createEmptyPagesByPaths(ancestorPaths, aggregationPipeline);
+    await Page.createEmptyPagesByPaths(ancestorPaths, aggregationPipeline, user);
 
     // Connect ancestors
     await this.connectPageTree(path);
