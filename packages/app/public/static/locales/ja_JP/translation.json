@@ -828,7 +828,7 @@
     "input_placeholder": "フォルダ名を入力してください",
     "new_folder": "新しいフォルダ",
     "delete": "フォルダを削除",
-    "drop_item_here": "ブックマークを解除",
+    "drop_item_here": "ルートに配置する",
     "cancel_bookmark": "このページのブックマークを解除"
   },
   "v5_page_migration": {
