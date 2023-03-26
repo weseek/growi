@@ -245,7 +245,7 @@ module.exports = function(crowi, app) {
       'Last-Modified': attachment.createdAt.toUTCString(),
     });
 
-    if (!attachment.fileSize) {
+    if (attachment.fileSize) {
       res.set({
         'Content-Length': attachment.fileSize,
       });
@@ -261,7 +261,7 @@ module.exports = function(crowi, app) {
     else {
       res.set({
         'Content-Type': attachment.fileFormat,
-        'Content-Security-Policy': "script-src 'unsafe-hashes'; object-src 'none'; require-trusted-types-for 'script'; default-src 'none';",
+        'Content-Security-Policy': "script-src 'unsafe-hashes'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
       });
     }
   }
