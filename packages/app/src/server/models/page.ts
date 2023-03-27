@@ -671,55 +671,18 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   return { targetAndAncestors, rootPage };
 };
 
-/*
- * Utils from obsolete-page.js
- */
-export async function pushRevision(pageData, newRevision, user) {
-  await newRevision.save();
-
-  pageData.revision = newRevision;
-  pageData.lastUpdateUser = user?._id ?? user;
-  pageData.updatedAt = Date.now();
-
-  return pageData.save();
-}
-
 /**
  * Create empty pages at paths at which no pages exist
  * @param paths Page paths
  * @param aggrPipelineForExistingPages AggregationPipeline object to find existing pages at paths
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[], aggrPipelineForExistingPages: any[], user?: IUserHasId): Promise<void> {
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], aggrPipelineForExistingPages: any[]): Promise<void> {
   const existingPages = await this.aggregate(aggrPipelineForExistingPages);
 
   const existingPagePaths = existingPages.map(page => page.path);
   const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
-  if (user != null) {
-    const Revision = mongoose.model('Revision') as any;
-    // Create and save pages
-    const createPagesAndRevisions = notExistingPagePaths.map(async(path) => {
-      const page = await this.create({ path, isEmpty: false, descendantCount: 0 });
 
-      // Get number of descendants
-      const descendantCount = await this.countDocuments({ path: { $regex: `^${path}/` } });
-
-      // Update descendantCount
-      page.descendantCount = descendantCount;
-      await page.save();
-
-      // Create revision and push it to the page
-      const newRevision = Revision.prepareRevision(page, '', null, user, { format: 'markdown' });
-      await pushRevision(page, newRevision, user);
-      await page.populateDataToShowRevision();
-
-      return page;
-    });
-
-    await Promise.all(createPagesAndRevisions);
-  }
-  else {
-    await this.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
-  }
+  await this.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
 };
 
 /**
@@ -742,6 +705,19 @@ schema.statics.findParentByPath = async function(path: string): Promise<PageDocu
 
   return null;
 };
+
+/*
+ * Utils from obsolete-page.js
+ */
+export async function pushRevision(pageData, newRevision, user) {
+  await newRevision.save();
+
+  pageData.revision = newRevision;
+  pageData.lastUpdateUser = user?._id ?? user;
+  pageData.updatedAt = Date.now();
+
+  return pageData.save();
+}
 
 /**
  * add/subtract descendantCount of pages with provided paths by increment.
