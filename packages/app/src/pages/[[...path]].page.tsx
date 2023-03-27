@@ -201,9 +201,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
-  useTemplateTagData(props.templateTagData);
-  useTemplateBodyData(props.templateBodyData);
-
   useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
