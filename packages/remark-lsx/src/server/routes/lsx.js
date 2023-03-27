@@ -104,12 +104,17 @@ class Lsx {
     }
 
     let filterPath = '';
-    if (optionsFilter.charAt(0) === '^') {
-      // move '^' to the first of path
-      filterPath = new RegExp(`^${addTrailingSlash(pagePath)}${optionsFilter.slice(1, optionsFilter.length)}`);
+    try {
+      if (optionsFilter.charAt(0) === '^') {
+        // move '^' to the first of path
+        filterPath = new RegExp(`^${addTrailingSlash(pagePath)}${optionsFilter.slice(1, optionsFilter.length)}`);
+      }
+      else {
+        filterPath = new RegExp(`^${addTrailingSlash(pagePath)}.*${optionsFilter}`);
+      }
     }
-    else {
-      filterPath = new RegExp(`^${addTrailingSlash(pagePath)}.*${optionsFilter}`);
+    catch (err) {
+      throw createError(400, err);
     }
 
     if (isExceptFilter) {
