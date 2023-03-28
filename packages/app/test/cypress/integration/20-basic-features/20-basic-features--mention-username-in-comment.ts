@@ -31,11 +31,13 @@ context('Mention username in comment', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('.Codemirror').type(username);
+      cy.get('.CodeMirror').type(username);
       // wait until
-      return cy.get('.Codemirror-hints').then($elem => $elem.is(':visible'));
+      return cy.get('.CodeMirror-hints').then($elem => $elem.is(':visible'));
     });
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}1-username-found`) });
+    cy.get('.CodeMirror-hints > li').first().click();
+    cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}2-username-mentioned`) });
   });
 
   it('Username not found when mention username in comment', () => {
@@ -43,11 +45,13 @@ context('Mention username in comment', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('.Codemirror').type(username);
+      cy.get('.CodeMirror').type(username);
       // wait until
-      return cy.get('.Codemirror-hints').then($elem => $elem.is(':visible'));
+      return cy.get('.CodeMirror-hints').then($elem => $elem.is(':visible'));
     });
-    cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}2-username-not-found`) });
+    cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}3-username-not-found`) });
+    cy.get('.CodeMirror-hints > li').first().click();
+    cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}4-no-username-mentioned`) });
   });
 
 });
