@@ -1,13 +1,16 @@
-# :memo: 目次
+<div class="card">
+  <div class="card-body">
 
-いくつかの `#` 記号に続けて `ToC` という文字列を記述します。  
-`Table of Contents` または `Table-of-Contents` でも構いません。
+# 目次
 
 ```
-# ToC
+@[toc]
 ```
 
-## ToC
+@[toc]
+
+  </div>
+</div>
 
 # :memo: Block Elements
 

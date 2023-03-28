@@ -1,13 +1,16 @@
-# :memo: Table of Contents
+<div class="card">
+  <div class="card-body">
 
-Add `ToC` after some `#` signs.
-`Table of Contents` or `Table-of-Contents` is also OK.
+# Table of Contents
 
 ```
-# ToC
+@[toc]
 ```
 
-## ToC
+@[toc]
+
+  </div>
+</div>
 
 # :memo: Block Elements
 

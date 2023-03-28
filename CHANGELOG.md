@@ -1,25 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
-
-## [v6.0.10](https://github.com/weseek/growi/compare/v6.0.9...v6.0.10) - 2023-03-23
-
-### 🚀 Improvement
-
-- imprv: Reverse switch for display or hidden page settings (#7483) @yuki-takei
-
-### 🐛 Bug Fixes
-
-- fix: CodeBlock string is be `[object Object]` if searched (#7484) @jam411
-- fix: Show handsontable edit modal color in dark theme  (#7497) @yukendev
-- fix: Error when transitioning to a user home page where creator does not exist (#7499) @miya
-- fix: Attachment links do not work correctly (#7498) @jam411
-- fix: Language selection dropdown in installer does not reflect browser language setting (#7494) @miya
-- fix:  Search results are not highlighted when searching for quoteted words (PageListItemL) (#7491) @miya
-- fix: Responses 500 status code when invalid regular expressions are inputted to lsx's execpt option (#7488) @jam411
-- fix: Page paths in search results are not displayed correctly (#7463) @miya
 
 ## [v6.0.9](https://github.com/weseek/growi/compare/v6.0.8...v6.0.9) - 2023-03-14
 
