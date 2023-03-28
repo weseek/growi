@@ -17,7 +17,7 @@ context('Mention username in comment', () => {
     cy.getByTestid('pageCommentButton').click();
     cy.getByTestid('openCommentEditorButton').click();
 
-    cy.screenshot(`${ssPrefix}-`);
+    cy.screenshot(`${ssPrefix}-open-comment-editor`);
   });
 });
 
