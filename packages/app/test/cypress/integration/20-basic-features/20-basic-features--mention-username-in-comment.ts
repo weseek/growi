@@ -8,8 +8,8 @@ context('Mention username in comment', () => {
     });
   });
 
-  it('/Successfully open comment editor', () => {
-
+  it('Successfully mention username in comment', () => {
+    const username = '@adm';
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
@@ -17,7 +17,30 @@ context('Mention username in comment', () => {
     cy.getByTestid('pageCommentButton').click();
     cy.getByTestid('openCommentEditorButton').click();
 
-    cy.screenshot(`${ssPrefix}-open-comment-editor`);
+    cy.get('.Codemirror').type(username);
+
+    cy.waitUntil(() => {
+      return cy.get('.Codemirror-hints').then($elem => $elem.is(':visible'));
+    });
+    cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}1-username-found`) });
   });
+
+  it('Username not found when mention username in comment', () => {
+    const username = '@user';
+    cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
+
+    cy.collapseSidebar(true, true);
+    cy.getByTestid('pageCommentButton').click();
+    cy.getByTestid('openCommentEditorButton').click();
+
+    cy.get('.Codemirror').type(username);
+
+    cy.waitUntil(() => {
+      return cy.get('.Codemirror-hints').then($elem => $elem.is(':visible'));
+    });
+    cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}2-username-not-found`) });
+  });
+
 });
 
