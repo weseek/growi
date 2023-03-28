@@ -40,7 +40,7 @@ export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
 
 export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroup'|'revision'|'author'> & {
   lastUpdateUser: IUserHasId,
-  creator: IUserHasId,
+  creator: IUserHasId | null,
   deleteUser: IUserHasId,
   grantedGroup: IUserGroupHasId,
   revision: IRevisionHasId,
