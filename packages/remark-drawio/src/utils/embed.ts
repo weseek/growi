@@ -2,24 +2,12 @@
 import pako from 'pako';
 import xmldoc from 'xmldoc';
 
-export const extractCodeFromMxfile = (input: string): string => {
-  const doc = new xmldoc.XmlDocument(input);
-  return doc.valueWithPath('diagram');
-};
-
 const validateUncompressedData = (input: string): boolean => {
   return new RegExp('/<mxGraphModel/').test(input);
 };
 
 const validateCompressedData = (input: string): boolean => {
   let data = input;
-
-  try {
-    data = extractCodeFromMxfile(data);
-  }
-  catch (e) {
-    // ignore
-  }
 
   try {
     data = Buffer.from(data, 'base64').toString('binary');
