@@ -2,7 +2,7 @@
 import pako from 'pako';
 import xmldoc from 'xmldoc';
 
-export const extractCodeFromCompressedInput = (input: string): string => {
+export const extractCodeFromMxfile = (input: string): string => {
   const doc = new xmldoc.XmlDocument(input);
   return doc.valueWithPath('diagram');
 };
@@ -15,7 +15,7 @@ const validateCompressedData = (input: string): boolean => {
   let data = input;
 
   try {
-    data = extractCodeFromCompressedInput(data);
+    data = extractCodeFromMxfile(data);
   }
   catch (e) {
     // ignore
