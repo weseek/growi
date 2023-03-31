@@ -1,8 +1,26 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.12](https://github.com/weseek/growi/compare/v6.0.11...v6.0.12) - 2023-03-30
+
+### 🐛 Bug Fixes
+
+- fix: DrawioViewer script URL (#7518) @yuki-takei
+
+## [v6.0.11](https://github.com/weseek/growi/compare/v6.0.10...v6.0.11) - 2023-03-29
+
+### 🚀 Improvement
+
+- imprv: ToC placeholder (#7506) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Support draw.io v21.1.0 (support both of compressed/uncompressed data) (#7515) @yuki-takei
+- fix: The same level template page is being applied to lower level pages unintentionally (#7510) @miya
+- fix: Supress `activeTab` prop type error (#7504) @jam411
 
 ## [v6.0.10](https://github.com/weseek/growi/compare/v6.0.9...v6.0.10) - 2023-03-23
 
