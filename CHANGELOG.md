@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.12](https://github.com/weseek/growi/compare/v6.0.11...v6.0.12) - 2023-03-30
+
+### 🐛 Bug Fixes
+
+- fix: DrawioViewer script URL (#7518) @yuki-takei
 
 ## [v6.0.11](https://github.com/weseek/growi/compare/v6.0.10...v6.0.11) - 2023-03-29
 
