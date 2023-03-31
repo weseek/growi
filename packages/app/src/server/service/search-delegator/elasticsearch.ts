@@ -970,10 +970,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       throw Error('Cannnot process search since terms is undefined.');
     }
 
-    const from = option.offset || null;
-    const size = option.limit || null;
-    const sort = option.sort || null;
-    const order = option.order || null;
+    const from = option?.offset ?? null;
+    const size = option?.limit ?? null;
+    const sort = option?.sort ?? null;
+    const order = option?.order ?? null;
     const query = this.createSearchQuery();
     this.appendCriteriaForQueryString(query, terms);
 
