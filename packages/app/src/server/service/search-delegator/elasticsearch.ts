@@ -963,7 +963,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option): Promise<ISearchResult<unknown>> {
+  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option?): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
 
     if (terms == null) {
