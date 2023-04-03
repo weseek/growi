@@ -65,15 +65,18 @@ export const Fab = (): JSX.Element => {
   useEffect(() => {
     // sticky
     // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    const stickySelector = '#grw-fav-sticky-trigger';
+    const stickyElement = document.querySelector(stickySelector);
+    if (stickyElement && stickyElement.getBoundingClientRect()) {
+      const stickyEvents = new StickyEvents({ stickySelector });
+      stickyEvents.enableEvents();
+      stickyElement.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
+      // return clean up handler
+      return () => {
+        stickyElement.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+      };
+    }
   }, [stickyChangeHandler]);
 
   const PageCreateButton = useCallback(() => {

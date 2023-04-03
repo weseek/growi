@@ -6,7 +6,6 @@ import SimpleBar from 'simplebar-react';
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
-import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
@@ -46,7 +45,6 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
   const {
     children, stickyElemSelector, calcViewHeight, simplebarRef: setSimplebarRef,
   } = props;
-  const { data: editMode } = useEditorMode();
   const simplebarRef = useRef<SimpleBar>(null);
   const [simplebarMaxHeight, setSimplebarMaxHeight] = useState<number|undefined>();
   const [isNavbarSticky, setIsNavbarSticky] = useState<boolean>(false);
@@ -78,16 +76,20 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
 
   // Detect sticky events on Subnav
   useEffect(() => {
-    // sticky-events
+    // sticky
     // See: https://github.com/ryanwalters/sticky-events
-    const { stickySelector } = new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' });
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
+    const stickySelector = '#grw-subnav-sticky-trigger';
+    const stickyElement = document.querySelector(stickySelector);
+    if (stickyElement && stickyElement.getBoundingClientRect()) {
+      const stickyEvents = new StickyEvents({ stickySelector });
+      stickyEvents.enableEvents();
+      stickyElement.addEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
 
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
-    };
+      // return clean up handler
+      return () => {
+        stickyElement.removeEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
+      };
+    }
   }, [subNavstickyChangeHandler]);
 
 
@@ -99,21 +101,22 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
   useEffect(() => {
     // sticky
     // See: https://github.com/ryanwalters/sticky-events
-    // Only execute sticky events if navbar is sticky and editor is in view mode
-    if (isNavbarSticky && editMode !== EditorMode.View) {
+    // Only execute sticky events if navbar is sticky
+    const stickyElement = document.querySelector(stickyElemSelector);
+
+    if (stickyElement && stickyElement.getBoundingClientRect() && isNavbarSticky) {
       const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
       stickyEvents.enableEvents();
-      const { stickySelector } = stickyEvents;
-      const elem = document.querySelector(stickySelector);
-      elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+
+      stickyElement.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
       // return clean up handler
       return () => {
-        elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+        stickyElement.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
       };
     }
 
-  }, [editMode, isNavbarSticky, stickyChangeHandler, stickyElemSelector]);
+  }, [isNavbarSticky, stickyChangeHandler, stickyElemSelector]);
 
   // setup effect by resizing event
   useEffect(() => {
