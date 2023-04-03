@@ -1,8 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.12...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.13...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.13](https://github.com/weseek/growi/compare/v6.0.12...v6.0.13) - 2023-04-03
+
+### 🐛 Bug Fixes
+
+- fix: The "note" and "keep" commands of the GROWI bot are not functioning (#7529) @miya
+- fix: The "search" command of the GROWI bot is not functioning (#7525) @miya
+- fix: Lsx filter and except option do not work when the path includes special characters (#7523) @yuki-takei
 
 ## [v6.0.12](https://github.com/weseek/growi/compare/v6.0.11...v6.0.12) - 2023-03-30
 
