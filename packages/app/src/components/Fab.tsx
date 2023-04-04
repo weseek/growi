@@ -67,7 +67,7 @@ export const Fab = (): JSX.Element => {
     // See: https://github.com/ryanwalters/sticky-events
     const stickySelector = '#grw-fav-sticky-trigger';
     const stickyElement = document.querySelector(stickySelector);
-    if (stickyElement && stickyElement.getBoundingClientRect()) {
+    if (stickyElement) {
       const stickyEvents = new StickyEvents({ stickySelector });
       stickyEvents.enableEvents();
       stickyElement.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);

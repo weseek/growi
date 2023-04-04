@@ -60,7 +60,7 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
     // See: https://github.com/ryanwalters/sticky-events
     const stickySelector = '#grw-subnav-sticky-trigger';
     const stickyElement = document.querySelector(stickySelector);
-    if (stickyElement && stickyElement.getBoundingClientRect()) {
+    if (stickyElement) {
       const stickyEvents = new StickyEvents({ stickySelector });
       stickyEvents.enableEvents();
       stickyElement.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);

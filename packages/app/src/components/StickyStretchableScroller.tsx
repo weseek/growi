@@ -80,7 +80,7 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
     // See: https://github.com/ryanwalters/sticky-events
     const stickySelector = '#grw-subnav-sticky-trigger';
     const stickyElement = document.querySelector(stickySelector);
-    if (stickyElement && stickyElement.getBoundingClientRect()) {
+    if (stickyElement) {
       const stickyEvents = new StickyEvents({ stickySelector });
       stickyEvents.enableEvents();
       stickyElement.addEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
@@ -104,7 +104,7 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
     // Only execute sticky events if navbar is sticky
     const stickyElement = document.querySelector(stickyElemSelector);
 
-    if (stickyElement && stickyElement.getBoundingClientRect() && isNavbarSticky) {
+    if (stickyElement && isNavbarSticky) {
       const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
       stickyEvents.enableEvents();
 
