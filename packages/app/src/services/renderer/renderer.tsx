@@ -19,6 +19,7 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
+import toc from 'remark-toc';
 import deepmerge from 'ts-deepmerge';
 import type { PluggableList, Pluggable, PluginTuple } from 'unified';
 
@@ -38,10 +39,9 @@ import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attrib
 import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
-import * as toc from './rehype-plugins/relocate-toc';
+import * as relocateToc from './rehype-plugins/relocate-toc';
 import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
-import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -124,6 +124,7 @@ const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = tr
 const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
+      [toc, { maxDepth: 3, tight: true, prefix: 'mdcont-' }],
       gfm,
       emoji,
       pukiwikiLikeLinker,
@@ -188,7 +189,7 @@ export const generateViewOptions = (
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
-    [toc.rehypePluginStore, { storeTocNode }],
+    [relocateToc.rehypePluginStore, { storeTocNode }],
   );
 
   // add components
@@ -232,7 +233,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   // add rehype plugins
   rehypePlugins.push(
-    [toc.rehypePluginRestore, { tocNode }],
+    [relocateToc.rehypePluginRestore, { tocNode }],
     rehypeSanitizePlugin,
   );
 
