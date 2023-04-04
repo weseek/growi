@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import {
   DrawioEditByViewerProps,
-  DrawioViewer, DrawioViewerProps, extractCodeFromMxfile,
+  DrawioViewer, DrawioViewerProps,
 } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 
@@ -33,7 +33,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
 
   const editButtonClickHandler = useCallback(() => {
     const data: DrawioEditByViewerProps = {
-      bol, eol, drawioMxFile: extractCodeFromMxfile(mxfile),
+      bol, eol, drawioMxFile: mxfile,
     };
     globalEmitter.emit('launchDrawioModal', data);
   }, [bol, eol, mxfile]);

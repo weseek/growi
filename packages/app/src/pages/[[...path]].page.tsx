@@ -35,7 +35,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
+  useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
@@ -43,7 +43,7 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision,
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -202,9 +202,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
-  useTemplateTagData(props.templateTagData);
-  useTemplateBodyData(props.templateBodyData);
-
   useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -252,6 +249,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
   const { mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+
+  const { mutate: mutateTemplateTagData } = useTemplateTagData();
+  const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -301,6 +301,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateIsLatestRevision(props.isLatestRevision);
   }, [mutateIsLatestRevision, props.isLatestRevision]);
+
+  useEffect(() => {
+    mutateTemplateTagData(props.templateTagData);
+  }, [props.templateTagData, mutateTemplateTagData]);
+
+  useEffect(() => {
+    mutateTemplateBodyData(props.templateBodyData);
+  }, [props.templateBodyData, mutateTemplateBodyData]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
