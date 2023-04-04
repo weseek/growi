@@ -1,6 +1,5 @@
 // transplanted from https://github.com/jgraph/drawio-tools/blob/d46977060ffad70cae5a9059a2cbfcd8bcf420de/tools/convert.html
 import pako from 'pako';
-import xmldoc from 'xmldoc';
 
 const unconpressedDataRegexp = new RegExp('<mxGraphModel');
 const validateUncompressedData = (input: string): boolean => {
@@ -68,7 +67,7 @@ export const generateMxgraphData = (code: string): string => {
   const xml = `
     <mxfile version="6.8.9" editor="www.draw.io" type="atlas">
       <mxAtlasLibraries/>
-      <diagram>${isUncompressedData ? xmldoc.XmlDocument(trimedCode) : trimedCode}</diagram>
+      <diagram>${trimedCode}</diagram>
     </mxfile>
   `;
 
