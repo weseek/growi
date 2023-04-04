@@ -15,14 +15,14 @@ import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
 
-import { DrawioCommunicationHelper } from './DrawioCommunicationHelper';
+import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
 const logger = loggerFactory('growi:components:DrawioModal');
 
 const headerColor = '#334455';
 const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 
-const drawioConfig = {
+const drawioConfig: DrawioConfig = {
   css: `
   .geMenubarContainer { background-color: ${headerColor} !important; }
   .geMenubar { background-color: ${headerColor} !important; }
@@ -33,6 +33,7 @@ const drawioConfig = {
   }
   `,
   customFonts: ['Lato', 'Charter'],
+  compressXml: true,
 };
 
 
