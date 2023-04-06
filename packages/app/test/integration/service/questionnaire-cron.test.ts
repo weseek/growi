@@ -278,6 +278,7 @@ describe('QuestionnaireCronService', () => {
         type: 'general',
         userCreatedAt: new Date(),
       },
+      questionnaireOrder: '63a8354837e7aa378e16f0b1',
     };
 
     await QuestionnaireAnswer.insertMany([

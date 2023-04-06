@@ -99,6 +99,7 @@ module.exports = (crowi: Crowi): Router => {
       }
       catch (err) {
         if (err.request != null) {
+          // when failed to send, save to resend in cronjob
           await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
         }
         else {
@@ -133,6 +134,7 @@ module.exports = (crowi: Crowi): Router => {
         userInfo,
         answers,
         answeredAt: new Date(),
+        questionnaireOrder: req.body.questionnaireOrderId,
       };
 
       try {
@@ -140,6 +142,7 @@ module.exports = (crowi: Crowi): Router => {
       }
       catch (err) {
         if (err.request != null) {
+          // when failed to send, save to resend in cronjob
           await QuestionnaireAnswer.create(questionnaireAnswer);
         }
         else {
