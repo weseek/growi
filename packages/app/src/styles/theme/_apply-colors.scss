@@ -276,17 +276,9 @@ ul.pagination {
     }
   }
 
-  .grw-pagetree {
+  .grw-pagetree, .grw-foldertree {
     .list-group-item {
-      .grw-pagetree-title-anchor {
-        color: inherit;
-      }
-    }
-  }
-
-  .grw-foldertree {
-    .list-group-item {
-      .grw-foldertree-title-anchor {
+      .grw-pagetree-title-anchor, .grw-foldertree-title-anchor {
         color: inherit;
       }
     }
