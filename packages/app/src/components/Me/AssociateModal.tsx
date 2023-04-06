@@ -12,7 +12,7 @@ import {
   TabPane,
 } from 'reactstrap';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import { LdapAuthTest } from '../Admin/Security/LdapAuthTest';

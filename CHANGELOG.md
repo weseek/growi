@@ -1,8 +1,80 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.14...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.14](https://github.com/weseek/growi/compare/v6.0.13...v6.0.14) - 2023-04-04
+
+### 🐛 Bug Fixes
+
+- fix(drawio): Set compressXml option (#7536) @yuki-takei
+- fix(drawio): Rendering uncompressed data (#7537) @yuki-takei
+
+## [v6.0.13](https://github.com/weseek/growi/compare/v6.0.12...v6.0.13) - 2023-04-03
+
+### 🐛 Bug Fixes
+
+- fix: The "note" and "keep" commands of the GROWI bot are not functioning (#7529) @miya
+- fix: The "search" command of the GROWI bot is not functioning (#7525) @miya
+- fix: Lsx filter and except option do not work when the path includes special characters (#7523) @yuki-takei
+
+## [v6.0.12](https://github.com/weseek/growi/compare/v6.0.11...v6.0.12) - 2023-03-30
+
+### 🐛 Bug Fixes
+
+- fix: DrawioViewer script URL (#7518) @yuki-takei
+
+## [v6.0.11](https://github.com/weseek/growi/compare/v6.0.10...v6.0.11) - 2023-03-29
+
+### 🚀 Improvement
+
+- imprv: ToC placeholder (#7506) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Support draw.io v21.1.0 (support both of compressed/uncompressed data) (#7515) @yuki-takei
+- fix: The same level template page is being applied to lower level pages unintentionally (#7510) @miya
+- fix: Supress `activeTab` prop type error (#7504) @jam411
+
+## [v6.0.10](https://github.com/weseek/growi/compare/v6.0.9...v6.0.10) - 2023-03-23
+
+### 🚀 Improvement
+
+- imprv: Reverse switch for display or hidden page settings (#7483) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: CodeBlock string is be `[object Object]` if searched (#7484) @jam411
+- fix: Show handsontable edit modal color in dark theme  (#7497) @yukendev
+- fix: Error when transitioning to a user home page where creator does not exist (#7499) @miya
+- fix: Attachment links do not work correctly (#7498) @jam411
+- fix: Language selection dropdown in installer does not reflect browser language setting (#7494) @miya
+- fix:  Search results are not highlighted when searching for quoteted words (PageListItemL) (#7491) @miya
+- fix: Responses 500 status code when invalid regular expressions are inputted to lsx's execpt option (#7488) @jam411
+- fix: Page paths in search results are not displayed correctly (#7463) @miya
+
+## [v6.0.9](https://github.com/weseek/growi/compare/v6.0.8...v6.0.9) - 2023-03-14
+
+### 💎 Features
+
+- feat: Replaced with new toast (#7466) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Page path hierarchical link color (#7474) @yuki-takei
+- imprv: Add markdown header link (h4, h5, h6) (#7465) @miya
+- imprv: Include anyone with the link page in the deletion target (#7461) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Scrolling table in preview causes editor to scroll to row 1 (workaround) (#7473) @miya
+- fix: Internal server error when input wrong tag to markdown (#7471) @jam411
+- fix: Search results are not highlighted when searching for quoteted words (#7443) @miya
+
+### 🧰 Maintenance
+
+- support: Bump Next.js to v13 (#7458) @yuki-takei
 
 ## [v6.0.8](https://github.com/weseek/growi/compare/v6.0.7...v6.0.8) - 2023-03-06
 

@@ -9,15 +9,15 @@ import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid, useIsIdenticalPath,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -25,7 +25,7 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound,
+  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData,
 } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
@@ -269,7 +269,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       toastSuccess('updated tags successfully');
     }
     catch (err) {
-      toastError(err, 'fail to update tags');
+      toastError(err);
     }
 
   }, [currentPage, updateStateAfterSave]);

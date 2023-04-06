@@ -5,8 +5,8 @@ import React, {
 import { pullAllBy } from 'lodash';
 import { useTranslation } from 'next-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { subscribeRuleNames, SubscribeRuleDescriptions } from '~/interfaces/in-app-notification';
 
 type SubscribeRule = {

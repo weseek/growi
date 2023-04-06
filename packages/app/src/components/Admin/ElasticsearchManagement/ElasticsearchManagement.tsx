@@ -3,8 +3,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useIsSearchServiceReachable } from '~/stores/context';
 import { useAdminSocket } from '~/stores/socket-io';
@@ -89,7 +89,7 @@ const ElasticsearchManagement = () => {
     });
 
     socket.on(SocketEventName.RebuildingFailed, (data) => {
-      toastError(new Error(data.error), 'Rebuilding Index has failed.');
+      toastError(new Error(data.error));
     });
 
     return () => {

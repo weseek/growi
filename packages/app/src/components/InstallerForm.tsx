@@ -2,22 +2,25 @@ import {
   FormEventHandler, memo, useCallback, useState,
 } from 'react';
 
+import { Lang, AllLang } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 
 const InstallerForm = memo((): JSX.Element => {
   const { t, i18n } = useTranslation();
 
   const router = useRouter();
 
+  const isSupportedLang = AllLang.includes(i18n.language as Lang);
+
   const [isValidUserName, setValidUserName] = useState(true);
   const [isSubmittingDisabled, setSubmittingDisabled] = useState(false);
-  const [currentLocale, setCurrentLocale] = useState('en_US');
+  const [currentLocale, setCurrentLocale] = useState(isSupportedLang ? i18n.language : Lang.en_US);
 
   const checkUserName = useCallback(async(event) => {
     const axios = require('axios').create({

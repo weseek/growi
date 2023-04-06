@@ -19,6 +19,7 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
+import toc from 'remark-toc';
 import deepmerge from 'ts-deepmerge';
 import type { PluggableList, Pluggable, PluginTuple } from 'unified';
 
@@ -27,7 +28,6 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import { Table } from '~/components/ReactMarkdownComponents/Table';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -39,10 +39,9 @@ import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attrib
 import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
-import * as toc from './rehype-plugins/relocate-toc';
+import * as relocateToc from './rehype-plugins/relocate-toc';
 import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
-import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -125,6 +124,7 @@ const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = tr
 const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
+      [toc, { maxDepth: 3, tight: true, prefix: 'mdcont-' }],
       gfm,
       emoji,
       pukiwikiLikeLinker,
@@ -189,7 +189,7 @@ export const generateViewOptions = (
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
-    [toc.rehypePluginStore, { storeTocNode }],
+    [relocateToc.rehypePluginStore, { storeTocNode }],
   );
 
   // add components
@@ -233,7 +233,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   // add rehype plugins
   rehypePlugins.push(
-    [toc.rehypePluginRestore, { tocNode }],
+    [relocateToc.rehypePluginRestore, { tocNode }],
     rehypeSanitizePlugin,
   );
 
@@ -261,7 +261,7 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -295,7 +295,6 @@ export const generateSimpleViewOptions = (
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -330,7 +329,7 @@ export const generateSSRViewOptions = (
     math,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = config.isEnabledLinebreaks;
@@ -361,7 +360,6 @@ export const generateSSRViewOptions = (
   // add components
   if (components != null) {
     components.lsx = LsxImmutable;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -382,7 +380,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    table.remarkPlugin,
+    // table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -413,7 +411,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   if (components != null) {
     components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
-    components.table = Table;
   }
 
   if (config.isEnabledXssPrevention) {

@@ -1,3 +1,4 @@
+import escapeStringRegexp from 'escape-string-regexp';
 import createError, { isHttpError } from 'http-errors';
 
 const { pathUtils, pagePathUtils, customTagUtils } = require('@growi/core');
@@ -103,13 +104,20 @@ class Lsx {
       throw createError(400, 'filter option require value in regular expression.');
     }
 
+    const pagePathForRegexp = escapeStringRegexp(addTrailingSlash(pagePath));
+
     let filterPath = '';
-    if (optionsFilter.charAt(0) === '^') {
-      // move '^' to the first of path
-      filterPath = new RegExp(`^${addTrailingSlash(pagePath)}${optionsFilter.slice(1, optionsFilter.length)}`);
+    try {
+      if (optionsFilter.charAt(0) === '^') {
+        // move '^' to the first of path
+        filterPath = new RegExp(`^${pagePathForRegexp}${optionsFilter.slice(1, optionsFilter.length)}`);
+      }
+      else {
+        filterPath = new RegExp(`^${pagePathForRegexp}.*${optionsFilter}`);
+      }
     }
-    else {
-      filterPath = new RegExp(`^${addTrailingSlash(pagePath)}.*${optionsFilter}`);
+    catch (err) {
+      throw createError(400, err);
     }
 
     if (isExceptFilter) {

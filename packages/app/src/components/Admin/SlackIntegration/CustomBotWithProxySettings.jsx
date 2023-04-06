@@ -3,8 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useAppTitle } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
@@ -53,7 +53,7 @@ const CustomBotWithProxySettings = (props) => {
       toastSuccess(t('toaster.update_successed', { target: 'Primary', ns: 'commons' }));
     }
     catch (err) {
-      toastError(err, 'Failed to change isPrimary');
+      toastError(err);
       logger.error('Failed to change isPrimary', err);
     }
   }, [t, onPrimaryUpdated]);
@@ -67,7 +67,7 @@ const CustomBotWithProxySettings = (props) => {
       toastSuccess(t('admin:slack_integration.toastr.delete_slack_integration_procedure'));
     }
     catch (err) {
-      toastError(err, 'Failed to delete');
+      toastError(err);
       logger.error('Failed to delete', err);
     }
   };
@@ -80,7 +80,7 @@ const CustomBotWithProxySettings = (props) => {
       toastSuccess(t('toaster.update_successed', { target: 'Proxy URL', ns: 'commons' }));
     }
     catch (err) {
-      toastError(err, 'Failed to update');
+      toastError(err);
       logger.error('Failed to update', err);
     }
   };

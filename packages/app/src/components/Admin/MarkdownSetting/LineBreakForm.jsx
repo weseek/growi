@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';

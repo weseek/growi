@@ -3,8 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import { toastError } from '~/client/util/apiNotification';
 import { apiv3PostForm } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 
 class UploadForm extends React.Component {
 

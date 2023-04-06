@@ -261,6 +261,13 @@
     box-shadow: none !important;
   }
 
+  /**
+   * GROWI PagePathHierarchicalLink
+   */
+  .grw-page-path-text-muted-container .grw-page-path-hierarchical-link a {
+    color: $gray-400;
+  }
+
   /*
   * GROWI page list
   */
@@ -497,6 +504,11 @@
   /*
   * GROWI HandsontableModal
   */
+
+  .handsontable td {
+    color: black;
+  }
+
   .grw-hot-modal-navbar {
     background-color: var(--dark);
   }
