@@ -384,17 +384,6 @@
         }
       }
     }
-    .grw-bookmarks-list {
-      @include override-list-group-item-for-pagetree(
-        var(--color-sidebar-context),
-        hsl.lighten(var(--bgcolor-sidebar-context),8%),
-        hsl.lighten(var(--bgcolor-sidebar-context),15%),
-        hsl.darken(var(--color-sidebar-context),15%),
-        hsl.darken(var(--color-sidebar-context),10%),
-        hsl.lighten(var(--bgcolor-sidebar-context),18%),
-        hsl.lighten(var(--bgcolor-sidebar-context),24%)
-      );
-    }
     .private-legacy-pages-link {
       &:hover {
         background: var(--bgcolor-list-hover);
@@ -431,17 +420,6 @@
       .grw-foldertree-triangle-btn {
         @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
       }
-    }
-    .page-list > .grw-bookmarks-list-container > .list-group {
-      @include override-list-group-item-for-pagetree(
-        $body-color,
-        hsl.lighten($body-bg, 8%),
-        hsl.lighten($body-bg, 15%),
-        hsl.darken($body-color, 15%),
-        hsl.darken($body-color, 10%),
-        hsl.lighten($body-bg, 18%),
-        hsl.lighten($body-bg, 24%)
-      );
     }
     .grw-folder-tree-container {
       .grw-drop-item-area , .grw-foldertree-item-container {
