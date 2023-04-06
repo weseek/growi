@@ -60,7 +60,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-              data-testid="openCommentEditorButton"
+              data-testid="pageCommentButton"
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
               <span>Comments</span>
