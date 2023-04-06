@@ -230,6 +230,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             type="button"
             className="btn btn-lg btn-link"
             onClick={() => setIsReadyToUse(true)}
+            data-testid="openCommentEditorButton"
           >
             <i className="icon-bubble"></i> Add Comment
           </button>
