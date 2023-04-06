@@ -1,8 +1,58 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.14...HEAD)
 
-*Please do not manually update this file. We've automated the process.*
+_Please do not manually update this file. We've automated the process._
+
+## [v6.0.14](https://github.com/weseek/growi/compare/v6.0.13...v6.0.14) - 2023-04-04
+
+### 🐛 Bug Fixes
+
+- fix(drawio): Set compressXml option (#7536) @yuki-takei
+- fix(drawio): Rendering uncompressed data (#7537) @yuki-takei
+
+## [v6.0.13](https://github.com/weseek/growi/compare/v6.0.12...v6.0.13) - 2023-04-03
+
+### 🐛 Bug Fixes
+
+- fix: The "note" and "keep" commands of the GROWI bot are not functioning (#7529) @miya
+- fix: The "search" command of the GROWI bot is not functioning (#7525) @miya
+- fix: Lsx filter and except option do not work when the path includes special characters (#7523) @yuki-takei
+
+## [v6.0.12](https://github.com/weseek/growi/compare/v6.0.11...v6.0.12) - 2023-03-30
+
+### 🐛 Bug Fixes
+
+- fix: DrawioViewer script URL (#7518) @yuki-takei
+
+## [v6.0.11](https://github.com/weseek/growi/compare/v6.0.10...v6.0.11) - 2023-03-29
+
+### 🚀 Improvement
+
+- imprv: ToC placeholder (#7506) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Support draw.io v21.1.0 (support both of compressed/uncompressed data) (#7515) @yuki-takei
+- fix: The same level template page is being applied to lower level pages unintentionally (#7510) @miya
+- fix: Supress `activeTab` prop type error (#7504) @jam411
+
+## [v6.0.10](https://github.com/weseek/growi/compare/v6.0.9...v6.0.10) - 2023-03-23
+
+### 🚀 Improvement
+
+- imprv: Reverse switch for display or hidden page settings (#7483) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: CodeBlock string is be `[object Object]` if searched (#7484) @jam411
+- fix: Show handsontable edit modal color in dark theme (#7497) @yukendev
+- fix: Error when transitioning to a user home page where creator does not exist (#7499) @miya
+- fix: Attachment links do not work correctly (#7498) @jam411
+- fix: Language selection dropdown in installer does not reflect browser language setting (#7494) @miya
+- fix: Search results are not highlighted when searching for quoteted words (PageListItemL) (#7491) @miya
+- fix: Responses 500 status code when invalid regular expressions are inputted to lsx's execpt option (#7488) @jam411
+- fix: Page paths in search results are not displayed correctly (#7463) @miya
 
 ## [v6.0.9](https://github.com/weseek/growi/compare/v6.0.8...v6.0.9) - 2023-03-14
 
@@ -95,8 +145,8 @@
 - fix: Make collapse work for anchor tags (#7381) @jam411
 - fix: Revision short body is not displayed on search results page (#7373) @miya
 - fix: Error when clicking on a page you are not authorized to view on the search results page (#7343) @miya
-- fix: Omit S3 credentials from the response for /_api/v3/app-settings (#7369) @miya
-- fix: Omit S3 credentials from the response for /_api/v3/app-settings (#7369) @miya
+- fix: Omit S3 credentials from the response for /\_api/v3/app-settings (#7369) @miya
+- fix: Omit S3 credentials from the response for /\_api/v3/app-settings (#7369) @miya
 - fix: Keep showing page restricted alert (#7371) @yukendev
 - fix: Recent changes and Timeline (#7366) @yuki-takei
 - fix: Login screen background (#7350) @ayaka0417
@@ -107,7 +157,7 @@
 - fix: Can't controll slack notification switch in editor (#7332) @yukendev
 - fix: Show load latest revision button when update drawio or table from view (#7324) @yukendev
 - fix: Can delete own user (#7321) @miya
-- fix: Request to "/_api/v3/page/is-grant-normalized" occurs when in guest mode (#7313) @miya
+- fix: Request to "/\_api/v3/page/is-grant-normalized" occurs when in guest mode (#7313) @miya
 
 ### 🧰 Maintenance
 
@@ -131,7 +181,7 @@
 
 ### 🐛 Bug Fixes
 
-- fix:  Request to "/_api/v3/personal-settings"  occurs when in guest mode (#7307) @miya
+- fix: Request to "/\_api/v3/personal-settings" occurs when in guest mode (#7307) @miya
 - fix: Undeleteable trash pages when clicked empty trash button bug (#7250) @jam411
 - fix: Guest users are able to move to pages that require authentication (#7300) @miya
 - fix: Modal does not close after clicking on path in DescendantsPageListModal (#7291) @miya
@@ -273,13 +323,13 @@
 ### 🐛 Bug Fixes
 
 - fix(auditlog): Attachment download is displayed even if the filter is unchecked (#6688) @miya
-- fix: firstName and lastName japanese translations in SAML  (#6631) @kaoritokashiki
+- fix: firstName and lastName japanese translations in SAML (#6631) @kaoritokashiki
 
 ## [v5.1.4](https://github.com/weseek/growi/compare/v5.1.3...v5.1.4) - 2022-09-12
 
 ### 💎 Features
 
-- feat:  Truncate long path when recent changes is in S size (#6263) @mudana-grune
+- feat: Truncate long path when recent changes is in S size (#6263) @mudana-grune
 - feat: In-app notifications when removing descendants of subscribed pages (#6192) @Shunm634-source
 - feat: Not increment ordered list number in CodeMirror (#6462) @mudana-grune
 
@@ -324,7 +374,7 @@
 ### 🚀 Improvement
 
 - imprv(auditlog): Clear and reload button (#6398) @miya
-- imprv(auditlog): Date Range Picker  (#6395) @miya
+- imprv(auditlog): Date Range Picker (#6395) @miya
 
 ### 🐛 Bug Fixes
 
@@ -338,7 +388,7 @@
 
 ### 💎 Features
 
-- feat: Users can set users per ip from env var at API Rate Limit  (#6379) @yukendev
+- feat: Users can set users per ip from env var at API Rate Limit (#6379) @yukendev
 - feat: Show user picture in Audit Log (#6342) @miya
 - feat: Reset search criteria button (#6327) @miya
 
@@ -416,7 +466,7 @@
 
 ### 🚀 Improvement
 
-- imprv: Show page control on subnavigation at existing empty page  (#5638) @Yohei-Shiina
+- imprv: Show page control on subnavigation at existing empty page (#5638) @Yohei-Shiina
 - imprv: Remove toc and page authors in empty page (#5661) @Yohei-Shiina
 - imprv: SWRize apiGet /tag.search (#6062) @kaoritokashiki
 
@@ -506,7 +556,7 @@
 
 - feat: Emoji - replace emojione to emojimart (#5668) @kaoritokashiki
 - feat: Show username suggestion for mention in comment (#5856) @mudana-grune
-- feat: Send in-app notification when containing username mention in comment  (#5906) @mudana-grune
+- feat: Send in-app notification when containing username mention in comment (#5906) @mudana-grune
 - feat: Customize menu in navbar for guest user (#5858) @yukendev
 - feat: Admin only page convert by path (#5902) @hakumizuki
 - feat: Fix grant alert (#5903) @hakumizuki
@@ -523,7 +573,7 @@
 ### 🐛 Bug Fixes
 
 - fix: Can not toggle textlint function on v5.0.x (#5854) @kaoritokashiki
-- fix(google-oauth2): Automatically bind external accounts  does not work on v5.0.x (#5886) @kaoritokashiki
+- fix(google-oauth2): Automatically bind external accounts does not work on v5.0.x (#5886) @kaoritokashiki
 
 ## [v4.5.21](https://github.com/weseek/growi/compare/v4.5.20...v4.5.21) - 2022-05-23
 
@@ -569,7 +619,7 @@
 - feat: Private legacy pages convert by path (#5787) @hakumizuki
 - feat: Generate activity when page is created (#5765) @miya
 - feat: Private legacy pages convert by path API (#5760) @hakumizuki
-- feat:  Create notification when page is reverted (#5756) @miya
+- feat: Create notification when page is reverted (#5756) @miya
 - feat: Create notification when page is duplicated (#5749) @miya
 - feat: Add count badge to Page List button and Comment button (#5740) @yukendev
 - feat: Infinite scroll for Recent Changes in Sidebar (#5647) @mudana-grune
@@ -586,7 +636,7 @@
 - fix: Include any public pages as applicable ancestors (#5786) @hakumizuki
 - fix: Not create unnecessary empty pages when ancestors are public (#5774) @hakumizuki
 - fix: Too many footstamps icons are shown by lsx output 2 (#5763) @yuki-takei
-- fix:  footstamp-icon size (#5759) @kaoritokashiki
+- fix: footstamp-icon size (#5759) @kaoritokashiki
 
 ## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
 
@@ -609,7 +659,7 @@
 ### 🐛 Bug Fixes
 
 - fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
-- fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
+- fix: New user notification email is also sent TO: deleted*at*<epoch_time>@deleted (#5735) @yuki-takei
 - fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
 
 ## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
@@ -748,7 +798,7 @@
 
 ### 🧰 Maintenance
 
-- support:  modify docker-compose indent (#5322) @yuto-oweseek
+- support: modify docker-compose indent (#5322) @yuto-oweseek
 
 ## [v4.5.14](https://github.com/weseek/growi/compare/v4.5.13...v4.5.14) - 2022-02-10
 
@@ -770,7 +820,7 @@
 
 ### 🐛 Bug Fixes
 
-- fix: /_api/v3/page with pageId param occurs an 500 error (#5212) @yuki-takei
+- fix: /\_api/v3/page with pageId param occurs an 500 error (#5212) @yuki-takei
 - fix: Resolving OIDC issure host (#5220) @yuki-takei
 
 ## [v4.5.11](https://github.com/weseek/growi/compare/v4.5.10...v4.5.11) - 2022-01-26
@@ -806,7 +856,7 @@
 ### 🐛 Bug Fixes
 
 - fix: OIDC reconnection bug fix (#5104) @mudana-grune
-- fix: /_api/v3/page is broken and dump 500 error "get-page-failed TypeError: user.canDeleteCompletely is not a function" (#5103) @yuki-takei
+- fix: /\_api/v3/page is broken and dump 500 error "get-page-failed TypeError: user.canDeleteCompletely is not a function" (#5103) @yuki-takei
 - fix: Default completely deletion settings label mismatched against to actual (#5102) @yuki-takei
 - fix: OIDC issuer host availability check (#5099) @mudana-grune
 
@@ -904,7 +954,7 @@
 
 - imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
 - support: Typescriptize search components (#4982) @yuki-takei
-- fix:  dependabot alert object-path (#4964) @mudana-grune
+- fix: dependabot alert object-path (#4964) @mudana-grune
 - fix: dependabot alert axios (#4960) @mudana-grune
 - fix: dependabot alert elliptic (#4959) @mudana-grune
 - fix: dependabot alert acorn (#4951) @mudana-grune
@@ -1257,7 +1307,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/44x.html](http
 - Improvement: CodeMirror syntax-highlighting fenced code blocks
 - Improvement: Slack Integration Settings: Error behavior when getting connection statuses
 - Improvement: Slack Integration Settings: Add links to docs
-- Improvement: /_api/v3/recent can be accessed with access token
+- Improvement: /\_api/v3/recent can be accessed with access token
 - Support: Using http-errors
 
 ## v4.3.1
@@ -1668,7 +1718,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/38x.html](http
 - Fix: Unset overflow-y style for Edit Tags Modal
 - Fix: Duplicate page source is overwrited (Introduced by 3.7.6)
 
-## v3.8.0  (Discontinued)
+## v3.8.0 (Discontinued)
 
 ## v3.7.7
 
@@ -1676,7 +1726,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/38x.html](http
 - Improvement: Behavior of Reconnect to Elasticsearch button
 - Fix: Duplicate page source is overwrited (Introduced by 3.7.6)
 
-## v3.7.6  (Discontinued)
+## v3.7.6 (Discontinued)
 
 ## v3.7.5
 
