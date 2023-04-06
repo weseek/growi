@@ -562,8 +562,8 @@ class PageService {
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
 
     // Remove leaf empty pages if not moving to under the ex-target position
-    if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
-    // remove empty pages at leaf position
+    if (page.path !== newPagePath && !this.isRenamingToUnderTarget(page.path, newPagePath)) {
+      // remove empty pages at leaf position
       await Page.removeLeafEmptyPagesRecursively(page.parent);
     }
 
