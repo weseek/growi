@@ -1,8 +1,19 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.11...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.11](https://github.com/weseek/growi/compare/v5.1.10...v5.1.11) - 2023-04-06
+
+🚀 Improvement
+
+- imprv: Add send email to user feat to /reset-password endpoint v5 (https://github.com/weseek/growi/pull/7382) @ryohi15
+- imprv: Determine page grant considering wiki mode when creating a new page by uploading attachments (v5) (https://github.com/weseek/growi/pull/7481) @miya
+
+🧰 Maintenance
+
+- support: draw.io 21.1.3 for v5 (https://github.com/weseek/growi/pull/7540) @miya
 
 ## [v5.1.10](https://github.com/weseek/growi/compare/v5.1.9...v5.1.10) - 2023-02-13
 
