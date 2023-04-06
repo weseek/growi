@@ -181,7 +181,6 @@
     "remark-emoji": "^3.0.2",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
-    "remark-toc": "^8.0.1",
     "remark-wiki-link": "^1.0.4",
     "socket.io": "^4.2.0",
     "stream-to-promise": "^3.0.0",
