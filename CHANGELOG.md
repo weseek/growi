@@ -8,7 +8,7 @@
 
 🚀 Improvement
 
-- imprv: Add send email to user feat to /reset-password endpoint v5 (https://github.com/weseek/growi/pull/7382) @ryohi15
+- imprv: Add send email to user feat to /reset-password endpoint v5 (https://github.com/weseek/growi/pull/7382) @jam411
 - imprv: Determine page grant considering wiki mode when creating a new page by uploading attachments (v5) (https://github.com/weseek/growi/pull/7481) @miya
 
 🧰 Maintenance
