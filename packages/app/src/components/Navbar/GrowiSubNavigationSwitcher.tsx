@@ -70,6 +70,21 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
         stickyElement.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
       };
     }
+    // disable sticky events before unload
+    const beforeUnloadHandler = () => {
+      const stickyElement = document.querySelector(stickySelector);
+      if (stickyElement) {
+        const stickyEvents = new StickyEvents({ stickySelector });
+        stickyEvents.disableEvents();
+      }
+    };
+
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+
+    // return clean up handler
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnloadHandler);
+    };
   }, [stickyChangeHandler]);
 
   // setup effect by resizing event
