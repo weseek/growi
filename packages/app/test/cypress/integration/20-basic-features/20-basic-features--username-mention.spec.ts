@@ -14,12 +14,12 @@ context('Mention username in comment', () => {
     cy.collapseSidebar(true, true);
 
     // Go to comment page
-    cy.getByTestid('pageCommentButton').click();
+    cy.getByTestid('page-comment-button').click();
 
     // Open comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('openCommentEditorButton').click();
+      cy.getByTestid('open-comment-editor-button').click();
       // wait until
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
