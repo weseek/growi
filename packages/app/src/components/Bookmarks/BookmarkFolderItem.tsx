@@ -36,6 +36,7 @@ type BookmarkFolderItemProps = {
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
+  const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
     bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
@@ -58,6 +59,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
   const childrenExists = hasChildren(children);
+
+  const paddingLeft = BASE_FOLDER_PADDING * level;
 
   const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
@@ -196,6 +199,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           onRenamed={mutateBookmarkData}
           onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
           parentFolder={bookmarkFolder}
+          level={level + 1}
         />
       );
     });
@@ -234,8 +238,9 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         isDropable={isDroppable}
       >
         <li
-          className={' list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center'}
+          className={'list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center'}
           onClick={loadChildFolder}
+          style={{ paddingLeft }}
         >
           <div className="grw-triangle-container d-flex justify-content-center">
             {childrenExists && (

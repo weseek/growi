@@ -27,12 +27,15 @@ type Props = {
   onRenamed: () => void,
   onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void,
   parentFolder: BookmarkFolderItems | null
+  level: number
 }
 
 export const BookmarkItem = (props: Props): JSX.Element => {
+  const BASE_FOLDER_PADDING = 15;
+  const BASE_BOOKMARK_PADDING = 20;
   const { t } = useTranslation();
   const {
-    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem, parentFolder,
+    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem, parentFolder, level,
   } = props;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
@@ -40,6 +43,8 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
   const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
   const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+
+  const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level + 1));
 
   const dragItem: Partial<DragItemDataType> = {
     ...bookmarkedPage, parentFolder,
@@ -106,6 +111,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
+        style={{ paddingLeft }}
       >
         { isRenameInputShown ? (
           <ClosableTextInput

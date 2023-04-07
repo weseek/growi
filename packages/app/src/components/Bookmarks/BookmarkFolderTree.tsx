@@ -123,6 +123,7 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
               onRenamed={mutateUserBookmarks}
               onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
               parentFolder={null}
+              level={0}
             />
           </div>
         ))}
