@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.13...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.14...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.14](https://github.com/weseek/growi/compare/v6.0.13...v6.0.14) - 2023-04-04
+
+### 🐛 Bug Fixes
+
+- fix(drawio): Set compressXml option (#7536) @yuki-takei
+- fix(drawio): Rendering uncompressed data (#7537) @yuki-takei
 
 ## [v6.0.13](https://github.com/weseek/growi/compare/v6.0.12...v6.0.13) - 2023-04-03
 
