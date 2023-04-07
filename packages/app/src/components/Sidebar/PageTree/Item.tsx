@@ -65,7 +65,7 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 };
 
 
-const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+const bookmarkMenuItemClickHandler = async (_pageId: string, _newValue: boolean): Promise<void> => {
   const bookmarkOperation = _newValue ? bookmark : unbookmark;
   await bookmarkOperation(_pageId);
 };
@@ -172,12 +172,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   });
 
-  const pageItemDropHandler = async(item: ItemNode) => {
+  const pageItemDropHandler = async (item: ItemNode) => {
     const { page: droppedPage } = item;
-    const dpagePath = new DevidedPagePath(droppedPage.path, false, true);
-
-    // Check if droppedPage is direct descendant of root
-    const isDirectDescendantOfRoot = dpagePath.isFormerRoot;
 
     if (!isDroppable(droppedPage, page, true)) {
       return;
@@ -198,11 +194,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         updateMetadata: true,
       });
 
-      // Mutate page tree if target is root or dropped item is direct descendant of root
-      if (page.parent === null || isDirectDescendantOfRoot) {
-        await mutatePageTree();
-      }
-
+      await mutatePageTree();
       await mutateChildren();
 
       if (onRenamed != null) {
@@ -255,7 +247,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
 
-  const onClickLoadChildren = useCallback(async() => {
+  const onClickLoadChildren = useCallback(async () => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
@@ -287,7 +279,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setRenameInputShown(true);
   }, []);
 
-  const onPressEnterForRenameHandler = async(inputText: string) => {
+  const onPressEnterForRenameHandler = async (inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
@@ -316,7 +308,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+  const deleteMenuItemClickHandler = useCallback(async (_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
       return;
     }
@@ -337,7 +329,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, page]);
 
-  const onPressEnterForCreateHandler = async(inputText: string) => {
+  const onPressEnterForCreateHandler = async (inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = nodePath.resolve(parentPath, inputText);
@@ -396,7 +388,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
    * Users do not need to know if all pages have been renamed.
    * Make resuming rename operation appears to be working fine to allow users for a seamless operation.
    */
-  const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
+  const pathRecoveryMenuItemClickHandler = async (pageId: string): Promise<void> => {
     try {
       await resumeRenameOperation(pageId);
       toastSuccess(t('page_operation.paths_recovered'));
@@ -462,7 +454,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        { isRenameInputShown
+        {isRenameInputShown
           ? (
             <div className="flex-fill">
               <NotDraggableForClosableTextInput>
@@ -478,7 +470,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { shouldShowAttentionIcon && (
+              {shouldShowAttentionIcon && (
                 <>
                   <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
                   <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
@@ -486,7 +478,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-              { page != null && page.path != null && page._id != null && (
+              {page != null && page.path != null && page._id != null && (
                 <Link
                   href={pathUtils.returnPathForURL(page.path, page._id)}
                   className="grw-pagetree-title-anchor flex-grow-1"
@@ -563,7 +555,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
-            { isCreating && (currentChildren.length - 1 === index) && (
+            {isCreating && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
                 <i className="fa fa-spinner fa-pulse mr-1"></i>
               </div>
