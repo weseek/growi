@@ -295,7 +295,7 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, createFromPageTree,
     } = req.body;
 
     let { path } = req.body;
@@ -309,10 +309,27 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
+    let tagsCreatedFromPageTree = [];
+    let bodyCreatedFromPageTree = '';
+    if (createFromPageTree) {
+      const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+      if (isEnabledAttachTitleHeader) {
+        bodyCreatedFromPageTree += `${pathUtils.attachTitleHeader(path)}\n`;
+      }
+
+      const templateData = await Page.findTemplate(path);
+      if (templateData?.templateTags != null) {
+        tagsCreatedFromPageTree = templateData.templateTags;
+      }
+      if (templateData?.templateBody != null) {
+        bodyCreatedFromPageTree += `${templateData.templateBody}\n`;
+      }
+    }
+
     let createdPage;
     try {
       createdPage = await createPageAction({
-        path, body, user: req.user, options,
+        path, body: createFromPageTree ? bodyCreatedFromPageTree : body, user: req.user, options,
       });
     }
     catch (err) {
@@ -320,7 +337,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(err);
     }
 
-    const savedTags = await saveTagsAction({ createdPage, pageTags });
+    const savedTags = await saveTagsAction({ createdPage, pageTags: createFromPageTree ? tagsCreatedFromPageTree : pageTags });
 
     const result = {
       page: serializePageSecurely(createdPage),
