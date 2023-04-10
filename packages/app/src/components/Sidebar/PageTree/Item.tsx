@@ -41,7 +41,6 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: Nullable<string>
   isOpen?: boolean
-  isEnabledAttachTitleHeader?: boolean
   onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
@@ -113,7 +112,7 @@ const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
@@ -340,21 +339,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    let initBody = '';
-    if (isEnabledAttachTitleHeader) {
-      const pageTitle = nodePath.basename(newPagePath);
-      initBody = pathUtils.attachTitleHeader(pageTitle);
-    }
-
     try {
       setCreating(true);
 
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: initBody,
+        body: undefined,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
-        createFromPageTree: true,
       });
 
       mutateChildren();
@@ -550,7 +542,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
-              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onRenamed={onRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
