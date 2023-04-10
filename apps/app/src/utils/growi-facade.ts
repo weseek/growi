@@ -1,4 +1,5 @@
-import { GrowiFacade, isServer } from '@growi/core';
+import type { GrowiFacade } from '@growi/core/dist/interfaces/growi-facade';
+import { isServer } from '@growi/core/dist/utils/browser-utils';
 import deepmerge from 'ts-deepmerge';
 
 declare global {
