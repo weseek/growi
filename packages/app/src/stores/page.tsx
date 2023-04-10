@@ -24,6 +24,9 @@ import { useStaticSWR } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
+export const useShouldSSR = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('shouldSSR', initialData);
+};
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);

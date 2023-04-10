@@ -42,7 +42,7 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData, useShouldSSR,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -173,6 +173,8 @@ type Props = CommonProps & {
 
   grantData?: IPageGrantData,
 
+  SSRMaxRevisionBodyLength: number,
+
   rendererConfig: RendererConfig,
 };
 
@@ -252,6 +254,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
   const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
 
+  const { mutate: mutateShouldSSR } = useShouldSSR();
+
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
@@ -308,6 +312,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
+
+  useEffect(() => {
+    mutateShouldSSR(revisionBody != null ? props.SSRMaxRevisionBodyLength >= revisionBody.length : true);
+  }, [mutateShouldSSR, props.SSRMaxRevisionBodyLength, revisionBody]);
 
   const title = generateCustomTitleForPage(props, pagePath);
 
@@ -568,6 +576,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
   props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+
+  props.SSRMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

@@ -11,7 +11,7 @@ import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
-import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
+import { useSWRxCurrentPage, useIsNotFound, useShouldSSR } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 import { registerGrowiFacade } from '~/utils/growi-facade';
@@ -24,8 +24,6 @@ import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
-
-import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
 
@@ -65,13 +63,15 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isNotFoundMeta } = useIsNotFound();
   const { data: isMobile } = useIsMobile();
-
+  const { data: shouldSSR } = useShouldSSR();
   const { data: pageBySWR } = useSWRxCurrentPage();
   const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
 
   const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomePagePath = isUsersHomePage(pagePath);
+
+  const RevisionRenderer = dynamic(() => import('./RevisionRenderer'), { ssr: shouldSSR });
 
   // register to facade
   useEffect(() => {
