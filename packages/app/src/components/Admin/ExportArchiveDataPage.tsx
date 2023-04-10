@@ -19,7 +19,7 @@ const IGNORED_COLLECTION_NAMES = [
 
 const ExportArchiveDataPage = (): JSX.Element => {
   const { data: socket } = useAdminSocket();
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const [collections, setCollections] = useState<any[]>([]);
   const [zipFileStats, setZipFileStats] = useState<any[]>([]);
