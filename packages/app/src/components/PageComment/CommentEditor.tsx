@@ -126,7 +126,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     }
   }, [isForNewComment, onCancelButtonClicked]);
 
-  const postCommentHandler = useCallback(async () => {
+  const postCommentHandler = useCallback(async() => {
     try {
       if (currentCommentId != null) {
         // update current comment
@@ -183,7 +183,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     });
   }, []);
 
-  const uploadHandler = useCallback(async (file) => {
+  const uploadHandler = useCallback(async(file) => {
     if (editorRef.current == null) { return }
 
     const pagePath = currentPagePath;
