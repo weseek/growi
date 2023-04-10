@@ -37,7 +37,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
     <>
       {/* Page list */}
       <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-        { !isSharedUser && (
+        {!isSharedUser && (
           <button
             type="button"
             className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
@@ -50,16 +50,17 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             {t('page_list')}
             <CountBadge count={page?.descendantCount} offset={1} />
           </button>
-        ) }
+        )}
       </div>
 
       {/* Comments */}
-      { !isTopPagePath && (
+      {!isTopPagePath && (
         <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
           <Link to={'page-comments'} offset={-120}>
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+              data-testid="page-comment-button"
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
               <span>Comments</span>
@@ -67,11 +68,11 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             </button>
           </Link>
         </div>
-      ) }
+      )}
 
       <div className="d-none d-lg-block">
         <TableOfContents />
-        { isUsersHomePagePath && <ContentLinkButtons author={page?.creator} /> }
+        {isUsersHomePagePath && <ContentLinkButtons author={page?.creator} />}
       </div>
     </>
   );

@@ -230,6 +230,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             type="button"
             className="btn btn-lg btn-link"
             onClick={() => setIsReadyToUse(true)}
+            data-testid="open-comment-editor-button"
           >
             <i className="icon-bubble"></i> Add Comment
           </button>
@@ -300,9 +301,9 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         <div className="comment-submit">
           <div className="d-flex">
             <span className="flex-grow-1" />
-            <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
+            <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
 
-            { isSlackConfigured && isSlackEnabled != null
+            {isSlackConfigured && isSlackEnabled != null
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
@@ -321,7 +322,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           </div>
           <div className="d-block d-sm-none mt-2">
             <div className="d-flex justify-content-end">
-              { error && errorMessage }
+              {error && errorMessage}
               <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
@@ -337,7 +338,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <UserPicture user={currentUser} noLink noTooltip />
         </div>
         <div className="comment-form-main">
-          { isReadyToUse
+          {isReadyToUse
             ? renderReady()
             : renderBeforeReady()
           }
