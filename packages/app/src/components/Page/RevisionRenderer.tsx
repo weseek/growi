@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown-customkeyprop';
 
 import type { RendererOptions } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';

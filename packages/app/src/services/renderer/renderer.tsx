@@ -7,9 +7,9 @@ import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
-import type { SpecialComponents } from 'react-markdown/lib/ast-to-react';
-import type { NormalComponents } from 'react-markdown/lib/complex-types';
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import type { SpecialComponents } from 'react-markdown-customkeyprop/lib/ast-to-react';
+import type { NormalComponents } from 'react-markdown-customkeyprop/lib/complex-types';
+import type { ReactMarkdownOptions } from 'react-markdown-customkeyprop/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
 import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-sanitize';
@@ -72,7 +72,7 @@ const baseSanitizeSchema = {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
     // The special value 'data*' as a property name can be used to allow all data properties.
     // see: https://github.com/syntax-tree/hast-util-sanitize/
-    '*': ['class', 'className', 'style', 'data*'],
+    '*': ['key', 'class', 'className', 'style', 'data*'],
   },
 };
 
