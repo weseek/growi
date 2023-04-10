@@ -261,7 +261,6 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -329,7 +328,6 @@ export const generateSSRViewOptions = (
     math,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = config.isEnabledLinebreaks;
@@ -380,7 +378,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
