@@ -4,7 +4,6 @@ import { debounce } from 'throttle-debounce';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-
 type UsersListForHints = {
   text: string
   displayText: string
@@ -42,7 +41,8 @@ export default class CommentMentionHelper {
         if (mention.length > 0) {
           const users = await this.getUsersList(mention);
           return {
-            list: users.length > 0 ? users : [{ text: '', displayText: i18n?.t('page_comment.no_user_found') }],
+            // Returns default value if i18n is null because it cannot do early return.
+            list: users.length > 0 ? users : [{ text: '', displayText: i18n != null ? i18n.t('page_comment.no_user_found') : 'No user found' }],
             from: searchFrom,
             to: searchTo,
           };
