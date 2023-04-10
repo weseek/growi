@@ -563,7 +563,7 @@ class PageService {
 
     // Remove leaf empty pages if not moving to under the ex-target position
     if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
-    // remove empty pages at leaf position
+      // remove empty pages at leaf position
       await Page.removeLeafEmptyPagesRecursively(page.parent);
     }
 
