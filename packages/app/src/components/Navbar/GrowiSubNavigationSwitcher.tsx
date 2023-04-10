@@ -2,7 +2,7 @@ import React, {
   useState, useRef, useEffect, useCallback,
 } from 'react';
 
-import StickyEvents from 'sticky-events';
+import { useSticky } from 'react-use-sticky';
 import { debounce } from 'throttle-debounce';
 
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -32,8 +32,8 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isSidebarCollapsed } = useSidebarCollapsed();
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(0);
+  const [subNavRef, sticky] = useSticky<HTMLDivElement>();
 
   // use more specific type HTMLDivElement for avoid assertion error.
   // see: https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement
@@ -49,43 +49,6 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
     }
   }, []);
 
-  const stickyChangeHandler = useCallback((event) => {
-    logger.debug('StickyEvents.CHANGE detected');
-    setIsVisible(event.detail.isSticky);
-  }, []);
-
-  // setup effect by sticky-events
-  useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickySelector = '#grw-subnav-sticky-trigger';
-    const stickyElement = document.querySelector(stickySelector);
-    if (stickyElement) {
-      const stickyEvents = new StickyEvents({ stickySelector });
-      stickyEvents.enableEvents();
-      stickyElement.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-
-      // return clean up handler
-      return () => {
-        stickyElement.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-      };
-    }
-    // disable sticky events before unload
-    const beforeUnloadHandler = () => {
-      const stickyElement = document.querySelector(stickySelector);
-      if (stickyElement) {
-        const stickyEvents = new StickyEvents({ stickySelector });
-        stickyEvents.disableEvents();
-      }
-    };
-
-    window.addEventListener('beforeunload', beforeUnloadHandler);
-
-    // return clean up handler
-    return () => {
-      window.removeEventListener('beforeunload', beforeUnloadHandler);
-    };
-  }, [stickyChangeHandler]);
 
   // setup effect by resizing event
   useEffect(() => {
@@ -119,7 +82,7 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   }
 
   return (
-    <div className={`${styles['grw-subnav-switcher']} ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
+    <div className={`${styles['grw-subnav-switcher']} ${sticky ? '' : 'grw-subnav-switcher-hidden'}`} ref={subNavRef} style={{ position: 'sticky', top: 0 }}>
       <div
         id="grw-subnav-fixed-container"
         className={`grw-subnav-fixed-container ${styles['grw-subnav-fixed-container']} position-fixed grw-subnav-append-shadow-container`}
