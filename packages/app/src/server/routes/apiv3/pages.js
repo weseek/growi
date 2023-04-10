@@ -165,8 +165,8 @@ module.exports = (crowi) => {
 
   const validator = {
     createPage: [
-      body('body').exists()
-        .withMessage('body is re quired but an empty string is allowed'),
+      body('body').optional().isString()
+        .withMessage('body must be string or undefined'),
       body('path').exists().not().isEmpty({ ignore_whitespace: true })
         .withMessage('path is required'),
       body('grant').if(value => value != null).isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
@@ -174,7 +174,6 @@ module.exports = (crowi) => {
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
-      body('createFromPageTree').optional().isBoolean().withMessage('createFromPageTree must be boolean'),
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -309,10 +308,28 @@ module.exports = (crowi) => {
       options.grantUserGroupId = grantUserGroupId;
     }
 
+    const isNoBodyPage = body === undefined;
+    let initialTags = [];
+    let initialBody = '';
+    if (isNoBodyPage) {
+      const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+      if (isEnabledAttachTitleHeader) {
+        initialBody += `${pathUtils.attachTitleHeader(path)}\n`;
+      }
+
+      const templateData = await Page.findTemplate(path);
+      if (templateData?.templateTags != null) {
+        initialTags = templateData.templateTags;
+      }
+      if (templateData?.templateBody != null) {
+        initialBody += `${templateData.templateBody}\n`;
+      }
+    }
+
     let createdPage;
     try {
       createdPage = await createPageAction({
-        path, body, user: req.user, options,
+        path, body: isNoBodyPage ? initialBody : body, user: req.user, options,
       });
     }
     catch (err) {
@@ -320,7 +337,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(err);
     }
 
-    const savedTags = await saveTagsAction({ createdPage, pageTags });
+    const savedTags = await saveTagsAction({ createdPage, pageTags: isNoBodyPage ? initialTags : pageTags });
 
     const result = {
       page: serializePageSecurely(createdPage),
