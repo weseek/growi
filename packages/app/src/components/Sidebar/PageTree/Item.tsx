@@ -337,10 +337,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: '',
+        body: undefined,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
-        createFromPageTree: true,
       });
 
       mutateChildren();
