@@ -8,6 +8,7 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
+import toc from 'remark-toc';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable, PluginTuple } from 'unified';
 
@@ -40,7 +41,7 @@ const baseSanitizeSchema = {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
     // The special value 'data*' as a property name can be used to allow all data properties.
     // see: https://github.com/syntax-tree/hast-util-sanitize/
-    '*': ['class', 'className', 'style', 'data*'],
+    '*': ['key', 'class', 'className', 'style', 'data*'],
   },
 };
 
@@ -92,6 +93,7 @@ export const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastIt
 export const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
+      [toc, { maxDepth: 3, tight: true, prefix: 'mdcont-' }],
       gfm,
       emoji,
       pukiwikiLikeLinker,
@@ -129,7 +131,6 @@ export const generateSSRViewOptions = (
   remarkPlugins.push(
     math,
     xsvToTable.remarkPlugin,
-    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = config.isEnabledLinebreaks;

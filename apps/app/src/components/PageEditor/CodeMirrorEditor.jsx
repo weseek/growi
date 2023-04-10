@@ -40,6 +40,7 @@ import styles from './CodeMirrorEditor.module.scss';
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
 
+require('codemirror/addon/hint/show-hint.css'); // Import from CodeMirrorEditor.module.scss not working
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');

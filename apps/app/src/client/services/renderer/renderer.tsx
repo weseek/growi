@@ -22,9 +22,8 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
-import * as toc from '~/services/renderer/rehype-plugins/relocate-toc';
+import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
-import * as table from '~/services/renderer/remark-plugins/table';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
@@ -81,7 +80,7 @@ export const generateViewOptions = (
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     rehypeSanitizePlugin,
     katex,
-    [toc.rehypePluginStore, { storeTocNode }],
+    [relocateToc.rehypePluginStore, { storeTocNode }],
   );
 
   // add components
@@ -125,7 +124,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   // add rehype plugins
   rehypePlugins.push(
-    [toc.rehypePluginRestore, { tocNode }],
+    [relocateToc.rehypePluginRestore, { tocNode }],
     rehypeSanitizePlugin,
   );
 
@@ -153,7 +152,6 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -220,7 +218,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);

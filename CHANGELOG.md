@@ -1,8 +1,52 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.15...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.15](https://github.com/weseek/growi/compare/v6.0.14...v6.0.15) - 2023-04-10
+
+### 🐛 Bug Fixes
+
+- fix: Templates are not applied when pages are created from PageTree (#7553) @miya
+- fix(drawio): Render uncompressed data when line-breaks option is set (#7555) @yuki-takei
+- fix: Is not working i18n on `/admin/export`  (#7554) @jam411
+- fix: PageTree mutiple DnD unexpected disappear and unexpected tree move if renamed path (#7542) @jam411
+- fix: Username incremental search is not working in comment (#7548) @mudana-grune
+- fix: H6 line-height (#7541) @yukendev
+
+## [v6.0.14](https://github.com/weseek/growi/compare/v6.0.13...v6.0.14) - 2023-04-04
+
+### 🐛 Bug Fixes
+
+- fix(drawio): Set compressXml option (#7536) @yuki-takei
+- fix(drawio): Rendering uncompressed data (#7537) @yuki-takei
+
+## [v6.0.13](https://github.com/weseek/growi/compare/v6.0.12...v6.0.13) - 2023-04-03
+
+### 🐛 Bug Fixes
+
+- fix: The "note" and "keep" commands of the GROWI bot are not functioning (#7529) @miya
+- fix: The "search" command of the GROWI bot is not functioning (#7525) @miya
+- fix: Lsx filter and except option do not work when the path includes special characters (#7523) @yuki-takei
+
+## [v6.0.12](https://github.com/weseek/growi/compare/v6.0.11...v6.0.12) - 2023-03-30
+
+### 🐛 Bug Fixes
+
+- fix: DrawioViewer script URL (#7518) @yuki-takei
+
+## [v6.0.11](https://github.com/weseek/growi/compare/v6.0.10...v6.0.11) - 2023-03-29
+
+### 🚀 Improvement
+
+- imprv: ToC placeholder (#7506) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Support draw.io v21.1.0 (support both of compressed/uncompressed data) (#7515) @yuki-takei
+- fix: The same level template page is being applied to lower level pages unintentionally (#7510) @miya
+- fix: Supress `activeTab` prop type error (#7504) @jam411
 
 ## [v6.0.10](https://github.com/weseek/growi/compare/v6.0.9...v6.0.10) - 2023-03-23
 

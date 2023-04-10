@@ -4,7 +4,9 @@ import React, {
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import {
+  pathUtils, pagePathUtils, Nullable, DevidedPagePath,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
@@ -19,7 +21,7 @@ import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
-import { useSWRxPageChildren } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -39,7 +41,6 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: Nullable<string>
   isOpen?: boolean
-  isEnabledAttachTitleHeader?: boolean
   onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
@@ -111,7 +112,7 @@ const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
@@ -192,6 +193,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         updateMetadata: true,
       });
 
+      await mutatePageTree();
       await mutateChildren();
 
       if (onRenamed != null) {
@@ -214,27 +216,31 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(() => ({
-    accept: 'PAGE_TREE',
-    drop: pageItemDropHandler,
-    hover: (item, monitor) => {
-      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
-      if (monitor.isOver()) {
-        setTimeout(() => {
-          if (monitor.isOver()) {
-            setIsOpen(true);
-          }
-        }, 600);
-      }
-    },
-    canDrop: (item) => {
-      const { page: droppedPage } = item;
-      return isDroppable(droppedPage, page);
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver(),
+  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(
+    () => ({
+      accept: 'PAGE_TREE',
+      drop: pageItemDropHandler,
+      hover: (item, monitor) => {
+        // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
+        if (monitor.isOver()) {
+          setTimeout(() => {
+            if (monitor.isOver()) {
+              setIsOpen(true);
+            }
+          }, 600);
+        }
+      },
+      canDrop: (item) => {
+        const { page: droppedPage } = item;
+        return isDroppable(droppedPage, page);
+      },
+      collect: monitor => ({
+        isOver: monitor.isOver(),
+      }),
     }),
-  }));
+    [page],
+  );
+
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
@@ -333,21 +339,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    let initBody = '';
-    if (isEnabledAttachTitleHeader) {
-      const pageTitle = nodePath.basename(newPagePath);
-      initBody = pathUtils.attachTitleHeader(pageTitle);
-    }
-
     try {
       setCreating(true);
 
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: initBody,
+        body: undefined,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
-        createFromPageTree: true,
       });
 
       mutateChildren();
@@ -447,7 +446,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        { isRenameInputShown
+        {isRenameInputShown
           ? (
             <div className="flex-fill">
               <NotDraggableForClosableTextInput>
@@ -463,7 +462,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           )
           : (
             <>
-              { shouldShowAttentionIcon && (
+              {shouldShowAttentionIcon && (
                 <>
                   <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
                   <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
@@ -471,7 +470,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-              { page != null && page.path != null && page._id != null && (
+              {page != null && page.path != null && page._id != null && (
                 <Link
                   href={pathUtils.returnPathForURL(page.path, page._id)}
                   className="grw-pagetree-title-anchor flex-grow-1"
@@ -543,12 +542,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
-              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onRenamed={onRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
-            { isCreating && (currentChildren.length - 1 === index) && (
+            {isCreating && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
                 <i className="fa fa-spinner fa-pulse mr-1"></i>
               </div>

@@ -208,7 +208,8 @@ context('Access to special pages', () => {
 });
 
 context('Access to Template Editing Mode', () => {
-  const ssPrefix = 'access-to-modal-';
+  const ssPrefix = 'access-to-template-page-';
+  const templateBody = 'Template for children';
 
   beforeEach(() => {
     // login
@@ -217,58 +218,92 @@ context('Access to Template Editing Mode', () => {
     });
   });
 
-  // TODO: 109057
-  // it('Access to Template Editor mode for only child pages successfully', () => {
-  //   cy.visit('/Sandbox/Bootstrap4', {  });
-  //   cy.waitUntilSkeletonDisappear();
+  it("Successfully created a template page by accessing the editor mode for children's templates", () => {
+    cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
 
-  //   cy.get('#grw-subnav-container').within(() => {
-  //     cy.getByTestid('open-page-item-control-btn').should('be.visible');
-  //     cy.getByTestid('open-page-item-control-btn').click();
-  //     cy.getByTestid('open-page-template-modal-btn').should('be.visible');
-  //     cy.getByTestid('open-page-template-modal-btn').click();
-  //   });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    });
 
-  //   cy.getByTestid('page-template-modal').should('be.visible');
-  //   cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+    cy.getByTestid('page-template-modal').should('be.visible');
+    cy.screenshot(`${ssPrefix}-open-page-template-modal`);
 
-  // Todo: `@`alias may be changed. This code was made in an attempt to solve the error of element being dettached from the dom which couldn't be solved at this time.
-  // Wait for Todo: 109057 is solved and fix or leave the code below for better test code.
-  //   cy.getByTestid('template-button-children').as('template-button-children');
-  //   cy.get('@template-button-children').should('be.visible').click();
-  //   cy.waitUntilSkeletonDisappear();
+    cy.getByTestid('template-button-children').click(({force: true}))
+    cy.waitUntilSkeletonDisappear();
 
-  //   cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-  //     cy.url().should('include', '/_template#edit');
-  //     cy.screenshot();
-  //   });
-  // });
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/_template#edit');
+      cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
+    });
 
-  // TODO: 109057
-  // it('Access to Template Editor mode including decendants successfully', () => {
-  //   cy.visit('/Sandbox/Bootstrap4', {  });
-  //   cy.waitUntilSkeletonDisappear();
+    cy.get('.CodeMirror').type(templateBody);
+    cy.get('.CodeMirror').contains(templateBody);
+    cy.get('.page-editor-preview-body').contains(templateBody);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').click();
+  });
 
-  //   cy.get('#grw-subnav-container').within(() => {
-  //     cy.getByTestid('open-page-item-control-btn').should('be.visible');
-  //     cy.getByTestid('open-page-item-control-btn').click();
-  //     cy.getByTestid('open-page-template-modal-btn').should('be.visible');
-  //     cy.getByTestid('open-page-template-modal-btn').click();
-  //   });
-  //   cy.getByTestid('page-template-modal').should('be.visible');
+  it('Successfully accessed the editor mode for the descendant template page', () => {
+    cy.visit('/Sandbox/Bootstrap4');
+    cy.waitUntilSkeletonDisappear();
 
-  // Todo: `@`alias may be changed. This code was made in an attempt to solve the error of element being dettached from the dom which couldn't be solved at this time.
-  // Wait for Todo: 109057 is solved and fix or leave the code below for better test code.
-  //   cy.getByTestid('template-button-decendants').as('template-button-decendants');
-  //   cy.get('@template-button-decendants').should('be.visible').click();
-  //   cy.waitUntilSkeletonDisappear();
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    });
 
-  //   cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-  //     cy.url().should('include', '/__template#edit');
-  //     cy.screenshot();
-  //   });
-  // });
+    cy.getByTestid('page-template-modal').should('be.visible');
 
+    cy.getByTestid('template-button-decendants').click(({force: true}))
+    cy.waitUntilSkeletonDisappear();
+
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/__template#edit');
+      cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
+    });
+  });
+
+  it('Templates are applied to pages created from the PageTree', () => {
+    cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
+    // Open sidebar
+    cy.collapseSidebar(false);
+    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
+
+    // If PageTree is not active when the sidebar is opened, make it active
+    cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
+      .then($elem => {
+        if (!$elem.hasClass('active')) {
+          cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
+        }
+      });
+
+    // Create page (/Sandbox/template-test-page) from PageTree
+    cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+      cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+        cy.get('#page-create-button-in-page-tree').first().click({force: true})
+      });
+    });
+    cy.get('@pagetreeItem').within(() => {
+      cy.getByTestid('closable-text-input').type('template-test-page').type('{enter}');
+    })
+
+    cy.visit('/Sandbox/template-test-page');
+    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
+
+    // Check if the template is applied
+    cy.get('.content-main').within(() => {
+      cy.get('.wiki').should('be.visible');
+      cy.get('.wiki').children().first().should('have.text', templateBody);
+    })
+
+    cy.screenshot(`${ssPrefix}-page-to-which-template-is-applied`)
+  });
 });
 
 context('Access to /me/all-in-app-notifications', () => {

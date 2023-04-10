@@ -35,7 +35,6 @@ module.exports = (crowi) => {
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const user = await User.findUserBySlackMemberId(payload.user.id);
 
-    const userId = user != null ? user._id : null;
     // validate form
     const { path, oldest, newest } = await this.keepValidateForm(client, payload, interactionPayloadAccessor);
     // get messages
@@ -45,7 +44,7 @@ module.exports = (crowi) => {
 
     const contentsBody = cleanedContents.join('');
     // create and send url message
-    await this.keepCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userId, contentsBody, respondUtil);
+    await this.keepCreatePageAndSendPreview(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil);
   };
 
   handler.keepValidateForm = async function(client, payload, interactionPayloadAccessor) {
@@ -197,8 +196,8 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.keepCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userId, contentsBody, respondUtil) {
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, userId);
+  handler.keepCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) {
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user);
 
     // TODO: contentsBody text characters must be less than 3001
     // send preview to dm
