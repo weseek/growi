@@ -304,6 +304,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('template-button-decendants').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
+    cy.get('.CodeMirror').clear(); // Clear templateBody1 value
     cy.get('.CodeMirror').type(templateBody2);
     cy.get('.CodeMirror').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
@@ -315,9 +316,9 @@ context('Access to Template Editing Mode', () => {
     createPageFromPageTreeTest('template-test-page2', templateBody1);
   });
 
-  it('Delete /Sandbox/_template for next test', () => {
+  it('Template is applied to pages created from PageTree (template for descendants)', () => {
+    // delete /Sandbox/_template
     cy.visit('/Sandbox/_template');
-
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true});
       cy.getByTestid('open-page-delete-modal-btn').click({force: true});
@@ -327,9 +328,7 @@ context('Access to Template Editing Mode', () => {
       cy.getByTestid('delete-page-button').click();
       cy.wait('@remove')
     });
-  });
 
-  it('Template is applied to pages created from PageTree (template for descendants)', () => {
     createPageFromPageTreeTest('template-test-page3', templateBody2);
   })
 });
