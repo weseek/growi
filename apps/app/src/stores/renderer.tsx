@@ -24,13 +24,13 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
   }, [mutateCurrentPageTocNode]);
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
+  const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions;
 
   return useSWR(
     isAllDataValid
-      ? ['viewOptions', currentPagePath, rendererConfig]
+      ? ['viewOptions', currentPagePath, rendererConfig, customGenerater]
       : null,
     async([, currentPagePath, rendererConfig]) => {
-      const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions;
       if (customGenerater != null) {
         return customGenerater(currentPagePath, rendererConfig, storeTocNodeHandler);
       }
@@ -74,13 +74,13 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: rendererConfig } = useRendererConfig();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
+  const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions;
 
   return useSWR(
     isAllDataValid
-      ? ['previewOptions', rendererConfig, currentPagePath]
+      ? ['previewOptions', rendererConfig, currentPagePath, customGenerater]
       : null,
     async([, rendererConfig, pagePath]) => {
-      const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions;
       if (customGenerater != null) {
         return customGenerater(rendererConfig, pagePath);
       }
