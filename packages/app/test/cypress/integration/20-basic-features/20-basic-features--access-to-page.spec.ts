@@ -212,7 +212,7 @@ context('Access to Template Editing Mode', () => {
   const templateBody1 = 'Template for children';
   const templateBody2 = 'Template for descendants';
 
-  const createPageFromPageTreeTest = (pagePath: string, expectedBody: string): any => {
+  const createPageFromPageTreeTest = (pagePath: string, expectedBody: string) => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
 
@@ -286,7 +286,9 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('save-page-btn').click();
   });
 
-  it('createPageFromPageTreeTest', createPageFromPageTreeTest('template-test-page1', templateBody1));
+  it('createPageFromPageTreeTest1', () => {
+    createPageFromPageTreeTest('template-test-page1', templateBody1);
+  });
 
   it('Successfully accessed the editor mode for the descendant template page', () => {
     cy.visit('/Sandbox/Bootstrap4');
@@ -309,7 +311,9 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('save-page-btn').click();
   });
 
-  it('createPageFromPageTreeTest', createPageFromPageTreeTest('template-test-page2', templateBody1));
+  it('createPageFromPageTreeTest2', () => {
+    createPageFromPageTreeTest('template-test-page1', templateBody1);
+  });
 });
 
 context('Access to /me/all-in-app-notifications', () => {
