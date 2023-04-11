@@ -106,8 +106,7 @@
       "password_reset_desc": "when forgot password, users are able to reset it by themselves.",
       "email_authentication": "Email authentication on user registration",
       "enable_email_authentication": "Enable email authentication",
-      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
-      "need_complete_mail_setting_warning": "To use the following functions, please complete the mail settings."
+      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
