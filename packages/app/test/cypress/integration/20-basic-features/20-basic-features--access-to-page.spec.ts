@@ -315,8 +315,7 @@ context('Access to Template Editing Mode', () => {
     createPageFromPageTreeTest('template-test-page2', templateBody1);
   });
 
-  it('Template is applied to pages created from PageTree (template for descendants)', () => {
-    // Delete /Sandbox/_template
+  it('Delete /Sandbox/_template for next test', () => {
     cy.visit('/Sandbox/_template');
 
     cy.get('#grw-subnav-container').within(() => {
@@ -328,7 +327,9 @@ context('Access to Template Editing Mode', () => {
       cy.getByTestid('delete-page-button').click();
       cy.wait('@remove')
     });
+  });
 
+  it('Template is applied to pages created from PageTree (template for descendants)', () => {
     createPageFromPageTreeTest('template-test-page3', templateBody2);
   })
 });
