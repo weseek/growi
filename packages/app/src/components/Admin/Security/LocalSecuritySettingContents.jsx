@@ -134,8 +134,13 @@ class LocalSecuritySettingContents extends React.Component {
                       {t('security_settings.registration_mode.closed')}
                     </button>
                   </div>
+                  {!isMailerSetup && (
+                    <div className="alert alert-warning p-1 my-1 small d-inline-block">
+                      <span>{t('commons:alert.register_limitation_please_enable_mailer')}</span>
+                      <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('app_setting.mail_settings')}</a>
+                    </div>
+                  )}
                 </div>
-
                 <p className="form-text text-muted small">{t('security_settings.register_limitation_desc')}</p>
               </div>
             </div>

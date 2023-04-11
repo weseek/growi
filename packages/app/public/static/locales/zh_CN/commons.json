@@ -20,7 +20,8 @@
   },
   "alert": {
     "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
-    "please_enable_mailer": "请先设置邮件程序。"
+    "please_enable_mailer": "请先设置邮件程序。",
+    "register_limitation_please_enable_mailer": "请先设置邮件程序。"
   },
   "headers": {
     "app_settings": "系统设置"
