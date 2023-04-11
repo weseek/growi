@@ -304,10 +304,16 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('template-button-decendants').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.CodeMirror').type('{selectall}{backspace}'); // Clear templateBody1 value (Cannot use cy.clear on .CodeMirror.)
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/__template#edit');
+      cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
+    })
+
+    cy.get('.CodeMirror').type('{home}{shift}{end}{backspace}'); // Clear templateBody1 value (Cannot use cy.clear on .CodeMirror.)
     cy.get('.CodeMirror').type(templateBody2);
     cy.get('.CodeMirror').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
+    cy.screenshot('clear?');
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
