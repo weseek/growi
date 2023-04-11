@@ -212,7 +212,7 @@ context('Access to Template Editing Mode', () => {
   const templateBody1 = 'Template for children';
   const templateBody2 = 'Template for descendants';
 
-  const createPageFromPageTreeTest = (pagePath: string, expectedBody: string) => {
+  const createPageFromPageTreeTest = (newPagePath: string, expectedBody: string) => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
 
@@ -236,10 +236,10 @@ context('Access to Template Editing Mode', () => {
       });
     });
     cy.get('@pagetreeItem').within(() => {
-      cy.getByTestid('closable-text-input').type(pagePath).type('{enter}');
+      cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
     })
 
-    cy.visit(`/Sandbox/${pagePath}`);
+    cy.visit(`/Sandbox/${newPagePath}`);
     cy.waitUntilSkeletonDisappear();
     cy.collapseSidebar(true);
 
@@ -249,7 +249,7 @@ context('Access to Template Editing Mode', () => {
       cy.get('.wiki').children().first().should('have.text', expectedBody);
     })
 
-    cy.screenshot(`${ssPrefix}-page-to-which-template-is-applied`)
+    cy.screenshot(`${ssPrefix}-page(${newPagePath})-to-which-template-is-applied`)
   }
 
   beforeEach(() => {
@@ -286,12 +286,12 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('save-page-btn').click();
   });
 
-  it('createPageFromPageTreeTest1', () => {
+  it('Template is applied to pages created from PageTree (same hierarchy 1)', () => {
     createPageFromPageTreeTest('template-test-page1', templateBody1);
   });
 
   it('Successfully accessed the editor mode for the descendant template page', () => {
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
@@ -311,7 +311,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('save-page-btn').click();
   });
 
-  it('createPageFromPageTreeTest2', () => {
+  it('Template is applied to pages created from PageTree (same hierarchy 2)', () => {
     createPageFromPageTreeTest('template-test-page1', templateBody1);
   });
 });
