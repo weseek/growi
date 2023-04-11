@@ -33,6 +33,8 @@ import loggerFactory from '~/utils/logger';
 // import EasyGrid from './PreProcessor/EasyGrid';
 // import BlockdiagConfigurer from './markdown-it/blockdiag';
 
+import '@growi/remark-lsx/dist/client/style.css';
+
 
 const logger = loggerFactory('growi:cli:services:renderer');
 
