@@ -14,7 +14,6 @@ import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -110,7 +109,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: sidebarScrollerRef } = useSidebarScrollerRef();
@@ -279,7 +277,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
           isOpen
-          isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
           isEnableActions={isEnableActions}
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}

@@ -23,7 +23,7 @@ const getTranspilePackages = () => {
   const packages = [
     ...listScopedPackages(['@growi'], { ignorePackageNames: ['@growi/app'] }),
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
-    'react-markdown',
+    'react-markdown-customkeyprop',
     'unified',
     'markdown-table',
     'character-entities-html4',
