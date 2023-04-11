@@ -304,7 +304,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('template-button-decendants').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.CodeMirror').clear(); // Clear templateBody1 value
+    cy.get('.CodeMirror').type('{selectall}{backspace}'); // Clear templateBody1 value (Cannot use cy.clear on .CodeMirror.)
     cy.get('.CodeMirror').type(templateBody2);
     cy.get('.CodeMirror').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
