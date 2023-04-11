@@ -259,7 +259,7 @@ context('Access to Template Editing Mode', () => {
     });
   });
 
-  it("Successfully created a template page by accessing the editor mode for children's templates", () => {
+  it("Successfully created template for children", () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
@@ -286,11 +286,11 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('save-page-btn').click();
   });
 
-  it('Template is applied to pages created from PageTree (same hierarchy 1)', () => {
+  it('Template is applied to pages created from PageTree (template for children 1)', () => {
     createPageFromPageTreeTest('template-test-page1', templateBody1);
   });
 
-  it('Successfully accessed the editor mode for the descendant template page', () => {
+  it('Successfully created template for descendants', () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
@@ -310,13 +310,15 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
-  it('Template is applied to pages created from PageTree (same hierarchy 2)', () => {
+
+  it('Template is applied to pages created from PageTree (template for children 2)', () => {
     createPageFromPageTreeTest('template-test-page2', templateBody1);
   });
 
-  it('Template is applied to pages created from PageTree (lower tier pages)', () => {
+  it('Template is applied to pages created from PageTree (template for descendants)', () => {
     // Delete /Sandbox/_template
     cy.visit('/Sandbox/_template');
+
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true});
       cy.getByTestid('open-page-delete-modal-btn').click({force: true});
@@ -325,6 +327,10 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-delete-modal`);
       cy.getByTestid('delete-page-button').click();
     });
+
+    cy.intercept('POST', '/_api/pages.remove').as('remove');
+    cy.getByTestid('btnSubmitForLogin').click();
+    cy.wait('@remove')
 
     createPageFromPageTreeTest('template-test-page3', templateBody2);
   })
