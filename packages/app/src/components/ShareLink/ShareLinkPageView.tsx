@@ -6,13 +6,12 @@ import dynamic from 'next/dynamic';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
-import { useIsNotFound } from '~/stores/page';
+import { useIsNotFound, useShouldSSR } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import { MainPane } from '../Layout/MainPane';
-import RevisionRenderer from '../Page/RevisionRenderer';
 import ShareLinkAlert from '../Page/ShareLinkAlert';
 import type { PageSideContentsProps } from '../PageSideContents';
 
@@ -40,9 +39,11 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     isExpired, disableLinkSharing,
   } = props;
 
+  const { data: shouldSSR } = useShouldSSR();
   const { data: isNotFoundMeta } = useIsNotFound();
-
   const { data: viewOptions, mutate: mutateRendererOptions } = useViewOptions();
+
+  const RevisionRenderer = dynamic(() => import('../Page/RevisionRenderer'), { ssr: shouldSSR });
 
   // register to facade
   useEffect(() => {

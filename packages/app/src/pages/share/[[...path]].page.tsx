@@ -22,7 +22,7 @@ import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
-import { useCurrentPageId, useIsNotFound } from '~/stores/page';
+import { useCurrentPageId, useIsNotFound, useShouldSSR } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -42,6 +42,7 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   drawioUri: string | null,
+  SSRMaxRevisionBodyLength: number,
   rendererConfig: RendererConfig,
 };
 
@@ -93,6 +94,8 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useDrawioUri(props.drawioUri);
   useIsContainerFluid(props.isContainerFluid);
 
+  const revisionBody = props.shareLinkRelatedPage?.revision.body;
+  useShouldSSR(revisionBody != null ? props.SSRMaxRevisionBodyLength >= revisionBody.length : true);
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
 
@@ -148,6 +151,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+
+  props.SSRMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 
   props.rendererConfig = {
     isSharedPage: true,
