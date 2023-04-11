@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import EventEmitter from 'events';
 
 import { useRouter } from 'next/router';
-import { Element } from 'react-markdown/lib/rehype-filter';
+import { Element } from 'react-markdown-customkeyprop/lib/rehype-filter';
 
 import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
