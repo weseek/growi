@@ -2,12 +2,12 @@ import React, {
   useState, useRef, useEffect, useCallback,
 } from 'react';
 
-import { useSticky } from 'react-use-sticky';
 import { debounce } from 'throttle-debounce';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useSidebarCollapsed } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+import { useSticky } from '~/utils/use-sticky-utils';
 
 import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
 
@@ -33,12 +33,14 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   const { data: isSidebarCollapsed } = useSidebarCollapsed();
 
   const [width, setWidth] = useState<number>(0);
-  const [subNavRef, sticky] = useSticky<HTMLDivElement>();
 
   // use more specific type HTMLDivElement for avoid assertion error.
   // see: https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement
   const fixedContainerRef = useRef<HTMLDivElement>(null);
   const clientWidth = fixedContainerRef.current?.parentElement?.clientWidth;
+
+  // Get sticky status
+  const isSticky = useSticky('#grw-subnav-sticky-trigger');
 
   // Do not use clientWidth as useCallback deps, resizing events will not work in production builds.
   const initWidth = useCallback(() => {
@@ -82,7 +84,7 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   }
 
   return (
-    <div className={`${styles['grw-subnav-switcher']} ${sticky ? '' : 'grw-subnav-switcher-hidden'}`} ref={subNavRef} style={{ position: 'sticky', top: 0 }}>
+    <div className={`${styles['grw-subnav-switcher']} ${isSticky ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div
         id="grw-subnav-fixed-container"
         className={`grw-subnav-fixed-container ${styles['grw-subnav-fixed-container']} position-fixed grw-subnav-append-shadow-container`}

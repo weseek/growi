@@ -17999,11 +17999,6 @@ react-use-ripple@^1.5.2:
   resolved "https://registry.yarnpkg.com/react-use-ripple/-/react-use-ripple-1.5.2.tgz#f42600a0c7729510c3dbba74e0c86ed6c55fd88e"
   integrity sha512-pK7PLEaEGJ4xCM5acxW+ua7ba0lqxbhNzBHzEw+MoD0yVFT3r8SkfkG6aSpiEm4iLZO9HOeSnUz+1k7YVuYX5w==
 
-react-use-sticky@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/react-use-sticky/-/react-use-sticky-0.1.4.tgz#7003c04a79a82eeca09a7f052628a8a4a41929ee"
-  integrity sha512-Lwe9MiApu9ybi4gO2IjW+PE37dHfmW2cwGKJpgsjXj6TYvkh6TvPBCczuD5hPjiAHLKeK/ty/2GHU505aais5g==
-
 react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
@@ -20056,11 +20051,6 @@ stealthy-require@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
-
-sticky-events@^3.4.11:
-  version "3.4.11"
-  resolved "https://registry.yarnpkg.com/sticky-events/-/sticky-events-3.4.11.tgz#c44b7866648c5b2818a00fe93f709aa86e9a09d3"
-  integrity sha512-g1ex5lR7EGJv8EXJh4gdBu0m8FMgAVeqFAow3dRR9MwxAIfBNVC2GtlXI1z+oMLE+/Ot2At+gp1aO/tbUGoOnQ==
 
 stoppable@^1.1.0:
   version "1.1.0"

@@ -1,12 +1,12 @@
 import React, {
-  useEffect, useCallback, FC, useRef, useState, useMemo, RefObject,
+  useEffect, useCallback, useRef, useState, useMemo, RefObject,
 } from 'react';
 
 import SimpleBar from 'simplebar-react';
-import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
 import loggerFactory from '~/utils/logger';
+import { useSticky } from '~/utils/use-sticky-utils';
 
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
@@ -47,7 +47,10 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
   } = props;
   const simplebarRef = useRef<SimpleBar>(null);
   const [simplebarMaxHeight, setSimplebarMaxHeight] = useState<number|undefined>();
-  const [isNavbarSticky, setIsNavbarSticky] = useState<boolean>(false);
+
+  // Get sticky status
+  const isSticky = useSticky(stickyElemSelector);
+
   /**
    * Reset scrollbar
    */
@@ -69,54 +72,9 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
 
   const resetScrollbarDebounced = useMemo(() => debounce(100, resetScrollbar), [resetScrollbar]);
 
-  // Store navbar sticky status to state
-  const subNavstickyChangeHandler = useCallback((event) => {
-    setIsNavbarSticky(event.detail.isSticky);
-  }, []);
-
-  // Detect sticky events on Subnav
   useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickySelector = '#grw-subnav-sticky-trigger';
-    const stickyElement = document.querySelector(stickySelector);
-    if (stickyElement) {
-      const stickyEvents = new StickyEvents({ stickySelector });
-      stickyEvents.enableEvents();
-      stickyElement.addEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
-
-      // return clean up handler
-      return () => {
-        stickyElement.removeEventListener(StickyEvents.CHANGE, subNavstickyChangeHandler);
-      };
-    }
-  }, [subNavstickyChangeHandler]);
-
-
-  const stickyChangeHandler = useCallback(() => {
-    logger.debug('StickyEvents.CHANGE detected');
     resetScrollbarDebounced();
-  }, [resetScrollbarDebounced]);
-
-  useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    // Only execute sticky events if navbar is sticky
-    const stickyElement = document.querySelector(stickyElemSelector);
-
-    if (stickyElement && isNavbarSticky) {
-      const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
-      stickyEvents.enableEvents();
-
-      stickyElement.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-
-      // return clean up handler
-      return () => {
-        stickyElement.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-      };
-    }
-
-  }, [isNavbarSticky, stickyChangeHandler, stickyElemSelector]);
+  }, [isSticky, resetScrollbarDebounced]);
 
   // setup effect by resizing event
   useEffect(() => {

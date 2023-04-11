@@ -247,8 +247,6 @@
     "simple-load-script": "^1.0.2",
     "simplebar-react": "^2.3.6",
     "socket.io-client": "^4.2.0",
-    "sticky-events": "^3.4.11",
-    "react-use-sticky": "^0.1.4",
     "swagger2openapi": "^5.3.1",
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.2.9"
