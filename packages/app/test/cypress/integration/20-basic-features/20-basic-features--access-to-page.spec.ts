@@ -324,13 +324,10 @@ context('Access to Template Editing Mode', () => {
       cy.getByTestid('open-page-delete-modal-btn').click({force: true});
     });
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
-      cy.screenshot(`${ssPrefix}-delete-modal`);
+      cy.intercept('POST', '/_api/pages.remove').as('remove');
       cy.getByTestid('delete-page-button').click();
+      cy.wait('@remove')
     });
-
-    cy.intercept('POST', '/_api/pages.remove').as('remove');
-    cy.getByTestid('btnSubmitForLogin').click();
-    cy.wait('@remove')
 
     createPageFromPageTreeTest('template-test-page3', templateBody2);
   })
