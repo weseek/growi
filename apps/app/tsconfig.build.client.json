@@ -14,16 +14,6 @@
       "^/*": ["./*"],
 
       "@growi/codemirror-textlint": ["../../packages/codemirror-textlint/src"],
-      // "@growi/core": ["../../packages/core/src"],
-      // "@growi/hackmd": ["../../packages/hackmd/src"],
-      // "@growi/presentation": ["../../packages/presentation/src"],
-      // "@growi/preset-themes": ["../../packages/preset-themes/src"],
-      // "@growi/remark-drawio": ["../../packages/remark-drawio/src"],
-      // "@growi/remark-growi-directive": ["../../packages/remark-growi-directive/src"],
-      // "@growi/remark-lsx": ["../../packages/remark-lsx/src"],
-      // "@growi/remark-lsx/*": ["../../packages/remark-lsx/src/*"],
-      // "@growi/slack": ["../../packages/slack/src"],
-      // "@growi/ui": ["../../packages/ui/src"],
 
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
