@@ -1,6 +1,5 @@
 import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
-import mongoose from 'mongoose';
 import qs from 'qs';
 
 import loggerFactory from '~/utils/logger';
