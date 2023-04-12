@@ -6,8 +6,8 @@ import { debounce } from 'throttle-debounce';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useSidebarCollapsed } from '~/stores/ui';
+import { useSticky } from '~/stores/use-sticky';
 import loggerFactory from '~/utils/logger';
-import { useSticky } from '~/utils/use-sticky-utils';
 
 import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
 

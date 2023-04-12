@@ -11,7 +11,7 @@ export const useSticky = (selector: string): boolean => {
     // Updates the sticky status based on the current position of the observed element.
     const observe = () => {
       // If the observed element is empty or not an instance of Element, return early.
-      if (stickyElement == null || stickyElement === undefined || !(stickyElement instanceof Element)) return;
+      if (stickyElement == null || !(stickyElement instanceof Element)) return;
 
       // Calculate the element's offset from the top of the viewport and the value of its "top" CSS property.
       const elemOffset = stickyElement.getBoundingClientRect().top;
