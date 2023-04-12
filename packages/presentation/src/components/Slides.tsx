@@ -3,7 +3,7 @@ import React from 'react';
 import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
-import { ReactMarkdown } from 'react-markdown-customkeyprop/lib/react-markdown';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
 import * as extractSections from '../services/renderer/extract-sections';

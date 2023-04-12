@@ -17881,10 +17881,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-markdown-customkeyprop@^8.0.6-customkeyprop.0:
-  version "8.0.6-customkeyprop.0"
-  resolved "https://registry.yarnpkg.com/react-markdown-customkeyprop/-/react-markdown-customkeyprop-8.0.6-customkeyprop.0.tgz#050a05dc204745f063ac44b1174b834468cc0112"
-  integrity sha512-9L03/4rhGM9K78c9FT1AXeyk0R5esghGmVOxXcpoaZeSI+zMLJ6spP5B2URHPqVahPk+YTgQso/Ba53a6R+oaQ==
+react-markdown@^8.0.7:
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-8.0.7.tgz#c8dbd1b9ba5f1c5e7e5f2a44de465a3caafdf89b"
+  integrity sha512-bvWbzG4MtOU62XqBx3Xx+zB2raaFFsq4mYiAzfjXJMEz2sixgeAfraA3tvzULF02ZdOMUOKTBFFaZJDDrq+BJQ==
   dependencies:
     "@types/hast" "^2.0.0"
     "@types/prop-types" "^15.0.0"

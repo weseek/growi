@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import type { PresentationProps } from '@growi/presentation';
 import { useFullScreen } from '@growi/ui';
 import dynamic from 'next/dynamic';
-import type { ReactMarkdownOptions } from 'react-markdown-customkeyprop/lib/react-markdown';
+import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
