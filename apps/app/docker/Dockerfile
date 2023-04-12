@@ -2,49 +2,44 @@
 
 
 ##
-## packages-json-picker
+## base
 ##
-FROM node:16-slim AS packages-json-picker
+FROM node:18-slim AS base
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
-COPY ["package.json", "yarn.lock", "lerna.json", "./"]
-COPY packages packages
-# Find and remove non-package.json files
-RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
+
+RUN yarn global add turbo
+COPY . .
+RUN turbo prune --scope=@growi/app --docker
 
 
 ##
 ## deps-resolver
 ##
-FROM node:16-slim AS deps-resolver
+FROM node:18-slim AS deps-resolver
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
-
-ENV nodeModulesGrowiPackagesDir ${optDir}/node_modules/@growi
-# expect a string seperated by commas (e.g. "A,B")
-ENV removeNodeModulesSymlinkPaths ${nodeModulesGrowiPackagesDir}/slackbot-proxy
 
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y python3 build-essential;
 
 # copy files
-COPY --from=packages-json-picker ${optDir} .
+COPY --from=base ${optDir}/out/json/ .
+COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
 
 # setup (with network-timeout = 1 hour)
 RUN yarn config set network-timeout 3600000
-RUN npx -y lerna bootstrap -- --frozen-lockfile
-
-# remove unnecessary symlinks
-RUN rm -f $(echo ${removeNodeModulesSymlinkPaths} | sed -e "s/,/ /g")
+RUN yarn --frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
+  apps/*/node_modules \
   packages/*/node_modules
 
 
@@ -54,24 +49,30 @@ RUN tar -cf node_modules.tar \
 ##
 FROM deps-resolver AS deps-resolver-prod
 
-# remove unnecessary packages
-RUN rm -rf apps/slackbot-proxy
-
-RUN npx -y lerna bootstrap -- --production
+RUN yarn --production
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
+  apps/*/node_modules \
   packages/*/node_modules
 
 
+
 ##
-## prebuilder
+## builder
 ##
-FROM node:16-slim AS prebuilder
+FROM node:18-slim AS builder
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
+
+RUN yarn global add turbo
+
+# copy files
+COPY --from=base ${optDir}/out/full/ .
+COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
+COPY ["tsconfig.base.json", "./"]
 
 # copy dependent packages
 COPY --from=deps-resolver \
@@ -81,34 +82,8 @@ COPY --from=deps-resolver \
 RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
-
-
-##
-## builder
-##
-FROM prebuilder AS builder
-
-ENV optDir /opt
-
-WORKDIR ${optDir}
-
-# ignore eslint and stylelint
-COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
-# copy all related packages
-COPY packages/codemirror-textlint packages/codemirror-textlint
-COPY packages/preset-themes packages/preset-themes
-COPY packages/slack packages/slack
-COPY packages/hackmd packages/hackmd
-COPY packages/presentation packages/presentation
-COPY packages/remark-drawio packages/remark-drawio
-COPY packages/remark-growi-directive packages/remark-growi-directive
-COPY packages/remark-lsx packages/remark-lsx
-COPY packages/ui packages/ui
-COPY packages/core packages/core
-COPY apps/app apps/app
-
 # build
-RUN yarn lerna run build
+RUN turbo run build
 
 # make artifacts
 RUN tar -cf packages.tar \
@@ -120,15 +95,15 @@ RUN tar -cf packages.tar \
   apps/app/tmp \
   apps/app/.env.production* \
   apps/app/next.config.js \
-  packages/*/package.json \
-  packages/*/dist
+  **/package.json \
+  **/dist
 
 
 
 ##
 ## release
 ##
-FROM node:16-slim
+FROM node:18-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
