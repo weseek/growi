@@ -8072,10 +8072,10 @@ eslint-config-next@^12.1.6:
     eslint-plugin-react "^7.29.4"
     eslint-plugin-react-hooks "^4.5.0"
 
-eslint-config-weseek@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-weseek/-/eslint-config-weseek-2.1.0.tgz#3581b8484805ae65edbf4cae32e13b01c8622796"
-  integrity sha512-LDQ5d2TSu90zGH7xrX6XZRL+HQ23L4hPJYIOif4WVLnCSqodrdUd/5PGOKuDzZiUd//WqN42/RhvChO6a4P1JA==
+eslint-config-weseek@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-weseek/-/eslint-config-weseek-2.1.1.tgz#e3dc1f909787476abf00a33e406fd0343fefbf3c"
+  integrity sha512-lg2CK8snxRdHUqW8erQ/ufYwP27fcpxvVdbLMvT4/n2ZabcKMDFMYH0hCvK/6I2k45cFqKuRRlTJVtZEwMHMNg==
   dependencies:
     eslint-config-airbnb "^17.1.0"
 
