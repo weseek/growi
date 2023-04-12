@@ -16,6 +16,7 @@
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
+    "lint:typecheck": "tsc",
     "lint": "run-p lint:*"
   },
   "dependencies": {
