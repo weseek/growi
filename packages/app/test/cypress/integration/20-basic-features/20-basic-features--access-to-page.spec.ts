@@ -309,7 +309,7 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
-    cy.get('textarea').clear() // Clear templateBody1
+    cy.get('textarea').clear({force: true}) // Clear templateBody1
     cy.get('.CodeMirror').type(templateBody2);
     cy.get('.CodeMirror').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
