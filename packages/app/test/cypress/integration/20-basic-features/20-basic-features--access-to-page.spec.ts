@@ -212,7 +212,7 @@ context('Access to Template Editing Mode', () => {
   const templateBody1 = 'Template for children';
   const templateBody2 = 'Template for descendants';
 
-  const createPageFromPageTreeTest = (newPagePath: string, expectedBody: string) => {
+  const createPageFromPageTreeTest = (newPagePath: string, parentPagePath: string, expectedBody: string) => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
 
@@ -229,7 +229,7 @@ context('Access to Template Editing Mode', () => {
         }
       });
 
-    // Create page (/Sandbox/{pagePath}) from PageTree
+    // Create page (/{parentPath}}/{newPagePath}) from PageTree
     cy.getByTestid('grw-contextual-navigation-sub').within(() => {
       cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
         cy.get('#page-create-button-in-page-tree').first().click({force: true})
@@ -239,7 +239,7 @@ context('Access to Template Editing Mode', () => {
       cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
     })
 
-    cy.visit(`/Sandbox/${newPagePath}`);
+    cy.visit(`/${parentPagePath}/${newPagePath}`);
     cy.waitUntilSkeletonDisappear();
     cy.collapseSidebar(true);
 
@@ -287,7 +287,7 @@ context('Access to Template Editing Mode', () => {
   });
 
   it('Template is applied to pages created from PageTree (template for children 1)', () => {
-    createPageFromPageTreeTest('template-test-page1', templateBody1);
+    createPageFromPageTreeTest('template-test-page1', '/Sandbox' ,templateBody1);
   });
 
   it('Successfully created template for descendants', () => {
@@ -317,7 +317,7 @@ context('Access to Template Editing Mode', () => {
   });
 
   it('Template is applied to pages created from PageTree (template for children 2)', () => {
-    createPageFromPageTreeTest('template-test-page2', templateBody1);
+    createPageFromPageTreeTest('template-test-page2','Sandbox',templateBody1);
   });
 
   it('Template is applied to pages created from PageTree (template for descendants)', () => {
@@ -333,7 +333,7 @@ context('Access to Template Editing Mode', () => {
       cy.wait('@remove')
     });
 
-    createPageFromPageTreeTest('template-test-page3', `${templateBody1}\n${templateBody2}`);
+    createPageFromPageTreeTest('template-test-page3','Sandbox',`${templateBody1}\n${templateBody2}`);
   })
 });
 
