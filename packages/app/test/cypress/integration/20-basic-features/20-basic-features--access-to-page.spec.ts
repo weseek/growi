@@ -309,11 +309,9 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
-    cy.get('textarea').clear({force: true}) // Clear templateBody1
     cy.get('.CodeMirror').type(templateBody2);
     cy.get('.CodeMirror').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
-    cy.screenshot('clear');
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
@@ -335,7 +333,7 @@ context('Access to Template Editing Mode', () => {
       cy.wait('@remove')
     });
 
-    createPageFromPageTreeTest('template-test-page3', templateBody2);
+    createPageFromPageTreeTest('template-test-page3', `${templateBody1}\n${templateBody2}`);
   })
 });
 
