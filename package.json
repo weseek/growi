@@ -30,6 +30,7 @@
     ]
   },
   "scripts": {
+    "bootstrap": "yarn install --frozen-lockfile",
     "start": "yarn app:server",
     "prestart": "yarn app:build",
     "app:build": "turbo run build --filter @growi/app",

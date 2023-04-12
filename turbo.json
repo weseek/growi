@@ -7,6 +7,14 @@
   ],
   "pipeline": {
 
+    "bootstrap": {
+      "dependsOn": ["//#bootstrap"],
+      "cache": false
+    },
+    "//#bootstrap": {
+      "cache": false
+    },
+
     "clean": {
       "cache": false
     },
