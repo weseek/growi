@@ -3,13 +3,15 @@ import React, { useCallback, useState } from 'react';
 import EventEmitter from 'events';
 
 import {
-  DrawioEditByViewerProps,
-  DrawioViewer, DrawioViewerProps,
+  DrawioViewer,
+  type DrawioEditByViewerProps,
+  type DrawioViewerProps,
 } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
 
+import '@growi/remark-drawio/dist/style.css';
 import styles from './DrawioViewerWithEditButton.module.scss';
 
 

@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { DrawioEditByViewerProps } from '@growi/remark-drawio';
+import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
 import mdu from '~/components/PageEditor/MarkdownDrawioUtil';
