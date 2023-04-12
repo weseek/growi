@@ -10,6 +10,7 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist/client',
+    sourcemap: true,
     lib: {
       entry: {
         index: 'src/client/index.ts',

@@ -8,6 +8,7 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist/server',
+    sourcemap: true,
     lib: {
       entry: [
         'src/server/index.ts',

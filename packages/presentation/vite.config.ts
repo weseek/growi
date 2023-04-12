@@ -10,6 +10,7 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
+    sourcemap: true,
     lib: {
       entry: 'src/index.ts',
       name: 'presentation-libs',

@@ -25,5 +25,6 @@ export default defineConfig({
         'node:path',
       ],
     },
+    sourcemap: true,
   },
 });

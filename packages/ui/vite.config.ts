@@ -13,6 +13,7 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
+    sourcemap: true,
     lib: {
       entry: glob.sync(path.resolve(__dirname, 'src/**/*.{ts,tsx}')),
       name: 'ui-libs',

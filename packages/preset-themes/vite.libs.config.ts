@@ -8,6 +8,7 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist/libs',
+    sourcemap: true,
     copyPublicDir: false,
     lib: {
       entry: 'src/index.ts',

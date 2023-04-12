@@ -11,6 +11,7 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
+    sourcemap: true,
     lib: {
       entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts')),
       name: 'core-libs',
@@ -28,6 +29,5 @@ export default defineConfig({
         /^node:.*/,
       ],
     },
-    sourcemap: true,
   },
 });
