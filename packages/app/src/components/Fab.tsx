@@ -26,6 +26,7 @@ export const Fab = (): JSX.Element => {
 
   const [animateClasses, setAnimateClasses] = useState<string>('invisible');
   const [buttonClasses, setButtonClasses] = useState<string>('');
+  const [isStickyApplied, setIsStickyApplied] = useState(false);
 
   // ripple
   const createBtnRef = useRef(null);
@@ -39,25 +40,37 @@ export const Fab = (): JSX.Element => {
    * Prevents the fade animation occurred each time by button components rendered.
    * Check Fab.module.scss for fade animation time.
    */
+
+  // check if isSticky is already initialized then save it in isStickyApplied state
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isSticky) {
-        setAnimateClasses('visible');
-        setButtonClasses('');
-      }
-      else {
-        setAnimateClasses('invisible');
-      }
-    }, 500);
-
-    const newAnimateClasses = isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-    const newButtonClasses = isSticky ? '' : 'disabled grw-pointer-events-none';
-
-    setAnimateClasses(newAnimateClasses);
-    setButtonClasses(newButtonClasses);
-
-    return () => clearTimeout(timer);
+    if (isSticky) {
+      setIsStickyApplied(true);
+    }
   }, [isSticky]);
+
+  // Apply new classes if only isSticky is initialized, otherwise no classes have changed
+  // Prevents the Fab button from showing on first load due to the isSticky effect
+  useEffect(() => {
+    if (isStickyApplied) {
+      const timer = setTimeout(() => {
+        if (isSticky) {
+          setAnimateClasses('visible');
+          setButtonClasses('');
+        }
+        else {
+          setAnimateClasses('invisible');
+        }
+      }, 500);
+
+      const newAnimateClasses = isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+      const newButtonClasses = isSticky ? '' : 'disabled grw-pointer-events-none';
+
+      setAnimateClasses(newAnimateClasses);
+      setButtonClasses(newButtonClasses);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSticky, isStickyApplied]);
 
   const PageCreateButton = useCallback(() => {
     return (
