@@ -1,6 +1,8 @@
 import csrf from 'csurf';
 import express from 'express';
 
+import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter';
+
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
@@ -32,7 +34,6 @@ module.exports = function(crowi, app) {
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
-  const rateLimiter = require('../middlewares/rate-limiter')();
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
@@ -62,7 +63,7 @@ module.exports = function(crowi, app) {
   app.use('/api-docs', require('./apiv3/docs')(crowi, app));
 
   // Rate limiter
-  app.use(rateLimiter);
+  app.use(rateLimiterFactory());
 
   // API v3 for admin
   app.use('/_api/v3', apiV3AdminRouter);

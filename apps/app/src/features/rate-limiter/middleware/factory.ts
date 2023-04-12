@@ -1,16 +1,15 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Handler, Request } from 'express';
 import md5 from 'md5';
-import mongoose from 'mongoose';
-import { IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexible';
+import { connection } from 'mongoose';
+import { type IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexible';
 
-import {
-  DEFAULT_DURATION_SEC, DEFAULT_MAX_REQUESTS, DEFAULT_USERS_PER_IP_PROSPECTION, IApiRateLimitConfig,
-} from '^/config/rate-limiter';
-
-import { IUserHasId } from '~/interfaces/user';
+import type { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
-import { generateApiRateLimitConfig } from '../util/rate-limiter';
+import {
+  DEFAULT_DURATION_SEC, DEFAULT_MAX_REQUESTS, DEFAULT_USERS_PER_IP_PROSPECTION, type IApiRateLimitConfig,
+} from '../config';
+import { generateApiRateLimitConfig } from '../utils/config-generator';
 
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
@@ -23,7 +22,7 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 const POINTS_THRESHOLD = 100;
 
 const opts: IRateLimiterMongoOptions = {
-  storeClient: mongoose.connection,
+  storeClient: connection,
   points: POINTS_THRESHOLD, // set default value
   duration: DEFAULT_DURATION_SEC, // set default value
 };
@@ -87,9 +86,9 @@ const consumePointsByIp = async(method: string, key: string | null, customizedCo
 };
 
 
-module.exports = () => {
+export const middlewareFactory = (): Handler => {
 
-  return async(req: Request & { user?: IUserHasId }, res: Response, next: NextFunction) => {
+  return async(req: Request & { user?: IUserHasId }, res, next) => {
 
     const endpoint = req.path;
 
