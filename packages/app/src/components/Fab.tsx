@@ -8,8 +8,8 @@ import { useRipple } from 'react-use-ripple';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useIsAbleToChangeEditorMode } from '~/stores/ui';
+import { useSticky } from '~/stores/use-sticky';
 import loggerFactory from '~/utils/logger';
-import { useSticky } from '~/utils/use-sticky-utils';
 
 import { CreatePageIcon } from './Icons/CreatePageIcon';
 import { ReturnTopIcon } from './Icons/ReturnTopIcon';
@@ -49,15 +49,14 @@ export const Fab = (): JSX.Element => {
         setAnimateClasses('invisible');
       }
     }, 500);
-    return () => clearTimeout(timer);
-  }, [isSticky]);
 
-  useEffect(() => {
     const newAnimateClasses = isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
     const newButtonClasses = isSticky ? '' : 'disabled grw-pointer-events-none';
 
     setAnimateClasses(newAnimateClasses);
     setButtonClasses(newButtonClasses);
+
+    return () => clearTimeout(timer);
   }, [isSticky]);
 
   const PageCreateButton = useCallback(() => {
