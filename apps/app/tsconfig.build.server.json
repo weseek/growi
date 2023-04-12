@@ -18,7 +18,8 @@
     }
   },
   "exclude": [
-    "resouce",
+    "config",
+    "resource",
     "src/client",
     "src/components",
     "src/linter-checker",
