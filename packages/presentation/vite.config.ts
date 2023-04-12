@@ -19,7 +19,7 @@ export default defineConfig({
       external: [
         'react', 'react-dom',
         'next/head',
-        'react-markdown-customkeyprop',
+        'react-markdown',
         '@marp-team/marp-core', '@marp-team/marpit',
         'reveal.js',
       ],

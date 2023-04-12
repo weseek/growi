@@ -16,7 +16,7 @@ const getTranspilePackages = () => {
 
   const packages = [
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
-    'react-markdown-customkeyprop',
+    'react-markdown',
     'unified',
     'markdown-table',
     'character-entities-html4',
