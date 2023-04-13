@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import type { CodeComponent } from 'react-markdown-customkeyprop/lib/ast-to-react';
+import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 

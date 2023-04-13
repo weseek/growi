@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { Element } from 'react-markdown-customkeyprop/lib/rehype-filter';
+import { Element } from 'react-markdown/lib/rehype-filter';
 
 import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
 
