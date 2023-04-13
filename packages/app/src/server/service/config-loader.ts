@@ -368,7 +368,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'security:passport-local:isPasswordResetEnabled',
     type:    ValueType.BOOLEAN,
-    default: true,
+    default: false,
   },
   LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED: {
     ns:      'crowi',
