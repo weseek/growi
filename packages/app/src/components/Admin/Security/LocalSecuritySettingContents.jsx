@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
-
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
@@ -134,12 +134,6 @@ class LocalSecuritySettingContents extends React.Component {
                       {t('security_settings.registration_mode.closed')}
                     </button>
                   </div>
-                  {!isMailerSetup && (
-                    <div className="alert alert-warning p-1 my-1 small d-inline-block">
-                      <span>{t('commons:alert.register_limitation_please_enable_mailer')}</span>
-                      <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('app_setting.mail_settings')}</a>
-                    </div>
-                  )}
                 </div>
                 <p className="form-text text-muted small">{t('security_settings.register_limitation_desc')}</p>
               </div>
@@ -183,6 +177,14 @@ class LocalSecuritySettingContents extends React.Component {
                     {t('security_settings.Local.enable_password_reset_by_users')}
                   </label>
                 </div>
+                {!isMailerSetup && (
+                  <div className="alert alert-warning p-1 my-1 small d-inline-block">
+                    <span>{t('commons:alert.password_reset_please_enable_mailer')}</span>
+                    <Link href="/admin/app#mail-settings">
+                      <i className="fa fa-link"></i> {t('app_setting.mail_settings')}
+                    </Link>
+                  </div>
+                )}
                 <p className="form-text text-muted small">
                   {t('security_settings.Local.password_reset_desc')}
                 </p>
@@ -207,7 +209,9 @@ class LocalSecuritySettingContents extends React.Component {
                 {!isMailerSetup && (
                   <div className="alert alert-warning p-1 my-1 small d-inline-block">
                     <span>{t('commons:alert.please_enable_mailer')}</span>
-                    <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('app_setting.mail_settings')}</a>
+                    <Link href="/admin/app#mail-settings">
+                      <i className="fa fa-link"></i> {t('app_setting.mail_settings')}
+                    </Link>
                   </div>
                 )}
                 <p className="form-text text-muted small">
