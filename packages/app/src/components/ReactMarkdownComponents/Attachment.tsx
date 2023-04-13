@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
 
-import type { HasObjectId, IAttachment } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import prettyBytes from 'pretty-bytes';
 
@@ -25,9 +24,12 @@ export const Attachment: React.FC<{
     return dataAttachments.attachments.find(item => item._id === attachmentId);
   }, [attachmentId, dataAttachments]);
 
-  const onAttachmentDeleteClicked = useCallback((attachment: IAttachment & HasObjectId) => {
+  const onClickTrashButtonHandler = useCallback(() => {
+    if (attachment == null) {
+      return;
+    }
     openAttachmentDeleteModal(attachment, remove);
-  }, [openAttachmentDeleteModal, remove]);
+  }, [attachment, openAttachmentDeleteModal, remove]);
 
   if (attachment == null) {
     return (
@@ -51,7 +53,7 @@ export const Attachment: React.FC<{
                 </a>
               </span>
               <span className='ml-2'>
-                <a className="text-danger attachment-delete" onClick={() => onAttachmentDeleteClicked(attachment)}>
+                <a className="text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
                   <i className="icon-trash" />
                 </a>
               </span>
