@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import type { HasObjectId, IAttachment } from '@growi/core';
 import { SWRResponse } from 'swr';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
@@ -611,25 +612,44 @@ export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & Te
 /**
  * AttachmentDeleteModal
  */
+type Remove =
+  (body: {
+    attachment_id: string;
+  }) => Promise<void>
+
 type AttachmentDeleteModalStatus = {
   isOpened: boolean,
+  attachment?: IAttachment & HasObjectId,
+  remove?: Remove,
 }
 
 type AttachmentDeleteModalUtils = {
-  open(): void,
+  open(
+    attachment: IAttachment & HasObjectId,
+    remove: Remove,
+  ): void,
   close(): void,
 }
 
 export const useAttachmentDeleteModal = (): SWRResponse<AttachmentDeleteModalStatus, Error> & AttachmentDeleteModalUtils => {
-  const initialStatus: AttachmentDeleteModalStatus = { isOpened: false };
+  const initialStatus: AttachmentDeleteModalStatus = {
+    isOpened: false,
+    attachment: undefined,
+    remove: undefined,
+  };
   const swrResponse = useStaticSWR<AttachmentDeleteModalStatus, Error>('attachmentDeleteModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
 
-  return Object.assign(swrResponse, {
-    open: () => {
-      swrResponse.mutate({ isOpened: true });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
+  const open = useCallback((attachment: IAttachment & HasObjectId, remove: Remove) => {
+    mutate({ isOpened: true, attachment, remove });
+  }, [mutate]);
+  const close = useCallback((): void => {
+    mutate({ isOpened: false });
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
 };
