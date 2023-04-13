@@ -68,7 +68,11 @@ export const Fab = (): JSX.Element => {
 
   const PageCreateButton = useCallback(() => {
     return (
-      <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
+      <div
+        className={`rounded-circle position-absolute ${animateClasses}`}
+        style={{ bottom: '2.3rem', right: '4rem' }}
+        data-testid="grw-fab-page-create-button"
+      >
         <button
           type="button"
           className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 ${buttonClasses}`}
