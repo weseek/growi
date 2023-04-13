@@ -6,6 +6,7 @@ const logger = loggerFactory('growi:cli:DrawioCommunicationHelper');
 export type DrawioConfig = {
   css: string,
   customFonts: string[],
+  compressXml: boolean,
 }
 
 export type DrawioCommunicationCallbackOptions = {
