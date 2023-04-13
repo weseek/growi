@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import ReactMarkdown from 'react-markdown-customkeyprop';
+import ReactMarkdown from 'react-markdown';
 
 import { useCurrentPagePath } from '~/stores/page';
 import { useTocOptions } from '~/stores/renderer';

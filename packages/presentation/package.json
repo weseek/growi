@@ -23,7 +23,7 @@
     "eslint-plugin-regex": "^1.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-markdown-customkeyprop": "^8.0.6-customkeyprop.0",
+    "react-markdown": "^8.0.7",
     "reveal.js": "^4.4.0"
   }
 }

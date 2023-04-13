@@ -209,7 +209,48 @@ context('Access to special pages', () => {
 
 context('Access to Template Editing Mode', () => {
   const ssPrefix = 'access-to-template-page-';
-  const templateBody = 'Template for children';
+  const templateBody1 = 'Template for children';
+  const templateBody2 = 'Template for descendants';
+
+  const createPageFromPageTreeTest = (newPagePath: string, parentPagePath: string, expectedBody: string) => {
+    cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
+    // Open sidebar
+    cy.collapseSidebar(false);
+    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
+
+    // If PageTree is not active when the sidebar is opened, make it active
+    cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
+      .then($elem => {
+        if (!$elem.hasClass('active')) {
+          cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
+        }
+      });
+
+    // Create page (/{parentPath}}/{newPagePath}) from PageTree
+    cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+      cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+        cy.get('#page-create-button-in-page-tree').first().click({force: true})
+      });
+    });
+    cy.get('@pagetreeItem').within(() => {
+      cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
+    })
+
+    cy.visit(`/${parentPagePath}/${newPagePath}`);
+    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
+
+    // Check if the template is applied
+    cy.get('.content-main').within(() => {
+      cy.get('.wiki').should('be.visible');
+      cy.get('.wiki').children().first().should('have.text', expectedBody);
+    })
+
+    cy.screenshot(`${ssPrefix}-page(${newPagePath})-to-which-template-is-applied`)
+  }
 
   beforeEach(() => {
     // login
@@ -218,7 +259,7 @@ context('Access to Template Editing Mode', () => {
     });
   });
 
-  it("Successfully created a template page by accessing the editor mode for children's templates", () => {
+  it("Successfully created template for children", () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
@@ -238,15 +279,19 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
     });
 
-    cy.get('.CodeMirror').type(templateBody);
-    cy.get('.CodeMirror').contains(templateBody);
-    cy.get('.page-editor-preview-body').contains(templateBody);
+    cy.get('.CodeMirror').type(templateBody1);
+    cy.get('.CodeMirror').contains(templateBody1);
+    cy.get('.page-editor-preview-body').contains(templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
 
-  it('Successfully accessed the editor mode for the descendant template page', () => {
-    cy.visit('/Sandbox/Bootstrap4');
+  it('Template is applied to pages created from PageTree (template for children 1)', () => {
+    createPageFromPageTreeTest('template-test-page1', '/Sandbox' ,templateBody1);
+  });
+
+  it('Successfully created template for descendants', () => {
+    cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
@@ -262,48 +307,34 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
       cy.url().should('include', '/__template#edit');
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
-    });
-  });
-
-  it('Templates are applied to pages created from the PageTree', () => {
-    cy.visit('/');
-    cy.waitUntilSkeletonDisappear();
-
-    // Open sidebar
-    cy.collapseSidebar(false);
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
-    cy.waitUntilSkeletonDisappear();
-
-    // If PageTree is not active when the sidebar is opened, make it active
-    cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
-      .then($elem => {
-        if (!$elem.hasClass('active')) {
-          cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-        }
-      });
-
-    // Create page (/Sandbox/template-test-page) from PageTree
-    cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-      cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
-        cy.get('#page-create-button-in-page-tree').first().click({force: true})
-      });
-    });
-    cy.get('@pagetreeItem').within(() => {
-      cy.getByTestid('closable-text-input').type('template-test-page').type('{enter}');
     })
 
-    cy.visit('/Sandbox/template-test-page');
-    cy.waitUntilSkeletonDisappear();
-    cy.collapseSidebar(true);
-
-    // Check if the template is applied
-    cy.get('.content-main').within(() => {
-      cy.get('.wiki').should('be.visible');
-      cy.get('.wiki').children().first().should('have.text', templateBody);
-    })
-
-    cy.screenshot(`${ssPrefix}-page-to-which-template-is-applied`)
+    cy.get('.CodeMirror').type(templateBody2);
+    cy.get('.CodeMirror').contains(templateBody2);
+    cy.get('.page-editor-preview-body').contains(templateBody2);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').click();
   });
+
+  it('Template is applied to pages created from PageTree (template for children 2)', () => {
+    createPageFromPageTreeTest('template-test-page2','Sandbox',templateBody1);
+  });
+
+  it('Template is applied to pages created from PageTree (template for descendants)', () => {
+    // delete /Sandbox/_template
+    cy.visit('/Sandbox/_template');
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+    });
+    cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
+      cy.intercept('POST', '/_api/pages.remove').as('remove');
+      cy.getByTestid('delete-page-button').click();
+      cy.wait('@remove')
+    });
+
+    createPageFromPageTreeTest('template-test-page3','Sandbox',`${templateBody1}\n${templateBody2}`);
+  })
 });
 
 context('Access to /me/all-in-app-notifications', () => {
