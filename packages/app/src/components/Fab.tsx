@@ -35,12 +35,6 @@ export const Fab = (): JSX.Element => {
   // Get sticky status
   const isSticky = useSticky('#grw-fav-sticky-trigger');
 
-  /**
-   * After the fade animation is finished, fix the button display status.
-   * Prevents the fade animation occurred each time by button components rendered.
-   * Check Fab.module.scss for fade animation time.
-   */
-
   // check if isSticky is already initialized then save it in isStickyApplied state
   useEffect(() => {
     if (isSticky) {
