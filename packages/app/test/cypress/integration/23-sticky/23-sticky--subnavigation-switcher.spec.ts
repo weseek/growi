@@ -14,7 +14,8 @@ context('Access to sticky sub navigation switcher ', () => {
     cy.collapseSidebar(true);
   });
 
-  it('Sub navigation is sticky when scrolling down', () => {
+  it('Sub navigation sticky changes when scrolling down and up', () => {
+    // Sticky
     cy.waitUntil(() => {
       // do
       // Scroll the window 250px down is enough to trigger sticky effect
@@ -24,10 +25,8 @@ context('Access to sticky sub navigation switcher ', () => {
       return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
     });
     cy.screenshot(`${ssPrefix}is-sticky-on-scroll-down`);
-  });
 
-  it('Sub navigation is not sticky when scrolling top', () => {
-
+    // Not sticky
     cy.waitUntil(() => {
       // do
       // Scroll page to top
@@ -40,12 +39,21 @@ context('Access to sticky sub navigation switcher ', () => {
   });
 
   it('Sub navigation is not sticky when move to other pages', () => {
+    // Make the sub navigation sticky
+    cy.waitUntil(() => {
+      // do
+      // Scroll the window 250px down is enough to trigger sticky effect
+      cy.scrollTo(0, 250);
+
+      // wait until
+      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+    });
+
     // Move to /Sandbox page
     cy.visit('/Sandbox');
 
     cy.waitUntilSkeletonDisappear();
     cy.collapseSidebar(true);
-
 
     cy.getByTestid('grw-subnav-switcher').should('have.class', 'grw-subnav-switcher-hidden');
     cy.screenshot(`${ssPrefix}is-not-sticky-on-move-to-other-pages`);
@@ -58,7 +66,7 @@ context('Access to sticky sub navigation switcher ', () => {
       cy.scrollTo(0, 250);
 
       // wait until
-      return cy.getByTestid('grw-subnav-switcher').then($elem => $elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
     });
 
     cy.getByTestid('grw-subnav-switcher').within(() => {
@@ -70,5 +78,18 @@ context('Access to sticky sub navigation switcher ', () => {
       });
     });
     cy.screenshot(`${ssPrefix}open-editor-when-sticky`);
+  });
+
+  it('Sub navigation is sticky when on small window', () => {
+    cy.waitUntil(() => {
+      // do
+      // Scroll the window 250px down is enough to trigger sticky effect
+      cy.scrollTo(0, 250);
+
+      // wait until
+      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+    });
+    cy.viewport('iphone-5');
+    cy.screenshot(`${ssPrefix}is-sticky-on-small-window`);
   });
 });
