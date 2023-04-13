@@ -74,7 +74,7 @@ const baseSanitizeSchema = {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
     // The special value 'data*' as a property name can be used to allow all data properties.
     // see: https://github.com/syntax-tree/hast-util-sanitize/
-    '*': ['class', 'className', 'style', 'data*'],
+    '*': ['key', 'class', 'className', 'style', 'data*'],
   },
 };
 
@@ -266,7 +266,6 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
     attachmentPlugin.remarkPlugin,
   );
 
@@ -337,7 +336,6 @@ export const generateSSRViewOptions = (
     math,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
     attachmentPlugin.remarkPlugin,
   );
 
@@ -391,7 +389,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    // table.remarkPlugin,
     attachmentPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
