@@ -46,7 +46,6 @@ export const remarkPlugin: Plugin = function() {
             }
           }
         }
-        attributes.key = `lsx-${index}`;
 
         data.hName = 'lsx';
         data.hProperties = attributes;
