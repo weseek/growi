@@ -259,9 +259,9 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
       uses: actions/cache@v3
@@ -310,7 +310,6 @@ jobs:
         browser: chrome
         working-directory: ./apps/app
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
-        install-command: yarn --production
         start: yarn server
         wait-on: 'http://localhost:3000'
         config: video=${{ inputs.cypress-config-video }}
