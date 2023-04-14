@@ -17965,11 +17965,6 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-sticky-events@^3.4.11:
-  version "3.4.11"
-  resolved "https://registry.yarnpkg.com/sticky-events/-/sticky-events-3.4.11.tgz#c44b7866648c5b2818a00fe93f709aa86e9a09d3"
-  integrity sha512-g1ex5lR7EGJv8EXJh4gdBu0m8FMgAVeqFAow3dRR9MwxAIfBNVC2GtlXI1z+oMLE+/Ot2At+gp1aO/tbUGoOnQ==
-
 stoppable@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/stoppable/-/stoppable-1.1.0.tgz#32da568e83ea488b08e4d7ea2c3bcc9d75015d5b"

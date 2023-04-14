@@ -243,7 +243,6 @@
     "simplebar-react": "^2.3.6",
     "socket.io-client": "^4.2.0",
     "source-map-loader": "^4.0.1",
-    "sticky-events": "^3.4.11",
     "swagger2openapi": "^5.3.1",
     "tsc-alias": "^1.2.9"
   }
