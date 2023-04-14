@@ -21,7 +21,7 @@ import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useCurrentPathname, useIsEnabledAttachTitleHeader, useTemplateBodyData,
+  useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
@@ -32,7 +32,7 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {

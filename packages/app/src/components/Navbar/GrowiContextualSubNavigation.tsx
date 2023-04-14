@@ -17,7 +17,7 @@ import {
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid, useIsIdenticalPath,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -25,7 +25,7 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound,
+  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData,
 } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,

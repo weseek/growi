@@ -2,9 +2,9 @@ import React, {
   useState, useRef, useEffect, useCallback,
 } from 'react';
 
-import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
+import { useSticky } from '~/client/services/side-effects/use-sticky';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useSidebarCollapsed } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -32,13 +32,15 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isSidebarCollapsed } = useSidebarCollapsed();
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(0);
 
   // use more specific type HTMLDivElement for avoid assertion error.
   // see: https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement
   const fixedContainerRef = useRef<HTMLDivElement>(null);
   const clientWidth = fixedContainerRef.current?.parentElement?.clientWidth;
+
+  // Get sticky status
+  const isSticky = useSticky('#grw-subnav-sticky-trigger');
 
   // Do not use clientWidth as useCallback deps, resizing events will not work in production builds.
   const initWidth = useCallback(() => {
@@ -48,25 +50,6 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
       setWidth(clientWidth);
     }
   }, []);
-
-  const stickyChangeHandler = useCallback((event) => {
-    logger.debug('StickyEvents.CHANGE detected');
-    setIsVisible(event.detail.isSticky);
-  }, []);
-
-  // setup effect by sticky-events
-  useEffect(() => {
-    // sticky-events
-    // See: https://github.com/ryanwalters/sticky-events
-    const { stickySelector } = new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' });
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
-  }, [stickyChangeHandler]);
 
   // setup effect by resizing event
   useEffect(() => {
@@ -100,7 +83,7 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   }
 
   return (
-    <div className={`${styles['grw-subnav-switcher']} ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
+    <div className={`${styles['grw-subnav-switcher']} ${isSticky ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div
         id="grw-subnav-fixed-container"
         className={`grw-subnav-fixed-container ${styles['grw-subnav-fixed-container']} position-fixed grw-subnav-append-shadow-container`}

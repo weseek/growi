@@ -56,14 +56,6 @@ export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, E
   return useContextSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
 
-export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
-  return useContextSWR<string[], Error>('templateTagData', initialData);
-};
-
-export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR<string, Error>('templateBodyData', initialData);
-};
-
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSharedUser', initialData);
 };

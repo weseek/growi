@@ -37,6 +37,14 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
+export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
+  return useStaticSWR<string[], Error>('templateTagData', initialData);
+};
+
+export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('templateBodyData', initialData);
+};
+
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 

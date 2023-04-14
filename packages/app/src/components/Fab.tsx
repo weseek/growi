@@ -4,8 +4,8 @@ import React, {
 
 import { animateScroll } from 'react-scroll';
 import { useRipple } from 'react-use-ripple';
-import StickyEvents from 'sticky-events';
 
+import { useSticky } from '~/client/services/side-effects/use-sticky';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useIsAbleToChangeEditorMode } from '~/stores/ui';
@@ -26,55 +26,45 @@ export const Fab = (): JSX.Element => {
 
   const [animateClasses, setAnimateClasses] = useState<string>('invisible');
   const [buttonClasses, setButtonClasses] = useState<string>('');
-  const [isSticky, setIsSticky] = useState<boolean>(false);
+  const [isStickyApplied, setIsStickyApplied] = useState(false);
 
   // ripple
   const createBtnRef = useRef(null);
   useRipple(createBtnRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
-  /**
-   * After the fade animation is finished, fix the button display status.
-   * Prevents the fade animation occurred each time by button components rendered.
-   * Check Fab.module.scss for fade animation time.
-   */
+  // Get sticky status
+  const isSticky = useSticky('#grw-fav-sticky-trigger');
+
+  // check if isSticky is already initialized then save it in isStickyApplied state
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isSticky) {
-        setAnimateClasses('visible');
-        setButtonClasses('');
-      }
-      else {
-        setAnimateClasses('invisible');
-      }
-    }, 500);
-    return () => clearTimeout(timer);
+    if (isSticky) {
+      setIsStickyApplied(true);
+    }
   }, [isSticky]);
 
-  const stickyChangeHandler = useCallback((event) => {
-    logger.debug('StickyEvents.CHANGE detected');
-
-    const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-    const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
-
-    setAnimateClasses(newAnimateClasses);
-    setButtonClasses(newButtonClasses);
-    setIsSticky(event.detail.isSticky);
-  }, []);
-
-  // setup effect by sticky event
+  // Apply new classes if only isSticky is initialized, otherwise no classes have changed
+  // Prevents the Fab button from showing on first load due to the isSticky effect
   useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    if (isStickyApplied) {
+      const timer = setTimeout(() => {
+        if (isSticky) {
+          setAnimateClasses('visible');
+          setButtonClasses('');
+        }
+        else {
+          setAnimateClasses('invisible');
+        }
+      }, 500);
 
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
-  }, [stickyChangeHandler]);
+      const newAnimateClasses = isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+      const newButtonClasses = isSticky ? '' : 'disabled grw-pointer-events-none';
+
+      setAnimateClasses(newAnimateClasses);
+      setButtonClasses(newButtonClasses);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSticky, isStickyApplied]);
 
   const PageCreateButton = useCallback(() => {
     return (

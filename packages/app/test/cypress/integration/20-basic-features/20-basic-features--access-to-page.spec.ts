@@ -208,7 +208,49 @@ context('Access to special pages', () => {
 });
 
 context('Access to Template Editing Mode', () => {
-  const ssPrefix = 'access-to-modal-';
+  const ssPrefix = 'access-to-template-page-';
+  const templateBody1 = 'Template for children';
+  const templateBody2 = 'Template for descendants';
+
+  const createPageFromPageTreeTest = (newPagePath: string, parentPagePath: string, expectedBody: string) => {
+    cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
+    // Open sidebar
+    cy.collapseSidebar(false);
+    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
+
+    // If PageTree is not active when the sidebar is opened, make it active
+    cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
+      .then($elem => {
+        if (!$elem.hasClass('active')) {
+          cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
+        }
+      });
+
+    // Create page (/{parentPath}}/{newPagePath}) from PageTree
+    cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+      cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+        cy.get('#page-create-button-in-page-tree').first().click({force: true})
+      });
+    });
+    cy.get('@pagetreeItem').within(() => {
+      cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
+    })
+
+    cy.visit(`/${parentPagePath}/${newPagePath}`);
+    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
+
+    // Check if the template is applied
+    cy.get('.content-main').within(() => {
+      cy.get('.wiki').should('be.visible');
+      cy.get('.wiki').children().first().should('have.text', expectedBody);
+    })
+
+    cy.screenshot(`${ssPrefix}-page(${newPagePath})-to-which-template-is-applied`)
+  }
 
   beforeEach(() => {
     // login
@@ -217,58 +259,82 @@ context('Access to Template Editing Mode', () => {
     });
   });
 
-  // TODO: 109057
-  // it('Access to Template Editor mode for only child pages successfully', () => {
-  //   cy.visit('/Sandbox/Bootstrap4', {  });
-  //   cy.waitUntilSkeletonDisappear();
+  it("Successfully created template for children", () => {
+    cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
 
-  //   cy.get('#grw-subnav-container').within(() => {
-  //     cy.getByTestid('open-page-item-control-btn').should('be.visible');
-  //     cy.getByTestid('open-page-item-control-btn').click();
-  //     cy.getByTestid('open-page-template-modal-btn').should('be.visible');
-  //     cy.getByTestid('open-page-template-modal-btn').click();
-  //   });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    });
 
-  //   cy.getByTestid('page-template-modal').should('be.visible');
-  //   cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+    cy.getByTestid('page-template-modal').should('be.visible');
+    cy.screenshot(`${ssPrefix}-open-page-template-modal`);
 
-  // Todo: `@`alias may be changed. This code was made in an attempt to solve the error of element being dettached from the dom which couldn't be solved at this time.
-  // Wait for Todo: 109057 is solved and fix or leave the code below for better test code.
-  //   cy.getByTestid('template-button-children').as('template-button-children');
-  //   cy.get('@template-button-children').should('be.visible').click();
-  //   cy.waitUntilSkeletonDisappear();
+    cy.getByTestid('template-button-children').click(({force: true}))
+    cy.waitUntilSkeletonDisappear();
 
-  //   cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-  //     cy.url().should('include', '/_template#edit');
-  //     cy.screenshot();
-  //   });
-  // });
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/_template#edit');
+      cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
+    });
 
-  // TODO: 109057
-  // it('Access to Template Editor mode including decendants successfully', () => {
-  //   cy.visit('/Sandbox/Bootstrap4', {  });
-  //   cy.waitUntilSkeletonDisappear();
+    cy.get('.CodeMirror').type(templateBody1);
+    cy.get('.CodeMirror').contains(templateBody1);
+    cy.get('.page-editor-preview-body').contains(templateBody1);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').click();
+  });
 
-  //   cy.get('#grw-subnav-container').within(() => {
-  //     cy.getByTestid('open-page-item-control-btn').should('be.visible');
-  //     cy.getByTestid('open-page-item-control-btn').click();
-  //     cy.getByTestid('open-page-template-modal-btn').should('be.visible');
-  //     cy.getByTestid('open-page-template-modal-btn').click();
-  //   });
-  //   cy.getByTestid('page-template-modal').should('be.visible');
+  it('Template is applied to pages created from PageTree (template for children 1)', () => {
+    createPageFromPageTreeTest('template-test-page1', '/Sandbox' ,templateBody1);
+  });
 
-  // Todo: `@`alias may be changed. This code was made in an attempt to solve the error of element being dettached from the dom which couldn't be solved at this time.
-  // Wait for Todo: 109057 is solved and fix or leave the code below for better test code.
-  //   cy.getByTestid('template-button-decendants').as('template-button-decendants');
-  //   cy.get('@template-button-decendants').should('be.visible').click();
-  //   cy.waitUntilSkeletonDisappear();
+  it('Successfully created template for descendants', () => {
+    cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
 
-  //   cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-  //     cy.url().should('include', '/__template#edit');
-  //     cy.screenshot();
-  //   });
-  // });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    });
 
+    cy.getByTestid('page-template-modal').should('be.visible');
+
+    cy.getByTestid('template-button-decendants').click(({force: true}))
+    cy.waitUntilSkeletonDisappear();
+
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/__template#edit');
+      cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
+    })
+
+    cy.get('.CodeMirror').type(templateBody2);
+    cy.get('.CodeMirror').contains(templateBody2);
+    cy.get('.page-editor-preview-body').contains(templateBody2);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').click();
+  });
+
+  it('Template is applied to pages created from PageTree (template for children 2)', () => {
+    createPageFromPageTreeTest('template-test-page2','Sandbox',templateBody1);
+  });
+
+  it('Template is applied to pages created from PageTree (template for descendants)', () => {
+    // delete /Sandbox/_template
+    cy.visit('/Sandbox/_template');
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+    });
+    cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
+      cy.intercept('POST', '/_api/pages.remove').as('remove');
+      cy.getByTestid('delete-page-button').click();
+      cy.wait('@remove')
+    });
+
+    createPageFromPageTreeTest('template-test-page3','Sandbox',`${templateBody1}\n${templateBody2}`);
+  })
 });
 
 context('Access to /me/all-in-app-notifications', () => {

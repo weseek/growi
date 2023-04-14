@@ -17,6 +17,7 @@ module.exports = (crowi) => {
     type: 'conversations_select',
     default_to_current_conversation: true,
   };
+  const { User } = crowi.models;
 
   handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
     await respondUtil.respond({
@@ -44,12 +45,13 @@ module.exports = (crowi) => {
   };
 
   handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
+    const user = await User.findUserBySlackMemberId(interactionPayload.user.id);
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;
     if (path == null || contentsBody == null) {
       throw new SlackCommandHandlerError('All parameters are required.');
     }
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user);
     await respondUtil.deleteOriginal();
   };
 

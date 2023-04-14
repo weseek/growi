@@ -114,7 +114,7 @@ const PageAccessoriesModal = (): JSX.Element => {
     </div>
   ), [close, isWindowExpanded]);
 
-  if (status == null) {
+  if (status == null || activeTab == null) {
     return <></>;
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.0.10",
+  "version": "6.0.16-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
@@ -20,9 +20,9 @@
     "test": ""
   },
   "dependencies": {
-    "@growi/core": "^6.0.10",
-    "@growi/remark-growi-directive": "^6.0.10",
-    "@growi/ui": "^6.0.10",
+    "@growi/core": "^6.0.16-RC.0",
+    "@growi/remark-growi-directive": "^6.0.16-RC.0",
+    "@growi/ui": "^6.0.16-RC.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {
