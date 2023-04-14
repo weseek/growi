@@ -38,7 +38,7 @@
     },
     "@growi/app#build": {
       "dependsOn": ["^build", "@growi/app#styles-prebuilt"],
-      "outputs": [".next/**", "config/**", "dist/**"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "outputMode": "new-only"
     },
     "@growi/slackbot-proxy#build": {
