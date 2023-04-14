@@ -1,11 +1,11 @@
 import React, {
-  useEffect, useCallback, FC, useRef, useState, useMemo, RefObject,
+  useEffect, useCallback, useRef, useState, useMemo, RefObject,
 } from 'react';
 
 import SimpleBar from 'simplebar-react';
-import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
+import { useSticky } from '~/client/side-effects/use-sticky';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
@@ -49,6 +49,9 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
   const simplebarRef = useRef<SimpleBar>(null);
   const [simplebarMaxHeight, setSimplebarMaxHeight] = useState<number|undefined>();
 
+  // Get sticky status
+  const isSticky = useSticky(stickyElemSelector);
+
   /**
    * Reset scrollbar
    */
@@ -70,26 +73,9 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
 
   const resetScrollbarDebounced = useMemo(() => debounce(100, resetScrollbar), [resetScrollbar]);
 
-  const stickyChangeHandler = useCallback(() => {
-    logger.debug('StickyEvents.CHANGE detected');
-    resetScrollbarDebounced();
-  }, [resetScrollbarDebounced]);
-
-  // setup effect by sticky event
   useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
-    stickyEvents.enableEvents();
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
-  }, [stickyElemSelector, stickyChangeHandler]);
+    resetScrollbarDebounced();
+  }, [isSticky, resetScrollbarDebounced]);
 
   // setup effect by resizing event
   useEffect(() => {
