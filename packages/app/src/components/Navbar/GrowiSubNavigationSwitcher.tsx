@@ -4,9 +4,9 @@ import React, {
 
 import { debounce } from 'throttle-debounce';
 
+import { useSticky } from '~/client/side-effects/use-sticky';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useSidebarCollapsed } from '~/stores/ui';
-import { useSticky } from '~/stores/use-sticky';
 import loggerFactory from '~/utils/logger';
 
 import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
