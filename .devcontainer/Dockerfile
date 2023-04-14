@@ -48,5 +48,7 @@ RUN apt-get update \
    && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
 
+RUN yarn global add turbo
+
 # Uncomment to default to non-root user
 # USER $USER_UID
