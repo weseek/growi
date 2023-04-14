@@ -264,7 +264,7 @@ jobs:
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Restore dist
+    - name: Cache dist
       uses: actions/cache/save@v3
       with:
         path: |
