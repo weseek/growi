@@ -14,7 +14,9 @@ context('Access to sticky Fab', () => {
     cy.collapseSidebar(true);
   });
 
-  it('Fab is displayed on scroll down', () => {
+  it('Fab display changes on scroll down and up', () => {
+
+    // Visible
     cy.waitUntil(() => {
       // do
       // Scroll the window 250px down is enough to trigger sticky effect
@@ -24,11 +26,9 @@ context('Access to sticky Fab', () => {
         return cy.getByTestid('grw-fab-page-create-button').then($elem => $elem.hasClass('visible'));
       });
     });
+    cy.screenshot(`${ssPrefix}is-visible-on-scroll-down`);
 
-    cy.screenshot(`${ssPrefix}is-sticky-on-scroll-down`);
-  });
-
-  it('Fab is invisible on scroll top', () => {
+    // Invisible
     cy.waitUntil(() => {
       //do
       // Scroll the window back to top
@@ -43,6 +43,18 @@ context('Access to sticky Fab', () => {
   });
 
   it('Fab is not displayed when move to other pages', () => {
+
+    // Initial scroll down
+    cy.waitUntil(() => {
+      // do
+      // Scroll the window 250px down is enough to trigger sticky effect
+       cy.scrollTo(0, 250);
+      // wait until
+      return cy.getByTestid('grw-fab-container').within(() => {
+        return cy.getByTestid('grw-fab-page-create-button').then($elem => $elem.hasClass('visible'));
+      });
+    });
+
     // Move to /Sandbox page
     cy.visit('/Sandbox');
 
