@@ -11,7 +11,7 @@ context('Access to sticky sub navigation switcher ', () => {
     cy.visit('/');
 
     cy.waitUntilSkeletonDisappear();
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
   });
 
   it('Sub navigation sticky changes when scrolling down and up', () => {
@@ -55,7 +55,7 @@ context('Access to sticky sub navigation switcher ', () => {
     cy.waitUntilSkeletonDisappear();
     cy.collapseSidebar(true);
 
-    cy.getByTestid('grw-subnav-switcher').should('have.class', 'grw-subnav-switcher-hidden');
+    cy.getByTestid('grw-subnav-switcher').then($elem => $elem.hasClass('grw-subnav-switcher-hidden'))
     cy.screenshot(`${ssPrefix}is-not-sticky-on-move-to-other-pages`);
   });
 
@@ -68,23 +68,21 @@ context('Access to sticky sub navigation switcher ', () => {
       // wait until
       return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
     });
-
-    cy.getByTestid('grw-subnav-switcher').within(() => {
-      cy.waitUntil(() => {
-        // do
-        cy.getByTestid('editor-button').click();
-        // until
-        return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+    cy.waitUntil(() => {
+      cy.getByTestid('grw-subnav-switcher').within(() => {
+        cy.getByTestid('editor-button').should('be.visible').click();
       });
+      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     });
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.screenshot(`${ssPrefix}open-editor-when-sticky`);
   });
 
   it('Sub navigation is sticky when on small window', () => {
     cy.waitUntil(() => {
       // do
-      // Scroll the window 250px down is enough to trigger sticky effect
-      cy.scrollTo(0, 250);
+      // Scroll the window 500px down
+      cy.scrollTo(0, 500);
 
       // wait until
       return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));

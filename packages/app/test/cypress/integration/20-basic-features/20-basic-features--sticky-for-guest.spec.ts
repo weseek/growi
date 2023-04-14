@@ -36,10 +36,10 @@ context('Access sticky sub navigation switcher and Fab for guest', () => {
       // do
       // Scroll the window 250px down is enough to trigger sticky effect
        cy.scrollTo(0, 250);
+
       // wait until
-      return cy.getByTestid('grw-fab-container').within(() => {
-        return cy.getByTestid('grw-fab-return-to-top').then($elem => $elem.hasClass('visible'));
-      });
+      return cy.getByTestid('grw-fab-return-to-top').then($elem => $elem.hasClass('visible'));
+
     });
     cy.screenshot(`${ssPrefix}fab-is-visible-on-scroll-down`);
 
@@ -48,10 +48,9 @@ context('Access sticky sub navigation switcher and Fab for guest', () => {
       // do
       // Scroll page to top
        cy.scrollTo(0, 0);
-      // wait until
-      return cy.getByTestid('grw-fab-container').within(() => {
-        return cy.getByTestid('grw-fab-return-to-top').then($elem => !$elem.hasClass('visible'));
-      });
+
+       // wait until
+      return cy.getByTestid('grw-fab-return-to-top').then($elem => !$elem.hasClass('visible'));
     });
     cy.screenshot(`${ssPrefix}fab-is-invisible-on-scroll-down`);
 
