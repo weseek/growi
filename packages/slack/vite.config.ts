@@ -1,3 +1,6 @@
+import path from 'path';
+
+import glob from 'glob';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -10,11 +13,15 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts')),
       name: 'slack-libs',
-      formats: ['es', 'umd'],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+      },
       external: [
         'assert',
         'axios',
@@ -25,6 +32,7 @@ export default defineConfig({
         'http-errors',
         'bunyan', 'universal-bunyan',
         'url-join',
+        'qs',
         /^@slack\/.*/,
       ],
     },

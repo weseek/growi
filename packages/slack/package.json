@@ -2,8 +2,8 @@
   "name": "@growi/slack",
   "version": "6.0.16-RC.0",
   "license": "MIT",
-  "main": "dist/slack.umd.js",
-  "module": "dist/slack.mjs",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "vite build",

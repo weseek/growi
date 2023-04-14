@@ -2,10 +2,10 @@
 import { WebClient } from '@slack/web-api';
 import axios, { type AxiosError } from 'axios';
 
+import { requiredScopes } from '../consts';
 import type { ConnectionStatus } from '../interfaces/connection-status';
 
 import { markdownSectionBlock } from './block-kit-builder';
-import { requiredScopes } from './required-scopes';
 import { generateWebClient } from './webclient-factory';
 
 /**
