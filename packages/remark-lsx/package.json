@@ -1,12 +1,10 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.0.16-RC.0",
+  "version": "6.1.0-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "run-p build:*",
     "build:client": "vite build -c vite.client.config.ts",
@@ -24,9 +22,9 @@
     "lint": "run-p lint:*"
   },
   "dependencies": {
-    "@growi/core": "^6.0.16-RC.0",
-    "@growi/remark-growi-directive": "^6.0.16-RC.0",
-    "@growi/ui": "^6.0.16-RC.0",
+    "@growi/core": "^6.1.0-RC.0",
+    "@growi/remark-growi-directive": "^6.1.0-RC.0",
+    "@growi/ui": "^6.1.0-RC.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {
