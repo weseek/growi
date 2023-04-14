@@ -4,7 +4,7 @@ import React, {
 
 import { debounce } from 'throttle-debounce';
 
-import { useSticky } from '~/client/side-effects/use-sticky';
+import { useSticky } from '~/client/services/side-effects/use-sticky';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useSidebarCollapsed } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
