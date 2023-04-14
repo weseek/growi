@@ -5,10 +5,11 @@ import Link from 'next/link';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-
+import { useIsMailerSetup } from '~/stores/context';
 
 const PasswordResetRequestForm: FC = () => {
   const { t } = useTranslation();
+  const { data: isMailerSetup } = useIsMailerSetup();
   const [email, setEmail] = useState('');
 
   const changeEmail = useCallback((inputValue) => {
@@ -33,16 +34,29 @@ const PasswordResetRequestForm: FC = () => {
 
   return (
     <form onSubmit={sendPasswordResetRequestMail}>
-      <h3>{ t('forgot_password.password_reset_request_desc') }</h3>
+      {!isMailerSetup && (
+        <div className="alert alert-danger">
+          {t('commons:alert.password_reset_please_enable_mailer')}
+        </div>
+      )}
+      <h3>{t('forgot_password.password_reset_request_desc')}</h3>
       <div className="form-group">
         <div className="input-group">
-          <input name="email" placeholder="E-mail Address" className="form-control" type="email" onChange={e => changeEmail(e.target.value)} />
+          <input
+            name="email"
+            placeholder="E-mail Address"
+            className="form-control"
+            type="email"
+            disabled={!isMailerSetup}
+            onChange={e => changeEmail(e.target.value)}
+          />
         </div>
       </div>
       <div className="form-group">
         <button
           className="btn btn-lg btn-primary btn-block"
           type="submit"
+          disabled={!isMailerSetup}
         >
           {t('forgot_password.send')}
         </button>
