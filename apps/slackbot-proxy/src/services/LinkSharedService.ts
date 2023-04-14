@@ -1,5 +1,5 @@
-import { GrowiEventProcessor, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
-import { WebClient } from '@slack/web-api';
+import { type GrowiEventProcessor, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
+import type { WebClient } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 

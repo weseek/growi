@@ -1,4 +1,4 @@
-import { generateWebClient } from '@growi/slack';
+import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
 import {
   IMiddleware, Middleware, Req,
 } from '@tsed/common';

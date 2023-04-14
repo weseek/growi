@@ -1,4 +1,4 @@
-import { markdownSectionBlock } from '@growi/slack';
+import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 import { ChatPostMessageResponse, WebClient } from '@slack/web-api';
 
 export const postWelcomeMessageOnce = async(client: WebClient, channel: string): Promise<void|ChatPostMessageResponse> => {

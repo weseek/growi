@@ -1,6 +1,7 @@
-import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient, BlockKitRequest,
-} from '@growi/slack';
+import { type BlockKitRequest, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
+import { verifyGrowiToSlackRequest } from '@growi/slack/dist/middlewares';
+import { getConnectionStatuses, getConnectionStatus } from '@growi/slack/dist/utils/check-communicable';
+import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
 import { ErrorCode, WebAPICallResult } from '@slack/web-api';
 import {
   Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put, QueryParams,

@@ -1,6 +1,6 @@
-import {
-  REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp, IChannelOptionalId, permissionParser,
-} from '@growi/slack';
+import { REQUEST_TIMEOUT_FOR_PTOG, type IChannelOptionalId } from '@growi/slack';
+import { getSupportedGrowiActionsRegExp } from '@growi/slack/dist/utils/get-supported-growi-actions-regexps';
+import { permissionParser } from '@growi/slack/dist/utils/permission-parser';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns';

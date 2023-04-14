@@ -1,6 +1,6 @@
-import { RequestFromSlack } from '@growi/slack';
+import type { RequestFromSlack } from '@growi/slack';
 import {
-  IMiddleware, Middleware, Next, Req, Res,
+  type IMiddleware, Middleware, Next, Req, Res,
 } from '@tsed/common';
 
 @Middleware()

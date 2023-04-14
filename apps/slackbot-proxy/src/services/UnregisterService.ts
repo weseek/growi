@@ -1,8 +1,12 @@
-import {
-  actionsBlock, buttonElement, getInteractionIdRegexpFromCommandName,
-  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
-  inputBlock, InteractionHandledResult, markdownSectionBlock, respond, InteractionPayloadAccessor, replaceOriginal,
+import type {
+  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, InteractionHandledResult,
 } from '@growi/slack';
+import {
+  inputBlock, markdownSectionBlock, actionsBlock, buttonElement,
+} from '@growi/slack/dist/utils/block-kit-builder';
+import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import { getInteractionIdRegexpFromCommandName } from '@growi/slack/dist/utils/payload-interaction-id-helpers';
+import { respond, replaceOriginal } from '@growi/slack/dist/utils/response-url';
 import { AuthorizeResult } from '@slack/oauth';
 import { MultiStaticSelect } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';

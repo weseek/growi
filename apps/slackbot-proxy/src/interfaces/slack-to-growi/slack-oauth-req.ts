@@ -1,6 +1,6 @@
-import { RequestFromSlack } from '@growi/slack';
-import { AuthorizeResult } from '@slack/oauth';
-import { Req } from '@tsed/common';
+import type { RequestFromSlack } from '@growi/slack';
+import type { AuthorizeResult } from '@slack/oauth';
+import type { Req } from '@tsed/common';
 
 export type SlackOauthReq = Req & RequestFromSlack & {
   authorizeResult: AuthorizeResult,
