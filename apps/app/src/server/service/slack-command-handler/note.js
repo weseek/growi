@@ -1,8 +1,9 @@
+import {
+  markdownHeaderBlock, inputSectionBlock, inputBlock, actionsBlock, buttonElement,
+} from '@growi/slack/dist/utils/block-kit-builder';
+
 import loggerFactory from '~/utils/logger';
 
-const {
-  markdownHeaderBlock, inputSectionBlock, inputBlock, actionsBlock, buttonElement,
-} = require('@growi/slack');
 const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:note');

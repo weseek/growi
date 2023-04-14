@@ -1,4 +1,5 @@
-import { type GrowiBotEvent, generateLastUpdateMrkdwn } from '@growi/slack';
+import type { GrowiBotEvent } from '@growi/slack';
+import { generateLastUpdateMrkdwn } from '@growi/slack/dist/utils/generate-last-update-markdown';
 import type {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';

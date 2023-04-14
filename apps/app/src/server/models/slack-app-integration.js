@@ -1,6 +1,7 @@
-const crypto = require('crypto');
-const mongoose = require('mongoose');
-const { defaultSupportedSlackEventActions } = require('@growi/slack');
+import crypto from 'crypto';
+
+import { defaultSupportedSlackEventActions } from '@growi/slack';
+import mongoose from 'mongoose';
 
 
 const schema = new mongoose.Schema({

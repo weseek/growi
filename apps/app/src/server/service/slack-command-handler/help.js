@@ -3,7 +3,7 @@
  * the help message should vary depending on the growi version
  */
 
-const { markdownSectionBlock } = require('@growi/slack');
+import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 
 module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');

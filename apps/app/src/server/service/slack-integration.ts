@@ -1,9 +1,10 @@
-import type {
-  GrowiCommand, RespondUtil, GrowiBotEvent,
-} from '@growi/slack';
 import {
-  generateWebClient, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
+  SlackbotType, type GrowiCommand, type GrowiBotEvent,
 } from '@growi/slack';
+import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
+import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import type { RespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
+import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 import { IncomingWebhookSendArguments } from '@slack/webhook';
 import mongoose from 'mongoose';

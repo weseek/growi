@@ -1,4 +1,6 @@
-import { getSupportedGrowiActionsRegExp, type IChannelOptionalId, permissionParser } from '@growi/slack';
+import type { IChannelOptionalId } from '@growi/slack';
+import { getSupportedGrowiActionsRegExp } from '@growi/slack/dist/utils/get-supported-growi-actions-regexps';
+import { permissionParser } from '@growi/slack/dist/utils/permission-parser';
 
 type CommandPermission = { [key:string]: string[] | boolean }
 

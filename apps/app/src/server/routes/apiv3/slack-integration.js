@@ -1,17 +1,17 @@
 import { ErrorV3 } from '@growi/core';
+import { supportedGrowiCommands } from '@growi/slack';
+import { verifySlackRequest } from '@growi/slack/dist/middlewares';
+import { InvalidGrowiCommandError } from '@growi/slack/dist/models/errors';
+import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
+import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import { generateRespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
+import { parseSlashCommand } from '@growi/slack/dist/utils/slash-command-parser';
 import createError from 'http-errors';
 
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
-import {
-  markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil, supportedGrowiCommands,
-} from '@growi/slack';
 
-
-const {
-  verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor, respond,
-} = require('@growi/slack');
 const express = require('express');
 const { body } = require('express-validator');
 const mongoose = require('mongoose');

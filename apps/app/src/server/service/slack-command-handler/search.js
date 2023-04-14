@@ -1,10 +1,13 @@
+import {
+  markdownSectionBlock, divider,
+} from '@growi/slack/dist/utils/block-kit-builder';
+import { generateLastUpdateMrkdwn } from '@growi/slack/dist/utils/generate-last-update-markdown';
+
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
-const {
-  markdownSectionBlock, divider, generateLastUpdateMrkdwn,
-} = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 
 const PAGINGLIMIT = 7;

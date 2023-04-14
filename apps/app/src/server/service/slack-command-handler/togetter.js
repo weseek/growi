@@ -1,12 +1,15 @@
+import {
+  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
+} from '@growi/slack/dist/utils/block-kit-builder';
+import { respond, deleteOriginal } from '@growi/slack/dist/utils/response-url';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
-const {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider, respond,
-  deleteOriginal,
-} = require('@growi/slack');
-const { parse, format } = require('date-fns');
+
 const axios = require('axios');
+const { parse, format } = require('date-fns');
+
 const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {

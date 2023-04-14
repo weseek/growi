@@ -1,6 +1,8 @@
 import assert from 'assert';
 
-import { respond, type RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
+import type { RespondBodyForResponseUrl } from '@growi/slack';
+import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
+import { respond } from '@growi/slack/dist/utils/response-url';
 import { type ChatPostEphemeralResponse, WebClient } from '@slack/web-api';
 
 

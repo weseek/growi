@@ -1,4 +1,12 @@
 import { ErrorV3 } from '@growi/core';
+import {
+  SlackbotType, REQUEST_TIMEOUT_FOR_GTOP,
+  defaultSupportedSlackEventActions, defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
+} from '@growi/slack';
+import {
+  getConnectionStatus, getConnectionStatuses,
+  sendSuccessMessage,
+} from '@growi/slack/dist/utils/check-communicable';
 
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
@@ -6,15 +14,7 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-import { SlackbotType, defaultSupportedSlackEventActions } from '@growi/slack';
 
-
-const {
-  getConnectionStatus, getConnectionStatuses,
-  sendSuccessMessage,
-  defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
-  REQUEST_TIMEOUT_FOR_GTOP,
-} = require('@growi/slack');
 const axios = require('axios');
 const express = require('express');
 const { body, query, param } = require('express-validator');

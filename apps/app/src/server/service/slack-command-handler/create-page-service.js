@@ -1,8 +1,10 @@
+import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
+import { reshapeContentsBody } from '@growi/slack/dist/utils/reshape-contents-body';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:CreatePageService');
 const { pathUtils } = require('@growi/core');
-const { reshapeContentsBody, markdownSectionBlock } = require('@growi/slack');
 const mongoose = require('mongoose');
 
 class CreatePageService {

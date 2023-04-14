@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { useTranslation } from 'next-i18next';
 
 import { SlackbotType } from '@growi/slack';
+import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 const botDetails = {
   officialBot: {
