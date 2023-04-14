@@ -263,10 +263,6 @@ jobs:
         restore-keys: |
           node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: Install dependencies
-      run: |
-        yarn --production
-
     - name: Cache/Restore Cypress files
       uses: actions/cache@v3
       with:
@@ -314,6 +310,7 @@ jobs:
         browser: chrome
         working-directory: ./apps/app
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
+        install-command: yarn --production
         start: yarn server
         wait-on: 'http://localhost:3000'
         config: video=${{ inputs.cypress-config-video }}
