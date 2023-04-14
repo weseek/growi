@@ -1,37 +1,68 @@
-import React, { useCallback, useMemo } from 'react';
+import React, {
+  useCallback, useMemo, useState,
+} from 'react';
 
-import { HasObjectId, IAttachment, IUser } from '@growi/core';
+import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useAttachmentDeleteModal } from '~/stores/modal';
+import loggerFactory from '~/utils/logger';
+
 import { Username } from '../User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';
+
+const logger = loggerFactory('growi:attachmentDelete');
 
 const iconByFormat = (format: string): string => {
   return format.match(/image\/.+/i) ? 'icon-picture' : 'icon-doc';
 };
 
-export const AttachmentDeleteModal: React.FC<{
-  isOpen: boolean,
-  toggle: () => void,
-  attachmentToDelete: IAttachment & HasObjectId,
-  deleting: boolean,
-  deleteError: string,
-  onAttachmentDeleteHandler: (attachment: IAttachment & HasObjectId) => Promise<void>,
-}> = ({
-  isOpen, toggle,
-  attachmentToDelete, deleting, deleteError,
-  onAttachmentDeleteHandler,
-}) => {
+export const AttachmentDeleteModal: React.FC = () => {
+  const [deleting, setDeleting] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string>('');
 
-  const onDeleteClicked = useCallback(() => {
-    onAttachmentDeleteHandler(attachmentToDelete);
-  }, [attachmentToDelete, onAttachmentDeleteHandler]);
+  const { data: attachmentDeleteModal, close: closeAttachmentDeleteModal } = useAttachmentDeleteModal();
+  const isOpen = attachmentDeleteModal?.isOpened;
+  const attachment = attachmentDeleteModal?.attachment;
+  const remove = attachmentDeleteModal?.remove;
 
-  const renderByFileFormat = useCallback((attachment: IAttachment & HasObjectId) => {
+  const toggleHandler = useCallback(() => {
+    closeAttachmentDeleteModal();
+    setDeleting(false);
+    setDeleteError('');
+  }, [closeAttachmentDeleteModal]);
+
+  const onClickDeleteButtonHandler = useCallback(async() => {
+    if (remove == null || attachment == null) {
+      return;
+    }
+
+    setDeleting(true);
+
+    try {
+      await remove({ attachment_id: attachment._id });
+      setDeleting(false);
+      closeAttachmentDeleteModal();
+      toastSuccess(`Delete ${attachment.originalName}`);
+    }
+    catch (err) {
+      setDeleting(false);
+      setDeleteError('Something went wrong.');
+      toastError(err);
+      logger.error(err);
+    }
+  }, [attachment, closeAttachmentDeleteModal, remove]);
+
+  const attachmentFileFormat = useMemo(() => {
+    if (attachment == null) {
+      return;
+    }
+
     const content = (attachment.fileFormat.match(/image\/.+/i))
       // eslint-disable-next-line @next/next/no-img-element
       ? <img src={attachment.filePathProxied} alt="deleting image" />
@@ -48,7 +79,7 @@ export const AttachmentDeleteModal: React.FC<{
         {content}
       </div>
     );
-  }, []);
+  }, [attachment]);
 
   const deletingIndicator = useMemo(() => {
     if (deleting) {
@@ -68,11 +99,11 @@ export const AttachmentDeleteModal: React.FC<{
       aria-labelledby="contained-modal-title-lg"
       fade={false}
     >
-      <ModalHeader tag="h4" toggle={toggle} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
         <span id="contained-modal-title-lg">Delete attachment?</span>
       </ModalHeader>
       <ModalBody>
-        {renderByFileFormat(attachmentToDelete)}
+        {attachmentFileFormat}
       </ModalBody>
       <ModalFooter>
         <div className="mr-3 d-inline-block">
@@ -80,9 +111,9 @@ export const AttachmentDeleteModal: React.FC<{
         </div>
         <Button
           color="danger"
-          onClick={onDeleteClicked}
+          onClick={onClickDeleteButtonHandler}
           disabled={deleting}
-        >Delete!
+        >Delete
         </Button>
       </ModalFooter>
     </Modal>
