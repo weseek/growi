@@ -5,7 +5,7 @@ import React, {
 import { animateScroll } from 'react-scroll';
 import { useRipple } from 'react-use-ripple';
 
-import { useSticky } from '~/client/side-effects/use-sticky';
+import { useSticky } from '~/client/services/side-effects/use-sticky';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useIsAbleToChangeEditorMode } from '~/stores/ui';
