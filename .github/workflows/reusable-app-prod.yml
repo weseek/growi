@@ -64,6 +64,7 @@ jobs:
         path: |
           **/.turbo
           **/dist
+          ${{ github.workspace }}/apps/app/.next
         key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
           dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
@@ -122,6 +123,7 @@ jobs:
         path: |
           **/.turbo
           **/dist
+          ${{ github.workspace }}/apps/app/.next
         key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 

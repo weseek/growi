@@ -49,15 +49,15 @@ jobs:
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-    - name: Cache/Restore dist
-      uses: actions/cache@v3
+    - name: Restore dist
+      uses: actions/cache/restore@v3
       with:
         path: |
           **/.turbo
           **/dist
-        key: dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        key: dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
-          dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-
+          dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -77,6 +77,15 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Cache dist
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+        key: dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+
 
   launch-dev:
     runs-on: ubuntu-latest
@@ -114,15 +123,15 @@ jobs:
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-    - name: Cache/Restore dist
-      uses: actions/cache@v3
+    - name: Restore dist
+      uses: actions/cache/restore@v3
       with:
         path: |
           **/.turbo
           **/dist
-        key: dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        key: dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
         restore-keys: |
-          dist-ci-slackbot-proxy-${{ runner.OS }}-node${{ matrix.node-version }}-
+          dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -152,6 +161,14 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Cache dist
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+        key: dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   launch-prod:
@@ -204,8 +221,8 @@ jobs:
       run: |
         yarn --frozen-lockfile
 
-    - name: Cache/Restore dist
-      uses: actions/cache@v3
+    - name: Restore dist
+      uses: actions/cache/restore@v3
       with:
         path: |
           **/.turbo
@@ -246,3 +263,11 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Restore dist
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+        key: dist-slackbot-proxy-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
