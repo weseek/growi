@@ -6,9 +6,9 @@
         "request": "attach",
         "name": "Debug: Attach Debugger to Server",
         "port": 9229,
-        "cwd": "${workspaceFolder}/packages/app",
+        "cwd": "${workspaceFolder}/apps/app",
         "sourceMapPathOverrides": {
-          "webpack://@growi/app/*": "${workspaceFolder}/packages/app/*"
+          "webpack://@growi/app/*": "${workspaceFolder}/apps/app/*"
         }
       },
       {
@@ -20,9 +20,9 @@
         ],
         "console": "integratedTerminal",
         "cwd": "${fileDirname}",
-        "runtimeExecutable": "yarn",
+        "runtimeExecutable": "node",
         "runtimeArgs": [
-          "ts-node",
+          "-r", "@swc-node/register",
           "${file}"
         ]
       },
@@ -30,7 +30,7 @@
         "type": "pwa-node",
         "request": "launch",
         "name": "Debug: Server",
-        "cwd": "${workspaceFolder}/packages/app",
+        "cwd": "${workspaceFolder}/apps/app",
         "runtimeExecutable": "yarn",
         "runtimeArgs": [
           "dev"
@@ -42,7 +42,7 @@
         "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen",
         "sourceMapPathOverrides": {
-          "webpack://@growi/app/*": "${workspaceFolder}/packages/app/*"
+          "webpack://@growi/app/*": "${workspaceFolder}/apps/app/*"
         }
       },
       {
@@ -51,9 +51,9 @@
         "name": "Debug: Chrome",
         "sourceMaps": true,
         "sourceMapPathOverrides": {
-          "webpack://_N_E/*": "${workspaceFolder}/packages/app/*"
+          "webpack://_N_E/*": "${workspaceFolder}/apps/app/*"
         },
-        "webRoot": "${workspaceFolder}/packages/app/public",
+        "webRoot": "${workspaceFolder}/apps/app/public",
         "url": "http://localhost:3000"
       },
       {
@@ -61,12 +61,12 @@
         "request": "launch",
         "name": "Debug: Firefox",
         "reAttach": true,
-        "webRoot": "${workspaceFolder}/packages/app/public",
+        "webRoot": "${workspaceFolder}/apps/app/public",
         "url": "http://localhost:3000",
         "pathMappings": [
           {
             "url": "webpack://_n_e/src",
-            "path": "${workspaceFolder}/packages/app/src"
+            "path": "${workspaceFolder}/apps/app/src"
           },
           {
             "url": "webpack://_n_e/core",
@@ -78,7 +78,7 @@
           },
           {
             "url": "webpack://_n_e/slack",
-            "path": "${workspaceFolder}/packages/app/slack"
+            "path": "${workspaceFolder}/apps/app/slack"
           },
           {
             "url": "webpack://_n_e/ui",
@@ -86,7 +86,7 @@
           },
           {
             "url": "http://localhost:3000",
-            "path": "${workspaceFolder}/packages/app/public"
+            "path": "${workspaceFolder}/apps/app/public"
           }
         ]
       }

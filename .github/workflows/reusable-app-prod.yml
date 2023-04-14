@@ -34,29 +34,45 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Install turbo
+      run: |
+        yarn global add turbo
+
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
     - name: Cache/Restore node_modules
       id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: lerna bootstrap
+    - name: Install dependencies
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        yarn --frozen-lockfile
 
-    - name: Remove unnecessary packages
-      run: |
-        rm -rf packages/slackbot-proxy
-        rm -f "node_modules/@growi/slackbot-proxy"
+    - name: Restore dist
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+          ${{ github.workspace }}/apps/app/.next
+        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        restore-keys: |
+          dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Build
+      working-directory: ./apps/app
       run: |
-        yarn lerna run build
+        turbo run build
       env:
         ANALYZE_BUNDLE_SIZE: 1
 
@@ -65,14 +81,16 @@ jobs:
       run: |
         tar -zcf production.tar.gz \
           package.json \
-          packages/app/.next \
-          packages/app/config \
-          packages/app/public \
-          packages/app/resource \
-          packages/app/tmp \
-          packages/app/.env.production* \
-          packages/*/package.json \
-          packages/*/dist
+          apps/app/.next \
+          apps/app/config \
+          apps/app/dist \
+          apps/app/public \
+          apps/app/resource \
+          apps/app/tmp \
+          apps/app/.env.production* \
+          apps/app/package.json \
+          packages/*/dist \
+          packages/*/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
@@ -86,8 +104,8 @@ jobs:
       with:
         name: Bundle Analyzing Report
         path: |
-          packages/app/.next/analyze/client.html
-          packages/app/.next/analyze/server.html
+          apps/app/.next/analyze/client.html
+          apps/app/.next/analyze/server.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -99,6 +117,14 @@ jobs:
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+    - name: Cache dist
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+          ${{ github.workspace }}/apps/app/.next
+        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   launch-prod:
@@ -126,34 +152,29 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
-    - name: Get Date
-      id: get-date
+    - name: Install turbo
       run: |
-        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")" >> $GITHUB_OUTPUT
-        echo "dateYm=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
+        yarn global add turbo
 
-    - name: Cache/Restore node_modules (not reused)
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
+    - name: Cache/Restore node_modules
       id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-        key: node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYmdHM }}
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
-          node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYm }}
-          node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: Remove unnecessary packages
+    - name: Install dependencies
       run: |
-        rm -rf packages/slackbot-proxy
-        rm -f "node_modules/@growi/slackbot-proxy"
-
-    - name: lerna bootstrap --production
-      run: |
-        npx lerna bootstrap -- --production
+        yarn --production
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3
@@ -165,7 +186,7 @@ jobs:
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
     - name: yarn server:ci
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
         yarn server:ci
@@ -222,24 +243,34 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
-    - name: Cache/Restore dependencies
+    - name: Install turbo
+      run: |
+        yarn global add turbo
+
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-          ~/.cache/Cypress
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: lerna bootstrap
-      run: |
-        npx lerna bootstrap -- --production
-
-    - name: lerna add packages needed for CI
-      run: |
-        npx lerna add yargs
+    - name: Cache/Restore Cypress files
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/Cypress
+        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3
@@ -253,23 +284,23 @@ jobs:
     - name: Determine spec expression
       id: determine-spec-exp
       run: |
-        SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
+        SPEC=`node bin/github-actions/generate-cypress-spec-arg.mjs --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
         echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
     - name: Copy dotenv file for automatic installation
       if: ${{ matrix.spec-group != '10' }}
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
     - name: Copy dotenv file for automatic installation with allowing guest mode
       if: ${{ matrix.spec-group == '21' }}
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
@@ -277,7 +308,7 @@ jobs:
       uses: cypress-io/github-action@v3
       with:
         browser: chrome
-        working-directory: ./packages/app
+        working-directory: ./apps/app
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         start: yarn server
         wait-on: 'http://localhost:3000'
@@ -292,8 +323,8 @@ jobs:
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: |
-          packages/app/test/cypress/screenshots
-          packages/app/test/cypress/videos
+          apps/app/test/cypress/screenshots
+          apps/app/test/cypress/videos
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

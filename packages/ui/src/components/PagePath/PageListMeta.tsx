@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import { templateChecker, pagePathUtils, IPageHasId } from '@growi/core';
 
-import { FootstampIcon } from '../SearchPage/FootstampIcon';
+import { FootstampIcon } from '../FootstampIcon';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;

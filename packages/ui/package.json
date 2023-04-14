@@ -4,23 +4,23 @@
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": ["growi"],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "files": ["dist"],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "run-p build:*",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
-    "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
+    "build": "vite build",
     "clean": "npx -y shx rm -rf dist",
-    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
-    "lint": "npm-run-all -p lint:*",
-    "test": "jest --verbose"
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w --emptyOutDir=false",
+    "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:typecheck": "tsc",
+    "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
     "@growi/core": "^6.0.16-RC.0"
   },
   "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0",
     "react": "^18.2.0"
   }
 }

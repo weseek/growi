@@ -3,28 +3,36 @@
   "description": "GROWI preset themes",
   "version": "6.0.16-RC.0",
   "license": "MIT",
-  "main": "dist/libs/index.js",
+  "main": "dist/libs/preset-themes.umd.js",
+  "module": "dist/libs/preset-themes.mjs",
+  "types": "dist/libs/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "yarn build:libs & yarn build:themes",
+    "build": "run-p build:*",
     "build:libs": "vite -c vite.libs.config.ts build",
     "build:themes": "vite -c vite.themes.config.ts build",
-    "dev": "yarn build:libs --mode dev -w & yarn build:themes --mode dev -w",
-    "dev:nowatch": "yarn build:libs --mode dev & yarn build:themes --mode dev",
-    "lint:eslint": "eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
+    "dev": "run-p dev:*",
+    "dev:libs": "yarn build:libs --mode dev",
+    "dev:themes": "yarn build:themes --mode dev",
+    "watch": "run-p watch:*",
+    "watch:libs": "yarn dev:libs -w --emptyOutDir=false",
+    "watch:themes": "yarn dev:themes -w --emptyOutDir=false",
+    "lint:eslint": "yarn eslint \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/**/*.scss",
+    "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-innertext": "^1.1.5"
   },
   "devDependencies": {
     "bootstrap": "^4.6.1",
     "sass": "^1.55.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
