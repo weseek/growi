@@ -594,7 +594,6 @@
     "slack_integration": "Slack Integration",
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
-      "detailed_explanation": "Detailed explanation",
       "official_bot": "Official bot",
       "custom_bot": "Custom bot",
       "without_proxy": "without proxy",
