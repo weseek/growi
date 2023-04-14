@@ -46,7 +46,7 @@ export const Attachment: React.FC<{
           </div>
           <div className='col-10'>
             <div>
-              <a className='' href={attachment.downloadPathProxied}>{attachment.originalName}</a>
+              <a target="_blank" rel="noopener noreferrer" href={attachment.filePathProxied}>{attachment.originalName}</a>
               <span className='ml-2'>
                 <a className="attachment-download" href={attachment.downloadPathProxied}>
                   <i className="icon-cloud-download" />
