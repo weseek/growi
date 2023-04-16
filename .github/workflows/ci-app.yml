@@ -9,13 +9,15 @@ on:
       - .github/workflows/ci-app.yml
       - .eslint*
       - tsconfig.base.json
+      - turbo.json
       - yarn.lock
-      - packages/app/**
-      - '!packages/app/docker/**'
+      - apps/app/**
+      - '!apps/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/preset-themes/**
+      - packages/hackmd/**
       - packages/presentation/**
+      - packages/preset-themes/**
       - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
@@ -31,7 +33,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -43,29 +45,33 @@ jobs:
           cache-dependency-path: '**/yarn.lock'
 
       - name: Cache/Restore node_modules
-        id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --frozen-lockfile
+      - name: Restore dist
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            **/.turbo
+            **/dist
+          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          restore-keys: |
+            dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna run lint for dependent packages
+      - name: Install dependencies
         run: |
-          yarn lerna run lint --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/hackmd --scope @growi/preset-themes --scope @growi/remark-* --scope @growi/slack --scope @growi/ui
-      - name: build dependent packages
+          yarn global add turbo
+          yarn --frozen-lockfile
+
+      - name: Lint
         run: |
-          yarn lerna run build --scope @growi/preset-themes
-      - name: lerna run lint for app
-        run: |
-          yarn lerna run lint --scope @growi/app
+          turbo run lint --filter=!@growi/slackbot-proxy
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -77,12 +83,21 @@ jobs:
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+      - name: Cache dist
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            **/.turbo
+            **/dist
+          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+
+
   test:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     services:
       mongodb:
@@ -105,23 +120,29 @@ jobs:
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --frozen-lockfile
+      - name: Restore dist
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            **/.turbo
+            **/dist
+          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          restore-keys: |
+            dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna run test for plugins
+      - name: Install dependencies
         run: |
-          yarn lerna run test --scope @growi/remark-*
+          yarn global add turbo
+          yarn --frozen-lockfile
 
-      - name: Test app
-        working-directory: ./packages/app
+      - name: Test
         run: |
-          yarn test:ci --selectProjects unit server ; yarn test:ci --selectProjects server-v5
+          turbo run test --filter=!@growi/slackbot-proxy
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
@@ -130,7 +151,7 @@ jobs:
         with:
           name: Coverage Report
           path: |
-            packages/app/coverage
+            apps/app/coverage
             packages/remark-growi-directive/coverage
 
       - name: Slack Notification
@@ -143,12 +164,21 @@ jobs:
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+      - name: Cache dist
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            **/.turbo
+            **/dist
+          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+
+
   launch-dev:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     services:
       mongodb:
@@ -165,27 +195,38 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules and next cache files
+      - name: Cache/Restore node_modules
         id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
             **/node_modules
-            ${{ github.workspace }}/packages/app/.next/cache
-          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
-            dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
+      - name: Restore dist
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            **/.turbo
+            **/dist
+            ${{ github.workspace }}/apps/app/.next
+          key: dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          restore-keys: |
+            dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+      - name: Install dependencies
         run: |
-          npx lerna bootstrap -- --frozen-lockfile
+          yarn global add turbo
+          yarn --frozen-lockfile
 
-      - name: yarn dev:ci
-        working-directory: ./packages/app
+      - name: turbo run dev:ci
+        working-directory: ./apps/app
         run: |
           cp config/ci/.env.local.for-ci .env.development.local
-          yarn dev:ci
+          turbo run dev:ci
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
@@ -198,3 +239,12 @@ jobs:
           channel: '#ci'
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Cache dist
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            **/.turbo
+            **/dist
+            ${{ github.workspace }}/apps/app/.next
+          key: dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}

@@ -1,4 +1,4 @@
-import {
+import type {
   SectionBlock, HeaderBlock, InputBlock, DividerBlock, ActionsBlock,
   Button, Overflow, Datepicker, Select, RadioButtons, Checkboxes, Action, MultiSelect, PlainTextInput, Option,
 } from '@slack/types';

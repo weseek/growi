@@ -60,28 +60,38 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Install turbo
+      run: |
+        yarn global add turbo
+
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
+
     - name: Cache/Restore node_modules
+      id: cache-dependencies
       uses: actions/cache@v3
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: lerna bootstrap
+    - name: Install dependencies
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        yarn --frozen-lockfile
 
     - name: Download screenshots taken by cypress
       uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
-        path: packages/app/test/cypress
+        path: apps/app/test/cypress
 
     - name: Run reg-suit
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         yarn reg:run
 

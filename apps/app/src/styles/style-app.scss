@@ -1,0 +1,114 @@
+@import 'mixins';
+
+// atoms
+@import 'atoms/buttons';
+@import 'atoms/spinners';
+@import 'atoms/custom_control';
+@import 'atoms/code';
+
+// molecules
+@import 'molecules/toastr';
+// @import 'molecules/slack-notification';
+// @import 'molecules/duplicated-paths-table.scss';
+
+// organisms
+@import 'organisms/wiki';
+
+// // growi component
+// @import 'draft';
+@import 'editor';
+@import 'fonts';
+@import 'layout';
+@import 'mirror_mode';
+@import 'modal';
+@import 'page-path';
+@import 'search';
+@import 'tag';
+@import 'installer';
+
+
+/*
+ * for Guest User Mode
+ */
+// TODO: reactify and replace with `grw-not-available-for-guest`
+.dropdown-toggle.dropdown-toggle-disabled {
+  cursor: not-allowed;
+}
+
+// TODO: reactify and replace with `grw-not-available-for-guest`
+.edit-button.edit-button-disabled {
+  cursor: not-allowed;
+}
+
+.grw-not-available-for-guest {
+  cursor: not-allowed !important;
+}
+
+/*
+ * Helper Classes
+ */
+
+.mw-0 {
+  min-width: 0;
+}
+
+.flex-basis-0 {
+  flex-basis: 0;
+}
+
+.picture {
+  width: 24px;
+  height: 24px;
+
+  // size list
+  &.picture-lg {
+    width: 48px;
+    height: 48px;
+  }
+
+  &.picture-md {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.picture-sm {
+    width: 18px;
+    height: 18px;
+  }
+
+  &.picture-xs {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// transplant from FontAwesome
+.icon-fw {
+  display: inline-block;
+  width: 1.4em;
+  text-align: left;
+}
+
+.cmd-key.mac {
+  &:after {
+    content: '⌘';
+  }
+}
+
+.cmd-key.win {
+  &:after {
+    content: 'Ctrl';
+  }
+}
+
+.grw-page-control-dropdown-item {
+  display: flex !important;
+  align-items: center;
+
+  .grw-page-control-dropdown-icon {
+    display: flex;
+    justify-content: center;
+    width: 25px;
+  }
+
+}

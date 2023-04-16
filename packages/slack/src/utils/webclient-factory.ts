@@ -1,4 +1,4 @@
-import { LogLevel, WebClient, WebClientOptions } from '@slack/web-api';
+import { LogLevel, WebClient, type WebClientOptions } from '@slack/web-api';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const logLevel: LogLevel = isProduction ? LogLevel.DEBUG : LogLevel.INFO;

@@ -1,9 +1,0 @@
-@import './variables';
-
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-
-// merge $colors to $theme-colors
-$theme-colors: map-merge($theme-colors, $colors);
-
-@import '~bootstrap/scss/mixins';

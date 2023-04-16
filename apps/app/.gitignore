@@ -1,0 +1,18 @@
+# next.js
+/.next/
+/out/
+
+# test
+test/cypress/screenshots
+test/cypress/videos
+.reg
+
+# dist
+/build/
+/dist/
+/transpiled/
+/public/static/js
+/public/static/styles
+/public/uploads
+/src/styles/prebuilt
+/tmp/

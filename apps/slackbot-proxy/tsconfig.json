@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "config",
+    "dist",
+    "src/public/**",
+    "**/*.test.ts"
+  ],
+  "ts-node": {
+    "transpileOnly": true,
+    "swc": true
+  }
+}

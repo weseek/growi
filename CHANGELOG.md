@@ -1,8 +1,19 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.14...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.15...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.15](https://github.com/weseek/growi/compare/v6.0.14...v6.0.15) - 2023-04-10
+
+### 🐛 Bug Fixes
+
+- fix: Templates are not applied when pages are created from PageTree (#7553) @miya
+- fix(drawio): Render uncompressed data when line-breaks option is set (#7555) @yuki-takei
+- fix: Is not working i18n on `/admin/export`  (#7554) @jam411
+- fix: PageTree mutiple DnD unexpected disappear and unexpected tree move if renamed path (#7542) @jam411
+- fix: Username incremental search is not working in comment (#7548) @mudana-grune
+- fix: H6 line-height (#7541) @yukendev
 
 ## [v6.0.14](https://github.com/weseek/growi/compare/v6.0.13...v6.0.14) - 2023-04-04
 
