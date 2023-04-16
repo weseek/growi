@@ -34,33 +34,38 @@ const PasswordResetRequestForm: FC = () => {
 
   return (
     <form onSubmit={sendPasswordResetRequestMail}>
-      {!isMailerSetup && (
+      {!isMailerSetup ? (
         <div className="alert alert-danger">
-          {t('commons:alert.password_reset_please_enable_mailer')}
+          {t('forgot_password.please_enable_mailer_alert')}
         </div>
+      ) : (
+        <>
+          <h1><i className="icon-lock large"></i></h1>
+          <h1 className="text-center">{ t('forgot_password.forgot_password') }</h1>
+          <h3>{t('forgot_password.password_reset_request_desc')}</h3>
+          <div className="form-group">
+            <div className="input-group">
+              <input
+                name="email"
+                placeholder="E-mail Address"
+                className="form-control"
+                type="email"
+                disabled={!isMailerSetup}
+                onChange={e => changeEmail(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <button
+              className="btn btn-lg btn-primary btn-block"
+              type="submit"
+              disabled={!isMailerSetup}
+            >
+              {t('forgot_password.send')}
+            </button>
+          </div>
+        </>
       )}
-      <h3>{t('forgot_password.password_reset_request_desc')}</h3>
-      <div className="form-group">
-        <div className="input-group">
-          <input
-            name="email"
-            placeholder="E-mail Address"
-            className="form-control"
-            type="email"
-            disabled={!isMailerSetup}
-            onChange={e => changeEmail(e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="form-group">
-        <button
-          className="btn btn-lg btn-primary btn-block"
-          type="submit"
-          disabled={!isMailerSetup}
-        >
-          {t('forgot_password.send')}
-        </button>
-      </div>
       <Link href='/login' prefetch={false}>
         <i className="icon-login mr-1" />{t('forgot_password.return_to_login')}
       </Link>
