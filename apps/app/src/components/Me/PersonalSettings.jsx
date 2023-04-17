@@ -1,13 +1,12 @@
 
 import React, { useMemo } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
 import ApiSettings from './ApiSettings';
-import { EditorSettings } from './EditorSettings';
+// import { EditorSettings } from './EditorSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import InAppNotificationSettings from './InAppNotificationSettings';
 import PasswordSettings from './PasswordSettings';
@@ -43,12 +42,12 @@ const PersonalSettings = () => {
         i18n: t('API Settings'),
         index: 3,
       },
-      editor_settings: {
-        Icon: () => <i className="icon-fw icon-pencil"></i>,
-        Content: EditorSettings,
-        i18n: t('editor_settings.editor_settings'),
-        index: 4,
-      },
+      // editor_settings: {
+      //   Icon: () => <i className="icon-fw icon-pencil"></i>,
+      //   Content: EditorSettings,
+      //   i18n: t('editor_settings.editor_settings'),
+      //   index: 4,
+      // },
       in_app_notification_settings: {
         Icon: () => <i className="icon-fw icon-bell"></i>,
         Content: InAppNotificationSettings,

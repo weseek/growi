@@ -13,7 +13,6 @@ on:
       - yarn.lock
       - apps/app/**
       - '!apps/app/docker/**'
-      - packages/codemirror-textlint/**
       - packages/core/**
       - packages/preset-themes/**
       - packages/presentation/**
@@ -33,7 +32,6 @@ on:
       - turbo.json
       - apps/app/**
       - '!apps/app/docker/**'
-      - packages/codemirror-textlint/**
       - packages/core/**
       - packages/preset-themes/**
       - packages/remark-*/**

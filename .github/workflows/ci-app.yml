@@ -13,7 +13,6 @@ on:
       - yarn.lock
       - apps/app/**
       - '!apps/app/docker/**'
-      - packages/codemirror-textlint/**
       - packages/core/**
       - packages/hackmd/**
       - packages/presentation/**
