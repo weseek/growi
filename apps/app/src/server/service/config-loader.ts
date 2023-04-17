@@ -73,12 +73,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
-  // PLANTUML_URI: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
   // BLOCKDIAG_URI: {
   //   ns:      ,
   //   key:     ,
@@ -121,6 +115,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  PLANTUML_URI: {
+    ns:      'crowi',
+    key:     'app:plantumlUri',
+    type:    ValueType.STRING,
+    default: 'https://www.plantuml.com/plantuml',
+  },
   DRAWIO_URI: {
     ns:      'crowi',
     key:     'app:drawioUri',
