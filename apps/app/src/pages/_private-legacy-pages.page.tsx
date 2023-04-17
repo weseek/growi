@@ -97,7 +97,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
     drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
     plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),

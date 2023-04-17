@@ -27,7 +27,6 @@ import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
-// import BlockdiagConfigurer from './markdown-it/blockdiag';
 
 
 const logger = loggerFactory('growi:services:renderer');

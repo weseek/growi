@@ -10,5 +10,4 @@ export type RendererConfig = {
 
   drawioUri: string,
   plantumlUri: string,
-  blockdiagUri: string | null,
 } & XssOptionConfig;

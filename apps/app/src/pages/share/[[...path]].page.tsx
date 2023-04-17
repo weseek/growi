@@ -157,7 +157,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
     plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
