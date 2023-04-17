@@ -8,5 +8,6 @@ export type RendererConfig = {
   isIndentSizeForced: boolean,
   highlightJsStyleBorder: boolean,
 
+  drawioUri: string,
   plantumlUri: string | null,
 } & XssOptionConfig;

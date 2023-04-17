@@ -33,7 +33,7 @@ import {
   useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
+  useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
@@ -211,7 +211,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
   useDefaultIndentSize(props.adminPreferredIndentSize);
@@ -577,6 +576,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
+    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
     plantumlUri: process.env.PLANTUML_URI ?? null,
 
     // XSS Options

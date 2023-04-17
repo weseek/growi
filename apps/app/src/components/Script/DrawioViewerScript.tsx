@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import type { IGraphViewerGlobal } from '@growi/remark-drawio';
-import Script from 'next/script';
+import Head from 'next/head';
 
-import { useDrawioUri } from '~/stores/context';
+import { useRendererConfig } from '~/stores/context';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -11,7 +11,7 @@ declare global {
 }
 
 export const DrawioViewerScript = (): JSX.Element => {
-  const { data: drawioUri } = useDrawioUri();
+  const { data: rendererConfig } = useRendererConfig();
 
   const loadedHandler = useCallback(() => {
     // disable useResizeSensor and checkVisibleState
@@ -32,11 +32,17 @@ export const DrawioViewerScript = (): JSX.Element => {
     GraphViewer.processElements();
   }, []);
 
+  if (rendererConfig == null) {
+    return <></>;
+  }
+
   return (
-    <Script
-      type="text/javascript"
-      src={(new URL('/js/viewer.min.js', drawioUri)).toString()}
-      onLoad={loadedHandler}
-    />
+    <Head>
+      <script
+        type="text/javascript" async
+        src={(new URL('/js/viewer.min.js', rendererConfig.drawioUri)).toString()}
+        onLoad={loadedHandler}
+      />
+    </Head>
   );
 };
