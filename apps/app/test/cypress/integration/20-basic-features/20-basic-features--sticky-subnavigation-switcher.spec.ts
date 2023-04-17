@@ -24,6 +24,7 @@ context('Access to sticky sub navigation switcher ', () => {
       // wait until
       return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
     });
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}is-sticky-on-scroll-down`);
 
     // Not sticky
@@ -87,7 +88,8 @@ context('Access to sticky sub navigation switcher ', () => {
       // wait until
       return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
     });
-    cy.viewport('iphone-5');
+    cy.viewport(600, 1024);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}is-sticky-on-small-window`);
   });
 });

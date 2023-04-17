@@ -24,6 +24,7 @@ context('Access to sticky Fab', () => {
       // wait until
       return cy.getByTestid('grw-fab-page-create-button').then($elem => $elem.hasClass('visible'));
     });
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}is-visible-on-scroll-down`);
 
     // Invisible
@@ -97,7 +98,7 @@ context('Access to sticky Fab', () => {
           });
         });
     });
-
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}scroll-page-to-top`);
   });
 });
