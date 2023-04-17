@@ -16,7 +16,7 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useRendererConfig,
+  useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
 
 import { NextPageWithLayout } from './_app.page';
@@ -63,8 +63,6 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
-
-  useRendererConfig(props.rendererConfig);
 
   const title = generateCustomTitle(props, t('Tags'));
 
@@ -139,21 +137,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
-  props.rendererConfig = {
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-
-    plantumlUri: process.env.PLANTUML_URI ?? null,
-
-    // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-  };
 }
 
 /**

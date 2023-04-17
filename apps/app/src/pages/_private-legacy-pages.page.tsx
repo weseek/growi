@@ -11,7 +11,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IUser, IUserHasId } from '~/interfaces/user';
 import {
-  useCsrfToken, useCurrentUser, useDrawioUri, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+  useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
 } from '~/stores/context';
 
@@ -28,8 +28,6 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-
-  drawioUri: string | null,
 
   // Render config
   rendererConfig: RendererConfig,
@@ -51,8 +49,6 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-
-  useDrawioUri(props.drawioUri);
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -88,8 +84,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
-  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
@@ -101,7 +95,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
-    plantumlUri: process.env.PLANTUML_URI ?? null,
+    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
+    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
