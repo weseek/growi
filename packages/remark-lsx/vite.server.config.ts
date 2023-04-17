@@ -23,6 +23,7 @@ export default defineConfig({
       },
       external: [
         'axios',
+        'escape-string-regexp',
         'http-errors',
         'is-absolute-url',
         'react',
