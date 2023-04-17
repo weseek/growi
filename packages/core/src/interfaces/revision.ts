@@ -8,6 +8,7 @@ export type IRevision = {
   hasDiffToPrev: boolean;
   createdAt: Date,
   updatedAt: Date,
+  shouldSSR(): boolean;
 }
 
 export type IRevisionHasId = IRevision & HasObjectId;

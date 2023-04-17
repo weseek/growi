@@ -65,5 +65,14 @@ module.exports = function(crowi) {
     return newRevision;
   };
 
+  revisionSchema.methods.shouldSSR = function() {
+    if (this.bodyLength == null) {
+      return true;
+    }
+
+    const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    return ssrMaxRevisionBodyLength >= this.bodyLength;
+  };
+
   return mongoose.model('Revision', revisionSchema);
 };
