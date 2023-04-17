@@ -52,7 +52,7 @@ concurrency:
 jobs:
 
   test-prod-node16:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/omit-textlint
     with:
       node-version: 16.x
       skip-cypress: true
@@ -61,7 +61,7 @@ jobs:
 
 
   test-prod-node18:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/omit-textlint
     with:
       node-version: 18.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
@@ -74,7 +74,7 @@ jobs:
   run-reg-suit-node18:
     needs: [test-prod-node18]
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/omit-textlint
 
     if: always()
 
