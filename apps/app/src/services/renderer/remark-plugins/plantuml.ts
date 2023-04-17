@@ -3,11 +3,11 @@ import { Plugin } from 'unified';
 import urljoin from 'url-join';
 
 type PlantUMLPluginParams = {
-  plantumlUri?: string,
+  plantumlUri: string,
 }
 
 export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
-  const plantumlUri = options.plantumlUri ?? 'https://www.plantuml.com/plantuml';
+  const plantumlUri = options.plantumlUri;
 
   const baseUrl = urljoin(plantumlUri, '/svg');
 

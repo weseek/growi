@@ -159,7 +159,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
     drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
-    plantumlUri: process.env.PLANTUML_URI ?? null,
+    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
