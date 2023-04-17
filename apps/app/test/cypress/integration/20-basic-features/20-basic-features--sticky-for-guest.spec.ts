@@ -50,9 +50,9 @@ context('Access sticky sub navigation switcher and Fab for guest', () => {
        cy.scrollTo(0, 0);
 
        // wait until
-      return cy.getByTestid('grw-fab-return-to-top').then($elem => !$elem.hasClass('visible'));
+      return cy.getByTestid('grw-fab-return-to-top').then($elem => $elem.hasClass('invisible'));
     });
-    cy.screenshot(`${ssPrefix}fab-is-invisible-on-scroll-down`);
+    cy.screenshot(`${ssPrefix}fab-is-invisible-on-scroll-top`);
 
   });
 });
