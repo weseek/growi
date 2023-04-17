@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "outDir": "transpiled",
+    "declaration": true,
+    "noResolve": false,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "noEmit": false,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+      "debug": ["./src/utils/logger/alias-for-debug"]
+    }
+  },
+  "exclude": [
+    "config",
+    "resource",
+    "src/client",
+    "src/components",
+    "src/linter-checker",
+    "src/stores",
+    "src/styles",
+    "src/styles-hackmd"
+  ]
+}
