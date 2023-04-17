@@ -64,6 +64,7 @@
     "@growi/codemirror-textlint": "^6.1.0-RC.0",
     "@growi/core": "^6.1.0-RC.0",
     "@growi/hackmd": "^6.1.0-RC.0",
+    "@growi/plugin-attachment-refs": "^6.0.0-RC.9",
     "@growi/preset-themes": "^6.1.0-RC.0",
     "@growi/remark-drawio": "^6.1.0-RC.0",
     "@growi/remark-growi-directive": "^6.1.0-RC.0",

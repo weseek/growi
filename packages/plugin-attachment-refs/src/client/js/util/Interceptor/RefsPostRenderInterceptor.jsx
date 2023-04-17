@@ -1,8 +1,5 @@
-import React from 'react';
-
 import { BasicInterceptor } from '@growi/core';
-import ReactDOM from 'react-dom';
-
+import { createRoot } from 'react-dom/client';
 
 import AttachmentList from '../../components/AttachmentList';
 import GalleryContext from '../GalleryContext';
@@ -53,10 +50,8 @@ export default class RefsPostRenderInterceptor extends BasicInterceptor {
   }
 
   renderReactDom(refsContext, elem) {
-    ReactDOM.render(
-      <AttachmentList appContainer={this.appContainer} refsContext={refsContext} />,
-      elem,
-    );
+    const root = createRoot(elem);
+    elem.render(<AttachmentList appContainer={this.appContainer} refsContext={refsContext} />);
   }
 
 }

@@ -1,8 +1,6 @@
 import loggerFactory from '../../utils/logger';
 
-const { customTagUtils } = require('@growi/core');
-
-const { OptionParser } = customTagUtils;
+const { OptionParser } = require('@growi/core');
 
 const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
