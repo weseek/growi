@@ -268,6 +268,9 @@ export const OptionsSelector = (): JSX.Element => {
             onChange={newValue => mutateCurrentIndentSize(newValue)}
           />
         </span>
+        <span className="ml-2 ml-sm-4">
+          <ConfigurationDropdown />
+        </span>
       </div>
     </>
   );
