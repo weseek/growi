@@ -26,6 +26,7 @@ module.exports = function(crowi) {
         return data ? data.replace(/\r\n?/g, '\n') : '';
       },
     },
+    bodyLength: { type: Number, required: true },
     format: { type: String, default: 'markdown' },
     author: { type: ObjectId, ref: 'User' },
     hasDiffToPrev: { type: Boolean },
@@ -54,6 +55,7 @@ module.exports = function(crowi) {
     const newRevision = new Revision();
     newRevision.pageId = pageData._id;
     newRevision.body = body;
+    newRevision.bodyLength = body.length;
     newRevision.format = format;
     newRevision.author = user._id;
     if (pageData.revision != null) {

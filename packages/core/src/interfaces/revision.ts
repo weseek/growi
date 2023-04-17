@@ -3,6 +3,7 @@ import type { IUser } from './user';
 
 export type IRevision = {
   body: string,
+  bodyLength: number,
   author: IUser,
   hasDiffToPrev: boolean;
   createdAt: Date,
