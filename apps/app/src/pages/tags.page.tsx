@@ -146,7 +146,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),

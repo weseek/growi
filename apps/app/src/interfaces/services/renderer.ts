@@ -9,5 +9,4 @@ export type RendererConfig = {
   highlightJsStyleBorder: boolean,
 
   plantumlUri: string | null,
-  blockdiagUri: string | null,
 } & XssOptionConfig;

@@ -79,12 +79,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
-  // BLOCKDIAG_URI: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
   // OAUTH_GOOGLE_CLIENT_ID: {
   //   ns:      'crowi',
   //   key:     'security:passport-google:clientId',
