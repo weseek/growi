@@ -88,8 +88,11 @@ context('Access to sticky sub navigation switcher ', () => {
       // wait until
       return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
     });
-    cy.viewport(600, 1024);
     cy.waitUntilSkeletonDisappear();
+    cy.viewport(600, 1024);
+    cy.getByTestid('grw-subnav-switcher').within(() => {
+      cy.get('#grw-page-editor-mode-manager').should('be.visible');
+    })
     cy.screenshot(`${ssPrefix}is-sticky-on-small-window`);
   });
 });
