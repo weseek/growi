@@ -133,7 +133,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
     drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
-    plantumlUri: process.env.PLANTUML_URI ?? null,
+    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),

@@ -9,5 +9,5 @@ export type RendererConfig = {
   highlightJsStyleBorder: boolean,
 
   drawioUri: string,
-  plantumlUri: string | null,
+  plantumlUri: string,
 } & XssOptionConfig;
