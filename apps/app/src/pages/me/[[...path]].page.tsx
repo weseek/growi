@@ -158,8 +158,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
-    plantumlUri: process.env.PLANTUML_URI ?? null,
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
+    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),

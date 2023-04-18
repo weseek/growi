@@ -17,6 +17,11 @@ import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
+export const useWaitingSaveProcessing = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR('waitingSaveProcessing', undefined, { fallbackData: false });
+};
+
+
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('editingMarkdown', initialData);
 };
