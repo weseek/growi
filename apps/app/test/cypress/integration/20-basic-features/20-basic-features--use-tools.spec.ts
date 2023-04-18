@@ -44,16 +44,16 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}today-add-page-name`);
       cy.getByTestid('btn-create-memo').click();
     });
-    cy.getByTestid('page-editor').should('be.visible');
 
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('save-page-btn').should('be.visible').click();
+      cy.get('@save-page-btn').click();
       // wait until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+      return cy.get('@save-page-btn').then($elem => $elem.is(':disabled'));
     });
-
-    cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
+    cy.get('.layout-root').should('not.have.class', 'editing');
 
     cy.collapseSidebar(true);
     cy.waitUntilSkeletonDisappear();
@@ -80,8 +80,15 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}under-path-add-page-name`);
       cy.getByTestid('btn-create-page-under-below').click();
     });
+
     cy.getByTestid('page-editor').should('be.visible');
-    cy.getByTestid('save-page-btn').click();
+    cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+    cy.waitUntil(() => {
+      // do
+      cy.get('@save-page-btn').click();
+      // wait until
+      return cy.get('@save-page-btn').then($elem => $elem.is(':disabled'));
+    });
     cy.get('.layout-root').should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');

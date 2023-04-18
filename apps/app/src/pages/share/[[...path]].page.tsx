@@ -20,7 +20,7 @@ import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
-  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
+  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid,
 } from '~/stores/context';
 import { useCurrentPageId, useIsNotFound } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -90,7 +90,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useDrawioUri(props.drawioUri);
   useIsContainerFluid(props.isContainerFluid);
 
 
@@ -156,8 +155,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
-    plantumlUri: process.env.PLANTUML_URI ?? null,
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
+    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
