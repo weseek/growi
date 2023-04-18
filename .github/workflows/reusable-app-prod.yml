@@ -273,9 +273,9 @@ jobs:
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
-      uses: cypress-io/github-action@v5
-      with:
-        runTests: false
+      run: |
+        yarn --frozen-lockfile
+        yarn cypress install
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3
