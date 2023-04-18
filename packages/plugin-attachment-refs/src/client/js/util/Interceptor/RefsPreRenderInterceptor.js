@@ -1,4 +1,4 @@
-import { customTagUtils, BasicInterceptor } from '@growi/core';
+import { findTagAndReplace, BasicInterceptor } from '@growi/core';
 
 import TagCacheManagerFactory from '../TagCacheManagerFactory';
 
@@ -35,7 +35,7 @@ export default class RefsPreRenderInterceptor extends BasicInterceptor {
     this.initializeCache(contextName);
 
     const tagPattern = /ref|refs|refimg|refsimg|gallery/;
-    const result = customTagUtils.findTagAndReplace(tagPattern, parsedHTML);
+    const result = findTagAndReplace(tagPattern, parsedHTML);
 
     context.parsedHTML = result.html;
     context.tagContextMap = result.tagContextMap;

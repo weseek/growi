@@ -1,8 +1,8 @@
 import * as url from 'url';
 
-import { customTagUtils, pathUtils } from '@growi/core';
-
-const { TagContext, ArgsParser, OptionParser } = customTagUtils;
+import {
+  TagContext, ArgsParser, OptionParser, pathUtils,
+} from '@growi/core';
 
 const GRID_DEFAULT_TRACK_WIDTH = 64;
 const GRID_AVAILABLE_OPTIONS_LIST = [

@@ -6,9 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-      // "@growi/*": ["../*/src"]
-    },
-    "rootDir": "./src"
+    }
   },
   "include": [
     "src"
