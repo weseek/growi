@@ -70,7 +70,6 @@ jobs:
           dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Build
-      working-directory: ./apps/app
       run: |
         turbo run build
       env:
