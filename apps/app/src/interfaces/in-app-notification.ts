@@ -1,4 +1,5 @@
 import type { IPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import type { IUserSnapshot } from '~/models/serializers/in-app-notification-snapshot/user';
 
 import { IPage } from './page';
 import { IUser } from './user';
@@ -11,14 +12,14 @@ export enum InAppNotificationStatuses {
 
 export interface IInAppNotification {
   user: IUser
-  targetModel: 'Page'
-  target: IPage
+  targetModel: 'Page' | 'User'
+  target: IPage | IUser
   action: 'COMMENT' | 'LIKE'
   status: InAppNotificationStatuses
   actionUsers: IUser[]
   createdAt: Date
   snapshot: string
-  parsedSnapshot?: IPageSnapshot
+  parsedSnapshot?: IPageSnapshot | IUserSnapshot
 }
 
 /*

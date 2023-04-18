@@ -10,7 +10,7 @@ module.exports = function(crowi, app) {
   const path = require('path');
   const User = crowi.model('User');
   const {
-    configManager, appService, aclService, mailService,
+    configManager, appService, aclService, mailService, activityService,
   } = crowi;
   const activityEvent = crowi.event('activity');
 
@@ -42,12 +42,28 @@ module.exports = function(crowi, app) {
       .forEach(result => logger.error(result.reason));
   }
 
+  async function sendNotificationToAllAdmins(user) {
+    const adminUsers = await User.findAdmins();
+    const activity = await activityService.createActivity({
+      action: SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
+      target: user,
+      targetModel: 'User',
+    });
+    await activityEvent.emit('updated', activity, user, adminUsers);
+    return;
+  }
+
   const registerSuccessHandler = async function(req, res, userData, registrationMode) {
     const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
+    const isMailerSetup = mailService.isMailerSetup ?? false;
+
     if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-      await sendEmailToAllAdmins(userData);
+      sendNotificationToAllAdmins(userData);
+      if (isMailerSetup) {
+        await sendEmailToAllAdmins(userData);
+      }
       return res.apiv3({});
     }
 
@@ -142,11 +158,6 @@ module.exports = function(crowi, app) {
       }
 
       const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
-      const isMailerSetup = mailService.isMailerSetup ?? false;
-
-      if (!isMailerSetup && registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-        return res.apiv3Err(['message.email_settings_is_not_setup'], 403);
-      }
 
       User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
         if (err) {
