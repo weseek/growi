@@ -44,15 +44,15 @@ jobs:
         rm -rf apps packages
         mv out/* .
 
-    # - name: Cache/Restore node_modules
-    #   id: cache-dependencies
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: |
-    #       **/node_modules
-    #     key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    #     restore-keys: |
-    #       node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
