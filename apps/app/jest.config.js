@@ -4,8 +4,6 @@
 const MODULE_NAME_MAPPING = {
   '^\\^/(.+)$': '<rootDir>/$1',
   '^~/(.+)$': '<rootDir>/src/$1',
-  '^@growi/remark-drawio$': '<rootDir>/../../packages/remark-drawio/src',
-  '^@growi/remark-growi-directive$': '<rootDir>/../../packages/remark-growi-directive/src',
 };
 
 module.exports = {
