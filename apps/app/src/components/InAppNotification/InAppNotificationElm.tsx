@@ -12,7 +12,7 @@ import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-a
 
 // Change the display for each targetmodel
 import PageModelNotification from './PageNotification/PageModelNotification';
-
+import UserModelNotification from './PageNotification/UserModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -42,6 +42,9 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
+      if (user == null) {
+        return;
+      }
       return `@${user.name}`;
     });
 
@@ -75,7 +78,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         <div className="position-absolute" style={{ top: 10, left: 10 }}>
           <UserPicture user={actionUsers[1]} size="md" noTooltip />
         </div>
-
       </div>
     );
   };
@@ -139,6 +141,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
       break;
+    case 'USER_REGISTRATION_APPROVAL_REQUEST':
+      actionMsg = 'requested registration approval';
+      actionIcon = 'icon-bubble';
+      break;
     default:
       actionMsg = '';
       actionIcon = '';
@@ -170,6 +176,15 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
             actionMsg={actionMsg}
             actionIcon={actionIcon}
             actionUsers={actionUsers}
+          />
+        )}
+        {notification.targetModel === 'User' && (
+          <UserModelNotification
+            ref={notificationRef}
+            notification={notification}
+            actionMsg={actionMsg}
+            actionIcon={actionIcon}
+            actionUsers={notification.target.username}
           />
         )}
       </div>
