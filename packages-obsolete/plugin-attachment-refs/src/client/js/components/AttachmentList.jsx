@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Attachment } from '@growi/ui';
+import { Attachment } from '@growi/ui/dist/components/Attachment';
 import axios from 'axios'; // import axios from growi dependencies
 import PropTypes from 'prop-types';
 

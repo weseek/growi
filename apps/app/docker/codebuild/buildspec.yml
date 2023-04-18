@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  variables:
+    DOCKER_BUILDKIT: 1
+    IMAGE_TAG: ''
+    IMAGE_TAG_GHCR: ''
+  secrets-manager:
+    DOCKER_REGISTRY_PASSWORD: growi/official-image-builder:DOCKER_REGISTRY_PASSWORD
+    DOCKER_REGISTRY_ON_GITHUB_PAT: growi/official-image-builder:DOCKER_REGISTRY_ON_GITHUB_PAT
+
+phases:
+  pre_build:
+    commands:
+      # login to docker.io
+      - echo ${DOCKER_REGISTRY_PASSWORD} | docker login --username wsmoogle --password-stdin
+      # login to ghcr.io
+      - echo ${DOCKER_REGISTRY_ON_GITHUB_PAT} | docker login ghcr.io --username wsmoogle --password-stdin
+  build:
+    commands:
+      - docker build -t ${IMAGE_TAG} -f ./apps/app/docker/Dockerfile .
+      - docker tag ${IMAGE_TAG} ${IMAGE_TAG_GHCR}
+
+  post_build:
+    commands:
+      - docker push $IMAGE_TAG
+      - docker push $IMAGE_TAG_GHCR
+
+cache:
+  paths:
+    - node_modules/**/*
+    - packages/*/node_modules/**/*

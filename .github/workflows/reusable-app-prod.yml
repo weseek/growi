@@ -18,6 +18,7 @@ on:
         required: true
 
 jobs:
+
   build-prod:
     runs-on: ubuntu-latest
 
@@ -25,78 +26,106 @@ jobs:
       PROD_FILES: ${{ steps.archive-prod-files.outputs.file }}
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+    - name: Install turbo
+      run: |
+        yarn global add turbo
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --frozen-lockfile
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
 
-      - name: Remove unnecessary packages
-        run: |
-          rm -rf packages/slackbot-proxy
-          rm -f "node_modules/@growi/slackbot-proxy"
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-      - name: Build
-        run: |
-          yarn lerna run build
-        env:
-          ANALYZE_BUNDLE_SIZE: 1
+    - name: Install dependencies
+      run: |
+        yarn --frozen-lockfile
 
-      - name: Archive production files
-        id: archive-prod-files
-        run: |
-          tar -zcf production.tar.gz \
-            package.json \
-            packages/app/.next \
-            packages/app/config \
-            packages/app/public \
-            packages/app/resource \
-            packages/app/tmp \
-            packages/app/.env.production* \
-            packages/*/package.json \
-            packages/*/dist
-          echo "file=production.tar.gz" >> $GITHUB_OUTPUT
+    - name: Restore dist
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+          ${{ github.workspace }}/apps/app/.next
+        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        restore-keys: |
+          dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Upload production files as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: Production Files (node${{ inputs.node-version }})
-          path: ${{ steps.archive-prod-files.outputs.file }}
+    - name: Build
+      working-directory: ./apps/app
+      run: |
+        turbo run build
+      env:
+        ANALYZE_BUNDLE_SIZE: 1
 
-      - name: Upload report as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: Bundle Analyzing Report
-          path: |
-            packages/app/.next/analyze/client.html
-            packages/app/.next/analyze/server.html
+    - name: Archive production files
+      id: archive-prod-files
+      run: |
+        tar -zcf production.tar.gz \
+          package.json \
+          apps/app/.next \
+          apps/app/config \
+          apps/app/dist \
+          apps/app/public \
+          apps/app/resource \
+          apps/app/tmp \
+          apps/app/.env.production* \
+          apps/app/package.json \
+          packages/*/dist \
+          packages/*/package.json
+        echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
-      - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@master
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: '*Node CI for growi - build-prod (${{ inputs.node-version }})*'
-          channel: '#ci'
-          isCompactMode: true
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Upload production files as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Production Files (node${{ inputs.node-version }})
+        path: ${{ steps.archive-prod-files.outputs.file }}
+
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Bundle Analyzing Report
+        path: |
+          apps/app/.next/analyze/client.html
+          apps/app/.next/analyze/server.html
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - build-prod (${{ inputs.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Cache dist
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          **/.turbo
+          **/dist
+          ${{ github.workspace }}/apps/app/.next
+        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+
 
   launch-prod:
     needs: [build-prod]
@@ -106,79 +135,76 @@ jobs:
       mongodb:
         image: mongo:4.4
         ports:
-          - 27017/tcp
+        - 27017/tcp
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
         ports:
-          - 9200/tcp
+        - 9200/tcp
         env:
           discovery.type: single-node
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")" >> $GITHUB_OUTPUT
-          echo "dateYm=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
+    - name: Install turbo
+      run: |
+        yarn global add turbo
 
-      - name: Cache/Restore node_modules (not reused)
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYmdHM }}
-          restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-            node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-            node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
-            node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ steps.get-date.outputs.dateYm }}
-            node_modules-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
 
-      - name: Remove unnecessary packages
-        run: |
-          rm -rf packages/slackbot-proxy
-          rm -f "node_modules/@growi/slackbot-proxy"
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-      - name: lerna bootstrap --production
-        run: |
-          npx lerna bootstrap -- --production
+    - name: Install dependencies
+      run: |
+        yarn --production
 
-      - name: Download production files artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Production Files (node${{ inputs.node-version }})
+    - name: Download production files artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: Production Files (node${{ inputs.node-version }})
 
-      - name: Extract procution files artifact
-        run: |
-          tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
+    - name: Extract procution files artifact
+      run: |
+        tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
-      - name: yarn server:ci
-        working-directory: ./packages/app
-        run: |
-          cp config/ci/.env.local.for-ci .env.production.local
-          yarn server:ci
-        env:
-          MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
-          ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+    - name: yarn server:ci
+      working-directory: ./apps/app
+      run: |
+        cp config/ci/.env.local.for-ci .env.production.local
+        yarn server:ci
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-      - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@master
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: '*Node CI for growi - build-prod (${{ inputs.node-version }})*'
-          channel: '#ci'
-          isCompactMode: true
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - build-prod (${{ inputs.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
 
   run-cypress:
     needs: [build-prod]
@@ -197,105 +223,115 @@ jobs:
       mongodb:
         image: mongo:4.4
         ports:
-          - 27017/tcp
+        - 27017/tcp
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
         ports:
-          - 9200/tcp
+        - 9200/tcp
         env:
           discovery.type: single-node
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      - name: Install fonts
-        run: sudo apt install fonts-noto
+    - name: Install fonts
+      run: sudo apt install fonts-noto
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            ~/.cache/Cypress
-          key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: |
-            deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}
+    - name: Install turbo
+      run: |
+        yarn global add turbo
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --production
+    - name: Prune repositories
+      run: |
+        turbo prune --scope=@growi/app
+        rm -rf apps packages
+        mv out/* .
 
-      - name: lerna add packages needed for CI
-        run: |
-          npx lerna add yargs
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-      - name: Download production files artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Production Files (node${{ inputs.node-version }})
+    - name: Cache/Restore Cypress files
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/Cypress
+        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-      - name: Extract procution files artifact
-        run: |
-          tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
+    - name: Download production files artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: Production Files (node${{ inputs.node-version }})
 
-      - name: Determine spec expression
-        id: determine-spec-exp
-        run: |
-          SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
-          echo "value=$SPEC" >> $GITHUB_OUTPUT
+    - name: Extract procution files artifact
+      run: |
+        tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
-      - name: Copy dotenv file for ci
-        working-directory: ./packages/app
-        run: |
-          cat config/ci/.env.local.for-ci >> .env.production.local
+    - name: Determine spec expression
+      id: determine-spec-exp
+      run: |
+        SPEC=`node bin/github-actions/generate-cypress-spec-arg.mjs --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
+        echo "value=$SPEC" >> $GITHUB_OUTPUT
 
-      - name: Copy dotenv file for automatic installation
-        if: ${{ matrix.spec-group != '10' }}
-        working-directory: ./packages/app
-        run: |
-          cat config/ci/.env.local.for-auto-install >> .env.production.local
+    - name: Copy dotenv file for ci
+      working-directory: ./apps/app
+      run: |
+        cat config/ci/.env.local.for-ci >> .env.production.local
 
-      - name: Copy dotenv file for automatic installation with allowing guest mode
-        if: ${{ matrix.spec-group == '21' }}
-        working-directory: ./packages/app
-        run: |
-          cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
+    - name: Copy dotenv file for automatic installation
+      if: ${{ matrix.spec-group != '10' }}
+      working-directory: ./apps/app
+      run: |
+        cat config/ci/.env.local.for-auto-install >> .env.production.local
 
-      - name: Cypress Run
-        uses: cypress-io/github-action@v3
-        with:
-          browser: chrome
-          working-directory: ./packages/app
-          spec: '${{ steps.determine-spec-exp.outputs.value }}'
-          start: yarn server
-          wait-on: 'http://localhost:3000'
-          config: video=${{ inputs.cypress-config-video }}
-        env:
-          MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
-          ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+    - name: Copy dotenv file for automatic installation with allowing guest mode
+      if: ${{ matrix.spec-group == '21' }}
+      working-directory: ./apps/app
+      run: |
+        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
-      - name: Upload results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ inputs.cypress-report-artifact-name }}
-          path: |
-            packages/app/test/cypress/screenshots
-            packages/app/test/cypress/videos
+    - name: Cypress Run
+      uses: cypress-io/github-action@v3
+      with:
+        browser: chrome
+        working-directory: ./apps/app
+        spec: '${{ steps.determine-spec-exp.outputs.value }}'
+        start: yarn server
+        wait-on: 'http://localhost:3000'
+        config: video=${{ inputs.cypress-config-video }}
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-      - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@master
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: '*Node CI for growi - run-cypress (${{ inputs.node-version }})*'
-          channel: '#ci'
-          isCompactMode: true
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Upload results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.cypress-report-artifact-name }}
+        path: |
+          apps/app/test/cypress/screenshots
+          apps/app/test/cypress/videos
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - run-cypress (${{ inputs.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}

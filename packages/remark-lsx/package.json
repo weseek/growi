@@ -1,33 +1,39 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.0.16-RC.0",
+  "version": "6.1.0-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
-  "main": "dist/index.js",
-  "exports": {
-    "./components": "./dist/components/index.js",
-    "./services/renderer": "./dist/services/renderer/index.js",
-    "./server/routes": "./dist/server/routes/index.js"
-  },
   "files": ["dist"],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "run-p build:*",
+    "build:client": "vite build -c vite.client.config.ts",
+    "build:server": "vite build -c vite.server.config.ts",
     "clean": "npx -y shx rm -rf dist",
-    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
+    "dev": "run-p dev:*",
+    "dev:client": "vite build -c vite.client.config.ts --mode dev",
+    "dev:server": "vite build -c vite.server.config.ts --mode dev",
+    "watch": "run-p watch:*",
+    "watch:client": "yarn dev:client -w --emptyOutDir=false",
+    "watch:server": "yarn dev:server -w --emptyOutDir=false",
+    "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
-    "lint": "run-p lint:*",
-    "test": ""
+    "lint:typecheck": "tsc",
+    "lint": "run-p lint:*"
   },
   "dependencies": {
-    "@growi/core": "^6.0.16-RC.0",
-    "@growi/remark-growi-directive": "^6.0.16-RC.0",
-    "@growi/ui": "^6.0.16-RC.0",
+    "@growi/core": "^6.1.0-RC.0",
+    "@growi/remark-growi-directive": "^6.1.0-RC.0",
+    "@growi/ui": "^6.1.0-RC.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0",
+    "eslint-plugin-regex": "^1.8.0"
+  },
+  "peerDependencies": {
+    "next": "~12.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.3"
   }
 }
