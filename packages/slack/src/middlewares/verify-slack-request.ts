@@ -1,10 +1,10 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 
-import { Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { stringify } from 'qs';
 
-import { RequestFromSlack } from '../interfaces/request-from-slack';
+import type { RequestFromSlack } from '../interfaces/request-from-slack';
 import loggerFactory from '../utils/logger';
 
 const logger = loggerFactory('@growi/slack:middlewares:verify-slack-request');

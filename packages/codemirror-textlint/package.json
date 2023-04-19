@@ -1,6 +1,6 @@
 {
   "name": "@growi/codemirror-textlint",
-  "version": "6.0.15-RC.0",
+  "version": "6.1.0-RC.0",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "clean": "npx -y shx rm -rf dist",
     "tsc": "tsc -p tsconfig.build.json",
     "tsc:w": "yarn tsc -w",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix"
+    "lint": "yarn eslint src --ext .ts",
+    "lint:fix": "yarn eslint src --ext .ts --fix"
   },
   "dependencies": {},
   "devDependencies": {

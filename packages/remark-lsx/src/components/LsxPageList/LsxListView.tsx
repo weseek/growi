@@ -5,6 +5,7 @@ import { LsxContext } from '../lsx-context';
 
 import { LsxPage } from './LsxPage';
 
+
 import styles from './LsxListView.module.scss';
 
 
@@ -47,7 +48,7 @@ export const LsxListView = React.memo((props: Props): JSX.Element => {
   }, [basisViewersCount, isEmpty, lsxContext, nodeTree]);
 
   return (
-    <div className={`page-list ${styles['page-list']} lsx`}>
+    <div className={`page-list ${styles['page-list']}`}>
       <ul className="page-list-ul">
         {contents}
       </ul>
