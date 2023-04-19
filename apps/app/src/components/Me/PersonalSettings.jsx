@@ -1,7 +1,6 @@
 
 import React, { useMemo } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
@@ -39,11 +38,11 @@ const PersonalSettings = () => {
         Content: ApiSettings,
         i18n: t('API Settings'),
       },
-      // editor_settings: {
-      //   Icon: () => <i className="icon-fw icon-pencil"></i>,
-      //   Content: EditorSettings,
-      //   i18n: t('editor_settings.editor_settings'),
-      // },
+      editor_settings: {
+        Icon: () => <i className="icon-fw icon-pencil"></i>,
+        Content: EditorSettings,
+        i18n: t('editor_settings.editor_settings'),
+      },
       in_app_notification_settings: {
         Icon: () => <i className="icon-fw icon-bell"></i>,
         Content: InAppNotificationSettings,
