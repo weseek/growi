@@ -130,7 +130,7 @@ const PageAccessoriesModal = (): JSX.Element => {
           activeTab={activeTab}
           navTabMapping={navTabMapping}
           breakpointToHideInactiveTabsDown="md"
-          onNavSelected={(v) => {
+          onNavSelected={(v: PageAccessoriesModalContents) => {
             setActiveTab(v);
           }}
           hideBorderBottom
