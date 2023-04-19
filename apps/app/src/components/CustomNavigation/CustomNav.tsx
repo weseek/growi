@@ -2,6 +2,7 @@ import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
 
+import { Breakpoint } from '@growi/ui/dist/interfaces/breakpoints';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
@@ -11,8 +12,10 @@ import { ICustomNavTabMappings } from '~/interfaces/ui';
 import styles from './CustomNav.module.scss';
 
 
-function getBreakpointOneLevelLarger(breakpoint) {
+function getBreakpointOneLevelLarger(breakpoint: Breakpoint): Omit<Breakpoint, 'xs' | 'sm'> {
   switch (breakpoint) {
+    case 'xs':
+      return 'sm';
     case 'sm':
       return 'md';
     case 'md':
@@ -29,7 +32,7 @@ function getBreakpointOneLevelLarger(breakpoint) {
 type CustomNavDropdownProps = {
   navTabMapping: ICustomNavTabMappings,
   activeTab: string,
-  onNavSelected: (activeTabKey: string) => void,
+  onNavSelected?: (selectedTabKey: string) => void,
 };
 
 export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element => {
@@ -89,7 +92,7 @@ type CustomNavTabProps = {
   navTabMapping: ICustomNavTabMappings,
   onNavSelected?: (selectedTabKey: string) => void,
   hideBorderBottom?: boolean,
-  breakpointToHideInactiveTabsDown?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  breakpointToHideInactiveTabsDown?: Breakpoint,
   navRightElement?: JSX.Element,
 };
 
@@ -119,7 +122,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
     }
   }, [onNavSelected]);
 
-  function registerNavLink(key: string, anchorElem: HTMLAnchorElement) {
+  function registerNavLink(key: string, anchorElem: HTMLAnchorElement | null) {
     if (anchorElem != null) {
       navTabRefs[key] = anchorElem;
     }
@@ -156,7 +159,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
   }, [activeTab, navTabRefs, navTabMapping]);
 
   // determine inactive classes to hide NavItem
-  const inactiveClassnames = [];
+  const inactiveClassnames: string[] = [];
   if (breakpointToHideInactiveTabsDown != null) {
     const breakpointOneLevelLarger = getBreakpointOneLevelLarger(breakpointToHideInactiveTabsDown);
     inactiveClassnames.push('d-none');
@@ -196,13 +199,22 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
 };
 
 
-const CustomNav = (props) => {
+type CustomNavProps = {
+  activeTab: string,
+  navTabMapping: ICustomNavTabMappings,
+  onNavSelected?: (selectedTabKey: string) => void,
+  hideBorderBottom?: boolean,
+  breakpointToHideInactiveTabsDown?: Breakpoint,
+  breakpointToSwitchDropdownDown?: Breakpoint,
+};
+
+const CustomNav = (props: CustomNavProps): JSX.Element => {
 
   const tabClassnames = ['d-none'];
   const dropdownClassnames = ['d-block'];
 
   // determine classes to show/hide
-  const breakpointOneLevelLarger = getBreakpointOneLevelLarger(props.breakpointToSwitchDropdownDown);
+  const breakpointOneLevelLarger = getBreakpointOneLevelLarger(props.breakpointToSwitchDropdownDown ?? 'sm');
   tabClassnames.push(`d-${breakpointOneLevelLarger}-block`);
   dropdownClassnames.push(`d-${breakpointOneLevelLarger}-none`);
 
@@ -218,20 +230,5 @@ const CustomNav = (props) => {
   );
 
 };
-
-CustomNav.propTypes = {
-  activeTab: PropTypes.string.isRequired,
-  navTabMapping: PropTypes.object.isRequired,
-  onNavSelected: PropTypes.func,
-  hideBorderBottom: PropTypes.bool,
-  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  breakpointToSwitchDropdownDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-};
-
-CustomNav.defaultProps = {
-  hideBorderBottom: false,
-  breakpointToSwitchDropdownDown: 'sm',
-};
-
 
 export default CustomNav;
