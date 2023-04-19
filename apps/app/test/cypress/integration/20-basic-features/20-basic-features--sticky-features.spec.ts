@@ -7,7 +7,6 @@ context('Access to any page', () => {
       cy.login(user.username, user.password);
     });
 
-    // Visit /
     cy.visit('/');
 
     cy.waitUntilSkeletonDisappear();
