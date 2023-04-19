@@ -26,7 +26,7 @@ module.exports = function(crowi) {
         return data ? data.replace(/\r\n?/g, '\n') : '';
       },
     },
-    bodyLength: { type: Number, required: true },
+    bodyLength: { type: Number },
     format: { type: String, default: 'markdown' },
     author: { type: ObjectId, ref: 'User' },
     hasDiffToPrev: { type: Boolean },
