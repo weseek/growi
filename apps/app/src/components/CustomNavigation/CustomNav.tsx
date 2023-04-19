@@ -2,10 +2,11 @@ import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
 
-import PropTypes from 'prop-types';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
+
+import { ICustomNavTabMappings } from '~/interfaces/ui';
 
 import styles from './CustomNav.module.scss';
 
@@ -25,12 +26,18 @@ function getBreakpointOneLevelLarger(breakpoint) {
 }
 
 
-export const CustomNavDropdown = (props) => {
+type CustomNavDropdownProps = {
+  navTabMapping: ICustomNavTabMappings,
+  activeTab: string,
+  onNavSelected: (activeTabKey: string) => void,
+};
+
+export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element => {
   const {
     activeTab, navTabMapping, onNavSelected,
   } = props;
 
-  const activeObj = navTabMapping[activeTab];
+  const { Icon, i18n } = navTabMapping[activeTab];
 
   const menuItemClickHandler = useCallback((key) => {
     if (onNavSelected != null) {
@@ -48,16 +55,15 @@ export const CustomNavDropdown = (props) => {
         aria-expanded="false"
       >
         <span className="float-left">
-          { activeObj != null && (
-            <><activeObj.Icon /> {activeObj.i18n}</>
-          ) }
+          { Icon != null && <Icon /> } {i18n}
         </span>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
         {Object.entries(navTabMapping).map(([key, value]) => {
 
           const isActive = activeTab === key;
-          const isLinkEnabled = value.isLinkEnabled != null ? value.isLinkEnabled(value) : true;
+          const _isLinkEnabled = value.isLinkEnabled ?? true;
+          const isLinkEnabled = typeof _isLinkEnabled === 'boolean' ? _isLinkEnabled : _isLinkEnabled(value);
           const { Icon, i18n } = value;
 
           return (
@@ -68,7 +74,7 @@ export const CustomNavDropdown = (props) => {
               disabled={!isLinkEnabled}
               onClick={() => menuItemClickHandler(key)}
             >
-              <Icon /> {i18n}
+              { Icon != null && <Icon /> } {i18n}
             </button>
           );
         })}
@@ -77,23 +83,29 @@ export const CustomNavDropdown = (props) => {
   );
 };
 
-CustomNavDropdown.propTypes = {
-  navTabMapping: PropTypes.object.isRequired,
-  activeTab: PropTypes.string,
-  onNavSelected: PropTypes.func,
+
+type CustomNavTabProps = {
+  activeTab: string,
+  navTabMapping: ICustomNavTabMappings,
+  onNavSelected?: (selectedTabKey: string) => void,
+  hideBorderBottom?: boolean,
+  breakpointToHideInactiveTabsDown?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  navRightElement?: JSX.Element,
 };
 
-
-export const CustomNavTab = (props) => {
-  const navContainer = useRef();
+export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
   const {
-    activeTab, navTabMapping, onNavSelected, hideBorderBottom, breakpointToHideInactiveTabsDown, navRightElement,
+    activeTab, navTabMapping, onNavSelected,
+    hideBorderBottom,
+    breakpointToHideInactiveTabsDown, navRightElement,
   } = props;
 
-  const navTabRefs = useMemo(() => {
+  const navContainerRef = useRef<HTMLDivElement>(null);
+
+  const navTabRefs: { [key: string]: HTMLAnchorElement } = useMemo(() => {
     const obj = {};
     Object.keys(navTabMapping).forEach((key) => {
       obj[key] = React.createRef();
@@ -107,9 +119,9 @@ export const CustomNavTab = (props) => {
     }
   }, [onNavSelected]);
 
-  function registerNavLink(key, elm) {
-    if (elm != null) {
-      navTabRefs[key] = elm;
+  function registerNavLink(key: string, anchorElem: HTMLAnchorElement) {
+    if (anchorElem != null) {
+      navTabRefs[key] = anchorElem;
     }
   }
 
@@ -123,23 +135,24 @@ export const CustomNavTab = (props) => {
       return;
     }
 
-    if (navContainer == null) {
+    if (navContainerRef.current == null) {
       return;
     }
 
-    let tempML = 0;
+    const navContainer = navContainerRef.current;
 
-    const styles = Object.entries(navTabRefs).map((el) => {
-      const width = getPercentage(el[1].offsetWidth, navContainer.current.offsetWidth);
-      const marginLeft = tempML;
-      tempML += width;
-      return { width, marginLeft };
-    });
-    const { width, marginLeft } = styles[navTabMapping[activeTab].index];
+    let marginLeft = 0;
+    for (const [key, anchorElem] of Object.entries(navTabRefs)) {
+      const width = getPercentage(anchorElem.offsetWidth, navContainer.offsetWidth);
 
-    setSliderWidth(width);
-    setSliderMarginLeft(marginLeft);
+      if (key === activeTab) {
+        setSliderWidth(width);
+        setSliderMarginLeft(marginLeft);
+        break;
+      }
 
+      marginLeft += width;
+    }
   }, [activeTab, navTabRefs, navTabMapping]);
 
   // determine inactive classes to hide NavItem
@@ -152,12 +165,13 @@ export const CustomNavTab = (props) => {
 
   return (
     <div className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
-      <div ref={navContainer} className="d-flex justify-content-between">
+      <div ref={navContainerRef} className="d-flex justify-content-between">
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
 
             const isActive = activeTab === key;
-            const isLinkEnabled = value.isLinkEnabled != null ? value.isLinkEnabled(value) : true;
+            const _isLinkEnabled = value.isLinkEnabled ?? true;
+            const isLinkEnabled = typeof _isLinkEnabled === 'boolean' ? _isLinkEnabled : _isLinkEnabled(value);
             const { Icon, i18n } = value;
 
             return (
@@ -166,7 +180,7 @@ export const CustomNavTab = (props) => {
                 className={`p-0 ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
               >
                 <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
-                  <Icon /> {i18n}
+                  { Icon != null && <Icon /> } {i18n}
                 </NavLink>
               </NavItem>
             );
@@ -179,19 +193,6 @@ export const CustomNavTab = (props) => {
     </div>
   );
 
-};
-
-CustomNavTab.propTypes = {
-  activeTab: PropTypes.string.isRequired,
-  navTabMapping: PropTypes.object.isRequired,
-  onNavSelected: PropTypes.func,
-  hideBorderBottom: PropTypes.bool,
-  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  navRightElement: PropTypes.node,
-};
-
-CustomNavTab.defaultProps = {
-  hideBorderBottom: false,
 };
 
 
