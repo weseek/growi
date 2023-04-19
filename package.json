@@ -26,7 +26,8 @@
       "apps/*"
     ],
     "nohoist": [
-      "**/slackbot-proxy/bootstrap"
+      "**/uvu/*",
+      "apps/slackbot-proxy/bootstrap"
     ]
   },
   "scripts": {
