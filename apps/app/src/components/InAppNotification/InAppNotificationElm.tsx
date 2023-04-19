@@ -40,11 +40,12 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   };
 
   const getActionUsers = () => {
+    if (notification.targetModel === 'User') {
+      return notification.target.username;
+    }
+
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
-      if (user == null) {
-        return;
-      }
       return `@${user.name}`;
     });
 
@@ -184,7 +185,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
             notification={notification}
             actionMsg={actionMsg}
             actionIcon={actionIcon}
-            actionUsers={notification.target.username}
+            actionUsers={actionUsers}
           />
         )}
       </div>

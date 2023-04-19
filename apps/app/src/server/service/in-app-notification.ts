@@ -51,7 +51,9 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage, users?: Ref<IUser>[]) => {
+    // TODO: do not use any type
+    // https://redmine.weseek.co.jp/issues/120632
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: any, users?: Ref<IUser>[]) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
@@ -199,7 +201,9 @@ export default class InAppNotificationService {
     return;
   };
 
-  createInAppNotification = async function(activity: ActivityDocument, target: IPage | IUser, users?: Ref<IUser>[]): Promise<void> {
+  // TODO: do not use any type
+  // https://redmine.weseek.co.jp/issues/120632
+  createInAppNotification = async function(activity: ActivityDocument, target, users?: Ref<IUser>[]): Promise<void> {
     if (activity.action === SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST) {
       const snapshot = userSerializers.stringifySnapshot(target);
       await this.upsertByActivity(users, activity, snapshot);

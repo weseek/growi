@@ -1,6 +1,7 @@
 import type { IPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import type { IUserSnapshot } from '~/models/serializers/in-app-notification-snapshot/user';
 
+import { SupportedTargetModelType, SupportedActionType } from './activity';
 import { IPage } from './page';
 import { IUser } from './user';
 
@@ -10,16 +11,18 @@ export enum InAppNotificationStatuses {
   STATUS_OPENED = 'OPENED',
 }
 
+// TODO: do not use any type
+// https://redmine.weseek.co.jp/issues/120632
 export interface IInAppNotification {
   user: IUser
-  targetModel: 'Page' | 'User'
-  target: IPage | IUser
-  action: 'COMMENT' | 'LIKE'
+  targetModel: SupportedTargetModelType
+  target: any
+  action: SupportedActionType
   status: InAppNotificationStatuses
   actionUsers: IUser[]
   createdAt: Date
   snapshot: string
-  parsedSnapshot?: IPageSnapshot | IUserSnapshot
+  parsedSnapshot?: any
 }
 
 /*
