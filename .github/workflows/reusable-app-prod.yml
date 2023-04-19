@@ -58,9 +58,6 @@ jobs:
       run: |
         yarn --frozen-lockfile
 
-    - run: |
-        node -p "module.paths"
-
     - name: Restore dist
       uses: actions/cache/restore@v3
       with:
