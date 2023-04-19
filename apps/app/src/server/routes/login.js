@@ -1,4 +1,4 @@
-import { SupportedAction } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 // disable all of linting
@@ -47,7 +47,7 @@ module.exports = function(crowi, app) {
     const activity = await activityService.createActivity({
       action: SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
       target: user,
-      targetModel: 'User',
+      targetModel: SupportedTargetModel.MODEL_USER,
     });
     await activityEvent.emit('updated', activity, user, adminUsers);
     return;

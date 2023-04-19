@@ -8,6 +8,7 @@ import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { SupportedTargetModel } from '~/interfaces/activity';
 import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel
@@ -40,7 +41,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   };
 
   const getActionUsers = () => {
-    if (notification.targetModel === 'User') {
+    if (notification.targetModel === SupportedTargetModel.MODEL_USER) {
       return notification.target.username;
     }
 
@@ -170,7 +171,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         >
         </span>
         {renderActionUserPictures()}
-        {notification.targetModel === 'Page' && (
+        {notification.targetModel === SupportedTargetModel.MODEL_PAGE && (
           <PageModelNotification
             ref={notificationRef}
             notification={notification}
@@ -179,7 +180,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
             actionUsers={actionUsers}
           />
         )}
-        {notification.targetModel === 'User' && (
+        {notification.targetModel === SupportedTargetModel.MODEL_USER && (
           <UserModelNotification
             ref={notificationRef}
             notification={notification}

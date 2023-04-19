@@ -1,5 +1,6 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
+import { SupportedTargetModel } from '~/interfaces/activity';
 import type { InAppNotificationStatuses, IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
 import * as userSerializers from '~/models/serializers/in-app-notification-snapshot/user';
@@ -25,10 +26,10 @@ export const useSWRxInAppNotifications = <Data, Error>(
       inAppNotificationPaginateResult.docs.forEach((doc) => {
         try {
           switch (doc.targetModel) {
-            case 'Page':
+            case SupportedTargetModel.MODEL_PAGE:
               doc.parsedSnapshot = pageSerializers.parseSnapshot(doc.snapshot);
               break;
-            case 'User':
+            case SupportedTargetModel.MODEL_USER:
               doc.parsedSnapshot = userSerializers.parseSnapshot(doc.snapshot);
               break;
             default:
