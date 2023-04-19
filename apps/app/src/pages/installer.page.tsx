@@ -46,13 +46,11 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
         Icon: () => <i className="icon-fw icon-user"></i>,
         Content: InstallerForm,
         i18n: t('installer.tab'),
-        index: 0,
       },
       external_accounts: {
         Icon: () => <i className="icon-fw icon-share-alt"></i>,
         Content: DataTransferForm,
         i18n: tCommons('g2g_data_transfer.tab'),
-        index: 1,
       },
     };
   }, [t, tCommons]);
