@@ -78,7 +78,6 @@ const PageAccessoriesModal = (): JSX.Element => {
           return <PageHistory onClose={close} sourceRevisionId={sourceRevisionId} targetRevisionId={targetRevisionId}/>;
         },
         i18n: t('History'),
-        index: 0,
         isLinkEnabled: () => !isGuestUser && !isSharedUser,
       },
       [PageAccessoriesModalContents.Attachment]: {
@@ -87,7 +86,6 @@ const PageAccessoriesModal = (): JSX.Element => {
           return <PageAttachment />;
         },
         i18n: t('attachment_data'),
-        index: 1,
       },
       [PageAccessoriesModalContents.ShareLink]: {
         Icon: ShareLinkIcon,
@@ -95,7 +93,6 @@ const PageAccessoriesModal = (): JSX.Element => {
           return <ShareLink />;
         },
         i18n: t('share_links.share_link_management'),
-        index: 2,
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };

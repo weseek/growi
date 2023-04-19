@@ -54,7 +54,6 @@ export const DescendantsPageListModal = (): JSX.Element => {
           return <DescendantsPageList path={status.path} />;
         },
         i18n: t('page_list'),
-        index: 0,
         isLinkEnabled: () => !isSharedUser,
       },
       timeline: {
@@ -66,7 +65,6 @@ export const DescendantsPageListModal = (): JSX.Element => {
           return <PageTimeline />;
         },
         i18n: t('Timeline View'),
-        index: 1,
         isLinkEnabled: () => !isSharedUser,
       },
     };

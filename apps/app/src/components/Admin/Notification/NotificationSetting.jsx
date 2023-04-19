@@ -126,12 +126,10 @@ function NotificationSetting(props) {
       user_trigger_notification: {
         Icon: () => <i className="icon-settings" />,
         i18n: 'User trigger notification',
-        index: 0,
       },
       global_notification: {
         Icon: () => <i className="icon-settings" />,
         i18n: 'Global notification',
-        index: 1,
       },
     };
   }, []);
