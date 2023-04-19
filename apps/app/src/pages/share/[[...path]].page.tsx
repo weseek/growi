@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
 import type {
@@ -22,7 +22,7 @@ import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
-import { useCurrentPageId, useIsNotFound } from '~/stores/page';
+import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -37,6 +37,7 @@ type Props = CommonProps & {
   shareLink?: IShareLinkHasId,
   isNotFound: boolean,
   isExpired: boolean,
+  shouldSSR?: boolean,
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -93,6 +94,13 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useDrawioUri(props.drawioUri);
   useIsContainerFluid(props.isContainerFluid);
 
+  const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
+
+  useEffect(() => {
+    if (props.shouldSSR === false) {
+      mutateCurrentPage();
+    }
+  }, [mutateCurrentPage, props.shouldSSR]);
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
 
@@ -108,7 +116,10 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigationForSharedPage page={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
+          <GrowiContextualSubNavigationForSharedPage
+            page={props.shareLinkRelatedPage ?? currentPage ?? undefined}
+            isLinkSharingDisabled={props.disableLinkSharing}
+          />
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
@@ -116,7 +127,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <ShareLinkPageView
           pagePath={pagePath}
           rendererConfig={props.rendererConfig}
-          page={props.shareLinkRelatedPage}
+          page={props.shareLinkRelatedPage ?? currentPage ?? undefined}
           shareLink={props.shareLink}
           isExpired={props.isExpired}
           disableLinkSharing={props.disableLinkSharing}
@@ -221,10 +232,17 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
       props.isNotFound = true;
     }
     else {
-      props.isNotFound = false;
-      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision();
-      props.isExpired = shareLink.isExpired();
+      const shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision();
+      const shouldSSR = shareLinkRelatedPage.revision.shouldSSR();
+
+      if (shouldSSR) {
+        props.shareLinkRelatedPage = shareLinkRelatedPage;
+      }
+
       props.shareLink = shareLink.toObject();
+      props.shouldSSR = shouldSSR;
+      props.isNotFound = false;
+      props.isExpired = shareLink.isExpired();
     }
   }
   catch (err) {

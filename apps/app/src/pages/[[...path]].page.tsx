@@ -42,7 +42,8 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -134,6 +135,8 @@ const PutbackPageModal = (): JSX.Element => {
 
 type Props = CommonProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
+  pageId?: string,
+  shouldSSR?: boolean,
   // pageUser?: any,
   redirectFrom?: string;
 
@@ -225,21 +228,38 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
-  const { pageWithMeta } = props;
+  const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateCurrentPageId } = useCurrentPageId();
 
-  const pageId = pageWithMeta?.data._id;
-  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
-  const revisionBody = pageWithMeta?.data.revision?.body;
+  const { mutate: mutateInitialCurrentPage } = useSWRxCurrentPage();
 
-  usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
-  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
+  const pageWithMeta = props.pageWithMeta ?? { data: currentPage };
+
+  useEffect(() => {
+    const getPageData = async() => {
+      await mutateCurrentPageId(props.pageId);
+      await mutateCurrentPage();
+    };
+
+    if (props.shouldSSR === false && props.pageId != null) {
+      getPageData();
+    }
+  }, [mutateCurrentPage, mutateCurrentPageId, props.pageId, props.shouldSSR]);
+
+  // store initial data
+  if (props.shouldSSR) {
+    mutateInitialCurrentPage(pageWithMeta?.data ?? null);
+  }
+
+  const pageId = pageWithMeta?.data?._id;
+  const pagePath = pageWithMeta?.data?.path ?? props.currentPathname;
+  const revisionBody = pageWithMeta?.data?.revision?.body;
+
+  usePageIdOnHackmd(pageWithMeta?.data?.pageIdOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data?.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
-
   const { mutate: mutateIsNotFound } = useIsNotFound();
-
-  const { mutate: mutateCurrentPageId } = useCurrentPageId();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
@@ -256,9 +276,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data);
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data ?? undefined);
 
-  const shouldRenderPutbackPageModal = pageWithMeta != null
+  const shouldRenderPutbackPageModal = pageWithMeta?.data != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
 
@@ -286,9 +306,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
-    mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
-    mutateRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
-  }, [mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, pageWithMeta?.data.revision?._id, pageWithMeta?.data.revisionHackmdSynced]);
+    mutateRemoteRevisionId(pageWithMeta?.data?.revision?._id);
+    mutateRevisionIdHackmdSynced(pageWithMeta?.data?.revisionHackmdSynced);
+  }, [mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, pageWithMeta?.data?.revision?._id, pageWithMeta?.data?.revisionHackmdSynced]);
 
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);
@@ -335,7 +355,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
           pageView={
             <PageView
               pagePath={pagePath}
-              initialPage={pageWithMeta?.data}
+              initialPage={pageWithMeta?.data ?? undefined}
               rendererConfig={props.rendererConfig}
             />
           }
@@ -480,6 +500,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     }
   }
 
+  props.shouldSSR = pageWithMeta?.data.revision.shouldSSR();
+  props.pageId = pageWithMeta?.data._id;
   props.pageWithMeta = pageWithMeta;
 }
 
@@ -643,6 +665,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
+
+  if (props.shouldSSR === false) {
+    props.pageWithMeta = null;
+  }
 
   return {
     props,
