@@ -194,9 +194,6 @@ export const routesFactory = (crowi): any => {
     const builder = new Page.PageQueryBuilder(baseQuery);
     builder.addConditionToListOnlyDescendants(pagePath);
 
-    builder
-      .addConditionToExcludeTrashed();
-
     return Page.addConditionToFilteringByViewerForList(builder, user);
   }
 
