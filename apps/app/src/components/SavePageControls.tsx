@@ -13,6 +13,7 @@ import { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
+import { useWaitingSaveProcessing } from '~/stores/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -42,7 +43,9 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
+  const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
 
+  const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);
@@ -91,10 +94,19 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
       }
 
       <UncontrolledButtonDropdown direction="up">
-        <Button data-testid="save-page-btn" id="caret" color="primary" className="btn-submit" onClick={save}>
+        <Button
+          id="caret" data-testid="save-page-btn"
+          color="primary"
+          className="btn-submit"
+          onClick={save}
+          disabled={isWaitingSaveProcessing}
+        >
+          { isWaitingSaveProcessing && (
+            <i className="fa fa-spinner fa-pulse mr-1"></i>
+          ) }
           {labelSubmitButton}
         </Button>
-        <DropdownToggle caret color="primary" />
+        <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
         <DropdownMenu right>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}

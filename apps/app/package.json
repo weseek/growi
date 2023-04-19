@@ -47,7 +47,6 @@
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM",
-    "next": ">=13.1.2 with Node v14 have the problem => https://github.com/vercel/next.js/issues/45052",
     "string-width": "5.0.0 or above exports only ESM.",
     "prom-client": "!!DO NOT REMOVE!! A peer dependency of @promster.",
     "remark-wiki-link": "!!DO NOT REMOVE!! including 'mdast-util-wiki-link' and 'micromark-extension-wiki-link' required by pukiwiki-like-linker"
@@ -131,7 +130,7 @@
     "mongoose-unique-validator": "^2.0.3",
     "multer": "~1.4.0",
     "multer-autoreap": "^1.0.3",
-    "next": "=13.1.1",
+    "next": "^13.3.0",
     "next-i18next": "^13.2.1",
     "next-superjson": "^0.0.4",
     "next-themes": "^0.2.1",

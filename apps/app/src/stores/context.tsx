@@ -72,10 +72,6 @@ export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRR
   return useContextSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
 };
 
-export const useDrawioUri = (initialData?: Nullable<string>): SWRResponse<string, Error> => {
-  return useContextSWR('drawioUri', initialData ?? undefined, { fallbackData: 'https://embed.diagrams.net/' });
-};
-
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
