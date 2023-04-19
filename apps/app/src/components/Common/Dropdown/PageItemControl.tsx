@@ -248,8 +248,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   return (
     <DropdownMenu
       data-testid="page-item-control-menu"
-      // modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
-      right={alignRight}
+      end={alignRight}
       container="body"
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >

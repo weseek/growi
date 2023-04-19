@@ -255,7 +255,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       ) }
       { showPageControlDropdown && (
         <PageItemControl
-          alignRight={false}
+          alignRight
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
