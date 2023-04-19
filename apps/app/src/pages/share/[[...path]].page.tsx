@@ -95,6 +95,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsContainerFluid(props.isContainerFluid);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
+  const shareLinkRelatedPage = props.shareLinkRelatedPage ?? currentPage ?? undefined;
 
   useEffect(() => {
     if (props.shouldSSR === false) {
@@ -102,9 +103,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
     }
   }, [mutateCurrentPage, props.shouldSSR]);
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(shareLinkRelatedPage);
 
-  const pagePath = props.shareLinkRelatedPage?.path ?? '';
+  const pagePath = shareLinkRelatedPage?.path ?? '';
 
   const title = generateCustomTitleForPage(props, pagePath);
 
@@ -117,7 +118,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
           <GrowiContextualSubNavigationForSharedPage
-            page={props.shareLinkRelatedPage ?? currentPage ?? undefined}
+            page={shareLinkRelatedPage}
             isLinkSharingDisabled={props.disableLinkSharing}
           />
         </header>
@@ -127,7 +128,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <ShareLinkPageView
           pagePath={pagePath}
           rendererConfig={props.rendererConfig}
-          page={props.shareLinkRelatedPage ?? currentPage ?? undefined}
+          page={shareLinkRelatedPage}
           shareLink={props.shareLink}
           isExpired={props.isExpired}
           disableLinkSharing={props.disableLinkSharing}
