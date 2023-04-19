@@ -21,10 +21,14 @@
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*"
   },
+  "// comments for dependencies": {
+    "escape-string-regexp": "5.0.0 or above exports only ESM"
+  },
   "dependencies": {
     "@growi/core": "^6.1.0-RC.0",
     "@growi/remark-growi-directive": "^6.1.0-RC.0",
     "@growi/ui": "^6.1.0-RC.0",
+    "escape-string-regexp": "^4.0.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {
