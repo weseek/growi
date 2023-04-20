@@ -2,8 +2,13 @@ import React, {
   useCallback, useRef, MutableRefObject,
 } from 'react';
 
-import { commands, Editor } from 'codemirror';
-import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
+import codemirror, { commands, Editor } from 'codemirror';
+import { type ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var CodeMirror: ICodeMirror;
+}
 
 // set save handler
 // CommandActions in @types/codemirror does not include 'save' but actualy exists
@@ -14,7 +19,7 @@ import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
   }
 };
 
-window.CodeMirror = require('codemirror');
+window.CodeMirror = codemirror;
 require('codemirror/addon/display/placeholder');
 require('~/client/util/codemirror/gfm-growi.mode');
 

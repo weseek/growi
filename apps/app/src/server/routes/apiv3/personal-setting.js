@@ -118,10 +118,6 @@ module.exports = (crowi) => {
       body('keymapMode').optional().isString(),
       body('styleActiveLine').optional().isBoolean(),
       body('autoFormatMarkdownTable').optional().isBoolean(),
-      body('textlintSettings.neverAskBeforeDownloadLargeFiles').optional().isBoolean(),
-      body('textlintSettings.textlintRules.*.name').optional().isString(),
-      body('textlintSettings.textlintRules.*.options').optional(),
-      body('textlintSettings.textlintRules.*.isEnabled').optional().isBoolean(),
     ],
     inAppNotificationSettings: [
       body('defaultSubscribeRules.*.name').isString(),
@@ -539,21 +535,11 @@ module.exports = (crowi) => {
 
     const {
       theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
-      textlintSettings,
     } = body;
 
     const document = {
       theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
     };
-
-    if (textlintSettings != null) {
-      if (textlintSettings.neverAskBeforeDownloadLargeFiles != null) {
-        Object.assign(document, { 'textlintSettings.neverAskBeforeDownloadLargeFiles': textlintSettings.neverAskBeforeDownloadLargeFiles });
-      }
-      if (textlintSettings.textlintRules != null) {
-        Object.assign(document, { 'textlintSettings.textlintRules': textlintSettings.textlintRules });
-      }
-    }
 
     // Insert if document does not exist, and return new values
     // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate

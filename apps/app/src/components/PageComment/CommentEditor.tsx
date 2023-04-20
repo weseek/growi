@@ -36,12 +36,10 @@ const navTabMapping = {
   comment_editor: {
     Icon: () => <i className="icon-settings" />,
     i18n: 'Write',
-    index: 0,
   },
   comment_preview: {
     Icon: () => <i className="icon-settings" />,
     i18n: 'Preview',
-    index: 1,
   },
 };
 
