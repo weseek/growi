@@ -12,8 +12,6 @@
       "~/*": ["./src/*"],
       "^/*": ["./*"],
 
-      "@growi/codemirror-textlint": ["../../packages/codemirror-textlint/src"],
-
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   },

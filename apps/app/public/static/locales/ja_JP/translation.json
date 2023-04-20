@@ -444,11 +444,6 @@
       "Post": "投稿"
     }
   },
-  "modal_enable_textlint": {
-    "confirm_download_dict_and_enable_textlint": "Textlintを有効にしますか？20MBの辞書ファイルをダウンロードします。",
-    "enable_textlint": "Textlintを有効にする",
-    "dont_ask_again": "常に許可する"
-  },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
     "resolve_conflict_message": "ページ本文を選んでください",

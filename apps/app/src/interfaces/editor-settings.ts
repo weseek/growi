@@ -1,14 +1,3 @@
-export interface ILintRule {
-  name: string;
-  options?: unknown;
-  isEnabled?: boolean;
-}
-
-export interface ITextlintSettings {
-  neverAskBeforeDownloadLargeFiles?: boolean;
-  textlintRules: ILintRule[];
-}
-
 export const DEFAULT_THEME = 'elegant';
 
 const KeyMapMode = {
@@ -25,7 +14,6 @@ export interface IEditorSettings {
   keymapMode: undefined | KeyMapMode,
   styleActiveLine: boolean,
   autoFormatMarkdownTable: boolean,
-  textlintSettings: undefined | ITextlintSettings;
 }
 
 export type EditorConfig = {

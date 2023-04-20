@@ -247,41 +247,7 @@
     }
   },
   "editor_settings": {
-    "editor_settings": "Editor Settings",
-    "common_settings": {
-      "common_settings": "Common Settings",
-      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia.",
-      "max_comma": "Textlint rule is that limit maximum ten(,) count of sentence. Default: 4",
-      "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100",
-      "en_capitalization": "Textlint rule that check capitalization in english text.",
-      "no_unmatched_pair": "Textlint rule that check unmatched pairs like （ and ]",
-      "date_weekday_mismatch": "Textlint rule that found mismatch between date and weekday.",
-      "no_kangxi_radicals": "Textlint rule to prevent using kangxi radicals.",
-      "no_surrogate_pair": "Detects surrogate pairs (D800-DBFF and DC00-DFFF)　in sentences.",
-      "no_zero_width_spaces": "Textlint rule that disallow zero width spaces.",
-      "period_in_list_item": "Textlint rule that check with or without period in list item.",
-      "use_si_units": "Use of units other than SI unit units is prohibited."
-
-      },
-    "japanese_settings": {
-      "japanese_settings": "Japanese Settings",
-      "ja_no_abusage": "Textlint rules to check for common misuse.",
-      "ja_hiragana_keishikimeishi": "Textlint rules to check easy-to-read Keishikimeishi(pronouns) written in Hiragana than Kanji.",
-      "ja_no_inappropriate_words": "Textlint rules to check for inappropriate expressions",
-      "ja_no_mixed_period": "Textlint rules to check that a paragraph always has a punctuation mark at the end.",
-      "ja_no_redundant_expression": "Textlint rules that prohibits redundant expressions. Redundant expressions are expressions that make sense even if they are omitted from the sentence.",
-      "max_kanji_continuous_len": "Textlint rules that limits the maximum number of consecutive Kanji. Default: 5",
-      "max_ten": "Textlint rule is that limit maximum ten(、) count of sentence.",
-      "no_double_negative_ja": "Textlint rules that detects double negation.",
-      "no_doubled_conjunction": "Textlint rules to check duplicated same conjunctions.",
-      "no_doubled_joshi": "Textlint rules that checks that the same particle appears consecutively in one sentence.",
-      "no_dropping_the_ra": "Textlint rules that detects the word dropping the ra.",
-      "no_hankaku_kana": "Textlint rules that disallow to use Half-width kana.",
-      "prefer_tari_tari": "Textlint rules that checks tari tari.",
-      "ja_unnatural_alphabet": "Detects unnatural alphabets.",
-      "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
-      "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
-    }
+    "editor_settings": "Editor Settings"
   },
   "search_help": {
     "title": "Searching Help",
@@ -443,11 +409,6 @@
       "title": "Comment Form shortcuts",
       "Post": "Post"
     }
-  },
-  "modal_enable_textlint": {
-    "confirm_download_dict_and_enable_textlint": "Are you sure you want to enable Textlint? This will download 20MB of dictionary file.",
-    "enable_textlint": "Enable Textlint",
-    "dont_ask_again": "Don't ask again"
   },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",

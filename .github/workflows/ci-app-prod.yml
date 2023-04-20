@@ -11,15 +11,10 @@ on:
       - tsconfig.base.json
       - turbo.json
       - yarn.lock
+      - package.json
       - apps/app/**
       - '!apps/app/docker/**'
-      - packages/codemirror-textlint/**
-      - packages/core/**
-      - packages/preset-themes/**
-      - packages/presentation/**
-      - packages/remark-*/**
-      - packages/slack/**
-      - packages/ui/**
+      - packages/**
   pull_request:
     branches:
       - master
@@ -31,14 +26,10 @@ on:
       - tsconfig.base.json
       - yarn.lock
       - turbo.json
+      - package.json
       - apps/app/**
       - '!apps/app/docker/**'
-      - packages/codemirror-textlint/**
-      - packages/core/**
-      - packages/preset-themes/**
-      - packages/remark-*/**
-      - packages/slack/**
-      - packages/ui/**
+      - packages/**
   workflow_call:
     inputs:
       cypress-config-video:
