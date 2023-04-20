@@ -118,7 +118,7 @@ const CopyDropdown = (props) => {
           <span id={dropdownToggleId}>{children}</span>
         </DropdownToggle>
 
-        <DropdownMenu >
+        <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}>
 
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">

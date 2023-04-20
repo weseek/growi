@@ -95,7 +95,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" />
-        <DropdownMenu end>
+        <DropdownMenu right>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>
