@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import xss from 'xss';
+import { FilterXSS } from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageHasId } from '~/interfaces/page';
@@ -31,7 +31,7 @@ const filterXssOptions = {
   },
 };
 
-const filterXss = new xss.FilterXSS(filterXssOptions);
+const filterXss = new FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();

@@ -191,7 +191,7 @@
     "usehooks-ts": "^2.6.0",
     "validator": "^13.7.0",
     "ws": "^8.3.0",
-    "xss": "^1.0.6"
+    "xss": "^1.0.14"
   },
   "// comments for defDependencies": {
     "@handsontable/react": "v3 requires handsontable >= 7.0.0.",
