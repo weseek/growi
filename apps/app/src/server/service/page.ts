@@ -478,7 +478,7 @@ class PageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error(`revertDeletedPage to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+        throw Error(`This page cannot be renamed to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
       }
     }
 
