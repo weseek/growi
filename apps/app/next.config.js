@@ -33,6 +33,7 @@ const getTranspilePackages = () => {
     'longest-streak',
     'micromark',
     'property-information',
+    'reactstrap',
     'space-separated-tokens',
     'stringify-entities',
     'trim-lines',

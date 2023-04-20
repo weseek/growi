@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Button,
-  Collapse,
-} from 'reactstrap';
+import Button from 'reactstrap/es/Button';
+import Collapse from 'reactstrap/es/Collapse';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 

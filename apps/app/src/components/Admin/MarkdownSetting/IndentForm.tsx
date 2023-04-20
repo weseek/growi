@@ -2,9 +2,10 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import DropdownItem from 'reactstrap/es/DropdownItem';
+import DropdownMenu from 'reactstrap/es/DropdownMenu';
+import DropdownToggle from 'reactstrap/es/DropdownToggle';
+import UncontrolledDropdown from 'reactstrap/es/UncontrolledDropdown';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';

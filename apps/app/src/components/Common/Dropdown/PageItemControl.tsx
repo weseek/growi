@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
-} from 'reactstrap';
+import Dropdown from 'reactstrap/es/Dropdown';
+import DropdownItem from 'reactstrap/es/DropdownItem';
+import DropdownMenu from 'reactstrap/es/DropdownMenu';
+import DropdownToggle from 'reactstrap/es/DropdownToggle';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {

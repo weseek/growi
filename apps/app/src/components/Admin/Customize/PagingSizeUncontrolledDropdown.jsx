@@ -1,9 +1,10 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import {
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import DropdownItem from 'reactstrap/es/DropdownItem';
+import DropdownMenu from 'reactstrap/es/DropdownMenu';
+import DropdownToggle from 'reactstrap/es/DropdownToggle';
+import UncontrolledDropdown from 'reactstrap/es/UncontrolledDropdown';
 
 
 const PagingSizeUncontrolledDropdown = (props) => {

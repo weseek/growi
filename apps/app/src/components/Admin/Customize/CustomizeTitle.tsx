@@ -1,7 +1,8 @@
 import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { Card, CardBody } from 'reactstrap';
+import Card from 'reactstrap/es/Card';
+import CardBody from 'reactstrap/es/CardBody';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';

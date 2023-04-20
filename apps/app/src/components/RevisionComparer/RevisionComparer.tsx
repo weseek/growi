@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { IRevisionHasPageId, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import Dropdown from 'reactstrap/es/Dropdown';
+import DropdownItem from 'reactstrap/es/DropdownItem';
+import DropdownMenu from 'reactstrap/es/DropdownMenu';
+import DropdownToggle from 'reactstrap/es/DropdownToggle';
 
 import { RevisionDiff } from '../PageHistory/RevisionDiff';
 

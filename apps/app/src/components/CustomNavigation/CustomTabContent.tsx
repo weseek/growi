@@ -1,8 +1,7 @@
 import React from 'react';
 
-import {
-  TabContent, TabPane,
-} from 'reactstrap';
+import TabContent from 'reactstrap/es/TabContent';
+import TabPane from 'reactstrap/es/TabPane';
 
 import type { ICustomNavTabMappings } from '~/interfaces/ui';
 

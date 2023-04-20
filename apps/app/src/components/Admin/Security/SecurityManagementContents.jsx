@@ -2,7 +2,8 @@ import React, { useMemo, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { TabContent, TabPane } from 'reactstrap';
+import TabContent from 'reactstrap/es/TabContent';
+import TabPane from 'reactstrap/es/TabPane';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 

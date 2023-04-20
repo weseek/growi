@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { Card, CardBody } from 'reactstrap';
+import Card from 'reactstrap/es/Card';
+import CardBody from 'reactstrap/es/CardBody';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxSidebarConfig } from '~/stores/ui';

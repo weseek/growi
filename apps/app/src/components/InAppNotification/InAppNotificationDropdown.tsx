@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRipple } from 'react-use-ripple';
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import Dropdown from 'reactstrap/es/Dropdown';
+import DropdownItem from 'reactstrap/es/DropdownItem';
+import DropdownMenu from 'reactstrap/es/DropdownMenu';
+import DropdownToggle from 'reactstrap/es/DropdownToggle';
 
 
 import { apiv3Post } from '~/client/util/apiv3-client';

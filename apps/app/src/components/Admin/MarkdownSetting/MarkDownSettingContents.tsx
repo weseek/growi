@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { Card, CardBody } from 'reactstrap';
+import Card from 'reactstrap/es/Card';
+import CardBody from 'reactstrap/es/CardBody';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastError } from '~/client/util/toastr';

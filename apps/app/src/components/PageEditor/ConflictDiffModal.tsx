@@ -6,9 +6,10 @@ import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import Modal from 'reactstrap/es/Modal';
+import ModalBody from 'reactstrap/es/ModalBody';
+import ModalFooter from 'reactstrap/es/ModalFooter';
+import ModalHeader from 'reactstrap/es/ModalHeader';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/toastr';
