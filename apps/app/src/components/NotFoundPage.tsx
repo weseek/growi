@@ -2,12 +2,12 @@ import React, { useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageList } from './DescendantsPageList';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import { PageTimeline } from './PageTimeline';
-
 
 type NotFoundPageProps = {
   path: string,
@@ -22,7 +22,7 @@ const NotFoundPage = (props: NotFoundPageProps): JSX.Element => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: () => <DescendantsPageList path={path} />,
+        Content: () => <DescendantsPageList path={path} forceHideMenuItems={[MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT]}/>,
         i18n: t('page_list'),
       },
       timeLine: {
