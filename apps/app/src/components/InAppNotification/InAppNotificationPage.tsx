@@ -127,13 +127,11 @@ export const InAppNotificationPage: FC = () => {
       Icon: () => <></>,
       Content: () => InAppNotificationCategoryByStatus(),
       i18n: t('in_app_notification.all'),
-      index: 0,
     },
     external_accounts: {
       Icon: () => <></>,
       Content: () => InAppNotificationCategoryByStatus(InAppNotificationStatuses.STATUS_UNOPENED),
       i18n: t('in_app_notification.unopend'),
-      index: 1,
     },
   };
 

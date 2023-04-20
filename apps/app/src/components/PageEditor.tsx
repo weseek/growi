@@ -25,7 +25,7 @@ import {
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
-  useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
   useIsConflict,
   useEditingMarkdown,
@@ -93,7 +93,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: isUploadableFile } = useIsUploadableFile();
@@ -536,7 +535,6 @@ const PageEditor = React.memo((): JSX.Element => {
           value={initialValue}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
-          isTextlintEnabled={isTextlintEnabled}
           indentSize={currentIndentSize}
           onScroll={editorScrolledHandler}
           onScrollCursorIntoView={editorScrollCursorIntoViewHandler}

@@ -87,7 +87,6 @@ export const TrashPageList = (): JSX.Element => {
         Icon: PageListIcon,
         Content: DescendantsPageListForTrash,
         i18n: t('page_list'),
-        index: 0,
       },
     };
   }, [t]);

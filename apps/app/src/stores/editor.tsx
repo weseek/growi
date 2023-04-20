@@ -29,7 +29,6 @@ export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Er
 
 type EditorSettingsOperation = {
   update: (updateData: Partial<IEditorSettings>) => Promise<void>,
-  turnOffAskingBeforeDownloadLargeFiles: () => void,
 }
 
 // TODO: Enable localStorageMiddleware
@@ -61,23 +60,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
       // invoke API
       await apiv3Put('/personal-setting/editor-settings', updateData);
     },
-    turnOffAskingBeforeDownloadLargeFiles: async() => {
-      const { data, mutate } = swrResult;
-
-      if (data == null) {
-        return;
-      }
-
-      // invoke API
-      await apiv3Put('/personal-setting/editor-settings', { textlintSettings: { neverAskBeforeDownloadLargeFiles: true } });
-      // revalidate
-      mutate();
-    },
   });
-};
-
-export const useIsTextlintEnabled = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isTextlintEnabled', undefined, { fallbackData: false });
 };
 
 export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
