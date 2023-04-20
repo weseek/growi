@@ -1468,6 +1468,9 @@ class PageService {
 
           throw err;
         }
+        finally {
+          this.pageEvent.emit('syncDescendantsUpdate', deletedPage, user);
+        }
       })();
     }
     else {

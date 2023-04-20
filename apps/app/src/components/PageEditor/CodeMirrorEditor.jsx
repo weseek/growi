@@ -1,8 +1,6 @@
 import React, { useCallback, memo } from 'react';
 
-import { createValidator } from '@growi/codemirror-textlint';
 import { commands } from 'codemirror';
-import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
@@ -36,10 +34,6 @@ import SimpleCheatsheet from './SimpleCheatsheet';
 
 import styles from './CodeMirrorEditor.module.scss';
 
-// Textlint
-window.JSHINT = JSHINT;
-window.kuromojin = { dicPath: '/static/dict' };
-
 require('codemirror/addon/hint/show-hint.css'); // Import from CodeMirrorEditor.module.scss not working
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
@@ -57,7 +51,6 @@ require('codemirror/addon/fold/foldgutter');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
-require('codemirror/addon/lint/lint');
 require('~/client/util/codemirror/autorefresh.ext');
 require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
@@ -208,8 +201,6 @@ class CodeMirrorEditor extends AbstractEditor {
   componentWillReceiveProps(nextProps) {
     this.initializeEditorSettings(nextProps.editorSettings);
 
-    this.initializeTextlint(nextProps.isTextlintEnabled, nextProps.editorSettings);
-
     // fold drawio section
     this.foldDrawioSection();
   }
@@ -230,19 +221,6 @@ class CodeMirrorEditor extends AbstractEditor {
     if (keymapMode != null) {
       this.setKeymapMode(keymapMode);
     }
-  }
-
-  async initializeTextlint(isTextlintEnabled, editorSettings) {
-    if (!isTextlintEnabled || editorSettings == null) {
-      return;
-    }
-
-    const textlintRules = editorSettings.textlintSettings?.textlintRules;
-
-    // If database has empty array, pass null instead to enable all default rules
-    const rulesForValidator = (textlintRules == null || textlintRules.length === 0) ? null : textlintRules;
-    this.textlintValidator = createValidator(rulesForValidator);
-    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
   getCodeMirror() {
@@ -1071,18 +1049,12 @@ class CodeMirrorEditor extends AbstractEditor {
 
 
   render() {
-    const { isTextlintEnabled } = this.props;
-
-    const lint = isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
     const gutters = [];
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
-    }
-    if (isTextlintEnabled) {
-      gutters.push('CodeMirror-lint-markers');
     }
 
     return (
@@ -1119,7 +1091,6 @@ class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
-            lint,
           }}
           onCursor={this.cursorHandlerDebounced}
           onScroll={(editor, data) => {
@@ -1166,7 +1137,6 @@ class CodeMirrorEditor extends AbstractEditor {
 }
 
 CodeMirrorEditor.propTypes = Object.assign({
-  isTextlintEnabled: PropTypes.bool,
   lineNumbers: PropTypes.bool,
   editorSettings: PropTypes.object.isRequired,
   onMarkdownHelpButtonClicked: PropTypes.func,

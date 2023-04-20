@@ -24,13 +24,11 @@ const NotFoundPage = (props: NotFoundPageProps): JSX.Element => {
         Icon: PageListIcon,
         Content: () => <DescendantsPageList path={path} />,
         i18n: t('page_list'),
-        index: 0,
       },
       timeLine: {
         Icon: TimeLineIcon,
         Content: PageTimeline,
         i18n: t('Timeline View'),
-        index: 1,
       },
     };
   }, [path, t]);
