@@ -73,12 +73,11 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       await updateBookmarkFolder(folderId, folderName, parent);
       mutateBookmarkData();
       setIsRenameAction(false);
-      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [folderId, mutateBookmarkData, parent, t]);
+  }, [folderId, mutateBookmarkData, parent]);
 
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -87,14 +86,11 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       setIsOpen(true);
       setIsCreateAction(false);
       mutateBookmarkData();
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
-
     }
     catch (err) {
       toastError(err);
     }
-
-  }, [mutateBookmarkData, t, targetFolder]);
+  }, [mutateBookmarkData, targetFolder]);
 
 
   const onClickPlusButton = useCallback(async(e) => {
@@ -136,7 +132,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         if (item.bookmarkFolder != null) {
           await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id);
           mutateBookmarkData();
-          toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
         }
       }
       catch (err) {
@@ -149,7 +144,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           await addBookmarkToFolder(item._id, bookmarkFolder._id);
           mutateBookmarkData();
           await mutateUserBookmarks();
-          toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
         }
       }
       catch (err) {
@@ -216,14 +210,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       }
       mutateBookmarkInfo();
       mutateBookmarkData();
-      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     };
 
     if (bookmarkFolder == null) {
       return;
     }
     openDeleteBookmarkFolderModal(bookmarkFolder, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [bookmarkFolder, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
+  }, [bookmarkFolder, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
 
 
   return (

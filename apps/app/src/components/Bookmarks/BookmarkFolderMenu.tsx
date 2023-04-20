@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 
 import { addBookmarkToFolder, addNewFolder, toggleBookmark } from '~/client/util/bookmark-utils';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
@@ -61,8 +61,7 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
     mutateBookmarkInfo();
     mutateBookmarkFolderData();
     setSelectedItem(null);
-    toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
-  }, [mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, t, toggleBookmarkHandler]);
+  }, [mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
   const toggleHandler = useCallback(async() => {
     setIsOpen(!isOpen);
@@ -82,13 +81,12 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
         mutateUserBookmarks();
         mutateBookmarkInfo();
         setSelectedItem(null);
-        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       }
       catch (err) {
         toastError(err);
       }
     }
-  }, [isOpen, mutateBookmarkFolderData, bookmarkFolders, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, t]);
+  }, [isOpen, mutateBookmarkFolderData, bookmarkFolders, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo]);
 
 
   const isBookmarkFolderExists = useCallback((): boolean => {
@@ -100,13 +98,11 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
       await addNewFolder(folderName, null);
       await mutateBookmarkFolderData();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-
-  }, [mutateBookmarkFolderData, t]);
+  }, [mutateBookmarkFolderData]);
 
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
@@ -116,8 +112,6 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
       if (currentPage != null) {
         await addBookmarkToFolder(currentPage._id, itemId);
       }
-      const toaster = isBookmarked ? 'toaster.update_successed' : 'toaster.add_succeeded';
-      toastSuccess(t(toaster, { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       mutateBookmarkInfo();
       mutateUserBookmarks();
     }
@@ -127,7 +121,7 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
     mutateBookmarkFolderData();
     setSelectedItem(itemId);
-  }, [mutateBookmarkFolderData, isBookmarked, currentPage, t, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
+  }, [mutateBookmarkFolderData, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
 
   const renderBookmarkMenuItem = (child?: BookmarkFolderItems[]) => {
