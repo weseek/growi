@@ -6,7 +6,7 @@ import { getIdForRef } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { animateScroll } from 'react-scroll';
-import { DropdownItem } from 'reactstrap';
+import DropdownItem from 'reactstrap/es/DropdownItem';
 
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';

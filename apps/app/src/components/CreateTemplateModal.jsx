@@ -3,7 +3,9 @@ import React from 'react';
 import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import Modal from 'reactstrap/es/Modal';
+import ModalBody from 'reactstrap/es/ModalBody';
+import ModalHeader from 'reactstrap/es/ModalHeader';
 import urljoin from 'url-join';
 
 const CreateTemplateModal = (props) => {

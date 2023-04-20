@@ -2,9 +2,11 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import Button from 'reactstrap/es/Button';
+import Modal from 'reactstrap/es/Modal';
+import ModalBody from 'reactstrap/es/ModalBody';
+import ModalFooter from 'reactstrap/es/ModalFooter';
+import ModalHeader from 'reactstrap/es/ModalHeader';
 
 const DeleteAllShareLinksModal = React.memo((props) => {
   const { t } = props;

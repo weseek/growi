@@ -2,7 +2,9 @@ import React, {
   FC, memo, useCallback, useMemo,
 } from 'react';
 
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import Pagination from 'reactstrap/es/Pagination';
+import PaginationItem from 'reactstrap/es/PaginationItem';
+import PaginationLink from 'reactstrap/es/PaginationLink';
 
 
 type Props = {

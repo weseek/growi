@@ -4,7 +4,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 import { useRipple } from 'react-use-ripple';
-import { UncontrolledTooltip } from 'reactstrap';
+import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';

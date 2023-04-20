@@ -1,7 +1,7 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 
-import { Input } from 'reactstrap';
+import Input from 'reactstrap/es/Input';
 
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';

@@ -6,9 +6,9 @@ import React, {
 
 import Dropzone from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
+import Modal from 'reactstrap/es/Modal';
+import ModalBody from 'reactstrap/es/ModalBody';
+import ModalHeader from 'reactstrap/es/ModalHeader';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorSettings } from '~/interfaces/editor-settings';

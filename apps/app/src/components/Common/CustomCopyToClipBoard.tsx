@@ -2,7 +2,7 @@ import React, { FC, useState, useCallback } from 'react';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from 'reactstrap';
+import Tooltip from 'reactstrap/es/Tooltip';
 
 type Props = {
   message: string

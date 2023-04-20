@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
+import Modal from 'reactstrap/es/Modal';
+import ModalBody from 'reactstrap/es/ModalBody';
+import ModalFooter from 'reactstrap/es/ModalFooter';
+import ModalHeader from 'reactstrap/es/ModalHeader';
 
 import { IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';

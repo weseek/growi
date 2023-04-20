@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { DropdownItem } from 'reactstrap';
+import DropdownItem from 'reactstrap/es/DropdownItem';
 
 import {
   toggleBookmark, toggleLike, toggleSubscribe,

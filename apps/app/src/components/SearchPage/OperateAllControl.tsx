@@ -1,7 +1,9 @@
 import React, {
   ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef,
 } from 'react';
-import { CustomInput } from 'reactstrap';
+
+import CustomInput from 'reactstrap/es/CustomInput';
+
 import { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 

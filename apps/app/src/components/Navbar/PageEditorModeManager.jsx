@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { UncontrolledTooltip } from 'reactstrap';
+import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
 
 import { useCurrentUser, useHackmdUri } from '~/stores/context';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';

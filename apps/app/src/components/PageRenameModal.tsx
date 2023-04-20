@@ -4,9 +4,11 @@ import React, {
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import {
-  Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import Collapse from 'reactstrap/es/Collapse';
+import Modal from 'reactstrap/es/Modal';
+import ModalBody from 'reactstrap/es/ModalBody';
+import ModalFooter from 'reactstrap/es/ModalFooter';
+import ModalHeader from 'reactstrap/es/ModalHeader';
 import { debounce } from 'throttle-debounce';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';

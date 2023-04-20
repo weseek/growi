@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { Spinner } from 'reactstrap';
+import Spinner from 'reactstrap/es/Spinner';
 
 import { useSWRxPlugins } from '~/stores/plugin';
 

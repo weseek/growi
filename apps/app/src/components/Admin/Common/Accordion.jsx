@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Collapse } from 'reactstrap';
+
 import PropTypes from 'prop-types';
+import Collapse from 'reactstrap/es/Collapse';
 
 const Accordion = (props) => {
   const [isOpen, setIsOpen] = useState(props.isOpenDefault);

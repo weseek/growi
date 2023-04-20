@@ -4,7 +4,7 @@ import React, {
 
 import { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
-import { DropdownItem } from 'reactstrap';
+import DropdownItem from 'reactstrap/es/DropdownItem';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { apiv3Post } from '~/client/util/apiv3-client';
