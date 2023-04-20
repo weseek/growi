@@ -31,17 +31,11 @@ $grw-bookmark-item-padding-left: 35px;
   .list-group-item {
     .grw-visible-on-hover {
       display: none;
-
-      &:hover {
-        display: block;
-      }
     }
 
-    .grw-count-badge {
-      display: block;
-
-      &:hover {
-        display: none;
+    &:hover {
+      .grw-visible-on-hover {
+        display: block;
       }
     }
 
