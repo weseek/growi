@@ -8,15 +8,15 @@ import {
 export const BookmarkFolderItemControl: React.FC<{
   children?: React.ReactNode
   isMoveToRoot: boolean
+  onClickMoveToRoot: () => void
   onClickRename: () => void
   onClickDelete: () => void
-  onClickMoveToRoot: () => void
 }> = ({
   children,
   isMoveToRoot,
+  onClickMoveToRoot,
   onClickRename,
   onClickDelete,
-  onClickMoveToRoot,
 }): JSX.Element => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -33,13 +33,6 @@ export const BookmarkFolderItemControl: React.FC<{
         container="body"
         style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
       >
-        <DropdownItem
-          onClick={onClickRename}
-          className="grw-page-control-dropdown-item"
-        >
-          <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
-          {t('Rename')}
-        </DropdownItem>
         {isMoveToRoot && (
           <DropdownItem
             onClick={onClickMoveToRoot}
@@ -49,6 +42,13 @@ export const BookmarkFolderItemControl: React.FC<{
             {t('bookmark_folder.move_to_root')}
           </DropdownItem>
         )}
+        <DropdownItem
+          onClick={onClickRename}
+          className="grw-page-control-dropdown-item"
+        >
+          <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+          {t('Rename')}
+        </DropdownItem>
 
         <DropdownItem divider/>
 
