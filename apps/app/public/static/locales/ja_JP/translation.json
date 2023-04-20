@@ -486,7 +486,6 @@
     "remove_share_link": "共有リンクを{{count}}件削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
     "failed_to_reset_password":"パスワードのリセットに失敗しました",
-    "delete_succeeded": "{{target}} の削除に成功しました",
     "save_succeeded": "保存に成功しました"
   },
   "template": {

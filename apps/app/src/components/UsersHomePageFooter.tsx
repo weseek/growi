@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { addNewFolder } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
@@ -15,7 +16,6 @@ import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
 import { CompressIcon } from './Icons/CompressIcon';
 import { ExpandIcon } from './Icons/ExpandIcon';
 import { FolderPlusIcon } from './Icons/FolderPlusIcon';
-import { addNewFolder } from '~/client/util/bookmark-utils';
 
 
 export type UsersHomePageFooterProps = {
@@ -34,7 +34,6 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
       await addNewFolder(folderName, null);
       await mutateChildBookmarkData();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

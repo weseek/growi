@@ -71,7 +71,6 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
       try {
         await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, null);
         await mutateBookamrkData();
-        toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
       }
       catch (err) {
         toastError(err);
@@ -81,7 +80,6 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
       try {
         await addBookmarkToFolder(item._id, null);
         await mutateUserBookmarks();
-        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       }
       catch (err) {
         toastError(err);
