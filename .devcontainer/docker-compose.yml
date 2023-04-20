@@ -49,7 +49,7 @@ services:
       context: ../../growi-docker-compose/elasticsearch
       dockerfile: ./Dockerfile
       args:
-        - version=7.17.9
+        - version=8.7.0
     restart: unless-stopped
     ports:
       - 9200:9200
@@ -67,7 +67,7 @@ services:
 
   #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.9
+    image: docker.elastic.co/kibana/kibana:8.7.0
     restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
