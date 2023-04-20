@@ -478,7 +478,7 @@ class PageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error(`This page cannot be renamed to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+        throw Error(`revertDeletedPage to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
       }
     }
 
@@ -2064,6 +2064,7 @@ class PageService {
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
     this.pageEvent.emit('revert', page, user);
+    this.pageEvent.emit('create', updatedPage, user);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
@@ -2100,6 +2101,9 @@ class PageService {
           await PageOperation.deleteOne({ _id: pageOp._id });
 
           throw err;
+        }
+        finally {
+          this.pageEvent.emit('syncDescendantsUpdate', updatedPage, user);
         }
       })();
     }
