@@ -11,16 +11,10 @@ on:
       - tsconfig.base.json
       - turbo.json
       - yarn.lock
+      - package.json
       - apps/app/**
       - '!apps/app/docker/**'
-      - packages/codemirror-textlint/**
-      - packages/core/**
-      - packages/hackmd/**
-      - packages/presentation/**
-      - packages/preset-themes/**
-      - packages/remark-*/**
-      - packages/slack/**
-      - packages/ui/**
+      - packages/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

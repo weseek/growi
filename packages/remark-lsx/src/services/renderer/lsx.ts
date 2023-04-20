@@ -18,7 +18,7 @@ type DirectiveAttributes = Record<string, string>
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visit(tree, (node, index) => {
+    visit(tree, (node) => {
       if (node.type === remarkGrowiDirectivePluginType.Text || node.type === remarkGrowiDirectivePluginType.Leaf) {
         if (typeof node.name !== 'string') {
           return;

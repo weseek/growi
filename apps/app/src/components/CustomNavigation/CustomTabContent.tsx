@@ -24,11 +24,12 @@ const CustomTabContent = (props: Props): JSX.Element => {
       {Object.entries(navTabMapping).map(([key, value]) => {
 
         const { Content } = value;
+        const content = Content != null ? <Content /> : <></>;
 
         return (
           <TabPane key={key} tabId={key}>
             <LazyRenderer shouldRender={key === activeTab}>
-              <Content />
+              {content}
             </LazyRenderer>
           </TabPane>
         );

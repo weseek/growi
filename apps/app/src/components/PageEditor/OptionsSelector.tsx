@@ -8,11 +8,9 @@ import {
 } from 'reactstrap';
 
 import { useIsIndentSizeForced } from '~/stores/context';
-import { useEditorSettings, useIsTextlintEnabled, useCurrentIndentSize } from '~/stores/editor';
+import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 
 import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
-
-import { DownloadDictModal } from './DownloadDictModal';
 
 
 const AVAILABLE_THEMES = [
@@ -162,18 +160,12 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
 IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
-type ConfigurationDropdownProps = {
-  onConfirmEnableTextlint?: () => void,
-}
-
-const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDropdownProps): JSX.Element => {
+const ConfigurationDropdown = memo((): JSX.Element => {
   const { t } = useTranslation();
 
   const [isCddMenuOpened, setCddMenuOpened] = useState(false);
 
   const { data: editorSettings, update } = useEditorSettings();
-
-  const { data: isTextlintEnabled, mutate: mutateTextlintEnabled } = useIsTextlintEnabled();
 
   const renderActiveLineMenuItem = useCallback(() => {
     if (editorSettings == null) {
@@ -223,44 +215,6 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
     );
   }, [editorSettings, t, update]);
 
-  const renderIsTextlintEnabledMenuItem = useCallback(() => {
-    if (editorSettings == null) {
-      return <></>;
-    }
-
-    const clickHandler = () => {
-      if (isTextlintEnabled) {
-        mutateTextlintEnabled(false);
-        return;
-      }
-
-      if (editorSettings.textlintSettings?.neverAskBeforeDownloadLargeFiles) {
-        mutateTextlintEnabled(true);
-        return;
-      }
-
-      if (onConfirmEnableTextlint != null) {
-        onConfirmEnableTextlint();
-      }
-    };
-
-    const iconClasses = ['text-info'];
-    if (isTextlintEnabled) {
-      iconClasses.push('ti ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
-    return (
-      <DropdownItem toggle={false} onClick={clickHandler}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"></span>
-          <span className="menuitem-label">Textlint</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
-    );
-  }, [editorSettings, isTextlintEnabled, mutateTextlintEnabled, onConfirmEnableTextlint]);
-
   return (
     <div className="my-0 form-group">
       <Dropdown
@@ -277,7 +231,6 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
         <DropdownMenu>
           {renderActiveLineMenuItem()}
           {renderMarkdownTableAutoFormattingMenuItem()}
-          {renderIsTextlintEnabledMenuItem()}
           {/* <DropdownItem divider /> */}
         </DropdownMenu>
 
@@ -291,10 +244,7 @@ ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
 
 export const OptionsSelector = (): JSX.Element => {
-  const [isDownloadDictModalShown, setDownloadDictModalShown] = useState(false);
-
-  const { data: editorSettings, turnOffAskingBeforeDownloadLargeFiles } = useEditorSettings();
-  const { mutate: mutateTextlintEnabled } = useIsTextlintEnabled();
+  const { data: editorSettings } = useEditorSettings();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
@@ -319,27 +269,9 @@ export const OptionsSelector = (): JSX.Element => {
           />
         </span>
         <span className="ml-2 ml-sm-4">
-          <ConfigurationDropdown
-            onConfirmEnableTextlint={() => setDownloadDictModalShown(true)}
-          />
+          <ConfigurationDropdown />
         </span>
       </div>
-
-      { editorSettings != null && !editorSettings.textlintSettings?.neverAskBeforeDownloadLargeFiles && (
-        <DownloadDictModal
-          isModalOpen={isDownloadDictModalShown}
-          onEnableTextlint={(isSkipAskingAgainChecked) => {
-            mutateTextlintEnabled(true);
-
-            if (isSkipAskingAgainChecked) {
-              turnOffAskingBeforeDownloadLargeFiles();
-            }
-
-            setDownloadDictModalShown(false);
-          }}
-          onCancel={() => setDownloadDictModalShown(false)}
-        />
-      )}
     </>
   );
 
