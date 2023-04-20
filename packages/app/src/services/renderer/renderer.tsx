@@ -67,9 +67,10 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 };
 
 const baseSanitizeSchema = {
-  tagNames: ['iframe', 'section'],
+  tagNames: ['iframe', 'section', 'video'],
   attributes: {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
+    video: ['controls', 'src', 'muted', 'preload', 'width', 'height', 'autoplay'],
     // The special value 'data*' as a property name can be used to allow all data properties.
     // see: https://github.com/syntax-tree/hast-util-sanitize/
     '*': ['key', 'class', 'className', 'style', 'data*'],
