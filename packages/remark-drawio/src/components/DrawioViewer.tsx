@@ -1,5 +1,6 @@
-import React, {
-  ReactNode, useCallback, useEffect, useMemo, useRef, useState,
+import {
+  type ReactNode,
+  memo, useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
 import { debounce } from 'throttle-debounce';
@@ -33,7 +34,7 @@ export type DrawioEditByViewerProps = {
   drawioMxFile: string,
 }
 
-export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element => {
+export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
     onRenderingStart, onRenderingUpdated,

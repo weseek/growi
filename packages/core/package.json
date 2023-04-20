@@ -1,26 +1,36 @@
 {
   "name": "@growi/core",
-  "version": "6.0.16-RC.0",
+  "version": "6.1.0-RC.0",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
     "growi"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "run-p build:*",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
-    "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
+    "build": "vite build",
     "clean": "npx -y shx rm -rf dist",
-    "lint:js": "eslint **/*.{js,ts}",
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w --emptyOutDir=false",
+    "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
   },
+  "// comments for dependencies": {
+    "escape-string-regexp": "5.0.0 or above exports only ESM"
+  },
+  "dependencies": {
+    "bson-objectid": "^2.0.4",
+    "escape-string-regexp": "^4.0.0"
+  },
   "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0"
+    "eslint-plugin-regex": "^1.8.0",
+    "swr": "^2.0.3"
   }
 }

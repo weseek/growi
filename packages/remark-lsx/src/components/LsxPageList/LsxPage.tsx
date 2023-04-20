@@ -1,11 +1,15 @@
 import React, { useMemo } from 'react';
 
 import { pathUtils } from '@growi/core';
-import { PagePathLabel, PageListMeta } from '@growi/ui';
+import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
+import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
 import Link from 'next/link';
 
 import type { PageNode } from '../../interfaces/page-node';
 import { LsxContext } from '../lsx-context';
+
+
+import styles from './LsxPage.module.scss';
 
 
 type Props = {
@@ -98,7 +102,7 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   }, [basisViewersCount, pageNode.page]);
 
   return (
-    <li className="page-list-li">
+    <li className={`page-list-li ${styles['page-list-li']}`}>
       <small>{iconElement}</small> {pagePathElement}
       <span className="ml-2">{pageListMetaElement}</span>
       {childrenElements}
