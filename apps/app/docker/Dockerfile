@@ -90,13 +90,14 @@ RUN tar -cf packages.tar \
   package.json \
   apps/app/.next \
   apps/app/config \
+  apps/app/dist \
   apps/app/public \
   apps/app/resource \
   apps/app/tmp \
   apps/app/.env.production* \
   apps/app/next.config.js \
-  **/package.json \
-  **/dist
+  packages/*/package.json \
+  packages/*/dist
 
 
 
