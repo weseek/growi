@@ -96,7 +96,6 @@ module.exports = async(phase, { defaultConfig }) => {
             /dtrace-provider/,
             /mongoose/,
             /mathjax-full/, // required from marp
-            /highlight.js/, // required from marp
           ].map((packageRegExp) => {
             return {
               test: packageRegExp,
