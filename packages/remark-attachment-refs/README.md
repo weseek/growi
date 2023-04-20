@@ -1,4 +1,4 @@
-# growi-plugin-attachment-refs
+# remark-attachment-refs
 
 Examples
 -------

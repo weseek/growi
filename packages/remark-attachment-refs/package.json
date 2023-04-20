@@ -1,5 +1,5 @@
 {
-  "name": "@growi/plugin-attachment-refs",
+  "name": "@growi/remark-attachment-refs",
   "version": "6.0.0-RC.9",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
@@ -14,9 +14,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "run-p build:*",
+    "build:server": "vite build -c vite.server.config.ts",
     "clean": "npx -y shx rm -rf dist",
-    "dev": "vite build --mode dev",
+    "dev": "run-p dev:*",
+    "dev:server": "vite build -c vite.server.config.ts --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint src/**/*.scss src/**/*.css",

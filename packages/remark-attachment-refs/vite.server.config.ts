@@ -1,6 +1,3 @@
-import path from 'path';
-
-import glob from 'glob';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -10,17 +7,19 @@ export default defineConfig({
     dts(),
   ],
   build: {
-    outDir: 'dist',
+    outDir: 'dist/server',
     sourcemap: true,
     lib: {
-      entry: glob.sync(path.resolve(__dirname, 'src/**/*.{js,jsx}')),
-      name: 'plugin-attachment-refs-libs',
-      formats: ['es', 'cjs'],
+      entry: [
+        'src/server/index.ts',
+      ],
+      name: 'remark-attachment-refs-libs',
+      formats: ['cjs'],
     },
     rollupOptions: {
       output: {
         preserveModules: true,
-        preserveModulesRoot: 'src',
+        preserveModulesRoot: 'src/server',
       },
       external: [
         'bunyan',
@@ -28,6 +27,7 @@ export default defineConfig({
         'universal-bunyan',
         'react',
         'react-dom',
+        /^@growi\/.*/,
       ],
     },
   },

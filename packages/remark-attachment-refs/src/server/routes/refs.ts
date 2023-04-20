@@ -1,16 +1,16 @@
-import loggerFactory from '../../utils/logger';
+import { OptionParser } from '@growi/core';
 
-const { OptionParser } = require('@growi/core');
+// import loggerFactory from '../../utils/logger';
 
-const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
+// const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
 
 const loginRequiredFallback = (req, res) => {
   return res.status(403).send('login required');
 };
 
-
-module.exports = (crowi) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const routesFactory = (crowi): any => {
   const express = crowi.require('express');
   const mongoose = crowi.require('mongoose');
 
@@ -57,6 +57,11 @@ module.exports = (crowi) => {
     }
 
     const range = OptionParser.parseRange(optionsDepth);
+
+    if (range == null) {
+      return query;
+    }
+
     const start = range.start;
     const end = range.end;
 
@@ -80,8 +85,6 @@ module.exports = (crowi) => {
   router.get('/ref', accessTokenParser, loginRequired, async(req, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
-    // eslint-disable-next-line no-unused-vars
-    const options = JSON.parse(req.query.options);
 
     if (pagePath == null) {
       res.status(400).send('the param \'pagePath\' must be set.');
@@ -97,7 +100,7 @@ module.exports = (crowi) => {
     }
 
     // convert ObjectId
-    const orConditions = [{ originalName: fileNameOrId }];
+    const orConditions: any[] = [{ originalName: fileNameOrId }];
     if (ObjectId.isValid(fileNameOrId)) {
       orConditions.push({ _id: ObjectId(fileNameOrId) });
     }
@@ -115,12 +118,12 @@ module.exports = (crowi) => {
       return;
     }
 
-    logger.debug(`attachment '${attachment.id}' is found from fileNameOrId '${fileNameOrId}'`);
+    // logger.debug(`attachment '${attachment.id}' is found from fileNameOrId '${fileNameOrId}'`);
 
     // forbidden
     const isAccessible = await Page.isAccessiblePageByViewer(attachment.page, user);
     if (!isAccessible) {
-      logger.debug(`attachment '${attachment.id}' is forbidden for user '${user && user.username}'`);
+      // logger.debug(`attachment '${attachment.id}' is forbidden for user '${user && user.username}'`);
       res.status(403).send(`page '${attachment.page}' is forbidden.`);
       return;
     }
@@ -188,7 +191,7 @@ module.exports = (crowi) => {
     const results = await pageQuery.select('id').exec();
     const pageIds = results.map(result => result.id);
 
-    logger.debug('retrieve attachments for pages:', pageIds);
+    // logger.debug('retrieve attachments for pages:', pageIds);
 
     // create query to find
     let query = Attachment

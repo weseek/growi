@@ -19,8 +19,8 @@
       "cache": false
     },
 
-    "@growi/plugin-attachment-refs#build": {
-      "dependsOn": ["@growi/core#build"],
+    "@growi/remark-attachment-refs#build": {
+      "dependsOn": ["^build"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
@@ -63,8 +63,8 @@
       "outputMode": "new-only"
     },
 
-    "@growi/plugin-attachment-refs#dev": {
-      "dependsOn": ["@growi/core#dev", "@growi/ui#dev"],
+    "@growi/remark-attachment-refs#dev": {
+      "dependsOn": ["^dev"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
@@ -132,8 +132,8 @@
       "persistent": true
     },
 
-    "@growi/plugin-attachment-refs#lint": {
-      "dependsOn": ["@growi/core#lint"]
+    "@growi/remark-attachment-refs#lint": {
+      "dependsOn": ["^dev"]
     },
     "@growi/ui#lint": {
       "dependsOn": ["@growi/core#dev"]
