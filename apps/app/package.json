@@ -224,6 +224,7 @@
     "load-css-file": "^1.0.0",
     "material-icons": "^1.11.3",
     "morgan": "^1.10.0",
+    "null-loader": "^4.0.1",
     "penpal": "^4.0.0",
     "plantuml-encoder": "^1.2.5",
     "prettier": "^1.19.1",
