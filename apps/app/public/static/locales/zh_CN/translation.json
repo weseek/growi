@@ -794,7 +794,8 @@
     "new_folder": "新建文件夹",
     "delete": "删除文件夹",
     "drop_item_here": "将项目拖放到此处",
-    "cancel_bookmark": "取消收藏此页面"
+    "cancel_bookmark": "取消收藏此页面",
+    "move_to_root": "移动到根部"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",

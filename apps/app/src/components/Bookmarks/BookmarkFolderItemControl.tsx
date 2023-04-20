@@ -5,16 +5,22 @@ import {
   Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
 } from 'reactstrap';
 
-
-type BookmarkFolderItemControlProps = {
+export const BookmarkFolderItemControl: React.FC<{
   children?: React.ReactNode
+  isMoveToRoot: boolean
   onClickRename: () => void
   onClickDelete: () => void
-}
-export const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps): JSX.Element => {
+  onClickMoveToRoot: () => void
+}> = ({
+  children,
+  isMoveToRoot,
+  onClickRename,
+  onClickDelete,
+  onClickMoveToRoot,
+}): JSX.Element => {
   const { t } = useTranslation();
-  const { children, onClickRename, onClickDelete } = props;
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
       { children ?? (
@@ -23,18 +29,29 @@ export const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps)
         </DropdownToggle>
       ) }
       <DropdownMenu
-        positionFixed
-        modifiers={{ preventOverflow: { boundariesElement: undefined } }}
-        right={true}
+        modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
+        container="body"
+        style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
       >
         <DropdownItem
           onClick={onClickRename}
+          className="grw-page-control-dropdown-item"
         >
           <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
           {t('Rename')}
         </DropdownItem>
+        {isMoveToRoot && (
+          <DropdownItem
+            onClick={onClickMoveToRoot}
+            className="grw-page-control-dropdown-item"
+          >
+            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            {t('bookmark_folder.move_to_root')}
+          </DropdownItem>
+        )}
 
         <DropdownItem divider/>
+
         <DropdownItem
           className='pt-2 grw-page-control-dropdown-item text-danger'
           onClick={onClickDelete}
