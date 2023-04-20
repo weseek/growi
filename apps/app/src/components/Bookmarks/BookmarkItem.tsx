@@ -12,7 +12,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
@@ -41,7 +41,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
+  const { mutate: mutateBookmarkData } = useSWRxBookmarkFolderAndChild();
   const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
 
   const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level + 1));
@@ -51,8 +51,8 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    mutateBookamrkData();
-  }, [mutateBookamrkData]);
+    mutateBookmarkData();
+  }, [mutateBookmarkData]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);

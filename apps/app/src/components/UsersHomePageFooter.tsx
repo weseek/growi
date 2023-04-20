@@ -4,18 +4,18 @@ import { useTranslation } from 'next-i18next';
 
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { addNewFolder } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 
 import { BookmarkFolderNameInput } from './Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
 import { CompressIcon } from './Icons/CompressIcon';
 import { ExpandIcon } from './Icons/ExpandIcon';
 import { FolderPlusIcon } from './Icons/FolderPlusIcon';
-import { addNewFolder } from '~/client/util/bookmark-utils';
 
 
 export type UsersHomePageFooterProps = {
@@ -27,7 +27,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const { creatorId } = props;
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild();
+  const { mutate: mutateChildBookmarkData } = useSWRxBookmarkFolderAndChild();
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {

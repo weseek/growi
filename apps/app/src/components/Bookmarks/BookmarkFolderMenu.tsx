@@ -11,7 +11,7 @@ import { addBookmarkToFolder, addNewFolder, toggleBookmark } from '~/client/util
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import { FolderIcon } from '../Icons/FolderIcon';
@@ -28,7 +28,7 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { children } = props;
   const [isCreateAction, setIsCreateAction] = useState(false);
-  const { data: bookmarkFolders, mutate: mutateBookmarkFolderData } = useSWRxBookamrkFolderAndChild();
+  const { data: bookmarkFolders, mutate: mutateBookmarkFolderData } = useSWRxBookmarkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);

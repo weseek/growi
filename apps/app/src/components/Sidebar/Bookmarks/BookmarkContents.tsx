@@ -7,14 +7,14 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
 import { FolderPlusIcon } from '~/components/Icons/FolderPlusIcon';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 
 
 export const BookmarkContents = (): JSX.Element => {
 
   const { t } = useTranslation();
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
-  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild();
+  const { mutate: mutateChildBookmarkData } = useSWRxBookmarkFolderAndChild();
 
 
   const onClickNewBookmarkFolder = useCallback(() => {

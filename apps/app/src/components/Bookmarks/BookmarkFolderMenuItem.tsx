@@ -15,7 +15,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -35,7 +35,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   } = props;
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
+  const { mutate: mutateBookmarkData } = useSWRxBookmarkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
@@ -50,7 +50,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await addNewFolder(folderName, item._id);
-      await mutateBookamrkData();
+      await mutateBookmarkData();
       setIsCreateAction(false);
       toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
@@ -58,7 +58,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       toastError(err);
     }
 
-  }, [item._id, mutateBookamrkData, t]);
+  }, [item._id, mutateBookmarkData, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -94,7 +94,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         return;
       }
       mutateBookmarkInfo();
-      mutateBookamrkData();
+      mutateBookmarkData();
       toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     };
 
@@ -102,7 +102,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       return;
     }
     openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [item, mutateBookamrkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
+  }, [item, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
@@ -117,14 +117,14 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       const toaster = isBookmarked ? 'toaster.update_successed' : 'toaster.add_succeeded';
       toastSuccess(t(toaster, { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       mutateUserBookmarks();
-      mutateBookamrkData();
+      mutateBookmarkData();
       setSelectedItem(item._id);
       mutateBookmarkInfo();
     }
     catch (err) {
       toastError(err);
     }
-  }, [onSelectedChild, isBookmarked, currentPage, t, mutateUserBookmarks, mutateBookamrkData, mutateBookmarkInfo]);
+  }, [onSelectedChild, isBookmarked, currentPage, t, mutateUserBookmarks, mutateBookmarkData, mutateBookmarkInfo]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     if (!isOpen) {

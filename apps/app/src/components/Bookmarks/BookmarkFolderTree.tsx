@@ -9,7 +9,7 @@ import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -35,7 +35,7 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
   const { t } = useTranslation();
   const { isUserHomePage } = props;
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: bookmarkFolderData, mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
+  const { data: bookmarkFolderData, mutate: mutateBookmarkData } = useSWRxBookmarkFolderAndChild();
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
@@ -61,43 +61,44 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
       }
       mutateUserBookmarks();
       mutateBookmarkInfo();
-      mutateBookamrkData();
+      mutateBookmarkData();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  }, [mutateBookmarkInfo, mutateBookamrkData, mutateUserBookmarks, openDeleteModal, t]);
+  }, [mutateBookmarkInfo, mutateBookmarkData, mutateUserBookmarks, openDeleteModal, t]);
 
-  const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {
-    if (dragType === DRAG_ITEM_TYPE.FOLDER) {
-      try {
-        await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, null);
-        await mutateBookamrkData();
-        toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
-      }
-      catch (err) {
-        toastError(err);
-      }
-    }
-    else {
-      try {
-        await addBookmarkToFolder(item._id, null);
-        await mutateUserBookmarks();
-        toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
-      }
-      catch (err) {
-        toastError(err);
-      }
-    }
+  /* TODO: update in bookmarks folder v2. */
+  // const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {
+  //   if (dragType === DRAG_ITEM_TYPE.FOLDER) {
+  //     try {
+  //       await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, null);
+  //       await mutateBookmarkData();
+  //       toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
+  //     }
+  //     catch (err) {
+  //       toastError(err);
+  //     }
+  //   }
+  //   else {
+  //     try {
+  //       await addBookmarkToFolder(item._id, null);
+  //       await mutateUserBookmarks();
+  //       toastSuccess(t('toaster.add_succeeded', { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
+  //     }
+  //     catch (err) {
+  //       toastError(err);
+  //     }
+  //   }
 
-  };
-  const isDroppable = (item: DragItemDataType, dragType: string | null | symbol) => {
-    if (dragType === DRAG_ITEM_TYPE.FOLDER) {
-      const isRootFolder = item.level === 0;
-      return !isRootFolder;
-    }
-    const isRootBookmark = item.parentFolder == null;
-    return !isRootBookmark;
+  // };
+  // const isDroppable = (item: DragItemDataType, dragType: string | null | symbol) => {
+  //   if (dragType === DRAG_ITEM_TYPE.FOLDER) {
+  //     const isRootFolder = item.level === 0;
+  //     return !isRootFolder;
+  //   }
+  //   const isRootBookmark = item.parentFolder == null;
+  //   return !isRootBookmark;
 
-  };
+  // };
 
   return (
     <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
@@ -128,7 +129,8 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
           </div>
         ))}
       </ul>
-      {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
+      {/* TODO: update in bookmarks folder v2. Also delete drop_item_here in translation.json, if don't need it. */}
+      {/* {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
         <DragAndDropWrapper
           useDropMode={true}
           type={acceptedTypes}
@@ -141,7 +143,7 @@ export const BookmarkFolderTree = (props: BookmarkFolderTreeProps): JSX.Element 
             </div>
           </div>
         </DragAndDropWrapper>
-      )}
+      )} */}
     </div>
   );
 };

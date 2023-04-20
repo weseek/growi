@@ -17,7 +17,7 @@ import {
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal, usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -49,7 +49,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const { mutate: mutateBookmarkData } = useSWRxBookamrkFolderAndChild();
+  const { mutate: mutateBookmarkData } = useSWRxBookmarkFolderAndChild();
   const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const [isRenameAction, setIsRenameAction] = useState<boolean>(false);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
@@ -225,6 +225,15 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     openDeleteBookmarkFolderModal(bookmarkFolder, { onDeleted: bookmarkFolderDeleteHandler });
   }, [bookmarkFolder, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
 
+  const onClickMoveToRootHandler = useCallback(async() => {
+    try {
+      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null);
+      await mutateBookmarkData();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [bookmarkFolder._id, bookmarkFolder.name, mutateBookmarkData]);
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
@@ -277,6 +286,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             <BookmarkFolderItemControl
               onClickRename={onClickRenameHandler}
               onClickDelete={onClickDeleteHandler}
+              onClickMoveToRoot={onClickMoveToRootHandler}
+              isMoveToRoot={bookmarkFolder.parent != null}
             >
               <div onClick={e => e.stopPropagation()}>
                 <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
