@@ -572,7 +572,7 @@
   "login": {
     "title": "Login",
     "sign_in_error": "Login error",
-    "registration_successful": "registration_successful. Please wait for administrator approval.",
+    "registration_successful": "Registration successful. Please wait for administrator approval.",
     "Setup": "Setup",
     "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
     "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
@@ -659,7 +659,8 @@
     "success_to_send_email": "Success to send email",
     "feature_is_unavailable": "This feature is unavailable.",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
-    "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
+    "password_and_confirm_password_does_not_match": "Password and confirm password does not match",
+    "please_enable_mailer_alert": "The password reset feature is disabled because email setup has not been completed. Please ask administrator to complete the email setup."
   },
   "emoji" :{
     "title": "Pick an Emoji",
