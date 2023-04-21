@@ -1501,8 +1501,7 @@ class PageService {
         throw err;
       }
     }
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', deletedPage, user);
+    this.pageEvent.emit('delete', page, deletedPage, user);
 
     return deletedPage;
   }
@@ -1558,8 +1557,7 @@ class PageService {
       }
     }
 
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', deletedPage, user);
+    this.pageEvent.emit('delete', page, deletedPage, user);
 
     return deletedPage;
   }
@@ -2063,8 +2061,7 @@ class PageService {
 
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
-    this.pageEvent.emit('revert', page, user);
-    this.pageEvent.emit('create', updatedPage, user);
+    this.pageEvent.emit('revert', page, updatedPage, user);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
@@ -2182,7 +2179,7 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
-    this.pageEvent.emit('revert', page, user);
+    this.pageEvent.emit('revert', page, updatedPage, user);
 
     return updatedPage;
   }
