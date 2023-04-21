@@ -9,7 +9,7 @@ import { visit } from 'unist-util-visit';
 const REF_NAME_PATTERN = new RegExp(/refimg|ref/);
 const REFS_NAME_PATTERN = new RegExp(/refsimg|refs/);
 const REF_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'fileNameOrId', 'pagePath'];
-const REF_IMG_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'width', 'height', 'max-width', 'max-height', 'alt', 'pagePath'];
+const REF_IMG_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'width', 'height', 'max-width', 'max-height', 'alt', 'fileNameOrId', 'pagePath'];
 const REFS_SUPPORTED_ATTRIBUTES = ['page', 'prefix', 'depth', 'regexp', 'pagePath'];
 const REFS_IMG_SUPPORTED_ATTRIBUTES = [
   'page', 'prefix', 'depth', 'regexp', 'width', 'height', 'max-width', 'max-height', 'display', 'grid', 'grid-gap', 'no-carousel', 'pagePath',
