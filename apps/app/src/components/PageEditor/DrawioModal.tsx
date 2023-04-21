@@ -10,7 +10,7 @@ import {
 } from 'reactstrap';
 
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
-import { useDrawioUri } from '~/stores/context';
+import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
@@ -38,7 +38,7 @@ const drawioConfig: DrawioConfig = {
 
 
 export const DrawioModal = (): JSX.Element => {
-  const { data: drawioUri } = useDrawioUri();
+  const { data: rendererConfig } = useRendererConfig();
   const { data: personalSettingsInfo } = usePersonalSettings({
     // make immutable
     revalidateIfStale: false,
@@ -50,13 +50,13 @@ export const DrawioModal = (): JSX.Element => {
   const isOpened = drawioModalData?.isOpened ?? false;
 
   const drawioUriWithParams = useMemo(() => {
-    if (drawioUri == null) {
+    if (rendererConfig == null) {
       return undefined;
     }
 
     let url;
     try {
-      url = new URL(drawioUri);
+      url = new URL(rendererConfig.drawioUri);
     }
     catch (err) {
       logger.debug(err);
@@ -71,19 +71,19 @@ export const DrawioModal = (): JSX.Element => {
     url.searchParams.append('configure', '1');
 
     return url;
-  }, [drawioUri, personalSettingsInfo?.lang]);
+  }, [rendererConfig, personalSettingsInfo?.lang]);
 
   const drawioCommunicationHelper = useMemo(() => {
-    if (drawioUri == null) {
+    if (rendererConfig == null) {
       return undefined;
     }
 
     return new DrawioCommunicationHelper(
-      drawioUri,
+      rendererConfig.drawioUri,
       drawioConfig,
       { onClose: closeDrawioModal, onSave: drawioModalData?.onSave },
     );
-  }, [closeDrawioModal, drawioModalData?.onSave, drawioUri]);
+  }, [closeDrawioModal, drawioModalData?.onSave, rendererConfig]);
 
   const receiveMessageHandler = useCallback((event: MessageEvent) => {
     if (drawioModalData == null) {

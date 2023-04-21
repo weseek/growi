@@ -3,3 +3,6 @@
 **/coverage
 **/Dockerfile
 **/*.dockerignore
+**/.turbo
+out
+apps/app

@@ -19,7 +19,7 @@ import {
   useCurrentPathname, useHackmdUri,
 } from '~/stores/context';
 import {
-  useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+  useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning, useWaitingSaveProcessing,
 } from '~/stores/editor';
 import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
@@ -56,6 +56,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const router = useRouter();
 
   const { data: isNotFound } = useIsNotFound();
+  const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
@@ -116,6 +117,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
         throw new Error('Some materials to save are invalid');
       }
 
+      mutateWaitingSaveProcessing(true);
+
       const options = Object.assign(optionsToSave, opts, { isSyncRevisionToHackmd: true });
 
       const markdown = await hackmdEditorRef.current.getValue();
@@ -142,8 +145,16 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
+    finally {
+      mutateWaitingSaveProcessing(false);
+    }
+
   // eslint-disable-next-line max-len
-  }, [editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, pageId, currentPagePath, isNotFound, mutateEditorMode, router, updateStateAfterSave, mutateIsHackmdDraftUpdatingInRealtime]);
+  }, [
+    pageId, currentPagePath, isNotFound, router,
+    editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave,
+    saveOrUpdate, mutateEditorMode, updateStateAfterSave, mutateIsHackmdDraftUpdatingInRealtime, mutateWaitingSaveProcessing,
+  ]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -249,6 +260,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
     try {
+      mutateWaitingSaveProcessing(true);
+
       const currentPagePathOrPathname = currentPagePath || currentPathname;
       if (
         pageId == null || revisionIdHackmdSynced == null || currentPagePathOrPathname == null || optionsToSave == null
@@ -278,8 +291,16 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
+    finally {
+      mutateWaitingSaveProcessing(false);
+    }
+
   // eslint-disable-next-line max-len
-  }, [currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, mutateIsEnabledUnsavedWarning, t]);
+  }, [
+    currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave,
+    saveOrUpdate,
+    mutateWaitingSaveProcessing, mutatePageData, updateStateAfterSave, mutateTagsInfo, mutateIsEnabledUnsavedWarning, t,
+  ]);
 
   /**
    * onChange event of HackmdEditor handler

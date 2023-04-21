@@ -1,38 +1,40 @@
 # syntax = docker/dockerfile:1.4
 
 ##
-## packages-json-picker
+## base
 ##
-FROM node:16-slim AS packages-json-picker
+FROM node:18-slim AS base
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
-COPY ["package.json", "yarn.lock", "lerna.json", "./"]
-COPY packages packages
-# Find and remove non-package.json files
-RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
+
+RUN yarn global add turbo
+COPY . .
+RUN turbo prune --scope=@growi/slackbot-proxy --docker
 
 
 ##
-## deps-resolver-dev
+## deps-resolver
 ##
-FROM node:16-slim AS deps-resolver-dev
+FROM node:18-slim AS deps-resolver
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
 
 # copy files
-COPY --from=packages-json-picker ${optDir} .
+COPY --from=base ${optDir}/out/json/ .
+COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
 
-# setup
-RUN yarn config set network-timeout 300000
-RUN npx -y lerna bootstrap -- --frozen-lockfile
+# setup (with network-timeout = 1 hour)
+RUN yarn config set network-timeout 3600000
+RUN yarn --frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
+  apps/*/node_modules \
   packages/*/node_modules
 
 
@@ -40,19 +42,13 @@ RUN tar -cf node_modules.tar \
 ##
 ## deps-resolver-prod
 ##
-FROM node:16-slim AS deps-resolver-prod
+FROM deps-resolver AS deps-resolver-prod
 
-ENV optDir /opt
-
-WORKDIR ${optDir}
-COPY ["package.json", "yarn.lock", "lerna.json", "./"]
-COPY ./packages/slack/package.json ./packages/slack/package.json
-COPY ./apps/slackbot-proxy/package.json ./apps/slackbot-proxy/package.json
-
-RUN npx -y lerna bootstrap -- --production
+RUN yarn --production
 # make artifacts
-RUN tar -cf dependencies.tar \
+RUN tar -cf node_modules.tar \
   node_modules \
+  apps/*/node_modules \
   packages/*/node_modules
 
 
@@ -60,62 +56,64 @@ RUN tar -cf dependencies.tar \
 ##
 ## builder
 ##
-FROM node:16-slim AS builder
+FROM node:18-slim AS builder
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
 
+RUN yarn global add turbo
+
+# copy files
+COPY --from=base ${optDir}/out/full/ .
+COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
+COPY ["tsconfig.base.json", "./"]
+
 # copy dependent packages
-COPY --from=deps-resolver-dev \
+COPY --from=deps-resolver \
   ${optDir}/node_modules.tar ${optDir}/
 
 # extract node_modules.tar
 RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
-COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
-# copy all related packages
-COPY packages/slack packages/slack
-COPY apps/slackbot-proxy apps/slackbot-proxy
-
 # build
-RUN yarn lerna run build
+RUN turbo run build
 
 # make artifacts
 RUN tar -cf packages.tar \
-  packages/slack/package.json \
-  packages/slack/dist \
-  apps/slackbot-proxy/package.json \
-  apps/slackbot-proxy/.env \
-  apps/slackbot-proxy/dist
+  package.json \
+  apps/*/package.json \
+  apps/*/dist \
+  apps/*/.env \
+  packages/*/package.json \
+  packages/*/dist
 
 
 
 ##
 ## release
 ##
-FROM node:16-slim
+FROM node:18-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
 
 ENV optDir /opt
-ENV appDir ${optDir}
-
+ENV appDir ${optDir}/slackbot-proxy
 USER node
-
-WORKDIR ${appDir}
 # copy artifacts
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/dependencies.tar ./
+  ${optDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
-  ${optDir}/packages.tar ./
+  ${optDir}/packages.tar ${appDir}/
+
+WORKDIR ${appDir}
 
 # extract artifacts
-RUN tar -xf dependencies.tar
+RUN tar -xf node_modules.tar
 RUN tar -xf packages.tar
-RUN rm dependencies.tar packages.tar
+RUN rm node_modules.tar packages.tar
 
 WORKDIR ${appDir}/apps/slackbot-proxy
 

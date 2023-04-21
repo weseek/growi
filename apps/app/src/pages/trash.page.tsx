@@ -16,7 +16,7 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser,
 } from '../stores/context';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -54,8 +54,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
-
-  useRendererConfig(props.rendererConfig);
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
@@ -128,22 +126,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
-  props.rendererConfig = {
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-
-    plantumlUri: process.env.PLANTUML_URI ?? null,
-    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
-
-    // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-  };
 }
 
 /**

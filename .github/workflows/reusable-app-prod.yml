@@ -272,6 +272,11 @@ jobs:
         restore-keys: |
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
 
+    - name: Install dependencies
+      run: |
+        yarn --frozen-lockfile
+        yarn cypress install
+
     - name: Download production files artifact
       uses: actions/download-artifact@v3
       with:
@@ -305,11 +310,12 @@ jobs:
         cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
     - name: Cypress Run
-      uses: cypress-io/github-action@v3
+      uses: cypress-io/github-action@v5
       with:
         browser: chrome
         working-directory: ./apps/app
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
+        install: false
         start: yarn server
         wait-on: 'http://localhost:3000'
         config: video=${{ inputs.cypress-config-video }}
