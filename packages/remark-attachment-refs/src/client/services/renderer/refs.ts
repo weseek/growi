@@ -8,11 +8,11 @@ import { visit } from 'unist-util-visit';
 
 const REF_NAME_PATTERN = new RegExp(/refimg|ref/);
 const REFS_NAME_PATTERN = new RegExp(/refsimg|refs/);
-const REF_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page'];
-const REF_IMG_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'width', 'height', 'max-width', 'max-height', 'alt'];
-const REFS_SUPPORTED_ATTRIBUTES = ['page', 'prefix', 'depth', 'regexp'];
+const REF_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'fileNameOrId', 'pagePath'];
+const REF_IMG_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'width', 'height', 'max-width', 'max-height', 'alt', 'pagePath'];
+const REFS_SUPPORTED_ATTRIBUTES = ['page', 'prefix', 'depth', 'regexp', 'pagePath'];
 const REFS_IMG_SUPPORTED_ATTRIBUTES = [
-  'page', 'prefix', 'depth', 'regexp', 'width', 'height', 'max-width', 'max-height', 'display', 'grid', 'grid-gap', 'no-carousel',
+  'page', 'prefix', 'depth', 'regexp', 'width', 'height', 'max-width', 'max-height', 'display', 'grid', 'grid-gap', 'no-carousel', 'pagePath',
 ];
 
 const { hasHeadingSlash } = pathUtils;
@@ -36,18 +36,13 @@ export const remarkPlugin: Plugin = function() {
           //   1: ref(file=..., ...)
           //   2: ref(id=..., ...)
           //   3: refs(firstArgs, ...)
-          let fileNameOrId: string | undefined = attributes.file || attributes.id;
+          let fileNameOrId: string = attributes.file || attributes.id;
           if (fileNameOrId == null && attrEntries.length > 0) {
             const [firstAttrKey, firstAttrValue] = attrEntries[0];
             fileNameOrId = (firstAttrValue === '' && !REF_SUPPORTED_ATTRIBUTES.concat(REF_IMG_SUPPORTED_ATTRIBUTES).includes(firstAttrValue))
-              ? firstAttrKey : undefined;
+              ? firstAttrKey : '';
           }
-          if (fileNameOrId == null) {
-            throw new Error('\'file\' or \'id\' is not specified. Set first argument or specify \'file\' or \'id\' option');
-          }
-          else {
-            attributes.fileNameOrId = fileNameOrId;
-          }
+          attributes.fileNameOrId = fileNameOrId;
         }
         else if (REFS_NAME_PATTERN.test(node.name)) {
           // set 'page' attribute if the first attribute is only value
@@ -104,7 +99,7 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
     }
 
     const basePagePath = options.pagePath;
-    const elements = selectAll('ref, refimg', tree as HastNode);
+    const elements = selectAll('ref, refimg, refs, refsimg', tree as HastNode);
 
     elements.forEach((refElem) => {
       if (refElem.properties == null) {
@@ -112,7 +107,7 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
       }
 
       refElem.properties.pagePath = refElem.properties.page;
-      const pagePath = refElem.properties.pagePath;
+      const pagePath = refElem.properties.pag1ePath;
 
       // set basePagePath when pagePath is undefined or invalid
       if (pagePath == null || typeof pagePath !== 'string') {

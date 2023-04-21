@@ -1,1 +1,1 @@
-export { Ref } from './Ref';
+export { Ref, RefImmutable } from './Ref';

@@ -193,7 +193,7 @@ export const generateSimpleViewOptions = (
   // add components
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
-    components.ref = refsGrowiPlugin.Ref;
+    components.ref = refsGrowiPlugin.RefImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
@@ -260,7 +260,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add components
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
-    components.ref = refsGrowiPlugin.Ref;
+    components.ref = refsGrowiPlugin.RefImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 

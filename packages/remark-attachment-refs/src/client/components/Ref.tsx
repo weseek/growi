@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useSWRxRef } from '../stores/refs';
 
@@ -12,7 +12,7 @@ type Props = {
   isImmutable?: boolean,
 };
 
-export const Ref = ({
+const RefSubstance = React.memo(({
   fileNameOrId,
   pagePath,
   isImmutable,
@@ -33,4 +33,14 @@ export const Ref = ({
     error={error}
     attachments={attachments}
   />;
-};
+});
+
+export const Ref = React.memo((props: Props): JSX.Element => {
+  return <RefSubstance {...props} />;
+});
+
+export const RefImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
+  return <RefSubstance {...props} isImmutable />;
+});
+
+Ref.displayName = 'Ref';
