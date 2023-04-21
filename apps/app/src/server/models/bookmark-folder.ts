@@ -3,7 +3,6 @@ import monggoose, {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-
 import { IBookmarkFolder, BookmarkFolderItems, MyBookmarkList } from '~/interfaces/bookmark-info';
 import { IPageHasId } from '~/interfaces/page';
 
@@ -15,7 +14,6 @@ import { InvalidParentBookmarkFolderError } from './errors';
 
 const logger = loggerFactory('growi:models:bookmark-folder');
 const Bookmark = monggoose.model('Bookmark');
-
 
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
@@ -39,7 +37,22 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
-  parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'BookmarkFolder',
+    required: false,
+    // Maximum folder hierarchy of 2 levels
+    validate: {
+      async validator(parent: string | null) {
+        if (!parent) return true;
+        const parentFolder = await this.model('BookmarkFolder').findById(parent);
+        if (!parentFolder) return true;
+        const grandparent = parentFolder.parent;
+        return !grandparent;
+      },
+      message: 'Parent folder must be at most 1 level deep',
+    },
+  },
   bookmarks: {
     type: [{
       type: Schema.Types.ObjectId, ref: 'Bookmark', required: false,
