@@ -57,6 +57,10 @@ export class RefsContext {
     return this.tag === 'ref' || this.tag === 'refimg';
   }
 
+  get isExtractImage(): boolean {
+    return this.tag === 'refimg' || this.tag === 'refsimg';
+  }
+
   getOptGrid(): string | undefined {
     return GRID_AVAILABLE_OPTIONS_LIST.find(item => item === this.options?.grid);
   }

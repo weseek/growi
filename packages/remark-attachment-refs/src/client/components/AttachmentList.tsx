@@ -14,7 +14,6 @@ type Props = {
   isLoading: boolean
   error?: Error
   attachments: IAttachmentHasId[]
-  isExtractImg?: boolean
 };
 
 export const AttachmentList = ({
@@ -22,7 +21,6 @@ export const AttachmentList = ({
   isLoading,
   error,
   attachments,
-  isExtractImg = false,
 }: Props): JSX.Element => {
   const renderNoAttachmentsMessage = () => {
     let message;
@@ -67,7 +65,7 @@ export const AttachmentList = ({
       return renderNoAttachmentsMessage();
     }
 
-    return (isExtractImg)
+    return (refsContext.isExtractImage)
       ? <ExtractedAttachments attachments={attachments} refsContext={refsContext} />
       : attachments.map((attachment) => {
         return <AttachmentLink key={attachment._id} attachment={attachment} inUse={false} />;

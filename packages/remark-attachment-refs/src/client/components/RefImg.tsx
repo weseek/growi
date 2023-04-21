@@ -7,22 +7,33 @@ import { RefsContext } from './util/refs-context';
 
 
 type Props = {
-  fileNameOrId: string,
-  pagePath: string,
-  isImmutable?: boolean,
+  fileNameOrId: string
+  pagePath: string
+  width?: string
+  height?: string
+  maxWidth?: string
+  maxHeight?: string
+  alt?: string
+
+  isImmutable?: boolean
 };
 
 const RefImgSubstance = React.memo(({
   fileNameOrId,
   pagePath,
+  width,
+  height,
+  maxWidth,
+  maxHeight,
+  alt,
   isImmutable,
 }: Props): JSX.Element => {
   const refsContext = useMemo(() => {
     const options = {
-      fileNameOrId, pagePath,
+      fileNameOrId, pagePath, width, height, maxWidth, maxHeight, alt,
     };
     return new RefsContext('refimg', options);
-  }, [fileNameOrId, pagePath]);
+  }, [fileNameOrId, pagePath, width, height, maxWidth, maxHeight, alt]);
 
   const { data, error, isLoading } = useSWRxRef(pagePath, fileNameOrId, isImmutable);
   const attachments = data != null ? [data] : [];
@@ -32,7 +43,6 @@ const RefImgSubstance = React.memo(({
     isLoading={isLoading}
     error={error}
     attachments={attachments}
-    isExtractImg
   />;
 });
 

@@ -8,11 +8,11 @@ import { visit } from 'unist-util-visit';
 
 const REF_NAME_PATTERN = new RegExp(/refimg|ref/);
 const REFS_NAME_PATTERN = new RegExp(/refsimg|refs/);
-const REF_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'fileNameOrId', 'pagePath'];
-const REF_IMG_SUPPORTED_ATTRIBUTES = ['file', 'id', 'page', 'width', 'height', 'max-width', 'max-height', 'alt', 'fileNameOrId', 'pagePath'];
-const REFS_SUPPORTED_ATTRIBUTES = ['page', 'prefix', 'depth', 'regexp', 'pagePath'];
+const REF_SUPPORTED_ATTRIBUTES = ['fileNameOrId', 'pagePath'];
+const REF_IMG_SUPPORTED_ATTRIBUTES = ['fileNameOrId', 'pagePath', 'width', 'height', 'maxWidth', 'maxHeight', 'alt'];
+const REFS_SUPPORTED_ATTRIBUTES = ['pagePath', 'prefix', 'depth', 'regexp'];
 const REFS_IMG_SUPPORTED_ATTRIBUTES = [
-  'page', 'prefix', 'depth', 'regexp', 'width', 'height', 'max-width', 'max-height', 'display', 'grid', 'grid-gap', 'no-carousel', 'pagePath',
+  'pagePath', 'prefix', 'depth', 'regexp', 'width', 'height', 'maxWidth', 'maxHeight', 'display', 'grid', 'gridGap', 'noCarousel',
 ];
 
 const { hasHeadingSlash } = pathUtils;
@@ -61,6 +61,11 @@ export const remarkPlugin: Plugin = function() {
         else {
           return;
         }
+
+        attributes.maxWidth = attributes['max-width'];
+        attributes.maxHeight = attributes['max-height'];
+        attributes.gridGap = attributes['grid-gap'];
+        attributes.noCarousel = attributes['no-carousel'];
 
         data.hName = node.name;
         data.hProperties = attributes;

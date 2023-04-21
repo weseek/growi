@@ -38,8 +38,8 @@ export const ExtractedAttachments = React.memo(({
 
     const width = options?.width;
     const height = options?.height;
-    const maxWidth = options?.['max-width'];
-    const maxHeight = options?.['max-height'];
+    const maxWidth = options?.maxWidth;
+    const maxHeight = options?.maxHeight;
     const display = options?.display || 'block';
 
     const containerStyles = {
@@ -61,8 +61,8 @@ export const ExtractedAttachments = React.memo(({
   const getClassesAndStylesForGrid = useCallback(() => {
     const { options } = refsContext;
 
-    const maxWidth = options?.['max-width'];
-    const maxHeight = options?.['max-height'];
+    const maxWidth = options?.maxWidth;
+    const maxHeight = options?.maxHeight;
 
     const containerStyles = {
       width: refsContext.getOptGridWidth(),
@@ -110,7 +110,7 @@ export const ExtractedAttachments = React.memo(({
 
     // carousel settings
     let onClick;
-    if (options?.['no-carousel'] == null) {
+    if (options?.noCarousel == null) {
       // pointer cursor
       Object.assign(containerStyles, { cursor: 'pointer' });
       // set click handler
@@ -128,7 +128,7 @@ export const ExtractedAttachments = React.memo(({
 
   const renderCarousel = useCallback(() => {
     const { options } = refsContext;
-    const withCarousel = options?.['no-carousel'] == null;
+    const withCarousel = options?.noCarousel == null;
 
     const images = getAttachmentsFilteredByFormat()
       .map((attachment) => {
@@ -159,7 +159,7 @@ export const ExtractedAttachments = React.memo(({
 
   const { options } = refsContext;
   const grid = options?.grid;
-  const gridGap = options?.['grid-gap'];
+  const gridGap = options?.gridGap;
 
   const styles = {};
 
