@@ -16,9 +16,11 @@
   "scripts": {
     "build": "run-p build:*",
     "build:server": "vite build -c vite.server.config.ts",
+    "build:client": "vite build -c vite.client.config.ts",
     "clean": "npx -y shx rm -rf dist",
     "dev": "run-p dev:*",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
+    "dev:client": "vite build -c vite.client.config.ts --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint src/**/*.scss src/**/*.css",

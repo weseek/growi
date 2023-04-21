@@ -1,8 +1,8 @@
 import { OptionParser } from '@growi/core';
 
-// import loggerFactory from '../../utils/logger';
+import loggerFactory from '../../utils/logger';
 
-// const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
+const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
 
 const loginRequiredFallback = (req, res) => {
@@ -118,12 +118,12 @@ export const routesFactory = (crowi): any => {
       return;
     }
 
-    // logger.debug(`attachment '${attachment.id}' is found from fileNameOrId '${fileNameOrId}'`);
+    logger.debug(`attachment '${attachment.id}' is found from fileNameOrId '${fileNameOrId}'`);
 
     // forbidden
     const isAccessible = await Page.isAccessiblePageByViewer(attachment.page, user);
     if (!isAccessible) {
-      // logger.debug(`attachment '${attachment.id}' is forbidden for user '${user && user.username}'`);
+      logger.debug(`attachment '${attachment.id}' is forbidden for user '${user && user.username}'`);
       res.status(403).send(`page '${attachment.page}' is forbidden.`);
       return;
     }
@@ -191,7 +191,7 @@ export const routesFactory = (crowi): any => {
     const results = await pageQuery.select('id').exec();
     const pageIds = results.map(result => result.id);
 
-    // logger.debug('retrieve attachments for pages:', pageIds);
+    logger.debug('retrieve attachments for pages:', pageIds);
 
     // create query to find
     let query = Attachment

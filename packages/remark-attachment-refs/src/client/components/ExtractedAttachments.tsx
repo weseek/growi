@@ -1,0 +1,194 @@
+import React, { useState, useCallback } from 'react';
+
+import { IAttachmentHasId } from '@growi/core';
+import { Property } from 'csstype';
+import Carousel, { Modal, ModalGateway } from 'react-images';
+
+import { RefsContext } from './util/refs-context';
+
+type Props = {
+  attachments: IAttachmentHasId[],
+  refsContext: RefsContext,
+};
+
+/**
+ *  1. when 'fileFormat' is image, render Attachment as an image
+ *  2. when 'fileFormat' is not image, render Attachment as an Attachment component
+ */
+export const ExtractedAttachments = React.memo(({
+  attachments,
+  refsContext,
+}: Props): JSX.Element => {
+
+  const [showCarousel, setShowCarousel] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
+  const imageClickedHandler = useCallback((index: number) => {
+    setShowCarousel(true);
+    setCurrentIndex(index);
+  }, []);
+
+  const getAttachmentsFilteredByFormat = useCallback(() => {
+    return attachments
+      .filter(attachment => attachment.fileFormat.startsWith('image/'));
+  }, []);
+
+  const getClassesAndStylesForNonGrid = useCallback(() => {
+    const { options } = refsContext;
+
+    const width = options?.width;
+    const height = options?.height;
+    const maxWidth = options?.['max-width'];
+    const maxHeight = options?.['max-height'];
+    const display = options?.display || 'block';
+
+    const containerStyles = {
+      width, height, maxWidth, maxHeight, display,
+    };
+
+    const imageClasses = [];
+    const imageStyles = {
+      width, height, maxWidth, maxHeight,
+    };
+
+    return {
+      containerStyles,
+      imageClasses,
+      imageStyles,
+    };
+  }, []);
+
+  const getClassesAndStylesForGrid = useCallback(() => {
+    const { options } = refsContext;
+
+    const maxWidth = options?.['max-width'];
+    const maxHeight = options?.['max-height'];
+
+    const containerStyles = {
+      width: refsContext.getOptGridWidth(),
+      height: refsContext.getOptGridHeight(),
+      maxWidth,
+      maxHeight,
+    };
+
+    const imageClasses = ['w-100', 'h-100'];
+    const imageStyles = {
+      objectFit: 'cover' as Property.ObjectFit,
+      maxWidth,
+      maxHeight,
+    };
+
+    return {
+      containerStyles,
+      imageClasses,
+      imageStyles,
+    };
+  }, []);
+
+  /**
+   * wrapper method for getClassesAndStylesForGrid/getClassesAndStylesForNonGrid
+   */
+  const getClassesAndStyles = useCallback(() => {
+    const { options } = refsContext;
+
+    return (options?.grid != null)
+      ? getClassesAndStylesForGrid()
+      : getClassesAndStylesForNonGrid();
+  }, []);
+
+  const renderExtractedImage = useCallback((attachment: IAttachmentHasId, index: number) => {
+    const { options } = refsContext;
+
+    // determine alt
+    let alt = refsContext.isSingle ? options?.alt : undefined; // use only when single mode
+    alt = alt || attachment.originalName; //                     use 'originalName' if options.alt is not specified
+
+    // get styles
+    const {
+      containerStyles, imageClasses, imageStyles,
+    } = getClassesAndStyles();
+
+    // carousel settings
+    let onClick;
+    if (options?.['no-carousel'] == null) {
+      // pointer cursor
+      Object.assign(containerStyles, { cursor: 'pointer' });
+      // set click handler
+      onClick = () => {
+        imageClickedHandler(index);
+      };
+    }
+
+    return (
+      <div key={attachment._id} style={containerStyles} onClick={onClick}>
+        <img src={attachment.filePathProxied} alt={alt} className={imageClasses.join(' ')} style={imageStyles} />
+      </div>
+    );
+  }, []);
+
+  const renderCarousel = useCallback(() => {
+    const { options } = refsContext;
+    const withCarousel = options?.['no-carousel'] == null;
+
+    const images = getAttachmentsFilteredByFormat()
+      .map((attachment) => {
+        return { src: attachment.filePathProxied };
+      });
+
+    // overwrite react-images modal styles
+    const zIndex = 1030; // > grw-navbar
+    const modalStyles = {
+      blanket: (styleObj) => {
+        return Object.assign(styleObj, { zIndex });
+      },
+      positioner: (styleObj) => {
+        return Object.assign(styleObj, { zIndex });
+      },
+    };
+
+    return (
+      <ModalGateway>
+        { withCarousel && showCarousel && (
+          <Modal styles={modalStyles} onClose={() => { setShowCarousel(false) }}>
+            <Carousel views={images} currentIndex={currentIndex} />
+          </Modal>
+        ) }
+      </ModalGateway>
+    );
+  }, []);
+
+  const { options } = refsContext;
+  const grid = options?.grid;
+  const gridGap = options?.['grid-gap'];
+
+  const styles = {};
+
+  // Grid mode
+  if (grid != null) {
+
+    const gridTemplateColumns = (refsContext.isOptGridColumnEnabled())
+      ? `repeat(${refsContext.getOptGridColumnsNum()}, 1fr)`
+      : `repeat(auto-fill, ${refsContext.getOptGridWidth()})`;
+
+    Object.assign(styles, {
+      display: 'grid',
+      gridTemplateColumns,
+      gridAutoRows: '1fr',
+      gridGap,
+    });
+
+  }
+
+  const contents = getAttachmentsFilteredByFormat()
+    .map((attachment, index) => renderExtractedImage(attachment, index));
+
+  return (
+    <React.Fragment>
+      <div style={styles}>
+        {contents}
+      </div>
+
+      { renderCarousel() }
+    </React.Fragment>
+  );
+});
