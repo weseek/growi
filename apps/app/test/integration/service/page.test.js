@@ -666,8 +666,7 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(parentForDelete1.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2);
-      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, resultPage, testUser2);
     });
 
     test('delete page with isRecursively', async() => {
@@ -686,8 +685,7 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(parentForDelete2.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2);
-      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, resultPage, testUser2);
     });
 
 
