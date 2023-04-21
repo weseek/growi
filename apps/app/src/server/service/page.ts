@@ -2093,6 +2093,7 @@ class PageService {
       (async() => {
         try {
           await this.revertRecursivelyMainOperation(page, user, options, pageOp._id, activity);
+          this.pageEvent.emit('syncDescendantsUpdate', updatedPage, user);
         }
         catch (err) {
           logger.error('Error occurred while running revertRecursivelyMainOperation.', err);
@@ -2101,9 +2102,6 @@ class PageService {
           await PageOperation.deleteOne({ _id: pageOp._id });
 
           throw err;
-        }
-        finally {
-          this.pageEvent.emit('syncDescendantsUpdate', updatedPage, user);
         }
       })();
     }
