@@ -1,5 +1,5 @@
 import React, {
-  useState, useMemo, useCallback,
+  useState, useMemo, useCallback, useEffect,
 } from 'react';
 
 import { pagePathUtils } from '@growi/core';
@@ -98,6 +98,33 @@ const CopyDropdown = (props) => {
   }, []);
 
 
+  // Efect for disable scroll if dropdown menu is opened
+  useEffect(() => {
+    // Get the current page scroll position
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHandler = () => {
+      window.scrollTo(0, scrollTop);
+    };
+    // Disable scroll
+    const disableScroll = () => {
+      if (dropdownOpen && scrollTop >= 0) {
+        window.addEventListener('scroll', scrollHandler, { passive: false });
+      }
+    };
+    // Enable scroll
+    const enableScroll = () => {
+      window.removeEventListener('scroll', scrollHandler);
+    };
+
+    // Add event listeners
+    disableScroll();
+
+    // Clean up function
+    return () => {
+      enableScroll();
+    };
+  }, [dropdownOpen]);
+
   /*
    * render
    */
@@ -118,7 +145,7 @@ const CopyDropdown = (props) => {
           <span id={dropdownToggleId}>{children}</span>
         </DropdownToggle>
 
-        <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}>
+        <DropdownMenu >
 
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
