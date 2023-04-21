@@ -34,7 +34,6 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
       await addNewFolder(folderName, null);
       await mutateChildBookmarkData();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

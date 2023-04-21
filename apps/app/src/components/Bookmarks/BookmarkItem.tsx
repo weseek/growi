@@ -9,7 +9,7 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
@@ -76,13 +76,12 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       setRenameInputShown(false);
       await renamePage(bookmarkedPage._id, bookmarkedPage.revision, newPagePath);
       onRenamed();
-      toastSuccess(t('renamed_pages', { path: bookmarkedPage.path }));
     }
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage, onRenamed, t]);
+  }, [bookmarkedPage, onRenamed]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {

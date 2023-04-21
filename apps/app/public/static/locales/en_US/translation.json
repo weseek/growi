@@ -452,7 +452,6 @@
     "remove_share_link": "Succeeded to remove {{count}} share links",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
     "failed_to_reset_password":"Failed to reset password",
-    "delete_succeeded": "Succeeded to delete {{target}}",
     "save_succeeded": "Saved successfully"
   },
   "template": {

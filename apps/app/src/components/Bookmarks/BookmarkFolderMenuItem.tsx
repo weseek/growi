@@ -11,7 +11,7 @@ import {
 import {
   addBookmarkToFolder, addNewFolder, hasChildren, toggleBookmark,
 } from '~/client/util/bookmark-utils';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
@@ -52,13 +52,11 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       await addNewFolder(folderName, item._id);
       await mutateBookmarkData();
       setIsCreateAction(false);
-      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-
-  }, [item._id, mutateBookmarkData, t]);
+  }, [item._id, mutateBookmarkData]);
 
   useEffect(() => {
     if (isOpen) {
@@ -95,14 +93,13 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       }
       mutateBookmarkInfo();
       mutateBookmarkData();
-      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder'), ns: 'commons' }));
     };
 
     if (item == null) {
       return;
     }
     openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [item, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal, t]);
+  }, [item, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
@@ -114,8 +111,6 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
       if (currentPage != null) {
         await addBookmarkToFolder(currentPage._id, item._id);
       }
-      const toaster = isBookmarked ? 'toaster.update_successed' : 'toaster.add_succeeded';
-      toastSuccess(t(toaster, { target: t('bookmark_folder.bookmark'), ns: 'commons' }));
       mutateUserBookmarks();
       mutateBookmarkData();
       setSelectedItem(item._id);
@@ -124,7 +119,7 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [onSelectedChild, isBookmarked, currentPage, t, mutateUserBookmarks, mutateBookmarkData, mutateBookmarkInfo]);
+  }, [onSelectedChild, isBookmarked, currentPage, mutateUserBookmarks, mutateBookmarkData, mutateBookmarkInfo]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     if (!isOpen) {

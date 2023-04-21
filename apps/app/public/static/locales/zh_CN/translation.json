@@ -439,7 +439,6 @@
     "remove_external_user_success": "Succeeded to remove {{accountId}} ",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",
     "failed_to_reset_password":"Failed to reset password",
-    "delete_succeeded": "Succeeded to delete {{target}}",
     "save_succeeded": "已成功保存",
     "issue_share_link": "Succeeded to issue new share link"
   },
