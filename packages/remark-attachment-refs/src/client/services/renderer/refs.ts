@@ -7,7 +7,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const REF_SINGLE_NAME_PATTERN = new RegExp(/refimg|ref/);
-const REF_MULTI_NAME_PATTERN = new RegExp(/refsimg|refs/);
+const REF_MULTI_NAME_PATTERN = new RegExp(/refsimg|refs|gallery/);
 
 const REF_SUPPORTED_ATTRIBUTES = ['fileNameOrId', 'pagePath'];
 const REF_IMG_SUPPORTED_ATTRIBUTES = ['fileNameOrId', 'pagePath', 'width', 'height', 'maxWidth', 'maxHeight', 'alt'];
@@ -106,7 +106,7 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
     }
 
     const basePagePath = options.pagePath;
-    const elements = selectAll('ref, refimg, refs, refsimg', tree as HastNode);
+    const elements = selectAll('ref, refimg, refs, refsimg, gallery', tree as HastNode);
 
     elements.forEach((refElem) => {
       if (refElem.properties == null) {
@@ -140,11 +140,12 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
 };
 
 export const sanitizeOption: SanitizeOption = {
-  tagNames: ['ref', 'refimg', 'refs', 'refsimg'],
+  tagNames: ['ref', 'refimg', 'refs', 'refsimg', 'gallery'],
   attributes: {
     ref: REF_SUPPORTED_ATTRIBUTES,
     refimg: REF_IMG_SUPPORTED_ATTRIBUTES,
     refs: REFS_SUPPORTED_ATTRIBUTES,
     refsimg: REFS_IMG_SUPPORTED_ATTRIBUTES,
+    gallery: REFS_IMG_SUPPORTED_ATTRIBUTES,
   },
 };

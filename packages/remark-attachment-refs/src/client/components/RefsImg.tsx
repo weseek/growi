@@ -6,7 +6,7 @@ import { AttachmentList } from './AttachmentList';
 import { RefsContext } from './util/refs-context';
 
 
-type Props = {
+export type Props = {
   pagePath: string
   prefix?: string
   depth?: string
@@ -23,7 +23,7 @@ type Props = {
   isImmutable?: boolean,
 };
 
-const RefsImgSubstance = React.memo(({
+export const RefsImgSubstance = React.memo(({
   pagePath, prefix, depth, regexp,
   width, height, maxWidth, maxHeight,
   display, grid, gridGap, noCarousel,
