@@ -56,7 +56,7 @@ export const ExtractedAttachments = React.memo(({
       imageClasses,
       imageStyles,
     };
-  }, []);
+  }, [refsContext]);
 
   const getClassesAndStylesForGrid = useCallback(() => {
     const { options } = refsContext;
@@ -83,7 +83,7 @@ export const ExtractedAttachments = React.memo(({
       imageClasses,
       imageStyles,
     };
-  }, []);
+  }, [refsContext]);
 
   /**
    * wrapper method for getClassesAndStylesForGrid/getClassesAndStylesForNonGrid
@@ -124,7 +124,7 @@ export const ExtractedAttachments = React.memo(({
         <img src={attachment.filePathProxied} alt={alt} className={imageClasses.join(' ')} style={imageStyles} />
       </div>
     );
-  }, []);
+  }, [refsContext]);
 
   const renderCarousel = useCallback(() => {
     const { options } = refsContext;
@@ -155,7 +155,7 @@ export const ExtractedAttachments = React.memo(({
         ) }
       </ModalGateway>
     );
-  }, []);
+  }, [refsContext]);
 
   const { options } = refsContext;
   const grid = options?.grid;

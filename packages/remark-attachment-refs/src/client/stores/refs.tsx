@@ -4,7 +4,7 @@ import useSWR, { SWRResponse } from 'swr';
 
 export const useSWRxRef = (
     pagePath: string, fileNameOrId: string, isImmutable?: boolean,
-): SWRResponse<IAttachmentHasId, Error> => {
+): SWRResponse<IAttachmentHasId | null, Error> => {
   return useSWR(
     ['/_api/attachment-refs/ref', pagePath, fileNameOrId, isImmutable],
     ([endpoint, pagePath, fileNameOrId]) => {
@@ -13,7 +13,8 @@ export const useSWRxRef = (
           pagePath,
           fileNameOrId,
         },
-      }).then(result => result.data.attachment);
+      }).then(result => result.data.attachment)
+        .catch(() => null);
     },
     {
       keepPreviousData: true,

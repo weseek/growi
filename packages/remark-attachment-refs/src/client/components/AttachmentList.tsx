@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { IAttachmentHasId } from '@growi/core';
 import { Attachment } from '@growi/ui/dist/components/Attachment';
 
@@ -22,14 +24,14 @@ export const AttachmentList = ({
   error,
   attachments,
 }: Props): JSX.Element => {
-  const renderNoAttachmentsMessage = () => {
+  const renderNoAttachmentsMessage = useCallback(() => {
     let message;
 
     if (refsContext.options?.prefix != null) {
       message = `${refsContext.options.prefix} and descendant pages have no attachments`;
     }
     else {
-      message = `${refsContext.options?.pagePath} has no attachments`;
+      message = `${refsContext.pagePath} has no attachments`;
     }
 
     return (
@@ -40,9 +42,9 @@ export const AttachmentList = ({
         </small>
       </div>
     );
-  };
+  }, [refsContext]);
 
-  const renderContents = () => {
+  const renderContents = useCallback(() => {
     if (isLoading) {
       return (
         <div className="text-muted">
@@ -70,7 +72,7 @@ export const AttachmentList = ({
       : attachments.map((attachment) => {
         return <AttachmentLink key={attachment._id} attachment={attachment} inUse={false} />;
       });
-  };
+  }, [refsContext, isLoading, attachments]);
 
   return <div className={styles['attachment-refs']}>{renderContents()}</div>;
 
