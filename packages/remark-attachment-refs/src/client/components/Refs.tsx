@@ -25,9 +25,9 @@ const RefsSubstance = React.memo(({
 }: Props): JSX.Element => {
   const refsContext = useMemo(() => {
     const options = {
-      pagePath, prefix, depth, regexp,
+      prefix, depth, regexp,
     };
-    return new RefsContext('refs', options);
+    return new RefsContext('refs', pagePath, options);
   }, [pagePath, prefix, depth, regexp]);
 
   const { data, error, isLoading } = useSWRxRefs(pagePath, prefix, { depth, regexp }, isImmutable);

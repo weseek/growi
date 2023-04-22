@@ -22,10 +22,14 @@ export class RefsContext {
 
   tag: tags;
 
+  pagePath: string;
+
   options?: Record<string, string|undefined>;
 
-  constructor(tag: tags, options: Record<string, string|undefined>) {
+  constructor(tag: tags, pagePath: string, options: Record<string, string|undefined>) {
     this.tag = tag;
+
+    this.pagePath = pagePath;
 
     // remove undefined keys
     Object.keys(options).forEach(key => options[key] === undefined && delete options[key]);
@@ -34,7 +38,7 @@ export class RefsContext {
   }
 
   getStringifiedAttributes(separator = ', '): string {
-    const attributeStrs: string[] = [];
+    const attributeStrs = [`page=${this.pagePath}`];
     if (this.options != null) {
       const optionEntries = Object.entries(this.options).sort();
       attributeStrs.push(

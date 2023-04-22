@@ -24,7 +24,7 @@ type Props = {
 };
 
 const RefsImgSubstance = React.memo(({
-  prefix, pagePath, depth, regexp,
+  pagePath, prefix, depth, regexp,
   width, height, maxWidth, maxHeight,
   display, grid, gridGap, noCarousel,
 
@@ -32,8 +32,8 @@ const RefsImgSubstance = React.memo(({
 }: Props): JSX.Element => {
   const refsContext = useMemo(() => {
     const options = {
-      prefix,
       pagePath,
+      prefix,
       depth,
       regexp,
       width,
@@ -45,8 +45,8 @@ const RefsImgSubstance = React.memo(({
       gridGap,
       noCarousel,
     };
-    return new RefsContext('refsimg', options);
-  }, [prefix, pagePath, depth, regexp,
+    return new RefsContext('refsimg', pagePath, options);
+  }, [pagePath, prefix, depth, regexp,
       width, height, maxWidth, maxHeight,
       display, grid, gridGap, noCarousel]);
 

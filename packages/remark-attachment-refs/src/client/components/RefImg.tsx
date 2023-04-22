@@ -30,9 +30,9 @@ const RefImgSubstance = React.memo(({
 }: Props): JSX.Element => {
   const refsContext = useMemo(() => {
     const options = {
-      fileNameOrId, pagePath, width, height, maxWidth, maxHeight, alt,
+      fileNameOrId, width, height, maxWidth, maxHeight, alt,
     };
-    return new RefsContext('refimg', options);
+    return new RefsContext('refimg', pagePath, options);
   }, [fileNameOrId, pagePath, width, height, maxWidth, maxHeight, alt]);
 
   const { data, error, isLoading } = useSWRxRef(pagePath, fileNameOrId, isImmutable);

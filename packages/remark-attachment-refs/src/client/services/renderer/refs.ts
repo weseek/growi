@@ -113,8 +113,14 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
         return;
       }
 
+      const prefix = refElem.properties.prefix;
+      // set basePagePath when prefix is undefined or invalid
+      if (prefix != null && typeof prefix === 'string') {
+        refElem.properties.prefix = decodeURI(pathResolver(prefix, basePagePath));
+      }
+
       refElem.properties.pagePath = refElem.properties.page;
-      const pagePath = refElem.properties.pag1ePath;
+      const pagePath = refElem.properties.pagePath;
 
       // set basePagePath when pagePath is undefined or invalid
       if (pagePath == null || typeof pagePath !== 'string') {

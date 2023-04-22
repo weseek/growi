@@ -18,10 +18,7 @@ const RefSubstance = React.memo(({
   isImmutable,
 }: Props): JSX.Element => {
   const refsContext = useMemo(() => {
-    const options = {
-      fileNameOrId, pagePath,
-    };
-    return new RefsContext('ref', options);
+    return new RefsContext('ref', pagePath, { fileNameOrId });
   }, [fileNameOrId, pagePath]);
 
   const { data, error, isLoading } = useSWRxRef(pagePath, fileNameOrId, isImmutable);
