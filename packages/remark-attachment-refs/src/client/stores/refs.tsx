@@ -26,7 +26,7 @@ export const useSWRxRef = (
 
 export const useSWRxRefs = (
     prefix: string, pagePath: string, options?: Record<string, string | undefined>, isImmutable?: boolean,
-): SWRResponse<IAttachmentHasId, Error> => {
+): SWRResponse<IAttachmentHasId[], Error> => {
   return useSWR(
     ['/_api/attachment-refs/refs', prefix, pagePath, options, isImmutable],
     ([endpoint, prefix, pagePath, options]) => {
