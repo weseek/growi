@@ -100,6 +100,7 @@ export const generateViewOptions = (
     components.ref = refsGrowiPlugin.Ref;
     components.refs = refsGrowiPlugin.Refs;
     components.refimg = refsGrowiPlugin.RefImg;
+    components.refsimg = refsGrowiPlugin.RefsImg;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
   }
@@ -198,6 +199,7 @@ export const generateSimpleViewOptions = (
     components.ref = refsGrowiPlugin.RefImmutable;
     components.refs = refsGrowiPlugin.RefsImmutable;
     components.refimg = refsGrowiPlugin.RefImgImmutable;
+    components.refsimg = refsGrowiPlugin.RefsImgImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
@@ -267,6 +269,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.ref = refsGrowiPlugin.RefImmutable;
     components.refs = refsGrowiPlugin.RefsImmutable;
     components.refimg = refsGrowiPlugin.RefImgImmutable;
+    components.refsimg = refsGrowiPlugin.RefsImgImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 

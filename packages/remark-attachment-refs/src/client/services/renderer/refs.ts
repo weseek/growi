@@ -6,8 +6,9 @@ import isAbsolute from 'is-absolute-url';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-const REF_NAME_PATTERN = new RegExp(/refimg|ref/);
-const REFS_NAME_PATTERN = new RegExp(/refsimg|refs/);
+const REF_SINGLE_NAME_PATTERN = new RegExp(/refimg|ref/);
+const REF_MULTI_NAME_PATTERN = new RegExp(/refsimg|refs/);
+
 const REF_SUPPORTED_ATTRIBUTES = ['fileNameOrId', 'pagePath'];
 const REF_IMG_SUPPORTED_ATTRIBUTES = ['fileNameOrId', 'pagePath', 'width', 'height', 'maxWidth', 'maxHeight', 'alt'];
 const REFS_SUPPORTED_ATTRIBUTES = ['pagePath', 'prefix', 'depth', 'regexp'];
@@ -30,7 +31,7 @@ export const remarkPlugin: Plugin = function() {
         const attributes = node.attributes as DirectiveAttributes || {};
         const attrEntries = Object.entries(attributes);
 
-        if (REF_NAME_PATTERN.test(node.name)) {
+        if (REF_SINGLE_NAME_PATTERN.test(node.name)) {
           // determine fileNameOrId
           // order:
           //   1: ref(file=..., ...)
@@ -44,7 +45,7 @@ export const remarkPlugin: Plugin = function() {
           }
           attributes.fileNameOrId = fileNameOrId;
         }
-        else if (REFS_NAME_PATTERN.test(node.name)) {
+        else if (REF_MULTI_NAME_PATTERN.test(node.name)) {
           // set 'page' attribute if the first attribute is only value
           // e.g.
           //   case 1: refs(page=/path..., ...)    => page="/path"
@@ -62,6 +63,7 @@ export const remarkPlugin: Plugin = function() {
           return;
         }
 
+        // kebab case to camel case
         attributes.maxWidth = attributes['max-width'];
         attributes.maxHeight = attributes['max-height'];
         attributes.gridGap = attributes['grid-gap'];

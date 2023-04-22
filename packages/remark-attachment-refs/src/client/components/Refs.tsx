@@ -7,16 +7,17 @@ import { RefsContext } from './util/refs-context';
 
 
 type Props = {
-  prefix: string,
   pagePath: string,
-  depth: string,
-  regexp: string,
+  prefix?: string,
+  depth?: string,
+  regexp?: string,
+
   isImmutable?: boolean,
 };
 
 const RefsSubstance = React.memo(({
-  prefix,
   pagePath,
+  prefix,
   depth,
   regexp,
 
@@ -24,12 +25,12 @@ const RefsSubstance = React.memo(({
 }: Props): JSX.Element => {
   const refsContext = useMemo(() => {
     const options = {
-      prefix, pagePath, depth, regexp,
+      pagePath, prefix, depth, regexp,
     };
     return new RefsContext('refs', options);
-  }, [prefix, pagePath, depth, regexp]);
+  }, [pagePath, prefix, depth, regexp]);
 
-  const { data, error, isLoading } = useSWRxRefs(prefix, pagePath, { depth, regexp }, isImmutable);
+  const { data, error, isLoading } = useSWRxRefs(pagePath, prefix, { depth, regexp }, isImmutable);
   const attachments = data != null ? data : [];
 
   return <AttachmentList

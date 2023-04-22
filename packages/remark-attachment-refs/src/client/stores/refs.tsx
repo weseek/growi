@@ -25,15 +25,15 @@ export const useSWRxRef = (
 };
 
 export const useSWRxRefs = (
-    prefix: string, pagePath: string, options?: Record<string, string | undefined>, isImmutable?: boolean,
+    pagePath: string, prefix?: string, options?: Record<string, string | undefined>, isImmutable?: boolean,
 ): SWRResponse<IAttachmentHasId[], Error> => {
   return useSWR(
-    ['/_api/attachment-refs/refs', prefix, pagePath, options, isImmutable],
-    ([endpoint, prefix, pagePath, options]) => {
+    ['/_api/attachment-refs/refs', pagePath, prefix, options, isImmutable],
+    ([endpoint, pagePath, prefix, options]) => {
       return axios.get(endpoint, {
         params: {
-          prefix,
           pagePath,
+          prefix,
           options,
         },
       }).then(result => result.data.attachments);
