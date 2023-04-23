@@ -1,3 +1,5 @@
+import * as url from 'url';
+
 import { pathUtils } from '@growi/core';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
@@ -76,20 +78,29 @@ export const remarkPlugin: Plugin = function() {
   };
 };
 
-const pathResolver = (href: string, basePath: string): string => {
-  // exclude absolute URL
-  if (isAbsolute(href)) {
-    // remove scheme
-    return href.replace(/^(.+?):\/\//, '/');
-  }
-
-  // generate relative pathname
+// return absolute path for the specified path
+const getAbsolutePathFor = (relativePath: string, basePath: string) => {
   const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
-  const relativeUrl = new URL(href, baseUrl);
-
-  return relativeUrl.pathname;
+  const absoluteUrl = new URL(relativePath, baseUrl);
+  return decodeURIComponent(
+    pathUtils.normalizePath( // normalize like /foo/bar
+      absoluteUrl.pathname,
+    ),
+  );
 };
 
+// resolve pagePath
+//   when `fromPagePath`=/hoge and `specifiedPath`=./fuga,
+//        `pagePath` to be /hoge/fuga
+//   when `fromPagePath`=/hoge and `specifiedPath`=/fuga,
+//        `pagePath` to be /fuga
+//   when `fromPagePath`=/hoge and `specifiedPath`=undefined,
+//        `pagePath` to be /hoge
+const resolvePath = (pagePath:string, basePath: string) => {
+  const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
+  const absoluteUrl = new URL(pagePath, baseUrl);
+  return decodeURIComponent(absoluteUrl.pathname);
+};
 
 type RefRehypePluginParams = {
   pagePath?: string,
@@ -116,7 +127,7 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
       const prefix = refElem.properties.prefix;
       // set basePagePath when prefix is undefined or invalid
       if (prefix != null && typeof prefix === 'string') {
-        refElem.properties.prefix = decodeURI(pathResolver(prefix, basePagePath));
+        refElem.properties.prefix = resolvePath(prefix, basePagePath);
       }
 
       refElem.properties.pagePath = refElem.properties.page;
@@ -134,7 +145,7 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
       }
 
       // resolve relative path
-      refElem.properties.pagePath = decodeURI(pathResolver(pagePath, basePagePath));
+      refElem.properties.pagePath = getAbsolutePathFor(pagePath, basePagePath);
     });
   };
 };
