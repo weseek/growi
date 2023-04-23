@@ -58,6 +58,7 @@
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
     "@elastic/elasticsearch6": "npm:@elastic/elasticsearch@^6.8.8",
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
+    "@elastic/elasticsearch8": "npm:@elastic/elasticsearch@^8.7.0",
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
     "@growi/core": "^6.1.0-RC.0",
