@@ -15,18 +15,19 @@ type Props = {
  *  1. when 'fileFormat' is image, render Attachment as an image
  *  2. when 'fileFormat' is not image, render Attachment as an Attachment component
  */
+// TODO: implement image carousel modal without using react-images
 export const ExtractedAttachments = React.memo(({
   attachments,
   refsContext,
 }: Props): JSX.Element => {
 
-  const [showCarousel, setShowCarousel] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+  // const [showCarousel, setShowCarousel] = useState(false);
+  // const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
-  const imageClickedHandler = useCallback((index: number) => {
-    setShowCarousel(true);
-    setCurrentIndex(index);
-  }, []);
+  // const imageClickedHandler = useCallback((index: number) => {
+  //   setShowCarousel(true);
+  //   setCurrentIndex(index);
+  // }, []);
 
   const getAttachmentsFilteredByFormat = useCallback(() => {
     return attachments
@@ -109,53 +110,55 @@ export const ExtractedAttachments = React.memo(({
     } = getClassesAndStyles();
 
     // carousel settings
-    let onClick;
-    if (options?.noCarousel == null) {
-      // pointer cursor
-      Object.assign(containerStyles, { cursor: 'pointer' });
-      // set click handler
-      onClick = () => {
-        imageClickedHandler(index);
-      };
-    }
+    // let onClick;
+    // if (options?.noCarousel == null) {
+    //   // pointer cursor
+    //   Object.assign(containerStyles, { cursor: 'pointer' });
+    //   // set click handler
+    //   onClick = () => {
+    //     imageClickedHandler(index);
+    //   };
+    // }
 
     return (
-      <div key={attachment._id} style={containerStyles} onClick={onClick}>
+      <div key={attachment._id} style={containerStyles}
+      // onClick={onClick}
+      >
         <img src={attachment.filePathProxied} alt={alt} className={imageClasses.join(' ')} style={imageStyles} />
       </div>
     );
   }, [refsContext]);
 
-  const renderCarousel = useCallback(() => {
-    const { options } = refsContext;
-    const withCarousel = options?.noCarousel == null;
+  // const renderCarousel = useCallback(() => {
+  //   const { options } = refsContext;
+  //   const withCarousel = options?.noCarousel == null;
 
-    const images = getAttachmentsFilteredByFormat()
-      .map((attachment) => {
-        return { src: attachment.filePathProxied };
-      });
+  //   const images = getAttachmentsFilteredByFormat()
+  //     .map((attachment) => {
+  //       return { src: attachment.filePathProxied };
+  //     });
 
-    // overwrite react-images modal styles
-    const zIndex = 1030; // > grw-navbar
-    const modalStyles = {
-      blanket: (styleObj) => {
-        return Object.assign(styleObj, { zIndex });
-      },
-      positioner: (styleObj) => {
-        return Object.assign(styleObj, { zIndex });
-      },
-    };
+  //   // overwrite react-images modal styles
+  //   const zIndex = 1030; // > grw-navbar
+  //   const modalStyles = {
+  //     blanket: (styleObj) => {
+  //       return Object.assign(styleObj, { zIndex });
+  //     },
+  //     positioner: (styleObj) => {
+  //       return Object.assign(styleObj, { zIndex });
+  //     },
+  //   };
 
-    return (
-      <ModalGateway>
-        { withCarousel && showCarousel && (
-          <Modal styles={modalStyles} onClose={() => { setShowCarousel(false) }}>
-            <Carousel views={images} currentIndex={currentIndex} />
-          </Modal>
-        ) }
-      </ModalGateway>
-    );
-  }, [refsContext]);
+  //   return (
+  //     <ModalGateway>
+  //       { withCarousel && showCarousel && (
+  //         <Modal styles={modalStyles} onClose={() => { setShowCarousel(false) }}>
+  //           <Carousel views={images} currentIndex={currentIndex} />
+  //         </Modal>
+  //       ) }
+  //     </ModalGateway>
+  //   );
+  // }, [refsContext]);
 
   const { options } = refsContext;
   const grid = options?.grid;
@@ -188,7 +191,7 @@ export const ExtractedAttachments = React.memo(({
         {contents}
       </div>
 
-      { renderCarousel() }
+      {/* { renderCarousel() } */}
     </React.Fragment>
   );
 });
