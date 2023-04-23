@@ -1,10 +1,7 @@
-import * as url from 'url';
-
 import { pathUtils } from '@growi/core';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll, HastNode } from 'hast-util-select';
-import isAbsolute from 'is-absolute-url';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
@@ -17,8 +14,6 @@ const REFS_SUPPORTED_ATTRIBUTES = ['pagePath', 'prefix', 'depth', 'regexp'];
 const REFS_IMG_SUPPORTED_ATTRIBUTES = [
   'pagePath', 'prefix', 'depth', 'regexp', 'width', 'height', 'maxWidth', 'maxHeight', 'display', 'grid', 'gridGap', 'noCarousel',
 ];
-
-const { hasHeadingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 
@@ -140,7 +135,7 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
       }
 
       // return when page is already determined and aboslute path
-      if (hasHeadingSlash(pagePath)) {
+      if (pathUtils.hasHeadingSlash(pagePath)) {
         return;
       }
 
