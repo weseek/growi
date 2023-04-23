@@ -7,7 +7,7 @@ export const Gallery = React.memo((props: Props): JSX.Element => {
 });
 
 export const GalleryImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
-  const grid = props.grid || 'col4';
+  const grid = props.grid || 'col-4';
   const gridGap = props.gridGap || '1px';
   return <RefsImgSubstance grid={grid} gridGap={gridGap} {...props} isImmutable />;
 });
