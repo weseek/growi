@@ -50,7 +50,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             </div>
             {t('page_list')}
 
-            {/* Do not display CountBadge if '/trash/*' */}
+            {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
             { !isTrash ? <CountBadge count={page?.descendantCount} offset={1} /> : <div className='px-2'></div>}
           </button>
         )}
