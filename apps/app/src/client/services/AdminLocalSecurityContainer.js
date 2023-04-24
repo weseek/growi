@@ -1,7 +1,6 @@
 import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
-import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
@@ -24,7 +23,6 @@ export default class AdminLocalSecurityContainer extends Container {
     this.appContainer = appContainer;
     this.dummyRegistrationMode = 0;
     this.dummyRegistrationModeForError = 1;
-    this.xss = new Xss();
 
     this.state = {
       retrieveError: null,
@@ -62,28 +60,28 @@ export default class AdminLocalSecurityContainer extends Container {
     /**
      * 1. Must start with an "@"
      * 2. Domain name must be a-z | A-Z | 0-9 and hyphen (-)
-     * 3. Domain name length must be 1-63 characters
-     * 4. Last Tld must be at least 2 and no more than 6 characters and no hyphen (-)
-     * 5. Do not use hyphens (-) at the beginning or end of the domain name (e.g. -google.com or google-.com)
-     * 6. Domain name can be a subdomain
-     * see: https://regex101.com/r/4xc7lg/1
+     * 3. Do not use hyphens (-) at the beginning or end of the domain name (e.g. -example.com or example-.com)
+     * 4. Domain name length must be 1-63 characters
+     * 5. Domain name can be a subdomain
+     * 6. Last Tld must be at least 2 and no more than 6 characters and no hyphen (-)
+     * 7. Total length must be less than 253 characters excluding "@"
+     * ref: https://www.nic.ad.jp/ja/dom/system.html
+     * see: https://regex101.com/r/xUJnJ4/1
      */
     // eslint-disable-next-line regex/invalid
-    const pattern = /^@((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z0-9]{2,6}$/;
+    const pattern = /^@(?=.{1,253}$)((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z0-9]{2,6}$/;
     return emailDomain.match(pattern);
   }
 
-  sanitizeRegistrationWhiteList(lines) {
-    const sanitizedLines = lines
+  validateRegistrationWhiteList(whiteList) {
+    return whiteList
       .filter(line => line !== '')
       .map((line) => {
-        const sanitizedLine = this.xss.process(line);
-        if (sanitizedLine !== line || !this.isValidEmailDomain(line)) {
+        if (!this.isValidEmailDomain(line)) {
           throw new Error('The input to the white list contains an invalid character. Please enter it in a format such as @growi.org.');
         }
-        return sanitizedLine;
+        return line;
       });
-    return sanitizedLines;
   }
 
   /**
@@ -127,11 +125,11 @@ export default class AdminLocalSecurityContainer extends Container {
   async updateLocalSecuritySetting() {
     const { registrationWhiteList, isPasswordResetEnabled, isEmailAuthenticationEnabled } = this.state;
 
-    const sanitizedRegistrationWhiteList = this.sanitizeRegistrationWhiteList(registrationWhiteList);
+    const validatedRegistrationWhiteList = this.validateRegistrationWhiteList(registrationWhiteList);
 
     const response = await apiv3Put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
-      registrationWhiteList: sanitizedRegistrationWhiteList,
+      registrationWhiteList: validatedRegistrationWhiteList,
       isPasswordResetEnabled,
       isEmailAuthenticationEnabled,
     });

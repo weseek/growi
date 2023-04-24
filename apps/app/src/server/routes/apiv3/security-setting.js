@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core';
+import xss from 'xss';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
@@ -8,7 +9,6 @@ import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -789,13 +789,23 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/LocalSetting'
    */
   router.put('/local-setting', loginRequiredStrictly, adminRequired, addActivity, validator.localSetting, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:registrationMode': req.body.registrationMode,
-      'security:registrationWhiteList': req.body.registrationWhiteList,
-      'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
-      'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
-    };
     try {
+      const sanitizedRegistrationWhiteList = req.body.registrationWhiteList
+        .map((line) => {
+          const sanitizedLine = xss(line, { stripIgnoreTag: true });
+          if (sanitizedLine !== line) {
+            throw new Error('The registration white list contains an invalid character');
+          }
+          return sanitizedLine;
+        });
+
+      const requestParams = {
+        'security:registrationMode': req.body.registrationMode,
+        'security:registrationWhiteList': sanitizedRegistrationWhiteList,
+        'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
+        'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
+      };
+
       await updateAndReloadStrategySettings('local', requestParams);
 
       const localSettingParams = {
