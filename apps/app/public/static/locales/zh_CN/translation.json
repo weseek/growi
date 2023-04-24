@@ -665,7 +665,8 @@
     "success_to_send_email": "我发了一封电子邮件",
     "feature_is_unavailable": "此功能不可用",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
-    "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
+    "password_and_confirm_password_does_not_match": "密码和确认密码不匹配",
+    "please_enable_mailer_alert": "密码重置功能被禁用，因为电子邮件设置尚未完成。请要求管理员完成电子邮件的设置。"
   },
   "emoji" :{
     "title": "选择一个表情符号",
