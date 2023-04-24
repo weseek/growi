@@ -6,11 +6,10 @@ import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Dropdown from 'reactstrap/es/Dropdown';
-import DropdownItem from 'reactstrap/es/DropdownItem';
-import DropdownMenu from 'reactstrap/es/DropdownMenu';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import Tooltip from 'reactstrap/es/Tooltip';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  Tooltip,
+} from 'reactstrap';
 
 import styles from './CopyDropdown.module.scss';
 

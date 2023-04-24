@@ -5,8 +5,9 @@ import React, {
 import { SlackbotType } from '@growi/slack';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import TabContent from 'reactstrap/es/TabContent';
-import TabPane from 'reactstrap/es/TabPane';
+import {
+  TabContent, TabPane,
+} from 'reactstrap';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/toastr';

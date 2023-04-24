@@ -2,9 +2,7 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PopoverBody from 'reactstrap/es/PopoverBody';
-import PopoverHeader from 'reactstrap/es/PopoverHeader';
-import UncontrolledPopover from 'reactstrap/es/UncontrolledPopover';
+import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
 
 import styles from './SlackNotification.module.scss';
 

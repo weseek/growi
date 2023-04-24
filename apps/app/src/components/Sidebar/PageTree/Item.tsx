@@ -5,13 +5,12 @@ import React, {
 import nodePath from 'path';
 
 import {
-  pathUtils, pagePathUtils, Nullable,
+  pathUtils, pagePathUtils, Nullable, DevidedPagePath,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';

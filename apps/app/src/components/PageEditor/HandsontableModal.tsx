@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
-import Collapse from 'reactstrap/es/Collapse';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+import {
+  Collapse,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';

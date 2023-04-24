@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
 import dynamic from 'next/dynamic';
-import Button from 'reactstrap/es/Button';
-import Collapse from 'reactstrap/es/Collapse';
+import { Collapse, Button } from 'reactstrap';
+
 
 import { SavePageControlsProps } from '~/components/SavePageControls';
 import { useIsSlackConfigured } from '~/stores/context';

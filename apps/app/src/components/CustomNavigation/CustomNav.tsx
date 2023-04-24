@@ -3,9 +3,9 @@ import React, {
 } from 'react';
 
 import { Breakpoint } from '@growi/ui/dist/interfaces/breakpoints';
-import Nav from 'reactstrap/es/Nav';
-import NavItem from 'reactstrap/es/NavItem';
-import NavLink from 'reactstrap/es/NavLink';
+import {
+  Nav, NavItem, NavLink,
+} from 'reactstrap';
 
 import { ICustomNavTabMappings } from '~/interfaces/ui';
 

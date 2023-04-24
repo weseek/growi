@@ -4,11 +4,10 @@ import EventEmitter from 'events';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import Button from 'reactstrap/es/Button';
-import DropdownItem from 'reactstrap/es/DropdownItem';
-import DropdownMenu from 'reactstrap/es/DropdownMenu';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import UncontrolledButtonDropdown from 'reactstrap/es/UncontrolledButtonDropdown';
+import {
+  UncontrolledButtonDropdown, Button,
+  DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { IPageGrantData } from '~/interfaces/page';
 import {

@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import Card from 'reactstrap/es/Card';
-import CardBody from 'reactstrap/es/CardBody';
+import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';

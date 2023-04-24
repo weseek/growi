@@ -4,9 +4,9 @@ import React, {
 
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import dynamic from 'next/dynamic';
-import Button from 'reactstrap/es/Button';
-import TabContent from 'reactstrap/es/TabContent';
-import TabPane from 'reactstrap/es/TabPane';
+import {
+  Button, TabContent, TabPane,
+} from 'reactstrap';
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';

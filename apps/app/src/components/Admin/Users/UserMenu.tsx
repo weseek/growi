@@ -2,9 +2,9 @@ import React, { useState, useCallback } from 'react';
 
 import { IUserHasId, USER_STATUS } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import DropdownMenu from 'reactstrap/es/DropdownMenu';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import UncontrolledDropdown from 'reactstrap/es/UncontrolledDropdown';
+import {
+  UncontrolledDropdown, DropdownToggle, DropdownMenu,
+} from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
