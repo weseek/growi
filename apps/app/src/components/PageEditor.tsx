@@ -25,10 +25,11 @@ import {
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
-  useCurrentIndentSize, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
   useIsConflict,
   useEditingMarkdown,
+  useWaitingSaveProcessing,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
@@ -76,7 +77,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: isNotFound, mutate: mutateIsNotFound } = useIsNotFound();
+  const { data: isNotFound } = useIsNotFound();
   const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
@@ -89,9 +90,9 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
+  const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: isUploadableFile } = useIsUploadableFile();
@@ -201,6 +202,8 @@ const PageEditor = React.memo((): JSX.Element => {
     const options = Object.assign(optionsToSave, opts);
 
     try {
+      mutateWaitingSaveProcessing(true);
+
       const { page } = await saveOrUpdate(
         markdownToSave.current,
         { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
@@ -223,10 +226,14 @@ const PageEditor = React.memo((): JSX.Element => {
       }
       return null;
     }
+    finally {
+      mutateWaitingSaveProcessing(false);
+    }
 
   }, [
     currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
-    currentPagePath, currentRevisionId, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
+    currentPagePath, currentRevisionId,
+    mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
   ]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
@@ -331,7 +338,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, mutateIsNotFound, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -528,7 +535,6 @@ const PageEditor = React.memo((): JSX.Element => {
           value={initialValue}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
-          isTextlintEnabled={isTextlintEnabled}
           indentSize={currentIndentSize}
           onScroll={editorScrolledHandler}
           onScrollCursorIntoView={editorScrollCursorIntoViewHandler}

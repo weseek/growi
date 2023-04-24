@@ -32,37 +32,30 @@ const SecurityManagementContents = () => {
       passport_local: {
         Icon: () => <i className="fa fa-users" />,
         i18n: 'ID/Pass',
-        index: 0,
       },
       passport_ldap: {
         Icon: () => <i className="fa fa-sitemap" />,
         i18n: 'LDAP',
-        index: 1,
       },
       passport_saml: {
         Icon: () => <i className="fa fa-key" />,
         i18n: 'SAML',
-        index: 2,
       },
       passport_oidc: {
         Icon: () => <i className="fa fa-key" />,
         i18n: 'OIDC',
-        index: 3,
       },
       passport_google: {
         Icon: () => <i className="fa fa-google" />,
         i18n: 'Google',
-        index: 4,
       },
       passport_github: {
         Icon: () => <i className="fa fa-github" />,
         i18n: 'GitHub',
-        index: 5,
       },
       // passport_facebook: {
       //   Icon: () => <i className="fa fa-facebook" />,
       //   i18n: '(TBD) Facebook',
-      //   index: 7,
       // },
     };
   }, []);

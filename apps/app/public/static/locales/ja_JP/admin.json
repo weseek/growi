@@ -114,8 +114,7 @@
       "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。",
       "email_authentication": "ユーザー登録時のメール認証",
       "enable_email_authentication": "メール認証を有効にする",
-      "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
+      "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。"
     },
     "ldap": {
       "enable_ldap": "LDAP を有効にする",

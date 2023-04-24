@@ -32,7 +32,6 @@ export type EditorPropsType = {
   noCdn?: boolean,
   isUploadable?: boolean,
   isUploadableFile?: boolean,
-  isTextlintEnabled?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
   editorSettings?: IEditorSettings,

@@ -115,23 +115,8 @@ context('Access User settings', () => {
     });
   });
 
-  it('Access Editor setting', () => {
-    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(4) a').click();
-    cy.scrollTo('top');
-    cy.getByTestid('grw-editor-settings').should('be.visible');
-    cy.screenshot(`${ssPrefix}-editor-setting-1`);
-    cy.getByTestid('grw-editor-settings-update-button').click();
-    cy.get('.Toastify__toast').should('be.visible');
-    cy.screenshot(`${ssPrefix}-editor-setting-2`);
-
-    cy.get('.Toastify__toast').should('be.visible').within(() => {
-      cy.get('.Toastify__close-button').should('be.visible').click();
-      cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
-    });
-  });
-
   it('Access In-app notification setting', () => {
-    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(5) a').click();
+    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(4) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-1`);
     cy.getByTestid('grw-in-app-notification-settings-update-button').click();

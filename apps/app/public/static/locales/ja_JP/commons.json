@@ -19,7 +19,8 @@
   },
   "alert": {
     "siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
-    "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。"
+    "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
+    "password_reset_please_enable_mailer": "パスワード再設定を有効にするには、メール設定を完了させてください。"
   },
   "headers": {
     "app_settings": "アプリ設定"

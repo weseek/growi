@@ -114,8 +114,7 @@
       "password_reset_desc": "忘记密码时，用户可以自行重置",
       "email_authentication": "用户注册时的电子邮件身份验证",
       "enable_email_authentication": "启用电子邮件身份验证",
-      "enable_email_authentication_desc": "用户注册将执行电子邮件身份验证。",
-      "need_complete_mail_setting_warning": "要使用以下功能，请完成邮件设置。"
+      "enable_email_authentication_desc": "用户注册将执行电子邮件身份验证。"
 		},
 		"ldap": {
 			"enable_ldap": "Enable LDAP",

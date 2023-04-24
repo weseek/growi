@@ -12,6 +12,7 @@ on:
       - tsconfig.base.json
       - turbo.json
       - yarn.lock
+      - package.json
       - apps/slackbot-proxy/**
       - '!apps/slackbot-proxy/docker/**'
       - packages/slack/**

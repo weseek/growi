@@ -83,7 +83,7 @@ export const GrowiSubNavigationSwitcher = (props: GrowiSubNavigationSwitcherProp
   }
 
   return (
-    <div className={`${styles['grw-subnav-switcher']} ${isSticky ? '' : 'grw-subnav-switcher-hidden'}`}>
+    <div className={`${styles['grw-subnav-switcher']} ${isSticky ? '' : 'grw-subnav-switcher-hidden'}`} data-testid="grw-subnav-switcher" >
       <div
         id="grw-subnav-fixed-container"
         className={`grw-subnav-fixed-container ${styles['grw-subnav-fixed-container']} position-fixed grw-subnav-append-shadow-container`}

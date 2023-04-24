@@ -4,10 +4,12 @@ import { IUser } from './user';
 
 // Model
 const MODEL_PAGE = 'Page';
+const MODEL_USER = 'User';
 const MODEL_COMMENT = 'Comment';
 
 // Action
 const ACTION_UNSETTLED = 'UNSETTLED';
+const ACTION_USER_REGISTRATION_APPROVAL_REQUEST = 'USER_REGISTRATION_APPROVAL_REQUEST';
 const ACTION_USER_REGISTRATION_SUCCESS = 'USER_REGISTRATION_SUCCESS';
 const ACTION_USER_LOGIN_WITH_LOCAL = 'USER_LOGIN_WITH_LOCAL';
 const ACTION_USER_LOGIN_WITH_LDAP = 'USER_LOGIN_WITH_LDAP';
@@ -163,6 +165,7 @@ const ACTION_ADMIN_SEARCH_INDICES_REBUILD = 'ADMIN_SEARCH_INDICES_REBUILD';
 
 export const SupportedTargetModel = {
   MODEL_PAGE,
+  MODEL_USER,
 } as const;
 
 export const SupportedEventModel = {
@@ -183,6 +186,7 @@ export const SupportedActionCategory = {
 
 export const SupportedAction = {
   ACTION_UNSETTLED,
+  ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
   ACTION_USER_REGISTRATION_SUCCESS,
   ACTION_USER_LOGIN_WITH_LOCAL,
   ACTION_USER_LOGIN_WITH_LDAP,
@@ -351,6 +355,7 @@ export const EssentialActionGroup = {
   ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY,
   ACTION_PAGE_RECURSIVELY_REVERT,
   ACTION_COMMENT_CREATE,
+  ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
 } as const;
 
 export const ActionGroupSize = {
@@ -377,6 +382,7 @@ export const SmallActionGroup = {
 // SmallActionGroup + Action by all General Users - PAGE_VIEW
 export const MediumActionGroup = {
   ...SmallActionGroup,
+  ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
   ACTION_USER_REGISTRATION_SUCCESS,
   ACTION_USER_FOGOT_PASSWORD,
   ACTION_USER_RESET_PASSWORD,

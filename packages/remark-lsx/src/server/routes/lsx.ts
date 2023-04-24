@@ -176,9 +176,10 @@ class Lsx {
 
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
 export const routesFactory = (crowi): any => {
   const Page = crowi.model('Page');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const actions: any = {};
 
   /**
@@ -193,9 +194,6 @@ export const routesFactory = (crowi): any => {
 
     const builder = new Page.PageQueryBuilder(baseQuery);
     builder.addConditionToListOnlyDescendants(pagePath);
-
-    builder
-      .addConditionToExcludeTrashed();
 
     return Page.addConditionToFilteringByViewerForList(builder, user);
   }
