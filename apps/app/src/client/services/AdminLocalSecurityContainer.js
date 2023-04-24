@@ -1,4 +1,4 @@
-import { isServer } from '@growi/core';
+import { isServer, isValidEmailDomain } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -56,28 +56,11 @@ export default class AdminLocalSecurityContainer extends Container {
 
   }
 
-  isValidEmailDomain(emailDomain) {
-    /**
-     * 1. Must start with an "@"
-     * 2. Domain name must be a-z | A-Z | 0-9 and hyphen (-)
-     * 3. Do not use hyphens (-) at the beginning or end of the domain name (e.g. -example.com or example-.com)
-     * 4. Domain name length must be 1-63 characters
-     * 5. Domain name can be a subdomain
-     * 6. Last Tld must be at least 2 and no more than 6 characters and no hyphen (-)
-     * 7. Total length must be less than 253 characters excluding "@"
-     * ref: https://www.nic.ad.jp/ja/dom/system.html
-     * see: https://regex101.com/r/xUJnJ4/1
-     */
-    // eslint-disable-next-line regex/invalid
-    const pattern = /^@(?=.{1,253}$)((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z0-9]{2,6}$/;
-    return emailDomain.match(pattern);
-  }
-
   validateRegistrationWhiteList(whiteList) {
     return whiteList
       .filter(line => line !== '')
       .map((line) => {
-        if (!this.isValidEmailDomain(line)) {
+        if (!isValidEmailDomain(line)) {
           throw new Error('The input to the white list contains an invalid character. Please enter it in a format such as @growi.org.');
         }
         return line;
