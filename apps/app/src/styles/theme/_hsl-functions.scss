@@ -1,0 +1,32 @@
+@use 'bootstrap/scss/functions' as bs;
+
+@function contrast($color, $darken-degrees: 0%, $alpha-degrees: 100%) {
+  $color: bs.str-replace($color, 'var(');
+  $color: bs.str-replace($color, ')');
+  $color-hs: var(#{$color+'-hs'});
+  $color-l: var(#{$color+'-l'});
+  // @return hsl($color-hs, clamp(10%, calc((100% - $color-l - 51% ) * 1000), 95%));
+  @return hsla($color-hs, clamp(10%, calc((100% - $color-l - $darken-degrees - 51% ) * 1000), 95%), $alpha-degrees);
+}
+
+@function lighten($color, $degrees) {
+  $color: bs.str-replace($color, 'var(');
+  $color: bs.str-replace($color, ')');
+  $color-hs: var(#{$color+'-hs'});
+  $color-l: var(#{$color+'-l'});
+  @return hsl($color-hs, calc($color-l + $degrees));
+}
+@function darken($color, $degrees) {
+  $color: bs.str-replace($color, 'var(');
+  $color: bs.str-replace($color, ')');
+  $color-hs: var(#{$color+'-hs'});
+  $color-l: var(#{$color+'-l'});
+  @return hsl($color-hs, calc($color-l - $degrees));
+}
+@function alpha($color, $degrees) {
+  $color: bs.str-replace($color, 'var(');
+  $color: bs.str-replace($color, ')');
+  $color-hs: var(#{$color+'-hs'});
+  $color-l: var(#{$color+'-l'});
+  @return hsla($color-hs,$color-l,$degrees);
+}

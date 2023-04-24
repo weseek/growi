@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-16
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-18
 
 # The node image includes a non-root user with sudo access. Use the
 # "remoteUser" property in devcontainer.json to use it. On Linux, update
@@ -14,9 +14,9 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 RUN mkdir -p /workspace/growi/node_modules
-RUN mkdir -p /workspace/growi/packages/app/node_modules
-RUN mkdir -p /workspace/growi/packages/slackbot-proxy/node_modules
-RUN mkdir -p /workspace/growi/packages/app/.next
+RUN mkdir -p /workspace/growi/apps/app/node_modules
+RUN mkdir -p /workspace/growi/apps/slackbot-proxy/node_modules
+RUN mkdir -p /workspace/growi/apps/app/.next
 
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
@@ -42,12 +42,13 @@ RUN apt-get update \
       google-chrome-stable \
       # for Cypress
       libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
-
    # Clean up
    && apt-get autoremove -y \
    && apt-get clean -y \
    && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
+
+RUN yarn global add turbo
 
 # Uncomment to default to non-root user
 # USER $USER_UID

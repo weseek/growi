@@ -1,0 +1,111 @@
+{
+  "Show": "公開",
+  "Hide": "非公開",
+  "Add": "追加",
+  "Reset": "リセット",
+  "Sign out": "ログアウト",
+  "New": "作成",
+
+  "meta": {
+    "display_name": "日本語"
+  },
+  "toaster": {
+    "create_succeeded": "新しい{{target}}が作成されました",
+    "create_failed": "{{target}}の作成に失敗しました",
+    "update_successed": "{{target}}を更新しました",
+    "update_failed": "{{target}}の更新に失敗しました",
+
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました"
+  },
+  "alert": {
+    "siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
+    "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
+    "password_reset_please_enable_mailer": "パスワード再設定を有効にするには、メール設定を完了させてください。"
+  },
+  "headers": {
+    "app_settings": "アプリ設定"
+  },
+
+  "header_search_box": {
+    "label": {
+      "All pages": "全てのページ",
+      "This tree": "この階層"
+    },
+    "item_label": {
+      "All pages": "全てのページ",
+      "This tree": "この階層下の子ページのみ"
+    }
+  },
+
+  "share_links": {
+    "Share Link": "共有用リンク",
+    "Page Path": "ページパス",
+    "expire": "有効期限",
+    "description": "概要"
+  },
+
+  "in_app_notification": {
+    "notification_list": "アプリ内通知一覧",
+    "see_all": "通知一覧を見る",
+    "no_notification": "通知はありません",
+    "all": "全て",
+    "unopend": "未読",
+    "mark_all_as_read": "全て既読にする"
+  },
+
+  "personal_dropdown": {
+    "home": "ホーム",
+    "settings": "設定",
+    "color_mode": "カラーモード",
+    "sidebar_mode": "サイドバーモード",
+    "sidebar_mode_editor": "サイドバーモード(編集時)",
+    "use_os_settings": "OS設定を利用する"
+  },
+
+  "copy_to_clipboard": {
+    "Copy to clipboard": "クリップボードにコピー",
+    "Page path": "ページ名",
+    "Page URL": "ページURL",
+    "Permanent link": "パーマリンク",
+    "Page path and permanent link": "ページ名とパーマリンク",
+    "Markdown link": "マークダウン形式のリンク"
+  },
+
+  "crop_image_modal": {
+    "image_crop": "画像の切り抜き",
+    "crop": "トリミング",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+
+  "handsontable_modal": {
+    "title": "テーブル編集",
+    "data_import": "データインポート",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "done": "完了",
+    "data_import_form": {
+      "select_data_format": "データフォーマット",
+      "import_data": "インポートデータ",
+      "paste_table_data": "テーブルデータを貼り付け",
+      "parse_error": "パーザーエラー",
+      "cancel": "キャンセル",
+      "import": "インポート"
+    }
+  },
+
+  "not_found_page": {
+    "page_not_exist": "このページは存在しません。"
+  },
+
+  "g2g_data_transfer": {
+    "tab": "データ移行",
+    "data_transfer": "データ移行",
+    "transfer_data_to_this_growi": "別GROWIのデータをこのGROWIへ移行する",
+    "publish_transfer_key": "移行キーを発行する",
+    "transfer_key_limit": "※ 移行キーの有効期限は発行から1時間となります。",
+    "once_transfer_key_used": "※ 移行キーは一度移行に利用するとそれ以降はご利用いただけなくなります。",
+    "transfer_to_growi_cloud": "※ GROWI.cloud への移行を実施する場合はこちらをご確認ください。"
+  }
+}

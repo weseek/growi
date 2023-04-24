@@ -1,0 +1,111 @@
+{
+	"Show": "显示",
+	"Hide": "隐藏",
+  "Add": "添加",
+  "Reset": "重启",
+	"Sign out": "退出",
+  "New": "新建",
+
+  "meta": {
+    "display_name": "简体中文"
+  },
+  "toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
+    "update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}",
+
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "remove_share_link": "Succeeded to remove {{count}} share links"
+  },
+  "alert": {
+    "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
+    "please_enable_mailer": "请先设置邮件程序。",
+    "password_reset_please_enable_mailer": "请先设置邮件程序。"
+  },
+  "headers": {
+    "app_settings": "系统设置"
+  },
+
+  "header_search_box": {
+		"label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支"
+		},
+		"item_label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支以下内容"
+		}
+  },
+
+  "share_links": {
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "expire": "Expiration",
+    "description": "Description"
+  },
+
+  "in_app_notification": {
+    "notification_list": "应用内通知列表",
+    "see_all": "查看通知列表",
+    "no_notification": "您没有任何通知",
+    "all": "全部",
+    "unopend": "未读",
+    "mark_all_as_read" : "标记为已读"
+  },
+
+  "personal_dropdown": {
+    "home": "家",
+    "settings": "设置",
+		"color_mode": "颜色模式",
+		"sidebar_mode": "边栏模式",
+		"sidebar_mode_editor": "编辑器上的边栏模式",
+		"use_os_settings": "使用操作系统设置"
+  },
+
+	"copy_to_clipboard": {
+		"Copy to clipboard": "复制到剪贴板",
+		"Page path": "页面路径",
+		"Page URL": "页面Url",
+		"Parmanent link": "参数化链接",
+		"Page path and parmanent link": "页面路径及参数化链接",
+		"Markdown link": "Markdown链接"
+	},
+
+  "crop_image_modal": {
+    "image_crop": "图像裁剪",
+    "crop": "修剪",
+    "save": "节省",
+    "cancel": "取消"
+  },
+
+  "handsontable_modal": {
+    "title": "编辑表格",
+    "data_import": "数据导入",
+    "save": "节省",
+    "cancel": "取消",
+    "done": "完毕",
+    "data_import_form": {
+      "select_data_format": "数据格式",
+      "import_data": "导入数据",
+      "paste_table_data": "粘贴表格数据",
+      "parse_error": "解析错误",
+      "cancel": "取消",
+      "import": "导入"
+    }
+  },
+
+  "not_found_page": {
+    "page_not_exist": "该页面不存在"
+  },
+
+  "g2g_data_transfer": {
+    "tab": "数据迁移",
+    "data_transfer": "数据迁移",
+    "transfer_data_to_this_growi": "将数据从另一个GROWI迁移到这个GROWI上",
+    "publish_transfer_key": "发布迁移密钥",
+    "transfer_key_limit": "迁移密钥在签发后一小时内有效。",
+    "once_transfer_key_used": "一旦迁移密钥被用于迁移，它将不再可用于进一步的迁移。",
+    "transfer_to_growi_cloud": "如果您希望迁移到GROWI.cloud，请点击这里。"
+  }
+}
