@@ -1,7 +1,6 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
-import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
@@ -79,9 +78,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
     }
 
-    this.isElasticsearchV6 = elasticsearchVersion === 6;
+    this.isElasticsearchV6 = false;
 
-    this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
+    this.elasticsearch = elasticsearch7;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
@@ -345,9 +344,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async createIndex(index) {
-    let mappings = this.isElasticsearchV6
-      ? require('^/resource/search/mappings-es6.json')
-      : require('^/resource/search/mappings-es7.json');
+    let mappings = require('^/resource/search/mappings-es7.json');
 
     if (process.env.CI) {
       mappings = require('^/resource/search/mappings-es7-for-ci.json');
@@ -704,10 +701,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     };
 
-    if (this.isElasticsearchV6) {
-      Object.assign(query, { type: 'pages' });
-    }
-
     return query;
   }
 
@@ -769,7 +762,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     if (parsedKeywords.phrase.length > 0) {
-      const phraseQueries: any[] = [];
       parsedKeywords.phrase.forEach((phrase) => {
         const phraseQuery = {
           multi_match: {
@@ -783,21 +775,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             ],
           },
         };
-        if (this.isElasticsearchV6) {
-          phraseQueries.push(phraseQuery);
-        }
-        else {
-          query.body.query.bool.must.push(phraseQuery);
-        }
+        query.body.query.bool.must.push(phraseQuery);
       });
-
-      if (this.isElasticsearchV6) {
-        query.body.query.bool.must.push(phraseQueries);
-      }
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
-      const notPhraseQueries: any[] = [];
       parsedKeywords.not_phrase.forEach((phrase) => {
         const notPhraseQuery = {
           multi_match: {
@@ -810,18 +792,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             ],
           },
         };
-
-        if (this.isElasticsearchV6) {
-          notPhraseQueries.push(notPhraseQuery);
-        }
-        else {
-          query.body.query.bool.must_not.push(notPhraseQuery);
-        }
+        query.body.query.bool.must_not.push(notPhraseQuery);
       });
-
-      if (this.isElasticsearchV6) {
-        query.body.query.bool.must_not.push(notPhraseQueries);
-      }
     }
 
     if (parsedKeywords.prefix.length > 0) {
@@ -956,11 +928,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           number_of_fragments: 0,
         },
       },
+      max_analyzed_offset: 1000000 - 1, // Set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
     };
-
-    if (!this.isElasticsearchV6) {
-      query.body.highlight.max_analyzed_offset = 1000000 - 1; // Set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
-    }
   }
 
   async search(data: SearchableData<ESQueryTerms>, user, userGroups, option?): Promise<ISearchResult<unknown>> {
