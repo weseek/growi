@@ -61,6 +61,7 @@ export default class AdminLocalSecurityContainer extends Container {
       .filter(line => line !== '')
       .map((line) => {
         if (!isValidEmailDomain(line)) {
+          logger.warn(`This white list line contains an invalid caharacter: ${line}`);
           throw new Error('The input to the white list contains an invalid character. Please enter it in a format such as @growi.org.');
         }
         return line;

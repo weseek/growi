@@ -793,9 +793,6 @@ module.exports = (crowi) => {
       const sanitizedRegistrationWhiteList = req.body.registrationWhiteList
         .map((line) => {
           const sanitizedLine = xss(line, { stripIgnoreTag: true });
-          if (sanitizedLine !== line) {
-            throw new Error('The registration white list contains an invalid character');
-          }
           return sanitizedLine;
         });
 
