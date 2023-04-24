@@ -16,13 +16,12 @@ import {
   useCurrentUser, useIsSlackConfigured,
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
-
 
 import { CommentPreview } from './CommentPreview';
 
@@ -70,6 +69,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
@@ -237,7 +237,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
-  const onChangeHandler = useCallback((newValue: string) => setComment(newValue), []);
+  const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+    setComment(newValue);
+    mutateIsEnabledUnsavedWarning(!isClean);
+  }, [mutateIsEnabledUnsavedWarning]);
 
   const renderReady = () => {
     const commentPreview = getCommentHtml();
