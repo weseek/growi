@@ -101,7 +101,7 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 | `yarn app:server` | Launch GROWI app server                                 |
 | `yarn start`      | Invoke `yarn app:build` and `yarn app:server`           |
 
-For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v5/start-development.html#list-of-npm-scripts).
+For more info, see [GROWI Docs: List of npm Scripts](https://docs.growi.org/en/dev/startup-v5/start-development.html#list-of-npm-scripts).
 
 # Documentation
 
