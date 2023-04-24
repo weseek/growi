@@ -159,9 +159,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       }
 
       // Maximum folder hierarchy of 2 levels
-      const dropSourceFolderHasChildren = item.bookmarkFolder.children.length !== 0;
-      const dropDestFolderHasParent = bookmarkFolder.parent != null;
-      if (dropSourceFolderHasChildren || dropDestFolderHasParent) {
+      // Check source folder has no chidren or dest folder has no parent
+      if (item.bookmarkFolder.children.length !== 0 || bookmarkFolder.parent != null) {
         return false;
       }
 

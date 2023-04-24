@@ -41,17 +41,6 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
     type: Schema.Types.ObjectId,
     ref: 'BookmarkFolder',
     required: false,
-    // Maximum folder hierarchy of 2 levels
-    validate: {
-      async validator(parent: string | null) {
-        if (!parent) return true;
-        const parentFolder = await this.model('BookmarkFolder').findById(parent);
-        if (!parentFolder) return true;
-        const grandparent = parentFolder.parent;
-        return !grandparent;
-      },
-      message: 'Parent folder must be at most 1 level deep',
-    },
   },
   bookmarks: {
     type: [{
@@ -166,6 +155,18 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
   updateFields.name = name;
   const parentFolder = parentId ? await this.findById(parentId) : null;
   updateFields.parent = parentFolder?._id ?? null;
+
+  // Maximum folder hierarchy of 2 levels
+  // Check source folder has no chidren or dest folder has no parent
+  if (parentId != null) {
+    if (parentFolder?.parent != null) {
+      throw new Error('Update bookmark folder failed');
+    }
+    const bookmarkFolder = await this.findById(bookmarkFolderId).populate('children');
+    if (bookmarkFolder?.children?.length !== 0) {
+      throw new Error('Update bookmark folder failed');
+    }
+  }
 
   const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: updateFields }, { new: true });
   if (bookmarkFolder == null) {
