@@ -3,11 +3,10 @@ import React, { useCallback } from 'react';
 
 import { HasObjectId, IAttachment } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
-import Button from 'reactstrap/es/Button';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+import {
+  Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { Username } from '../User/Username';
 

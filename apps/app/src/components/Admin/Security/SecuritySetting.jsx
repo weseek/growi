@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import Collapse from 'reactstrap/es/Collapse';
+import { Collapse } from 'reactstrap';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';

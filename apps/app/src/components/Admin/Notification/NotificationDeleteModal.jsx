@@ -2,10 +2,9 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 class NotificationDeleteModal extends React.PureComponent {
 

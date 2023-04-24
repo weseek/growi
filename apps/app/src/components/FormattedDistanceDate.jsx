@@ -2,7 +2,7 @@ import React from 'react';
 
 import { format, formatDistanceStrict, differenceInSeconds } from 'date-fns';
 import PropTypes from 'prop-types';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip } from 'reactstrap';
 
 const FormattedDistanceDate = (props) => {
 

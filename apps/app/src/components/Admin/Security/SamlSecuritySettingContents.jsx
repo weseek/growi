@@ -4,7 +4,7 @@ import React from 'react';
 import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import Collapse from 'reactstrap/es/Collapse';
+import { Collapse } from 'reactstrap';
 import urljoin from 'url-join';
 
 

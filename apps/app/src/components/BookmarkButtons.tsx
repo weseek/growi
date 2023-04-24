@@ -1,9 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import Popover from 'reactstrap/es/Popover';
-import PopoverBody from 'reactstrap/es/PopoverBody';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import { useIsGuestUser } from '~/stores/context';
 

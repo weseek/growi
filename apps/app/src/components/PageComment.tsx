@@ -4,7 +4,7 @@ import React, {
 
 import { isPopulated, getIdForRef } from '@growi/core/dist/interfaces/common';
 import { type IRevisionHasId } from '@growi/core/dist/interfaces/revision';
-import Button from 'reactstrap/es/Button';
+import { Button } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';

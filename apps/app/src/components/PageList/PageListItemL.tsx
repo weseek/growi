@@ -11,7 +11,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
-import CustomInput from 'reactstrap/es/CustomInput';
+import { CustomInput } from 'reactstrap';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';

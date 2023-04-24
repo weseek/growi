@@ -6,13 +6,9 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import DropdownItem from 'reactstrap/es/DropdownItem';
-import DropdownMenu from 'reactstrap/es/DropdownMenu';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalHeader from 'reactstrap/es/ModalHeader';
-import UncontrolledButtonDropdown from 'reactstrap/es/UncontrolledButtonDropdown';
+import {
+  Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
 import { toastError } from '~/client/util/toastr';

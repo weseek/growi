@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
 import { animateScroll } from 'react-scroll';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
+import {
+  Modal, ModalBody,
+} from 'reactstrap';
 
 import { useSWRxStaffs } from '~/stores/staff';
 import loggerFactory from '~/utils/logger';

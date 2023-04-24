@@ -3,7 +3,7 @@ import React, { useCallback, memo } from 'react';
 import { commands } from 'codemirror';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
-import Button from 'reactstrap/es/Button';
+import { Button } from 'reactstrap';
 import * as loadScript from 'simple-load-script';
 import { throttle, debounce } from 'throttle-debounce';
 import urljoin from 'url-join';

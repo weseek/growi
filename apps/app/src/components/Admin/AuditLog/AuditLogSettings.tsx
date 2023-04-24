@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import Collapse from 'reactstrap/es/Collapse';
+import { Collapse } from 'reactstrap';
 
 import { AllSupportedActions } from '~/interfaces/activity';
 import { useActivityExpirationSeconds, useAuditLogAvailableActions } from '~/stores/context';

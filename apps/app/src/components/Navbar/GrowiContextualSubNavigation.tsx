@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import DropdownItem from 'reactstrap/es/DropdownItem';
+import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';

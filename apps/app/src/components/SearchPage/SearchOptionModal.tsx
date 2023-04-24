@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-
 import { useTranslation } from 'next-i18next';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 
 
 type Props = {

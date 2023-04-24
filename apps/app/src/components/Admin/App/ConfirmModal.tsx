@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 type ConfirmModalProps = {
   isModalOpen: boolean

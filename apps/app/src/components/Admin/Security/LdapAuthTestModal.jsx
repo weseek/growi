@@ -1,9 +1,11 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+} from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 

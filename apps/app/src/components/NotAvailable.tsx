@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { Disable } from 'react-disable';
-import type { UncontrolledTooltipProps } from 'reactstrap';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip, UncontrolledTooltipProps } from 'reactstrap';
 
 type NotAvailableProps = {
   children: JSX.Element

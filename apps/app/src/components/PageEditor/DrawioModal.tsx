@@ -4,8 +4,10 @@ import React, {
   useMemo,
 } from 'react';
 
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
+import {
+  Modal,
+  ModalBody,
+} from 'reactstrap';
 
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { useRendererConfig } from '~/stores/context';

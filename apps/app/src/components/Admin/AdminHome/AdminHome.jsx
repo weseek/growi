@@ -3,7 +3,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Tooltip from 'reactstrap/es/Tooltip';
+import { Tooltip } from 'reactstrap';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { toastError } from '~/client/util/toastr';

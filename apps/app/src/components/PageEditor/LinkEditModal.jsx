@@ -4,12 +4,14 @@ import path from 'path';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
-import Popover from 'reactstrap/es/Popover';
-import PopoverBody from 'reactstrap/es/PopoverBody';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Popover,
+  PopoverBody,
+} from 'reactstrap';
 import validator from 'validator';
 
 

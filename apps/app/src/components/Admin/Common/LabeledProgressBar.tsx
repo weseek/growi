@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Progress from 'reactstrap/es/Progress';
+import { Progress } from 'reactstrap';
 
 type Props = {
   header: string,

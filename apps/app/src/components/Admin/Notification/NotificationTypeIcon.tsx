@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import type { INotificationType } from '~/client/interfaces/notification';
 

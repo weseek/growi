@@ -6,7 +6,7 @@ import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';

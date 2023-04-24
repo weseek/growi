@@ -1,14 +1,16 @@
 import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
-import Nav from 'reactstrap/es/Nav';
-import NavLink from 'reactstrap/es/NavLink';
-import TabContent from 'reactstrap/es/TabContent';
-import TabPane from 'reactstrap/es/TabPane';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Nav,
+  NavLink,
+  TabContent,
+  TabPane,
+} from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';

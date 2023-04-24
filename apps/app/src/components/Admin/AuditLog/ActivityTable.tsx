@@ -5,7 +5,7 @@ import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format } from 'date-fns';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
-import Tooltip from 'reactstrap/es/Tooltip';
+import { Tooltip } from 'reactstrap';
 
 import { IActivityHasId } from '~/interfaces/activity';
 

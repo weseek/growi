@@ -3,14 +3,9 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import DropdownItem from 'reactstrap/es/DropdownItem';
-import DropdownMenu from 'reactstrap/es/DropdownMenu';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalFooter from 'reactstrap/es/ModalFooter';
-import ModalHeader from 'reactstrap/es/ModalHeader';
-import UncontrolledButtonDropdown from 'reactstrap/es/UncontrolledButtonDropdown';
+import {
+  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { apiv3Post } from '~/client/util/apiv3-client';

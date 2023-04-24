@@ -2,13 +2,12 @@ import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import DropdownItem from 'reactstrap/es/DropdownItem';
-import DropdownMenu from 'reactstrap/es/DropdownMenu';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalHeader from 'reactstrap/es/ModalHeader';
-import UncontrolledDropdown from 'reactstrap/es/UncontrolledDropdown';
+import {
+  UncontrolledDropdown,
+  DropdownToggle, DropdownMenu, DropdownItem,
+
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 
 import { IPageGrantData } from '~/interfaces/page';
 import { IUserGroupHasId } from '~/interfaces/user';

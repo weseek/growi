@@ -4,9 +4,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import Modal from 'reactstrap/es/Modal';
-import ModalBody from 'reactstrap/es/ModalBody';
-import ModalHeader from 'reactstrap/es/ModalHeader';
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 
 import { useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';

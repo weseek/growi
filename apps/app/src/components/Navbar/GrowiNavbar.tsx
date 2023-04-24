@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import {
   useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useIsDefaultLogo,

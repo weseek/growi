@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 
 import { Picker } from 'emoji-mart';
-import Modal from 'reactstrap/es/Modal';
+import { Modal } from 'reactstrap';
 
 import { useNextThemes } from '~/stores/use-next-themes';
 
