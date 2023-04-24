@@ -25,20 +25,15 @@ export const AttachmentList = ({
   attachments,
 }: Props): JSX.Element => {
   const renderNoAttachmentsMessage = useCallback(() => {
-    let message;
-
-    if (refsContext.options?.prefix != null) {
-      message = `${refsContext.options.prefix} and descendant pages have no attachments`;
-    }
-    else {
-      message = `${refsContext.pagePath} has no attachments`;
-    }
-
     return (
       <div className="text-muted">
         <small>
           <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
-          {message}
+          {
+            refsContext.options?.prefix != null
+              ? `${refsContext.options.prefix} and descendant pages have no attachments`
+              : `${refsContext.pagePath} has no attachments`
+          }
         </small>
       </div>
     );
