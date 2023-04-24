@@ -28,12 +28,7 @@ export const routesFactory = (crowi): any => {
 
   const { PageQueryBuilder } = Page;
 
-  /**
-   * generate RegExp instance by the 'expression' arg
-   * @param {string} expression
-   * @return {RegExp}
-   */
-  function generateRegexp(expression) {
+  function generateRegexp(expression: string): RegExp {
     // https://regex101.com/r/uOrwqt/2
     const matches = expression.match(/^\/(.+)\/(.*)?$/);
 
