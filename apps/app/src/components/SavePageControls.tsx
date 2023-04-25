@@ -51,7 +51,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     mutateGrant(grantData);
   }, [mutateGrant]);
 
-  const save = useCallback(async (): Promise<void> => {
+  const save = useCallback(async(): Promise<void> => {
     // save
     globalEmitter.emit('saveAndReturnToView', { slackChannels });
   }, [slackChannels]);
@@ -107,7 +107,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-        <DropdownMenu end>
+        <DropdownMenu right>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>

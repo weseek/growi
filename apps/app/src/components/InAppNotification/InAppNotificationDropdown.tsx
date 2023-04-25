@@ -86,7 +86,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
       <DropdownToggle className="px-3 nav-link border-0 bg-transparent" innerRef={buttonRef}>
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
-      <DropdownMenu end>
+      <DropdownMenu right>
         { inAppNotificationData != null && inAppNotificationData.docs.length === 0
           // no items
           ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>

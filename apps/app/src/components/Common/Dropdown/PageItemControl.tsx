@@ -245,11 +245,51 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     );
   }
 
+  // Conditional modifiers
+  // To prevent flickering. only happened when `right` is true and persist props should be enabled
+  let modifiers = {};
+  if (alignRight) {
+    modifiers = {
+      applyStyle: {
+        enabled: true,
+      },
+      computeStyle: {
+        enabled: true,
+        fn: (data) => {
+          const popperRect = data.offsets.popper;
+          // Calculate transform styles
+          const newTransform = `translate3d(${popperRect.left - window.innerWidth + popperRect.width}px, ${popperRect.top}px, 0px)`;
+          const styles = {
+            transform: newTransform,
+            top: '0px',
+            right: '0px',
+            willChange: 'transform',
+          };
+          data.styles = styles;
+          return data;
+        },
+      },
+      preventOverflow: {
+        boundariesElement: 'viewport',
+      },
+    };
+  }
+  else {
+    modifiers = {
+      preventOverflow: {
+        boundariesElement: 'viewport',
+      },
+    };
+  }
+
+
   return (
     <DropdownMenu
       data-testid="page-item-control-menu"
-      end={alignRight}
+      right={alignRight}
+      modifiers={modifiers}
       container="body"
+      persist = { !!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >
       {contents}
@@ -278,34 +318,6 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const [shouldFetch, setShouldFetch] = useState(fetchOnInit ?? false);
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
-
-  // Efect for disable scroll if dropdown menu is opened
-  useEffect(() => {
-    // Get the current page scroll position
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollHandler = () => {
-      window.scrollTo(0, scrollTop);
-    };
-    // Disable scroll
-    const disableScroll = () => {
-      if (isOpen && scrollTop >= 0) {
-        window.addEventListener('scroll', scrollHandler, { passive: false });
-      }
-    };
-    // Enable scroll
-    const enableScroll = () => {
-      window.removeEventListener('scroll', scrollHandler);
-    };
-
-    // Add event listeners
-    disableScroll();
-
-    // Clean up function
-    return () => {
-      enableScroll();
-    };
-  }, [isOpen]);
-
 
   // update shouldFetch (and will never be false)
   useEffect(() => {
