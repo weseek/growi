@@ -13,7 +13,7 @@ import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
-
+import { Attachment } from '~/components/ReactMarkdownComponents/Attachment';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
@@ -23,12 +23,14 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
+import * as attachmentPlugin from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
 } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
+
 
 // import EasyGrid from './PreProcessor/EasyGrid';
 
@@ -58,6 +60,7 @@ export const generateViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -72,6 +75,7 @@ export const generateViewOptions = (
       commonSanitizeOption,
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -95,6 +99,7 @@ export const generateViewOptions = (
     components.lsx = lsxGrowiPlugin.Lsx;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -153,6 +158,7 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -171,6 +177,7 @@ export const generateSimpleViewOptions = (
       commonSanitizeOption,
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -186,6 +193,7 @@ export const generateSimpleViewOptions = (
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -219,6 +227,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    attachmentPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -234,6 +243,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       lsxGrowiPlugin.sanitizeOption,
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      attachmentPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -249,6 +259,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.attachment = Attachment;
   }
 
   if (config.isEnabledXssPrevention) {

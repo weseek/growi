@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import prettyBytes from 'pretty-bytes';
 
 import { useSWRxAttachments } from '~/stores/attachment';

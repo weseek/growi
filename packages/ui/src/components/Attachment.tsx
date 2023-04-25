@@ -1,13 +1,11 @@
-import React from 'react';
-
-import { HasObjectId, IAttachment } from '@growi/core';
+import { IAttachmentHasId } from '@growi/core';
 
 import { UserPicture } from './User/UserPicture';
 
 type AttachmentProps = {
-  attachment: IAttachment & HasObjectId,
+  attachment: IAttachmentHasId,
   inUse: boolean,
-  onAttachmentDeleteClicked?: (attachment: IAttachment & HasObjectId) => void,
+  onAttachmentDeleteClicked?: (attachment: IAttachmentHasId) => void,
   isUserLoggedIn?: boolean,
 };
 
