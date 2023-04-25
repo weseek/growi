@@ -5,6 +5,8 @@ import { apiGet, apiPost } from '~/client/util/apiv1-client';
 
 import { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
 
+import { useStaticSWR } from './use-static-swr';
+
 type IResponseComment = {
   comments: ICommentHasIdList,
   ok: boolean,
@@ -60,5 +62,25 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
     ...swrResponse,
     update,
     post,
+  };
+};
+
+type EditingCommentsNumOperation = {
+  increment(): Promise<number | undefined>,
+  decrement(): Promise<number | undefined>,
+}
+
+export const useSWRxEditingCommentsNum = (): SWRResponse<number, Error> & EditingCommentsNumOperation => {
+  const swrResponse = useStaticSWR<number, Error>('editingCommentsNum', undefined, { fallbackData: 0 });
+
+  return {
+    ...swrResponse,
+    increment: () => swrResponse.mutate(swrResponse.data ? swrResponse.data + 1 : 1),
+    decrement: () => {
+      if (swrResponse.data != null && swrResponse.data > 0) {
+        return swrResponse.mutate(swrResponse.data - 1);
+      }
+      return swrResponse.mutate(0);
+    },
   };
 };
