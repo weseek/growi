@@ -2,7 +2,7 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
-import { pullAllBy } from 'lodash';
+import pullAllBy from 'lodash/pullAllBy';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
