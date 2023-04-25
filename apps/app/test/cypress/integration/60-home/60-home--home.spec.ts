@@ -129,7 +129,7 @@ context('Access User settings', () => {
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-other-setting-1`);
     cy.getByTestid('grw-questionnaire-settings-update-btn').click();
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.Toastify__toast').should('be.visible').invoke('attr', 'style', 'display: none');
     cy.screenshot(`${ssPrefix}-other-setting-2`);
   });
 });
