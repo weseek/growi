@@ -79,7 +79,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## 依存関係
 
-- Node.js v14.x or v16.x
+- Node.js v16.x or v18.x
 - npm 6.x
 - yarn
 - MongoDB 4.x
@@ -100,7 +100,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 | `yarn app:server` | GROWI app サーバーを起動します。                        |
 | `yarn start`      | `yarn app:build` と `yarn app:server` を呼び出します。  |
 
-詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/ja/dev/startup-v2/launch-system.html#npm-コマンドリスト)をご覧ください。
+詳しくは [GROWI Docs: npm スクリプトリスト](https://docs.growi.org/ja/dev/startup-v5/start-development.html#npm-%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%95%E3%82%9A%E3%83%88%E3%83%AA%E3%82%B9%E3%83%88)をご覧ください。
 
 # ドキュメント
 

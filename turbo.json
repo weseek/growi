@@ -1,0 +1,154 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    ".env",
+    ".env.*",
+    "tsconfig.json"
+  ],
+  "pipeline": {
+
+    "bootstrap": {
+      "dependsOn": ["//#bootstrap"],
+      "cache": false
+    },
+    "//#bootstrap": {
+      "cache": false
+    },
+
+    "clean": {
+      "cache": false
+    },
+
+    "@growi/ui#build": {
+      "dependsOn": ["@growi/core#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-lsx#build": {
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/app#styles-prebuilt": {
+      "outputs": ["src/styles/prebuilt/**"],
+      "inputs": [
+        "src/styles/**/*.scss"
+      ],
+      "outputMode": "new-only"
+    },
+    "@growi/app#build": {
+      "dependsOn": ["^build", "@growi/app#styles-prebuilt"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/slackbot-proxy#build": {
+      "dependsOn": ["@growi/slack#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "build": {
+      "outputs": ["dist/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
+        "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
+      ],
+      "outputMode": "new-only"
+    },
+
+    "@growi/remark-lsx#dev": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/ui#dev": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/app#dev:migrate": {
+      "outputs": ["tmp/cache/migration-status.out"],
+      "inputs": ["src/migration/*.js"],
+      "outputMode": "new-only"
+    },
+    "@growi/app#dev:styles-prebuilt": {
+      "outputs": ["src/styles/prebuilt/**"],
+      "inputs": [
+        "src/styles/**/*.scss",
+        "!src/styles/prebuilt/**"
+      ],
+      "outputMode": "new-only"
+    },
+    "@growi/app#dev": {
+      "dependsOn": ["^dev", "@growi/app#dev:migrate", "@growi/app#dev:styles-prebuilt"],
+      "cache": false,
+      "persistent": true
+    },
+    "@growi/app#dev:ci": {
+      "dependsOn": ["^dev", "@growi/app#dev:migrate", "@growi/app#dev:styles-prebuilt"],
+      "cache": false
+    },
+    "@growi/slackbot-proxy#dev": {
+      "dependsOn": ["@growi/slack#dev"],
+      "cache": false,
+      "persistent": true
+    },
+    "@growi/slackbot-proxy#dev:ci": {
+      "dependsOn": ["@growi/slack#dev"],
+      "cache": false
+    },
+    "dev": {
+      "outputs": ["dist/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
+        "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
+      ],
+      "outputMode": "new-only"
+    },
+
+    "watch": {
+      "outputs": ["dist/**"],
+      "inputs": [
+        "src/**/*.js", "src/**/*.jsx",
+        "src/**/*.ts", "src/**/*.tsx",
+        "src/**/*.css", "src/**/*.scss",
+        "tsconfig*.json",
+        "vite*.ts"
+      ],
+      "persistent": true
+    },
+
+    "@growi/ui#lint": {
+      "dependsOn": ["@growi/core#dev"]
+    },
+    "@growi/remark-lsx#lint": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
+    },
+    "@growi/app#lint": {
+      "dependsOn": ["^dev", "@growi/app#dev:styles-prebuilt"]
+    },
+    "@growi/slackbot-proxy#lint": {
+      "dependsOn": ["@growi/slack#dev"]
+    },
+    "lint": {
+    },
+
+    "@growi/app#test": {
+      "dependsOn": ["^dev"],
+      "outputMode": "new-only"
+    },
+    "@growi/slackbot-proxy#test": {
+      "dependsOn": ["@growi/slack#dev"],
+      "outputMode": "new-only"
+    },
+    "test": {
+      "outputMode": "new-only"
+    }
+
+  }
+}

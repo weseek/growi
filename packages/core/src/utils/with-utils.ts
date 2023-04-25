@@ -1,4 +1,4 @@
-import { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 
 export type SWRResponseWithUtils<U, D = any, E = any> = SWRResponse<D, E> & U;
 
