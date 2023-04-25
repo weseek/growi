@@ -18,7 +18,6 @@
     "//// for development": "",
     "dev": "yarn cross-env NODE_ENV=development yarn ts-node-dev --inspect --transpile-only src/server/app.ts",
     "dev:styles-prebuilt": "yarn styles-prebuilt --mode dev",
-    "dev:analyze": "yarn cross-env ANALYZE=true yarn dev",
     "dev:migrate-mongo": "yarn cross-env NODE_ENV=development yarn ts-node node_modules/.bin/migrate-mongo",
     "dev:migrate": "yarn dev:migrate:status > tmp/cache/migration-status.out && yarn dev:migrate:up",
     "dev:migrate:create": "yarn dev:migrate-mongo create -f config/migrate-mongo-config.js",
@@ -145,6 +144,7 @@
     "passport-local": "^1.0.0",
     "passport-saml": "^3.2.0",
     "prom-client": "^14.1.1",
+    "qs": "^6.11.1",
     "rate-limiter-flexible": "^2.3.7",
     "react": "^18.2.0",
     "react-bootstrap-typeahead": "^5.2.2",
@@ -193,7 +193,7 @@
     "usehooks-ts": "^2.6.0",
     "validator": "^13.7.0",
     "ws": "^8.3.0",
-    "xss": "^1.0.6"
+    "xss": "^1.0.14"
   },
   "// comments for defDependencies": {
     "@handsontable/react": "v3 requires handsontable >= 7.0.0.",
@@ -226,6 +226,7 @@
     "load-css-file": "^1.0.0",
     "material-icons": "^1.11.3",
     "morgan": "^1.10.0",
+    "null-loader": "^4.0.1",
     "penpal": "^4.0.0",
     "plantuml-encoder": "^1.2.5",
     "prettier": "^1.19.1",
