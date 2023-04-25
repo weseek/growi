@@ -9,6 +9,7 @@
   "specified_users": "Specified users",
   "only_me": "Only me",
   "only_inside_the_group": "Only inside the group",
+  "The input to the white list contains an invalid character. Please enter it in a format such as @growi.org.": "白名单的输入包含一个无效的字符。请以@growi.org这样的格式输入。",
   "security_settings": {
     "security_settings": "Security Settings",
     "scope_of_page_disclosure": "Scope of page disclosure",

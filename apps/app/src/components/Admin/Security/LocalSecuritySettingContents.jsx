@@ -27,7 +27,7 @@ class LocalSecuritySettingContents extends React.Component {
       toastSuccess(t('security_settings.updated_general_security_setting'));
     }
     catch (err) {
-      toastError(err);
+      toastError(t(err.message));
     }
   }
 

@@ -17,6 +17,7 @@
   "specified_users": "特定ユーザーのみ",
   "only_me": "自分のみ",
   "only_inside_the_group": "特定グループのみ",
+  "The input to the white list contains an invalid character. Please enter it in a format such as @growi.org.": "ホワイトリストへの入力に無効な文字が含まれています。@growi.orgのような形式で入力してください。",
   "security_settings": {
     "security_settings": "セキュリティ設定",
     "scope_of_page_disclosure": "ページの公開範囲",
