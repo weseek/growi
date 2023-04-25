@@ -125,7 +125,7 @@ context('Access User settings', () => {
   });
 
   it('Access Other setting', () => {
-    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(6) a').click();
+    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(5) a').click();
     cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}-other-setting-1`);
     cy.getByTestid('grw-questionnaire-settings-update-btn').click();
