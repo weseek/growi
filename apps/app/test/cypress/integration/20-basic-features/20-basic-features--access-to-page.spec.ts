@@ -268,7 +268,9 @@ context('Access to Template Editing Mode', () => {
     });
 
     cy.get('body').within(() => {
-      cy.getByTestid('open-page-template-modal-btn').filter('.show').click({force: true});
+      cy.getByTestid('page-item-control-menu').filter('.show').within(() => {
+        cy.getByTestid('open-page-template-modal-btn').click({force: true});
+      });
     });
 
     cy.getByTestid('page-template-modal').should('be.visible');
@@ -302,7 +304,9 @@ context('Access to Template Editing Mode', () => {
     });
 
     cy.get('body').within(() => {
-      cy.getByTestid('open-page-template-modal-btn').filter('.show').click({force: true});
+      cy.getByTestid('page-item-control-menu').filter('.show').within(() => {
+        cy.getByTestid('open-page-template-modal-btn').click({force: true});
+      });
     });
 
     cy.getByTestid('page-template-modal').should('be.visible');
@@ -334,7 +338,9 @@ context('Access to Template Editing Mode', () => {
     });
 
     cy.get('body').within(() => {
-      cy.getByTestid('open-page-delete-modal-btn').filter('.show').click({force: true});
+      cy.getByTestid('page-item-control-menu').filter('.show').within(() => {
+        cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+      });
     });
 
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {

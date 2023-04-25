@@ -141,7 +141,9 @@ context('Modal for page operation', () => {
     });
 
     cy.get('body').within(() => {
-      cy.getByTestid('open-page-delete-modal-btn').filter('.show').click({force: true});
+      cy.getByTestid('page-item-control-menu').filter('.show').within(() => {
+        cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+      });
     });
 
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
@@ -171,7 +173,9 @@ context('Modal for page operation', () => {
     });
 
     cy.get('body').within(() => {
-      cy.getByTestid('open-page-duplicate-modal-btn').filter('.show').click({force: true});
+      cy.getByTestid('page-item-control-menu').filter('.show').within(() => {
+        cy.getByTestid('open-page-duplicate-modal-btn').click({force: true});
+      });
     });
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap4`);
@@ -186,7 +190,9 @@ context('Modal for page operation', () => {
     });
 
     cy.get('body').within(() => {
-      cy.getByTestid('open-page-move-rename-modal-btn').filter('.show').click({force: true});
+      cy.getByTestid('page-item-control-menu').filter('.show').within(() => {
+        cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
+      });
     });
 
     cy.getByTestid('grw-page-rename-button').should('be.disabled');
