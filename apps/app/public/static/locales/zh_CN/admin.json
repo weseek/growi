@@ -17,6 +17,7 @@
   "specified_users": "仅指定用户",
   "only_me": "只有我",
   "only_inside_the_group": "仅组内",
+  "The input to the white list contains an invalid character. Please enter it in a format such as @growi.org.": "白名单的输入包含一个无效的字符。请以@growi.org这样的格式输入。",
   "security_settings": {
     "security_settings": "安全设置",
     "scope_of_page_disclosure": "页面公开范围",
