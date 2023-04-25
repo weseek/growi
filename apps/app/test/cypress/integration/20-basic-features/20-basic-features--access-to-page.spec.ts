@@ -265,7 +265,10 @@ context('Access to Template Editing Mode', () => {
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    });
+
+    cy.get('body').within(() => {
+      cy.getByTestid('open-page-template-modal-btn').filter('.show').click({force: true});
     });
 
     cy.getByTestid('page-template-modal').should('be.visible');
@@ -296,7 +299,10 @@ context('Access to Template Editing Mode', () => {
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    });
+
+    cy.get('body').within(() => {
+      cy.getByTestid('open-page-template-modal-btn').filter('.show').click({force: true});
     });
 
     cy.getByTestid('page-template-modal').should('be.visible');
@@ -325,8 +331,12 @@ context('Access to Template Editing Mode', () => {
     cy.visit('/Sandbox/_template');
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-delete-modal-btn').click({force: true});
     });
+
+    cy.get('body').within(() => {
+      cy.getByTestid('open-page-delete-modal-btn').filter('.show').click({force: true});
+    });
+
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
       cy.intercept('POST', '/_api/pages.remove').as('remove');
       cy.getByTestid('delete-page-button').click();
