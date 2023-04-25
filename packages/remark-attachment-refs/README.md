@@ -11,9 +11,9 @@ Examples
 
 ![refsimg](https://user-images.githubusercontent.com/1638767/64986528-1c54eb00-d902-11e9-95dc-2784fa15746c.gif)
 
-### Image Carousel
+<!-- ### Image Carousel
 
-![lightbox](https://user-images.githubusercontent.com/1638767/64986530-1e1eae80-d902-11e9-8711-b5df3572769c.gif)
+![lightbox](https://user-images.githubusercontent.com/1638767/64986530-1e1eae80-d902-11e9-8711-b5df3572769c.gif) -->
 
 
 Usage
@@ -113,7 +113,7 @@ $refsimg(prefix=/somewhere, grid=autofill, grid-gap=1px)
   - `col-6` : Grid layout with 6 columns
 - *`grid-gap`* : Grid gap
   - e.g. `grid-gap=1px`
-- *`no-carousel`* : Omit carousel function and just show images
+<!-- - *`no-carousel`* : Omit carousel function and just show images -->
 
 
 ### `$gallery` tag

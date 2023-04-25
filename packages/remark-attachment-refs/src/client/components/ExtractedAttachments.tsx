@@ -15,7 +15,7 @@ type Props = {
  *  1. when 'fileFormat' is image, render Attachment as an image
  *  2. when 'fileFormat' is not image, render Attachment as an Attachment component
  */
-// TODO: implement image carousel modal without using react-images
+// TODO https://redmine.weseek.co.jp/issues/121095: implement image carousel modal without using react-images
 export const ExtractedAttachments = React.memo(({
   attachments,
   refsContext,

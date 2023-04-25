@@ -29,11 +29,11 @@
     "test": ""
   },
   "dependencies": {
-    "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
-    "http-errors": "^2.0.0",
     "universal-bunyan": "^0.9.2",
-    "@growi/core": "^6.1.0-RC.0"
+    "@growi/core": "^6.1.0-RC.0",
+    "@growi/remark-growi-directive": "^6.1.0-RC.0",
+    "@growi/ui": "^6.1.0-RC.0"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",

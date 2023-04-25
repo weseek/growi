@@ -19,10 +19,11 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'bunyan',
-        'http-errors',
         'universal-bunyan',
         'react',
         'react-dom',
+        /^hast-.*/,
+        /^unist-.*/,
         /^@growi\/.*/,
       ],
     },

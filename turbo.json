@@ -20,7 +20,7 @@
     },
 
     "@growi/remark-attachment-refs#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
@@ -64,7 +64,7 @@
     },
 
     "@growi/remark-attachment-refs#dev": {
-      "dependsOn": ["^dev"],
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
@@ -133,7 +133,7 @@
     },
 
     "@growi/remark-attachment-refs#lint": {
-      "dependsOn": ["^dev"]
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
     "@growi/ui#lint": {
       "dependsOn": ["@growi/core#dev"]
