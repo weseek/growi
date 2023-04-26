@@ -1,29 +1,18 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import prettyBytes from 'pretty-bytes';
 
-import { useSWRxAttachments } from '~/stores/attachment';
+import { useSWRxAttachment } from '~/stores/attachment';
 import { useAttachmentDeleteModal } from '~/stores/modal';
-import { useCurrentPageId } from '~/stores/page';
 
 export const Attachment: React.FC<{
   attachmentId: string,
   url: string,
   attachmentName: string
 }> = React.memo(({ attachmentId, url, attachmentName }) => {
-  const { data: pageId } = useCurrentPageId();
-  // TODO: We need to be able to get it from all pages if there are a lot of attachments.
-  const { data: dataAttachments, remove } = useSWRxAttachments(pageId, 1);
+  const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openAttachmentDeleteModal } = useAttachmentDeleteModal();
-
-  const attachment = useMemo(() => {
-    if (dataAttachments == null) {
-      return;
-    }
-    return dataAttachments.attachments.find(item => item._id === attachmentId);
-  }, [attachmentId, dataAttachments]);
-
   const onClickTrashButtonHandler = useCallback(() => {
     if (attachment == null) {
       return;

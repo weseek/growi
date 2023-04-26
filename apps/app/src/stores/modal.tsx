@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import type { HasObjectId, IAttachment } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core';
 import { SWRResponse } from 'swr';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
@@ -619,13 +619,13 @@ type Remove =
 
 type AttachmentDeleteModalStatus = {
   isOpened: boolean,
-  attachment?: IAttachment & HasObjectId,
+  attachment?: IAttachmentHasId,
   remove?: Remove,
 }
 
 type AttachmentDeleteModalUtils = {
   open(
-    attachment: IAttachment & HasObjectId,
+    attachment: IAttachmentHasId,
     remove: Remove,
   ): void,
   close(): void,
@@ -640,7 +640,7 @@ export const useAttachmentDeleteModal = (): SWRResponse<AttachmentDeleteModalSta
   const swrResponse = useStaticSWR<AttachmentDeleteModalStatus, Error>('attachmentDeleteModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
-  const open = useCallback((attachment: IAttachment & HasObjectId, remove: Remove) => {
+  const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
     mutate({ isOpened: true, attachment, remove });
   }, [mutate]);
   const close = useCallback((): void => {
