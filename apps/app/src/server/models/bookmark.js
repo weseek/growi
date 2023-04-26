@@ -45,18 +45,16 @@ module.exports = function(crowi) {
   };
 
   // bookmark チェック用
-  bookmarkSchema.statics.findByPageIdAndUserId = function(pageId, userId) {
+  bookmarkSchema.statics.findByPageIdAndUserId = async function(pageId, userId) {
     const Bookmark = this;
-
-    return new Promise(((resolve, reject) => {
-      return Bookmark.findOne({ page: pageId, user: userId }, (err, doc) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(doc);
-      });
-    }));
+    try {
+      const doc = await Bookmark.findOne({ page: pageId, user: userId });
+      return doc;
+    }
+    catch (err) {
+      debug('Bookmark.find failed (find by pageId and userId)', err);
+      throw err;
+    }
   };
 
   bookmarkSchema.statics.add = async function(page, user) {

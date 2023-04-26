@@ -10,7 +10,7 @@ import {
 } from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
-import mongoose, { ObjectId, QueryCursor } from 'mongoose';
+import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -60,7 +60,7 @@ class PageCursorsForDescendantsFactory {
 
   private shouldIncludeEmpty: boolean;
 
-  private initialCursor: QueryCursor<any> | never[]; // TODO: wait for mongoose update
+  private initialCursor: Cursor<any> | never[]; // TODO: wait for mongoose update
 
   private Page: PageModel;
 
@@ -100,7 +100,7 @@ class PageCursorsForDescendantsFactory {
   /**
    * Generator that unorderedly yields descendant pages
    */
-  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
+  private async* generateOnlyDescendants(cursor: Cursor<any>) {
     for await (const page of cursor) {
       const nextCursor = await this.generateCursorToFindChildren(page);
       if (!this.isNeverArray(nextCursor)) {
@@ -111,7 +111,7 @@ class PageCursorsForDescendantsFactory {
     }
   }
 
-  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any> | never[]> {
+  private async generateCursorToFindChildren(page: any): Promise<Cursor<any> | never[]> {
     if (page == null) {
       return [];
     }
@@ -121,12 +121,12 @@ class PageCursorsForDescendantsFactory {
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
 
-    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
 
     return cursor;
   }
 
-  private isNeverArray(val: QueryCursor<any> | never[]): val is never[] {
+  private isNeverArray(val: Cursor<any> | never[]): val is never[] {
     return 'length' in val && val.length === 0;
   }
 
@@ -503,7 +503,7 @@ class PageService {
       update.lastUpdateUser = user;
       update.updatedAt = new Date();
     }
-    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true }) as PageDocument;
 
     // 5.increase parent's descendantCount.
     // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
@@ -634,7 +634,7 @@ class PageService {
       };
     }));
 
-    const pages = [...insertedPages, originalParent];
+    const pages = [...insertedPages, originalParent] as Array<PageDocument & {_id: any} >;
 
     const ancestorsMap = new Map<string, PageDocument & {_id: any}>(pages.map(p => [p.path, p]));
 
@@ -3070,22 +3070,22 @@ class PageService {
         try {
           const res = await Page.bulkWrite(updateManyOperations);
 
-          nextCount += res.result.nModified;
-          nextSkiped += res.result.writeErrors.length;
-          logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
+          nextCount += res.nModified;
+          nextSkiped += res.getWriteErrorCount();
+          logger.info(`Page migration processing: (migratedPages=${res.nModified})`);
 
           socket?.emit(SocketEventName.PMMigrating, { count: nextCount });
           socket?.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
-          if (res.result.writeErrors.length > 0) {
-            logger.error('Failed to migrate some pages', res.result.writeErrors);
+          if (res.getWriteErrorCount() > 0) {
+            logger.error('Failed to migrate some pages', res.getWriteErrors());
             socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
           // Finish migration if no modification occurred
-          if (res.result.nModified === 0 && res.result.nMatched === 0) {
+          if (res.nModified === 0 && res.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
             socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
@@ -3206,7 +3206,7 @@ class PageService {
   /**
    * Recount descendantCount of pages one by one
    */
-  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
+  async recountAndUpdateDescendantCountOfPages(pageCursor: Cursor<any>, batchSize:number): Promise<void> {
     const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,
@@ -3633,7 +3633,7 @@ class PageService {
   /**
    * V4 compatible create method
    */
-  private async createV4(path, body, user, options: any = {}) {
+  private async createV4(path, body, user, options: any = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
@@ -3656,7 +3656,7 @@ class PageService {
       throw new Error('Cannot create new page to existed path');
     }
 
-    const page = new Page();
+    const page = new Page() as PageDocument;
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;

@@ -155,46 +155,41 @@ export const getPageSchema = (crowi) => {
     });
   };
 
-  pageSchema.methods.like = function(userData) {
+  pageSchema.methods.like = async function(userData) {
     const self = this;
 
-    return new Promise(((resolve, reject) => {
+    try {
       const added = self.liker.addToSet(userData._id);
       if (added.length > 0) {
-        self.save((err, data) => {
-          if (err) {
-            return reject(err);
-          }
-          logger.debug('liker updated!', added);
-          return resolve(data);
-        });
+        const data = await self.save();
+        logger.debug('liker updated!', added);
+        return data;
       }
-      else {
-        logger.debug('liker not updated');
-        return reject(new Error('Already liked'));
-      }
-    }));
+      logger.debug('liker not updated');
+      throw new Error('Already liked');
+    }
+    catch (err) {
+      logger.debug('Liker update failed', err);
+      throw err;
+    }
   };
 
-  pageSchema.methods.unlike = function(userData, callback) {
+  pageSchema.methods.unlike = async function(userData) {
     const self = this;
 
-    return new Promise(((resolve, reject) => {
+    try {
       const beforeCount = self.liker.length;
       self.liker.pull(userData._id);
       if (self.liker.length !== beforeCount) {
-        self.save((err, data) => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve(data);
-        });
+        const data = await self.save();
+        return data;
       }
-      else {
-        logger.debug('liker not updated');
-        return reject(new Error('Already unliked'));
-      }
-    }));
+      logger.debug('liker not updated');
+      throw new Error('Already unliked');
+    }
+    catch (err) {
+      throw err;
+    }
   };
 
   pageSchema.methods.isSeenUser = function(userData) {

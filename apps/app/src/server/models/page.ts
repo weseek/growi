@@ -492,13 +492,13 @@ schema.statics.createEmptyPage = async function(
   }
 
   const Page = this;
-  const page = new Page();
+  const page = new Page() as PageDocument & { _id: any };
   page.path = path;
   page.isEmpty = true;
   page.parent = parent;
   page.descendantCount = descendantCount;
-
-  return page.save();
+  const createdPage = await page.save();
+  return createdPage;
 };
 
 /**
@@ -877,7 +877,7 @@ schema.statics.findNotEmptyParentByPathRecursively = async function(path: string
       return page;
     }
 
-    const next = await this.findById(page.parent);
+    const next = await this.findById(page.parent) as PageDocument;
 
     if (next == null || isTopPage(next.path)) {
       return page;
