@@ -10,7 +10,7 @@ import Sidebar from '../Sidebar';
 import { RawLayout } from './RawLayout';
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
-const AttachmentDeleteModal = dynamic(() => import('../PageAttachment/AttachmentDeleteModal').then(mod => mod.AttachmentDeleteModal), { ssr: false });
+const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
@@ -56,7 +56,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <PageDeleteModal />
         <PageRenameModal />
         <PageAccessoriesModal />
-        <AttachmentDeleteModal />
+        <DeleteAttachmentModal />
       </DndProvider>
 
       <PagePresentationModal />

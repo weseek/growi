@@ -610,20 +610,20 @@ export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & Te
 };
 
 /**
- * AttachmentDeleteModal
+ * DeleteAttachmentModal
  */
 type Remove =
   (body: {
     attachment_id: string;
   }) => Promise<void>
 
-type AttachmentDeleteModalStatus = {
+type DeleteAttachmentModalStatus = {
   isOpened: boolean,
   attachment?: IAttachmentHasId,
   remove?: Remove,
 }
 
-type AttachmentDeleteModalUtils = {
+type DeleteAttachmentModalUtils = {
   open(
     attachment: IAttachmentHasId,
     remove: Remove,
@@ -631,13 +631,13 @@ type AttachmentDeleteModalUtils = {
   close(): void,
 }
 
-export const useAttachmentDeleteModal = (): SWRResponse<AttachmentDeleteModalStatus, Error> & AttachmentDeleteModalUtils => {
-  const initialStatus: AttachmentDeleteModalStatus = {
+export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalStatus, Error> & DeleteAttachmentModalUtils => {
+  const initialStatus: DeleteAttachmentModalStatus = {
     isOpened: false,
     attachment: undefined,
     remove: undefined,
   };
-  const swrResponse = useStaticSWR<AttachmentDeleteModalStatus, Error>('attachmentDeleteModal', undefined, { fallbackData: initialStatus });
+  const swrResponse = useStaticSWR<DeleteAttachmentModalStatus, Error>('deleteAttachmentModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
   const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
