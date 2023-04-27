@@ -159,7 +159,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       }
 
       // Maximum folder hierarchy of 2 levels
-      // Check source folder has no chidren or dest folder has no parent
+      // If the drop source folder has child folders, the drop source folder cannot be moved because the drop source folder hierarchy is already 2.
+      // If the destination folder has a parent, the source folder cannot be moved because the destination folder hierarchy is already 2.
       if (item.bookmarkFolder.children.length !== 0 || bookmarkFolder.parent != null) {
         return false;
       }
