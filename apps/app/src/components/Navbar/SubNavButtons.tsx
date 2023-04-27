@@ -207,7 +207,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
   forceHideMenuItemsWithBookmark.push(MenuItemType.BOOKMARK);
-  forceHideMenuItemsWithBookmark.push(MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT);
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>

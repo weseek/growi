@@ -438,7 +438,6 @@ const PrivateLegacyPages = (): JSX.Element => {
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
         forceHideMenuItems={[
           MenuItemType.BOOKMARK,
-          MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT,
           MenuItemType.RENAME,
           MenuItemType.DUPLICATE,
           MenuItemType.REVERT,

@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useEffect, useMemo,
+  useState, useCallback, useEffect,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -7,14 +7,11 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
-import { addBookmarkToFolder } from '~/client/util/bookmark-utils';
-import { toastError } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -24,7 +21,6 @@ const logger = loggerFactory('growi:cli:PageItemControl');
 
 export const MenuItemType = {
   BOOKMARK: 'bookmark',
-  BOOKMARKS_TREE_MOVE_TO_ROOT: 'bookmarks_tree_move_to_root',
   RENAME: 'rename',
   DUPLICATE: 'duplicate',
   DELETE: 'delete',
@@ -66,8 +62,6 @@ type DropdownMenuProps = CommonProps & {
 const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
   const { t } = useTranslation('');
 
-  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
-
   const {
     pageId, isLoading, pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
@@ -84,20 +78,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
   }, [onClickBookmarkMenuItem, pageId, pageInfo]);
-
-  const isMoveToRoot = useMemo(() => {
-    return !userBookmarks?.map(userBookmark => userBookmark._id).includes(pageId);
-  }, [pageId, userBookmarks]);
-
-  const moveToRootClickedHandler = useCallback(async() => {
-    try {
-      await addBookmarkToFolder(pageId, null);
-      await mutateUserBookmarks();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [mutateUserBookmarks, pageId]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
@@ -191,18 +171,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           >
             <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
-          </DropdownItem>
-        ) }
-
-        {/* Bookmarks Tree Move to Root */}
-        { !forceHideMenuItems?.includes(MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT) && isEnableActions && isMoveToRoot && (
-          <DropdownItem
-            onClick={moveToRootClickedHandler}
-            className="grw-page-control-dropdown-item"
-            data-testid="add-remove-bookmark-btn"
-          >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
-            {t('bookmark_folder.move_to_root')}
           </DropdownItem>
         ) }
 

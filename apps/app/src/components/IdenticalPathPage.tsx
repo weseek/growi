@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next';
 import { useCurrentPathname } from '~/stores/context';
 import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listing';
 
-import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { PageListItemL } from './PageList/PageListItemL';
 
 
@@ -77,7 +76,6 @@ export const IdenticalPathPage = (): JSX.Element => {
                 isSelected={false}
                 isEnableActions
                 showPageUpdatedTime
-                forceHideMenuItems={[MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT]}
               />
             );
           })}

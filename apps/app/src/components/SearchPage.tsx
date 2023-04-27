@@ -12,7 +12,6 @@ import { IFormattedSearchResult } from '~/interfaces/search';
 import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
-import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { NotAvailableForGuest } from './NotAvailableForGuest';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
@@ -265,7 +264,6 @@ export const SearchPage = (): JSX.Element => {
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
       searchPager={searchPager}
-      forceHideMenuItems={[MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT]}
     />
   );
 };

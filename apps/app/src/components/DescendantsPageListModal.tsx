@@ -11,7 +11,6 @@ import {
 import { useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 
-import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
 import { DescendantsPageListProps } from './DescendantsPageList';
@@ -52,7 +51,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
           if (status == null || status.path == null || !status.isOpened) {
             return <></>;
           }
-          return <DescendantsPageList path={status.path} forceHideMenuItems={[MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT]}/>;
+          return <DescendantsPageList path={status.path} />;
         },
         i18n: t('page_list'),
         isLinkEnabled: () => !isSharedUser,

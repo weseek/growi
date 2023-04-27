@@ -494,7 +494,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isInstantRename
               // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
               operationProcessData={page.processData}
-              forceHideMenuItems={[MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT]}
             >
               {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
               <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">

@@ -1,17 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState, useMemo,
+} from 'react';
 
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
-import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
+import {
+  UncontrolledTooltip, DropdownItem, DropdownToggle,
+} from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
-import { renamePage } from '~/client/util/bookmark-utils';
+import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -53,6 +58,36 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   useEffect(() => {
     mutateBookmarkData();
   }, [mutateBookmarkData]);
+
+  const pageId = bookmarkedPage._id;
+
+  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const isMoveToRoot = useMemo(() => {
+    return !userBookmarks?.map(userBookmark => userBookmark._id).includes(pageId);
+  }, [pageId, userBookmarks]);
+
+  const moveToRootClickedHandler = useCallback(async() => {
+    try {
+      await addBookmarkToFolder(pageId, null);
+      await mutateUserBookmarks();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [mutateUserBookmarks, pageId]);
+
+  const additionalMenuItemOnTopRenderer = useMemo(() => {
+    return (
+      <DropdownItem
+        onClick={moveToRootClickedHandler}
+        className="grw-page-control-dropdown-item"
+        data-testid="add-remove-bookmark-btn"
+      >
+        <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+        {t('bookmark_folder.move_to_root')}
+      </DropdownItem>
+    );
+  }, [moveToRootClickedHandler, t]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
@@ -130,6 +165,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            additionalMenuItemOnTopRenderer={isMoveToRoot ? (() => additionalMenuItemOnTopRenderer) : undefined}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>

@@ -72,7 +72,7 @@ const DescendantsPageListForTrash = (): JSX.Element => {
     <DescendantsPageList
       path="/trash"
       limit={limit}
-      forceHideMenuItems={[MenuItemType.RENAME, MenuItemType.BOOKMARKS_TREE_MOVE_TO_ROOT]}
+      forceHideMenuItems={[MenuItemType.RENAME]}
     />
   );
 };
