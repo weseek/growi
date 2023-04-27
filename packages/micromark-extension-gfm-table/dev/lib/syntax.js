@@ -174,6 +174,19 @@ function tokenizeTable(effects, ok, nok) {
   /** @type {boolean|undefined} */
   let hasDash;
 
+
+  const originalEnter = effects.enter;
+  const originalExit = effects.exit;
+  effects.enter = (...args) => {
+    console.log(`>> enter ${args[0]}`);
+    return originalEnter(...args);
+  };
+  effects.exit = (...args) => {
+    console.log(`<< exit ${args[0]}`);
+    return originalExit(...args);
+  };
+
+
   return start;
 
   /** @type {State} */
@@ -255,6 +268,7 @@ function tokenizeTable(effects, ok, nok) {
     }
 
     effects.consume(code);
+    console.log('[consume in Head]', String.fromCharCode(code));
     return code === codes.backslash
       ? inCellContentEscapeHead
       : inCellContentHead;
@@ -511,6 +525,7 @@ function tokenizeTable(effects, ok, nok) {
     }
 
     effects.consume(code);
+    console.log('[consume in Body]', String.fromCharCode(code));
     return code === codes.backslash
       ? inCellContentEscapeBody
       : inCellContentBody;
