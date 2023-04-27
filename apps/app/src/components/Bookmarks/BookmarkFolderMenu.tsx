@@ -19,24 +19,20 @@ import { FolderIcon } from '../Icons/FolderIcon';
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 
-
-type Props = {
-  children?: React.ReactNode
-}
-
-export const BookmarkFolderMenu = (props: Props): JSX.Element => {
+export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ children }): JSX.Element => {
   const { t } = useTranslation();
-  const { children } = props;
+
   const [isCreateAction, setIsCreateAction] = useState(false);
-  const { data: bookmarkFolders, mutate: mutateBookmarkFolderData } = useSWRxBookmarkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
-  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
-  const isBookmarked = userBookmarkInfo?.isBookmarked ?? false;
   const [isOpen, setIsOpen] = useState(false);
 
+  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
+
+  const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
 
   const toggleBookmarkHandler = useCallback(async() => {
     try {
@@ -57,14 +53,14 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
     await toggleBookmarkHandler();
     mutateUserBookmarks();
     mutateBookmarkInfo();
-    mutateBookmarkFolderData();
+    mutateBookmarkFolders();
     mutatePageInfo();
     setSelectedItem(null);
-  }, [mutateBookmarkFolderData, mutateBookmarkInfo, mutatePageInfo, mutateUserBookmarks, toggleBookmarkHandler]);
+  }, [mutateBookmarkFolders, mutateBookmarkInfo, mutatePageInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
   const toggleHandler = useCallback(async() => {
     setIsOpen(!isOpen);
-    mutateBookmarkFolderData();
+    mutateBookmarkFolders();
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
@@ -89,7 +85,7 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
   },
   [
     isOpen,
-    mutateBookmarkFolderData,
+    mutateBookmarkFolders,
     bookmarkFolders,
     isBookmarked,
     currentPage?._id,
@@ -99,7 +95,6 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
     mutatePageInfo,
   ]);
 
-
   const isBookmarkFolderExists = useCallback((): boolean => {
     return bookmarkFolders != null && bookmarkFolders.length > 0;
   }, [bookmarkFolders]);
@@ -107,13 +102,13 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await addNewFolder(folderName, null);
-      await mutateBookmarkFolderData();
+      await mutateBookmarkFolders();
       setIsCreateAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolderData]);
+  }, [mutateBookmarkFolders]);
 
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
@@ -130,14 +125,13 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
       toastError(err);
     }
 
-    mutateBookmarkFolderData();
+    mutateBookmarkFolders();
     setSelectedItem(itemId);
-  }, [mutateBookmarkFolderData, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
-
+  }, [mutateBookmarkFolders, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
   const renderBookmarkMenuItem = (child?: BookmarkFolderItems[]) => {
     const renderSubmenu = () => {
-      if (child == null) {
+      if (child == null || currentPage == null || bookmarkInfo == null) {
         return <></>;
       }
       return (
@@ -154,6 +148,11 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
                   item={folder}
                   isSelected={selectedItem === folder._id}
                   onSelectedChild={() => setSelectedItem(null)}
+                  currentPage={currentPage}
+                  bookmarkInfo={bookmarkInfo}
+                  mutateBookmarkFolders={mutateBookmarkFolders}
+                  mutateBookmarkInfo={mutateBookmarkInfo}
+                  mutateUserBookmarks={mutateUserBookmarks}
                 />
                 {isOpen && renderSubmenu()}
               </div>
@@ -199,7 +198,7 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
           </DropdownItem>
         )}
 
-        {isBookmarkFolderExists() && (
+        {isBookmarkFolderExists() && currentPage != null && bookmarkInfo != null && (
           <>
             <DropdownItem divider />
             {bookmarkFolders?.map(folder => (
@@ -214,6 +213,11 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
                     item={folder}
                     isSelected={selectedItem === folder._id}
                     onSelectedChild={() => setSelectedItem(null)}
+                    currentPage={currentPage}
+                    bookmarkInfo={bookmarkInfo}
+                    mutateBookmarkFolders={mutateBookmarkFolders}
+                    mutateBookmarkInfo={mutateBookmarkInfo}
+                    mutateUserBookmarks={mutateUserBookmarks}
                   />
                   {isOpen && renderSubmenu()}
                 </div>

@@ -2,61 +2,69 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
+import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   DropdownItem,
   DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
+import type { KeyedMutator } from 'swr';
 
 import {
   addBookmarkToFolder, addNewFolder, hasChildren, toggleBookmark,
 } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { BookmarkFolderItems, IBookmarkInfo } from '~/interfaces/bookmark-info';
+import { IPageHasId } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
-import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 import { FolderIcon } from '../Icons/FolderIcon';
 import { TriangleIcon } from '../Icons/TriangleIcon';
 
 import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 
-type Props = {
+export const BookmarkFolderMenuItem: React.FC<{
   item: BookmarkFolderItems
-  onSelectedChild: () => void
   isSelected: boolean
-}
-export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
-  const {
-    item, isSelected, onSelectedChild,
-  } = props;
+  onSelectedChild: () => void
+  currentPage: IPagePopulatedToShowRevision
+  bookmarkInfo: IBookmarkInfo
+  mutateBookmarkFolders: KeyedMutator<BookmarkFolderItems[]>
+  mutateBookmarkInfo: KeyedMutator<IBookmarkInfo>
+  mutateUserBookmarks: KeyedMutator<IPageHasId[]>
+}> = ({
+  item,
+  isSelected,
+  onSelectedChild,
+  currentPage,
+  bookmarkInfo,
+  mutateBookmarkFolders,
+  mutateBookmarkInfo,
+  mutateUserBookmarks,
+}) => {
   const { t } = useTranslation();
+
   const [isOpen, setIsOpen] = useState(false);
-  const { mutate: mutateBookmarkData } = useSWRxBookmarkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
-  const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
-  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
 
-  const isBookmarked = userBookmarkInfo?.isBookmarked ?? false;
+  const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
+
+  const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
 
   const childrenExists = hasChildren(item);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await addNewFolder(folderName, item._id);
-      await mutateBookmarkData();
+      await mutateBookmarkFolders();
       setIsCreateAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [item._id, mutateBookmarkData]);
+  }, [item._id, mutateBookmarkFolders]);
 
   useEffect(() => {
     if (isOpen) {
@@ -92,14 +100,14 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         return;
       }
       mutateBookmarkInfo();
-      mutateBookmarkData();
+      mutateBookmarkFolders();
     };
 
     if (item == null) {
       return;
     }
     openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [item, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
+  }, [item, mutateBookmarkFolders, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
@@ -112,14 +120,14 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         await addBookmarkToFolder(currentPage._id, item._id);
       }
       mutateUserBookmarks();
-      mutateBookmarkData();
+      mutateBookmarkFolders();
       setSelectedItem(item._id);
       mutateBookmarkInfo();
     }
     catch (err) {
       toastError(err);
     }
-  }, [onSelectedChild, isBookmarked, currentPage, mutateUserBookmarks, mutateBookmarkData, mutateBookmarkInfo]);
+  }, [onSelectedChild, isBookmarked, currentPage, mutateUserBookmarks, mutateBookmarkFolders, mutateBookmarkInfo]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     if (!isOpen) {
