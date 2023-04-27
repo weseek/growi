@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
+import { modifiersForRightAlign } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
@@ -248,9 +249,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   return (
     <DropdownMenu
       data-testid="page-item-control-menu"
-      modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
       right={alignRight}
+      modifiers={modifiersForRightAlign}
       container="body"
+      persist={!!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >
       {contents}
