@@ -114,6 +114,6 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
         </DropdownMenu>
       </UncontrolledButtonDropdown>
 
-    </div >
+    </div>
   );
 };
