@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import {
   DropdownItem,
-  DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip,
+  DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
 import {
@@ -201,29 +201,22 @@ export const BookmarkFolderMenuItem = (props: Props): JSX.Element => {
         >
           <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
         </DropdownToggle>
-        <DropdownToggle
-          color="transparent"
-          onClick={e => e.stopPropagation()}
-          onMouseEnter={onMouseEnterHandler}
-        >
-          {childrenExists
-            ? <TriangleIcon />
-            : (
-              <i className="icon-plus d-block pl-0" />
-            )}
-        </DropdownToggle>
+        {/* Maximum folder hierarchy of 2 levels */}
+        {item.parent == null && (
+          <DropdownToggle
+            color="transparent"
+            onClick={e => e.stopPropagation()}
+            onMouseEnter={onMouseEnterHandler}
+          >
+            {childrenExists
+              ? <TriangleIcon />
+              : <i className="icon-plus d-block pl-0" />
+            }
+          </DropdownToggle>
+        )}
         {renderBookmarkSubMenuItem()}
 
       </UncontrolledDropdown >
-      <UncontrolledTooltip
-        modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-        autohide={false}
-        placement="top"
-        target={`bookmark-delete-button-${item._id}`}
-        fade={false}
-      >
-        {t('bookmark_folder.delete')}
-      </UncontrolledTooltip>
     </>
   );
 };

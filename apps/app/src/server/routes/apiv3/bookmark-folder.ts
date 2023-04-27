@@ -1,7 +1,6 @@
 import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
 
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
@@ -17,7 +16,13 @@ const router = express.Router();
 const validator = {
   bookmarkFolder: [
     body('name').isString().withMessage('name must be a string'),
-    body('parent').isMongoId().optional({ nullable: true }),
+    body('parent').isMongoId().optional({ nullable: true })
+      .custom(async(parent: string) => {
+        const parentFolder = await BookmarkFolder.findById(parent);
+        if (parentFolder == null || parentFolder.parent != null) {
+          throw new Error('Maximum folder hierarchy of 2 levels');
+        }
+      }),
   ],
   bookmarkPage: [
     body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),

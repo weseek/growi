@@ -152,11 +152,19 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
   };
 
-  const isDroppable = (item: DragItemDataType, type: string | null| symbol): boolean => {
+  const isDropable = (item: DragItemDataType, type: string | null| symbol): boolean => {
     if (type === DRAG_ITEM_TYPE.FOLDER) {
       if (item.bookmarkFolder.parent === bookmarkFolder._id || item.bookmarkFolder._id === bookmarkFolder._id) {
         return false;
       }
+
+      // Maximum folder hierarchy of 2 levels
+      // If the drop source folder has child folders, the drop source folder cannot be moved because the drop source folder hierarchy is already 2.
+      // If the destination folder has a parent, the source folder cannot be moved because the destination folder hierarchy is already 2.
+      if (item.bookmarkFolder.children.length !== 0 || bookmarkFolder.parent != null) {
+        return false;
+      }
+
       return item.root !== root || item.level >= level;
     }
 
@@ -228,7 +236,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         useDragMode={true}
         useDropMode={true}
         onDropItem={itemDropHandler}
-        isDropable={isDroppable}
+        isDropable={isDropable}
       >
         <li
           className={'list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center'}
@@ -277,13 +285,17 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
                 </DropdownToggle>
               </div>
             </BookmarkFolderItemControl>
-            <button
-              type="button"
-              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-              onClick={onClickPlusButton}
-            >
-              <i className="icon-plus d-block p-0" />
-            </button>
+            {/* Maximum folder hierarchy of 2 levels */}
+            {!(bookmarkFolder.parent != null) && (
+              <button
+                id='create-bookmark-folder-button'
+                type="button"
+                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                onClick={onClickPlusButton}
+              >
+                <i className="icon-plus d-block p-0" />
+              </button>
+            )}
           </div>
         </li>
       </DragAndDropWrapper>
