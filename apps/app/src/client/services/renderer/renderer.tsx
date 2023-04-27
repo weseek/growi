@@ -1,6 +1,7 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
+import * as refsGrowiPlugin from '@growi/remark-attachment-refs/dist/client/index.mjs';
 import * as drawioPlugin from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
 import * as lsxGrowiPlugin from '@growi/remark-lsx/dist/client/index.mjs';
@@ -33,6 +34,7 @@ import loggerFactory from '~/utils/logger';
 // import EasyGrid from './PreProcessor/EasyGrid';
 
 import '@growi/remark-lsx/dist/client/style.css';
+import '@growi/remark-attachment-refs/dist/client/style.css';
 
 
 const logger = loggerFactory('growi:cli:services:renderer');
@@ -58,6 +60,7 @@ export const generateViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    refsGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -72,6 +75,7 @@ export const generateViewOptions = (
       commonSanitizeOption,
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      refsGrowiPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -79,6 +83,7 @@ export const generateViewOptions = (
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    [refsGrowiPlugin.rehypePlugin, { pagePath }],
     rehypeSanitizePlugin,
     katex,
     [relocateToc.rehypePluginStore, { storeTocNode }],
@@ -93,6 +98,11 @@ export const generateViewOptions = (
     components.h5 = Header;
     components.h6 = Header;
     components.lsx = lsxGrowiPlugin.Lsx;
+    components.ref = refsGrowiPlugin.Ref;
+    components.refs = refsGrowiPlugin.Refs;
+    components.refimg = refsGrowiPlugin.RefImg;
+    components.refsimg = refsGrowiPlugin.RefsImg;
+    components.gallery = refsGrowiPlugin.Gallery;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
   }
@@ -153,6 +163,7 @@ export const generateSimpleViewOptions = (
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    refsGrowiPlugin.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -171,12 +182,14 @@ export const generateSimpleViewOptions = (
       commonSanitizeOption,
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      refsGrowiPlugin.sanitizeOption,
     )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    [refsGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
@@ -185,6 +198,11 @@ export const generateSimpleViewOptions = (
   // add components
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
+    components.ref = refsGrowiPlugin.RefImmutable;
+    components.refs = refsGrowiPlugin.RefsImmutable;
+    components.refimg = refsGrowiPlugin.RefImgImmutable;
+    components.refsimg = refsGrowiPlugin.RefsImgImmutable;
+    components.gallery = refsGrowiPlugin.GalleryImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
@@ -219,6 +237,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    refsGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -232,6 +251,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     ? [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      refsGrowiPlugin.sanitizeOption,
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )]
@@ -240,6 +260,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    [refsGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
     rehypeSanitizePlugin,
     katex,
@@ -248,6 +269,11 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add components
   if (components != null) {
     components.lsx = lsxGrowiPlugin.LsxImmutable;
+    components.ref = refsGrowiPlugin.RefImmutable;
+    components.refs = refsGrowiPlugin.RefsImmutable;
+    components.refimg = refsGrowiPlugin.RefImgImmutable;
+    components.refsimg = refsGrowiPlugin.RefsImgImmutable;
+    components.gallery = refsGrowiPlugin.GalleryImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 

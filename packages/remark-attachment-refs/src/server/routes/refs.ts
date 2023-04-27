@@ -1,8 +1,6 @@
+import { OptionParser } from '@growi/core';
+
 import loggerFactory from '../../utils/logger';
-
-const { customTagUtils } = require('@growi/core');
-
-const { OptionParser } = customTagUtils;
 
 const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
@@ -11,8 +9,8 @@ const loginRequiredFallback = (req, res) => {
   return res.status(403).send('login required');
 };
 
-
-module.exports = (crowi) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const routesFactory = (crowi): any => {
   const express = crowi.require('express');
   const mongoose = crowi.require('mongoose');
 
@@ -30,12 +28,7 @@ module.exports = (crowi) => {
 
   const { PageQueryBuilder } = Page;
 
-  /**
-   * generate RegExp instance by the 'expression' arg
-   * @param {string} expression
-   * @return {RegExp}
-   */
-  function generateRegexp(expression) {
+  function generateRegexp(expression: string): RegExp {
     // https://regex101.com/r/uOrwqt/2
     const matches = expression.match(/^\/(.+)\/(.*)?$/);
 
@@ -59,6 +52,11 @@ module.exports = (crowi) => {
     }
 
     const range = OptionParser.parseRange(optionsDepth);
+
+    if (range == null) {
+      return query;
+    }
+
     const start = range.start;
     const end = range.end;
 
@@ -82,15 +80,13 @@ module.exports = (crowi) => {
   router.get('/ref', accessTokenParser, loginRequired, async(req, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
-    // eslint-disable-next-line no-unused-vars
-    const options = JSON.parse(req.query.options);
 
     if (pagePath == null) {
       res.status(400).send('the param \'pagePath\' must be set.');
       return;
     }
 
-    const page = await Page.findByPathAndViewer(pagePath, user);
+    const page = await Page.findByPathAndViewer(pagePath, user, undefined, true);
 
     // not found
     if (page == null) {
@@ -99,7 +95,7 @@ module.exports = (crowi) => {
     }
 
     // convert ObjectId
-    const orConditions = [{ originalName: fileNameOrId }];
+    const orConditions: any[] = [{ originalName: fileNameOrId }];
     if (ObjectId.isValid(fileNameOrId)) {
       orConditions.push({ _id: ObjectId(fileNameOrId) });
     }
