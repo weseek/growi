@@ -289,7 +289,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       right={alignRight}
       modifiers={modifiers}
       container="body"
-      persist = { !!alignRight}
+      persist={!!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >
       {contents}
