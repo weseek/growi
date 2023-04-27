@@ -12,7 +12,7 @@ import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import { FolderIcon } from '../Icons/FolderIcon';
 
@@ -33,12 +33,12 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: userBookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
   const isBookmarked = userBookmarkInfo?.isBookmarked ?? false;
   const [isOpen, setIsOpen] = useState(false);
 
 
   const toggleBookmarkHandler = useCallback(async() => {
-
     try {
       if (currentPage != null) {
         await toggleBookmark(currentPage._id, isBookmarked);
@@ -47,8 +47,6 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-
-
   }, [currentPage, isBookmarked]);
 
   const onClickNewBookmarkFolder = useCallback(() => {
@@ -60,8 +58,9 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
     mutateUserBookmarks();
     mutateBookmarkInfo();
     mutateBookmarkFolderData();
+    mutatePageInfo();
     setSelectedItem(null);
-  }, [mutateBookmarkFolderData, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
+  }, [mutateBookmarkFolderData, mutateBookmarkInfo, mutatePageInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
   const toggleHandler = useCallback(async() => {
     setIsOpen(!isOpen);
@@ -80,13 +79,25 @@ export const BookmarkFolderMenu = (props: Props): JSX.Element => {
         toggleBookmarkHandler();
         mutateUserBookmarks();
         mutateBookmarkInfo();
+        mutatePageInfo();
         setSelectedItem(null);
       }
       catch (err) {
         toastError(err);
       }
     }
-  }, [isOpen, mutateBookmarkFolderData, bookmarkFolders, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo]);
+  },
+  [
+    isOpen,
+    mutateBookmarkFolderData,
+    bookmarkFolders,
+    isBookmarked,
+    currentPage?._id,
+    toggleBookmarkHandler,
+    mutateUserBookmarks,
+    mutateBookmarkInfo,
+    mutatePageInfo,
+  ]);
 
 
   const isBookmarkFolderExists = useCallback((): boolean => {

@@ -3,7 +3,6 @@ import monggoose, {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-
 import { IBookmarkFolder, BookmarkFolderItems, MyBookmarkList } from '~/interfaces/bookmark-info';
 import { IPageHasId } from '~/interfaces/page';
 
@@ -15,7 +14,6 @@ import { InvalidParentBookmarkFolderError } from './errors';
 
 const logger = loggerFactory('growi:models:bookmark-folder');
 const Bookmark = monggoose.model('Bookmark');
-
 
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
@@ -39,7 +37,11 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
-  parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'BookmarkFolder',
+    required: false,
+  },
   bookmarks: {
     type: [{
       type: Schema.Types.ObjectId, ref: 'Bookmark', required: false,
@@ -153,6 +155,19 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
   updateFields.name = name;
   const parentFolder = parentId ? await this.findById(parentId) : null;
   updateFields.parent = parentFolder?._id ?? null;
+
+  // Maximum folder hierarchy of 2 levels
+  // If the destination folder (parentFolder) has a parent, the source folder cannot be moved because the destination folder hierarchy is already 2.
+  // If the drop source folder has child folders, the drop source folder cannot be moved because the drop source folder hierarchy is already 2.
+  if (parentId != null) {
+    if (parentFolder?.parent != null) {
+      throw new Error('Update bookmark folder failed');
+    }
+    const bookmarkFolder = await this.findById(bookmarkFolderId).populate('children');
+    if (bookmarkFolder?.children?.length !== 0) {
+      throw new Error('Update bookmark folder failed');
+    }
+  }
 
   const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: updateFields }, { new: true });
   if (bookmarkFolder == null) {
