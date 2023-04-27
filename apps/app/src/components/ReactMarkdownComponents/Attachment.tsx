@@ -4,7 +4,7 @@ import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import prettyBytes from 'pretty-bytes';
 
 import { useSWRxAttachment } from '~/stores/attachment';
-import { useAttachmentDeleteModal } from '~/stores/modal';
+import { useDeleteAttachmentModal } from '~/stores/modal';
 
 export const Attachment: React.FC<{
   attachmentId: string,
@@ -12,13 +12,13 @@ export const Attachment: React.FC<{
   attachmentName: string
 }> = React.memo(({ attachmentId, url, attachmentName }) => {
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
-  const { open: openAttachmentDeleteModal } = useAttachmentDeleteModal();
+  const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
   const onClickTrashButtonHandler = useCallback(() => {
     if (attachment == null) {
       return;
     }
-    openAttachmentDeleteModal(attachment, remove);
-  }, [attachment, openAttachmentDeleteModal, remove]);
+    openDeleteAttachmentModal(attachment, remove);
+  }, [attachment, openDeleteAttachmentModal, remove]);
 
   if (attachment == null) {
     return (

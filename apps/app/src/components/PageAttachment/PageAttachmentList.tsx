@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 type Props = {
   attachments: (IAttachment & HasObjectId)[],
   inUse: { [id: string]: boolean },
-  onAttachmentDeleteClicked?: (attachment: IAttachment & HasObjectId) => void,
+  onAttachmentDeleteClicked: (attachment: IAttachment & HasObjectId) => void,
   isUserLoggedIn?: boolean,
 }
 

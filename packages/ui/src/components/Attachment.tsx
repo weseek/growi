@@ -5,7 +5,7 @@ import { UserPicture } from './User/UserPicture';
 type AttachmentProps = {
   attachment: IAttachmentHasId,
   inUse: boolean,
-  onAttachmentDeleteClicked?: (attachment: IAttachmentHasId) => void,
+  onAttachmentDeleteClicked: (attachment: IAttachmentHasId) => void,
   isUserLoggedIn?: boolean,
 };
 
@@ -16,9 +16,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
   } = props;
 
   const _onAttachmentDeleteClicked = () => {
-    if (onAttachmentDeleteClicked != null) {
-      onAttachmentDeleteClicked(attachment);
-    }
+    onAttachmentDeleteClicked(attachment);
   };
 
   const formatIcon = (attachment.fileFormat.match(/image\/.+/i)) ? 'icon-picture' : 'icon-doc';

@@ -26,10 +26,10 @@ export const AttachmentDeleteModal: React.FC = () => {
   const [deleting, setDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>('');
 
-  const { data: attachmentDeleteModal, close: closeAttachmentDeleteModal } = useAttachmentDeleteModal();
-  const isOpen = attachmentDeleteModal?.isOpened;
-  const attachment = attachmentDeleteModal?.attachment;
-  const remove = attachmentDeleteModal?.remove;
+  const { data: deleteAttachmentModal, close: closeAttachmentDeleteModal } = useAttachmentDeleteModal();
+  const isOpen = deleteAttachmentModal?.isOpened;
+  const attachment = deleteAttachmentModal?.attachment;
+  const remove = deleteAttachmentModal?.remove;
 
   const toggleHandler = useCallback(() => {
     closeAttachmentDeleteModal();
