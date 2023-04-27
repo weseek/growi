@@ -161,6 +161,11 @@ export const BookmarkFolderMenuItem: React.FC<{
                 onSelectedChild={() => setSelectedItem(null)}
                 item={child}
                 isSelected={selectedItem === child._id}
+                currentPage={currentPage}
+                bookmarkInfo={bookmarkInfo}
+                mutateBookmarkFolders={mutateBookmarkFolders}
+                mutateBookmarkInfo={mutateBookmarkInfo}
+                mutateUserBookmarks={mutateUserBookmarks}
               />
             </div>
           </div>
