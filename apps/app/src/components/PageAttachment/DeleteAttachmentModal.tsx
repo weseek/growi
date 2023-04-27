@@ -9,7 +9,7 @@ import {
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useAttachmentDeleteModal } from '~/stores/modal';
+import { useDeleteAttachmentModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { Username } from '../User/Username';
@@ -22,20 +22,20 @@ const iconByFormat = (format: string): string => {
   return format.match(/image\/.+/i) ? 'icon-picture' : 'icon-doc';
 };
 
-export const AttachmentDeleteModal: React.FC = () => {
+export const DeleteAttachmentModal: React.FC = () => {
   const [deleting, setDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>('');
 
-  const { data: deleteAttachmentModal, close: closeAttachmentDeleteModal } = useAttachmentDeleteModal();
+  const { data: deleteAttachmentModal, close: closeDeleteAttachmentModal } = useDeleteAttachmentModal();
   const isOpen = deleteAttachmentModal?.isOpened;
   const attachment = deleteAttachmentModal?.attachment;
   const remove = deleteAttachmentModal?.remove;
 
   const toggleHandler = useCallback(() => {
-    closeAttachmentDeleteModal();
+    closeDeleteAttachmentModal();
     setDeleting(false);
     setDeleteError('');
-  }, [closeAttachmentDeleteModal]);
+  }, [closeDeleteAttachmentModal]);
 
   const onClickDeleteButtonHandler = useCallback(async() => {
     if (remove == null || attachment == null) {
@@ -47,7 +47,7 @@ export const AttachmentDeleteModal: React.FC = () => {
     try {
       await remove({ attachment_id: attachment._id });
       setDeleting(false);
-      closeAttachmentDeleteModal();
+      closeDeleteAttachmentModal();
       toastSuccess(`Delete ${attachment.originalName}`);
     }
     catch (err) {
@@ -56,7 +56,7 @@ export const AttachmentDeleteModal: React.FC = () => {
       toastError(err);
       logger.error(err);
     }
-  }, [attachment, closeAttachmentDeleteModal, remove]);
+  }, [attachment, closeDeleteAttachmentModal, remove]);
 
   const attachmentFileFormat = useMemo(() => {
     if (attachment == null) {
