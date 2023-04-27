@@ -6,7 +6,7 @@ import {
   IPageInfoAll, IPageToDeleteWithMeta, pathUtils,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import { DropdownItem, DropdownToggle } from 'reactstrap';
+import { DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -17,6 +17,7 @@ import { IPageHasId } from '~/interfaces/page';
 import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import loggerFactory from '~/utils/logger';
 
+import { BookmarkMoveToRootBtn } from '../Bookmarks/BookmarkMoveToRootBtn';
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
@@ -40,6 +41,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
   const pageId = page._id;
 
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+
   const isMoveToRoot = useMemo(() => {
     return !userBookmarks?.map(userBookmark => userBookmark._id).includes(pageId);
   }, [pageId, userBookmarks]);
@@ -53,19 +55,6 @@ export const BookmarkList = (props:Props): JSX.Element => {
       toastError(err);
     }
   }, [mutateUserBookmarks, pageId]);
-
-  const additionalMenuItemOnTopRenderer = useMemo(() => {
-    return (
-      <DropdownItem
-        onClick={moveToRootClickedHandler}
-        className="grw-page-control-dropdown-item"
-        data-testid="add-remove-bookmark-btn"
-      >
-        <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
-        {t('bookmark_folder.move_to_root')}
-      </DropdownItem>
-    );
-  }, [moveToRootClickedHandler, t]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(page._id);
@@ -135,7 +124,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
         onClickRenameMenuItem={() => setIsRenameInputShown(true)}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        additionalMenuItemOnTopRenderer={isMoveToRoot ? (() => additionalMenuItemOnTopRenderer) : undefined}
+        additionalMenuItemOnTopRenderer={isMoveToRoot ? (() => <BookmarkMoveToRootBtn moveToRootClickedHandler={moveToRootClickedHandler}/>) : undefined}
       >
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
           <i className="icon-options fa fa-rotate-90 p-1"></i>

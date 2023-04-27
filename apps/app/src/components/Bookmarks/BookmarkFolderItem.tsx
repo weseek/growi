@@ -2,8 +2,10 @@ import {
   FC, useCallback, useState,
 } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
+import type { KeyedMutator } from 'swr';
 
 import {
   addBookmarkToFolder, addNewFolder, hasChildren, updateBookmarkFolder,
@@ -12,20 +14,16 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
-  BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
+  BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE, IBookmarkInfo,
 } from '~/interfaces/bookmark-info';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useBookmarkFolderDeleteModal, usePageDeleteModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
 import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 import { BookmarkItem } from './BookmarkItem';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
-
 
 type BookmarkFolderItemProps = {
   bookmarkFolder: BookmarkFolderItems
@@ -33,13 +31,20 @@ type BookmarkFolderItemProps = {
   level: number
   root: string
   isUserHomePage?: boolean
+  bookmarkFolders: BookmarkFolderItems[]
+  mutateBookmarkFolders: KeyedMutator<BookmarkFolderItems[]>
+  userBookmarks: IPageHasId[]
+  mutateUserBookmarks: KeyedMutator<IPageHasId[]>
+  bookmarkInfo: IBookmarkInfo
+  mutateBookmarkInfo: KeyedMutator<IBookmarkInfo>
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
-    bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
+    bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage, bookmarkFolders,
+    mutateBookmarkFolders, userBookmarks, mutateUserBookmarks, bookmarkInfo, mutateBookmarkInfo,
   } = props;
 
   const { t } = useTranslation();
@@ -49,12 +54,10 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const { mutate: mutateBookmarkData } = useSWRxBookmarkFolderAndChild();
-  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const [isRenameAction, setIsRenameAction] = useState<boolean>(false);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+
+
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
@@ -71,13 +74,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
       await updateBookmarkFolder(folderId, folderName, parent);
-      mutateBookmarkData();
+      mutateBookmarkFolders();
       setIsRenameAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [folderId, mutateBookmarkData, parent]);
+  }, [folderId, mutateBookmarkFolders, parent]);
 
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -85,12 +88,12 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       await addNewFolder(folderName, targetFolder);
       setIsOpen(true);
       setIsCreateAction(false);
-      mutateBookmarkData();
+      mutateBookmarkFolders();
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkData, targetFolder]);
+  }, [mutateBookmarkFolders, targetFolder]);
 
 
   const onClickPlusButton = useCallback(async(e) => {
@@ -114,16 +117,16 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       else {
         toastSuccess(t('deleted_pages', { path }));
       }
-      mutateBookmarkData();
+      mutateBookmarkFolders();
       mutateBookmarkInfo();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  }, [mutateBookmarkInfo, mutateBookmarkData, openDeleteModal, t]);
+  }, [mutateBookmarkInfo, mutateBookmarkFolders, openDeleteModal, t]);
 
   const onUnbookmarkHandler = useCallback(() => {
-    mutateBookmarkData();
+    mutateBookmarkFolders();
     mutateBookmarkInfo();
-  }, [mutateBookmarkInfo, mutateBookmarkData]);
+  }, [mutateBookmarkInfo, mutateBookmarkFolders]);
 
 
   const itemDropHandler = async(item: DragItemDataType, dragItemType: string | symbol | null) => {
@@ -131,7 +134,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       try {
         if (item.bookmarkFolder != null) {
           await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id);
-          mutateBookmarkData();
+          mutateBookmarkFolders();
         }
       }
       catch (err) {
@@ -142,7 +145,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       try {
         if (item != null) {
           await addBookmarkToFolder(item._id, bookmarkFolder._id);
-          mutateBookmarkData();
+          mutateBookmarkFolders();
           await mutateUserBookmarks();
         }
       }
@@ -184,7 +187,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
-            isUserHomePage ={isUserHomePage}
+            isUserHomePage={isUserHomePage}
+            bookmarkFolders={bookmarkFolders}
+            mutateBookmarkFolders={mutateBookmarkFolders}
+            userBookmarks={userBookmarks}
+            mutateUserBookmarks={mutateUserBookmarks}
+            bookmarkInfo={bookmarkInfo}
+            mutateBookmarkInfo={mutateBookmarkInfo}
           />
         </div>
       );
@@ -198,10 +207,14 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           bookmarkedPage={bookmark.page}
           key={bookmark._id}
           onUnbookmarked={onUnbookmarkHandler}
-          onRenamed={mutateBookmarkData}
+          onRenamed={mutateBookmarkFolders}
           onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
           parentFolder={bookmarkFolder}
           level={level + 1}
+          bookmarkFolders={bookmarkFolders}
+          mutateBookmarkFolders={mutateBookmarkFolders}
+          userBookmarks={userBookmarks}
+          mutateUserBookmarks={mutateUserBookmarks}
         />
       );
     });
@@ -217,24 +230,24 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         return;
       }
       mutateBookmarkInfo();
-      mutateBookmarkData();
+      mutateBookmarkFolders();
     };
 
     if (bookmarkFolder == null) {
       return;
     }
     openDeleteBookmarkFolderModal(bookmarkFolder, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [bookmarkFolder, mutateBookmarkData, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
+  }, [bookmarkFolder, mutateBookmarkFolders, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
 
   const onClickMoveToRootHandler = useCallback(async() => {
     try {
       await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null);
-      await mutateBookmarkData();
+      await mutateBookmarkFolders();
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolder._id, bookmarkFolder.name, mutateBookmarkData]);
+  }, [bookmarkFolder._id, bookmarkFolder.name, mutateBookmarkFolders]);
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
