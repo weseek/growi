@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
+import { modifiersForRightAlign } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
@@ -245,49 +246,11 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     );
   }
 
-  // Conditional modifiers
-  // To prevent flickering. only happened when `right` is true and persist props should be enabled
-  let modifiers = {};
-  if (alignRight) {
-    modifiers = {
-      applyStyle: {
-        enabled: true,
-      },
-      computeStyle: {
-        enabled: true,
-        fn: (data) => {
-          const popperRect = data.offsets.popper;
-          // Calculate transform styles
-          const newTransform = `translate3d(${popperRect.left - window.innerWidth + popperRect.width}px, ${popperRect.top}px, 0px)`;
-          const styles = {
-            transform: newTransform,
-            top: '0px',
-            right: '0px',
-            willChange: 'transform',
-          };
-          data.styles = styles;
-          return data;
-        },
-      },
-      preventOverflow: {
-        boundariesElement: 'viewport',
-      },
-    };
-  }
-  else {
-    modifiers = {
-      preventOverflow: {
-        boundariesElement: 'viewport',
-      },
-    };
-  }
-
-
   return (
     <DropdownMenu
       data-testid="page-item-control-menu"
       right={alignRight}
-      modifiers={modifiers}
+      modifiers={modifiersForRightAlign}
       container="body"
       persist={!!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
