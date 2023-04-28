@@ -9,12 +9,12 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const GiveReadOnlyAlert = React.memo((): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return (
     <div className="px-4">
-      <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.remove_read_only_access')}
-      <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_give_read_only')}</p>
+      <i className="icon-fw icon-user-unfollow mb-2"></i>{t('user_management.user_table.remove_read_only_access')}
+      <p className="alert alert-danger">{t('user_management.user_table.cannot_give_read_only')}</p>
     </div>
   );
 });
