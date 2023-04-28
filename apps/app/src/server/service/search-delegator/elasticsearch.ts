@@ -2,6 +2,7 @@ import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
 import elasticsearch7 from '@elastic/elasticsearch7';
+import elasticsearch8 from '@elastic/elasticsearch8';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -53,7 +54,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   socketIoService!: any;
 
-  isElasticsearchV6: boolean;
+  isElasticsearchV7: boolean;
 
   isElasticsearchReindexOnBoot: boolean;
 
@@ -74,13 +75,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const elasticsearchVersion: number = this.configManager.getConfig('crowi', 'app:elasticsearchVersion');
 
-    if (elasticsearchVersion !== 6 && elasticsearchVersion !== 7) {
+    if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8) {
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
     }
 
-    this.isElasticsearchV6 = false;
+    this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.elasticsearch = elasticsearch7;
+    this.elasticsearch = this.isElasticsearchV7 ? elasticsearch7 : elasticsearch8;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
@@ -128,7 +129,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   getType() {
-    return this.isElasticsearchV6 ? 'pages' : '_doc';
+    // return this.isElasticsearchV6 ? 'pages' : '_doc';
+    return '_doc';
   }
 
   /**
@@ -660,7 +662,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const { body: result } = await this.client.search(query);
 
-    const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
+    // const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
+    const totalValue = result.hits.total.value;
 
     return {
       meta: {
