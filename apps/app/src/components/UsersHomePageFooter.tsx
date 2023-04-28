@@ -1,11 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-
-import { apiv3Post } from '~/client/util/apiv3-client';
 import { addNewFolder } from '~/client/util/bookmark-utils';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
@@ -38,7 +36,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
     catch (err) {
       toastError(err);
     }
-  }, [mutateChildBookmarkData, t]);
+  }, [mutateChildBookmarkData]);
 
   return (
     <div className={`container-lg user-page-footer py-5 ${styles['user-page-footer']}`}>
