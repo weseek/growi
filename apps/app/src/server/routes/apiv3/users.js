@@ -585,8 +585,7 @@ module.exports = (crowi) => {
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      // TODO: https://redmine.weseek.co.jp/issues/121247
-      // activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
@@ -638,8 +637,7 @@ module.exports = (crowi) => {
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      // TODO: https://redmine.weseek.co.jp/issues/121247
-      // activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
