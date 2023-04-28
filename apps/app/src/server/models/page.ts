@@ -9,7 +9,7 @@ import mongoose, {
   Schema, Model, Document, AnyObject,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import uniqueValidator from 'mongoose-unique-validator';
+
 
 import { IPage, IPageHasId, PageGrant } from '~/interfaces/page';
 import { IUserHasId } from '~/interfaces/user';
@@ -17,6 +17,7 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
+import uniqueValidator from '../util/unique-validator-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 
