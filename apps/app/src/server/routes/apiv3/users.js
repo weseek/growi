@@ -547,11 +547,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users/{id}/giveReadOnly:
+   *    /users/{id}/give-read-only:
    *      put:
    *        tags: [Users]
    *        operationId: ReadOnlyUser
-   *        summary: /users/{id}/ReadOnly
+   *        summary: /users/{id}/give-read-only
    *        description: Give user read only flag
    *        parameters:
    *          - name: id
@@ -571,11 +571,16 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of read only user
    */
-  router.put('/:id/giveReadOnly', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/give-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
+
+      if (userData == null) {
+        return res.apiv3Err(new ErrorV3('User not found'), 404);
+      }
+
       await userData.giveReadOnly();
 
       const serializedUserData = serializeUserSecurely(userData);
@@ -595,11 +600,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users/{id}/removeReadOnly:
+   *    /users/{id}/remove-read-only:
    *      put:
    *        tags: [Users]
    *        operationId: removeReadOnlyUser
-   *        summary: /users/{id}/removeReadOnly
+   *        summary: /users/{id}/remove-read-only
    *        description: Remove user read only flag
    *        parameters:
    *          - name: id
@@ -619,11 +624,16 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed read only user
    */
-  router.put('/:id/removeReadOnly', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
+  router.put('/:id/remove-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
+
+      if (userData == null) {
+        return res.apiv3Err(new ErrorV3('User not found'), 404);
+      }
+
       await userData.removeReadOnly();
 
       const serializedUserData = serializeUserSecurely(userData);
