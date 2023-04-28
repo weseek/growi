@@ -107,7 +107,7 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
               bookmarkedPage={userBookmark}
               level={0}
               parentFolder={null}
-              isMoveToRoot={false}
+              canMoveToRoot={false}
               onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />

@@ -7,13 +7,11 @@ import {
 
 export const BookmarkFolderItemControl: React.FC<{
   children?: React.ReactNode
-  isMoveToRoot: boolean
-  onClickMoveToRoot: () => void
+  onClickMoveToRoot?: () => Promise<void>
   onClickRename: () => void
   onClickDelete: () => void
 }> = ({
   children,
-  isMoveToRoot,
   onClickMoveToRoot,
   onClickRename,
   onClickDelete,
@@ -33,7 +31,7 @@ export const BookmarkFolderItemControl: React.FC<{
         container="body"
         style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
       >
-        {isMoveToRoot && (
+        {onClickMoveToRoot && (
           <DropdownItem
             onClick={onClickMoveToRoot}
             className="grw-page-control-dropdown-item"

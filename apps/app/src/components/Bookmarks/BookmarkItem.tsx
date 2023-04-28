@@ -25,7 +25,7 @@ type Props = {
   bookmarkedPage: IPageHasId,
   level: number,
   parentFolder: BookmarkFolderItems | null,
-  isMoveToRoot: boolean,
+  canMoveToRoot: boolean,
   onClickDeleteBookmarkHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
   bookmarkFolderTreeMutation: () => void
 }
@@ -38,7 +38,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
 
   const {
     bookmarkedPage, onClickDeleteBookmarkHandler,
-    parentFolder, level, isMoveToRoot, bookmarkFolderTreeMutation,
+    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
@@ -138,7 +138,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            additionalMenuItemOnTopRenderer={isMoveToRoot
+            additionalMenuItemOnTopRenderer={canMoveToRoot
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
               : undefined}
           >

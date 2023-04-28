@@ -140,7 +140,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     return true;
   };
 
-
   const renderChildFolder = () => {
     return isOpen && children?.map((childFolder) => {
       return (
@@ -167,7 +166,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           bookmarkedPage={bookmark.page}
           level={level + 1}
           parentFolder={bookmarkFolder}
-          isMoveToRoot={true}
+          canMoveToRoot={true}
           onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
           bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
         />
@@ -254,8 +253,10 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             <BookmarkFolderItemControl
               onClickRename={onClickRenameHandler}
               onClickDelete={onClickDeleteHandler}
-              onClickMoveToRoot={onClickMoveToRootHandlerForBookmarkFolderItemControl}
-              isMoveToRoot={bookmarkFolder.parent != null}
+              onClickMoveToRoot={bookmarkFolder.parent != null
+                ? onClickMoveToRootHandlerForBookmarkFolderItemControl
+                : undefined
+              }
             >
               <div onClick={e => e.stopPropagation()}>
                 <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
