@@ -1,8 +1,8 @@
-import { PopperData, Modifiers } from '~/interfaces/popper-data';
+import { PopperData, CustomModifiers } from '~/interfaces/popper-data';
 
 // Conditional modifiers
 // To prevent flickering. only happened when `right` is true and persist props should be enabled
-export const modifiersForRightAlign: Modifiers = {
+const modifiersForRightAlign: CustomModifiers = {
   applyStyle: {
     enabled: true,
   },
@@ -23,4 +23,12 @@ export const modifiersForRightAlign: Modifiers = {
     },
   },
   preventOverflow: { boundariesElement: 'viewport' },
+};
+
+export const getCustomModifiers = (alignRight?: boolean): CustomModifiers => {
+  return (
+    alignRight
+      ? modifiersForRightAlign
+      : { preventOverflow: { boundariesElement: 'viewport' } }
+  );
 };
