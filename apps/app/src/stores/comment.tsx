@@ -75,12 +75,10 @@ export const useSWRxEditingCommentsNum = (): SWRResponse<number, Error> & Editin
 
   return {
     ...swrResponse,
-    increment: () => swrResponse.mutate(swrResponse.data ? swrResponse.data + 1 : 1),
+    increment: () => swrResponse.mutate((swrResponse.data ?? 0) + 1),
     decrement: () => {
-      if (swrResponse.data != null && swrResponse.data > 0) {
-        return swrResponse.mutate(swrResponse.data - 1);
-      }
-      return swrResponse.mutate(0);
+      const newValue = (swrResponse.data ?? 0) - 1;
+      return swrResponse.mutate(Math.max(0, newValue));
     },
   };
 };
