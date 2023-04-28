@@ -128,10 +128,12 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       setIsReadyToUse(false);
     }
 
+    initializeEditor();
+
     if (onCancelButtonClicked != null) {
       onCancelButtonClicked();
     }
-  }, [isForNewComment, onCancelButtonClicked]);
+  }, [isForNewComment, onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
     try {
