@@ -263,11 +263,16 @@ context('Access to Template Editing Mode', () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    cy.waitUntil(() => {
+      // do
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+      });
+      // wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
 
+    cy.getByTestid('open-page-template-modal-btn').filter(':visible').click({force: true});
     cy.getByTestid('page-template-modal').should('be.visible');
     cy.screenshot(`${ssPrefix}-open-page-template-modal`);
 
@@ -294,11 +299,16 @@ context('Access to Template Editing Mode', () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-template-modal-btn').click({force: true});
+    cy.waitUntil(() => {
+      // do
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+      });
+      // Wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
 
+    cy.getByTestid('open-page-template-modal-btn').filter(':visible').click({force: true});
     cy.getByTestid('page-template-modal').should('be.visible');
 
     cy.getByTestid('template-button-decendants').click(({force: true}))
@@ -323,10 +333,18 @@ context('Access to Template Editing Mode', () => {
   it('Template is applied to pages created from PageTree (template for descendants)', () => {
     // delete /Sandbox/_template
     cy.visit('/Sandbox/_template');
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+
+    cy.waitUntil(() => {
+      //do
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+      });
+      // wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
+
+    cy.getByTestid('open-page-delete-modal-btn').filter(':visible').click({force: true});
+
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
       cy.intercept('POST', '/_api/pages.remove').as('remove');
       cy.getByTestid('delete-page-button').click();
