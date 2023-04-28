@@ -201,7 +201,9 @@ module.exports = function(crowi) {
 
     const gcs = getGcsInstance();
     const bucket = gcs.bucket(getGcsBucket());
-    const [files] = await bucket.getFiles();
+    const [files] = await bucket.getFiles({
+      prefix: configManager.getConfig('crowi', 'gcs:uploadNamespace'),
+    });
 
     return files.map(({ name, metadata: { size } }) => {
       return { name, size };

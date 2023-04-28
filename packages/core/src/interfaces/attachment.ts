@@ -1,4 +1,5 @@
 import type { Ref } from './common';
+import { HasObjectId } from './has-object-id';
 import type { IPage } from './page';
 import type { IUser } from './user';
 
@@ -13,3 +14,5 @@ export type IAttachment = {
   downloadPathProxied: string,
   originalName: string,
 };
+
+export type IAttachmentHasId = IAttachment & HasObjectId;
