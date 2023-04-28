@@ -576,7 +576,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
-      await userData.makeReadOnly();
+      await userData.giveReadOnly();
 
       const serializedUserData = serializeUserSecurely(userData);
 
@@ -624,7 +624,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
-      await userData.removeFromReadOnly();
+      await userData.removeReadOnly();
 
       const serializedUserData = serializeUserSecurely(userData);
 

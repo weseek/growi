@@ -68,6 +68,7 @@ module.exports = function(crowi) {
     },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
+    readOnly: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
   }, {
     timestamps: true,
@@ -273,6 +274,18 @@ module.exports = function(crowi) {
   userSchema.methods.makeAdmin = async function() {
     debug('Admin', this);
     this.admin = 1;
+    return this.save();
+  };
+
+  userSchema.methods.giveReadOnly = async function() {
+    debug('Give read only flag', this);
+    this.readOnly = 1;
+    return this.save();
+  };
+
+  userSchema.methods.removeReadOnly = async function() {
+    debug('Remove read only flag', this);
+    this.readOnly = 0;
     return this.save();
   };
 
