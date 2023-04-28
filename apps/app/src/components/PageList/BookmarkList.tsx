@@ -46,7 +46,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
     return !userBookmarks?.map(userBookmark => userBookmark._id).includes(pageId);
   }, [pageId, userBookmarks]);
 
-  const moveToRootClickedHandler = useCallback(async() => {
+  const onClickMoveToRootHandler = useCallback(async() => {
     try {
       await addBookmarkToFolder(pageId, null);
       await mutateUserBookmarks();
@@ -125,7 +125,7 @@ export const BookmarkList = (props:Props): JSX.Element => {
         onClickRenameMenuItem={() => setIsRenameInputShown(true)}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
         additionalMenuItemOnTopRenderer={isMoveToRoot
-          ? () => <BookmarkMoveToRootBtn pageId={pageId} moveToRootClickedHandler={moveToRootClickedHandler}/>
+          ? () => <BookmarkMoveToRootBtn pageId={pageId} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
           : undefined
         }
       >

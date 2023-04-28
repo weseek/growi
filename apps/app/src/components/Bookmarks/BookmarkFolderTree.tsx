@@ -3,9 +3,8 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { BookmarkFolderItems, DragItemType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
-import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { toastSuccess } from '~/client/util/toastr';
+import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRxCurrentUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
@@ -28,15 +27,16 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
   const { t } = useTranslation();
 
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const onUnbookmarkHandler = useCallback(() => {
+  const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
     mutateBookmarkInfo();
-  }, [mutateBookmarkInfo, mutateUserBookmarks]);
+    mutateBookmarkFolders();
+  }, [mutateBookmarkFolders, mutateBookmarkInfo, mutateUserBookmarks]);
 
   const onClickDeleteBookmarkHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -44,12 +44,10 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
 
       toastSuccess(isCompletely ? t('deleted_pages_completely', { pathOrPathsToDelete }) : t('deleted_pages', { pathOrPathsToDelete }));
 
-      mutateUserBookmarks();
-      mutateBookmarkInfo();
-      mutateBookmarkFolders();
+      bookmarkFolderTreeMutation();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  }, [openDeleteModal, mutateUserBookmarks, mutateBookmarkInfo, mutateBookmarkFolders, t]);
+  }, [openDeleteModal, t, bookmarkFolderTreeMutation]);
 
   /* TODO: update in bookmarks folder v2. */
   // const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {
@@ -85,10 +83,6 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
 
   // };
 
-  if (bookmarkFolders == null || userBookmarks == null || currentPage == null || bookmarkInfo == null) {
-    return <></>;
-  }
-
   return (
     <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
       <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
@@ -101,29 +95,21 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
               level={0}
               root={bookmarkFolder._id}
               isUserHomePage={isUserHomePage}
-              bookmarkFolders={bookmarkFolders}
-              mutateBookmarkFolders={mutateBookmarkFolders}
-              userBookmarks={userBookmarks}
-              mutateUserBookmarks={mutateUserBookmarks}
-              bookmarkInfo={bookmarkInfo}
-              mutateBookmarkInfo={mutateBookmarkInfo}
+              onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
+              bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />
           );
         })}
         {userBookmarks?.map(userBookmark => (
           <div key={userBookmark._id} className="grw-foldertree-item-container grw-root-bookmarks">
             <BookmarkItem
-              bookmarkedPage={userBookmark}
               key={userBookmark._id}
-              onUnbookmarked={onUnbookmarkHandler}
-              onRenamed={mutateUserBookmarks}
-              onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
-              parentFolder={null}
+              bookmarkedPage={userBookmark}
               level={0}
-              bookmarkFolders={bookmarkFolders}
-              mutateBookmarkFolders={mutateBookmarkFolders}
-              userBookmarks={userBookmarks}
-              mutateUserBookmarks={mutateUserBookmarks}
+              parentFolder={null}
+              isMoveToRoot={false}
+              onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
+              bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />
           </div>
         ))}

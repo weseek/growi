@@ -5,13 +5,13 @@ import { DropdownItem } from 'reactstrap';
 
 export const BookmarkMoveToRootBtn: React.FC<{
   pageId: string
-  moveToRootClickedHandler: (pageId: string) => Promise<void>
-}> = React.memo(({ pageId, moveToRootClickedHandler }) => {
+  onClickMoveToRootHandler: (pageId: string) => Promise<void>
+}> = React.memo(({ pageId, onClickMoveToRootHandler }) => {
   const { t } = useTranslation();
 
   return (
     <DropdownItem
-      onClick={() => moveToRootClickedHandler(pageId)}
+      onClick={() => onClickMoveToRootHandler(pageId)}
       className="grw-page-control-dropdown-item"
       data-testid="add-remove-bookmark-btn"
     >
