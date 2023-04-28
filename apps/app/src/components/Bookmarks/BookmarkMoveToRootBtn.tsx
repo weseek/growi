@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { DropdownItem } from 'reactstrap';
 
 export const BookmarkMoveToRootBtn: React.FC<{
-  moveToRootClickedHandler: () => Promise<void>
-}> = React.memo(({ moveToRootClickedHandler }) => {
+  pageId: string
+  moveToRootClickedHandler: (pageId: string) => Promise<void>
+}> = React.memo(({ pageId, moveToRootClickedHandler }) => {
   const { t } = useTranslation();
 
   return (
     <DropdownItem
-      onClick={moveToRootClickedHandler}
+      onClick={() => moveToRootClickedHandler(pageId)}
       className="grw-page-control-dropdown-item"
       data-testid="add-remove-bookmark-btn"
     >

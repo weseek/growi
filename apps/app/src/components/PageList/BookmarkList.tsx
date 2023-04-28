@@ -124,7 +124,10 @@ export const BookmarkList = (props:Props): JSX.Element => {
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
         onClickRenameMenuItem={() => setIsRenameInputShown(true)}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        additionalMenuItemOnTopRenderer={isMoveToRoot ? (() => <BookmarkMoveToRootBtn moveToRootClickedHandler={moveToRootClickedHandler}/>) : undefined}
+        additionalMenuItemOnTopRenderer={isMoveToRoot
+          ? () => <BookmarkMoveToRootBtn pageId={pageId} moveToRootClickedHandler={moveToRootClickedHandler}/>
+          : undefined
+        }
       >
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
           <i className="icon-options fa fa-rotate-90 p-1"></i>

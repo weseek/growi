@@ -30,7 +30,7 @@ import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
-import { MenuItemType, PageItemControl } from '../../Common/Dropdown/PageItemControl';
+import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
 import { ItemNode } from './ItemNode';
 

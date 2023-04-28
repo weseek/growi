@@ -10,8 +10,10 @@ import {
 import { addBookmarkToFolder, addNewFolder, toggleBookmark } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
+import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import { FolderIcon } from '../Icons/FolderIcon';
@@ -31,6 +33,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
+  const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
   const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
 
@@ -99,9 +102,9 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     return bookmarkFolders != null && bookmarkFolders.length > 0;
   }, [bookmarkFolders]);
 
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  const onPressEnterHandlerForCreate = useCallback(async(folderName: string, item?: BookmarkFolderItems) => {
     try {
-      await addNewFolder(folderName, null);
+      await addNewFolder(folderName, item ? item._id : null);
       await mutateBookmarkFolders();
       setIsCreateAction(false);
     }
@@ -129,6 +132,47 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     setSelectedItem(itemId);
   }, [mutateBookmarkFolders, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
+  // Delete folder handler
+  const onClickDeleteHandler = useCallback(async(e, item) => {
+    e.stopPropagation();
+
+    const bookmarkFolderDeleteHandler: onDeletedBookmarkFolderFunction = (folderId) => {
+      if (typeof folderId !== 'string') {
+        return;
+      }
+      mutateBookmarkInfo();
+      mutateBookmarkFolders();
+    };
+
+    if (item == null) {
+      return;
+    }
+    openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
+  }, [mutateBookmarkFolders, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
+
+  const onClickChildMenuItemHandler = useCallback(async(e, item) => {
+    e.stopPropagation();
+
+    setSelectedItem(null);
+
+    try {
+      if (isBookmarked && currentPage != null) {
+        await toggleBookmark(currentPage._id, isBookmarked);
+      }
+      if (currentPage != null) {
+        await addBookmarkToFolder(currentPage._id, item._id);
+      }
+      mutateUserBookmarks();
+      mutateBookmarkFolders();
+      setSelectedItem(item._id);
+      mutateBookmarkInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [isBookmarked, currentPage, mutateUserBookmarks, mutateBookmarkFolders, mutateBookmarkInfo]);
+
+
   const renderBookmarkMenuItem = (child?: BookmarkFolderItems[]) => {
     const renderSubmenu = () => {
       if (child == null || currentPage == null || bookmarkInfo == null) {
@@ -147,12 +191,10 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                 <BookmarkFolderMenuItem
                   item={folder}
                   isSelected={selectedItem === folder._id}
-                  onSelectedChild={() => setSelectedItem(null)}
                   currentPage={currentPage}
-                  bookmarkInfo={bookmarkInfo}
-                  mutateBookmarkFolders={mutateBookmarkFolders}
-                  mutateBookmarkInfo={mutateBookmarkInfo}
-                  mutateUserBookmarks={mutateUserBookmarks}
+                  onClickDeleteHandler={onClickDeleteHandler}
+                  onClickChildMenuItemHandler={onClickChildMenuItemHandler}
+                  onPressEnterHandlerForCreate={onPressEnterHandlerForCreate}
                 />
                 {isOpen && renderSubmenu()}
               </div>
@@ -212,12 +254,10 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                   <BookmarkFolderMenuItem
                     item={folder}
                     isSelected={selectedItem === folder._id}
-                    onSelectedChild={() => setSelectedItem(null)}
                     currentPage={currentPage}
-                    bookmarkInfo={bookmarkInfo}
-                    mutateBookmarkFolders={mutateBookmarkFolders}
-                    mutateBookmarkInfo={mutateBookmarkInfo}
-                    mutateUserBookmarks={mutateUserBookmarks}
+                    onClickDeleteHandler={onClickDeleteHandler}
+                    onClickChildMenuItemHandler={onClickChildMenuItemHandler}
+                    onPressEnterHandlerForCreate={onPressEnterHandlerForCreate}
                   />
                   {isOpen && renderSubmenu()}
                 </div>

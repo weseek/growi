@@ -8,16 +8,9 @@ import {
   DropdownItem,
   DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
-import type { KeyedMutator } from 'swr';
 
-import {
-  addBookmarkToFolder, addNewFolder, hasChildren, toggleBookmark,
-} from '~/client/util/bookmark-utils';
-import { toastError } from '~/client/util/toastr';
-import { BookmarkFolderItems, IBookmarkInfo } from '~/interfaces/bookmark-info';
-import { IPageHasId } from '~/interfaces/page';
-import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
-import { useBookmarkFolderDeleteModal } from '~/stores/modal';
+import { hasChildren } from '~/client/util/bookmark-utils';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 
 import { FolderIcon } from '../Icons/FolderIcon';
 import { TriangleIcon } from '../Icons/TriangleIcon';
@@ -27,21 +20,17 @@ import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 export const BookmarkFolderMenuItem: React.FC<{
   item: BookmarkFolderItems
   isSelected: boolean
-  onSelectedChild: () => void
   currentPage: IPagePopulatedToShowRevision
-  bookmarkInfo: IBookmarkInfo
-  mutateBookmarkFolders: KeyedMutator<BookmarkFolderItems[]>
-  mutateBookmarkInfo: KeyedMutator<IBookmarkInfo>
-  mutateUserBookmarks: KeyedMutator<IPageHasId[]>
+  onClickDeleteHandler: (e: any, item: any) => Promise<void>
+  onClickChildMenuItemHandler: (e: any, item: any) => Promise<void>
+  onPressEnterHandlerForCreate: (folderName: string, item?: BookmarkFolderItems) => Promise<void>
 }> = ({
   item,
   isSelected,
-  onSelectedChild,
   currentPage,
-  bookmarkInfo,
-  mutateBookmarkFolders,
-  mutateBookmarkInfo,
-  mutateUserBookmarks,
+  onClickDeleteHandler,
+  onClickChildMenuItemHandler,
+  onPressEnterHandlerForCreate,
 }) => {
   const { t } = useTranslation();
 
@@ -49,22 +38,7 @@ export const BookmarkFolderMenuItem: React.FC<{
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
 
-  const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
-
-  const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
-
   const childrenExists = hasChildren(item);
-
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
-    try {
-      await addNewFolder(folderName, item._id);
-      await mutateBookmarkFolders();
-      setIsCreateAction(false);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [item._id, mutateBookmarkFolders]);
 
   useEffect(() => {
     if (isOpen) {
@@ -91,43 +65,6 @@ export const BookmarkFolderMenuItem: React.FC<{
   const onMouseEnterHandler = useCallback(() => {
     setIsOpen(true);
   }, []);
-
-  // Delete folder handler
-  const onClickDeleteHandler = useCallback(async(e) => {
-    e.stopPropagation();
-    const bookmarkFolderDeleteHandler: onDeletedBookmarkFolderFunction = (folderId) => {
-      if (typeof folderId !== 'string') {
-        return;
-      }
-      mutateBookmarkInfo();
-      mutateBookmarkFolders();
-    };
-
-    if (item == null) {
-      return;
-    }
-    openDeleteBookmarkFolderModal(item, { onDeleted: bookmarkFolderDeleteHandler });
-  }, [item, mutateBookmarkFolders, mutateBookmarkInfo, openDeleteBookmarkFolderModal]);
-
-  const onClickChildMenuItemHandler = useCallback(async(e, item) => {
-    e.stopPropagation();
-    onSelectedChild();
-    try {
-      if (isBookmarked && currentPage != null) {
-        await toggleBookmark(currentPage._id, isBookmarked);
-      }
-      if (currentPage != null) {
-        await addBookmarkToFolder(currentPage._id, item._id);
-      }
-      mutateUserBookmarks();
-      mutateBookmarkFolders();
-      setSelectedItem(item._id);
-      mutateBookmarkInfo();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [onSelectedChild, isBookmarked, currentPage, mutateUserBookmarks, mutateBookmarkFolders, mutateBookmarkInfo]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     if (!isOpen) {
@@ -158,29 +95,30 @@ export const BookmarkFolderMenuItem: React.FC<{
               tabIndex={0} role="menuitem"
               onClick={e => onClickChildMenuItemHandler(e, child)}>
               <BookmarkFolderMenuItem
-                onSelectedChild={() => setSelectedItem(null)}
                 item={child}
                 isSelected={selectedItem === child._id}
                 currentPage={currentPage}
-                bookmarkInfo={bookmarkInfo}
-                mutateBookmarkFolders={mutateBookmarkFolders}
-                mutateBookmarkInfo={mutateBookmarkInfo}
-                mutateUserBookmarks={mutateUserBookmarks}
+                onClickDeleteHandler={onClickDeleteHandler}
+                onClickChildMenuItemHandler={onClickChildMenuItemHandler}
+                onPressEnterHandlerForCreate={onPressEnterHandlerForCreate}
               />
             </div>
           </div>
         ))}
       </DropdownMenu>
     );
-  }, [isOpen,
-      isCreateAction,
-      onPressEnterHandlerForCreate,
-      t,
-      childrenExists,
-      item.children,
-      onClickNewBookmarkFolder,
-      selectedItem,
-      onClickChildMenuItemHandler,
+  }, [
+    isOpen,
+    isCreateAction,
+    onPressEnterHandlerForCreate,
+    t,
+    childrenExists,
+    item.children,
+    onClickNewBookmarkFolder,
+    selectedItem,
+    currentPage,
+    onClickDeleteHandler,
+    onClickChildMenuItemHandler,
   ]);
 
   return (
@@ -210,7 +148,7 @@ export const BookmarkFolderMenuItem: React.FC<{
           id={`bookmark-delete-button-${item._id}`}
           className="text-danger ml-auto"
           color="transparent"
-          onClick={e => onClickDeleteHandler(e)}
+          onClick={e => onClickDeleteHandler(e, item)}
         >
           <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
         </DropdownToggle>
