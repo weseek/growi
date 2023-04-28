@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import nodePath from 'path';
 
@@ -7,62 +7,70 @@ import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { unbookmark } from '~/client/services/page-operation';
-import { renamePage } from '~/client/util/bookmark-utils';
+import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
+import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 type Props = {
   bookmarkedPage: IPageHasId,
-  onUnbookmarked: () => void,
-  onRenamed: () => void,
-  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void,
-  parentFolder: BookmarkFolderItems | null
-  level: number
+  level: number,
+  parentFolder: BookmarkFolderItems | null,
+  canMoveToRoot: boolean,
+  onClickDeleteBookmarkHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
+  bookmarkFolderTreeMutation: () => void
 }
 
 export const BookmarkItem = (props: Props): JSX.Element => {
   const BASE_FOLDER_PADDING = 15;
   const BASE_BOOKMARK_PADDING = 20;
+
   const { t } = useTranslation();
+
   const {
-    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem, parentFolder, level,
+    bookmarkedPage, onClickDeleteBookmarkHandler,
+    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
+
   const [isRenameInputShown, setRenameInputShown] = useState(false);
+
+  const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const { mutate: mutateBookamrkData } = useSWRxBookamrkFolderAndChild();
-  const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
-
   const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level + 1));
-
   const dragItem: Partial<DragItemDataType> = {
     ...bookmarkedPage, parentFolder,
   };
 
-  useEffect(() => {
-    mutateBookamrkData();
-  }, [mutateBookamrkData]);
+  const onClickMoveToRootHandler = useCallback(async() => {
+    try {
+      await addBookmarkToFolder(bookmarkedPage._id, null);
+      bookmarkFolderTreeMutation();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [bookmarkFolderTreeMutation, bookmarkedPage._id]);
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
-    onUnbookmarked();
-  }, [onUnbookmarked, bookmarkedPage]);
+    bookmarkFolderTreeMutation();
+  }, [bookmarkedPage._id, bookmarkFolderTreeMutation]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     setRenameInputShown(true);
   }, []);
-
 
   const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
@@ -75,13 +83,13 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     try {
       setRenameInputShown(false);
       await renamePage(bookmarkedPage._id, bookmarkedPage.revision, newPagePath);
-      onRenamed();
+      bookmarkFolderTreeMutation();
     }
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage, onRenamed]);
+  }, [bookmarkedPage, bookmarkFolderTreeMutation]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
@@ -97,8 +105,8 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       meta: pageInfo,
     };
 
-    onClickDeleteMenuItem(pageToDelete);
-  }, [bookmarkedPage, onClickDeleteMenuItem]);
+    onClickDeleteBookmarkHandler(pageToDelete);
+  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteBookmarkHandler]);
 
   return (
     <DragAndDropWrapper
@@ -130,6 +138,9 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            additionalMenuItemOnTopRenderer={canMoveToRoot
+              ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
+              : undefined}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>

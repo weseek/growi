@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 
 import { modifiersForRightAlign } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
