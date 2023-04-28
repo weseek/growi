@@ -744,7 +744,6 @@
       "cannot_remove": "您不能从管理员中删除自己",
       "give_admin_access": "授予管理员访问权限",
       "remove_read_only_access": "删除一个用户作为浏览用户",
-      "cannot_give_read_only": "管理员不能成为浏览用户",
       "give_read_only_access": "使一个用户成为阅读用户",
       "send_invitation_email": "发送邀请邮件",
       "resend_invitation_email": "重发邀请函"

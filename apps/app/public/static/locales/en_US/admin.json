@@ -736,7 +736,6 @@
       "cannot_remove": "You cannot remove yourself from administrator",
       "give_admin_access": "Give admin access",
       "remove_read_only_access": "Remove read only access",
-      "cannot_give_read_only": "You cannot give read only flag to administrator",
       "give_read_only_access": "Give read only access",
       "send_invitation_email": "Send invitation email",
       "resend_invitation_email": "Resend invitation email"

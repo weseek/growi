@@ -744,7 +744,6 @@
       "cannot_remove": "自分自身を管理者から外すことはできません",
       "give_admin_access": "管理者にする",
       "remove_read_only_access": "閲覧ユーザーから外す",
-      "cannot_give_read_only": "管理者を閲覧ユーザーにすることはできません",
       "give_read_only_access": "閲覧ユーザーにする",
       "send_invitation_email": "招待メールの送信",
       "resend_invitation_email": "招待メールの再送信"
