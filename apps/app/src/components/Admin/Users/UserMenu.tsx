@@ -83,12 +83,10 @@ const UserMenu = (props: UserMenuProps) => {
         <li className="dropdown-divider pl-0"></li>
         <li className="dropdown-header">{t('user_management.user_table.administrator_menu')}</li>
         <li>
-          {user.admin === true && <RemoveAdminMenuItem user={user} />}
-          {user.admin === false && <GiveAdminButton user={user} />}
+          {user.admin ? <RemoveAdminMenuItem user={user} /> : <GiveAdminButton user={user} />}
         </li>
         <li>
-          {user.readOnly === true && <RemoveReadOnlyMenuItem user={user} />}
-          {user.readOnly === false && <GiveReadOnlyButton user={user} />}
+          {user.readOnly ? <RemoveReadOnlyMenuItem user={user} /> : <GiveReadOnlyButton user={user} />}
         </li>
       </>
     );
