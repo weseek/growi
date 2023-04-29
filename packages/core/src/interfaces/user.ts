@@ -13,6 +13,7 @@ export type IUser = {
   imageUrlCached: string,
   isGravatarEnabled: boolean,
   admin: boolean,
+  readOnly: boolean,
   apiToken?: string,
   isEmailPublished: boolean,
   isInvitationEmailSended: boolean,
