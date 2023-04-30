@@ -32,7 +32,7 @@ import styles from './LinkEditPreview.module.scss';
 const logger = loggerFactory('growi:components:LinkEditModal');
 
 type Props = {
-  onSave: any // TODO: typescriptize
+  onSave: (linkText: string) => void
 }
 
 export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
@@ -222,7 +222,7 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
     }
   };
 
-  const handleChangeLabelInput = (label) => {
+  const handleChangeLabelInput = (label: string) => {
     setLabelInputValue(label);
   };
 
@@ -241,7 +241,7 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
     const linker = generateLink();
 
     if (props.onSave != null) {
-      props.onSave(linker.generateMarkdownText());
+      props.onSave(linker.generateMarkdownText() ?? '');
     }
 
     hide();
@@ -268,7 +268,6 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
               <SearchTypeahead
                 onChange={handleChangeTypeahead}
                 onInputChange={handleChangeLinkInput}
-                // inputName="link" // TODO: research
                 placeholder={t('link_edit.placeholder_of_link_input')}
                 keywordOnInit={linkInputValue}
                 autoFocus
