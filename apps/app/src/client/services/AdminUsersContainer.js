@@ -231,6 +231,32 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * Give user read only
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async giveUserReadOnly(userId) {
+    const response = await apiv3Put(`/users/${userId}/give-read-only`);
+    const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
+    return username;
+  }
+
+  /**
+   * Remove user read only
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async removeUserReadOnly(userId) {
+    const response = await apiv3Put(`/users/${userId}/remove-read-only`);
+    const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
+    return username;
+  }
+
+  /**
    * Activate user
    * @memberOf AdminUsersContainer
    * @param {string} userId

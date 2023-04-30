@@ -725,6 +725,7 @@
     },
     "user_table": {
       "administrator": "Administrator",
+      "read_only_user": "Read Only User",
       "edit_menu": "Edit menu",
       "reset_password": "Reset password",
       "administrator_menu": "Administrator Menu",
@@ -734,6 +735,8 @@
       "remove_admin_access": "Remove admin access",
       "cannot_remove": "You cannot remove yourself from administrator",
       "give_admin_access": "Give admin access",
+      "remove_read_only_access": "Remove read only access",
+      "give_read_only_access": "Give read only access",
       "send_invitation_email": "Send invitation email",
       "resend_invitation_email": "Resend invitation email"
     },
@@ -1024,6 +1027,8 @@
   "toaster": {
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "give_user_read_only": "Succeeded to give {{username}} read only",
+    "remove_user_read_only": "Succeeded to remove {{username}} read only",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",
