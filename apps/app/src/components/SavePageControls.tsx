@@ -80,17 +80,17 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     <div className="d-flex align-items-center form-inline flex-nowrap">
 
       {isAclEnabled
-          && (
-            <div className="mr-2">
-              <GrantSelector
-                grant={grant}
-                disabled={isRootPage}
-                grantGroupId={grantedGroup?.id}
-                grantGroupName={grantedGroup?.name}
-                onUpdateGrant={updateGrantHandler}
-              />
-            </div>
-          )
+        && (
+          <div className="mr-2">
+            <GrantSelector
+              grant={grant}
+              disabled={isRootPage}
+              grantGroupId={grantedGroup?.id}
+              grantGroupName={grantedGroup?.name}
+              onUpdateGrant={updateGrantHandler}
+            />
+          </div>
+        )
       }
 
       <UncontrolledButtonDropdown direction="up">
@@ -101,9 +101,9 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           onClick={save}
           disabled={isWaitingSaveProcessing}
         >
-          { isWaitingSaveProcessing && (
+          {isWaitingSaveProcessing && (
             <i className="fa fa-spinner fa-pulse mr-1"></i>
-          ) }
+          )}
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />

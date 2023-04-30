@@ -11,18 +11,17 @@ import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
-import { useSWRxPageComment } from '~/stores/comment';
+import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured,
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
-
 
 import { CommentPreview } from './CommentPreview';
 
@@ -70,12 +69,18 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const {
+    increment: incrementEditingCommentsNum,
+    decrement: decrementEditingCommentsNum,
+  } = useSWRxEditingCommentsNum();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
+  const [incremented, setIncremented] = useState(false);
 
   const editorRef = useRef<IEditorMethods>(null);
 
@@ -102,7 +107,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     setSlackChannels(slackChannels);
   }, []);
 
-  const initializeEditor = useCallback(() => {
+  const initializeEditor = useCallback(async() => {
     setComment('');
     setActiveTab('comment_editor');
     setError(undefined);
@@ -110,7 +115,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     // reset value
     if (editorRef.current == null) { return }
     editorRef.current.setValue('');
-  }, [initializeSlackEnabled]);
+    const editingCommentsNum = await decrementEditingCommentsNum();
+    if (editingCommentsNum === 0) {
+      mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
+    }
+  }, [initializeSlackEnabled, mutateIsEnabledUnsavedWarning, decrementEditingCommentsNum]);
 
   const cancelButtonClickedHandler = useCallback(() => {
     // change state to not ready
@@ -119,10 +128,12 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       setIsReadyToUse(false);
     }
 
+    initializeEditor();
+
     if (onCancelButtonClicked != null) {
       onCancelButtonClicked();
     }
-  }, [isForNewComment, onCancelButtonClicked]);
+  }, [isForNewComment, onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
     try {
@@ -237,7 +248,14 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
-  const onChangeHandler = useCallback((newValue: string) => setComment(newValue), []);
+  const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+    setComment(newValue);
+    if (!isClean && !incremented) {
+      incrementEditingCommentsNum();
+      setIncremented(true);
+    }
+    mutateIsEnabledUnsavedWarning(!isClean);
+  }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
 
   const renderReady = () => {
     const commentPreview = getCommentHtml();

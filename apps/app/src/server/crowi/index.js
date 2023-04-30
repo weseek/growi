@@ -3,6 +3,7 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
+import attachmentRoutes from '@growi/remark-attachment-refs/dist/server';
 import lsxRoutes from '@growi/remark-lsx/dist/server';
 import mongoose from 'mongoose';
 import next from 'next';
@@ -548,6 +549,7 @@ Crowi.prototype.setupTerminus = function(server) {
 
 Crowi.prototype.setupRoutesForPlugins = function() {
   lsxRoutes(this, this.express);
+  attachmentRoutes(this, this.express);
 };
 
 /**
