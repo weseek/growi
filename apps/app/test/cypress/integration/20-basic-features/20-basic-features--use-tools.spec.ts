@@ -136,10 +136,16 @@ context('Modal for page operation', () => {
   it('Page Deletion and PutBack is executed successfully', { scrollBehavior: false }, () => {
     cy.visit('/Sandbox/Bootstrap4');
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+    cy.waitUntil(() => {
+      // do
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+      });
+      //wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
+
+    cy.getByTestid('open-page-delete-modal-btn').filter(':visible').click({force: true});
 
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}-delete-modal`);
@@ -163,10 +169,16 @@ context('Modal for page operation', () => {
     cy.visit('/Sandbox/Bootstrap4');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-duplicate-modal-btn').click({force: true});
+    cy.waitUntil(() => {
+      // do
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+      });
+      // wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
+
+    cy.getByTestid('open-page-duplicate-modal-btn').filter(':visible').click({force: true});
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap4`);
   });
@@ -175,11 +187,16 @@ context('Modal for page operation', () => {
     cy.visit('/Sandbox/Bootstrap4');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
+    cy.waitUntil(() => {
+      // do
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+      });
+      // wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
 
+    cy.getByTestid('open-page-move-rename-modal-btn').filter(':visible').click({force: true});
     cy.getByTestid('grw-page-rename-button').should('be.disabled');
 
     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap4`);

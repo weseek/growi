@@ -61,6 +61,7 @@
     "@google-cloud/storage": "^5.8.5",
     "@growi/core": "^6.1.0-RC.0",
     "@growi/hackmd": "^6.1.0-RC.0",
+    "@growi/remark-attachment-refs": "^6.1.0-RC.0",
     "@growi/preset-themes": "^6.1.0-RC.0",
     "@growi/remark-drawio": "^6.1.0-RC.0",
     "@growi/remark-growi-directive": "^6.1.0-RC.0",
