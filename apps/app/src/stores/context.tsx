@@ -215,6 +215,20 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   );
 };
 
+export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: isGuestUser, isLoading: isGuestUserLoding } = useIsGuestUser();
+
+  const isLoading = isCurrentUserLoading || isGuestUserLoding;
+  const isReadOnlyUser = !isGuestUser && !!currentUser?.readOnly;
+
+  return useSWRImmutable(
+    isLoading ? null : ['isReadOnlyUser', isReadOnlyUser],
+    () => isReadOnlyUser,
+    { fallbackData: isReadOnlyUser },
+  );
+};
+
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isForbidden } = useIsForbidden();
