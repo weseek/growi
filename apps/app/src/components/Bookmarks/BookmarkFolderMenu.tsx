@@ -62,8 +62,8 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
   }, [mutateBookmarkFolders, mutateBookmarkInfo, mutatePageInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
   const toggleHandler = useCallback(async() => {
+    await mutateBookmarkFolders();
     setIsOpen(!isOpen);
-    mutateBookmarkFolders();
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {

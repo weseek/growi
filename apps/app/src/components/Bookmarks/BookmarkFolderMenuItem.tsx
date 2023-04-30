@@ -76,7 +76,7 @@ export const BookmarkFolderMenuItem: React.FC<{
           <div className='mx-2' onClick={e => e.stopPropagation()}>
             <BookmarkFolderNameInput
               onClickOutside={() => setIsCreateAction(false)}
-              onPressEnter={onPressEnterHandlerForCreate}
+              onPressEnter={e => onPressEnterHandlerForCreate(e, item)}
             />
           </div>
         ) : (
@@ -100,26 +100,15 @@ export const BookmarkFolderMenuItem: React.FC<{
                 currentPage={currentPage}
                 onClickDeleteHandler={onClickDeleteHandler}
                 onClickChildMenuItemHandler={onClickChildMenuItemHandler}
-                onPressEnterHandlerForCreate={onPressEnterHandlerForCreate}
+                onPressEnterHandlerForCreate={e => onPressEnterHandlerForCreate(e, item)}
               />
             </div>
           </div>
         ))}
       </DropdownMenu>
     );
-  }, [
-    isOpen,
-    isCreateAction,
-    onPressEnterHandlerForCreate,
-    t,
-    childrenExists,
-    item.children,
-    onClickNewBookmarkFolder,
-    selectedItem,
-    currentPage,
-    onClickDeleteHandler,
-    onClickChildMenuItemHandler,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [isOpen, isCreateAction, t, childrenExists, item, onPressEnterHandlerForCreate, onClickNewBookmarkFolder, selectedItem, currentPage, onClickDeleteHandler, onClickChildMenuItemHandler]);
 
   return (
     <>
