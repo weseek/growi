@@ -55,13 +55,13 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
   const [linkerType, setLinkerType] = useState<string>('');
   const [markdown, setMarkdown] = useState<string>('');
   const [pagePath, setPagePath] = useState<string>('');
-  const [previewError, setPreviewError] = useState<string>('');
+  const [previewError, setPreviewError] = useState<string>();
   const [permalink, setPermalink] = useState<string>('');
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
 
   const getRootPath = (type: string) => {
     // rootPaths of md link and pukiwiki link are different
-    if (currentPath == null) return ''; // TODO: think
+    if (currentPath == null) return '';
     return type === Linker.types.markdownLink ? path.dirname(currentPath) : currentPath;
   };
 
@@ -145,7 +145,6 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
     let markdown = '';
     let pagePath = '';
     let permalink = '';
-    let previewError = '';
 
     if (path.startsWith('/')) {
       try {
@@ -160,16 +159,15 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
         permalink = page.id;
       }
       catch (err) {
-        previewError = err.message;
+        setPreviewError(err.message);
       }
     }
     else {
-      previewError = t('link_edit.page_not_found_in_preview', { path });
+      setPreviewError(t('link_edit.page_not_found_in_preview', { path }));
     }
 
     setMarkdown(markdown);
     setPagePath(pagePath);
-    setPreviewError(previewError);
     setPermalink(permalink);
   };
 
@@ -371,6 +369,7 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter>
+        { previewError && <span className='text-danger'>{previewError}</span>}
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={hide}>
           {t('Cancel')}
         </button>
