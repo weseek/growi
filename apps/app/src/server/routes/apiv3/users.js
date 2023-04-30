@@ -637,7 +637,7 @@ module.exports = (crowi) => {
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_READ_ONLY });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
