@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 
-import { IProactiveQuestionnaireAnswer } from '../../../src/interfaces/questionnaire/proactive-questionnaire-answer';
-import { IQuestionnaireAnswer } from '../../../src/interfaces/questionnaire/questionnaire-answer';
-import { StatusType } from '../../../src/interfaces/questionnaire/questionnaire-answer-status';
-import ProactiveQuestionnaireAnswer from '../../../src/server/models/questionnaire/proactive-questionnaire-answer';
-import QuestionnaireAnswer from '../../../src/server/models/questionnaire/questionnaire-answer';
-import QuestionnaireAnswerStatus from '../../../src/server/models/questionnaire/questionnaire-answer-status';
-import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
+import { IProactiveQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
+import { IQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/questionnaire-answer';
+import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
+import ProactiveQuestionnaireAnswer from '../../../src/features/questionnaire/server/models/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../../../src/features/questionnaire/server/models/questionnaire-answer';
+import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
+import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
 import { getInstance } from '../setup-crowi';
 
 const axios = require('axios').default;

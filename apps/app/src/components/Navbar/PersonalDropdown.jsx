@@ -9,7 +9,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 
-import ProactiveQuestionnaireModal from '../Questionnaire/ProactiveQuestionnaireModal';
+import ProactiveQuestionnaireModal from '../../features/questionnaire/client/components/ProactiveQuestionnaireModal';
 
 const PersonalDropdown = () => {
   const { t } = useTranslation('commons');

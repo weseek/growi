@@ -1,15 +1,15 @@
 import axiosRetry from 'axios-retry';
 
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
-import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
-import ProactiveQuestionnaireAnswer from '../models/questionnaire/proactive-questionnaire-answer';
-import QuestionnaireAnswer from '../models/questionnaire/questionnaire-answer';
-import QuestionnaireAnswerStatus from '../models/questionnaire/questionnaire-answer-status';
-import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
+import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../models/questionnaire-answer';
+import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
+import QuestionnaireOrder from '../models/questionnaire-order';
 
 const logger = loggerFactory('growi:service:questionnaire-cron');
 

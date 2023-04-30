@@ -1,6 +1,6 @@
-import { StatusType } from '../../../src/interfaces/questionnaire/questionnaire-answer-status';
-import QuestionnaireAnswerStatus from '../../../src/server/models/questionnaire/questionnaire-answer-status';
-import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
+import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
+import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
+import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
 import { getInstance } from '../setup-crowi';
 
 describe('QuestionnaireService', () => {

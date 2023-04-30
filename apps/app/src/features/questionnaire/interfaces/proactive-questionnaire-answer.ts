@@ -1,6 +1,7 @@
 import { IGrowiInfo } from './growi-info';
 import { IUserInfo } from './user-info';
 
+
 export interface IProactiveQuestionnaireAnswer {
   satisfaction: number,
   commentText: string,

@@ -1,17 +1,17 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
+import { IUserHasId } from '~/interfaces/user';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
 import {
   GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
-} from '~/interfaces/questionnaire/growi-info';
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
-import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
-import { IUserHasId } from '~/interfaces/user';
-import QuestionnaireOrder, { QuestionnaireOrderDocument } from '~/server/models/questionnaire/questionnaire-order';
-
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import QuestionnaireAnswerStatus from '../models/questionnaire/questionnaire-answer-status';
-import { isShowableCondition } from '../util/questionnaire/condition';
+} from '../../interfaces/growi-info';
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import { IUserInfo, UserType } from '../../interfaces/user-info';
+import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
+import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire-order';
+import { isShowableCondition } from '../util/condition';
 
 class QuestionnaireService {
 

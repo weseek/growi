@@ -1,19 +1,19 @@
 import { Router, Request } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import { IAnswer } from '~/interfaces/questionnaire/answer';
-import { IProactiveQuestionnaireAnswer } from '~/interfaces/questionnaire/proactive-questionnaire-answer';
-import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
 import { IUserHasId } from '~/interfaces/user';
 import Crowi from '~/server/crowi';
-import ProactiveQuestionnaireAnswer from '~/server/models/questionnaire/proactive-questionnaire-answer';
-import QuestionnaireAnswer from '~/server/models/questionnaire/questionnaire-answer';
-import QuestionnaireAnswerStatus from '~/server/models/questionnaire/questionnaire-answer-status';
+import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import { IAnswer } from '../../../interfaces/answer';
+import { IProactiveQuestionnaireAnswer } from '../../../interfaces/proactive-questionnaire-answer';
+import { IQuestionnaireAnswer } from '../../../interfaces/questionnaire-answer';
+import { StatusType } from '../../../interfaces/questionnaire-answer-status';
+import ProactiveQuestionnaireAnswer from '../../models/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../../models/questionnaire-answer';
+import QuestionnaireAnswerStatus from '../../models/questionnaire-answer-status';
 
 
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
@@ -25,8 +25,8 @@ interface AuthorizedRequest extends Request {
 }
 
 module.exports = (crowi: Crowi): Router => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
+  const loginRequired = require('~/server/middlewares/login-required')(crowi, true);
 
   const validators = {
     proactiveAnswer: [

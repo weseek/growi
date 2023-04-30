@@ -10,10 +10,13 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
+import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
+
 
 import Activity from '../models/activity';
 import GrowiPlugin from '../models/growi-plugin';
@@ -31,8 +34,6 @@ import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
 // eslint-disable-next-line import/no-cycle
 import { PluginService } from '../service/plugin';
-import QuestionnaireService from '../service/questionnaire';
-import QuestionnaireCronService from '../service/questionnaire-cron';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';

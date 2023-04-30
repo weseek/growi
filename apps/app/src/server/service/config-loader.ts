@@ -1,7 +1,7 @@
 import { envUtils } from '@growi/core';
 import { parseISO } from 'date-fns';
 
-import { GrowiServiceType } from '~/interfaces/questionnaire/growi-info';
+import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
 import ConfigModel, {
