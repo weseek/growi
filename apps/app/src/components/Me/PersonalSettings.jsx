@@ -53,7 +53,6 @@ const PersonalSettings = () => {
         Icon: () => <i className="icon-fw icon-settings"></i>,
         Content: OtherSettings,
         i18n: t('Other Settings'),
-        index: 6,
       },
     };
   }, [t]);
@@ -61,7 +60,11 @@ const PersonalSettings = () => {
   const getDefaultTabIndex = () => {
     // e.g) '/me#password_settings' sets password settings tab as default
     const tab = window.location.hash?.substring(1);
-    return navTabMapping[tab]?.index;
+    let defaultTabIndex;
+    Object.keys(navTabMapping).forEach((key, i) => {
+      if (key === tab) { defaultTabIndex = i }
+    });
+    return defaultTabIndex;
   };
 
   return (

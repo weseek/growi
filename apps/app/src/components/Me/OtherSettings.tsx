@@ -7,8 +7,8 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/stores/questionnaire';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxIsQuestionnaireEnabled } from '~/stores/questionnaire';
 
 const OtherSettings = (): JSX.Element => {
   const { t } = useTranslation();
