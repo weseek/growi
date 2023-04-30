@@ -1009,6 +1009,8 @@
     "ADMIN_USERS_DEACTIVATE": "Deactivate user",
     "ADMIN_USERS_GIVE_ADMIN": "Give admin access",
     "ADMIN_USERS_REMOVE_ADMIN": "Remove admin access",
+    "ADMIN_USERS_GIVE_READ_ONLY": "Give read only access",
+    "ADMIN_USERS_REMOVE_READ_ONLY": "Remove read only access",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "Resend invitation email",
     "ADMIN_USERS_REMOVE": "Remove user",
     "ADMIN_USER_GROUP_CREATE": "Create User Group",

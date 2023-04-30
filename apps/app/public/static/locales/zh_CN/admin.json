@@ -1017,6 +1017,8 @@
     "ADMIN_USERS_DEACTIVATE": "停用用户",
     "ADMIN_USERS_GIVE_ADMIN": "授予管理员访问权限",
     "ADMIN_USERS_REMOVE_ADMIN": "删除管理员访问权限",
+    "ADMIN_USERS_GIVE_READ_ONLY": "给予只读权限",
+    "ADMIN_USERS_REMOVE_READ_ONLY": "取消只读访问",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "重发邀请函",
     "ADMIN_USERS_REMOVE": "删除用户",
     "ADMIN_USER_GROUP_CREATE": "创建用户组",

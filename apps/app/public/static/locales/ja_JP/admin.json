@@ -1017,6 +1017,8 @@
     "ADMIN_USERS_DEACTIVATE": "ユーザーを停止する",
     "ADMIN_USERS_GIVE_ADMIN": "管理者にする",
     "ADMIN_USERS_REMOVE_ADMIN": "管理者から外す",
+    "ADMIN_USERS_GIVE_READ_ONLY": "閲覧ユーザーにする",
+    "ADMIN_USERS_REMOVE_READ_ONLY": "閲覧ユーザーから外す",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "招待メールの再送信",
     "ADMIN_USERS_REMOVE": "ユーザーの削除",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
