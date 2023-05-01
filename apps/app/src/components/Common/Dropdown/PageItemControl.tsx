@@ -2,7 +2,7 @@ import React, {
   useState, useCallback, useEffect,
 } from 'react';
 
-import { modifiersForRightAlign } from '@growi/ui/dist/utils';
+import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
@@ -252,7 +252,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     <DropdownMenu
       data-testid="page-item-control-menu"
       right={alignRight}
-      modifiers={modifiersForRightAlign}
+      modifiers={getCustomModifiers(alignRight)}
       container="body"
       persist={!!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */

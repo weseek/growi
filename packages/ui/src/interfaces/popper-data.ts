@@ -14,11 +14,11 @@ export interface PopperData {
   };
 }
 
-export interface Modifiers {
-  applyStyle: {
+export interface CustomModifiers {
+  applyStyle?: {
     enabled: boolean
   }
-  computeStyle: {
+  computeStyle?: {
     enabled: boolean,
     fn: (data: PopperData) => PopperData
   }
