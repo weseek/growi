@@ -186,25 +186,26 @@ function tokenizeTable(effects, ok, nok) {
     effects.enter('tableHead');
     effects.enter('tableRow');
 
-    // increment row count
-    rowCount++;
-    self.containerState.rowCount = rowCount;
-
-    // max 2 rows processing before delimiter row
-    if (hasDelimiterRow || rowCount > 2) {
-      return nok(code);
-    }
-
     // If we start with a pipe, we open a cell marker.
     if (code === codes.verticalBar) {
+      // increment row count
+      rowCount++;
+      self.containerState.rowCount = rowCount;
+
+      // max 2 rows processing before delimiter row
+      if (hasDelimiterRow || rowCount > 2) {
+        return nok(code);
+      }
       return cellDividerHead(code);
     }
 
-    tableHeaderCount++;
-    effects.enter('temporaryTableCellContent');
-    // Can’t be space or eols at the start of a construct, so we’re in a cell.
-    assert(!markdownLineEndingOrSpace(code), 'expected non-space');
-    return inCellContentHead(code);
+    // === ignore processing all characters but code.verticalBar -- 2023.05.01 Yuki Takei
+    // tableHeaderCount++;
+    // effects.enter('temporaryTableCellContent');
+    // // Can’t be space or eols at the start of a construct, so we’re in a cell.
+    // assert(!markdownLineEndingOrSpace(code), 'expected non-space');
+    // return inCellContentHead(code);
+    return nok(code);
   }
 
   /** @type {State} */
