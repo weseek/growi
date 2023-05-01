@@ -178,10 +178,22 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function start(code) {
+    let rowCount = self.containerState.rowCount ?? 0;
+    const hasDelimiterRow = self.containerState.hasDelimiterRow ?? false;
+
     // @ts-expect-error Custom.
     effects.enter('table')._align = align;
     effects.enter('tableHead');
     effects.enter('tableRow');
+
+    // increment row count
+    rowCount++;
+    self.containerState.rowCount = rowCount;
+
+    // max 2 rows processing before delimiter row
+    if (hasDelimiterRow || rowCount > 2) {
+      return nok(code);
+    }
 
     // If we start with a pipe, we open a cell marker.
     if (code === codes.verticalBar) {
@@ -304,6 +316,9 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atDelimiterRowBreak(code) {
+    // persist that the table has a delimiter row
+    self.containerState.hasDelimiterRow = true;
+
     if (code === codes.eof || markdownLineEnding(code)) {
       return rowEndDelimiter(code);
     }
@@ -439,6 +454,11 @@ function tokenizeTable(effects, ok, nok) {
   /** @type {State} */
   function tableClose(code) {
     effects.exit('table');
+
+    // delete persisted states
+    delete self.containerState.rowCount;
+    delete self.containerState.hasDelimiterRow;
+
     return ok(code);
   }
 
