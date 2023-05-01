@@ -174,19 +174,6 @@ function tokenizeTable(effects, ok, nok) {
   /** @type {boolean|undefined} */
   let hasDash;
 
-
-  const originalEnter = effects.enter;
-  const originalExit = effects.exit;
-  effects.enter = (...args) => {
-    console.log(`>> enter ${args[0]}`);
-    return originalEnter(...args);
-  };
-  effects.exit = (...args) => {
-    console.log(`<< exit ${args[0]}`);
-    return originalExit(...args);
-  };
-
-
   return start;
 
   /** @type {State} */
@@ -287,6 +274,8 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndHead(code) {
+    console.log('atRowEndHead');
+
     if (code === codes.eof) {
       return nok(code);
     }
@@ -544,6 +533,7 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndBody(code) {
+    console.log('atRowEndBody');
     effects.exit('tableRow');
 
     if (code === codes.eof) {
