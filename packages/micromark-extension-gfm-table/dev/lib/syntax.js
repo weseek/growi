@@ -274,7 +274,10 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndHead(code) {
-    console.log('atRowEndHead');
+    let rowEndCount = self.containerState.rowEndCount ?? 0;
+    rowEndCount++;
+    self.containerState.rowEndCount = rowEndCount;
+    console.log({ method: 'atRowEndHead', rowEndCount });
 
     if (code === codes.eof) {
       return nok(code);
@@ -533,7 +536,10 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndBody(code) {
-    console.log('atRowEndBody');
+    let rowEndCount = self.containerState.rowEndCount ?? 0;
+    rowEndCount++;
+    self.containerState.rowEndCount = rowEndCount;
+    console.log({ method: 'atRowEndBody', rowEndCount });
     effects.exit('tableRow');
 
     if (code === codes.eof) {
