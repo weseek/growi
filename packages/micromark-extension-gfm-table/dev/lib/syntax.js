@@ -268,7 +268,6 @@ function tokenizeTable(effects, ok, nok) {
     }
 
     effects.consume(code);
-    console.log('[consume in Head]', String.fromCharCode(code));
     return code === codes.backslash
       ? inCellContentEscapeHead
       : inCellContentHead;
@@ -287,11 +286,6 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndHead(code) {
-    let rowEndCount = self.containerState.rowEndCount ?? 0;
-    rowEndCount++;
-    self.containerState.rowEndCount = rowEndCount;
-    console.log({ method: 'atRowEndHead', rowEndCount });
-
     if (code === codes.eof) {
       return nok(code);
     }
@@ -538,7 +532,6 @@ function tokenizeTable(effects, ok, nok) {
     }
 
     effects.consume(code);
-    console.log('[consume in Body]', String.fromCharCode(code));
     return code === codes.backslash
       ? inCellContentEscapeBody
       : inCellContentBody;
@@ -557,10 +550,6 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndBody(code) {
-    let rowEndCount = self.containerState.rowEndCount ?? 0;
-    rowEndCount++;
-    self.containerState.rowEndCount = rowEndCount;
-    console.log({ method: 'atRowEndBody', rowEndCount });
     effects.exit('tableRow');
 
     if (code === codes.eof) {
