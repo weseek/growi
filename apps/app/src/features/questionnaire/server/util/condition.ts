@@ -1,7 +1,7 @@
-import { ICondition } from '~/interfaces/questionnaire/condition';
-import { IGrowiInfo } from '~/interfaces/questionnaire/growi-info';
-import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
-import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
+import { ICondition } from '../../interfaces/condition';
+import { IGrowiInfo } from '../../interfaces/growi-info';
+import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
+import { IUserInfo, UserType } from '../../interfaces/user-info';
 
 
 const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {

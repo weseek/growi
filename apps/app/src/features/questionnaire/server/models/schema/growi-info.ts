@@ -2,7 +2,7 @@ import { Schema } from 'mongoose';
 
 import {
   GrowiAttachmentType, GrowiDeploymentType, GrowiExternalAuthProviderType, GrowiServiceType, GrowiWikiType, IGrowiInfo,
-} from '~/interfaces/questionnaire/growi-info';
+} from '../../../interfaces/growi-info';
 
 export const growiInfoSchema = new Schema<IGrowiInfo>({
   version: { type: String, required: true },

@@ -2,14 +2,15 @@ import { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess } from '~/client/util/toastr';
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
-import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
+
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import { IQuestionnaireOrderHasId } from '../../interfaces/questionnaire-order';
+import { GuestQuestionnaireAnswerStatusService } from '../services/guest-questionnaire-answer-status';
 
 const logger = loggerFactory('growi:QuestionnaireToast');
 

@@ -3,6 +3,7 @@ import { HasObjectId } from '@growi/core';
 import { GrowiServiceType } from './growi-info';
 import { UserType } from './user-info';
 
+
 interface UserCondition {
   types: UserType[] // user types to show questionnaire
   daysSinceCreation?: {

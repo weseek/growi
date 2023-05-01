@@ -3,15 +3,16 @@ import { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalBody } from 'reactstrap';
 
-import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IAnswer } from '~/interfaces/questionnaire/answer';
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
-import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
+import { IAnswer } from '~/features/questionnaire/interfaces/answer';
+import { StatusType } from '~/features/questionnaire/interfaces/questionnaire-answer-status';
+import { IQuestionnaireOrderHasId } from '~/features/questionnaire/interfaces/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
 import { useQuestionnaireModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
+
+import { GuestQuestionnaireAnswerStatusService } from '../services/guest-questionnaire-answer-status';
 
 import Question from './Question';
 

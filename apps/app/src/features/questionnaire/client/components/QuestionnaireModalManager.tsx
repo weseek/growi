@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 
-import { GuestQuestionnaireAnswerStatusService } from '~/client/services/guest-questionnaire-answer-status';
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
-import { IQuestionnaireOrderHasId } from '~/interfaces/questionnaire/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxQuestionnaireOrders } from '~/stores/questionnaire';
+
+
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import { IQuestionnaireOrderHasId } from '../../interfaces/questionnaire-order';
+import { GuestQuestionnaireAnswerStatusService } from '../services/guest-questionnaire-answer-status';
+import { useSWRxQuestionnaireOrders } from '../stores/questionnaire';
 
 import QuestionnaireModal from './QuestionnaireModal';
 import QuestionnaireToast from './QuestionnaireToast';

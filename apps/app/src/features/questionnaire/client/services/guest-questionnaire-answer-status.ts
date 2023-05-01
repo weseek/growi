@@ -1,7 +1,7 @@
 // A service to manage questionnaire answer statuses for guest user.
 // Saves statuses in localStorage.
 
-import { StatusType } from '~/interfaces/questionnaire/questionnaire-answer-status';
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
 
 interface GuestQuestionnaireAnswerStatus {
   status: StatusType

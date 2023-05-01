@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-import { IUserInfo, UserType } from '~/interfaces/questionnaire/user-info';
+import { IUserInfo, UserType } from '../../../interfaces/user-info';
 
 export const userInfoSchema = new Schema<IUserInfo>({
   userIdHash: { type: String },

@@ -21,8 +21,8 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import QuestionnaireModalManager from '~/components/Questionnaire/QuestionnaireModalManager';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import QuestionnaireModalManager from '~/features/questionnaire/client/components/QuestionnaireModalManager';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';

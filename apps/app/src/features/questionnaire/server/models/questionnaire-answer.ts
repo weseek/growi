@@ -1,8 +1,9 @@
 import { Document, Model, Schema } from 'mongoose';
 
-import { IQuestionnaireAnswer } from '~/interfaces/questionnaire/questionnaire-answer';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
+
+import { IQuestionnaireAnswer } from '../../interfaces/questionnaire-answer';
 
 import { answerSchema } from './schema/answer';
 import { growiInfoSchema } from './schema/growi-info';
