@@ -129,8 +129,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   getType() {
-    // return this.isElasticsearchV6 ? 'pages' : '_doc';
-    return '_doc';
+    return this.isElasticsearchV7 ? '_doc' : undefined;
   }
 
   /**
@@ -324,13 +323,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const tmpIndexName = `${indexName}-tmp`;
 
     // remove tmp index
-    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
+    const isExistsTmpIndexResult = await client.indices.exists({ index: tmpIndexName });
+    const isExistsTmpIndex = this.isElasticsearchV7 ? isExistsTmpIndexResult.body : isExistsTmpIndexResult;
     if (isExistsTmpIndex) {
       await client.indices.delete({ index: tmpIndexName });
     }
 
     // create index
-    const { body: isExistsIndex } = await client.indices.exists({ index: indexName });
+    const isExistsIndexRsult = await client.indices.exists({ index: indexName });
+    const isExistsIndex = this.isElasticsearchV7 ? isExistsIndexRsult.body : isExistsIndexRsult;
     if (!isExistsIndex) {
       await this.createIndex(indexName);
     }
@@ -346,7 +347,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async createIndex(index) {
-    let mappings = require('^/resource/search/mappings-es7.json');
+    let mappings = this.isElasticsearchV7
+      ? require('^/resource/search/mappings-es7.json')
+      : require('^/resource/search/mappings-es8.json');
 
     if (process.env.CI) {
       mappings = require('^/resource/search/mappings-es7-for-ci.json');
@@ -567,6 +570,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     });
 
     let count = 0;
+    const isElasticsearchV7 = this.isElasticsearchV7;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -574,14 +578,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         batch.forEach(doc => prepareBodyForCreate(body, doc));
 
         try {
-          const { body: res } = await bulkWrite({
+          const bulkResponseResult = await bulkWrite({
             body,
             // requestTimeout: Infinity,
           });
+          const bulkResponse = isElasticsearchV7 ? bulkResponseResult.body : bulkResponseResult;
 
-          count += (res.items || []).length;
+          count += (bulkResponse.items || []).length;
 
-          logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
+          logger.info(`Adding pages progressing: (count=${count}, errors=${bulkResponse.errors}, took=${bulkResponse.took}ms)`);
 
           if (shouldEmitProgress) {
             socket?.emit('addPageProgress', { totalCount, count, skipped });
@@ -660,15 +665,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       logger.debug('ES result: ', result);
     }
 
-    const { body: result } = await this.client.search(query);
-
-    // const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
-    const totalValue = result.hits.total.value;
+    const searchResponse = await this.client.search(query);
+    const result = this.isElasticsearchV7 ? searchResponse.body : searchResponse;
 
     return {
       meta: {
         took: result.took,
-        total: totalValue,
+        total: result.hits.total.value,
         hitsCount: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
