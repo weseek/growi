@@ -669,7 +669,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     if (process.env.NODE_ENV === 'development') {
       logger.debug('query: ', JSON.stringify(query, null, 2));
 
-      const { body: result } = await this.client.indices.validateQuery({
+      const validateQueryResponse = await this.client.indices.validateQuery({
         index: query.index,
         type: query.type,
         explain: true,
@@ -677,6 +677,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           query: query.body.query,
         },
       });
+      const result = this.isElasticsearchV7 ? validateQueryResponse.body : validateQueryResponse;
+
       // for debug
       logger.debug('ES result: ', result);
     }
