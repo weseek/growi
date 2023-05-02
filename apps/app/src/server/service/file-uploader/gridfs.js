@@ -15,19 +15,48 @@ module.exports = function(crowi) {
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
   // instantiate mongoose-gridfs
-  const { createModel } = require('mongoose-gridfs');
+  const { createModel, GridFSBucket } = require('mongoose-gridfs');
   const AttachmentFile = createModel({
     modelName: COLLECTION_NAME,
     bucketName: COLLECTION_NAME,
     connection: mongoose.connection,
   });
 
+  // Create bucket
+  const bucket = new GridFSBucket(mongoose.connection.db, {
+    bucketName: COLLECTION_NAME,
+  });
+
   // get Collection instance of chunk
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
 
   // create promisified method
-  AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
-  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
+  // Since the findById API (mongoose v7.x.x) doesn't accept callbacks anymore, while gridfs still uses callbacks on findById
+  // it needs to be overridden
+  // Override gridfs `write` method
+  AttachmentFile.promisifiedWrite = async function(file, stream) {
+    try {
+      const created = await util.promisify(bucket.writeFile).call(bucket, file, stream);
+      const attachment = await AttachmentFile.findById(created._id).exec();
+      return attachment;
+    }
+    catch (error) {
+      throw new Error('Failed to write attachment to bucket');
+    }
+  };
+
+  // Override gridfs `unlink` method
+  AttachmentFile.promisifiedUnlink = function(attachment) {
+    return new Promise(async(resolve, reject) => {
+      try {
+        await bucket.deleteFile(attachment._id);
+        resolve('File deleted successfully');
+      }
+      catch (err) {
+        reject(err);
+      }
+    });
+  };
 
   lib.isValidUploadSettings = function() {
     return true;

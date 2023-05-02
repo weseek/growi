@@ -68,14 +68,11 @@ class AttachmentService {
     return;
   }
 
-  async removeAttachment(attachmentId) {
+  async removeAttachment(attachment) {
     const Attachment = this.crowi.model('Attachment');
     const { fileUploadService } = this.crowi;
-    const attachment = await Attachment.findById(attachmentId);
-
     await fileUploadService.deleteFile(attachment);
-    await attachment.remove();
-
+    await Attachment.deleteOne({ _id: attachment._id });
     return;
   }
 
