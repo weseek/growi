@@ -281,16 +281,24 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const tmpIndexName = `${indexName}-tmp`;
 
-    try {
-      // reindex to tmp index
-      await this.createIndex(tmpIndexName);
-      await client.reindex({
+    const reindexRequest = this.isElasticsearchV7
+      ? {
         waitForCompletion: false,
         body: {
           source: { index: indexName },
           dest: { index: tmpIndexName },
         },
-      });
+      }
+      : {
+        wait_for_completion: false,
+        source: { index: indexName },
+        dest: { index: tmpIndexName },
+      };
+
+    try {
+      // reindex to tmp index
+      await this.createIndex(tmpIndexName);
+      await client.reindex(reindexRequest);
 
       // update alias
       await client.indices.updateAliases({
