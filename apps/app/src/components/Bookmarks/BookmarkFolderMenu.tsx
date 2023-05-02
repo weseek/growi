@@ -126,7 +126,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
             <DropdownItem divider />
             <DropdownItem
               toggle={false}
-              onClick={(e) => onMenuItemClickHandler(e, null)}
+              onClick={e => onMenuItemClickHandler(e, null)}
             >
               {t('bookmark_folder.do_not_include_folder')}
             </DropdownItem>
@@ -138,7 +138,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                     className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
                     tabIndex={0}
                     role="menuitem"
-                    onClick={(e) => onMenuItemClickHandler(e, folder._id)}
+                    onClick={e => onMenuItemClickHandler(e, folder._id)}
                   >
                     <BookmarkFolderMenuItem
                       item={folder}
@@ -151,10 +151,10 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                     <div key={child._id}>
                       <div
                         className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
-                        style={{ paddingLeft: '30px' }}
+                        style={{ paddingLeft: '40px' }}
                         tabIndex={0}
                         role="menuitem"
-                        onClick={(e) => onMenuItemClickHandler(e, child._id)}>
+                        onClick={e => onMenuItemClickHandler(e, child._id)}>
                         <BookmarkFolderMenuItem
                           item={child}
                           isSelected={selectedItem === child._id}
@@ -188,6 +188,6 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>
-      </UncontrolledDropdown>
+    </UncontrolledDropdown>
   );
 };
