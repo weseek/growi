@@ -232,8 +232,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const tmpIndexName = `${indexName}-tmp`;
 
     // check existence
-    const { body: isExistsMainIndex } = await client.indices.exists({ index: indexName });
-    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
+    const isExistsMainIndexResult = await client.indices.exists({ index: indexName });
+    const isExistsMainIndex = this.isElasticsearchV7 ? isExistsMainIndexResult.body : isExistsMainIndexResult;
+
+    const isExistsTmpIndexResult = await client.indices.exists({ index: tmpIndexName });
+    const isExistsTmpIndex = this.isElasticsearchV7 ? isExistsTmpIndexResult.body : isExistsTmpIndexResult;
 
     // create indices name list
     const existingIndices: string[] = [];
@@ -249,9 +252,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       };
     }
 
-    const { body: indicesBody } = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
-    const { indices } = indicesBody;
-    const { body: aliases } = await client.indices.getAlias({ index: existingIndices });
+    const indicesStatsResponse = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
+    const indicesStats = this.isElasticsearchV7 ? indicesStatsResponse.body : indicesStatsResponse;
+    const { indices } = indicesStats;
+
+    const getAliasResponse = await client.indices.getAlias({ index: existingIndices });
+    const aliases = this.isElasticsearchV7 ? getAliasResponse.body : getAliasResponse;
+
 
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
@@ -263,6 +270,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       aliases,
       isNormalized,
     };
+
   }
 
   /**
