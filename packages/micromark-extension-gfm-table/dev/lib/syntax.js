@@ -286,9 +286,8 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndHead(code) {
-    const { containerState } = self;
-
     // for debug -- 2023.05.06 Yuki Takei
+    // const { containerState } = self;
     // let atRowEndHeadCount = containerState.atRowEndHeadCount ?? 0;
     // atRowEndHeadCount++;
     // containerState.atRowEndHeadCount = atRowEndHeadCount;
