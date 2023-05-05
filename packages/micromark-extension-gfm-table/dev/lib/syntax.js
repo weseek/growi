@@ -200,13 +200,11 @@ function tokenizeTable(effects, ok, nok) {
       return cellDividerHead(code);
     }
 
-    // === ignore processing all characters but code.verticalBar -- 2023.05.01 Yuki Takei
-    // tableHeaderCount++;
-    // effects.enter('temporaryTableCellContent');
-    // // Can’t be space or eols at the start of a construct, so we’re in a cell.
-    // assert(!markdownLineEndingOrSpace(code), 'expected non-space');
-    // return inCellContentHead(code);
-    return nok(code);
+    tableHeaderCount++;
+    effects.enter('temporaryTableCellContent');
+    // Can’t be space or eols at the start of a construct, so we’re in a cell.
+    assert(!markdownLineEndingOrSpace(code), 'expected non-space');
+    return inCellContentHead(code);
   }
 
   /** @type {State} */
@@ -287,6 +285,14 @@ function tokenizeTable(effects, ok, nok) {
 
   /** @type {State} */
   function atRowEndHead(code) {
+    const { containerState } = self;
+
+    // for debug -- 2023.05.06 Yuki Takei
+    // let atRowEndHeadCount = containerState.atRowEndHeadCount ?? 0;
+    // atRowEndHeadCount++;
+    // containerState.atRowEndHeadCount = atRowEndHeadCount;
+    // console.log({ atRowEndHeadCount });
+
     if (code === codes.eof) {
       return nok(code);
     }
@@ -349,7 +355,7 @@ function tokenizeTable(effects, ok, nok) {
       return atDelimiterRowBreak;
     }
 
-    return nok(code);
+    return tableExit(code);
   }
 
   /** @type {State} */
@@ -395,7 +401,7 @@ function tokenizeTable(effects, ok, nok) {
     }
 
     // Anything else is not ok.
-    return nok(code);
+    return tableExit(code);
   }
 
   /** @type {State} */
@@ -418,7 +424,7 @@ function tokenizeTable(effects, ok, nok) {
       return atDelimiterRowBreak;
     }
 
-    return nok(code);
+    return tableExit(code);
   }
 
   /** @type {State} */
@@ -428,7 +434,7 @@ function tokenizeTable(effects, ok, nok) {
     // Exit if there was no dash at all, or if the header cell count is not the
     // delimiter cell count.
     if (!hasDash || tableHeaderCount !== align.length) {
-      return nok(code);
+      return tableExit(code);
     }
 
     if (code === codes.eof) {
@@ -445,6 +451,15 @@ function tokenizeTable(effects, ok, nok) {
         tableClose,
       ),
     )(code);
+  }
+
+  /** @type {State} */
+  function tableExit(code) {
+    // delete persisted states
+    delete self.containerState.rowCount;
+    delete self.containerState.hasDelimiterRow;
+
+    return nok(code);
   }
 
   /** @type {State} */
