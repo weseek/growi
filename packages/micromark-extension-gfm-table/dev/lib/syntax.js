@@ -294,7 +294,7 @@ function tokenizeTable(effects, ok, nok) {
     // console.log({ atRowEndHeadCount });
 
     if (code === codes.eof) {
-      return nok(code);
+      return tableExit(code);
     }
 
     assert(markdownLineEnding(code), 'expected eol');
@@ -311,7 +311,7 @@ function tokenizeTable(effects, ok, nok) {
       },
       (code) => {
         self.interrupt = originalInterrupt;
-        return nok(code);
+        return tableExit(code);
       },
     )(code);
   }
