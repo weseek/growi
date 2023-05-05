@@ -187,16 +187,17 @@ function tokenizeTable(effects, ok, nok) {
     effects.enter('tableHead');
     effects.enter('tableRow');
 
+    // increment row count
+    const crrRowCount = prevRowCount + 1;
+    containerState.rowCount = crrRowCount;
+
+    // Max 2 rows processing before delimiter row
+    if (hasDelimiterRow || crrRowCount > 2) {
+      return nok(code);
+    }
+
     // If we start with a pipe, we open a cell marker.
     if (code === codes.verticalBar) {
-      // increment row count
-      const crrRowCount = prevRowCount + 1;
-      containerState.rowCount = crrRowCount;
-
-      // Max 2 rows processing before delimiter row
-      if (hasDelimiterRow || crrRowCount > 2) {
-        return nok(code);
-      }
       return cellDividerHead(code);
     }
 
