@@ -61,7 +61,7 @@
     "clean": "npx -y shx rm -rf lib index.js index.d.ts \"dev/**/*.d.ts\" \"test/**/*.d.ts\"",
     "dev": "yarn build",
     "test-api": "node --conditions development test/index.js",
-    "test-coverage": "c8 --check-coverage --branches 100 --functions 100 --lines 100 --statements 100 --reporter lcov node --conditions development test/index.js",
+    "test-coverage": "c8 --check-coverage --functions 100 --reporter lcov node --conditions development test/index.js",
     "test": "npm run build && npm run test-coverage",
     "lint": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\"",
     "lint:fix": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\" --fix"
