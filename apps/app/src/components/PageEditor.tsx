@@ -517,6 +517,12 @@ const PageEditor = React.memo((): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
+  useEffect(() => {
+    if (currentPagePath != null) {
+      editorRef.current?.setValue(initialValue);
+    }
+  }, [currentPagePath, initialValue]);
+
   if (!isEditable) {
     return <></>;
   }
