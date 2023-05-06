@@ -517,6 +517,8 @@ const PageEditor = React.memo((): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
+  // when transitioning to a different page, if the initialValue is the same,
+  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
   useEffect(() => {
     if (currentPagePath != null) {
       editorRef.current?.setValue(initialValue);
