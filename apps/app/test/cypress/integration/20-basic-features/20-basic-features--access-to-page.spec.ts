@@ -22,7 +22,7 @@ context('Access to page', () => {
 
   // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
-    cy.visit('/Sandbox#Headers');
+    cy.visit('/Sandbox#headers');
     cy.waitUntilSkeletonDisappear();
 
     // for check download toc data
