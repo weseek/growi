@@ -1,5 +1,5 @@
 {
-  "name": "@growi/micromark-extension-gfm-table",
+  "name": "micromark-extension-gfm-table",
   "version": "1.0.5",
   "description": "micromark extension to support GFM tables",
   "license": "MIT",
