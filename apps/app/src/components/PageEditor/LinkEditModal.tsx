@@ -93,9 +93,9 @@ export const LinkEditModal = (): JSX.Element => {
   }, [getRootPath]);
 
   useEffect(() => {
-    if (linkEditModalStatus?.defaultMarkdownLink == null) { return }
-    const { label = '', link = '' } = linkEditModalStatus.defaultMarkdownLink;
-    const { type = Linker.types.markdownLink } = linkEditModalStatus.defaultMarkdownLink;
+    if (linkEditModalStatus == null) { return }
+    const { label = '', link = '' } = linkEditModalStatus.defaultMarkdownLink ?? {};
+    const { type = Linker.types.markdownLink } = linkEditModalStatus.defaultMarkdownLink ?? {};
 
     parseLinkAndSetState(link, type);
     setLabelInputValue(label);
@@ -103,7 +103,7 @@ export const LinkEditModal = (): JSX.Element => {
     setPermalink('');
     setLinkerType(type);
 
-  }, [linkEditModalStatus?.defaultMarkdownLink, parseLinkAndSetState]);
+  }, [linkEditModalStatus, parseLinkAndSetState]);
 
   const toggleIsUseRelativePath = () => {
     if (!linkInputValue.startsWith('/') || linkerType === Linker.types.growiLink) {
