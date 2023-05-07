@@ -151,7 +151,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
     // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
     // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
-    // this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
@@ -849,17 +848,12 @@ class CodeMirrorEditor extends AbstractEditor {
   //   this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   // }
 
-  // showLinkEditHandler() {
-  //   this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
-  // }
-
   showTemplateModal() {
     const onSubmit = templateText => this.setValue(templateText);
     this.props.onClickTemplateBtn(onSubmit);
   }
 
   showLinkEditModal() {
-    // TODO: 詳細をあとで実装
     const onSubmit = (linkText) => {
       return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText);
     };
@@ -999,7 +993,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Link"
-        onClick={this.showLinkEditModal} // ここでLinkEditModalを表示させている
+        onClick={this.showLinkEditModal}
       >
         <EditorIcon icon="Link" />
       </Button>,
@@ -1139,11 +1133,6 @@ class CodeMirrorEditor extends AbstractEditor {
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
         />
          */}
-
-        {/* <LinkEditModal
-          ref={this.linkEditModal}
-          onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
-        /> */}
       </div>
     );
   }

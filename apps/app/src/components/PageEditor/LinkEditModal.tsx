@@ -38,14 +38,6 @@ export const LinkEditModal = (): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
   const { data: linkEditModalStatus, close } = useLinkEditModal();
 
-  // useImperativeHandle(ref, () => ({
-  //   show: (defaultMarkdownLink: Linker) => {
-  //     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  //     show(defaultMarkdownLink);
-  //   },
-  // }));
-
-  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isUseRelativePath, setIsUseRelativePath] = useState<boolean>(false);
   const [isUsePermanentLink, setIsUsePermanentLink] = useState<boolean>(false);
   const [linkInputValue, setLinkInputValue] = useState<string>('');
@@ -112,24 +104,6 @@ export const LinkEditModal = (): JSX.Element => {
     setLinkerType(type);
 
   }, [linkEditModalStatus?.defaultMarkdownLink, parseLinkAndSetState]);
-
-  // const show = (defaultMarkdownLink: Linker) => {
-  //   // if defaultMarkdownLink is null, set default value in inputs.
-  //   const { label = '', link = '' } = defaultMarkdownLink;
-  //   const { type = Linker.types.markdownLink } = defaultMarkdownLink;
-
-  //   parseLinkAndSetState(link, type);
-
-  //   // setIsOpen(true);
-  //   setLabelInputValue(label);
-  //   setIsUsePermanentLink(false);
-  //   setPermalink('');
-  //   setLinkerType(type);
-  // };
-
-  // const hide = () => {
-  //   setIsOpen(false);
-  // };
 
   const toggleIsUseRelativePath = () => {
     if (!linkInputValue.startsWith('/') || linkerType === Linker.types.growiLink) {
@@ -253,7 +227,6 @@ export const LinkEditModal = (): JSX.Element => {
       linkEditModalStatus.onSave(linker.generateMarkdownText() ?? '');
     }
 
-    // hide();
     close();
   };
 
