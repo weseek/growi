@@ -19,7 +19,7 @@
       "cache": false
     },
 
-    "@growi/micromark-extension-gfm-table#build": {
+    "micromark-extension-gfm-table#build": {
       "outputs": ["index.js", "index.d.ts", "lib/**"],
       "inputs": ["dev/**/*.js", "tsconfig*.json"],
       "outputMode": "new-only"
@@ -68,7 +68,7 @@
       "outputMode": "new-only"
     },
 
-    "@growi/micromark-extension-gfm-table#dev": {
+    "micromark-extension-gfm-table#dev": {
       "outputs": ["index.js", "index.d.ts", "lib/**"],
       "inputs": ["dev/**/*.js", "tsconfig*.json"],
       "outputMode": "new-only"
