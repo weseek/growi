@@ -401,7 +401,7 @@ Content Cell,Content Cell
 
 # :memo: Footnote
 
-You can write a reference [^1] to a footnote. You can also add an inline footnote^[Inline_footnote].
+You can write a reference [^1] to a footnote.
 
 Long footnotes can be written as [^longnote].
 
