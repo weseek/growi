@@ -21,6 +21,7 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
+import { LinkEditModal } from '~/components/PageEditor/LinkEditModal';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -379,6 +380,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <DrawioModal />
       <HandsontableModal />
       <TemplateModal />
+      <LinkEditModal />
     </>
   );
 };
