@@ -17,8 +17,6 @@ import {
   ReindexResponse,
 } from './elasticsearch-client-types';
 
-type ApiResponse<T = any, C = any> = ES7ApiResponse<T, C> | any
-
 export default class ElasticsearchClient {
 
   client: ES7Client | ES8Client;
@@ -27,20 +25,21 @@ export default class ElasticsearchClient {
     this.client = client;
   }
 
-  bulk(params: ES7RequestParams.Bulk & estypes.BulkRequest): Promise<ApiResponse<BulkResponse>> {
+  bulk(params: ES7RequestParams.Bulk & estypes.BulkRequest): Promise<ES7ApiResponse<BulkResponse> | estypes.BulkResponse> {
     return this.client instanceof ES7Client ? this.client.bulk(params) : this.client.bulk(params);
   }
 
   // TODO: cat is not used in current Implementation, remove cat?
   cat = {
-    aliases: (params: ES7RequestParams.CatAliases & estypes.CatAliasesRequest): Promise<ApiResponse<CatAliasesResponse>> =>
+    aliases: (params: ES7RequestParams.CatAliases & estypes.CatAliasesRequest): Promise<ES7ApiResponse<CatAliasesResponse> | estypes.CatAliasesResponse> =>
       this.client instanceof ES7Client ? this.client.cat.aliases(params) : this.client.cat.aliases(params),
-    indices: (params: ES7RequestParams.CatIndices & estypes.CatIndicesRequest): Promise<ApiResponse<CatIndicesResponse>> =>
+    indices: (params: ES7RequestParams.CatIndices & estypes.CatIndicesRequest): Promise<ES7ApiResponse<CatIndicesResponse> | estypes.CatAliasesResponse> =>
       this.client instanceof ES7Client ? this.client.cat.indices(params) : this.client.cat.indices(params),
   };
 
   cluster = {
-    health: (params: ES7RequestParams.ClusterHealth & estypes.ClusterHealthRequest): Promise<ApiResponse<ClusterHealthResponse>> =>
+    health: (params: ES7RequestParams.ClusterHealth & estypes.ClusterHealthRequest)
+    : Promise<ES7ApiResponse<ClusterHealthResponse> | estypes.ClusterHealthResponse> =>
       this.client instanceof ES7Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
   };
 
@@ -51,9 +50,11 @@ export default class ElasticsearchClient {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     delete: (params: ES7RequestParams.IndicesDelete & estypes.IndicesDeleteRequest) =>
       this.client instanceof ES7Client ? this.client.indices.delete(params) : this.client.indices.delete(params),
-    exists: (params: ES7RequestParams.IndicesExists & estypes.IndicesDeleteRequest): Promise<ApiResponse<IndicesExistsResponse>> =>
+    exists: (params: ES7RequestParams.IndicesExists & estypes.IndicesDeleteRequest)
+    : Promise<ES7ApiResponse<IndicesExistsResponse> | estypes.IndicesExistsResponse> =>
       this.client instanceof ES7Client ? this.client.indices.exists(params) : this.client.indices.exists(params),
-    existsAlias: (params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest): Promise<ApiResponse<IndicesExistsAliasResponse>> =>
+    existsAlias: (params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
+    : Promise<ES7ApiResponse<IndicesExistsAliasResponse> | estypes.IndicesExistsAliasResponse> =>
       this.client instanceof ES7Client ? this.client.indices.existsAlias(params) : this.client.indices.existsAlias(params),
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     putAlias: (params: ES7RequestParams.IndicesPutAlias & estypes.IndicesPutAliasRequest) =>
@@ -64,14 +65,17 @@ export default class ElasticsearchClient {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     updateAliases: (params: ES7RequestParams.IndicesUpdateAliases & estypes.IndicesUpdateAliasesRequest) =>
       this.client instanceof ES7Client ? this.client.indices.updateAliases(params) : this.client.indices.updateAliases(params),
-    validateQuery: (params: ES7RequestParams.IndicesValidateQuery & estypes.IndicesUpdateAliasesRequest): Promise<ApiResponse<ValidateQueryResponse>> =>
+    validateQuery: (params: ES7RequestParams.IndicesValidateQuery & estypes.IndicesUpdateAliasesRequest)
+    : Promise<ES7ApiResponse<ValidateQueryResponse> | estypes.IndicesValidateQueryResponse> =>
       this.client instanceof ES7Client ? this.client.indices.validateQuery(params) : this.client.indices.validateQuery(params),
-    stats: (params: ES7RequestParams.IndicesStats & estypes.IndicesStatsRequest): Promise<ApiResponse<IndicesStatsResponse>> =>
+    stats: (params: ES7RequestParams.IndicesStats & estypes.IndicesStatsRequest)
+    : Promise<ES7ApiResponse<IndicesStatsResponse> | estypes.IndicesStatsResponse> =>
       this.client instanceof ES7Client ? this.client.indices.stats(params) : this.client.indices.stats(params),
   };
 
   nodes = {
-    info: (): Promise<ApiResponse<NodesInfoResponse>> => (this.client instanceof ES7Client ? this.client.nodes.info() : this.client.nodes.info()),
+    info: (): Promise<ES7ApiResponse<NodesInfoResponse> | estypes.NodesInfoResponse> =>
+      (this.client instanceof ES7Client ? this.client.nodes.info() : this.client.nodes.info()),
   };
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -79,11 +83,11 @@ export default class ElasticsearchClient {
     return this.client instanceof ES7Client ? this.client.ping() : this.client.ping();
   }
 
-  reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ApiResponse<ReindexResponse>> {
+  reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
     return this.client instanceof ES7Client ? this.client.reindex(params) : this.client.reindex(params);
   }
 
-  search(params: ES7RequestParams.Search & estypes.SearchRequest): Promise<ApiResponse<SearchResponse>> {
+  search(params: ES7RequestParams.Search & estypes.SearchRequest): Promise<ES7ApiResponse<SearchResponse> | estypes.SearchResponse> {
     return this.client instanceof ES7Client ? this.client.search(params) : this.client.search(params);
   }
 
