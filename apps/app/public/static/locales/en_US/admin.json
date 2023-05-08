@@ -725,7 +725,7 @@
     },
     "user_table": {
       "administrator": "Administrator",
-      "read_only_user": "Read Only User",
+      "read_only": "Read Only",
       "edit_menu": "Edit menu",
       "reset_password": "Reset password",
       "administrator_menu": "Administrator Menu",

@@ -733,7 +733,7 @@
     },
     "user_table": {
       "administrator": "管理员",
-      "read_only_user": "浏览的用户",
+      "read_only": "只浏览",
       "edit_menu": "编辑菜单",
       "reset_password": "重置密码",
       "administrator_menu": "管理员菜单",
@@ -743,8 +743,8 @@
       "remove_admin_access": "删除管理员访问权限",
       "cannot_remove": "您不能从管理员中删除自己",
       "give_admin_access": "授予管理员访问权限",
-      "remove_read_only_access": "删除一个用户作为浏览用户",
-      "give_read_only_access": "使一个用户成为阅读用户",
+      "remove_read_only_access": "取消只读访问",
+      "give_read_only_access": "给予只读权限",
       "send_invitation_email": "发送邀请邮件",
       "resend_invitation_email": "重发邀请函"
     },
