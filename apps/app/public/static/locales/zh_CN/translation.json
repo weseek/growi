@@ -49,6 +49,8 @@
 	"Sign up with this Google Account": "Sign up with this Google Account",
 	"Example": "例如",
 	"Taro Yamada": "John Doe",
+  "Select": "请选择",
+  "Required": "必需的",
 	"List View": "列表",
 	"Timeline View": "时间线",
   "History": "历史",
@@ -224,6 +226,7 @@
 		"password_is_not_set": "密码未设置"
 	},
 	"API Settings": "API设置",
+  "Other Settings": "其他设置",
 	"API Token Settings": "API token 设置",
 	"Current API Token": "当前 API token",
 	"Update API Token": "更新 API token",
@@ -767,6 +770,23 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "questionnaire": {
+    "give_us_feedback": "向我们提供反馈以进行改进",
+    "thank_you_for_answering": "谢谢你的回答",
+    "additional_feedback": "从用户图标下拉菜单向我们发送更多反馈。",
+    "dont_show_again": "不再显示",
+    "deny": "不要回答",
+    "agree": "同意",
+    "disagree": "不同意",
+    "answer": "答案是",
+    "no_answer": "没有答案",
+    "settings": "问卷设置",
+    "failed_to_send": "无法发送反馈",
+    "denied": "问卷不会再显示",
+    "personal_settings_explanation": "将展示改进 GROWI 的问卷。 如果您有其他反馈，可以从用户图标下拉菜单中发送。",
+    "enable_questionnaire": "启用问卷",
+    "disabled_by_admin": "问卷已被管理员禁用"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",

@@ -47,6 +47,8 @@
   "Sign up with Google Account": "Google で登録",
   "Sign in with Google Account": "Google でログイン",
   "Sign up with this Google Account": "この Google アカウントで登録します",
+  "Select": "選択してください",
+  "Required": "必須",
   "Example": "例",
   "Taro Yamada": "山田 太郎",
   "List View": "リスト表示",
@@ -234,6 +236,7 @@
     "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
+  "Other Settings": "その他の設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
@@ -799,6 +802,23 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
+  },
+  "questionnaire": {
+    "give_us_feedback": "GROWI の改善のために、アンケートにご協力ください",
+    "thank_you_for_answering": "ご回答ありがとうございます",
+    "additional_feedback": "その他ご意見ご要望はユーザーアイコンのドロップダウンからお願い致します。",
+    "dont_show_again": "今後このアンケートを表示しない",
+    "deny": "回答しない",
+    "agree": "そう思う",
+    "disagree": "そう思わない",
+    "answer": "回答する",
+    "no_answer": "わからない",
+    "settings": "アンケート設定",
+    "failed_to_send": "回答送信に失敗しました",
+    "denied": "このアンケートは今後表示されません",
+    "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
+    "enable_questionnaire": "アンケートを有効にする",
+    "disabled_by_admin": "管理者によってアンケートは無効化されています"
   },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",

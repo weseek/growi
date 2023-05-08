@@ -123,4 +123,41 @@ context('Access User settings', () => {
     cy.get('.Toastify__toast').should('be.visible');
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-2`);
   });
+
+  it('Access Other setting', () => {
+    cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(5) a').click();
+    cy.scrollTo('top');
+    cy.screenshot(`${ssPrefix}-other-setting-1`);
+    cy.getByTestid('grw-questionnaire-settings-update-btn').click();
+    cy.get('.Toastify__toast').should('be.visible').invoke('attr', 'style', 'display: none');
+    cy.screenshot(`${ssPrefix}-other-setting-2`);
+  });
+});
+
+context('Access proactive questionnaire modal', () => {
+  const ssPrefix = 'proactive-questionnaire-modal-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
+
+  it('Opens questionnaire modal', () => {
+    cy.visit('/dummy');
+
+    // open PersonalDropdown
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('personal-dropdown-button').should('be.visible').click();
+      // wait until
+      return cy.getByTestid('grw-personal-dropdown-menu-user-home').then($elem => $elem.is(':visible'));
+    });
+
+    cy.getByTestid('grw-proactive-questionnaire-modal-toggle-btn').should('be.visible').click();
+    cy.getByTestid('grw-proactive-questionnaire-modal').should('be.visible');
+
+    cy.screenshot(`${ssPrefix}-opened`);
+  });
 });
