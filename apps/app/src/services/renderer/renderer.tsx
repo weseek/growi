@@ -49,7 +49,7 @@ export const commonSanitizeOption: SanitizeOption = deepmerge(
   rehypeSanitizeDefaultSchema,
   baseSanitizeSchema,
   {
-    clobberPrefix: 'mdcont-',
+    clobberPrefix: '', // remove clobber prefix
   },
 );
 
@@ -93,14 +93,14 @@ export const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastIt
 export const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
-      [toc, { maxDepth: 3, tight: true, prefix: 'mdcont-' }],
+      [toc, { maxDepth: 3, tight: true }],
       gfm,
       emoji,
       pukiwikiLikeLinker,
       growiDirective,
     ],
     remarkRehypeOptions: {
-      clobberPrefix: 'mdcont-',
+      clobberPrefix: '', // remove clobber prefix
       allowDangerousHtml: true,
     },
     rehypePlugins: [
