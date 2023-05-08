@@ -550,26 +550,26 @@ module.exports = (crowi) => {
    *    /users/{id}/give-read-only:
    *      put:
    *        tags: [Users]
-   *        operationId: ReadOnlyUser
+   *        operationId: ReadOnly
    *        summary: /users/{id}/give-read-only
-   *        description: Give user read only flag
+   *        description: Give user read only access
    *        parameters:
    *          - name: id
    *            in: path
    *            required: true
-   *            description: id of user for read only
+   *            description: id of user for read only access
    *            schema:
    *              type: string
    *        responses:
    *          200:
-   *            description: Give user read only flag success
+   *            description: Give user read only access success
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    userData:
    *                      type: object
-   *                      description: data of read only user
+   *                      description: data of read only
    */
   router.put('/:id/give-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
@@ -585,8 +585,7 @@ module.exports = (crowi) => {
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      // TODO: https://redmine.weseek.co.jp/issues/121247
-      // activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
@@ -603,26 +602,26 @@ module.exports = (crowi) => {
    *    /users/{id}/remove-read-only:
    *      put:
    *        tags: [Users]
-   *        operationId: removeReadOnlyUser
+   *        operationId: removeReadOnly
    *        summary: /users/{id}/remove-read-only
-   *        description: Remove user read only flag
+   *        description: Remove user read only access
    *        parameters:
    *          - name: id
    *            in: path
    *            required: true
-   *            description: id of user for removing read only flag
+   *            description: id of user for removing read only access
    *            schema:
    *              type: string
    *        responses:
    *          200:
-   *            description: Remove user read only flag success
+   *            description: Remove user read only access success
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    userData:
    *                      type: object
-   *                      description: data of removed read only user
+   *                      description: data of removed read only
    */
   router.put('/:id/remove-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
@@ -638,8 +637,7 @@ module.exports = (crowi) => {
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      // TODO: https://redmine.weseek.co.jp/issues/121247
-      // activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
