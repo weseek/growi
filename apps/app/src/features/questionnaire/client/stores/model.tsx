@@ -1,6 +1,7 @@
+import { SWRResponse } from 'swr';
+
 import { useStaticSWR } from '~/stores/use-static-swr';
 import loggerFactory from '~/utils/logger';
-import { SWRResponse } from 'swr';
 
 const logger = loggerFactory('growi:stores:modal');
 
@@ -36,4 +37,4 @@ export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRR
       return swrResponse.mutate({ openedQuestionnaireId: null });
     },
   };
-};/
+};
