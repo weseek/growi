@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess } from '~/client/util/toastr';
+import { useQuestionnaireModal } from '~/features/questionnaire/client/stores/model';
 import { useCurrentUser } from '~/stores/context';
-import { useQuestionnaireModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { StatusType } from '../../interfaces/questionnaire-answer-status';

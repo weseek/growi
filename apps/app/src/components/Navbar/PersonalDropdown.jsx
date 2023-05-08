@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 
@@ -9,7 +10,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 
-import ProactiveQuestionnaireModal from '../../features/questionnaire/client/components/ProactiveQuestionnaireModal';
+const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
 const PersonalDropdown = () => {
   const { t } = useTranslation('commons');

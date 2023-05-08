@@ -79,7 +79,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
-      const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+      const questionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
@@ -95,7 +95,7 @@ module.exports = (crowi: Crowi): Router => {
       };
 
       try {
-        await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer);
+        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer);
       }
       catch (err) {
         if (err.request != null) {
@@ -125,7 +125,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
-      const growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+      const questionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
@@ -138,7 +138,7 @@ module.exports = (crowi: Crowi): Router => {
       };
 
       try {
-        await axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
       }
       catch (err) {
         if (err.request != null) {

@@ -5,11 +5,11 @@ import { Modal, ModalBody } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useQuestionnaireModal } from '~/features/questionnaire/client/stores/model';
 import { IAnswer } from '~/features/questionnaire/interfaces/answer';
 import { StatusType } from '~/features/questionnaire/interfaces/questionnaire-answer-status';
 import { IQuestionnaireOrderHasId } from '~/features/questionnaire/interfaces/questionnaire-order';
 import { useCurrentUser } from '~/stores/context';
-import { useQuestionnaireModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { GuestQuestionnaireAnswerStatusService } from '../services/guest-questionnaire-answer-status';

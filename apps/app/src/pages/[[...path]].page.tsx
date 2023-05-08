@@ -21,9 +21,7 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import QuestionnaireModalManager from '~/features/questionnaire/client/components/QuestionnaireModalManager';
-import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -78,6 +76,7 @@ const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal')
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 

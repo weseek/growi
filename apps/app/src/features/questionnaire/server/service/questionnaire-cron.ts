@@ -2,7 +2,6 @@ import axiosRetry from 'axios-retry';
 
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
-import { sleep } from '~/utils/sleep';
 
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
@@ -36,6 +35,8 @@ class QuestionnaireCronService {
     this.crowi = crowi;
   }
 
+  sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
+
   startCron(): void {
     const cronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
     const maxHoursUntilRequest = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
@@ -52,10 +53,10 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
-    const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
+    const questionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
-      const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
+      const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);
       return response.data.questionnaireOrders;
     };
 
@@ -78,11 +79,11 @@ class QuestionnaireCronService {
       const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
         .select('-_id -growiInfo._id -userInfo._id');
 
-      axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
+      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
         .then(async() => {
           await QuestionnaireAnswer.deleteMany();
         });
-      axios.post(`${growiQuestionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
+      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
         .then(async() => {
           await ProactiveQuestionnaireAnswer.deleteMany();
         });
@@ -103,7 +104,7 @@ class QuestionnaireCronService {
     return nodeCron.schedule(cronSchedule, async() => {
       // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
       const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
-      await sleep(secToSleep * 1000);
+      await this.sleep(secToSleep * 1000);
 
       try {
         this.executeJob();
