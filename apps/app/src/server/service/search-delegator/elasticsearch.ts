@@ -368,7 +368,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       : require('^/resource/search/mappings-es8.json');
 
     if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es7-for-ci.json');
+      mappings = require('^/resource/search/mappings-es8-for-ci.json');
     }
 
     return this.client.indices.create({

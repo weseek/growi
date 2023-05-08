@@ -104,11 +104,11 @@
       },
       "created_at": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
       },
       "updated_at": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
       },
       "tag_names": {
         "type": "keyword"
