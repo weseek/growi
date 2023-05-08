@@ -50,7 +50,7 @@ export default class ElasticsearchClient {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     delete: (params: ES7RequestParams.IndicesDelete & estypes.IndicesDeleteRequest) =>
       this.client instanceof ES7Client ? this.client.indices.delete(params) : this.client.indices.delete(params),
-    exists: (params: ES7RequestParams.IndicesExists & estypes.IndicesDeleteRequest)
+    exists: (params: ES7RequestParams.IndicesExists & estypes.IndicesExistsRequest)
     : Promise<ES7ApiResponse<IndicesExistsResponse> | estypes.IndicesExistsResponse> =>
       this.client instanceof ES7Client ? this.client.indices.exists(params) : this.client.indices.exists(params),
     existsAlias: (params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
