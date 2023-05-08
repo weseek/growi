@@ -264,22 +264,20 @@ export const getPageSchema = (crowi) => {
   };
 
 
-  pageSchema.statics.updateCommentCount = function(pageId) {
+  pageSchema.statics.updateCommentCount = async function(pageId) {
     validateCrowi();
 
     const self = this;
     const Comment = crowi.model('Comment');
-    return Comment.countCommentByPageId(pageId)
-      .then((count) => {
-        self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
-          if (err) {
-            debug('Update commentCount Error', err);
-            throw err;
-          }
-
-          return data;
-        });
-      });
+    try {
+      const count = await Comment.countCommentByPageId(pageId);
+      const data = await self.updateOne({ _id: pageId }, { commentCount: count });
+      return data;
+    }
+    catch (err) {
+      debug('Update commentCount Error', err);
+      throw err;
+    }
   };
 
   pageSchema.statics.getUserPagePath = function(user) {

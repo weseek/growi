@@ -166,11 +166,15 @@ module.exports = function(crowi) {
     return false;
   };
 
-  userSchema.methods.updateLastLoginAt = function(lastLoginAt, callback) {
-    this.lastLoginAt = lastLoginAt;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+  userSchema.methods.updateLastLoginAt = async function(lastLoginAt, callback) {
+    try {
+      this.lastLoginAt = lastLoginAt;
+      const userData = await this.save();
+      return callback(null, userData);
+    }
+    catch (err) {
+      return callback(err);
+    }
   };
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
@@ -487,30 +491,33 @@ module.exports = function(crowi) {
     return isEmailUsable;
   };
 
-  userSchema.statics.isRegisterable = function(email, username, callback) {
+  userSchema.statics.isRegisterable = async function(email, username, callback) {
     const User = this;
     let emailUsable = true;
     let usernameUsable = true;
 
-    // username check
-    this.findOne({ username }, (err, userData) => {
-      if (userData) {
+    try {
+      // username check
+      const foundUsername = await User.findOne({ username });
+      if (foundUsername) {
         usernameUsable = false;
       }
 
       // email check
-      User.findOne({ email }, (err, userData) => {
-        if (userData) {
-          emailUsable = false;
-        }
+      const foundEmail = await User.findOne({ email });
+      if (foundEmail) {
+        emailUsable = false;
+      }
 
-        if (!emailUsable || !usernameUsable) {
-          return callback(false, { email: emailUsable, username: usernameUsable });
-        }
+      if (!emailUsable || !usernameUsable) {
+        return callback(false, { email: emailUsable, username: usernameUsable });
+      }
 
-        return callback(true, {});
-      });
-    });
+      return callback(true, {});
+    }
+    catch (err) {
+      return callback(false, err);
+    }
   };
 
   userSchema.statics.resetPasswordByRandomString = async function(id) {
@@ -604,15 +611,15 @@ module.exports = function(crowi) {
     }
 
     // check email duplication because email must be unique
+    let newEmail = email; // store email to new variable
     const count = await this.count({ email });
     if (count > 0) {
-      // eslint-disable-next-line no-param-reassign
-      email = generateRandomEmail();
+      newEmail = generateRandomEmail(); // change the new variable value
     }
 
     newUser.name = name;
     newUser.username = username;
-    newUser.email = email;
+    newUser.email = newEmail; // assign email by new email varibale
     if (password != null) {
       newUser.setPassword(password);
     }
@@ -632,17 +639,17 @@ module.exports = function(crowi) {
     }
     newUser.status = status || decideUserStatusOnRegistration();
 
-    newUser.save((err, userData) => {
-      if (err) {
-        logger.error('createUserByEmailAndPasswordAndStatus failed: ', err);
-        return callback(err);
-      }
-
+    try {
+      const userData = await newUser.save();
       if (userData.status === STATUS_ACTIVE) {
         userEvent.emit('activated', userData);
       }
-      return callback(err, userData);
-    });
+      callback(null, userData);
+    }
+    catch (err) {
+      logger.error('createUserByEmailAndPasswordAndStatus failed: ', err);
+      callback(err);
+    }
   };
 
   /**

@@ -16,10 +16,10 @@ module.exports = function(crowi) {
     timestamps: true,
   });
 
-  commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
+  commentSchema.statics.create = async function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
     const Comment = this;
 
-    return new Promise(((resolve, reject) => {
+    try {
       const newComment = new Comment();
 
       newComment.page = pageId;
@@ -30,15 +30,14 @@ module.exports = function(crowi) {
       newComment.isMarkdown = isMarkdown || false;
       newComment.replyTo = replyTo;
 
-      newComment.save((err, data) => {
-        if (err) {
-          debug('Error on saving comment.', err);
-          return reject(err);
-        }
-        debug('Comment saved.', data);
-        return resolve(data);
-      });
-    }));
+      const savedComment = await newComment.save();
+      debug('Comment saved.', savedComment);
+      return savedComment;
+    }
+    catch (err) {
+      debug('Error on saving comment.', err);
+      throw err;
+    }
   };
 
   commentSchema.statics.getCommentsByPageId = function(id) {
@@ -67,18 +66,16 @@ module.exports = function(crowi) {
     return idToCommentMap;
   };
 
-  commentSchema.statics.countCommentByPageId = function(page) {
+  commentSchema.statics.countCommentByPageId = async function(page) {
     const self = this;
 
-    return new Promise(((resolve, reject) => {
-      self.count({ page }, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    }));
+    try {
+      const count = await self.countDocuments({ page });
+      return count;
+    }
+    catch (err) {
+      throw err;
+    }
   };
 
   commentSchema.statics.updateCommentsByPageId = async function(comment, isMarkdown, commentId) {
