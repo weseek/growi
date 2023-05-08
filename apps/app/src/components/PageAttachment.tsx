@@ -2,7 +2,7 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 
-import { HasObjectId, IAttachment } from '@growi/core';
+import { IAttachmentHasId } from '@growi/core';
 
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useIsGuestUser } from '~/stores/context';
@@ -28,7 +28,7 @@ const PageAttachment = (): JSX.Element => {
 
   // States
   const [pageNumber, setPageNumber] = useState(1);
-  const [attachmentToDelete, setAttachmentToDelete] = useState<(IAttachment & HasObjectId) | null>(null);
+  const [attachmentToDelete, setAttachmentToDelete] = useState<(IAttachmentHasId) | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
@@ -58,7 +58,7 @@ const PageAttachment = (): JSX.Element => {
     setAttachmentToDelete(attachment);
   }, []);
 
-  const onAttachmentDeleteClickedConfirmHandler = useCallback(async(attachment: IAttachment & HasObjectId) => {
+  const onAttachmentDeleteClickedConfirmHandler = useCallback(async(attachment: IAttachmentHasId) => {
     setDeleting(true);
 
     try {
