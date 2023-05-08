@@ -223,7 +223,7 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
   const isReadOnlyUser = !isGuestUser && !!currentUser?.readOnly;
 
   return useSWRImmutable(
-    isLoading ? null : ['isReadOnlyUser', isReadOnlyUser],
+    isLoading ? null : ['isReadOnlyUser', isReadOnlyUser, currentUser?._id],
     () => isReadOnlyUser,
     { fallbackData: isReadOnlyUser },
   );
