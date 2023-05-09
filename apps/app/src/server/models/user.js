@@ -69,6 +69,7 @@ module.exports = function(crowi) {
     admin: { type: Boolean, default: 0, index: true },
     readOnly: { type: Boolean, default: 0 },
     isInvitationEmailSended: { type: Boolean, default: false },
+    isQuestionnaireEnabled: { type: Boolean, default: true },
   }, {
     timestamps: true,
     toObject: {
@@ -740,6 +741,11 @@ module.exports = function(crowi) {
     const totalCount = (await this.find(conditions).distinct('username')).length;
 
     return { users, totalCount };
+  };
+
+  userSchema.methods.updateIsQuestionnaireEnabled = async function(value) {
+    this.isQuestionnaireEnabled = value;
+    return this.save();
   };
 
   class UserUpperLimitException {

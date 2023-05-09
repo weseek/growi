@@ -1,7 +1,7 @@
 import { envUtils } from '@growi/core';
 import { parseISO } from 'date-fns';
 
-
+import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
 import ConfigModel, {
@@ -637,6 +637,48 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   AUDIT_LOG_EXCLUDE_ACTIONS: {
     ns: 'crowi',
     key: 'app:auditLogExcludeActions',
+    type: ValueType.STRING,
+    default: null,
+  },
+  QUESTIONNAIRE_SERVER_ORIGIN: {
+    ns: 'crowi',
+    key: 'app:questionnaireServerOrigin',
+    type: ValueType.STRING,
+    default: null,
+  },
+  QUESTIONNAIRE_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:questionnaireCronSchedule',
+    type: ValueType.STRING,
+    default: '0 22 * * *',
+  },
+  QUESTIONNAIRE_CRON_MAX_HOURS_UNTIL_REQUEST: {
+    ns: 'crowi',
+    key: 'app:questionnaireCronMaxHoursUntilRequest',
+    type: ValueType.NUMBER,
+    default: 4,
+  },
+  QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE: {
+    ns: 'crowi',
+    key: 'questionnaire:isQuestionnaireEnabled',
+    type: ValueType.BOOLEAN,
+    default: true,
+  },
+  QUESTIONNAIRE_IS_APP_SITE_URL_HASHED: {
+    ns: 'crowi',
+    key: 'questionnaire:isAppSiteUrlHashed',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
+  SERVICE_TYPE: {
+    ns: 'crowi',
+    key: 'app:serviceType',
+    type: ValueType.STRING,
+    default: GrowiServiceType.onPremise,
+  },
+  DEPLOYMENT_TYPE: {
+    ns: 'crowi',
+    key: 'app:deploymentType',
     type: ValueType.STRING,
     default: null,
   },
