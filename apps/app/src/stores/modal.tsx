@@ -8,8 +8,11 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
+import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
+
+const logger = loggerFactory('growi:stores:modal');
 
 /*
 * PageCreateModal
@@ -578,7 +581,6 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
     },
   });
 };
-
 
 /*
  * TemplateModal

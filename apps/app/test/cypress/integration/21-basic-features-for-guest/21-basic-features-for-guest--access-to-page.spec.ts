@@ -20,7 +20,7 @@ context('Access to page by guest', () => {
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
-    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
+    cy.get('#headers').invoke('removeClass', 'blink');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });

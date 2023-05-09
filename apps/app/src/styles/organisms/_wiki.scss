@@ -157,6 +157,33 @@
     }
   }
 
+  // see: https://github.com/micromark/micromark-extension-gfm-footnote#css
+  /* Style the footnotes section. */
+  .footnotes {
+    font-size: smaller;
+    color: bs.$text-muted;
+    border-top: 1px solid bs.$border-color;
+    /* Hide the section label for visual users. */
+    #footnote-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      word-wrap: normal;
+      border: 0;
+    }
+  }
+  /* Place `[` and `]` around footnote references. */
+  [data-footnote-ref]::before {
+    content: '[';
+  }
+
+  [data-footnote-ref]::after {
+    content: ']';
+  }
+
   $ratio: 0.95;
 
   &.comment {

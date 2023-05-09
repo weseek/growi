@@ -33,7 +33,9 @@ context('Access to Admin page', () => {
     cy.visit('/admin/app');
     cy.getByTestid('admin-app-settings').should('be.visible');
     cy.getByTestid('v5-page-migration').should('be.visible');
-    cy.get('#cbFileUpload').should('be.checked')
+    cy.get('#cbFileUpload').should('be.checked');
+    cy.get('#isQuestionnaireEnabled').should('be.checked');
+    cy.get('#isAppSiteUrlHashed').should('not.be.checked');
     cy.screenshot(`${ssPrefix}-admin-app`);
   });
 
