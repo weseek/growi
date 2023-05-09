@@ -70,7 +70,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
     <>
       <style jsx global>{`
         :root {
-          --font-family-sans-serif: ${lato.style.fontFamily} -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+          --font-family-sans-serif: ${lato.style.fontFamily}, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
           --font-family-serif: Georgia, 'Times New Roman', Times, serif;
           --font-family-monospace: monospace, ${sourceHanCodeJP.style.fontFamily};
         }
