@@ -799,7 +799,7 @@
     "drop_item_here": "将项目拖放到此处",
     "cancel_bookmark": "取消收藏此页面",
     "move_to_root": "移动到根部",
-    "do_not_include_folder": "不包括在文件夹中"
+    "root": "root (default)"
   },
   "questionnaire": {
     "give_us_feedback": "向我们提供反馈以进行改进",

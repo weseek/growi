@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-
 export const BookmarkFolderMenuItem: React.FC<{
-  item: BookmarkFolderItems
+  itemId: string
+  itemName: string
   isSelected: boolean
 }> = ({
-  item,
+  itemId,
+  itemName,
   isSelected,
 }) => {
   return (
@@ -15,12 +15,12 @@ export const BookmarkFolderMenuItem: React.FC<{
         type="radio"
         checked={isSelected}
         name="bookmark-folder-menu-item"
-        id={`bookmark-folder-menu-item-${item._id}`}
+        id={`bookmark-folder-menu-item-${itemId}`}
         onChange={e => e.stopPropagation()}
         onClick={e => e.stopPropagation()}
       />
-      <label htmlFor={`bookmark-folder-menu-item-${item._id}`} className='p-2 m-0'>
-        {item.name}
+      <label htmlFor={`bookmark-folder-menu-item-${itemId}`} className='p-2 m-0'>
+        {itemName}
       </label>
     </div>
   );

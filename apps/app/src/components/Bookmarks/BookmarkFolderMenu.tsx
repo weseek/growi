@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+
 import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
@@ -8,6 +9,7 @@ import { toastError } from '~/client/util/toastr';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 
 export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ children }): JSX.Element => {
@@ -74,17 +76,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       }
     }
   },
-  [
-    isOpen,
-    mutateBookmarkFolders,
-    bookmarkFolders,
-    isBookmarked,
-    currentPage?._id,
-    toggleBookmarkHandler,
-    mutateUserBookmarks,
-    mutateBookmarkInfo,
-    mutatePageInfo,
-  ]);
+  [isOpen, bookmarkFolders, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
 
   const onMenuItemClickHandler = useCallback(async(e, itemId: string | null) => {
     e.stopPropagation();
@@ -96,7 +88,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
         await toggleBookmarkHandler();
       }
       if (currentPage != null) {
-        await addBookmarkToFolder(currentPage._id, itemId);
+        await addBookmarkToFolder(currentPage._id, itemId === 'clear' ? null : itemId);
       }
       mutateUserBookmarks();
       mutateBookmarkFolders();
@@ -124,24 +116,33 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
         {isBookmarkFolderExists && (
           <>
             <DropdownItem divider />
-            <DropdownItem
-              toggle={false}
-              onClick={e => onMenuItemClickHandler(e, null)}
-            >
-              {t('bookmark_folder.do_not_include_folder')}
-            </DropdownItem>
-            <DropdownItem divider />
+            <div key='root'>
+              <div
+                className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
+                tabIndex={0}
+                role="menuitem"
+                onClick={e => onMenuItemClickHandler(e, 'root')}
+              >
+                <BookmarkFolderMenuItem
+                  itemId='root'
+                  itemName={t('bookmark_folder.root')}
+                  isSelected={selectedItem === 'root'}
+                />
+              </div>
+            </div>
             {bookmarkFolders?.map(folder => (
               <>
                 <div key={folder._id}>
                   <div
                     className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
+                    style={{ paddingLeft: '40px' }}
                     tabIndex={0}
                     role="menuitem"
                     onClick={e => onMenuItemClickHandler(e, folder._id)}
                   >
                     <BookmarkFolderMenuItem
-                      item={folder}
+                      itemId={folder._id}
+                      itemName={folder.name}
                       isSelected={selectedItem === folder._id}
                     />
                   </div>
@@ -151,12 +152,13 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                     <div key={child._id}>
                       <div
                         className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
-                        style={{ paddingLeft: '40px' }}
+                        style={{ paddingLeft: '60px' }}
                         tabIndex={0}
                         role="menuitem"
                         onClick={e => onMenuItemClickHandler(e, child._id)}>
                         <BookmarkFolderMenuItem
-                          item={child}
+                          itemId={child._id}
+                          itemName={child.name}
                           isSelected={selectedItem === child._id}
                         />
                       </div>
