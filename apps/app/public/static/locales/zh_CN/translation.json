@@ -165,8 +165,12 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。"
+    "title_required": "标题是必需的。",
+    "field_required": "{{target}} 是必需的"
   },
+  "page_name": "页面名称",
+  "folder_name": "文件夹名称",
+  "field": "字段",
   "not_creatable_page": {
     "could_not_creata_path": "无法创建路径"
   },
@@ -429,6 +433,15 @@
 	"toaster": {
     "file_upload_succeeded": "文件上传成功",
     "file_upload_failed": "文件上传失败",
+    "initialize_successed": "Succeeded to initialize {{target}}",
+		"give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+		"activate_user_success": "Succeeded to activating {{username}}",
+		"deactivate_user_success": "Succeeded to deactivate {{username}}",
+		"remove_user_success": "Succeeded to removing {{username}} ",
+    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "switch_disable_link_sharing_success": "成功更新分享链接设置",
+    "failed_to_reset_password":"Failed to reset password",
     "save_succeeded": "已成功保存",
     "issue_share_link": "Succeeded to issue new share link"
   },
@@ -770,6 +783,23 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "bookmark_folder": {
+    "bookmark_folder": "书签文件夹",
+    "bookmark": "书签",
+    "delete_modal": {
+      "modal_header_label": "删除书签文件夹",
+      "modal_body_description": "删除此书签文件夹及其内容",
+      "modal_body_alert": "已删除的文件夹及其内容无法恢复",
+      "modal_footer_button": "删除文件夹"
+    },
+    "input_placeholder": "输入文件夹名称",
+    "new_folder": "新建文件夹",
+    "delete": "删除文件夹",
+    "drop_item_here": "将项目拖放到此处",
+    "cancel_bookmark": "取消收藏此页面",
+    "move_to_root": "移动到根部",
+    "root": "root (default)"
   },
   "questionnaire": {
     "give_us_feedback": "向我们提供反馈以进行改进",

@@ -10,13 +10,14 @@
     "display_name": "English"
   },
   "toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
+    "add_succeeded": "Succeeded to add {{target}}",
     "create_failed": "Failed to create {{target}}",
-    "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
-
+    "create_succeeded": "Succeeded to create {{target}}",
+    "delete_succeeded": "Succeeded to delete {{target}}",
+    "remove_share_link": "Succeeded to remove {{count}} share links",
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
-    "remove_share_link": "Succeeded to remove {{count}} share links"
+    "update_failed": "Failed to update {{target}}",
+    "update_successed": "Succeeded to update {{target}}"
   },
   "alert": {
     "siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
