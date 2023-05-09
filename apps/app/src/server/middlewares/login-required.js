@@ -6,7 +6,7 @@ const logger = loggerFactory('growi:middleware:login-required');
 /**
  * require login handler
  *
- * @param {boolean} isGuestAllowed whethere guest user is allowed (default false)
+ * @param {boolean} isGuestAllowed whether guest user is allowed (default false)
  * @param {function} fallback fallback function which will be triggered when the check cannot be passed
  */
 module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
