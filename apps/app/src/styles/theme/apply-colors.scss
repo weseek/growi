@@ -697,8 +697,27 @@ Emoji picker modal
 }
 
 /*
-* revision-history-diff
-*/
+ * Questionnaire modal
+ */
+.grw-questionnaire-btn-group {
+  .btn-outline-primary {
+    @include hsl-button.button-outline-variant(
+      #{hsl.lighten(var(--primary), 30%)} !important,
+      #{hsl.contrast(var(--primary))} !important,
+      var(--primary) !important,
+      #{hsl.lighten(var(--primary), 30%)} !important,
+    );
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      color: #{hsl.contrast(var(--primary))} !important;
+      background-color: var(--primary) !important;
+    }
+  }
+}
+
+/*
+ * revision-history-diff
+ */
 .revision-history-diff {
   background-color: white;
 }

@@ -10,10 +10,13 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
+import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
+
 
 import Activity from '../models/activity';
 import GrowiPlugin from '../models/growi-plugin';
@@ -35,6 +38,7 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -83,6 +87,8 @@ function Crowi() {
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
+  this.questionnaireService = null;
+  this.questionnaireCronService = null;
 
   this.tokens = null;
 
@@ -109,6 +115,7 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupConfigManager();
   await this.setupSessionConfig();
+  this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
@@ -145,6 +152,7 @@ Crowi.prototype.init = async function() {
     this.setupActivityService(),
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
+    this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
   ]);
 
@@ -307,6 +315,16 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
+
+};
+
+Crowi.prototype.setupCron = function() {
+  this.questionnaireCronService = new QuestionnaireCronService(this);
+  this.questionnaireCronService.startCron();
+};
+
+Crowi.prototype.setupQuestionnaireService = function() {
+  this.questionnaireService = new QuestionnaireService(this);
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
