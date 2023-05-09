@@ -10,7 +10,7 @@ import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser,
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
@@ -37,9 +37,10 @@ type EditorSettingsOperation = {
 export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const swrResult = useSWRImmutable(
-    isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
+    (isGuestUser || isReadOnlyUser) ? null : ['/personal-setting/editor-settings', currentUser?.username],
     ([endpoint]) => apiv3Get(endpoint).then(result => result.data),
     {
       // use: [localStorageMiddleware], // store to localStorage for initialization fastly

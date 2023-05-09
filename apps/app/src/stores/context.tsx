@@ -231,14 +231,15 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
 
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isIdenticalPath } = useIsIdenticalPath();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isForbidden, isNotCreatable, isIdenticalPath],
-    ([, isGuestUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
-      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser);
+    ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
+    ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
+      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
     },
   );
 };
