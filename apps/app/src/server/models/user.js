@@ -433,9 +433,11 @@ module.exports = function(crowi) {
       .or([
         { username: usernameOrEmail },
         { email: usernameOrEmail },
-      ])
-      .exec((err, userData) => {
-        callback(err, userData);
+      ]).exec().then((userData) => {
+        callback(null, userData);
+      })
+      .catch((err) => {
+        callback(err);
       });
   };
 

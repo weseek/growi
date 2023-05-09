@@ -675,9 +675,9 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
-      await UserGroupRelation.remove({ relatedUser: userData });
+      await UserGroupRelation.deleteOne({ relatedUser: userData });
       await userData.statusDelete();
-      await ExternalAccount.remove({ user: userData });
+      await ExternalAccount.deleteOne({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
 
       const serializedUserData = serializeUserSecurely(userData);
