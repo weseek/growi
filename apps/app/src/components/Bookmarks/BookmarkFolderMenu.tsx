@@ -64,6 +64,10 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       });
     }
 
+    if (selectedItem == null) {
+      setSelectedItem('root');
+    }
+
     if (!isOpen && !isBookmarked) {
       try {
         await toggleBookmarkHandler();
@@ -76,9 +80,9 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       }
     }
   },
-  [isOpen, bookmarkFolders, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
+  [isOpen, bookmarkFolders, selectedItem, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
 
-  const onMenuItemClickHandler = useCallback(async(e, itemId: string | null) => {
+  const onMenuItemClickHandler = useCallback(async(e, itemId: string) => {
     e.stopPropagation();
 
     setSelectedItem(itemId);
@@ -88,7 +92,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
         await toggleBookmarkHandler();
       }
       if (currentPage != null) {
-        await addBookmarkToFolder(currentPage._id, itemId === 'clear' ? null : itemId);
+        await addBookmarkToFolder(currentPage._id, itemId === 'root' ? null : itemId);
       }
       mutateUserBookmarks();
       mutateBookmarkFolders();
@@ -99,6 +103,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     }
   }, [mutateBookmarkFolders, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
+  console.log(selectedItem);
   const renderBookmarkMenuItem = () => {
     return (
       <>
