@@ -826,7 +826,7 @@
     "drop_item_here": "ルートに配置する",
     "cancel_bookmark": "このページのブックマークを解除",
     "move_to_root": "ルートに配置する",
-    "do_not_include_folder": "フォルダに含めない"
+    "root": "root (default)"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
