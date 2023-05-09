@@ -11,7 +11,7 @@ import {
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import {
-  useIsGuestUser, useIsSharedUser,
+  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
 } from '~/stores/context';
 import {
   mutatePageTree,
@@ -45,6 +45,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
@@ -106,7 +107,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     <>
       <PageList
         pages={pageWithMetas}
-        isEnableActions={!isGuestUser}
+        isEnableActions={!(isGuestUser || isReadOnlyUser)}
         forceHideMenuItems={forceHideMenuItems}
         onPagesDeleted={pageDeletedHandler}
         onPagePutBacked={pagePutBackedHandler}

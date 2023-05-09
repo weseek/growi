@@ -10,7 +10,7 @@ import { toastError } from '~/client/util/toastr';
 import {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
@@ -90,6 +90,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -104,7 +105,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 15) : [];
 
   const subscribeClickhandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
+    if (isGuestUser ?? true) {
       return;
     }
     if (!isIPageInfoForOperation(pageInfo)) {
@@ -116,7 +117,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const likeClickhandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
+    if (isGuestUser ?? true) {
       return;
     }
     if (!isIPageInfoForOperation(pageInfo)) {
@@ -128,7 +129,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const bookmarkClickHandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
+    if (isGuestUser ?? true) {
       return;
     }
     if (!isIPageInfoForOperation(pageInfo)) {
@@ -184,7 +185,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
-    if (onClickSwitchContentWidth == null || isGuestUser == null || isGuestUser) {
+    if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
       return;
     }
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -196,7 +197,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, onClickSwitchContentWidth, pageId, pageInfo]);
+  }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -258,7 +259,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           alignRight
           pageId={pageId}
           pageInfo={pageInfo}
-          isEnableActions={!isGuestUser}
+          isEnableActions={!(isGuestUser || isReadOnlyUser)}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
           additionalMenuItemOnTopRenderer={additionalMenuItemOnTopRenderer}
           additionalMenuItemRenderer={additionalMenuItemRenderer}

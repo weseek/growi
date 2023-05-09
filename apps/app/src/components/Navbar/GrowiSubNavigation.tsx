@@ -27,7 +27,7 @@ export type GrowiSubNavigationProps = {
   isNotFound?: boolean,
   showDrawerToggler?: boolean,
   showTagLabel?: boolean,
-  isGuestUser?: boolean,
+  isTagLabelsDisabled: boolean,
   isDrawerMode?: boolean,
   isCompactMode?: boolean,
   tags?: string[],
@@ -43,7 +43,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
   const {
     pageId, pagePath,
     showDrawerToggler, showTagLabel,
-    isGuestUser, isDrawerMode, isCompactMode,
+    isTagLabelsDisabled, isDrawerMode, isCompactMode,
     tags, tagsUpdatedHandler,
     rightComponent: RightComponent,
     additionalClasses = [],
@@ -70,7 +70,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
           { (showTagLabel && !isCompactMode) && (
             <div className="grw-taglabels-container">
               { tags != null
-                ? <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+                ? <TagLabels tags={tags} isTagLabelsDisabled={isTagLabelsDisabled} tagsUpdateInvoked={tagsUpdatedHandler} />
                 : <TagLabelsSkeleton />
               }
             </div>

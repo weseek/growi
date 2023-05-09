@@ -9,7 +9,7 @@ import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
-  useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useIsDefaultLogo,
+  useIsSearchPage, useIsGuestUser, useIsReadOnlyUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useIsDefaultLogo,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
@@ -31,6 +31,7 @@ const NavbarRight = memo((): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   // ripple
   const newButtonRef = useRef(null);
@@ -47,18 +48,20 @@ const NavbarRight = memo((): JSX.Element => {
           <InAppNotificationDropdown />
         </li>
 
-        <li className="nav-item d-none d-md-block">
-          <button
-            className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
-            type="button"
-            ref={newButtonRef}
-            data-testid="newPageBtn"
-            onClick={() => openCreateModal(currentPagePath || '')}
-          >
-            <i className="icon-pencil mr-2"></i>
-            <span className="d-none d-lg-block">{ t('commons:New') }</span>
-          </button>
-        </li>
+        {!isReadOnlyUser
+          && <li className="nav-item d-none d-md-block">
+            <button
+              className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
+              type="button"
+              ref={newButtonRef}
+              data-testid="newPageBtn"
+              onClick={() => openCreateModal(currentPagePath || '')}
+            >
+              <i className="icon-pencil mr-2"></i>
+              <span className="d-none d-lg-block">{ t('commons:New') }</span>
+            </button>
+          </li>
+        }
 
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
@@ -69,7 +72,7 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [t, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [isReadOnlyUser, t, isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (

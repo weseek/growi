@@ -11,7 +11,7 @@ import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
@@ -41,6 +41,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     .map(page => page.data._id);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, null, true, true);
 
   const itemsRef = useRef<(ISelectable|null)[]>([]);
@@ -130,7 +131,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             // eslint-disable-next-line no-return-assign
             ref={c => itemsRef.current[i] = c}
             page={page}
-            isEnableActions={!isGuestUser}
+            isEnableActions={!(isGuestUser || isReadOnlyUser)}
             isSelected={page.data._id === selectedPageId}
             forceHideMenuItems={forceHideMenuItems}
             onClickItem={clickItemHandler}

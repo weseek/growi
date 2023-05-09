@@ -2,7 +2,7 @@ import React, { FC, memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useTargetAndAncestors, useIsGuestUser } from '~/stores/context';
+import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
@@ -24,6 +24,7 @@ const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
@@ -57,7 +58,7 @@ const PageTree: FC = memo(() => {
   /*
    * dependencies
    */
-  if (isGuestUser == null) {
+  if (isGuestUser == null || isReadOnlyUser == null) {
     return null;
   }
 
@@ -67,13 +68,13 @@ const PageTree: FC = memo(() => {
     <div className="px-3">
       <PageTreeHeader />
       <ItemsTree
-        isEnableActions={!isGuestUser}
+        isEnableActions={!(isGuestUser || isReadOnlyUser)}
         targetPath={path}
         targetPathOrId={targetPathOrId}
         targetAndAncestorsData={targetAndAncestorsData}
       />
 
-      {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
+      {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
         <div className="grw-pagetree-footer border-top py-3 w-100">
           <div className="private-legacy-pages-link px-3 py-2">
             <PrivateLegacyPagesLink />

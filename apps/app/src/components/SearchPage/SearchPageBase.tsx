@@ -9,7 +9,9 @@ import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
 import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSearchServiceConfigured, useIsSearchServiceReachable,
+} from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree } from '~/stores/page-listing';
 
@@ -54,6 +56,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
@@ -206,7 +209,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
-              showPageControlDropdown={!isGuestUser}
+              showPageControlDropdown={!(isGuestUser || isReadOnlyUser)}
               forceHideMenuItems={forceHideMenuItems}
             />
           )}

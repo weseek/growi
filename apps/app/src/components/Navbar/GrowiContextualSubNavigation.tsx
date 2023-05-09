@@ -17,7 +17,7 @@ import {
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -81,6 +81,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
 
   const { open: openPresentationModal } = usePagePresentationModal();
@@ -117,7 +118,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       */}
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
-        disabled={isGuestUser || isSharedUser}
+        disabled={!!isGuestUser || !!isReadOnlyUser || !!isSharedUser}
         data-testid="open-page-accessories-modal-btn-with-history-tab"
         className="grw-page-control-dropdown-item"
       >
@@ -138,7 +139,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         {t('attachment_data')}
       </DropdownItem>
 
-      { !isGuestUser && !isSharedUser && (
+      { !isGuestUser && !isReadOnlyUser && !isSharedUser && (
         <NotAvailable isDisabled={isLinkSharingDisabled ?? false} title="Disabled by admin">
           <DropdownItem
             onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
@@ -212,6 +213,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isNotFound } = useIsNotFound();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
 
@@ -384,7 +386,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             {isAbleToChangeEditorMode && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
-                isBtnDisabled={isGuestUser}
+                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
                 editorMode={editorMode}
               />
             )}
@@ -429,7 +431,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       pageId={currentPage?._id}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
-      isGuestUser={isGuestUser}
+      isTagLabelsDisabled={!!isGuestUser || !!isReadOnlyUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
       tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}

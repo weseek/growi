@@ -6,12 +6,12 @@ import { NotAvailableForGuest } from '../NotAvailableForGuest';
 
 type RenderTagLabelsProps = {
   tags: string[],
-  isGuestUser: boolean,
+  isTagLabelsDisabled: boolean,
   openEditorModal?: () => void,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
-  const { tags, isGuestUser, openEditorModal } = props;
+  const { tags, isTagLabelsDisabled, openEditorModal } = props;
   const { t } = useTranslation();
 
   function openEditorHandler() {
@@ -35,7 +35,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
       <NotAvailableForGuest>
         <div id="edit-tags-btn-wrapper-for-tooltip">
           <a
-            className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
+            className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isTagLabelsDisabled && 'disabled'}`}
             onClick={openEditorHandler}
           >
             { isTagsEmpty && <>{ t('Add tags for this page') }</>}

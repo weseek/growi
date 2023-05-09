@@ -16,7 +16,7 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useIsReadOnlyUser,
 } from '../stores/context';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -57,6 +57,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const title = generateCustomTitleForPage(props, '/trash');
 
@@ -70,7 +71,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           <GrowiSubNavigation
             pagePath="/trash"
             showDrawerToggler={isDrawerMode}
-            isGuestUser={isGuestUser}
+            isTagLabelsDisabled={!!isGuestUser || !!isReadOnlyUser}
             isDrawerMode={isDrawerMode}
             additionalClasses={['container-fluid']}
           />
