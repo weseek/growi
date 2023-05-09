@@ -796,7 +796,7 @@
     "drop_item_here": "Drag and drop item here",
     "cancel_bookmark": "Un-bookmark this page",
     "move_to_root": "Move to the root",
-    "do_not_include_folder": "Do not include in folder"
+    "root": "root (default)"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
