@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import path from 'path';
 
@@ -16,6 +16,7 @@ import validator from 'validator';
 
 import Linker from '~/client/models/Linker';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { useLinkEditModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -31,23 +32,12 @@ import styles from './LinkEditPreview.module.scss';
 
 const logger = loggerFactory('growi:components:LinkEditModal');
 
-type Props = {
-  onSave: (linkText: string) => void
-}
-
-export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
+export const LinkEditModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentPath } = useCurrentPagePath();
   const { data: rendererOptions } = usePreviewOptions();
+  const { data: linkEditModalStatus, close } = useLinkEditModal();
 
-  useImperativeHandle(ref, () => ({
-    show: (defaultMarkdownLink: Linker) => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      show(defaultMarkdownLink);
-    },
-  }));
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isUseRelativePath, setIsUseRelativePath] = useState<boolean>(false);
   const [isUsePermanentLink, setIsUsePermanentLink] = useState<boolean>(false);
   const [linkInputValue, setLinkInputValue] = useState<string>('');
@@ -59,11 +49,11 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
   const [permalink, setPermalink] = useState<string>('');
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
 
-  const getRootPath = (type: string) => {
+  const getRootPath = useCallback((type: string) => {
     // rootPaths of md link and pukiwiki link are different
     if (currentPath == null) return '';
     return type === Linker.types.markdownLink ? path.dirname(currentPath) : currentPath;
-  };
+  }, [currentPath]);
 
   // parse link, link is ...
   // case-1. url of this growi's page (ex. 'http://localhost:3000/hoge/fuga')
@@ -71,7 +61,7 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
   // case-3. relative path of this growi's page (ex. '../fuga', 'hoge')
   // case-4. external link (ex. 'https://growi.org')
   // case-5. the others (ex. '')
-  const parseLinkAndSetState = (link: string, type: string) => {
+  const parseLinkAndSetState = useCallback((link: string, type: string) => {
     // create url from link, add dummy origin if link is not valid url.
     // ex-1. link = 'https://growi.org/' -> url = 'https://growi.org/' (case-1,4)
     // ex-2. link = 'hoge' -> url = 'http://example.com/hoge' (case-2,3,5)
@@ -100,25 +90,20 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
 
     setLinkInputValue(reshapedLink);
     setIsUseRelativePath(isUseRelativePath);
-  };
+  }, [getRootPath]);
 
-  const show = (defaultMarkdownLink: Linker) => {
-    // if defaultMarkdownLink is null, set default value in inputs.
-    const { label = '', link = '' } = defaultMarkdownLink;
-    const { type = Linker.types.markdownLink } = defaultMarkdownLink;
+  useEffect(() => {
+    if (linkEditModalStatus == null) { return }
+    const { label = '', link = '' } = linkEditModalStatus.defaultMarkdownLink ?? {};
+    const { type = Linker.types.markdownLink } = linkEditModalStatus.defaultMarkdownLink ?? {};
 
     parseLinkAndSetState(link, type);
-
-    setIsOpen(true);
     setLabelInputValue(label);
     setIsUsePermanentLink(false);
     setPermalink('');
     setLinkerType(type);
-  };
 
-  const hide = () => {
-    setIsOpen(false);
-  };
+  }, [linkEditModalStatus, parseLinkAndSetState]);
 
   const toggleIsUseRelativePath = () => {
     if (!linkInputValue.startsWith('/') || linkerType === Linker.types.growiLink) {
@@ -238,11 +223,11 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
   const save = () => {
     const linker = generateLink();
 
-    if (props.onSave != null) {
-      props.onSave(linker.generateMarkdownText() ?? '');
+    if (linkEditModalStatus?.onSave != null) {
+      linkEditModalStatus.onSave(linker.generateMarkdownText() ?? '');
     }
 
-    hide();
+    close();
   };
 
   const toggleIsPreviewOpen = async() => {
@@ -347,10 +332,13 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
     );
   };
 
+  if (linkEditModalStatus == null) {
+    return <></>;
+  }
 
   return (
-    <Modal className="link-edit-modal" isOpen={isOpen} toggle={hide} size="lg" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={hide} className="bg-primary text-light">
+    <Modal className="link-edit-modal" isOpen={linkEditModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         {t('link_edit.edit_link')}
       </ModalHeader>
 
@@ -370,7 +358,7 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
       </ModalBody>
       <ModalFooter>
         { previewError && <span className='text-danger'>{previewError}</span>}
-        <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={hide}>
+        <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>
         <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={save}>
@@ -379,6 +367,6 @@ export const LinkEditModal = forwardRef((props: Props, ref): JSX.Element => {
       </ModalFooter>
     </Modal>
   );
-});
+};
 
 LinkEditModal.displayName = 'LinkEditModal';

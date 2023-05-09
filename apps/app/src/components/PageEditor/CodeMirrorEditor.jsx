@@ -9,7 +9,9 @@ import { throttle, debounce } from 'throttle-debounce';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
-import { useHandsontableModal, useDrawioModal, useTemplateModal } from '~/stores/modal';
+import {
+  useHandsontableModal, useDrawioModal, useTemplateModal, useLinkEditModal,
+} from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -22,7 +24,6 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
 // import geu from './GridEditorUtil';
-import { LinkEditModal } from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
 import markdownListUtil from './MarkdownListUtil';
@@ -149,13 +150,13 @@ class CodeMirrorEditor extends AbstractEditor {
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
     // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
     // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
-    this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
     this.clickTableIconHandler = this.clickTableIconHandler.bind(this);
 
     this.showTemplateModal = this.showTemplateModal.bind(this);
+    this.showLinkEditModal = this.showLinkEditModal.bind(this);
 
   }
 
@@ -846,13 +847,19 @@ class CodeMirrorEditor extends AbstractEditor {
   //   this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   // }
 
-  showLinkEditHandler() {
-    this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
-  }
-
   showTemplateModal() {
     const onSubmit = templateText => this.setValue(templateText);
     this.props.onClickTemplateBtn(onSubmit);
+  }
+
+  showLinkEditModal() {
+    const onSubmit = (linkText) => {
+      return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText);
+    };
+
+    const defaultMarkdownLink = markdownLinkUtil.getMarkdownLink(this.getCodeMirror());
+
+    this.props.onClickLinkEditBtn(defaultMarkdownLink, onSubmit);
   }
 
   // fold draw.io section (``` drawio ~ ```)
@@ -985,7 +992,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Link"
-        onClick={this.showLinkEditHandler}
+        onClick={this.showLinkEditModal}
       >
         <EditorIcon icon="Link" />
       </Button>,
@@ -1125,11 +1132,6 @@ class CodeMirrorEditor extends AbstractEditor {
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
         />
          */}
-
-        <LinkEditModal
-          ref={this.linkEditModal}
-          onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
-        />
       </div>
     );
   }
@@ -1154,6 +1156,7 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openDrawioModal } = useDrawioModal();
   const { open: openHandsontableModal } = useHandsontableModal();
   const { open: openTemplateModal } = useTemplateModal();
+  const { open: openLinkEditModal } = useLinkEditModal();
 
   const openDrawioModalHandler = useCallback((drawioMxFile, onSave) => {
     openDrawioModal(drawioMxFile, onSave);
@@ -1167,12 +1170,17 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openTemplateModal(onSubmit);
   }, [openTemplateModal]);
 
+  const openLinkEditModalHandler = useCallback((defaultMarkdownLink, onSubmit) => {
+    openLinkEditModal(defaultMarkdownLink, onSubmit);
+  }, [openLinkEditModal]);
+
   return (
     <CodeMirrorEditorMemoized
       ref={ref}
       onClickDrawioBtn={openDrawioModalHandler}
       onClickTableBtn={openTableModalHandler}
       onClickTemplateBtn={openTemplateModalHandler}
+      onClickLinkEditBtn={openLinkEditModalHandler}
       {...props}
     />
   );
