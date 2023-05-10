@@ -4,13 +4,14 @@ import { i18n } from '^/config/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
+import uniqueValidator from '../util/unique-validator-utils';
+
 
 const crypto = require('crypto');
 
 const debug = require('debug')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

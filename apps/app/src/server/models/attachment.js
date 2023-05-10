@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
 import { AttachmentType } from '../interfaces/attachment';
+import uniqueValidator from '../util/unique-validator-utils';
 
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
@@ -11,7 +12,7 @@ const path = require('path');
 const { addSeconds } = require('date-fns');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:models:attachment');

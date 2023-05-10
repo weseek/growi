@@ -1,9 +1,10 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+import uniqueValidator from '../util/unique-validator-utils';
+
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

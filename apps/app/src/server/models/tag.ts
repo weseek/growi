@@ -4,9 +4,9 @@ import {
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
+import uniqueValidator from '../util/unique-validator-utils';
 
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 
 export interface TagDocument {

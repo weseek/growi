@@ -4,9 +4,9 @@ import { addHours } from 'date-fns';
 import {
   Schema, Model, Document,
 } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
+import uniqueValidator from '../util/unique-validator-utils';
 
 
 export interface IUserRegistrationOrder {

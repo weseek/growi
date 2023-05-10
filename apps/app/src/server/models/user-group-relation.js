@@ -1,7 +1,8 @@
+import uniqueValidator from '../util/unique-validator-utils';
+
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

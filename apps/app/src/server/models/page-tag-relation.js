@@ -1,3 +1,5 @@
+import uniqueValidator from '../util/unique-validator-utils';
+
 import Tag from './tag';
 
 // disable no-return-await for model functions
@@ -6,7 +8,6 @@ import Tag from './tag';
 const flatMap = require('array.prototype.flatmap');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

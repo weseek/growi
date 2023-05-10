@@ -1,9 +1,11 @@
 /* eslint-disable no-return-await */
 
+import uniqueValidator from '../util/unique-validator-utils';
+
 const debug = require('debug')('growi:models:bookmark');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

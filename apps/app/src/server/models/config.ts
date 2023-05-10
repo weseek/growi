@@ -1,9 +1,9 @@
 import { PresetThemes } from '@growi/preset-themes';
 import { Types, Schema } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 
 import { RehypeSanitizeOption } from '../../interfaces/rehype';
 import { getOrCreateModel } from '../util/mongoose-utils';
+import uniqueValidator from '../util/unique-validator-utils';
 
 
 export interface Config {
