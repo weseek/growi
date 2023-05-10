@@ -9,7 +9,7 @@ import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoos
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:migrate:revision-path-to-page-id-schema-migration');
+const logger = loggerFactory('growi:migrate:revision-path-to-page-id-schema-migration--fixed-7549');
 
 const LIMIT = 300;
 
