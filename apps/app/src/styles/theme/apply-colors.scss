@@ -279,13 +279,14 @@ ul.pagination {
     }
   }
 
-  .grw-pagetree {
+  .grw-pagetree, .grw-foldertree {
     .list-group-item {
-      .grw-pagetree-title-anchor {
+      .grw-pagetree-title-anchor, .grw-foldertree-title-anchor {
         color: inherit;
       }
     }
   }
+
   .grw-pagetree-footer {
     .h5.grw-private-legacy-pages-anchor {
       color: inherit;
@@ -311,6 +312,7 @@ ul.pagination {
       }
     }
   }
+
 }
 
 /*
@@ -694,6 +696,19 @@ Emoji picker modal
 */
 .emoji-picker-modal {
   background-color: transparent !important;
+}
+
+/*
+Expand / compress button bookmark list on users page
+*/
+.grw-user-page-list-m {
+  .grw-expand-compress-btn {
+    color: $body-color;
+    background-color: $body-bg;
+    &.active {
+      background-color: hsl.darken($body-bg, 12%),
+    }
+  }
 }
 
 /*

@@ -158,8 +158,12 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required."
+    "title_required": "Title is required.",
+    "field_required": "{{target}} is required"
   },
+  "page_name": "Page name",
+  "folder_name": "Folder name",
+  "field": "field",
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
   },
@@ -440,8 +444,19 @@
   "toaster": {
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
-    "save_succeeded": "Saved successfully",
-    "issue_share_link": "Succeeded to issue new share link"
+    "initialize_successed": "Succeeded to initialize {{target}}",
+    "give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "activate_user_success": "Succeeded to activating {{username}}",
+    "deactivate_user_success": "Succeeded to deactivate {{username}}",
+    "remove_user_success": "Succeeded to removing {{username}}",
+    "remove_external_user_success": "Succeeded to remove {{accountId}}",
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "issue_share_link": "Succeeded to issue new share link",
+    "remove_share_link": "Succeeded to remove {{count}} share links",
+    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
+    "failed_to_reset_password":"Failed to reset password",
+    "save_succeeded": "Saved successfully"
   },
   "template": {
     "modal_label": {
@@ -766,7 +781,23 @@
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
   },
-
+  "bookmark_folder":{
+    "bookmark_folder": "bookmark folder",
+    "bookmark": "bookmark",
+    "delete_modal": {
+      "modal_header_label": "Delete Bookmark Folder",
+      "modal_body_description": "Delete this bookmark folder and its contents",
+      "modal_body_alert": "Deleted folder and its contents cannot be recovered",
+      "modal_footer_button": "Delete Folder"
+    },
+    "input_placeholder": "Input folder name",
+    "new_folder": "New Folder",
+    "delete": "Delete Folder",
+    "drop_item_here": "Drag and drop item here",
+    "cancel_bookmark": "Un-bookmark this page",
+    "move_to_root": "Move to the root",
+    "root": "root (default)"
+  },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"

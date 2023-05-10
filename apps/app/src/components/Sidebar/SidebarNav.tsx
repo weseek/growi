@@ -105,6 +105,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
         {/* eslint-enable max-len */}
+        <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
