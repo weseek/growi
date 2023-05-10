@@ -1,4 +1,5 @@
 const xss = require('xss');
+
 const commonmarkSpec = require('./commonmark-spec');
 
 

@@ -33,12 +33,12 @@ const filterXssOptions = {
 
 const filterXss = new FilterXSS(filterXssOptions);
 
-const normalizeQueryString = (_queryString: string): string => {
+function normalizeQueryString(_queryString: string): string {
   let queryString = _queryString.trim();
   queryString = queryString.replace(/\s+/g, ' ');
 
   return queryString;
-};
+}
 
 const normalizeNQName = (nqName: string): string => {
   return nqName.trim();
