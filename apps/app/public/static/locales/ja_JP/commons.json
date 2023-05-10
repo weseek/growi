@@ -9,13 +9,14 @@
     "display_name": "日本語"
   },
   "toaster": {
-    "create_succeeded": "新しい{{target}}が作成されました",
+    "add_succeeded": "新しい{{target}}が追加されました",
+    "delete_succeeded": "{{target}} の削除に成功しました",
     "create_failed": "{{target}}の作成に失敗しました",
-    "update_successed": "{{target}}を更新しました",
+    "create_succeeded": "新しい{{target}}が作成されました",
     "update_failed": "{{target}}の更新に失敗しました",
-
-    "remove_share_link_success": "{{shareLinkId}}を削除しました",
-    "remove_share_link": "共有リンクを{{count}}件削除しました"
+    "update_successed": "{{target}}を更新しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました",
+    "remove_share_link_success": "{{shareLinkId}}を削除しました"
   },
   "alert": {
     "siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",

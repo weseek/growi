@@ -22,6 +22,7 @@ const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
+const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 // Fab
 const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
 
@@ -55,6 +56,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <PageDeleteModal />
         <PageRenameModal />
         <PageAccessoriesModal />
+        <DeleteBookmarkFolderModal />
       </DndProvider>
 
       <PagePresentationModal />
