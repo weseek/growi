@@ -20,16 +20,21 @@ module.exports = {
     const Page = getModelSafely('Page') || getPageModel();
     const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
-    const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 }).cursor({ batch_size: LIMIT });
+    const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
     const batchStrem = createBatchStream(LIMIT);
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, encoding, callback) {
+      async write(pages, _encoding, callback) {
         const updateManyOperations = pages.map((page) => {
           return {
             updateMany: {
-              filter: { _id: page.revision },
+              filter: {
+                $and: [
+                  { path: page.path },
+                  { pageId: { $exists: false } },
+                ],
+              },
               update: [
                 {
                   $unset: ['path'],
@@ -66,16 +71,22 @@ module.exports = {
     const Page = getModelSafely('Page') || getPageModel();
     const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
-    const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1, path: 1 }).cursor({ batch_size: LIMIT });
+    const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
     const batchStrem = createBatchStream(LIMIT);
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, encoding, callback) {
+      async write(pages, _encoding, callback) {
         const updateManyOperations = pages.map((page) => {
           return {
             updateMany: {
-              filter: { _id: page.revision },
+              filter: {
+                $and: [
+                  { pageId: page._id },
+                  { path: { $exists: false } },
+                ],
+
+              },
               update: [
                 {
                   $unset: ['pageId'],
