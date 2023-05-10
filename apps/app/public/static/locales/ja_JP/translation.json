@@ -159,8 +159,12 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください"
+    "title_required": "タイトルを入力してください",
+    "field_required": "{{target}}に値を入力してください"
   },
+  "page_name": "ページ名",
+  "folder_name": "フォルダ名",
+  "field": "フィールド",
   "not_creatable_page": {
     "could_not_creata_path": "パスを作成できませんでした。"
   },
@@ -473,8 +477,19 @@
   "toaster": {
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
-    "save_succeeded": "保存に成功しました",
-    "issue_share_link": "共有リンクを作成しました"
+    "initialize_successed": "{{target}}を初期化しました",
+    "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました",
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "issue_share_link": "共有リンクを作成しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました",
+    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "save_succeeded": "保存に成功しました"
   },
   "template": {
     "modal_label": {
@@ -798,6 +813,23 @@
   "footer": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
+  },
+  "bookmark_folder":{
+    "bookmark_folder": "ブックマークフォルダ",
+    "bookmark": "ブックマーク",
+    "delete_modal": {
+      "modal_header_label": "ブックマークフォルダを削除",
+      "modal_body_description": "このブックマークフォルダと配下のブックマークを削除する",
+      "modal_body_alert": "削除されたフォルダとその内容は復元できません",
+      "modal_footer_button": "フォルダを削除"
+    },
+    "input_placeholder": "フォルダ名を入力してください",
+    "new_folder": "新しいフォルダ",
+    "delete": "フォルダを削除",
+    "drop_item_here": "ルートに配置する",
+    "cancel_bookmark": "このページのブックマークを解除",
+    "move_to_root": "ルートに配置する",
+    "root": "root (default)"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",

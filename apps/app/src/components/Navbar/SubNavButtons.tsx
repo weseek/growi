@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
-  toggleBookmark, toggleLike, toggleSubscribe,
+  toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import {
@@ -16,7 +16,7 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
-import BookmarkButtons from '../BookmarkButtons';
+import { BookmarkButtons } from '../BookmarkButtons';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
@@ -94,7 +94,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
-  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+  const { data: bookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
@@ -127,19 +127,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     await toggleLike(pageId, pageInfo.isLiked);
     mutatePageInfo();
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
-
-  const bookmarkClickHandler = useCallback(async() => {
-    if (isGuestUser ?? true) {
-      return;
-    }
-    if (!isIPageInfoForOperation(pageInfo)) {
-      return;
-    }
-
-    await toggleBookmark(pageId, pageInfo.isBookmarked);
-    mutatePageInfo();
-    mutateBookmarkInfo();
-  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
   const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDuplicateMenuItem == null || path == null) {
@@ -215,7 +202,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }
 
   const {
-    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked,
   } = pageInfo;
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
@@ -241,10 +228,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       {revisionId != null && (
         <BookmarkButtons
           hideTotalNumber={isCompactMode}
-          bookmarkCount={bookmarkCount}
-          isBookmarked={isBookmarked}
           bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-          onBookMarkClicked={bookmarkClickHandler}
+          bookmarkInfo={bookmarkInfo}
         />
       )}
       {revisionId != null && !isCompactMode && (

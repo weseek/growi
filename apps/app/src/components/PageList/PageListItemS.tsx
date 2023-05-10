@@ -10,13 +10,16 @@ import { IPageHasId } from '~/interfaces/page';
 type PageListItemSProps = {
   page: IPageHasId,
   noLink?: boolean,
+  pageTitle?: string
 }
 
 export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
-  const { page, noLink = false } = props;
+  const { page, noLink = false, pageTitle } = props;
 
-  let pagePathElement = <PagePathLabel path={page.path} additionalClassNames={['mx-1']} />;
+  const path = pageTitle != null ? pageTitle : page.path;
+
+  let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-1']} />;
   if (!noLink) {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
