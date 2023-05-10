@@ -232,11 +232,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const tmpIndexName = `${indexName}-tmp`;
 
     // check existence
-    const indicesExistsResponse = await client.indices.exists({ index: indexName });
-    const isExistsMainIndex = this.isElasticsearchV7 ? indicesExistsResponse.body : indicesExistsResponse;
-
-    const tmpIndicesExistsResponse = await client.indices.exists({ index: tmpIndexName });
-    const isExistsTmpIndex = this.isElasticsearchV7 ? tmpIndicesExistsResponse.body : tmpIndicesExistsResponse;
+    const isExistsMainIndex = await client.indices.exists({ index: indexName });
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
 
     // create indices name list
     const existingIndices: string[] = [];
@@ -252,12 +249,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       };
     }
 
-    const indicesStatsResponse = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
-    const indicesStats = this.isElasticsearchV7 ? indicesStatsResponse.body : indicesStatsResponse;
+    const indicesStats = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
     const { indices } = indicesStats;
 
-    const indicesGetAliasResponse = await client.indices.getAlias({ index: existingIndices });
-    const aliases = this.isElasticsearchV7 ? indicesGetAliasResponse.body : indicesGetAliasResponse;
+    const aliases = await client.indices.getAlias({ index: existingIndices });
 
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
@@ -338,15 +333,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const tmpIndexName = `${indexName}-tmp`;
 
     // remove tmp index
-    const tmpIndicesExistsResponse = await client.indices.exists({ index: tmpIndexName });
-    const isExistsTmpIndex = this.isElasticsearchV7 ? tmpIndicesExistsResponse.body : tmpIndicesExistsResponse;
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
     if (isExistsTmpIndex) {
       await client.indices.delete({ index: tmpIndexName });
     }
 
     // create index
-    const indicesExistsResponse = await client.indices.exists({ index: indexName });
-    const isExistsIndex = this.isElasticsearchV7 ? indicesExistsResponse.body : indicesExistsResponse;
+    const isExistsIndex = await client.indices.exists({ index: indexName });
     if (!isExistsIndex) {
       await this.createIndex(indexName);
     }
@@ -585,7 +578,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     });
 
     let count = 0;
-    const isElasticsearchV7 = this.isElasticsearchV7;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -597,11 +589,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             body,
             // requestTimeout: Infinity,
           });
-          const result = isElasticsearchV7 ? bulkResponse.body : bulkResponse;
 
           count += (bulkResponse.items || []).length;
 
-          logger.info(`Adding pages progressing: (count=${count}, errors=${result.errors}, took=${result.took}ms)`);
+          logger.info(`Adding pages progressing: (count=${count}, errors=${bulkResponse.errors}, took=${bulkResponse.took}ms)`);
 
           if (shouldEmitProgress) {
             socket?.emit('addPageProgress', { totalCount, count, skipped });
@@ -676,22 +667,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           query: query.body.query,
         },
       });
-      const result = this.isElasticsearchV7 ? validateQueryResponse.body : validateQueryResponse;
 
       // for debug
-      logger.debug('ES result: ', result);
+      logger.debug('ES result: ', validateQueryResponse);
     }
 
     const searchResponse = await this.client.search(query);
-    const result = this.isElasticsearchV7 ? searchResponse.body : searchResponse;
 
     return {
       meta: {
-        took: result.took,
-        total: result.hits.total.value,
-        hitsCount: result.hits.hits.length,
+        took: searchResponse.took,
+        total: searchResponse.hits.total.value,
+        hitsCount: searchResponse.hits.hits.length,
       },
-      data: result.hits.hits.map((elm) => {
+      data: searchResponse.hits.hits.map((elm) => {
         return {
           _id: elm._id,
           _score: elm._score,
