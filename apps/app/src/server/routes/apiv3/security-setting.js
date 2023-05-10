@@ -150,7 +150,7 @@ const validator = {
  *            description: array of regsitrationList
  *            items:
  *              type: string
- *              description: registration whiteList
+ *              description: registration whitelist
  *      LdapAuthSetting:
  *        type: object
  *        properties:

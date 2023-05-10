@@ -75,13 +75,13 @@ const validator = {
  *            description: number of xss option
  *          tagWhitelist:
  *            type: array
- *            description: array of tag whiteList
+ *            description: array of tag whitelist
  *            items:
  *              type: string
  *              description: tag whitelist
  *          attrWhitelist:
  *            type: array
- *            description: array of attr whiteList
+ *            description: array of attr whitelist
  *            items:
  *              type: string
  *              description: attr whitelist
