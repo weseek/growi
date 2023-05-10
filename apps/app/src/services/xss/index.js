@@ -1,4 +1,5 @@
 const xss = require('xss');
+
 const commonmarkSpec = require('./commonmark-spec');
 
 
@@ -10,8 +11,8 @@ class Xss {
 
     xssOption = xssOption || {}; // eslint-disable-line no-param-reassign
 
-    const tagWhiteList = xssOption.tagWhiteList || [];
-    const attrWhiteList = xssOption.attrWhiteList || [];
+    const tagWhitelist = xssOption.tagWhitelist || [];
+    const attrWhitelist = xssOption.attrWhitelist || [];
 
     const whiteListContent = {};
 
@@ -30,8 +31,8 @@ class Xss {
       },
     };
 
-    tagWhiteList.forEach((tag) => {
-      whiteListContent[tag] = attrWhiteList;
+    tagWhitelist.forEach((tag) => {
+      whiteListContent[tag] = attrWhitelist;
     });
 
     // create the XSS Filter instance

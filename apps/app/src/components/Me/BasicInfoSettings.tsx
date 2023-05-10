@@ -5,12 +5,12 @@ import { useTranslation, i18n } from 'next-i18next';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useRegistrationWhiteList } from '~/stores/context';
+import { useRegistrationWhitelist } from '~/stores/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
 export const BasicInfoSettings = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: registrationWhiteList } = useRegistrationWhiteList();
+  const { data: registrationWhitelist } = useRegistrationWhitelist();
 
   const {
     data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
@@ -63,11 +63,11 @@ export const BasicInfoSettings = (): JSX.Element => {
             defaultValue={personalSettingsInfo?.email || ''}
             onChange={e => changePersonalSettingsHandler({ email: e.target.value })}
           />
-          {registrationWhiteList != null && registrationWhiteList.length !== 0 && (
+          {registrationWhitelist != null && registrationWhitelist.length !== 0 && (
             <div className="form-text text-muted">
               {t('page_register.form_help.email')}
               <ul>
-                {registrationWhiteList.map(data => <li key={data}><code>{data}</code></li>)}
+                {registrationWhitelist.map(data => <li key={data}><code>{data}</code></li>)}
               </ul>
             </div>
           )}
