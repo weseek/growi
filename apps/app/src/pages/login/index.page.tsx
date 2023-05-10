@@ -28,7 +28,7 @@ type Props = CommonProps & {
   pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,
-  registrationWhiteList: string[],
+  registrationWhitelist: string[],
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
@@ -60,7 +60,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isLdapStrategySetup={props.isLdapStrategySetup}
         isLdapSetupFailed={props.isLdapSetupFailed}
         isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
-        registrationWhiteList={props.registrationWhiteList}
+        registrationWhitelist={props.registrationWhitelist}
         isPasswordResetEnabled={props.isPasswordResetEnabled}
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
@@ -113,7 +113,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
   props.isLdapStrategySetup = passportService.isLdapStrategySetup;
   props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
-  props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+  props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
   props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
   props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
 }

@@ -26,7 +26,7 @@ const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // options for filtering xss
 const filterXssOptions = {
-  whiteList: {
+  whitelist: {
     em: ['class'],
   },
 };

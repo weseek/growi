@@ -17,7 +17,7 @@ import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhiteList, useShowPageLimitationXL, useRendererConfig,
+  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
@@ -38,7 +38,7 @@ type Props = CommonProps & {
   showPageLimitationXL: number,
 
   // config
-  registrationWhiteList: string[],
+  registrationWhitelist: string[],
 };
 
 const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
@@ -82,7 +82,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser ?? null);
 
-  useRegistrationWhiteList(props.registrationWhiteList);
+  useRegistrationWhitelist(props.registrationWhitelist);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
 
@@ -143,7 +143,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
-  props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+  props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
 
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 
@@ -164,8 +164,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }
