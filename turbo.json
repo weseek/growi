@@ -90,7 +90,7 @@
     },
     "@growi/app#dev:migrate": {
       "outputs": ["tmp/cache/migration-status.out"],
-      "inputs": ["src/migration/*.js"],
+      "inputs": ["src/migrations/*.js"],
       "outputMode": "new-only"
     },
     "@growi/app#dev:styles-prebuilt": {
