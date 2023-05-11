@@ -3,13 +3,17 @@ import { useCallback, useMemo } from 'react';
 import { SWRResponse } from 'swr';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
+import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
+
+const logger = loggerFactory('growi:stores:modal');
 
 /*
 * PageCreateModal
@@ -174,7 +178,7 @@ type RenameModalStatusUtils = {
   open(
     page?: IPageToRenameWithMeta,
     opts?: IRenameModalOption
-    ): Promise<RenameModalStatus | undefined>
+  ): Promise<RenameModalStatus | undefined>
   close(): Promise<RenameModalStatus | undefined>
 }
 
@@ -217,8 +221,8 @@ type PutBackPageModalUtils = {
   open(
     page?: IPageForPagePutBackModal,
     opts?: IPutBackPageModalOption,
-    ): Promise<PutBackPageModalStatus | undefined>
-  close():Promise<PutBackPageModalStatus | undefined>
+  ): Promise<PutBackPageModalStatus | undefined>
+  close(): Promise<PutBackPageModalStatus | undefined>
 }
 
 export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
@@ -579,6 +583,45 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   });
 };
 
+/*
+* BookmarkFolderDeleteModal
+*/
+export type IDeleteBookmarkFolderModalOption = {
+  onDeleted?: onDeletedBookmarkFolderFunction,
+}
+
+type DeleteBookmarkFolderModalStatus = {
+  isOpened: boolean,
+  bookmarkFolder?: BookmarkFolderItems,
+  opts?: IDeleteBookmarkFolderModalOption,
+}
+
+type DeleteModalBookmarkFolderStatusUtils = {
+  open(
+    bookmarkFolder?: BookmarkFolderItems,
+    opts?: IDeleteBookmarkFolderModalOption,
+  ): Promise<DeleteBookmarkFolderModalStatus | undefined>,
+  close(): Promise<DeleteBookmarkFolderModalStatus | undefined>,
+}
+
+export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalStatus):
+  SWRResponse<DeleteBookmarkFolderModalStatus, Error> & DeleteModalBookmarkFolderStatusUtils => {
+  const initialData: DeleteBookmarkFolderModalStatus = {
+    isOpened: false,
+  };
+  const swrResponse = useStaticSWR<DeleteBookmarkFolderModalStatus, Error>('deleteBookmarkFolderModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (
+        bookmarkFolder?: BookmarkFolderItems,
+        opts?: IDeleteBookmarkFolderModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, bookmarkFolder, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
 
 /*
  * TemplateModal

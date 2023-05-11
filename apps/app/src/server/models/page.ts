@@ -567,7 +567,7 @@ schema.statics.findByIdsAndViewer = async function(
 };
 
 /*
- * Find a page by path and viewer. Pass false to useFindOne to use findOne method.
+ * Find a page by path and viewer. Pass true to useFindOne to use findOne method.
  */
 schema.statics.findByPathAndViewer = async function(
     path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,

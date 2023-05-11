@@ -19,6 +19,16 @@
       "cache": false
     },
 
+    "micromark-extension-gfm-table#build": {
+      "outputs": ["index.js", "index.d.ts", "lib/**"],
+      "inputs": ["dev/**/*.js", "tsconfig*.json"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-attachment-refs#build": {
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "@growi/ui#build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
@@ -58,6 +68,16 @@
       "outputMode": "new-only"
     },
 
+    "micromark-extension-gfm-table#dev": {
+      "outputs": ["index.js", "index.d.ts", "lib/**"],
+      "inputs": ["dev/**/*.js", "tsconfig*.json"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-attachment-refs#dev": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "@growi/remark-lsx#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
@@ -123,6 +143,9 @@
       "persistent": true
     },
 
+    "@growi/remark-attachment-refs#lint": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
+    },
     "@growi/ui#lint": {
       "dependsOn": ["@growi/core#dev"]
     },

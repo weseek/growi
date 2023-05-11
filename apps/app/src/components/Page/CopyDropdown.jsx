@@ -118,8 +118,11 @@ const CopyDropdown = (props) => {
           <span id={dropdownToggleId}>{children}</span>
         </DropdownToggle>
 
-        <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}>
-
+        <DropdownMenu
+          positionFixed
+          modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
+          style={{ zIndex: 1016 }} /* zIndex: 1016 // larger than z-index value of grw-subnav-fixed-container in GrowiSubNavigationSwitcher.module.scss */
+        >
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
               { t('copy_to_clipboard.Copy to clipboard') }
