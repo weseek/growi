@@ -103,7 +103,6 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     }
   }, [mutateBookmarkFolders, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
-  console.log(selectedItem);
   const renderBookmarkMenuItem = () => {
     return (
       <>

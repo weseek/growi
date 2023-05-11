@@ -90,7 +90,6 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   async updateGoogleSetting() {
     const { googleClientId, googleClientSecret, isSameEmailTreatedAsIdenticalUser } = this.state;
-    console.log('updateGoogleSetting', isSameEmailTreatedAsIdenticalUser);
 
     let requestParams = {
       googleClientId, googleClientSecret, isSameEmailTreatedAsIdenticalUser,
