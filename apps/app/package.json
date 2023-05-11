@@ -120,7 +120,6 @@
     "markdown-table": "^1.1.1",
     "md5": "^2.2.1",
     "method-override": "^3.0.0",
-    "micromark-extension-gfm-table": "link:./packages/micromark-extension-gfm-table",
     "migrate-mongo": "^8.2.3",
     "mkdirp": "^1.0.3",
     "mongoose": "^6.0.13",
