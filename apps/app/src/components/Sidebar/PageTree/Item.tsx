@@ -18,6 +18,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
@@ -505,14 +506,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
         {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
           <NotAvailableForGuest>
-            <button
-              id='page-create-button-in-page-tree'
-              type="button"
-              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-              onClick={onClickPlusButton}
-            >
-              <i className="icon-plus d-block p-0" />
-            </button>
+            <NotAvailableForReadOnlyUser>
+              <button
+                id='page-create-button-in-page-tree'
+                type="button"
+                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                onClick={onClickPlusButton}
+              >
+                <i className="icon-plus d-block p-0" />
+              </button>
+            </NotAvailableForReadOnlyUser>
           </NotAvailableForGuest>
         )}
       </li>
