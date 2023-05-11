@@ -108,7 +108,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
-  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   const currentRevisionId = currentPage?.revision?._id;
 
