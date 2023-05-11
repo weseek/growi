@@ -25,6 +25,7 @@ const logger = loggerFactory('growi:service:search');
 const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // options for filtering xss
+// not change whitelist becouse of xss
 const filterXssOptions = {
   whiteList: {
     em: ['class'],
