@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import WhiteListInput from './WhiteListInput';
+import WhitelistInput from './WhiteListInput';
 
 const logger = loggerFactory('growi:importer');
 
@@ -102,7 +102,7 @@ class XssForm extends React.Component {
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
-                <WhiteListInput customizable />
+                <WhitelistInput customizable />
               </label>
             </div>
           </div>
