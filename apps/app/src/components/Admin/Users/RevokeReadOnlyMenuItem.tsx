@@ -8,16 +8,16 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-const RemoveReadOnlyMenuItem: React.FC<{
+const RevokeReadOnlyMenuItem: React.FC<{
   adminUsersContainer: AdminUsersContainer,
   user: IUserHasId,
 }> = ({ adminUsersContainer, user }): JSX.Element => {
   const { t } = useTranslation('admin');
 
-  const clickRemoveReadOnlyBtnHandler = useCallback(async() => {
+  const clickRevokeReadOnlyBtnHandler = useCallback(async() => {
     try {
-      const username = await adminUsersContainer.removeUserReadOnly(user._id);
-      toastSuccess(t('toaster.remove_user_read_only', { username }));
+      const username = await adminUsersContainer.revokeUserReadOnly(user._id);
+      toastSuccess(t('toaster.revoke_user_read_only', { username }));
     }
     catch (err) {
       toastError(err);
@@ -25,8 +25,8 @@ const RemoveReadOnlyMenuItem: React.FC<{
   }, [adminUsersContainer, t, user._id]);
 
   return (
-    <button className="dropdown-item" type="button" onClick={clickRemoveReadOnlyBtnHandler}>
-      <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.remove_read_only_access')}
+    <button className="dropdown-item" type="button" onClick={clickRevokeReadOnlyBtnHandler}>
+      <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.revoke_read_only_access')}
     </button>
   );
 };
@@ -35,6 +35,6 @@ const RemoveReadOnlyMenuItem: React.FC<{
 * Wrapper component for using unstated
 */
 // eslint-disable-next-line max-len
-const RemoveReadOnlyMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RemoveReadOnlyMenuItem, [AdminUsersContainer]);
+const RevokeReadOnlyMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RevokeReadOnlyMenuItem, [AdminUsersContainer]);
 
-export default RemoveReadOnlyMenuItemWrapper;
+export default RevokeReadOnlyMenuItemWrapper;

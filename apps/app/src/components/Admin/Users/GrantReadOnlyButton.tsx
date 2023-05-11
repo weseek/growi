@@ -8,16 +8,16 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-const GiveReadOnlyButton: React.FC<{
+const GrantReadOnlyButton: React.FC<{
   adminUsersContainer: AdminUsersContainer,
   user: IUserHasId,
 }> = ({ adminUsersContainer, user }): JSX.Element => {
   const { t } = useTranslation('admin');
 
-  const onClickGiveReadOnlyBtnHandler = useCallback(async() => {
+  const onClickGrantReadOnlyBtnHandler = useCallback(async() => {
     try {
-      const username = await adminUsersContainer.giveUserReadOnly(user._id);
-      toastSuccess(t('toaster.give_user_read_only', { username }));
+      const username = await adminUsersContainer.grantUserReadOnly(user._id);
+      toastSuccess(t('toaster.grant_user_read_only', { username }));
     }
     catch (err) {
       toastError(err);
@@ -25,8 +25,8 @@ const GiveReadOnlyButton: React.FC<{
   }, [adminUsersContainer, t, user._id]);
 
   return (
-    <button className="dropdown-item" type="button" onClick={onClickGiveReadOnlyBtnHandler}>
-      <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.give_read_only_access')}
+    <button className="dropdown-item" type="button" onClick={onClickGrantReadOnlyBtnHandler}>
+      <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.grant_read_only_access')}
     </button>
   );
 };
@@ -35,6 +35,6 @@ const GiveReadOnlyButton: React.FC<{
  * Wrapper component for using unstated
  */
 // eslint-disable-next-line max-len
-const GiveReadOnlyButtonWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(GiveReadOnlyButton, [AdminUsersContainer]);
+const GrantReadOnlyButtonWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(GrantReadOnlyButton, [AdminUsersContainer]);
 
-export default GiveReadOnlyButtonWrapper;
+export default GrantReadOnlyButtonWrapper;

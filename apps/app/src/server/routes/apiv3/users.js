@@ -547,12 +547,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users/{id}/give-read-only:
+   *    /users/{id}/grant-read-only:
    *      put:
    *        tags: [Users]
    *        operationId: ReadOnly
-   *        summary: /users/{id}/give-read-only
-   *        description: Give user read only access
+   *        summary: /users/{id}/grant-read-only
+   *        description: Grant user read only access
    *        parameters:
    *          - name: id
    *            in: path
@@ -562,7 +562,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Give user read only access success
+   *            description: Grant user read only access success
    *            content:
    *              application/json:
    *                schema:
@@ -571,7 +571,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of read only
    */
-  router.put('/:id/give-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/grant-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -581,11 +581,11 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3('User not found'), 404);
       }
 
-      await userData.giveReadOnly();
+      await userData.grantReadOnly();
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_READ_ONLY });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GRANT_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
@@ -599,12 +599,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users/{id}/remove-read-only:
+   *    /users/{id}/revoke-read-only:
    *      put:
    *        tags: [Users]
-   *        operationId: removeReadOnly
-   *        summary: /users/{id}/remove-read-only
-   *        description: Remove user read only access
+   *        operationId: revokeReadOnly
+   *        summary: /users/{id}/revoke-read-only
+   *        description: Revoke user read only access
    *        parameters:
    *          - name: id
    *            in: path
@@ -614,16 +614,16 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Remove user read only access success
+   *            description: Revoke user read only access success
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    userData:
    *                      type: object
-   *                      description: data of removed read only
+   *                      description: data of revoke read only
    */
-  router.put('/:id/remove-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/revoke-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -633,11 +633,11 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3('User not found'), 404);
       }
 
-      await userData.removeReadOnly();
+      await userData.revokeReadOnly();
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_READ_ONLY });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REVOKE_READ_ONLY });
 
       return res.apiv3({ userData: serializedUserData });
     }
