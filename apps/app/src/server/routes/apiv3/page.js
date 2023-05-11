@@ -4,11 +4,11 @@ import {
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { readOnlyValidator } from '~/server/middlewares/read-only-validator';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
-
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -542,7 +542,7 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  router.put('/:pageId/grant', loginRequiredStrictly, validator.updateGrant, apiV3FormValidator, async(req, res) => {
+  router.put('/:pageId/grant', loginRequiredStrictly, readOnlyValidator, validator.updateGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.params;
     const { grant, grantedGroup } = req.body;
 
@@ -837,7 +837,7 @@ module.exports = (crowi) => {
   });
 
 
-  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly,
+  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, readOnlyValidator,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;
