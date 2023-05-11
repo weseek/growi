@@ -5,7 +5,7 @@ type EnvVarsTableProps = {
 }
 
 export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => {
-  const envVarRows: React.ReactNode[] = [];
+  const envVarRows: JSX.Element[] = [];
 
   for (const [key, value] of Object.entries(props.envVars)) {
     if (value != null) {
