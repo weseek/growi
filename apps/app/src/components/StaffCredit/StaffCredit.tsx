@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import localFont from 'next/font/local';
 import { animateScroll } from 'react-scroll';
 import {
   Modal, ModalBody,
@@ -14,6 +15,13 @@ import styles from './StaffCredit.module.scss';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:cli:StaffCredit');
+
+
+// define fonts
+const pressStart2P = localFont({
+  src: '../../../resource/fonts/PressStart2P-latin.woff2',
+  display: 'block',
+});
 
 
 type Props = {
@@ -124,7 +132,7 @@ const StaffCredit = (props: Props): JSX.Element => {
       isOpen={isLoaded}
       toggle={closeHandler}
       scrollable
-      className={`staff-credit ${styles['staff-credit']}`}
+      className={`staff-credit ${styles['staff-credit']} ${pressStart2P.className}`}
       onOpened={openedHandler}
     >
       <ModalBody id="modalBody" className="credit-curtain">
