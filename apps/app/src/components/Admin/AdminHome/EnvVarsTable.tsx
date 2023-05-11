@@ -4,7 +4,7 @@ type EnvVarsTableProps = {
   envVars: object,
 }
 
-const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => {
+export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => {
   const envVarRows: React.ReactNode[] = [];
 
   for (const [key, value] of Object.entries(props.envVars)) {
@@ -26,5 +26,3 @@ const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => 
     </table>
   );
 };
-
-export default EnvVarsTable;
