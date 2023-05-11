@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import WhitelistInput from './WhitelistInput';
+import WhitelistInput from './WhiteIistInput';
 
 const logger = loggerFactory('growi:importer');
 
