@@ -1,7 +1,5 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
-
 type EnvVarsTableProps = {
   envVars: object,
 }
@@ -27,10 +25,6 @@ const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => 
       </tbody>
     </table>
   );
-};
-
-EnvVarsTable.propTypes = {
-  envVars: PropTypes.object.isRequired,
 };
 
 export default EnvVarsTable;
