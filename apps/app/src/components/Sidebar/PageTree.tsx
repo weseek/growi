@@ -58,7 +58,7 @@ const PageTree: FC = memo(() => {
   /*
    * dependencies
    */
-  if (isGuestUser == null || isReadOnlyUser == null) {
+  if (isGuestUser == null) {
     return null;
   }
 
@@ -68,7 +68,8 @@ const PageTree: FC = memo(() => {
     <div className="px-3">
       <PageTreeHeader />
       <ItemsTree
-        isEnableActions={!(isGuestUser || isReadOnlyUser)}
+        isEnableActions={!isGuestUser}
+        isReadOnlyUser={!!isReadOnlyUser}
         targetPath={path}
         targetPathOrId={targetPathOrId}
         targetAndAncestorsData={targetAndAncestorsData}

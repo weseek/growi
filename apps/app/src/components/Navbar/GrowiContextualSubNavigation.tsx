@@ -118,7 +118,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       */}
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
-        disabled={!!isGuestUser || !!isReadOnlyUser || !!isSharedUser}
+        disabled={!!isGuestUser || !!isSharedUser}
         data-testid="open-page-accessories-modal-btn-with-history-tab"
         className="grw-page-control-dropdown-item"
       >
@@ -338,9 +338,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       if (revisionId == null || pageId == null) {
         return (
           <>
-            <CreateTemplateMenuItems
+            {!isReadOnlyUser
+            && <CreateTemplateMenuItems
               onClickTemplateMenuItem={templateMenuItemClickHandler}
             />
+            }
           </>);
       }
       return (
@@ -350,10 +352,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             revisionId={revisionId}
             isLinkSharingDisabled={isLinkSharingDisabled}
           />
-          <DropdownItem divider />
-          <CreateTemplateMenuItems
-            onClickTemplateMenuItem={templateMenuItemClickHandler}
-          />
+          {!isReadOnlyUser && <>
+            <DropdownItem divider />
+            <CreateTemplateMenuItems
+              onClickTemplateMenuItem={templateMenuItemClickHandler}
+            /></>
+          }
         </>
       );
     };
@@ -409,7 +413,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           ) }
         </div>
 
-        {path != null && currentUser != null && (
+        {path != null && currentUser != null && !isReadOnlyUser && (
           <CreateTemplateModal
             path={path}
             isOpen={isPageTemplateModalShown}

@@ -244,9 +244,10 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           alignRight
           pageId={pageId}
           pageInfo={pageInfo}
-          isEnableActions={!(isGuestUser || isReadOnlyUser)}
+          isEnableActions={!isGuestUser}
+          isReadOnlyUser={!!isReadOnlyUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
-          additionalMenuItemOnTopRenderer={additionalMenuItemOnTopRenderer}
+          additionalMenuItemOnTopRenderer={!isReadOnlyUser ? additionalMenuItemOnTopRenderer : undefined}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}

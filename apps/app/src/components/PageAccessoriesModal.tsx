@@ -79,7 +79,7 @@ const PageAccessoriesModal = (): JSX.Element => {
           return <PageHistory onClose={close} sourceRevisionId={sourceRevisionId} targetRevisionId={targetRevisionId}/>;
         },
         i18n: t('History'),
-        isLinkEnabled: () => !isGuestUser && !isReadOnlyUser && !isSharedUser,
+        isLinkEnabled: () => !isGuestUser && !isSharedUser,
       },
       [PageAccessoriesModalContents.Attachment]: {
         Icon: AttachmentIcon,

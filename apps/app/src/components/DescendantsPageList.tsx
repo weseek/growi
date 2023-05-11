@@ -107,7 +107,8 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     <>
       <PageList
         pages={pageWithMetas}
-        isEnableActions={!(isGuestUser || isReadOnlyUser)}
+        isEnableActions={!isGuestUser}
+        isReadOnlyUser={!!isReadOnlyUser}
         forceHideMenuItems={forceHideMenuItems}
         onPagesDeleted={pageDeletedHandler}
         onPagePutBacked={pagePutBackedHandler}

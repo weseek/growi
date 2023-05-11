@@ -131,7 +131,8 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             // eslint-disable-next-line no-return-assign
             ref={c => itemsRef.current[i] = c}
             page={page}
-            isEnableActions={!(isGuestUser || isReadOnlyUser)}
+            isEnableActions={!isGuestUser}
+            isReadOnlyUser={!!isReadOnlyUser}
             isSelected={page.data._id === selectedPageId}
             forceHideMenuItems={forceHideMenuItems}
             onClickItem={clickItemHandler}
