@@ -521,7 +521,7 @@
     "discard_changes": "Discard changes of HackMD",
     "integration_failed": "HackMD Integration failed",
     "fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
-    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
+    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
     "not_initialized": "HackmdEditor component has not initialized",
     "someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD",
