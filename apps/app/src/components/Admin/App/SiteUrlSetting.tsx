@@ -39,6 +39,20 @@ const SiteUrlSetting = (props: Props) => {
       {!adminAppContainer.state.isSetSiteUrl
           && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('site_url.warn')}</p>)}
 
+      { adminAppContainer.state.siteUrlUseOnlyEnvVars && (
+        <div className="row">
+          <div className="col-md-9 offset-md-3">
+            <p
+              className="alert alert-info"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: t('site_url.note_for_the_only_env_option', { env: 'APP_SITE_URL_USES_ONLY_ENV_VARS' }),
+              }}
+            />
+          </div>
+        </div>
+      ) }
+
       <div className="row form-group">
         <div className="col-md-9 offset-md-3">
           <table className="table settings-table">
@@ -60,6 +74,7 @@ const SiteUrlSetting = (props: Props) => {
                     type="text"
                     name="settingForm[app:siteUrl]"
                     defaultValue={adminAppContainer.state.siteUrl || ''}
+                    disabled={adminAppContainer.state.siteUrlUseOnlyEnvVars ?? true}
                     onChange={(e) => { adminAppContainer.changeSiteUrl(e.target.value) }}
                     placeholder="e.g. https://my.growi.org"
                   />

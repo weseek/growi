@@ -11,6 +11,10 @@ import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
+const KEYS_FOR_APP_SITE_URL_USES_ONLY_ENV_OPTION = [
+  'app:siteUrl',
+];
+
 const KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION = [
   'security:passport-local:isEnabled',
 ];
@@ -233,8 +237,13 @@ export default class ConfigManager implements S2sMessageHandlable {
    */
   shouldSearchedFromEnvVarsOnly(namespace, key) {
     return (namespace === 'crowi' && (
-      // local strategy
+      // siteUrl
       (
+        KEYS_FOR_APP_SITE_URL_USES_ONLY_ENV_OPTION.includes(key)
+        && this.defaultSearch('crowi', 'app:siteUrl:useOnlyEnvVars')
+      )
+      // local strategy
+      || (
         KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION.includes(key)
         && this.defaultSearch('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions')
       )
