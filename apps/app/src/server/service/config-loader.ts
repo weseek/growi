@@ -139,6 +139,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  APP_SITE_URL_USES_ONLY_ENV_VARS: {
+    ns:      'crowi',
+    key:     'app:siteUrl:useOnlyEnvVars',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   PUBLISH_OPEN_API: {
     ns:      'crowi',
     key:     'app:publishOpenAPI',
