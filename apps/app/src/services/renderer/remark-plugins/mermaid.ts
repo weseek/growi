@@ -1,16 +1,11 @@
-import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Plugin } from 'unified';
 import { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
 function rewriteNode(node: Node) {
-  const mermaidTree = fromMarkdown(node.value as string);
-
   // replace node
-  if (mermaidTree.children[0] != null) {
-    node.type = 'paragraph';
-    node.children = mermaidTree.children[0].children;
-  }
+  const data = node.data ?? (node.data = {});
+  data.hName = 'mermaid';
 }
 
 export const remarkPlugin: Plugin = function() {
