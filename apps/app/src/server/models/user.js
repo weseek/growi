@@ -277,14 +277,14 @@ module.exports = function(crowi) {
     return this.save();
   };
 
-  userSchema.methods.giveReadOnly = async function() {
-    logger.debug('Give read only flag', this);
+  userSchema.methods.grantReadOnly = async function() {
+    logger.debug('Grant read only flag', this);
     this.readOnly = 1;
     return this.save();
   };
 
-  userSchema.methods.removeReadOnly = async function() {
-    logger.debug('Remove read only flag', this);
+  userSchema.methods.revokeReadOnly = async function() {
+    logger.debug('Revoke read only flag', this);
     this.readOnly = 0;
     return this.save();
   };
