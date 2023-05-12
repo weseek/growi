@@ -74,6 +74,7 @@ const SiteUrlSetting = (props: Props) => {
                     type="text"
                     name="settingForm[app:siteUrl]"
                     defaultValue={adminAppContainer.state.siteUrl || ''}
+                    disabled={adminAppContainer.state.siteUrlUseOnlyEnvVars ?? true}
                     onChange={(e) => { adminAppContainer.changeSiteUrl(e.target.value) }}
                     placeholder="e.g. https://my.growi.org"
                   />
