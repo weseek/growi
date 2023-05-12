@@ -1,3 +1,4 @@
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { Plugin } from 'unified';
 import { Node } from 'unist';
 import { visit } from 'unist-util-visit';
@@ -16,4 +17,8 @@ export const remarkPlugin: Plugin = function() {
       }
     });
   };
+};
+
+export const sanitizeOption: SanitizeOption = {
+  tagNames: ['mermaid'],
 };

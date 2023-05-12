@@ -79,6 +79,7 @@ export const generateViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
       refsGrowiPlugin.sanitizeOption,
+      mermaid.sanitizeOption,
     )]
     : () => {};
 
@@ -188,6 +189,7 @@ export const generateSimpleViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
       refsGrowiPlugin.sanitizeOption,
+      mermaid.sanitizeOption,
     )]
     : () => {};
 
@@ -261,6 +263,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       refsGrowiPlugin.sanitizeOption,
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      mermaid.sanitizeOption,
     )]
     : () => {};
 
