@@ -21,7 +21,7 @@ module.exports = {
         { value: JSON.stringify('en_US') },
       ),
       // update ja -> ja_JP
-      Config.update(
+      Config.updateOne(
         { key: 'app:globalLang', value: JSON.stringify('ja') },
         { value: JSON.stringify('ja_JP') },
       ),
