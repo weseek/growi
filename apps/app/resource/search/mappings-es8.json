@@ -17,11 +17,8 @@
       },
       "analyzer": {
         "japanese": {
-          "tokenizer": "edge_ngram_tokenizer",
-          "filter": [
-            "lowercase",
-            "english_stop"
-          ]
+          "tokenizer": "kuromoji_tokenizer",
+          "char_filter" : ["icu_normalizer"]
         },
         "english_edge_ngram": {
           "tokenizer": "edge_ngram_tokenizer",
@@ -104,11 +101,11 @@
       },
       "created_at": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
       },
       "updated_at": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
       },
       "tag_names": {
         "type": "keyword"

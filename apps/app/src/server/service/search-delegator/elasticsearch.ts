@@ -1,8 +1,8 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
-import elasticsearch6 from '@elastic/elasticsearch6';
 import elasticsearch7 from '@elastic/elasticsearch7';
+import elasticsearch8 from '@elastic/elasticsearch8';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -54,7 +54,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   socketIoService!: any;
 
-  isElasticsearchV6: boolean;
+  isElasticsearchV7: boolean;
 
   isElasticsearchReindexOnBoot: boolean;
 
@@ -75,13 +75,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const elasticsearchVersion: number = this.configManager.getConfig('crowi', 'app:elasticsearchVersion');
 
-    if (elasticsearchVersion !== 6 && elasticsearchVersion !== 7) {
+    if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8) {
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
     }
 
-    this.isElasticsearchV6 = elasticsearchVersion === 6;
+    this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
+    this.elasticsearch = this.isElasticsearchV7 ? elasticsearch7 : elasticsearch8;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
@@ -129,7 +129,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   getType() {
-    return this.isElasticsearchV6 ? 'pages' : '_doc';
+    return this.isElasticsearchV7 ? '_doc' : undefined;
   }
 
   /**
@@ -232,8 +232,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const tmpIndexName = `${indexName}-tmp`;
 
     // check existence
-    const { body: isExistsMainIndex } = await client.indices.exists({ index: indexName });
-    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
+    const isExistsMainIndex = await client.indices.exists({ index: indexName });
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
 
     // create indices name list
     const existingIndices: string[] = [];
@@ -249,9 +249,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       };
     }
 
-    const { body: indicesBody } = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
-    const { indices } = indicesBody;
-    const { body: aliases } = await client.indices.getAlias({ index: existingIndices });
+    const indicesStats = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
+    const { indices } = indicesStats;
+
+    const aliases = await client.indices.getAlias({ index: existingIndices });
 
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
@@ -263,6 +264,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       aliases,
       isNormalized,
     };
+
   }
 
   /**
@@ -273,16 +275,24 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const tmpIndexName = `${indexName}-tmp`;
 
-    try {
-      // reindex to tmp index
-      await this.createIndex(tmpIndexName);
-      await client.reindex({
+    const reindexRequest = this.isElasticsearchV7
+      ? {
         waitForCompletion: false,
         body: {
           source: { index: indexName },
           dest: { index: tmpIndexName },
         },
-      });
+      }
+      : {
+        wait_for_completion: false,
+        source: { index: indexName },
+        dest: { index: tmpIndexName },
+      };
+
+    try {
+      // reindex to tmp index
+      await this.createIndex(tmpIndexName);
+      await client.reindex(reindexRequest);
 
       // update alias
       await client.indices.updateAliases({
@@ -323,13 +333,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const tmpIndexName = `${indexName}-tmp`;
 
     // remove tmp index
-    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
     if (isExistsTmpIndex) {
       await client.indices.delete({ index: tmpIndexName });
     }
 
     // create index
-    const { body: isExistsIndex } = await client.indices.exists({ index: indexName });
+    const isExistsIndex = await client.indices.exists({ index: indexName });
     if (!isExistsIndex) {
       await this.createIndex(indexName);
     }
@@ -345,12 +355,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async createIndex(index) {
-    let mappings = this.isElasticsearchV6
-      ? require('^/resource/search/mappings-es6.json')
-      : require('^/resource/search/mappings-es7.json');
+    let mappings = this.isElasticsearchV7
+      ? require('^/resource/search/mappings-es7.json')
+      : require('^/resource/search/mappings-es8.json');
 
     if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es7-for-ci.json');
+      mappings = require('^/resource/search/mappings-es8-for-ci.json');
     }
 
     return this.client.indices.create({
@@ -575,14 +585,14 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         batch.forEach(doc => prepareBodyForCreate(body, doc));
 
         try {
-          const { body: res } = await bulkWrite({
+          const bulkResponse = await bulkWrite({
             body,
             // requestTimeout: Infinity,
           });
 
-          count += (res.items || []).length;
+          count += (bulkResponse.items || []).length;
 
-          logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
+          logger.info(`Adding pages progressing: (count=${count}, errors=${bulkResponse.errors}, took=${bulkResponse.took}ms)`);
 
           if (shouldEmitProgress) {
             socket?.emit('addPageProgress', { totalCount, count, skipped });
@@ -649,7 +659,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     if (process.env.NODE_ENV === 'development') {
       logger.debug('query: ', JSON.stringify(query, null, 2));
 
-      const { body: result } = await this.client.indices.validateQuery({
+      const validateQueryResponse = await this.client.indices.validateQuery({
         index: query.index,
         type: query.type,
         explain: true,
@@ -657,21 +667,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           query: query.body.query,
         },
       });
+
       // for debug
-      logger.debug('ES result: ', result);
+      logger.debug('ES result: ', validateQueryResponse);
     }
 
-    const { body: result } = await this.client.search(query);
-
-    const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
+    const searchResponse = await this.client.search(query);
 
     return {
       meta: {
-        took: result.took,
-        total: totalValue,
-        hitsCount: result.hits.hits.length,
+        took: searchResponse.took,
+        total: searchResponse.hits.total.value,
+        hitsCount: searchResponse.hits.hits.length,
       },
-      data: result.hits.hits.map((elm) => {
+      data: searchResponse.hits.hits.map((elm) => {
         return {
           _id: elm._id,
           _score: elm._score,
@@ -703,10 +712,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         query: {}, // query
       },
     };
-
-    if (this.isElasticsearchV6) {
-      Object.assign(query, { type: 'pages' });
-    }
 
     return query;
   }
@@ -769,7 +774,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     if (parsedKeywords.phrase.length > 0) {
-      const phraseQueries: any[] = [];
       parsedKeywords.phrase.forEach((phrase) => {
         const phraseQuery = {
           multi_match: {
@@ -783,21 +787,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             ],
           },
         };
-        if (this.isElasticsearchV6) {
-          phraseQueries.push(phraseQuery);
-        }
-        else {
-          query.body.query.bool.must.push(phraseQuery);
-        }
+        query.body.query.bool.must.push(phraseQuery);
       });
-
-      if (this.isElasticsearchV6) {
-        query.body.query.bool.must.push(phraseQueries);
-      }
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
-      const notPhraseQueries: any[] = [];
       parsedKeywords.not_phrase.forEach((phrase) => {
         const notPhraseQuery = {
           multi_match: {
@@ -810,18 +804,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             ],
           },
         };
-
-        if (this.isElasticsearchV6) {
-          notPhraseQueries.push(notPhraseQuery);
-        }
-        else {
-          query.body.query.bool.must_not.push(notPhraseQuery);
-        }
+        query.body.query.bool.must_not.push(notPhraseQuery);
       });
-
-      if (this.isElasticsearchV6) {
-        query.body.query.bool.must_not.push(notPhraseQueries);
-      }
     }
 
     if (parsedKeywords.prefix.length > 0) {
@@ -956,11 +940,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           number_of_fragments: 0,
         },
       },
+      max_analyzed_offset: 1000000 - 1, // Set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
     };
-
-    if (!this.isElasticsearchV6) {
-      query.body.highlight.max_analyzed_offset = 1000000 - 1; // Set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
-    }
   }
 
   async search(data: SearchableData<ESQueryTerms>, user, userGroups, option?): Promise<ISearchResult<unknown>> {
