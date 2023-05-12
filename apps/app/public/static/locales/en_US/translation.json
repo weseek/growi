@@ -50,6 +50,8 @@
   "Sign up with Google Account": "Sign up with Google Account",
   "Sign in with Google Account": "Sign in with Google Account",
   "Sign up with this Google Account": "Sign up with this Google Account",
+  "Select": "Select",
+  "Required": "Required",
   "Example": "Example",
   "Taro Yamada": "John Doe",
   "List View": "List",
@@ -135,6 +137,7 @@
   "edited this page": "edited this page.",
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
+  "Questionnaire": "Questionnaire",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "Add to Bookmarks",
@@ -155,8 +158,12 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required."
+    "title_required": "Title is required.",
+    "field_required": "{{target}} is required"
   },
+  "page_name": "Page name",
+  "folder_name": "Folder name",
+  "field": "field",
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
   },
@@ -232,6 +239,7 @@
     "link_sharing_is_disabled": "Link sharing is disabled"
   },
   "API Settings": "API settings",
+  "Other Settings": "Other Settings",
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
   "Update API Token": "Update API token",
@@ -436,8 +444,19 @@
   "toaster": {
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
-    "save_succeeded": "Saved successfully",
-    "issue_share_link": "Succeeded to issue new share link"
+    "initialize_successed": "Succeeded to initialize {{target}}",
+    "give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "activate_user_success": "Succeeded to activating {{username}}",
+    "deactivate_user_success": "Succeeded to deactivate {{username}}",
+    "remove_user_success": "Succeeded to removing {{username}}",
+    "remove_external_user_success": "Succeeded to remove {{accountId}}",
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "issue_share_link": "Succeeded to issue new share link",
+    "remove_share_link": "Succeeded to remove {{count}} share links",
+    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
+    "failed_to_reset_password":"Failed to reset password",
+    "save_succeeded": "Saved successfully"
   },
   "template": {
     "modal_label": {
@@ -502,7 +521,7 @@
     "discard_changes": "Discard changes of HackMD",
     "integration_failed": "HackMD Integration failed",
     "fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
-    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
+    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
     "not_initialized": "HackmdEditor component has not initialized",
     "someone_editing": "Someone editing this page on HackMD",
     "this_page_has_draft": "This page has a draft on HackMD",
@@ -762,9 +781,43 @@
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
   },
+  "bookmark_folder":{
+    "bookmark_folder": "bookmark folder",
+    "bookmark": "bookmark",
+    "delete_modal": {
+      "modal_header_label": "Delete Bookmark Folder",
+      "modal_body_description": "Delete this bookmark folder and its contents",
+      "modal_body_alert": "Deleted folder and its contents cannot be recovered",
+      "modal_footer_button": "Delete Folder"
+    },
+    "input_placeholder": "Input folder name",
+    "new_folder": "New Folder",
+    "delete": "Delete Folder",
+    "drop_item_here": "Drag and drop item here",
+    "cancel_bookmark": "Un-bookmark this page",
+    "move_to_root": "Move to the root",
+    "root": "root (default)"
+  },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
+  },
+  "questionnaire": {
+    "give_us_feedback": "Give us feedback for improvements",
+    "thank_you_for_answering": "Thank you for answering",
+    "additional_feedback": "Send us additional feedback from the user icon dropdown.",
+    "dont_show_again": "Don`t show again",
+    "deny": "Don't answer",
+    "agree": "Agree",
+    "disagree": "Disagree",
+    "answer": "Answer",
+    "no_answer": "No answer",
+    "settings": "Questionnaire settings",
+    "failed_to_send": "Failed to send feedback",
+    "denied": "The questionnaire won't be shown again",
+    "personal_settings_explanation": "Questionnaires for improving GROWI will be shown. If you have other feedbacks, you can send them from the user icon dropdown.",
+    "enable_questionnaire": "Enable questionnaire",
+    "disabled_by_admin": "Questionnaire is disabled by admin"
   },
   "tag_edit_modal": {
     "edit_tags": "Edit Tags",

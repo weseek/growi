@@ -108,7 +108,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
-  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   const currentRevisionId = currentPage?.revision?._id;
 
@@ -516,6 +516,14 @@ const PageEditor = React.memo((): JSX.Element => {
       }
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
+
+  // when transitioning to a different page, if the initialValue is the same,
+  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  useEffect(() => {
+    if (currentPagePath != null) {
+      editorRef.current?.setValue(initialValue);
+    }
+  }, [currentPagePath, initialValue]);
 
   if (!isEditable) {
     return <></>;

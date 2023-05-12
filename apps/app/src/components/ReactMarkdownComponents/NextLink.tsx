@@ -24,13 +24,14 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
 
 type Props = Omit<LinkProps, 'href'> & {
   children: React.ReactNode,
+  id?: string,
   href?: string,
   className?: string,
 };
 
 export const NextLink = (props: Props): JSX.Element => {
   const {
-    href, children, className, ...rest
+    id, href, children, className, ...rest
   } = props;
 
   const { data: siteUrl } = useSiteUrl();
@@ -47,13 +48,13 @@ export const NextLink = (props: Props): JSX.Element => {
   // when href is an anchor link
   if (isAnchorLink(href)) {
     return (
-      <a href={href} className={className} {...dataAttributes}>{children}</a>
+      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
     );
   }
 
   if (isExternalLink(href, siteUrl)) {
     return (
-      <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
+      <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
         {children}&nbsp;<i className='icon-share-alt small'></i>
       </a>
     );
