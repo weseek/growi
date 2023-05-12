@@ -1,8 +1,8 @@
 import { ErrorV3 } from '@growi/core';
 
-import { readOnlyValidator } from '../../../src/server/middlewares/read-only-validator';
+import { excludeReadOnlyUser } from '../../../src/server/middlewares/exclude-read-only-user';
 
-describe('readOnlyValidator', () => {
+describe('excludeReadOnlyUser', () => {
   let req;
   let res;
   let next;
@@ -20,7 +20,7 @@ describe('readOnlyValidator', () => {
   test('should call next if user is not read only', () => {
     req.user.readOnly = false;
 
-    readOnlyValidator(req, res, next);
+    excludeReadOnlyUser(req, res, next);
 
     expect(next).toBeCalled();
     expect(res.apiv3Err).not.toBeCalled();
@@ -29,7 +29,7 @@ describe('readOnlyValidator', () => {
   test('should return error response if user is read only', () => {
     req.user.readOnly = true;
 
-    readOnlyValidator(req, res, next);
+    excludeReadOnlyUser(req, res, next);
 
     expect(next).not.toBeCalled();
     expect(res.apiv3Err).toBeCalledWith(

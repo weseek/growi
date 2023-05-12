@@ -5,7 +5,7 @@ import { ErrorV3 } from '@growi/core';
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
-import { readOnlyValidator } from '~/server/middlewares/read-only-validator';
+import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:share-links');
@@ -134,7 +134,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, readOnlyValidator, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, excludeReadOnlyUser, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -186,7 +186,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
-  router.delete('/', loginRequired, readOnlyValidator, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
+  router.delete('/', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
 
@@ -260,7 +260,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', loginRequired, readOnlyValidator, addActivity, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const { user } = req;
 

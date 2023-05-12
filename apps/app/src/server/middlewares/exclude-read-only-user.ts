@@ -4,9 +4,9 @@ import { Request } from 'express-validator/src/base';
 
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:middleware:read-only-validator');
+const logger = loggerFactory('growi:middleware:exclude-read-only-user');
 
-export const readOnlyValidator = (req: Request, res: Response & { apiv3Err }, next: () => NextFunction): NextFunction => {
+export const excludeReadOnlyUser = (req: Request, res: Response & { apiv3Err }, next: () => NextFunction): NextFunction => {
   const user = req.user;
 
   if (user.readOnly) {
