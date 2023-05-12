@@ -140,7 +140,7 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFo
     }));
     const deletedChild = await this.deleteMany({ parent: bookmarkFolder._id });
     deletedCount += deletedChild.deletedCount + 1;
-    bookmarkFolder.delete();
+    bookmarkFolder.deleteOne();
   }
   return { deletedCount };
 };

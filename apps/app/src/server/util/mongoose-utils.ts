@@ -29,11 +29,20 @@ export const getModelSafely = <T>(modelName: string): Model<T & Document> | null
   return null;
 };
 
-export const getOrCreateModel = <Interface, Method>(modelName: string, schema: Schema<Interface>): Method & Model<Interface & Document> => {
+export const getOrCreateModel = <T extends Document, M extends Model<T>>(
+  modelName: string,
+  schema: Schema<T>,
+): M => {
+  let modelInstance: M;
+
   if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName);
+    modelInstance = mongoose.model<T, M>(modelName) as M;
   }
-  return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName, schema);
+  else {
+    modelInstance = mongoose.model<T, M>(modelName, schema) as M;
+  }
+
+  return modelInstance;
 };
 
 // supress deprecation warnings

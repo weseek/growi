@@ -1,4 +1,4 @@
-import { Model, Schema } from 'mongoose';
+import { Model, Schema, Document } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 

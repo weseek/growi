@@ -122,7 +122,7 @@ activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = asyn
     q: string, option: { sortOpt: number | string, offset: number, limit: number},
 ): Promise<{usernames: string[], totalCount: number}> {
   const opt = option || {};
-  const sortOpt = opt.sortOpt || 1;
+  const sortOpt = opt.sortOpt === 1 || opt.sortOpt === -1 ? opt.sortOpt : 1;
   const offset = opt.offset || 0;
   const limit = opt.limit || 10;
 

@@ -1,12 +1,14 @@
 import { PresetThemes } from '@growi/preset-themes';
-import { Types, Schema } from 'mongoose';
+import {
+  Types, Schema, Document, Model,
+} from 'mongoose';
 
 import { RehypeSanitizeOption } from '../../interfaces/rehype';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import uniqueValidator from '../util/unique-validator-utils';
 
 
-export interface Config {
+export interface Config extends Document{
   _id: Types.ObjectId;
   ns: string;
   key: string;
@@ -16,8 +18,7 @@ export interface Config {
 /*
  * define methods type
  */
-interface ModelMethods { any }
-
+export type ModelMethods = Model<Config>
 
 const schema = new Schema<Config>({
   ns: { type: String, required: true },

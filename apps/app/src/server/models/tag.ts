@@ -1,5 +1,5 @@
 import {
-  Types, Model, Schema,
+  Types, Model, Schema, Document,
 } from 'mongoose';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -9,7 +9,7 @@ import uniqueValidator from '../util/unique-validator-utils';
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 
-export interface TagDocument {
+export interface TagDocument extends Document {
   _id: Types.ObjectId;
   name: string;
 }

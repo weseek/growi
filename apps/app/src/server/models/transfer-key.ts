@@ -26,4 +26,4 @@ schema.statics.findOneActiveTransferKey = async function(key: string): Promise<H
   return this.findOne({ key });
 };
 
-export default getOrCreateModel('TransferKey', schema);
+export default getOrCreateModel<ITransferKey, TransferKeyModel>('TransferKey', schema);

@@ -86,7 +86,7 @@ export default class InAppNotificationService {
     } = activity;
     const now = createdAt || Date.now();
     const lastWeek = subDays(now, 7);
-    const operations = users.map((user) => {
+    const operations: any[] = users.map((user) => {
       const filter = {
         user, target, action, createdAt: { $gt: lastWeek }, snapshot,
       };
