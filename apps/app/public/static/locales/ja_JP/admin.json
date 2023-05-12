@@ -346,7 +346,8 @@
       "title": "サイトURL設定",
       "desc": "サイトURLを設定します。",
       "warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
-      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL"
+      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
+      "note_for_the_only_env_option": "現在サイトURLは環境変数の値によって固定されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
     },
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",

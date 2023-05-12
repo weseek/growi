@@ -237,6 +237,7 @@ module.exports = (crowi) => {
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
+      siteUrlUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'app:siteUrl:useOnlyEnvVars'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
       isMailerSetup: crowi.mailService.isMailerSetup,
       fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
@@ -360,6 +361,13 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
+
+    const useOnlyEnvVars = crowi.configManager.getConfig('crowi', 'app:siteUrl:useOnlyEnvVars');
+
+    if (useOnlyEnvVars) {
+      const msg = 'Updating the Site URL is prohibited on this system.';
+      return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-prohibited'));
+    }
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),

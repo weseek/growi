@@ -338,7 +338,8 @@
       "title": "Site URL settings",
       "desc": "This is for the site URL setting.",
       "warn": "Some features don't work because the site URL is not set.",
-      "help": "Site full URL beginning from <code>http://</code> or <code>https://</code>."
+      "help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
+      "note_for_the_only_env_option": "The Site URL is fixed to the value of the environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
     },
     "confidential_name": "Confidential name",
     "confidential_example": "ex): internal use only",

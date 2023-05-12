@@ -346,7 +346,8 @@
       "title": "主页URL设置",
       "desc": "用于网站URL设置。",
       "warn": "某些功能不起作用，因为未设置网站URL。",
-      "help": "网站完整URL起始于 <code>http://</code> or <code>https://</code>."
+      "help": "网站完整URL起始于 <code>http://</code> or <code>https://</code>.",
+      "note_for_the_only_env_option": "站点 URL 固定为环境变量的值。<br>要更改此设置，请更改为 false 或删除环境变量 <code>{{env}}</code> 的值。"
     },
     "confidential_name": "内部名称",
     "confidential_example": "ex）：仅供内部使用",
