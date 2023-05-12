@@ -17,6 +17,7 @@ import type { Pluggable } from 'unified';
 
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { MermaidViewer } from '~/components/ReactMarkdownComponents/MermaidViewer';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -24,6 +25,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
+import * as mermaid from '~/services/renderer/remark-plugins/mermaid';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
@@ -61,6 +63,7 @@ export const generateViewOptions = (
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     refsGrowiPlugin.remarkPlugin,
+    mermaid.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -76,6 +79,7 @@ export const generateViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
       refsGrowiPlugin.sanitizeOption,
+      mermaid.sanitizeOption,
     )]
     : () => {};
 
@@ -105,6 +109,7 @@ export const generateViewOptions = (
     components.gallery = refsGrowiPlugin.Gallery;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
+    components.mermaid = MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -164,6 +169,7 @@ export const generateSimpleViewOptions = (
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     refsGrowiPlugin.remarkPlugin,
+    mermaid.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -183,6 +189,7 @@ export const generateSimpleViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
       refsGrowiPlugin.sanitizeOption,
+      mermaid.sanitizeOption,
     )]
     : () => {};
 
@@ -204,6 +211,7 @@ export const generateSimpleViewOptions = (
     components.refsimg = refsGrowiPlugin.RefsImgImmutable;
     components.gallery = refsGrowiPlugin.GalleryImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.mermaid = MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -238,6 +246,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
     refsGrowiPlugin.remarkPlugin,
+    mermaid.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -254,6 +263,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       refsGrowiPlugin.sanitizeOption,
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      mermaid.sanitizeOption,
     )]
     : () => {};
 
@@ -275,6 +285,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.refsimg = refsGrowiPlugin.RefsImgImmutable;
     components.gallery = refsGrowiPlugin.GalleryImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.mermaid = MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
