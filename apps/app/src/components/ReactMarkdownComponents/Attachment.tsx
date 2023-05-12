@@ -26,14 +26,18 @@ export const Attachment: React.FC<{
     );
   }
 
+  // TODO: locale support
+  // TODO: User Picture Tooltip
+  // TODO: Ensure that the card style does not collapse when d-inline-blocked
+
   return (
-    <div className="card my-3" style={{ width: 'fit-content' }}>
-      <div className="card-body pr-0">
+    <div className="card my-3">
+      <div className="card-body py-1">
         <div className='row'>
-          <div className='col-2'>
-            <div className='icon-doc' style={{ fontSize: '2.7rem', opacity: '0.5' }}/>
+          <div className='col-1 px-0 d-flex align-items-center justify-content-center'>
+            <img src='/images/icons/editor/attachment.svg'/>
           </div>
-          <div className='col-10'>
+          <div className='col-11 pl-0'>
             <div>
               <a target="_blank" rel="noopener noreferrer" href={attachment.filePathProxied}>{attachment.originalName}</a>
               <span className='ml-2'>
@@ -49,8 +53,7 @@ export const Attachment: React.FC<{
             </div>
             <div>
               <UserPicture user={attachment.creator} size="sm"></UserPicture>
-              {/* TODO: check locale */}
-              <span className='ml-2 text-muted'>{new Date(attachment.createdAt).toLocaleString()}</span>
+              <span className='ml-2 text-muted'>{new Date(attachment.createdAt).toLocaleString('ja-JP')}</span>
               <span className='border-left ml-2 pl-2 text-muted'>{prettyBytes(attachment.fileSize)}</span>
             </div>
           </div>
