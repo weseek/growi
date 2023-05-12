@@ -1,4 +1,4 @@
-import { useRef, useEffect, ReactNode } from 'react';
+import React, { useRef, useEffect, ReactNode } from 'react';
 
 import mermaid from 'mermaid';
 
@@ -6,7 +6,7 @@ type MermaidViewerProps = {
   children: ReactNode,
 }
 
-export const MermaidViewer = (props: MermaidViewerProps): JSX.Element => {
+export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element => {
   const { children } = props;
 
   const ref = useRef<HTMLDivElement>(null);
@@ -24,4 +24,5 @@ export const MermaidViewer = (props: MermaidViewerProps): JSX.Element => {
       </div>
       : <div key={children as string} />
   );
-};
+});
+MermaidViewer.displayName = 'MermaidViewer';
