@@ -23,6 +23,7 @@ import { BookmarkItem } from './BookmarkItem';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 type BookmarkFolderItemProps = {
+  isReadOnlyUser: boolean
   bookmarkFolder: BookmarkFolderItems
   isOpen?: boolean
   level: number
@@ -36,7 +37,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
-    bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
+    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
     onClickDeleteBookmarkHandler, bookmarkFolderTreeMutation,
   } = props;
 
@@ -146,6 +147,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         <div key={childFolder._id} className="grw-foldertree-item-children">
           <BookmarkFolderItem
             key={childFolder._id}
+            isReadOnlyUser={isReadOnlyUser}
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
@@ -163,6 +165,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       return (
         <BookmarkItem
           key={bookmark._id}
+          isReadOnlyUser={isReadOnlyUser}
           bookmarkedPage={bookmark.page}
           level={level + 1}
           parentFolder={bookmarkFolder}

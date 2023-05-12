@@ -15,6 +15,7 @@ import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
 import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
@@ -177,17 +178,19 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                   {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                     <div className="d-flex flex-row-reverse">
                       <NotAvailableForGuest>
-                        <Button
-                          outline
-                          color="secondary"
-                          size="sm"
-                          className="btn-comment-reply"
-                          onClick={() => {
-                            setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
-                          }}
-                        >
-                          <i className="icon-fw icon-action-undo"></i> Reply
-                        </Button>
+                        <NotAvailableForReadOnlyUser>
+                          <Button
+                            outline
+                            color="secondary"
+                            size="sm"
+                            className="btn-comment-reply"
+                            onClick={() => {
+                              setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
+                            }}
+                          >
+                            <i className="icon-fw icon-action-undo"></i> Reply
+                          </Button>
+                        </NotAvailableForReadOnlyUser>
                       </NotAvailableForGuest>
                     </div>
                   )}

@@ -9,7 +9,9 @@ import {
 } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 
-import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+} from '~/stores/context';
 
 import '@growi/remark-drawio/dist/style.css';
 import styles from './DrawioViewerWithEditButton.module.scss';
@@ -27,6 +29,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   const { bol, eol } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -52,7 +55,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
     }
   }, []);
 
-  const showEditButton = isRendered && !isGuestUser && !isSharedUser && shareLinkId == null;
+  const showEditButton = isRendered && !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
     <div className={`drawio-viewer-with-edit-button ${styles['drawio-viewer-with-edit-button']}`}>
