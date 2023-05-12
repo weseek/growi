@@ -16,7 +16,7 @@ module.exports = {
 
     await Promise.all([
       // update en-US -> en_US
-      Config.update(
+      Config.updateOne(
         { key: 'app:globalLang', value: JSON.stringify('en-US') },
         { value: JSON.stringify('en_US') },
       ),
