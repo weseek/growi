@@ -17,6 +17,15 @@ describe('excludeReadOnlyUser', () => {
     next = jest.fn();
   });
 
+  test('should call next if user is not found', () => {
+    req.user = null;
+
+    excludeReadOnlyUser(req, res, next);
+
+    expect(next).toBeCalled();
+    expect(res.apiv3Err).not.toBeCalled();
+  });
+
   test('should call next if user is not read only', () => {
     req.user.readOnly = false;
 
