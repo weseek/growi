@@ -9,11 +9,16 @@ const logger = loggerFactory('growi:middleware:exclude-read-only-user');
 export const excludeReadOnlyUser = (req: Request, res: Response & { apiv3Err }, next: () => NextFunction): NextFunction => {
   const user = req.user;
 
+  if (user == null) {
+    logger.warn('req.user is null');
+    return next();
+  }
+
   if (user.readOnly) {
     const message = 'This user is read only user';
     logger.warn(message);
 
-    return res.apiv3Err(new ErrorV3(message, 'validatioin_failed'));
+    return res.apiv3Err(new ErrorV3(message, 'validation_failed'));
   }
 
   return next();
