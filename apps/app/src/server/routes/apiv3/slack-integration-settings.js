@@ -507,28 +507,29 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, addActivity, async(req, res) => {
-    const { id } = req.params;
+  router.delete('/slack-app-integrations/:id', loginRequiredStrictly, adminRequired, validator.deleteIntegration, apiV3FormValidator, addActivity,
+    async(req, res) => {
+      const { id } = req.params;
 
-    try {
-      const response = await SlackAppIntegration.findOneAndDelete({ _id: id });
+      try {
+        const response = await SlackAppIntegration.findOneAndDelete({ _id: id });
 
-      // update primary
-      const countOfPrimary = await SlackAppIntegration.countDocuments({ isPrimary: true });
-      if (countOfPrimary === 0) {
-        await SlackAppIntegration.updateOne({}, { isPrimary: true });
+        // update primary
+        const countOfPrimary = await SlackAppIntegration.countDocuments({ isPrimary: true });
+        if (countOfPrimary === 0) {
+          await SlackAppIntegration.updateOne({}, { isPrimary: true });
+        }
+
+        activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_WORKSPACE_DELETE });
+
+        return res.apiv3({ response });
       }
-
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SLACK_WORKSPACE_DELETE });
-
-      return res.apiv3({ response });
-    }
-    catch (error) {
-      const msg = 'Error occured in deleting access token for slack app tokens';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
-    }
-  });
+      catch (error) {
+        const msg = 'Error occured in deleting access token for slack app tokens';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+      }
+    });
 
   router.put('/proxy-uri', loginRequiredStrictly, adminRequired, addActivity, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
