@@ -22,6 +22,7 @@ import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 type Props = {
+  isReadOnlyUser: boolean
   bookmarkedPage: IPageHasId,
   level: number,
   parentFolder: BookmarkFolderItems | null,
@@ -37,7 +38,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    bookmarkedPage, onClickDeleteBookmarkHandler,
+    isReadOnlyUser, bookmarkedPage, onClickDeleteBookmarkHandler,
     parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
 
@@ -133,6 +134,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
           <PageItemControl
             pageId={bookmarkedPage._id}
             isEnableActions
+            isReadOnlyUser={isReadOnlyUser}
             pageInfo={fetchedPageInfo}
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}

@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 
 const crypto = require('crypto');
 
-const debug = require('debug')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
@@ -68,6 +67,7 @@ module.exports = function(crowi) {
     },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
+    readOnly: { type: Boolean, default: 0 },
     isInvitationEmailSended: { type: Boolean, default: false },
     isQuestionnaireEnabled: { type: Boolean, default: true },
   }, {
@@ -266,14 +266,26 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.removeFromAdmin = async function() {
-    debug('Remove from admin', this);
+    logger.debug('Remove from admin', this);
     this.admin = 0;
     return this.save();
   };
 
   userSchema.methods.makeAdmin = async function() {
-    debug('Admin', this);
+    logger.debug('Admin', this);
     this.admin = 1;
+    return this.save();
+  };
+
+  userSchema.methods.grantReadOnly = async function() {
+    logger.debug('Grant read only flag', this);
+    this.readOnly = 1;
+    return this.save();
+  };
+
+  userSchema.methods.revokeReadOnly = async function() {
+    logger.debug('Revoke read only flag', this);
+    this.readOnly = 0;
     return this.save();
   };
 
@@ -283,14 +295,14 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.statusActivate = async function() {
-    debug('Activate User', this);
+    logger.debug('Activate User', this);
     this.status = STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
   };
 
   userSchema.methods.statusSuspend = async function() {
-    debug('Suspend User', this);
+    logger.debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
       this.email = '-';
@@ -305,7 +317,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.statusDelete = async function() {
-    debug('Delete User', this);
+    logger.debug('Delete User', this);
 
     const now = new Date();
     const deletedLabel = `deleted_at_${now.getTime()}`;

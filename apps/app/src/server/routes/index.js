@@ -6,6 +6,7 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
+import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import * as loginFormValidator from '../middlewares/login-form-validator';
@@ -126,27 +127,27 @@ module.exports = function(crowi, app) {
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
-  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , addActivity, page.api.update);
+  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, page.api.update);
   apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
-  apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , page.api.unlink); // (Avoid from API Token)
-  apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, page.api.duplicate);
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
+  apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, addActivity, tag.api.update);
+  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , addActivity, comment.api.add);
-  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , addActivity, comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , addActivity, comment.api.remove);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,addActivity ,attachment.api.add);
-  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,attachment.api.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , addActivity ,attachment.api.remove);
-  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , attachment.api.removeProfileImage);
+  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachment.api.add);
+  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, attachment.api.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachment.api.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, attachment.api.removeProfileImage);
   apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
   // API v1
@@ -165,9 +166,9 @@ module.exports = function(crowi, app) {
 
   app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
   app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
-  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
-  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
-  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
+  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, hackmd.validateForApi, hackmd.integrate);
+  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, hackmd.validateForApi, hackmd.discard);
+  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))

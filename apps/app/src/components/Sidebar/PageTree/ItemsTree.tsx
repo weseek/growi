@@ -90,6 +90,7 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 
 type ItemsTreeProps = {
   isEnableActions: boolean
+  isReadOnlyUser: boolean
   targetPath: string
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
@@ -100,7 +101,7 @@ type ItemsTreeProps = {
  */
 const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser,
   } = props;
 
   const { t } = useTranslation();
@@ -278,6 +279,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
           itemNode={initialItemNode}
           isOpen
           isEnableActions={isEnableActions}
+          isReadOnlyUser={isReadOnlyUser}
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}
           onClickDeleteMenuItem={onClickDeleteMenuItem}

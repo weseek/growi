@@ -744,6 +744,7 @@
     },
     "user_table": {
       "administrator": "管理者",
+      "read_only": "閲覧のみ",
       "edit_menu": "編集メニュー",
       "reset_password": "パスワードの再発行",
       "administrator_menu": "管理者メニュー",
@@ -753,6 +754,8 @@
       "remove_admin_access": "管理者から外す",
       "cannot_remove": "自分自身を管理者から外すことはできません",
       "give_admin_access": "管理者にする",
+      "revoke_read_only_access": "閲覧のみアクセス権を外す",
+      "grant_read_only_access": "閲覧のみアクセス権を付与する",
       "send_invitation_email": "招待メールの送信",
       "resend_invitation_email": "招待メールの再送信"
     },
@@ -1025,6 +1028,8 @@
     "ADMIN_USERS_DEACTIVATE": "ユーザーを停止する",
     "ADMIN_USERS_GIVE_ADMIN": "管理者にする",
     "ADMIN_USERS_REMOVE_ADMIN": "管理者から外す",
+    "ADMIN_USERS_GRANT_READ_ONLY": "閲覧のみアクセス権を付与する",
+    "ADMIN_USERS_REVOKE_READ_ONLY": "閲覧のみアクセス権を外す",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "招待メールの再送信",
     "ADMIN_USERS_REMOVE": "ユーザーの削除",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
@@ -1043,6 +1048,8 @@
   "toaster": {
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
+    "grant_user_read_only": "{{username}}に閲覧のみアクセス権を付与しました",
+    "revoke_user_read_only": "{{username}}から閲覧のみアクセス権を外しました",
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",

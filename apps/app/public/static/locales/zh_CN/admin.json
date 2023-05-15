@@ -744,6 +744,7 @@
     },
     "user_table": {
       "administrator": "管理员",
+      "read_only": "只浏览",
       "edit_menu": "编辑菜单",
       "reset_password": "重置密码",
       "administrator_menu": "管理员菜单",
@@ -753,6 +754,8 @@
       "remove_admin_access": "删除管理员访问权限",
       "cannot_remove": "您不能从管理员中删除自己",
       "give_admin_access": "授予管理员访问权限",
+      "revoke_read_only_access": "取消只读访问",
+      "grant_read_only_access": "给予只读权限",
       "send_invitation_email": "发送邀请邮件",
       "resend_invitation_email": "重发邀请函"
     },
@@ -1025,6 +1028,8 @@
     "ADMIN_USERS_DEACTIVATE": "停用用户",
     "ADMIN_USERS_GIVE_ADMIN": "授予管理员访问权限",
     "ADMIN_USERS_REMOVE_ADMIN": "删除管理员访问权限",
+    "ADMIN_USERS_GRANT_READ_ONLY": "给予只读权限",
+    "ADMIN_USERS_REVOKE_READ_ONLY": "取消只读访问",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "重发邀请函",
     "ADMIN_USERS_REMOVE": "删除用户",
     "ADMIN_USER_GROUP_CREATE": "创建用户组",
@@ -1042,7 +1047,9 @@
   },
   "toaster": {
     "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+    "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "grant_user_read_only": "Succeeded to grant {{username}} read only",
+    "revoke_user_read_only": "Succeeded to revoke {{username}} read only",
 		"activate_user_success": "Succeeded to activating {{username}}",
 		"deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",

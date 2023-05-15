@@ -8,7 +8,7 @@ import {
   IPageHasId,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { useShowPageLimitationXL } from '~/stores/context';
+import { useIsReadOnlyUser, useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 
@@ -28,9 +28,10 @@ const convertToIDataWithMeta = (page) => {
 
 const useEmptyTrashButton = () => {
 
-  const { data: limit } = useShowPageLimitationXL();
-  const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
   const { t } = useTranslation();
+  const { data: limit } = useShowPageLimitationXL();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
@@ -59,8 +60,8 @@ const useEmptyTrashButton = () => {
   }, [deletablePages, onEmptiedTrashHandler, openEmptyTrashModal, pagingResult?.totalCount]);
 
   const emptyTrashButton = useMemo(() => {
-    return <EmptyTrashButton onEmptyTrashButtonClick={emptyTrashClickHandler} disableEmptyButton={deletablePages?.length === 0} />;
-  }, [emptyTrashClickHandler, deletablePages?.length]);
+    return <EmptyTrashButton onEmptyTrashButtonClick={emptyTrashClickHandler} disableEmptyButton={deletablePages?.length === 0 || !!isReadOnlyUser} />;
+  }, [emptyTrashClickHandler, deletablePages?.length, isReadOnlyUser]);
 
   return emptyTrashButton;
 };
