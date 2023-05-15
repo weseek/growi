@@ -31,6 +31,11 @@ function bracketlinkProcessor(body) {
   return body.replace(oldBracketLinkRegExp, '[[$1]]');
 }
 
+function mdcontPrefixProcessor(body) {
+  var oldMdcontPrefixRegExp = /mdcont-/g;
+  return body.replace(oldMdcontPrefixRegExp, '');
+}
+
 // processor for MIGRATION_TYPE=custom
 function customProcessor(body) {
   // ADD YOUR PROCESS HERE!
@@ -60,8 +65,11 @@ function getProcessorArray(migrationType) {
     case 'v6-bracketlink':
       oldFormatProcessors = [bracketlinkProcessor];
       break;
+    case 'mdcont':
+      oldFormatProcessors = [mdcontPrefixProcessor];
+      break;
     case 'v6':
-      oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor];
+      oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor, mdcontPrefixProcessor];
       break;
     case 'custom':
       oldFormatProcessors = [customProcessor];
