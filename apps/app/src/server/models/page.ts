@@ -16,9 +16,9 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
+import uniqueValidator from '../util/unique-validator';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-import uniqueValidator from '../util/unique-validator';
 
 const { addTrailingSlash, normalizePath } = pathUtils;
 const {
@@ -365,7 +365,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(
-    user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+      user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
   ): PageQueryBuilder {
     const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
@@ -484,8 +484,8 @@ export class PageQueryBuilder {
 
 }
 
-schema.statics.createEmptyPage = async function (
-  path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
+schema.statics.createEmptyPage = async function(
+    path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
 ): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
@@ -507,7 +507,7 @@ schema.statics.createEmptyPage = async function (
  * @param exPage a page document to be replaced
  * @returns Promise<void>
  */
-schema.statics.replaceTargetWithPage = async function (exPage, pageToReplaceWith?, deleteExPageIfEmpty = false) {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?, deleteExPageIfEmpty = false) {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -554,8 +554,8 @@ schema.statics.replaceTargetWithPage = async function (exPage, pageToReplaceWith
 /*
  * Find pages by ID and viewer.
  */
-schema.statics.findByIdsAndViewer = async function (
-  pageIds: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+schema.statics.findByIdsAndViewer = async function(
+    pageIds: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
 ): Promise<PageDocument[]> {
   const baseQuery = this.find({ _id: { $in: pageIds } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
@@ -568,8 +568,8 @@ schema.statics.findByIdsAndViewer = async function (
 /*
  * Find a page by path and viewer. Pass true to useFindOne to use findOne method.
  */
-schema.statics.findByPathAndViewer = async function (
-  path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,
+schema.statics.findByPathAndViewer = async function(
+    path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,
 ): Promise<(PageDocument | PageDocument[]) & HasObjectId | null> {
   if (path == null) {
     throw new Error('path is required.');
@@ -584,7 +584,7 @@ schema.statics.findByPathAndViewer = async function (
   return queryBuilder.query.exec();
 };
 
-schema.statics.countByPathAndViewer = async function (path: string | null, user, userGroups = null, includeEmpty = false): Promise<number> {
+schema.statics.countByPathAndViewer = async function(path: string | null, user, userGroups = null, includeEmpty = false): Promise<number> {
   if (path == null) {
     throw new Error('path is required.');
   }
@@ -597,8 +597,8 @@ schema.statics.countByPathAndViewer = async function (path: string | null, user,
   return queryBuilder.query.exec();
 };
 
-schema.statics.findRecentUpdatedPages = async function (
-  path: string, user, options, includeEmpty = false,
+schema.statics.findRecentUpdatedPages = async function(
+    path: string, user, options, includeEmpty = false,
 ): Promise<PaginatedPages> {
 
   const sortOpt = {};
@@ -635,7 +635,7 @@ schema.statics.findRecentUpdatedPages = async function (
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  * The result will include the target as well
  */
-schema.statics.findTargetAndAncestorsByPathOrId = async function (pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -677,7 +677,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function (pathOrId: stri
  * @param paths Page paths
  * @param aggrPipelineForExistingPages AggregationPipeline object to find existing pages at paths
  */
-schema.statics.createEmptyPagesByPaths = async function (paths: string[], aggrPipelineForExistingPages: any[]): Promise<void> {
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], aggrPipelineForExistingPages: any[]): Promise<void> {
   const existingPages = await this.aggregate(aggrPipelineForExistingPages);
 
   const existingPagePaths = existingPages.map(page => page.path);
@@ -691,7 +691,7 @@ schema.statics.createEmptyPagesByPaths = async function (paths: string[], aggrPi
  * @param {string} path
  * @returns {Promise<PageDocument | null>}
  */
-schema.statics.findParentByPath = async function (path: string): Promise<PageDocument | null> {
+schema.statics.findParentByPath = async function(path: string): Promise<PageDocument | null> {
   const parentPath = nodePath.dirname(path);
 
   const builder = new PageQueryBuilder(this.find({ path: parentPath }), true);
@@ -724,14 +724,14 @@ export async function pushRevision(pageData, newRevision, user) {
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
  */
-schema.statics.incrementDescendantCountOfPageIds = async function (pageIds: ObjectIdLike[], increment: number): Promise<void> {
+schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: ObjectIdLike[], increment: number): Promise<void> {
   await this.updateMany({ _id: { $in: pageIds } }, { $inc: { descendantCount: increment } });
 };
 
 /**
  * recount descendantCount of a page with the provided id and return it
  */
-schema.statics.recountDescendantCount = async function (id: ObjectIdLike): Promise<number> {
+schema.statics.recountDescendantCount = async function(id: ObjectIdLike): Promise<number> {
   const res = await this.aggregate(
     [
       {
@@ -772,7 +772,7 @@ schema.statics.recountDescendantCount = async function (id: ObjectIdLike): Promi
   return res.length === 0 ? 0 : res[0].descendantCount;
 };
 
-schema.statics.findAncestorsUsingParentRecursively = async function (pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
+schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
   const self = this;
   const target = await this.findById(pageId);
   if (target == null) {
@@ -797,7 +797,7 @@ schema.statics.findAncestorsUsingParentRecursively = async function (pageId: Obj
  * @param pageId ObjectIdLike
  * @returns Promise<void>
  */
-schema.statics.removeLeafEmptyPagesRecursively = async function (pageId: ObjectIdLike): Promise<void> {
+schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectIdLike): Promise<void> {
   const self = this;
 
   const initialPage = await this.findById(pageId);
@@ -836,7 +836,7 @@ schema.statics.removeLeafEmptyPagesRecursively = async function (pageId: ObjectI
   await this.deleteMany({ _id: { $in: pageIdsToRemove } });
 };
 
-schema.statics.normalizeDescendantCountById = async function (pageId) {
+schema.statics.normalizeDescendantCountById = async function(pageId) {
   const children = await this.find({ parent: pageId });
 
   const sumChildrenDescendantCount = children.map(d => d.descendantCount).reduce((c1, c2) => c1 + c2);
@@ -845,11 +845,11 @@ schema.statics.normalizeDescendantCountById = async function (pageId) {
   return this.updateOne({ _id: pageId }, { $set: { descendantCount: sumChildrenDescendantCount + sumChildPages } }, { new: true });
 };
 
-schema.statics.takeOffFromTree = async function (pageId: ObjectIdLike) {
+schema.statics.takeOffFromTree = async function(pageId: ObjectIdLike) {
   return this.findByIdAndUpdate(pageId, { $set: { parent: null } });
 };
 
-schema.statics.removeEmptyPages = async function (pageIdsToNotRemove: ObjectIdLike[], paths: string[]): Promise<void> {
+schema.statics.removeEmptyPages = async function(pageIdsToNotRemove: ObjectIdLike[], paths: string[]): Promise<void> {
   await this.deleteMany({
     _id: {
       $nin: pageIdsToNotRemove,
@@ -866,13 +866,13 @@ schema.statics.removeEmptyPages = async function (pageIdsToNotRemove: ObjectIdLi
  * @param {string} path
  * @returns {Promise<PageDocument | null>}
  */
-schema.statics.findNotEmptyParentByPathRecursively = async function (path: string): Promise<PageDocument | null> {
+schema.statics.findNotEmptyParentByPathRecursively = async function(path: string): Promise<PageDocument | null> {
   const parent = await this.findParentByPath(path);
   if (parent == null) {
     return null;
   }
 
-  const recursive = async (page: PageDocument): Promise<PageDocument> => {
+  const recursive = async(page: PageDocument): Promise<PageDocument> => {
     if (!page.isEmpty) {
       return page;
     }
@@ -891,14 +891,14 @@ schema.statics.findNotEmptyParentByPathRecursively = async function (path: strin
   return notEmptyParent;
 };
 
-schema.statics.findParent = async function (pageId): Promise<PageDocument | null> {
+schema.statics.findParent = async function(pageId): Promise<PageDocument | null> {
   return this.findOne({ _id: pageId });
 };
 
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(
-  user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+    user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
   const grantConditions: AnyObject[] = [
     { grant: null },
@@ -941,7 +941,7 @@ export function generateGrantCondition(
 schema.statics.generateGrantCondition = generateGrantCondition;
 
 // find ancestor page with isEmpty: false. If parameter path is '/', return undefined
-schema.statics.findNonEmptyClosestAncestor = async function (path: string): Promise<PageDocument | undefined> {
+schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {
   if (path === '/') {
     return;
   }

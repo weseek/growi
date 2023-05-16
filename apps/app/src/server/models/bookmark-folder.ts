@@ -59,7 +59,7 @@ bookmarkFolderSchema.virtual('children', {
   foreignField: 'parent',
 });
 
-bookmarkFolderSchema.statics.createByParameters = async function (params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
+bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
   const { name, owner, parent } = params;
   let bookmarkFolder: BookmarkFolderDocument;
 
@@ -83,9 +83,9 @@ bookmarkFolderSchema.statics.createByParameters = async function (params: IBookm
   return bookmarkFolder;
 };
 
-bookmarkFolderSchema.statics.findFolderAndChildren = async function (
-  userId: Types.ObjectId | string,
-  parentId?: Types.ObjectId | string,
+bookmarkFolderSchema.statics.findFolderAndChildren = async function(
+    userId: Types.ObjectId | string,
+    parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
   const folderItems: BookmarkFolderItems[] = [];
 
@@ -100,7 +100,7 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function (
       },
     });
 
-  const promises = folders.map(async (folder) => {
+  const promises = folders.map(async(folder) => {
     const children = await this.findFolderAndChildren(userId, folder._id);
     const {
       _id, name, owner, bookmarks, parent,
@@ -122,7 +122,7 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function (
   return folderItems;
 };
 
-bookmarkFolderSchema.statics.deleteFolderAndChildren = async function (bookmarkFolderId: Types.ObjectId | string): Promise<{ deletedCount: number }> {
+bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFolderId: Types.ObjectId | string): Promise<{ deletedCount: number }> {
   const bookmarkFolder = await this.findById(bookmarkFolderId);
   // Delete parent and all children folder
   let deletedCount = 0;
@@ -134,7 +134,7 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function (bookmarkF
     }
     // Delete all child recursively and update deleted count
     const childFolders = await this.find({ parent: bookmarkFolder._id });
-    await Promise.all(childFolders.map(async (child) => {
+    await Promise.all(childFolders.map(async(child) => {
       const deletedChildFolder = await this.deleteFolderAndChildren(child._id);
       deletedCount += deletedChildFolder.deletedCount;
     }));
@@ -145,7 +145,7 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function (bookmarkF
   return { deletedCount };
 };
 
-bookmarkFolderSchema.statics.updateBookmarkFolder = async function (bookmarkFolderId: string, name: string, parentId: string | null):
+bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parentId: string | null):
   Promise<BookmarkFolderDocument> {
   const updateFields: { name: string, parent: Types.ObjectId | null } = {
     name: '',
@@ -177,7 +177,7 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function (bookmarkFold
 
 };
 
-bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function (pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null):
+bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null):
   Promise<BookmarkFolderDocument | null> {
 
   // Create bookmark or update existing
@@ -195,7 +195,7 @@ bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function (page
   return null;
 };
 
-bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function (userId: Types.ObjectId | string): Promise<MyBookmarkList> {
+bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function(userId: Types.ObjectId | string): Promise<MyBookmarkList> {
   const bookmarkIdsInFolders = await this.distinct('bookmarks', { owner: userId });
   const userRootBookmarks: MyBookmarkList = await Bookmark.find({
     _id: { $nin: bookmarkIdsInFolders },
@@ -210,7 +210,7 @@ bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function (userId:
   return userRootBookmarks;
 };
 
-bookmarkFolderSchema.statics.updateBookmark = async function (pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId | string):
+bookmarkFolderSchema.statics.updateBookmark = async function(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId | string):
   Promise<BookmarkFolderDocument | null> {
   // If isBookmarked
   if (status) {

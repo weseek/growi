@@ -147,7 +147,7 @@ module.exports = (crowi) => {
     next();
   };
 
-  const sendEmailByUserList = async (userList) => {
+  const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
     const failedToSendEmailList = [];
@@ -228,7 +228,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async (req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
@@ -333,7 +333,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async (req, res) => {
+  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     let user;
@@ -419,7 +419,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Users email that failed to create or send email
    */
-  router.post('/invite', loginRequiredStrictly, adminRequired, addActivity, validator.inviteEmail, apiV3FormValidator, async (req, res) => {
+  router.post('/invite', loginRequiredStrictly, adminRequired, addActivity, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
     // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
@@ -477,7 +477,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of admin user
    */
-  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
+  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -524,7 +524,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async (req, res) => {
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -571,7 +571,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of read only
    */
-  router.put('/:id/grant-read-only', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
+  router.put('/:id/grant-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -623,7 +623,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of revoke read only
    */
-  router.put('/:id/revoke-read-only', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
+  router.put('/:id/revoke-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -675,7 +675,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of activate user
    */
-  router.put('/:id/activate', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     // check user upper limit
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
     if (isUserCountExceedsUpperLimit) {
@@ -729,7 +729,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of deactivate user
    */
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async (req, res) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -775,7 +775,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async (req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -817,7 +817,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async (req, res) => {
+  router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const page = parseInt(req.query.page) || 1;
     try {
       const paginateResult = await ExternalAccount.findAllWithPagination({ page });
@@ -858,7 +858,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `ExtenralAccount.findByIdAndRemove`
    */
-  router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, apiV3FormValidator, async (req, res) => {
+  router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -900,11 +900,11 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: users updated with imageUrlCached
    */
-  router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, async (req, res) => {
+  router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const userIds = req.body.userIds;
       const users = await User.find({ _id: { $in: userIds }, imageUrlCached: null });
-      const requests = await Promise.all(users.map(async (user) => {
+      const requests = await Promise.all(users.map(async(user) => {
         return {
           updateOne: {
             filter: { _id: user._id },
@@ -949,7 +949,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: success resrt password
    */
-  router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {
@@ -995,7 +995,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: email and reasons for email sending failure
    */
-  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
+  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {
@@ -1053,7 +1053,7 @@ module.exports = (crowi) => {
    *            500:
    *              $ref: '#/components/responses/500'
    */
-  router.get('/list', accessTokenParser, loginRequired, async (req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds || null;
 
     let userFetcher;
@@ -1082,7 +1082,7 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async (req, res) => {
+  router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 10;

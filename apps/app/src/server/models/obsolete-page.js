@@ -75,7 +75,7 @@ export const populateDataToShowRevision = (page, userPublicFields) => {
       {
         path: 'revision', model: 'Revision', populate: {
           path: 'author', model: 'User', select: userPublicFields,
-        }
+        },
       },
     ]);
 };
@@ -100,11 +100,11 @@ export const getPageSchema = (crowi) => {
     }
   }
 
-  pageSchema.methods.isDeleted = function () {
+  pageSchema.methods.isDeleted = function() {
     return isTrashPage(this.path);
   };
 
-  pageSchema.methods.isPublic = function () {
+  pageSchema.methods.isPublic = function() {
     if (!this.grant || this.grant === GRANT_PUBLIC) {
       return true;
     }
@@ -112,15 +112,15 @@ export const getPageSchema = (crowi) => {
     return false;
   };
 
-  pageSchema.methods.isTopPage = function () {
+  pageSchema.methods.isTopPage = function() {
     return isTopPage(this.path);
   };
 
-  pageSchema.methods.isTemplate = function () {
+  pageSchema.methods.isTemplate = function() {
     return checkTemplatePath(this.path);
   };
 
-  pageSchema.methods.isLatestRevision = function () {
+  pageSchema.methods.isLatestRevision = function() {
     // populate されていなくて判断できない
     if (!this.latestRevision || !this.revision) {
       return true;
@@ -131,13 +131,13 @@ export const getPageSchema = (crowi) => {
     return (this.latestRevision == this.revision._id.toString());
   };
 
-  pageSchema.methods.findRelatedTagsById = async function () {
+  pageSchema.methods.findRelatedTagsById = async function() {
     const PageTagRelation = mongoose.model('PageTagRelation');
     const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
-  pageSchema.methods.isUpdatable = function (previousRevision) {
+  pageSchema.methods.isUpdatable = function(previousRevision) {
     const revision = this.latestRevision || this.revision;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
@@ -147,7 +147,7 @@ export const getPageSchema = (crowi) => {
     return true;
   };
 
-  pageSchema.methods.isLiked = function (user) {
+  pageSchema.methods.isLiked = function(user) {
     if (user == null || user._id == null) {
       return false;
     }
@@ -157,7 +157,7 @@ export const getPageSchema = (crowi) => {
     });
   };
 
-  pageSchema.methods.like = async function (userData) {
+  pageSchema.methods.like = async function(userData) {
     const self = this;
 
     try {
@@ -176,7 +176,7 @@ export const getPageSchema = (crowi) => {
     }
   };
 
-  pageSchema.methods.unlike = async function (userData) {
+  pageSchema.methods.unlike = async function(userData) {
     const self = this;
 
     try {
@@ -194,11 +194,11 @@ export const getPageSchema = (crowi) => {
     }
   };
 
-  pageSchema.methods.isSeenUser = function (userData) {
+  pageSchema.methods.isSeenUser = function(userData) {
     return this.seenUsers.includes(userData._id);
   };
 
-  pageSchema.methods.seen = async function (userData) {
+  pageSchema.methods.seen = async function(userData) {
     if (this.isSeenUser(userData)) {
       debug('seenUsers not updated');
       return this;
@@ -217,27 +217,27 @@ export const getPageSchema = (crowi) => {
     return saved;
   };
 
-  pageSchema.methods.updateSlackChannels = function (slackChannels) {
+  pageSchema.methods.updateSlackChannels = function(slackChannels) {
     this.slackChannels = slackChannels;
 
     return this.save();
   };
 
-  pageSchema.methods.initLatestRevisionField = async function (revisionId) {
+  pageSchema.methods.initLatestRevisionField = async function(revisionId) {
     this.latestRevision = this.revision;
     if (revisionId != null) {
       this.revision = revisionId;
     }
   };
 
-  pageSchema.methods.populateDataToShowRevision = async function () {
+  pageSchema.methods.populateDataToShowRevision = async function() {
     validateCrowi();
 
     const User = crowi.model('User');
     return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   };
 
-  pageSchema.methods.populateDataToMakePresentation = async function (revisionId) {
+  pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
     this.latestRevision = this.revision;
     if (revisionId != null) {
       this.revision = revisionId;
@@ -245,7 +245,7 @@ export const getPageSchema = (crowi) => {
     return this.populate('revision');
   };
 
-  pageSchema.methods.applyScope = function (user, grant, grantUserGroupId) {
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
     // Reset
     this.grantedUsers = [];
     this.grantedGroup = null;
@@ -261,12 +261,12 @@ export const getPageSchema = (crowi) => {
     }
   };
 
-  pageSchema.methods.getContentAge = function () {
+  pageSchema.methods.getContentAge = function() {
     return differenceInYears(new Date(), this.updatedAt);
   };
 
 
-  pageSchema.statics.updateCommentCount = async function (pageId) {
+  pageSchema.statics.updateCommentCount = async function(pageId) {
     validateCrowi();
 
     const self = this;
@@ -282,11 +282,11 @@ export const getPageSchema = (crowi) => {
     }
   };
 
-  pageSchema.statics.getUserPagePath = function (user) {
+  pageSchema.statics.getUserPagePath = function(user) {
     return `/user/${user.username}`;
   };
 
-  pageSchema.statics.getDeletedPageName = function (path) {
+  pageSchema.statics.getDeletedPageName = function(path) {
     if (path.match('/')) {
       // eslint-disable-next-line no-param-reassign
       path = path.substr(1);
@@ -294,16 +294,16 @@ export const getPageSchema = (crowi) => {
     return `/trash/${path}`;
   };
 
-  pageSchema.statics.getRevertDeletedPageName = function (path) {
+  pageSchema.statics.getRevertDeletedPageName = function(path) {
     return path.replace('/trash', '');
   };
 
-  pageSchema.statics.fixToCreatableName = function (path) {
+  pageSchema.statics.fixToCreatableName = function(path) {
     return path
       .replace(/\/\//g, '/');
   };
 
-  pageSchema.statics.updateRevision = function (pageId, revisionId, cb) {
+  pageSchema.statics.updateRevision = function(pageId, revisionId, cb) {
     this.update({ _id: pageId }, { revision: revisionId }, {}, (err, data) => {
       cb(err, data);
     });
@@ -314,7 +314,7 @@ export const getPageSchema = (crowi) => {
    * @param {string} id ObjectId
    * @param {User} user
    */
-  pageSchema.statics.isAccessiblePageByViewer = async function (id, user) {
+  pageSchema.statics.isAccessiblePageByViewer = async function(id, user) {
     const baseQuery = this.count({ _id: id });
 
     let userGroups = [];
@@ -336,7 +336,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByIdAndViewer = async function (id, user, userGroups, includeEmpty = false) {
+  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups, includeEmpty = false) {
     const baseQuery = this.findOne({ _id: id });
 
     let relatedUserGroups = userGroups;
@@ -353,14 +353,14 @@ export const getPageSchema = (crowi) => {
     if (page) {
       // Perform additional operations or return the page as needed
       return page;
-    } else {
-      // Page not found, handle accordingly
-      return null;
     }
+    // Page not found, handle accordingly
+    return null;
+
   };
 
   // find page by path
-  pageSchema.statics.findByPath = function (path, includeEmpty = false) {
+  pageSchema.statics.findByPath = function(path, includeEmpty = false) {
     if (path == null) {
       return null;
     }
@@ -375,7 +375,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findAncestorByPathAndViewer = async function (path, user, userGroups, includeEmpty = false) {
+  pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups, includeEmpty = false) {
     if (path == null) {
       throw new Error('path is required.');
     }
@@ -405,7 +405,7 @@ export const getPageSchema = (crowi) => {
   /**
    * find pages that is match with `path` and its descendants
    */
-  pageSchema.statics.findListWithDescendants = async function (path, user, option = {}, includeEmpty = false) {
+  pageSchema.statics.findListWithDescendants = async function(path, user, option = {}, includeEmpty = false) {
     const builder = new this.PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(path, option);
 
@@ -415,7 +415,7 @@ export const getPageSchema = (crowi) => {
   /**
    * find pages that is match with `path` and its descendants which user is able to manage
    */
-  pageSchema.statics.findManageableListWithDescendants = async function (page, user, option = {}, includeEmpty = false) {
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}, includeEmpty = false) {
     if (user == null) {
       return null;
     }
@@ -440,7 +440,7 @@ export const getPageSchema = (crowi) => {
   /**
    * find pages that start with `path`
    */
-  pageSchema.statics.findListByStartWith = async function (path, user, option, includeEmpty = false) {
+  pageSchema.statics.findListByStartWith = async function(path, user, option, includeEmpty = false) {
     const builder = new this.PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListByStartWith(path, option);
 
@@ -454,7 +454,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} currentUser
    * @param {any} option
    */
-  pageSchema.statics.findListByCreator = async function (targetUser, currentUser, option) {
+  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
     const opt = Object.assign({ sort: 'createdAt', desc: -1 }, option);
     const builder = new this.PageQueryBuilder(this.find({ creator: targetUser._id }));
 
@@ -561,9 +561,9 @@ export const getPageSchema = (crowi) => {
   /**
    * Throw error for growi-lsx-plugin (v1.x)
    */
-  pageSchema.statics.generateQueryToListByStartWith = function (path, user, option) {
+  pageSchema.statics.generateQueryToListByStartWith = function(path, user, option) {
     const dummyQuery = this.find();
-    dummyQuery.exec = async () => {
+    dummyQuery.exec = async() => {
       throw new Error('Plugin version mismatch. Upgrade growi-lsx-plugin to v2.0.0 or above.');
     };
     return dummyQuery;
@@ -574,7 +574,7 @@ export const getPageSchema = (crowi) => {
   /**
    * find all templates applicable to the new page
    */
-  pageSchema.statics.findTemplate = async function (path) {
+  pageSchema.statics.findTemplate = async function(path) {
     const templatePath = nodePath.posix.dirname(path);
     const pathList = generatePathsOnTree(path, []);
     const regexpList = pathList.map((path) => {
@@ -623,7 +623,7 @@ export const getPageSchema = (crowi) => {
     return assignDecendantsTemplate(decendantsTemplates, newPath);
   };
 
-  const fetchTemplate = async (templates, templatePath) => {
+  const fetchTemplate = async(templates, templatePath) => {
     let templateBody;
     let templateTags;
     /**
@@ -650,7 +650,7 @@ export const getPageSchema = (crowi) => {
     return { templateBody, templateTags };
   };
 
-  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function (parentPage, user, isV4 = false) {
+  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
     const builder = new this.PageQueryBuilder(this.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
 
@@ -674,21 +674,21 @@ export const getPageSchema = (crowi) => {
 
   };
 
-  pageSchema.statics.removeByPath = function (path) {
+  pageSchema.statics.removeByPath = function(path) {
     if (path == null) {
       throw new Error('path is required');
     }
     return this.findOneAndRemove({ path }).exec();
   };
 
-  pageSchema.statics.findListByPathsArray = async function (paths, includeEmpty = false) {
+  pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
   };
 
-  pageSchema.statics.publicizePages = async function (pages) {
+  pageSchema.statics.publicizePages = async function(pages) {
     const operationsToPublicize = pages.map((page) => {
       return {
         updateOne: {
@@ -703,7 +703,7 @@ export const getPageSchema = (crowi) => {
     await this.bulkWrite(operationsToPublicize);
   };
 
-  pageSchema.statics.transferPagesToGroup = async function (pages, transferToUserGroupId) {
+  pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroupId) {
     const UserGroup = mongoose.model('UserGroup');
 
     if ((await UserGroup.count({ _id: transferToUserGroupId })) === 0) {
@@ -718,7 +718,7 @@ export const getPageSchema = (crowi) => {
    * @param {Page} pageData
    * @param {string} pageIdOnHackmd
    */
-  pageSchema.statics.registerHackmdPage = function (pageData, pageIdOnHackmd) {
+  pageSchema.statics.registerHackmdPage = function(pageData, pageIdOnHackmd) {
     pageData.pageIdOnHackmd = pageIdOnHackmd;
     return this.syncRevisionToHackmd(pageData);
   };
@@ -728,7 +728,7 @@ export const getPageSchema = (crowi) => {
    * @param {Page} pageData
    * @param {bool} isSave whether save or not
    */
-  pageSchema.statics.syncRevisionToHackmd = function (pageData, isSave = true) {
+  pageSchema.statics.syncRevisionToHackmd = function(pageData, isSave = true) {
     pageData.revisionHackmdSynced = pageData.revision;
     pageData.hasDraftOnHackmd = false;
 
@@ -746,7 +746,7 @@ export const getPageSchema = (crowi) => {
    * @param {Page} pageData
    * @param {Boolean} newValue
    */
-  pageSchema.statics.updateHasDraftOnHackmd = async function (pageData, newValue) {
+  pageSchema.statics.updateHasDraftOnHackmd = async function(pageData, newValue) {
     if (pageData.hasDraftOnHackmd === newValue) {
       // do nothing when hasDraftOnHackmd equals to newValue
       return;
@@ -756,7 +756,7 @@ export const getPageSchema = (crowi) => {
     return pageData.save();
   };
 
-  pageSchema.methods.getNotificationTargetUsers = async function () {
+  pageSchema.methods.getNotificationTargetUsers = async function() {
     const Comment = mongoose.model('Comment');
     const Revision = mongoose.model('Revision');
 
@@ -766,7 +766,7 @@ export const getPageSchema = (crowi) => {
     return Array.from(targetUsers);
   };
 
-  pageSchema.statics.getHistories = function () {
+  pageSchema.statics.getHistories = function() {
     // TODO
 
   };

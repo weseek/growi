@@ -33,7 +33,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = async function (tagIds: ObjectIdLike[]): Promise<IdToNameMap> {
+tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promise<IdToNameMap> {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
@@ -44,7 +44,7 @@ tagSchema.statics.getIdToNameMap = async function (tagIds: ObjectIdLike[]): Prom
   return idToNameMap;
 };
 
-tagSchema.statics.findOrCreateMany = async function (tagNames: string[]): Promise<TagDocument[]> {
+tagSchema.statics.findOrCreateMany = async function(tagNames: string[]): Promise<TagDocument[]> {
   const existTags = await this.find({ name: { $in: tagNames } });
   const existTagNames = existTags.map((tag) => { return tag.name });
 

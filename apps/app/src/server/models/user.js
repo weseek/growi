@@ -3,6 +3,7 @@ import { i18n } from '^/config/next-i18next.config';
 
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
+
 import uniqueValidator from '../util/unique-validator';
 
 
@@ -17,7 +18,7 @@ const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
 const logger = loggerFactory('growi:models:user');
 
-module.exports = function (crowi) {
+module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
   const STATUS_SUSPENDED = 3;
@@ -144,30 +145,30 @@ module.exports = function (crowi) {
     return hasher.digest('base64');
   }
 
-  userSchema.methods.isPasswordSet = function () {
+  userSchema.methods.isPasswordSet = function() {
     if (this.password) {
       return true;
     }
     return false;
   };
 
-  userSchema.methods.isPasswordValid = function (password) {
+  userSchema.methods.isPasswordValid = function(password) {
     return this.password === generatePassword(password);
   };
 
-  userSchema.methods.setPassword = function (password) {
+  userSchema.methods.setPassword = function(password) {
     this.password = generatePassword(password);
     return this;
   };
 
-  userSchema.methods.isEmailSet = function () {
+  userSchema.methods.isEmailSet = function() {
     if (this.email) {
       return true;
     }
     return false;
   };
 
-  userSchema.methods.updateLastLoginAt = async function (lastLoginAt, callback) {
+  userSchema.methods.updateLastLoginAt = async function(lastLoginAt, callback) {
     try {
       this.lastLoginAt = lastLoginAt;
       const userData = await this.save();
@@ -178,20 +179,20 @@ module.exports = function (crowi) {
     }
   };
 
-  userSchema.methods.updateIsGravatarEnabled = async function (isGravatarEnabled) {
+  userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
     await this.updateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
 
-  userSchema.methods.updatePassword = async function (password) {
+  userSchema.methods.updatePassword = async function(password) {
     this.setPassword(password);
     const userData = await this.save();
     return userData;
   };
 
-  userSchema.methods.updateApiToken = async function () {
+  userSchema.methods.updateApiToken = async function() {
     const self = this;
 
     self.apiToken = generateApiToken(this);
@@ -200,14 +201,14 @@ module.exports = function (crowi) {
   };
 
   // TODO: create UserService and transplant this method because image uploading depends on AttachmentService
-  userSchema.methods.updateImage = async function (attachment) {
+  userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
     await this.updateImageUrlCached();
     return this.save();
   };
 
   // TODO: create UserService and transplant this method because image deletion depends on AttachmentService
-  userSchema.methods.deleteImage = async function () {
+  userSchema.methods.deleteImage = async function() {
     validateCrowi();
 
     // the 'image' field became DEPRECATED in v3.3.8
@@ -223,11 +224,11 @@ module.exports = function (crowi) {
     return this.save();
   };
 
-  userSchema.methods.updateImageUrlCached = async function () {
+  userSchema.methods.updateImageUrlCached = async function() {
     this.imageUrlCached = await this.generateImageUrlCached();
   };
 
-  userSchema.methods.generateImageUrlCached = async function () {
+  userSchema.methods.generateImageUrlCached = async function() {
     if (this.isGravatarEnabled) {
       return generateGravatarSrc(this.email);
     }
@@ -242,18 +243,18 @@ module.exports = function (crowi) {
     return '/images/icons/user.svg';
   };
 
-  userSchema.methods.updateGoogleId = function (googleId, callback) {
+  userSchema.methods.updateGoogleId = function(googleId, callback) {
     this.googleId = googleId;
     this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
-  userSchema.methods.deleteGoogleId = function (callback) {
+  userSchema.methods.deleteGoogleId = function(callback) {
     return this.updateGoogleId(null, callback);
   };
 
-  userSchema.methods.activateInvitedUser = async function (username, name, password) {
+  userSchema.methods.activateInvitedUser = async function(username, name, password) {
     this.setPassword(password);
     this.name = name;
     this.username = username;
@@ -269,43 +270,43 @@ module.exports = function (crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = async function () {
+  userSchema.methods.removeFromAdmin = async function() {
     logger.debug('Remove from admin', this);
     this.admin = 0;
     return this.save();
   };
 
-  userSchema.methods.makeAdmin = async function () {
+  userSchema.methods.makeAdmin = async function() {
     logger.debug('Admin', this);
     this.admin = 1;
     return this.save();
   };
 
-  userSchema.methods.grantReadOnly = async function () {
+  userSchema.methods.grantReadOnly = async function() {
     logger.debug('Grant read only flag', this);
     this.readOnly = 1;
     return this.save();
   };
 
-  userSchema.methods.revokeReadOnly = async function () {
+  userSchema.methods.revokeReadOnly = async function() {
     logger.debug('Revoke read only flag', this);
     this.readOnly = 0;
     return this.save();
   };
 
-  userSchema.methods.asyncMakeAdmin = async function (callback) {
+  userSchema.methods.asyncMakeAdmin = async function(callback) {
     this.admin = 1;
     return this.save();
   };
 
-  userSchema.methods.statusActivate = async function () {
+  userSchema.methods.statusActivate = async function() {
     logger.debug('Activate User', this);
     this.status = STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
   };
 
-  userSchema.methods.statusSuspend = async function () {
+  userSchema.methods.statusSuspend = async function() {
     logger.debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
@@ -320,7 +321,7 @@ module.exports = function (crowi) {
     return this.save();
   };
 
-  userSchema.methods.statusDelete = async function () {
+  userSchema.methods.statusDelete = async function() {
     logger.debug('Delete User', this);
 
     const now = new Date();
@@ -337,7 +338,7 @@ module.exports = function (crowi) {
     return this.save();
   };
 
-  userSchema.statics.getUserStatusLabels = function () {
+  userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
     userStatus[STATUS_REGISTERED] = 'Approval Pending';
     userStatus[STATUS_ACTIVE] = 'Active';
@@ -348,7 +349,7 @@ module.exports = function (crowi) {
     return userStatus;
   };
 
-  userSchema.statics.isEmailValid = function (email, callback) {
+  userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
     const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
@@ -363,14 +364,15 @@ module.exports = function (crowi) {
     return true;
   };
 
-  userSchema.statics.findUsers = function (options, callback) {
+  userSchema.statics.findUsers = function(options, callback) {
     const sort = options.sort || { status: 1, createdAt: 1 };
 
     this.find()
       .sort(sort)
       .skip(options.skip || 0)
       .limit(options.limit || 21)
-      .exec().then((userData) => {
+      .exec()
+      .then((userData) => {
         callback(null, userData);
       })
       .catch((err) => {
@@ -378,7 +380,7 @@ module.exports = function (crowi) {
       });
   };
 
-  userSchema.statics.findAllUsers = function (option) {
+  userSchema.statics.findAllUsers = function(option) {
     // eslint-disable-next-line no-param-reassign
     option = option || {};
 
@@ -396,7 +398,7 @@ module.exports = function (crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findUsersByIds = function (ids, option) {
+  userSchema.statics.findUsersByIds = function(ids, option) {
     // eslint-disable-next-line no-param-reassign
     option = option || {};
 
@@ -409,7 +411,7 @@ module.exports = function (crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = async function (option) {
+  userSchema.statics.findAdmins = async function(option) {
     const sort = option?.sort ?? { createdAt: -1 };
 
     let status = option?.status ?? [STATUS_ACTIVE];
@@ -421,21 +423,21 @@ module.exports = function (crowi) {
       .sort(sort);
   };
 
-  userSchema.statics.findUserByUsername = function (username) {
+  userSchema.statics.findUserByUsername = function(username) {
     if (username == null) {
       return Promise.resolve(null);
     }
     return this.findOne({ username });
   };
 
-  userSchema.statics.findUserByApiToken = function (apiToken) {
+  userSchema.statics.findUserByApiToken = function(apiToken) {
     if (apiToken == null) {
       return Promise.resolve(null);
     }
     return this.findOne({ apiToken });
   };
 
-  userSchema.statics.findUserByGoogleId = function (googleId, callback) {
+  userSchema.statics.findUserByGoogleId = function(googleId, callback) {
     if (googleId == null) {
       callback(null, null);
     }
@@ -444,7 +446,7 @@ module.exports = function (crowi) {
     });
   };
 
-  userSchema.statics.findUserByUsernameOrEmail = function (usernameOrEmail, password, callback) {
+  userSchema.statics.findUserByUsernameOrEmail = function(usernameOrEmail, password, callback) {
     this.findOne()
       .or([
         { username: usernameOrEmail },
@@ -458,14 +460,14 @@ module.exports = function (crowi) {
       });
   };
 
-  userSchema.statics.findUserByEmailAndPassword = function (email, password, callback) {
+  userSchema.statics.findUserByEmailAndPassword = function(email, password, callback) {
     const hashedPassword = generatePassword(password);
     this.findOne({ email, password: hashedPassword }, (err, userData) => {
       callback(err, userData);
     });
   };
 
-  userSchema.statics.isUserCountExceedsUpperLimit = async function () {
+  userSchema.statics.isUserCountExceedsUpperLimit = async function() {
     const { configManager } = crowi;
 
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
@@ -478,11 +480,11 @@ module.exports = function (crowi) {
     return false;
   };
 
-  userSchema.statics.countActiveUsers = async function () {
+  userSchema.statics.countActiveUsers = async function() {
     return this.countListByStatus(STATUS_ACTIVE);
   };
 
-  userSchema.statics.countListByStatus = async function (status) {
+  userSchema.statics.countListByStatus = async function(status) {
     const User = this;
     const conditions = { status };
 
@@ -490,7 +492,7 @@ module.exports = function (crowi) {
     return User.count(conditions);
   };
 
-  userSchema.statics.isRegisterableUsername = async function (username) {
+  userSchema.statics.isRegisterableUsername = async function(username) {
     let usernameUsable = true;
 
     const userData = await this.findOne({ username });
@@ -500,7 +502,7 @@ module.exports = function (crowi) {
     return usernameUsable;
   };
 
-  userSchema.statics.isRegisterableEmail = async function (email) {
+  userSchema.statics.isRegisterableEmail = async function(email) {
     let isEmailUsable = true;
 
     const userData = await this.findOne({ email });
@@ -510,7 +512,7 @@ module.exports = function (crowi) {
     return isEmailUsable;
   };
 
-  userSchema.statics.isRegisterable = async function (email, username, callback) {
+  userSchema.statics.isRegisterable = async function(email, username, callback) {
     const User = this;
     let emailUsable = true;
     let usernameUsable = true;
@@ -539,7 +541,7 @@ module.exports = function (crowi) {
     }
   };
 
-  userSchema.statics.resetPasswordByRandomString = async function (id) {
+  userSchema.statics.resetPasswordByRandomString = async function(id) {
     const user = await this.findById(id);
 
     if (!user) {
@@ -553,7 +555,7 @@ module.exports = function (crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUserByEmail = async function (email) {
+  userSchema.statics.createUserByEmail = async function(email) {
     const configManager = crowi.configManager;
 
     const User = this;
@@ -589,7 +591,7 @@ module.exports = function (crowi) {
     }
   };
 
-  userSchema.statics.createUsersByEmailList = async function (emailList) {
+  userSchema.statics.createUsersByEmailList = async function(emailList) {
     const User = this;
 
     // check exists and get list of try to create
@@ -618,7 +620,7 @@ module.exports = function (crowi) {
     return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };
 
-  userSchema.statics.createUserByEmailAndPasswordAndStatus = async function (name, username, email, password, lang, status, callback) {
+  userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
     const newUser = new User();
 
@@ -675,7 +677,7 @@ module.exports = function (crowi) {
    * A wrapper function of createUserByEmailAndPasswordAndStatus with callback
    *
    */
-  userSchema.statics.createUserByEmailAndPassword = function (name, username, email, password, lang, callback) {
+  userSchema.statics.createUserByEmailAndPassword = function(name, username, email, password, lang, callback) {
     this.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, undefined, callback);
   };
 
@@ -684,7 +686,7 @@ module.exports = function (crowi) {
    *
    * @return {Promise<User>}
    */
-  userSchema.statics.createUser = function (name, username, email, password, lang, status) {
+  userSchema.statics.createUser = function(name, username, email, password, lang, status) {
     const User = this;
 
     return new Promise((resolve, reject) => {
@@ -697,7 +699,7 @@ module.exports = function (crowi) {
     });
   };
 
-  userSchema.statics.getUsernameByPath = function (path) {
+  userSchema.statics.getUsernameByPath = function(path) {
     let username = null;
     const match = path.match(/^\/user\/([^/]+)\/?/);
     if (match) {
@@ -707,7 +709,7 @@ module.exports = function (crowi) {
     return username;
   };
 
-  userSchema.statics.updateIsInvitationEmailSended = async function (id) {
+  userSchema.statics.updateIsInvitationEmailSended = async function(id) {
     const user = await this.findById(id);
 
     if (user == null) {
@@ -722,7 +724,7 @@ module.exports = function (crowi) {
     user.save();
   };
 
-  userSchema.statics.findUserBySlackMemberId = async function (slackMemberId) {
+  userSchema.statics.findUserBySlackMemberId = async function(slackMemberId) {
     const user = this.findOne({ slackMemberId });
     if (user == null) {
       throw new Error('User not found');
@@ -730,7 +732,7 @@ module.exports = function (crowi) {
     return user;
   };
 
-  userSchema.statics.findUsersBySlackMemberIds = async function (slackMemberIds) {
+  userSchema.statics.findUsersBySlackMemberIds = async function(slackMemberIds) {
     const users = this.find({ slackMemberId: { $in: slackMemberIds } });
     if (users.length === 0) {
       throw new Error('No user found');
@@ -738,7 +740,7 @@ module.exports = function (crowi) {
     return users;
   };
 
-  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function (username, status, option) {
+  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function(username, status, option) {
     const opt = option || {};
     const sortOpt = opt.sortOpt || { username: 1 };
     const offset = opt.offset || 0;
@@ -756,7 +758,7 @@ module.exports = function (crowi) {
     return { users, totalCount };
   };
 
-  userSchema.methods.updateIsQuestionnaireEnabled = async function (value) {
+  userSchema.methods.updateIsQuestionnaireEnabled = async function(value) {
     this.isQuestionnaireEnabled = value;
     return this.save();
   };

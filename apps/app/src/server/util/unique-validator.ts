@@ -43,7 +43,7 @@ const defaultOptions = {
 
 // schema.indexes() error when schema type is Schema
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const uniqueValidator = function (schema: any, options: PluginOptions = {}): void {
+const uniqueValidator = function(schema: any, options: PluginOptions = {}): void {
   const type = options.type || defaultOptions.type;
   const message = options.message || defaultOptions.message;
 
@@ -66,7 +66,7 @@ const uniqueValidator = function (schema: any, options: PluginOptions = {}): voi
 
         if (path) {
           // Add an async validator
-          path.validate(function () {
+          path.validate(function() {
             return new Promise((resolve, reject) => {
               const isQuery = this.constructor.name === 'Query';
               const conditions: { [key: string]: any } = {};

@@ -49,14 +49,14 @@ const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
 });
 schema.plugin(uniqueValidator);
 
-schema.statics.generateOneTimeToken = function () {
+schema.statics.generateOneTimeToken = function() {
   const buf = crypto.randomBytes(256);
   const token = buf.toString('hex');
 
   return token;
 };
 
-schema.statics.createPasswordResetOrder = async function (email) {
+schema.statics.createPasswordResetOrder = async function(email) {
   let token;
   let duplicateToken;
 
@@ -71,11 +71,11 @@ schema.statics.createPasswordResetOrder = async function (email) {
   return passwordResetOrderData;
 };
 
-schema.methods.isExpired = function () {
+schema.methods.isExpired = function() {
   return this.expiredAt.getTime() < Date.now();
 };
 
-schema.methods.revokeOneTimeToken = async function () {
+schema.methods.revokeOneTimeToken = async function() {
   this.isRevoked = true;
   return this.save();
 };

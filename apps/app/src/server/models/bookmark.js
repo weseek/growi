@@ -3,11 +3,12 @@
 const debug = require('debug')('growi:models:bookmark');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+
 const { default: uniqueValidator } = require('../util/unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-module.exports = function (crowi) {
+module.exports = function(crowi) {
   const bookmarkEvent = crowi.event('bookmark');
 
   let bookmarkSchema = null;
@@ -23,14 +24,14 @@ module.exports = function (crowi) {
   bookmarkSchema.plugin(mongoosePaginate);
   bookmarkSchema.plugin(uniqueValidator);
 
-  bookmarkSchema.statics.countByPageId = async function (pageId) {
+  bookmarkSchema.statics.countByPageId = async function(pageId) {
     return await this.count({ page: pageId });
   };
 
   /**
    * @return {object} key: page._id, value: bookmark count
    */
-  bookmarkSchema.statics.getPageIdToCountMap = async function (pageIds) {
+  bookmarkSchema.statics.getPageIdToCountMap = async function(pageIds) {
     const results = await this.aggregate()
       .match({ page: { $in: pageIds } })
       .group({ _id: '$page', count: { $sum: 1 } });
@@ -45,7 +46,7 @@ module.exports = function (crowi) {
   };
 
   // bookmark チェック用
-  bookmarkSchema.statics.findByPageIdAndUserId = async function (pageId, userId) {
+  bookmarkSchema.statics.findByPageIdAndUserId = async function(pageId, userId) {
     const Bookmark = this;
     try {
       const doc = await Bookmark.findOne({ page: pageId, user: userId });
@@ -57,7 +58,7 @@ module.exports = function (crowi) {
     }
   };
 
-  bookmarkSchema.statics.add = async function (page, user) {
+  bookmarkSchema.statics.add = async function(page, user) {
     const Bookmark = this;
 
     const newBookmark = new Bookmark({ page, user });
@@ -82,7 +83,7 @@ module.exports = function (crowi) {
    * used only when removing the page
    * @param {string} pageId
    */
-  bookmarkSchema.statics.removeBookmarksByPageId = async function (pageId) {
+  bookmarkSchema.statics.removeBookmarksByPageId = async function(pageId) {
     const Bookmark = this;
 
     try {
@@ -96,7 +97,7 @@ module.exports = function (crowi) {
     }
   };
 
-  bookmarkSchema.statics.removeBookmark = async function (pageId, user) {
+  bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
     const Bookmark = this;
 
     try {

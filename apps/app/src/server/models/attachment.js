@@ -18,7 +18,7 @@ const logger = loggerFactory('growi:models:attachment');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-module.exports = function (crowi) {
+module.exports = function(crowi) {
   function generateFileHash(fileName) {
     const hash = require('crypto').createHash('md5');
     hash.update(`${fileName}_${Date.now()}`);
@@ -47,11 +47,11 @@ module.exports = function (crowi) {
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);
 
-  attachmentSchema.virtual('filePathProxied').get(function () {
+  attachmentSchema.virtual('filePathProxied').get(function() {
     return `/attachment/${this._id}`;
   });
 
-  attachmentSchema.virtual('downloadPathProxied').get(function () {
+  attachmentSchema.virtual('downloadPathProxied').get(function() {
     return `/download/${this._id}`;
   });
 
@@ -59,7 +59,7 @@ module.exports = function (crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.createWithoutSave = function (pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -80,7 +80,7 @@ module.exports = function (crowi) {
   };
 
 
-  attachmentSchema.methods.getValidTemporaryUrl = function () {
+  attachmentSchema.methods.getValidTemporaryUrl = function() {
     if (this.temporaryUrlExpiredAt == null) {
       return null;
     }
@@ -91,7 +91,7 @@ module.exports = function (crowi) {
     return this.temporaryUrlCached;
   };
 
-  attachmentSchema.methods.cashTemporaryUrlByProvideSec = function (temporaryUrl, provideSec) {
+  attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
     if (temporaryUrl == null) {
       throw new Error('url is required.');
     }

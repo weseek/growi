@@ -184,11 +184,11 @@ class PageService {
   }
 
   private canDeleteLogic(
-    creatorId: ObjectIdLike,
-    operator,
-    isRecursively: boolean,
-    authority: IPageDeleteConfigValueToProcessValidation | null,
-    recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
+      creatorId: ObjectIdLike,
+      operator,
+      isRecursively: boolean,
+      authority: IPageDeleteConfigValueToProcessValidation | null,
+      recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
     const isAdmin = operator?.admin ?? false;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
@@ -225,7 +225,7 @@ class PageService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async findPageAndMetaDataByViewer(
-    pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
+      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
   ): Promise<IPageWithMeta<IPageInfoAll> | null> {
 
     const Page = this.crowi.model('Page') as PageModel;
@@ -1039,7 +1039,7 @@ class PageService {
         throw err;
       }
 
-      (async () => {
+      (async() => {
         try {
           await this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
         }
@@ -1456,7 +1456,7 @@ class PageService {
       /*
        * Resumable Operation
        */
-      (async () => {
+      (async() => {
         try {
           await this.deleteRecursivelyMainOperation(page, user, pageOp._id, activity);
         }
@@ -1810,7 +1810,7 @@ class PageService {
       /*
        * Main Operation
        */
-      (async () => {
+      (async() => {
         try {
           await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id, activity);
         }
@@ -2087,7 +2087,7 @@ class PageService {
       /*
        * Resumable Operation
        */
-      (async () => {
+      (async() => {
         try {
           await this.revertRecursivelyMainOperation(page, user, options, pageOp._id, activity);
           this.pageEvent.emit('syncDescendantsUpdate', updatedPage, user);
@@ -2492,7 +2492,7 @@ class PageService {
       throw err;
     }
 
-    (async () => {
+    (async() => {
       try {
         await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
       }
@@ -2933,14 +2933,14 @@ class PageService {
   }
 
   private async _normalizeParentRecursively(
-    pathOrRegExps: (RegExp | string)[],
-    publicPathsToNormalize: string[],
-    grantFiltersByUser: { $or: any[] },
-    user,
-    shouldEmitProgress = false,
-    count = 0,
-    skiped = 0,
-    isFirst = true,
+      pathOrRegExps: (RegExp | string)[],
+      publicPathsToNormalize: string[],
+      grantFiltersByUser: { $or: any[] },
+      user,
+      shouldEmitProgress = false,
+      count = 0,
+      skiped = 0,
+      isFirst = true,
   ): Promise<number> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
@@ -3420,9 +3420,9 @@ class PageService {
   }
 
   private setFieldExceptForGrantRevisionParent(
-    pageDocument: PageDocument,
-    path: string,
-    user?,
+      pageDocument: PageDocument,
+      path: string,
+      user?,
   ): void {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3448,15 +3448,15 @@ class PageService {
   }
 
   private async canProcessCreate(
-    path: string,
-    grantData: {
+      path: string,
+      grantData: {
       grant: number,
       grantedUserIds?: ObjectIdLike[],
       grantUserGroupId?: ObjectIdLike,
     },
-    shouldValidateGrant: boolean,
-    user?,
-    options?: Partial<PageCreateOptions>,
+      shouldValidateGrant: boolean,
+      user?,
+      options?: Partial<PageCreateOptions>,
   ): Promise<boolean> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3683,8 +3683,8 @@ class PageService {
   }
 
   private async canProcessForceCreateBySystem(
-    path: string,
-    grantData: {
+      path: string,
+      grantData: {
       grant: number,
       grantedUserIds?: ObjectIdLike[],
       grantUserGroupId?: ObjectIdLike,
@@ -3836,11 +3836,11 @@ class PageService {
   }
 
   async updatePage(
-    pageData,
-    body: string | null,
-    previousBody: string | null,
-    user,
-    options: IOptionsForUpdate = {},
+      pageData,
+      body: string | null,
+      previousBody: string | null,
+      user,
+      options: IOptionsForUpdate = {},
   ): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
@@ -4114,8 +4114,8 @@ class PageService {
    * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
    */
   private async injectProcessDataIntoPagesByActionTypes(
-    pages: (PageDocument & { processData?: IPageOperationProcessData })[],
-    actionTypes: PageActionType[],
+      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
+      actionTypes: PageActionType[],
   ): Promise<void> {
 
     const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });
