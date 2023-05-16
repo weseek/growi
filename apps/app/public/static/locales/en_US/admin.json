@@ -736,6 +736,7 @@
     },
     "user_table": {
       "administrator": "Administrator",
+      "read_only": "Read Only",
       "edit_menu": "Edit menu",
       "reset_password": "Reset password",
       "administrator_menu": "Administrator Menu",
@@ -745,14 +746,16 @@
       "remove_admin_access": "Remove admin access",
       "cannot_remove": "You cannot remove yourself from administrator",
       "give_admin_access": "Give admin access",
+      "revoke_read_only_access": "Revoke read only access",
+      "grant_read_only_access": "Grant read only access",
       "send_invitation_email": "Send invitation email",
       "resend_invitation_email": "Resend invitation email"
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {
-      "reset_password_info": "When a password is reset, a newly password is sent to the target user.",
-      "password_reset_message": "The temporary password was sent to the below user and strongly recommend to change another one immediately.",
-      "reset_password_alert": "If the e-mail transmission fails, please make sure that e-mail settings are correct and reset password again.",
+      "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
+      "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
+      "send_new_password": "Please send the new password to the user.",
       "target_user": "Target User",
       "new_password": "New Password"
     },
@@ -1017,6 +1020,8 @@
     "ADMIN_USERS_DEACTIVATE": "Deactivate user",
     "ADMIN_USERS_GIVE_ADMIN": "Give admin access",
     "ADMIN_USERS_REMOVE_ADMIN": "Remove admin access",
+    "ADMIN_USERS_GRANT_READ_ONLY": "Grant read only access",
+    "ADMIN_USERS_REVOKE_READ_ONLY": "Revoke read only access",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "Resend invitation email",
     "ADMIN_USERS_REMOVE": "Remove user",
     "ADMIN_USER_GROUP_CREATE": "Create User Group",
@@ -1035,6 +1040,8 @@
   "toaster": {
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "grant_user_read_only": "Succeeded to grant {{username}} read only",
+    "revoke_user_read_only": "Succeeded to revoke {{username}} read only",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",

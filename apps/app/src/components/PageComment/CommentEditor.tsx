@@ -21,6 +21,7 @@ import { useCurrentPagePath } from '~/stores/page';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 import Editor from '../PageEditor/Editor';
 
 import { CommentPreview } from './CommentPreview';
@@ -235,14 +236,16 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     return (
       <div className="text-center">
         <NotAvailableForGuest>
-          <button
-            type="button"
-            className="btn btn-lg btn-link"
-            onClick={() => setIsReadyToUse(true)}
-            data-testid="open-comment-editor-button"
-          >
-            <i className="icon-bubble"></i> Add Comment
-          </button>
+          <NotAvailableForReadOnlyUser>
+            <button
+              type="button"
+              className="btn btn-lg btn-link"
+              onClick={() => setIsReadyToUse(true)}
+              data-testid="open-comment-editor-button"
+            >
+              <i className="icon-bubble"></i> Add Comment
+            </button>
+          </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
       </div>
     );

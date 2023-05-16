@@ -13,6 +13,7 @@ import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/co
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
@@ -185,21 +186,23 @@ export const SearchPage = (): JSX.Element => {
 
     return (
       <NotAvailableForGuest>
-        <OperateAllControl
-          ref={selectAllControlRef}
-          isCheckboxDisabled={isDisabled}
-          onCheckboxChanged={selectAllCheckboxChangedHandler}
-        >
-          <button
-            type="button"
-            className="btn btn-outline-danger text-nowrap border-0 px-2"
-            disabled={isDisabled}
-            onClick={deleteAllButtonClickedHandler}
+        <NotAvailableForReadOnlyUser>
+          <OperateAllControl
+            ref={selectAllControlRef}
+            isCheckboxDisabled={isDisabled}
+            onCheckboxChanged={selectAllCheckboxChangedHandler}
           >
-            <i className="icon-fw icon-trash"></i>
-            {t('search_result.delete_all_selected_page')}
-          </button>
-        </OperateAllControl>
+            <button
+              type="button"
+              className="btn btn-outline-danger text-nowrap border-0 px-2"
+              disabled={isDisabled}
+              onClick={deleteAllButtonClickedHandler}
+            >
+              <i className="icon-fw icon-trash"></i>
+              {t('search_result.delete_all_selected_page')}
+            </button>
+          </OperateAllControl>
+        </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
   }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);

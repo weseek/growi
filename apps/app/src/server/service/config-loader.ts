@@ -73,12 +73,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
-  // BLOCKDIAG_URI: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
   // OAUTH_GOOGLE_CLIENT_ID: {
   //   ns:      'crowi',
   //   key:     'security:passport-google:clientId',
@@ -508,6 +502,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  GCS_LIFETIME_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'gcs:lifetimeSecForTemporaryUrl',
+    type:    ValueType.NUMBER,
+    default: 120,
+  },
   GCS_REFERENCE_FILE_WITH_RELAY_MODE: {
     ns:      'crowi',
     key:     'gcs:referenceFileWithRelayMode',
@@ -519,12 +519,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:useOnlyEnvVarsForSomeOptions',
     type:    ValueType.BOOLEAN,
     default: false,
-  },
-  GCS_LIFETIME_SEC_FOR_TEMPORARY_URL: {
-    ns:      'crowi',
-    key:     'gcs:lifetimeSecForTemporaryUrl',
-    type:    ValueType.NUMBER,
-    default: 120,
   },
   PROMSTER_ENABLED: {
     ns:      'crowi',

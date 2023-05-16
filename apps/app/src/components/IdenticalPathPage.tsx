@@ -75,6 +75,7 @@ export const IdenticalPathPage = (): JSX.Element => {
                 page={pageWithMeta}
                 isSelected={false}
                 isEnableActions
+                isReadOnlyUser={false}
                 showPageUpdatedTime
               />
             );
