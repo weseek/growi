@@ -294,7 +294,7 @@ packetdiag {
 
 # :pencil: Mermaid
 
-## Pie chart diagrams
+## Pie chart diagram
 
 ```mermaid
 %%{init: {"pie": {"textPosition": 0.5}, "themeVariables": {"pieOuterStrokeWidth": "5px"}} }%%
@@ -306,7 +306,7 @@ pie showData
     "Iron" :  5
 ```
 
-## Gantt diagrams
+## Gantt diagram
 
 ```mermaid
 gantt
@@ -320,7 +320,7 @@ gantt
     another task      : 24d
 ```
 
-## Gitgraph Diagrams
+## Gitgraph diagram
 
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'rotateCommitLabel': true}} }%%
@@ -341,7 +341,7 @@ gitGraph
   commit
 ```
 
-## Mindmaps
+## Mindmap diagram
 
 ```mermaid
 mindmap
