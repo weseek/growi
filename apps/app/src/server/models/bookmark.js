@@ -87,7 +87,7 @@ module.exports = function(crowi) {
     const Bookmark = this;
 
     try {
-      const data = await Bookmark.deleteOne({ page: pageId });
+      const data = await Bookmark.deleteMany({ page: pageId });
       bookmarkEvent.emit('delete', pageId);
       return data;
     }

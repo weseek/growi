@@ -102,7 +102,7 @@ module.exports = function(crowi) {
   commentSchema.methods.removeWithReplies = async function(comment) {
     const Comment = crowi.model('Comment');
 
-    await Comment.deleteOne({
+    await Comment.deleteMany({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
