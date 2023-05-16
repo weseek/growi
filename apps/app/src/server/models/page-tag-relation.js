@@ -1,3 +1,4 @@
+import uniqueValidator from '../util/unique-validator';
 import Tag from './tag';
 
 // disable no-return-await for model functions
@@ -6,7 +7,6 @@ import Tag from './tag';
 const flatMap = require('array.prototype.flatmap');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -173,7 +173,7 @@ class PageTagRelation {
 
 }
 
-module.exports = function() {
+module.exports = function () {
   schema.loadClass(PageTagRelation);
   const model = mongoose.model('PageTagRelation', schema);
   return model;

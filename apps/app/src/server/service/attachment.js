@@ -74,7 +74,7 @@ class AttachmentService {
     const attachment = await Attachment.findById(attachmentId);
 
     await fileUploadService.deleteFile(attachment);
-    await attachment.remove();
+    await attachment.deleteOne();
 
     return;
   }

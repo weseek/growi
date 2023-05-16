@@ -10,7 +10,7 @@ import {
 } from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
-import mongoose, { ObjectId, QueryCursor } from 'mongoose';
+import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -60,7 +60,7 @@ class PageCursorsForDescendantsFactory {
 
   private shouldIncludeEmpty: boolean;
 
-  private initialCursor: QueryCursor<any> | never[]; // TODO: wait for mongoose update
+  private initialCursor: Cursor<any> | never[]; // TODO: wait for mongoose update
 
   private Page: PageModel;
 
@@ -100,7 +100,7 @@ class PageCursorsForDescendantsFactory {
   /**
    * Generator that unorderedly yields descendant pages
    */
-  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
+  private async* generateOnlyDescendants(cursor: Cursor<any>) {
     for await (const page of cursor) {
       const nextCursor = await this.generateCursorToFindChildren(page);
       if (!this.isNeverArray(nextCursor)) {
@@ -111,7 +111,7 @@ class PageCursorsForDescendantsFactory {
     }
   }
 
-  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any> | never[]> {
+  private async generateCursorToFindChildren(page: any): Promise<Cursor<any> | never[]> {
     if (page == null) {
       return [];
     }
@@ -121,12 +121,12 @@ class PageCursorsForDescendantsFactory {
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
 
-    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
 
     return cursor;
   }
 
-  private isNeverArray(val: QueryCursor<any> | never[]): val is never[] {
+  private isNeverArray(val: Cursor<any> | never[]): val is never[] {
     return 'length' in val && val.length === 0;
   }
 
@@ -184,11 +184,11 @@ class PageService {
   }
 
   private canDeleteLogic(
-      creatorId: ObjectIdLike,
-      operator,
-      isRecursively: boolean,
-      authority: IPageDeleteConfigValueToProcessValidation | null,
-      recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
+    creatorId: ObjectIdLike,
+    operator,
+    isRecursively: boolean,
+    authority: IPageDeleteConfigValueToProcessValidation | null,
+    recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
     const isAdmin = operator?.admin ?? false;
     const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
@@ -225,8 +225,8 @@ class PageService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async findPageAndMetaDataByViewer(
-      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
-  ): Promise<IPageWithMeta<IPageInfoAll>|null> {
+    pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
+  ): Promise<IPageWithMeta<IPageInfoAll> | null> {
 
     const Page = this.crowi.model('Page') as PageModel;
 
@@ -503,7 +503,7 @@ class PageService {
       update.lastUpdateUser = user;
       update.updatedAt = new Date();
     }
-    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true }) as PageDocument;
 
     // 5.increase parent's descendantCount.
     // see: https://dev.growi.org/62149d019311629d4ecd91cf#Handling%20of%20descendantCount%20in%20case%20of%20unexpected%20process%20interruption
@@ -538,7 +538,7 @@ class PageService {
 
     const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
     try {
-    // update descendants first
+      // update descendants first
       const descendantsSubscribedSets = new Set();
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
       const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
@@ -634,9 +634,9 @@ class PageService {
       };
     }));
 
-    const pages = [...insertedPages, originalParent];
+    const pages = [...insertedPages, originalParent] as Array<PageDocument & { _id: any }>;
 
-    const ancestorsMap = new Map<string, PageDocument & {_id: any}>(pages.map(p => [p.path, p]));
+    const ancestorsMap = new Map<string, PageDocument & { _id: any }>(pages.map(p => [p.path, p]));
 
     // bulkWrite to update ancestors
     const operations = insertedPages.map((page) => {
@@ -1039,7 +1039,7 @@ class PageService {
         throw err;
       }
 
-      (async() => {
+      (async () => {
         try {
           await this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
         }
@@ -1456,7 +1456,7 @@ class PageService {
       /*
        * Resumable Operation
        */
-      (async() => {
+      (async () => {
         try {
           await this.deleteRecursivelyMainOperation(page, user, pageOp._id, activity);
         }
@@ -1810,7 +1810,7 @@ class PageService {
       /*
        * Main Operation
        */
-      (async() => {
+      (async () => {
         try {
           await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id, activity);
         }
@@ -2087,7 +2087,7 @@ class PageService {
       /*
        * Resumable Operation
        */
-      (async() => {
+      (async () => {
         try {
           await this.revertRecursivelyMainOperation(page, user, options, pageOp._id, activity);
           this.pageEvent.emit('syncDescendantsUpdate', updatedPage, user);
@@ -2492,7 +2492,7 @@ class PageService {
       throw err;
     }
 
-    (async() => {
+    (async () => {
       try {
         await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
       }
@@ -2737,7 +2737,7 @@ class PageService {
     return count;
   }
 
-  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike, options: {prevDescendantCount: number}): Promise<void> {
+  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike, options: { prevDescendantCount: number }): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     try {
@@ -2933,14 +2933,14 @@ class PageService {
   }
 
   private async _normalizeParentRecursively(
-      pathOrRegExps: (RegExp | string)[],
-      publicPathsToNormalize: string[],
-      grantFiltersByUser: { $or: any[] },
-      user,
-      shouldEmitProgress = false,
-      count = 0,
-      skiped = 0,
-      isFirst = true,
+    pathOrRegExps: (RegExp | string)[],
+    publicPathsToNormalize: string[],
+    grantFiltersByUser: { $or: any[] },
+    user,
+    shouldEmitProgress = false,
+    count = 0,
+    skiped = 0,
+    isFirst = true,
   ): Promise<number> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
@@ -3070,22 +3070,22 @@ class PageService {
         try {
           const res = await Page.bulkWrite(updateManyOperations);
 
-          nextCount += res.result.nModified;
-          nextSkiped += res.result.writeErrors.length;
-          logger.info(`Page migration processing: (migratedPages=${res.result.nModified})`);
+          nextCount += res.nModified;
+          nextSkiped += res.getWriteErrorCount();
+          logger.info(`Page migration processing: (migratedPages=${res.nModified})`);
 
           socket?.emit(SocketEventName.PMMigrating, { count: nextCount });
           socket?.emit(SocketEventName.PMErrorCount, { skip: nextSkiped });
 
           // Throw if any error is found
-          if (res.result.writeErrors.length > 0) {
-            logger.error('Failed to migrate some pages', res.result.writeErrors);
+          if (res.getWriteErrorCount() > 0) {
+            logger.error('Failed to migrate some pages', res.getWriteErrors());
             socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
             throw Error('Failed to migrate some pages');
           }
 
           // Finish migration if no modification occurred
-          if (res.result.nModified === 0 && res.result.nMatched === 0) {
+          if (res.nModified === 0 && res.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
             socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
@@ -3206,7 +3206,7 @@ class PageService {
   /**
    * Recount descendantCount of pages one by one
    */
-  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
+  async recountAndUpdateDescendantCountOfPages(pageCursor: Cursor<any>, batchSize: number): Promise<void> {
     const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,
@@ -3420,9 +3420,9 @@ class PageService {
   }
 
   private setFieldExceptForGrantRevisionParent(
-      pageDocument: PageDocument,
-      path: string,
-      user?,
+    pageDocument: PageDocument,
+    path: string,
+    user?,
   ): void {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3448,15 +3448,15 @@ class PageService {
   }
 
   private async canProcessCreate(
-      path: string,
-      grantData: {
-        grant: number,
-        grantedUserIds?: ObjectIdLike[],
-        grantUserGroupId?: ObjectIdLike,
-      },
-      shouldValidateGrant: boolean,
-      user?,
-      options?: Partial<PageCreateOptions>,
+    path: string,
+    grantData: {
+      grant: number,
+      grantedUserIds?: ObjectIdLike[],
+      grantUserGroupId?: ObjectIdLike,
+    },
+    shouldValidateGrant: boolean,
+    user?,
+    options?: Partial<PageCreateOptions>,
   ): Promise<boolean> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3633,7 +3633,7 @@ class PageService {
   /**
    * V4 compatible create method
    */
-  private async createV4(path, body, user, options: any = {}) {
+  private async createV4(path, body, user, options: any = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
@@ -3656,7 +3656,7 @@ class PageService {
       throw new Error('Cannot create new page to existed path');
     }
 
-    const page = new Page();
+    const page = new Page() as PageDocument;
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
@@ -3683,12 +3683,12 @@ class PageService {
   }
 
   private async canProcessForceCreateBySystem(
-      path: string,
-      grantData: {
-        grant: number,
-        grantedUserIds?: ObjectIdLike[],
-        grantUserGroupId?: ObjectIdLike,
-      },
+    path: string,
+    grantData: {
+      grant: number,
+      grantedUserIds?: ObjectIdLike[],
+      grantUserGroupId?: ObjectIdLike,
+    },
   ): Promise<boolean> {
     return this.canProcessCreate(path, grantData, false);
   }
@@ -3784,7 +3784,7 @@ class PageService {
    * @param {UserDocument} user
    * @param options
    */
-  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}): Promise<PageDocument> {
+  async updateGrant(page, user, grantData: { grant: PageGrant, grantedGroup: ObjectIdLike }): Promise<PageDocument> {
     const { grant, grantedGroup } = grantData;
 
     const options = {
@@ -3836,11 +3836,11 @@ class PageService {
   }
 
   async updatePage(
-      pageData,
-      body: string | null,
-      previousBody: string | null,
-      user,
-      options: IOptionsForUpdate = {},
+    pageData,
+    body: string | null,
+    previousBody: string | null,
+    user,
+    options: IOptionsForUpdate = {},
   ): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
@@ -4101,7 +4101,7 @@ class PageService {
     return pathToChildren;
   }
 
-  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
+  private injectIsTargetIntoPages(pages: (PageDocument & { isTarget?: boolean })[], path): void {
     pages.forEach((page) => {
       if (page.path === path) {
         page.isTarget = true;
@@ -4114,8 +4114,8 @@ class PageService {
    * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
    */
   private async injectProcessDataIntoPagesByActionTypes(
-      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
-      actionTypes: PageActionType[],
+    pages: (PageDocument & { processData?: IPageOperationProcessData })[],
+    actionTypes: PageActionType[],
   ): Promise<void> {
 
     const pageOperations = await PageOperation.find({ actionType: { $in: actionTypes } });

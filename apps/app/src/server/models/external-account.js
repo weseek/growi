@@ -1,11 +1,11 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
+import uniqueValidator from '../util/unique-validator';
 
 const debug = require('debug')('growi:models:external-account');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -94,8 +94,8 @@ class ExternalAccount {
    * @memberof ExternalAccount
    */
   static findOrRegister(providerType, accountId,
-      usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered,
-      isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser) {
+    usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered,
+    isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser) {
     //
     return this.findOne({ providerType, accountId })
       .then((account) => {
@@ -180,7 +180,7 @@ class ExternalAccount {
 
 }
 
-module.exports = function(crowi) {
+module.exports = function (crowi) {
   ExternalAccount.crowi = crowi;
   schema.loadClass(ExternalAccount);
   return mongoose.model('ExternalAccount', schema);

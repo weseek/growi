@@ -4,9 +4,9 @@ import {
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
+import uniqueValidator from '../util/unique-validator';
 
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 
 
 export interface TagDocument {
@@ -14,9 +14,9 @@ export interface TagDocument {
   name: string;
 }
 
-export type IdToNameMap = {[key: string] : string }
+export type IdToNameMap = { [key: string]: string }
 
-export interface TagModel extends Model<TagDocument>{
+export interface TagModel extends Model<TagDocument> {
   getIdToNameMap(tagIds: ObjectIdLike[]): IdToNameMap
   findOrCreateMany(tagNames: string[]): Promise<TagDocument[]>
 }
@@ -33,7 +33,7 @@ tagSchema.plugin(mongoosePaginate);
 tagSchema.plugin(uniqueValidator);
 
 
-tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promise<IdToNameMap> {
+tagSchema.statics.getIdToNameMap = async function (tagIds: ObjectIdLike[]): Promise<IdToNameMap> {
   const tags = await this.find({ _id: { $in: tagIds } });
 
   const idToNameMap = {};
@@ -44,7 +44,7 @@ tagSchema.statics.getIdToNameMap = async function(tagIds: ObjectIdLike[]): Promi
   return idToNameMap;
 };
 
-tagSchema.statics.findOrCreateMany = async function(tagNames: string[]): Promise<TagDocument[]> {
+tagSchema.statics.findOrCreateMany = async function (tagNames: string[]): Promise<TagDocument[]> {
   const existTags = await this.find({ name: { $in: tagNames } });
   const existTagNames = existTags.map((tag) => { return tag.name });
 

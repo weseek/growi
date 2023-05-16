@@ -1,7 +1,7 @@
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+const { default: uniqueValidator } = require('../util/unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -293,7 +293,7 @@ class UserGroupRelation {
           throw new Error('UserGroupRelation data is not exists. id:', id);
         }
         else {
-          relationData.remove();
+          relationData.deleteOne();
         }
       });
   }
@@ -333,7 +333,7 @@ class UserGroupRelation {
   static async findGroupsWithDescendantsByGroupAndUser(group, user) {
     const descendantGroups = [group];
 
-    const incrementGroupsRecursively = async(groups, user) => {
+    const incrementGroupsRecursively = async (groups, user) => {
       const groupIds = groups.map(g => g._id);
 
       const populatedRelations = await this.aggregate([
@@ -383,7 +383,7 @@ class UserGroupRelation {
 
 }
 
-module.exports = function(crowi) {
+module.exports = function (crowi) {
   UserGroupRelation.crowi = crowi;
   schema.loadClass(UserGroupRelation);
   const model = mongoose.model('UserGroupRelation', schema);

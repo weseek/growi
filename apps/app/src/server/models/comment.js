@@ -1,4 +1,4 @@
-module.exports = function(crowi) {
+module.exports = function (crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -16,10 +16,10 @@ module.exports = function(crowi) {
     timestamps: true,
   });
 
-  commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
+  commentSchema.statics.create = async function (pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
     const Comment = this;
 
-    return new Promise(((resolve, reject) => {
+    try {
       const newComment = new Comment();
 
       newComment.page = pageId;
@@ -30,22 +30,21 @@ module.exports = function(crowi) {
       newComment.isMarkdown = isMarkdown || false;
       newComment.replyTo = replyTo;
 
-      newComment.save((err, data) => {
-        if (err) {
-          debug('Error on saving comment.', err);
-          return reject(err);
-        }
-        debug('Comment saved.', data);
-        return resolve(data);
-      });
-    }));
+      const savedComment = await newComment.save();
+      debug('Comment saved.', savedComment);
+      return savedComment;
+    }
+    catch (err) {
+      debug('Error on saving comment.', err);
+      throw err;
+    }
   };
 
-  commentSchema.statics.getCommentsByPageId = function(id) {
+  commentSchema.statics.getCommentsByPageId = function (id) {
     return this.find({ page: id }).sort({ createdAt: -1 });
   };
 
-  commentSchema.statics.getCommentsByRevisionId = function(id) {
+  commentSchema.statics.getCommentsByRevisionId = function (id) {
     return this.find({ revision: id }).sort({ createdAt: -1 });
   };
 
@@ -53,7 +52,7 @@ module.exports = function(crowi) {
   /**
    * @return {object} key: page._id, value: comments
    */
-  commentSchema.statics.getPageIdToCommentMap = async function(pageIds) {
+  commentSchema.statics.getPageIdToCommentMap = async function (pageIds) {
     const results = await this.aggregate()
       .match({ page: { $in: pageIds } })
       .group({ _id: '$page', comments: { $push: '$comment' } });
@@ -67,21 +66,19 @@ module.exports = function(crowi) {
     return idToCommentMap;
   };
 
-  commentSchema.statics.countCommentByPageId = function(page) {
+  commentSchema.statics.countCommentByPageId = async function (page) {
     const self = this;
 
-    return new Promise(((resolve, reject) => {
-      self.count({ page }, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    }));
+    try {
+      const count = await self.countDocuments({ page });
+      return count;
+    }
+    catch (err) {
+      throw err;
+    }
   };
 
-  commentSchema.statics.updateCommentsByPageId = async function(comment, isMarkdown, commentId) {
+  commentSchema.statics.updateCommentsByPageId = async function (comment, isMarkdown, commentId) {
     const Comment = this;
 
     const commentData = await Comment.findOneAndUpdate(
@@ -98,14 +95,14 @@ module.exports = function(crowi) {
   /**
    * post remove hook
    */
-  commentSchema.post('reomove', async(savedComment) => {
+  commentSchema.post('reomove', async (savedComment) => {
     await commentEvent.emit('delete', savedComment);
   });
 
-  commentSchema.methods.removeWithReplies = async function(comment) {
+  commentSchema.methods.removeWithReplies = async function (comment) {
     const Comment = crowi.model('Comment');
 
-    await Comment.remove({
+    await Comment.deleteOne({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
@@ -114,7 +111,7 @@ module.exports = function(crowi) {
     return;
   };
 
-  commentSchema.statics.findCreatorsByPage = async function(page) {
+  commentSchema.statics.findCreatorsByPage = async function (page) {
     return this.distinct('creator', { page }).exec();
   };
 
