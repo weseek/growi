@@ -16,6 +16,7 @@ class PasswordResetModal extends React.Component {
     super(props);
 
     this.state = {
+      temporaryPassword: [],
       isPasswordResetDone: false,
     };
 
@@ -25,8 +26,9 @@ class PasswordResetModal extends React.Component {
   async resetPassword() {
     const { t, userForPasswordResetModal } = this.props;
     try {
-      await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
-      this.setState({ isPasswordResetDone: true });
+      const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
+      const { newPassword } = res.data;
+      this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
     }
     catch (err) {
       toastError(err);
@@ -39,8 +41,8 @@ class PasswordResetModal extends React.Component {
     return (
       <>
         <p>
-          {t('user_management.reset_password_modal.reset_password_info')}<br />
-          <span className="text-danger">{t('user_management.reset_password_modal.reset_password_alert')}</span>
+          {t('user_management.reset_password_modal.password_never_seen')}<br />
+          <span className="text-danger">{t('user_management.reset_password_modal.send_new_password')}</span>
         </p>
         <p>
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
@@ -57,6 +59,9 @@ class PasswordResetModal extends React.Component {
         <p className="text-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
         <p>
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
+        </p>
+        <p>
+          {t('user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
         </p>
       </>
     );

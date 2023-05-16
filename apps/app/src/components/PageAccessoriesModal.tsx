@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import {
-  useDisableLinkSharing, useIsGuestUser, useIsSharedUser,
+  useDisableLinkSharing, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
 } from '~/stores/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
@@ -34,6 +34,7 @@ const PageAccessoriesModal = (): JSX.Element => {
 
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isLinkSharingDisabled } = useDisableLinkSharing();
 
   const { data: status, mutate, close } = usePageAccessoriesModal();
@@ -93,10 +94,10 @@ const PageAccessoriesModal = (): JSX.Element => {
           return <ShareLink />;
         },
         i18n: t('share_links.share_link_management'),
-        isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
+        isLinkEnabled: () => !isGuestUser && !isReadOnlyUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [t, close, sourceRevisionId, targetRevisionId, isGuestUser, isSharedUser, isLinkSharingDisabled]);
+  }, [t, close, sourceRevisionId, targetRevisionId, isGuestUser, isReadOnlyUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">

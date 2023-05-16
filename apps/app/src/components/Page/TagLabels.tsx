@@ -9,7 +9,7 @@ import styles from './TagLabels.module.scss';
 
 type Props = {
   tags?: string[],
-  isGuestUser: boolean,
+  isTagLabelsDisabled: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
 }
 
@@ -18,7 +18,7 @@ export const TagLabelsSkeleton = (): JSX.Element => {
 };
 
 export const TagLabels:FC<Props> = (props: Props) => {
-  const { tags, isGuestUser, tagsUpdateInvoked } = props;
+  const { tags, isTagLabelsDisabled, tagsUpdateInvoked } = props;
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
@@ -41,7 +41,7 @@ export const TagLabels:FC<Props> = (props: Props) => {
         <RenderTagLabels
           tags={tags}
           openEditorModal={openEditorModal}
-          isGuestUser={isGuestUser}
+          isTagLabelsDisabled={isTagLabelsDisabled}
         />
       </div>
       <TagEditModal

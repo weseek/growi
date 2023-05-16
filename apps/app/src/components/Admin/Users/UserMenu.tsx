@@ -11,7 +11,9 @@ import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GiveAdminButton from './GiveAdminButton';
+import GrantReadOnlyButton from './GrantReadOnlyButton';
 import RemoveAdminMenuItem from './RemoveAdminMenuItem';
+import RevokeReadOnlyMenuItem from './RevokeReadOnlyMenuItem';
 import SendInvitationEmailButton from './SendInvitationEmailButton';
 import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedMenuItem from './StatusSuspendMenuItem';
@@ -81,8 +83,10 @@ const UserMenu = (props: UserMenuProps) => {
         <li className="dropdown-divider pl-0"></li>
         <li className="dropdown-header">{t('user_management.user_table.administrator_menu')}</li>
         <li>
-          {user.admin === true && <RemoveAdminMenuItem user={user} />}
-          {user.admin === false && <GiveAdminButton user={user} />}
+          {user.admin ? <RemoveAdminMenuItem user={user} /> : <GiveAdminButton user={user} />}
+        </li>
+        <li>
+          {user.readOnly ? <RevokeReadOnlyMenuItem user={user} /> : <GrantReadOnlyButton user={user} />}
         </li>
       </>
     );
