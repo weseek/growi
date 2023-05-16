@@ -1,6 +1,6 @@
 import { Ref, IPage } from '@growi/core';
 import {
-  Types, Document, Model, Schema, Expression,
+  Types, Document, Model, Schema, SortOrder,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
@@ -119,7 +119,7 @@ activitySchema.statics.updateByParameters = async function(activityId: string, p
 };
 
 activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = async function(
-    q: string, option: { sortOpt: 1 | -1 | Expression.Meta, offset: number, limit: number},
+    q: string, option: { sortOpt: SortOrder, offset: number, limit: number},
 ): Promise<{usernames: string[], totalCount: number}> {
   const opt = option || {};
   const sortOpt = opt.sortOpt || 1;
