@@ -2,7 +2,7 @@ import {
   HasObjectId, SubscriptionStatusType, Ref, IPage, IUser,
 } from '@growi/core';
 import { subDays } from 'date-fns';
-import { Types } from 'mongoose';
+import { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
 import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
@@ -87,10 +87,10 @@ export default class InAppNotificationService {
     const now = createdAt || Date.now();
     const lastWeek = subDays(now, 7);
     const operations = users.map((user) => {
-      const filter = {
+      const filter: FilterQuery<InAppNotificationDocument> = {
         user, target, action, createdAt: { $gt: lastWeek }, snapshot,
       };
-      const parameters = {
+      const parameters: UpdateQuery<InAppNotificationDocument> = {
         user,
         targetModel,
         target,
