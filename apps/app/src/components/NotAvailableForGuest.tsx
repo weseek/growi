@@ -6,7 +6,6 @@ import { useIsGuestUser } from '~/stores/context';
 
 import { NotAvailable } from './NotAvailable';
 
-
 type NotAvailableForGuestProps = {
   children: JSX.Element
 }

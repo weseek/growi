@@ -542,6 +542,111 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/{id}/grant-read-only:
+   *      put:
+   *        tags: [Users]
+   *        operationId: ReadOnly
+   *        summary: /users/{id}/grant-read-only
+   *        description: Grant user read only access
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user for read only access
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Grant user read only access success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of read only
+   */
+  router.put('/:id/grant-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userData = await User.findById(id);
+
+      if (userData == null) {
+        return res.apiv3Err(new ErrorV3('User not found'), 404);
+      }
+
+      await userData.grantReadOnly();
+
+      const serializedUserData = serializeUserSecurely(userData);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GRANT_READ_ONLY });
+
+      return res.apiv3({ userData: serializedUserData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/{id}/revoke-read-only:
+   *      put:
+   *        tags: [Users]
+   *        operationId: revokeReadOnly
+   *        summary: /users/{id}/revoke-read-only
+   *        description: Revoke user read only access
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user for removing read only access
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Revoke user read only access success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of revoke read only
+   */
+  router.put('/:id/revoke-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userData = await User.findById(id);
+
+      if (userData == null) {
+        return res.apiv3Err(new ErrorV3('User not found'), 404);
+      }
+
+      await userData.revokeReadOnly();
+
+      const serializedUserData = serializeUserSecurely(userData);
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REVOKE_READ_ONLY });
+
+      return res.apiv3({ userData: serializedUserData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
   /**
    * @swagger
    *
@@ -835,7 +940,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  id:
+   *                  newPassword:
+   *                    type: string
+   *                  user:
    *                    type: string
    *                    description: user id for reset password
    *        responses:
@@ -843,44 +950,19 @@ module.exports = (crowi) => {
    *            description: success resrt password
    */
   router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const { appService, mailService } = crowi;
     const { id } = req.body;
 
-    let newPassword;
-    let user;
-
     try {
-      [newPassword, user] = await Promise.all([
+      const [newPassword, user] = await Promise.all([
         await User.resetPasswordByRandomString(id),
         await User.findById(id)]);
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_PASSWORD_RESET });
+      return res.apiv3({ newPassword, user });
     }
     catch (err) {
-      const msg = 'Error occurred during password reset request procedure.';
-      logger.error(err);
-      return res.apiv3Err(`${msg} Cause: ${err}`);
-    }
-
-    try {
-      await mailService.send({
-        to: user.email,
-        subject: 'Your password has been reset by the administrator',
-        template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.txt'),
-        vars: {
-          email: user.email,
-          password: newPassword,
-          url: crowi.appService.getSiteUrl(),
-          appTitle: appService.getAppTitle(),
-        },
-      });
-
-      return res.apiv3({});
-    }
-    catch (err) {
-      const msg = 'Error occurred during password reset send e-mail.';
-      logger.error(err);
-      return res.apiv3Err(`${msg} Cause: ${err}`);
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
     }
   });
 

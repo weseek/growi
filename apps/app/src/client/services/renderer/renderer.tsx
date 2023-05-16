@@ -18,6 +18,7 @@ import { Attachment } from '~/components/ReactMarkdownComponents/Attachment';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
+import * as mermaidPlugin from '~/features/mermaid-plugin';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -64,6 +65,7 @@ export const generateViewOptions = (
     lsxGrowiPlugin.remarkPlugin,
     attachmentPlugin.remarkPlugin,
     refsGrowiPlugin.remarkPlugin,
+    mermaidPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -80,6 +82,7 @@ export const generateViewOptions = (
       lsxGrowiPlugin.sanitizeOption,
       attachmentPlugin.sanitizeOption,
       refsGrowiPlugin.sanitizeOption,
+      mermaidPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -110,6 +113,7 @@ export const generateViewOptions = (
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
     components.attachment = Attachment;
+    components.mermaid = mermaidPlugin.MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -170,6 +174,7 @@ export const generateSimpleViewOptions = (
     lsxGrowiPlugin.remarkPlugin,
     attachmentPlugin.remarkPlugin,
     refsGrowiPlugin.remarkPlugin,
+    mermaidPlugin.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -190,6 +195,7 @@ export const generateSimpleViewOptions = (
       lsxGrowiPlugin.sanitizeOption,
       attachmentPlugin.sanitizeOption,
       refsGrowiPlugin.sanitizeOption,
+      mermaidPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -212,6 +218,7 @@ export const generateSimpleViewOptions = (
     components.gallery = refsGrowiPlugin.GalleryImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.attachment = Attachment;
+    components.mermaid = mermaidPlugin.MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -247,6 +254,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     lsxGrowiPlugin.remarkPlugin,
     attachmentPlugin.remarkPlugin,
     refsGrowiPlugin.remarkPlugin,
+    mermaidPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -264,6 +272,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
       attachmentPlugin.sanitizeOption,
+      mermaidPlugin.sanitizeOption,
     )]
     : () => {};
 
@@ -286,6 +295,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.gallery = refsGrowiPlugin.GalleryImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
     components.attachment = Attachment;
+    components.mermaid = mermaidPlugin.MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {

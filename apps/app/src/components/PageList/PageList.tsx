@@ -14,6 +14,7 @@ import styles from './PageList.module.scss';
 type Props<M extends IPageInfoForEntity> = {
   pages: IPageWithMeta<M>[],
   isEnableActions?: boolean,
+  isReadOnlyUser: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   onPagesDeleted?: OnDeletedFunction,
   onPagePutBacked?: OnPutBackedFunction,
@@ -22,7 +23,7 @@ type Props<M extends IPageInfoForEntity> = {
 const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
   const { t } = useTranslation();
   const {
-    pages, isEnableActions, forceHideMenuItems, onPagesDeleted, onPagePutBacked,
+    pages, isEnableActions, isReadOnlyUser, forceHideMenuItems, onPagesDeleted, onPagePutBacked,
   } = props;
 
   if (pages == null) {
@@ -40,6 +41,7 @@ const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
       key={page.data._id}
       page={page}
       isEnableActions={isEnableActions}
+      isReadOnlyUser={isReadOnlyUser}
       forceHideMenuItems={forceHideMenuItems}
       onPageDeleted={onPagesDeleted}
       onPagePutBacked={onPagePutBacked}

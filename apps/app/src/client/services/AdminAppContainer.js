@@ -26,6 +26,7 @@ export default class AdminAppContainer extends Container {
 
       isV5Compatible: null,
       siteUrl: '',
+      siteUrlUseOnlyEnvVars: null,
       envSiteUrl: '',
       isSetSiteUrl: true,
       isMailerSetup: false,
@@ -88,6 +89,7 @@ export default class AdminAppContainer extends Container {
       fileUpload: appSettingsParams.fileUpload,
       isV5Compatible: appSettingsParams.isV5Compatible,
       siteUrl: appSettingsParams.siteUrl,
+      siteUrlUseOnlyEnvVars: appSettingsParams.siteUrlUseOnlyEnvVars,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
       isMailerSetup: appSettingsParams.isMailerSetup,
