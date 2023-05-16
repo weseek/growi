@@ -46,7 +46,7 @@ services:
   #   cloned from https://github.com/weseek/growi-docker-compose.git
   elasticsearch:
     build:
-      context: ../../growi-docker-compose/elasticsearch
+      context: ../../growi-docker-compose/elasticsearch/v8
       dockerfile: ./Dockerfile
       args:
         - version=8.7.0
@@ -63,7 +63,7 @@ services:
         hard: -1
     volumes:
       - /usr/share/elasticsearch/data
-      - ../../growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
   kibana:
