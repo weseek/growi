@@ -26,7 +26,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  useIsEditable,
+  useIsEditable, useIsReadOnlyUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from './context';
 import { useStaticSWR } from './use-static-swr';
@@ -413,9 +413,10 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
 
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isTrashPage } = useIsTrashPage();
 
-  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null);
+  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null && !isReadOnlyUser);
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {

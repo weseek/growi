@@ -8,6 +8,7 @@ import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRxCurrentUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
+import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -26,6 +27,7 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
   // const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
 
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
@@ -90,6 +92,7 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
           return (
             <BookmarkFolderItem
               key={bookmarkFolder._id}
+              isReadOnlyUser={!!isReadOnlyUser}
               bookmarkFolder={bookmarkFolder}
               isOpen={false}
               level={0}
@@ -104,6 +107,7 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
           <div key={userBookmark._id} className="grw-foldertree-item-container grw-root-bookmarks">
             <BookmarkItem
               key={userBookmark._id}
+              isReadOnlyUser={!!isReadOnlyUser}
               bookmarkedPage={userBookmark}
               level={0}
               parentFolder={null}

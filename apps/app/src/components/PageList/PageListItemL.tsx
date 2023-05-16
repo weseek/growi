@@ -38,6 +38,7 @@ type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
+  isReadOnlyUser: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
@@ -50,7 +51,7 @@ type Props = {
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
+    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions, isReadOnlyUser,
     forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
@@ -259,6 +260,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageId={pageData._id}
                   pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                   isEnableActions={isEnableActions}
+                  isReadOnlyUser={isReadOnlyUser}
                   forceHideMenuItems={forceHideMenuItems}
                   onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}

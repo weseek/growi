@@ -3,15 +3,16 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
 type RenderTagLabelsProps = {
   tags: string[],
-  isGuestUser: boolean,
+  isTagLabelsDisabled: boolean,
   openEditorModal?: () => void,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
-  const { tags, isGuestUser, openEditorModal } = props;
+  const { tags, isTagLabelsDisabled, openEditorModal } = props;
   const { t } = useTranslation();
 
   function openEditorHandler() {
@@ -33,15 +34,17 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
         );
       })}
       <NotAvailableForGuest>
-        <div id="edit-tags-btn-wrapper-for-tooltip">
-          <a
-            className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
-            onClick={openEditorHandler}
-          >
-            { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-            <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
-          </a>
-        </div>
+        <NotAvailableForReadOnlyUser>
+          <div id="edit-tags-btn-wrapper-for-tooltip">
+            <a
+              className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isTagLabelsDisabled && 'disabled'}`}
+              onClick={openEditorHandler}
+            >
+              { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+              <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
+            </a>
+          </div>
+        </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     </>
 

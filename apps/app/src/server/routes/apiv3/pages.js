@@ -6,6 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
 import { ErrorV3 } from '@growi/core';
@@ -292,7 +293,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
@@ -504,7 +505,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -575,35 +576,36 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
+  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator,
+    async(req, res) => {
 
-    const { pageId } = req.body;
-    const { user } = req;
+      const { pageId } = req.body;
+      const { user } = req;
 
-    // The user has permission to resume rename operation if page is returned.
-    const page = await Page.findByIdAndViewer(pageId, user, null, true);
-    if (page == null) {
-      const msg = 'The operation is forbidden for this user';
-      const code = 'forbidden-user';
-      return res.apiv3Err(new ErrorV3(msg, code), 403);
-    }
+      // The user has permission to resume rename operation if page is returned.
+      const page = await Page.findByIdAndViewer(pageId, user, null, true);
+      if (page == null) {
+        const msg = 'The operation is forbidden for this user';
+        const code = 'forbidden-user';
+        return res.apiv3Err(new ErrorV3(msg, code), 403);
+      }
 
-    const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
-    if (pageOp == null) {
-      const msg = 'PageOperation document for Rename Sub operation not found.';
-      const code = 'document_not_found';
-      return res.apiv3Err(new ErrorV3(msg, code), 404);
-    }
+      const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
+      if (pageOp == null) {
+        const msg = 'PageOperation document for Rename Sub operation not found.';
+        const code = 'document_not_found';
+        return res.apiv3Err(new ErrorV3(msg, code), 404);
+      }
 
-    try {
-      await crowi.pageService.resumeRenameSubOperation(page, pageOp);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-    return res.apiv3();
-  });
+      try {
+        await crowi.pageService.resumeRenameSubOperation(page, pageOp);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+      return res.apiv3();
+    });
 
   /**
    * @swagger
@@ -616,7 +618,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, addActivity, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, excludeReadOnlyUser, addActivity, apiV3FormValidator, async(req, res) => {
     const options = {};
 
     const pagesInTrash = await crowi.pageService.findAllTrashPages(req.user);
@@ -746,61 +748,62 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, addActivity, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively } = req.body;
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.duplicatePage, apiV3FormValidator,
+    async(req, res) => {
+      const { pageId, isRecursively } = req.body;
 
-    const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
+      const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
 
-    const isCreatable = isCreatablePage(newPagePath);
-    if (!isCreatable) {
-      return res.apiv3Err(new ErrorV3('This page path is invalid', 'invalid_path'), 400);
-    }
+      const isCreatable = isCreatablePage(newPagePath);
+      if (!isCreatable) {
+        return res.apiv3Err(new ErrorV3('This page path is invalid', 'invalid_path'), 400);
+      }
 
-    // check page existence
-    const isExist = (await Page.count({ path: newPagePath })) > 0;
-    if (isExist) {
-      return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
-    }
+      // check page existence
+      const isExist = (await Page.count({ path: newPagePath })) > 0;
+      if (isExist) {
+        return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
+      }
 
-    const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
+      const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
-    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
-    if (page == null || isEmptyAndNotRecursively) {
-      res.code = 'Page is not found';
-      logger.error('Failed to find the pages');
-      return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
-    }
+      const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
+      if (page == null || isEmptyAndNotRecursively) {
+        res.code = 'Page is not found';
+        logger.error('Failed to find the pages');
+        return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
+      }
 
-    const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
-    const result = { page: serializePageSecurely(newParentPage) };
+      const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
+      const result = { page: serializePageSecurely(newParentPage) };
 
-    // copy the page since it's used and updated in crowi.pageService.duplicate
-    const copyPage = { ...page };
-    copyPage.path = newPagePath;
-    try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create grobal notification failed', err);
-    }
+      // copy the page since it's used and updated in crowi.pageService.duplicate
+      const copyPage = { ...page };
+      copyPage.path = newPagePath;
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
+      }
+      catch (err) {
+        logger.error('Create grobal notification failed', err);
+      }
 
-    // create subscription (parent page only)
-    try {
-      await crowi.inAppNotificationService.createSubscription(req.user.id, newParentPage._id, subscribeRuleNames.PAGE_CREATE);
-    }
-    catch (err) {
-      logger.error('Failed to create subscription document', err);
-    }
+      // create subscription (parent page only)
+      try {
+        await crowi.inAppNotificationService.createSubscription(req.user.id, newParentPage._id, subscribeRuleNames.PAGE_CREATE);
+      }
+      catch (err) {
+        logger.error('Failed to create subscription document', err);
+      }
 
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: SupportedAction.ACTION_PAGE_DUPLICATE,
-    };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+      const parameters = {
+        targetModel: SupportedTargetModel.MODEL_PAGE,
+        target: page,
+        action: SupportedAction.ACTION_PAGE_DUPLICATE,
+      };
+      activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
-    return res.apiv3(result);
-  });
+      return res.apiv3(result);
+    });
 
   /**
    * @swagger
@@ -851,7 +854,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.post('/delete', accessTokenParser, loginRequiredStrictly, validator.deletePages, apiV3FormValidator, async(req, res) => {
+  router.post('/delete', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.deletePages, apiV3FormValidator, async(req, res) => {
     const {
       pageIdToRevisionIdMap, isCompletely, isRecursively, isAnyoneWithTheLink,
     } = req.body;
@@ -913,7 +916,7 @@ module.exports = (crowi) => {
 
 
   // eslint-disable-next-line max-len
-  router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, adminRequired, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
+  router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, adminRequired, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
     const { convertPath } = req.body;
 
     // Convert by path
@@ -935,7 +938,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, excludeReadOnlyUser, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
 
     // Convert by pageIds
