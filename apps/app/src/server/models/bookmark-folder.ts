@@ -199,6 +199,7 @@ bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function(userId: 
   const bookmarkIdsInFolders = await this.distinct('bookmarks', { owner: userId });
   const userRootBookmarks: MyBookmarkList = await Bookmark.find({
     _id: { $nin: bookmarkIdsInFolders },
+    user: userId,
   }).populate({
     path: 'page',
     model: 'Page',
