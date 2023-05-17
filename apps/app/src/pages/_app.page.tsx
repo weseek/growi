@@ -33,7 +33,14 @@ const lato = Lato({
   subsets: ['latin'],
   display: 'swap',
 });
-const sourceHanCodeJP = localFont({ src: '../../resource/fonts/SourceHanCodeJP-Regular.woff2' });
+const sourceHanCodeJPSubsetMain = localFont({
+  src: '../../resource/fonts/SourceHanCodeJP-Regular-subset-main.woff2',
+  display: 'optional',
+});
+const sourceHanCodeJPSubsetJis2 = localFont({
+  src: '../../resource/fonts/SourceHanCodeJP-Regular-subset-jis2.woff2',
+  display: 'optional',
+});
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -72,7 +79,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
         :root {
           --font-family-sans-serif: ${lato.style.fontFamily}, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
           --font-family-serif: Georgia, 'Times New Roman', Times, serif;
-          --font-family-monospace: monospace, ${sourceHanCodeJP.style.fontFamily};
+          --font-family-monospace: monospace, ${sourceHanCodeJPSubsetMain.style.fontFamily}, ${sourceHanCodeJPSubsetJis2.style.fontFamily};
         }
       `}</style>
       <SWRConfig value={swrGlobalConfiguration}>
