@@ -1,7 +1,7 @@
 import React from 'react';
 
 type EnvVarsTableProps = {
-  envVars: object,
+  envVars: Record<string, string | number | boolean>,
 }
 
 export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => {
