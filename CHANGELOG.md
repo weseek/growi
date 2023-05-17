@@ -1,8 +1,65 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.15...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.0](https://github.com/weseek/growi/compare/v6.0.15...v6.1.0) - 2023-05-17
+
+### 💎 Features
+
+- feat: Add read-only user feature (#7648) @jam411
+- feat: Support Mermaid (move into the feature dierctory) (#7647) @miya
+- feat: Fix APP_SITE_URL with an environment variable (#7646) @yuki-takei
+- feat: Support Mermaid (#7645) @miya
+- feat: Support Elasticsearch v8 (#7623) @miya
+- feat: Elasticsearchv8 module (#7623) @miya
+- feat: Bookmarks folder and sidebar menu (#7450) @mudana-grune
+- feat: GROWI Questionnaire (#7316) @hakumizuki
+- feat: Revive attachment-refs with remark (#7597) @arafubeatbox
+
+### 🚀 Improvement
+
+- imprv: Font size (#7663) @yuki-takei
+- imprv: Admin user can use `reset-password` without email settings (#7650) @jam411
+- imprv: Optimize fonts with next/font (#7633) @yuki-takei
+- imprv: GFM table performance 2 (#7640) @yuki-takei
+- imprv: GFM footnote styles (#7628) @yuki-takei
+- imprv: Omit clobber prefix (#7627) @yuki-takei
+- imprv: GFM table performance (#7619) @yuki-takei
+- imprv: Show unsaved warning when comment not posted (#7603) @arafubeatbox
+- imprv: Suppress UI Flickering for dropdowns (#7608) @jam411
+- imprv: Allow registering without GROWI email settings for ID/Password authentication's restricted registration (#7591) @jam411
+- imprv: Enable browsing video (for v6.1.0) (#7589) @yuki-takei
+- imprv: Show a spinner into the save button while the saving process (#7579) @yuki-takei
+- imprv: Inject PlantUML URI with config-loader (#7577) @yuki-takei
+- imprv: Loading draw.io (diagrams.net) resources (#7575) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: The environment variable for disabling link sharing (#7652) @yuki-takei
+- fix: Cursor resetting occurs after updating with the built-in editor (#7644) @yuki-takei
+- fix: Revision schema migration for v5 to v6 (#7637) @yuki-takei
+- fix: Editor not resetting when the same markdown (#7625) @arafubeatbox
+- support: Replaced by IAttachmentHasId (#7629) @reiji-h
+- fix: AlignRight DropdownMenu flickering (#7606) @mudana-grune
+- fix: Not display page list count badge in trash page (#7600) @yukendev
+- fix: Reverted descendant pages do not appear in search results (#7587) @miya
+- fix: Deleted descendant pages do not appear in search results (#7583) @miya
+- fix: Show lsx page list in trash page correctly (#7582) @yukendev
+- fix: Uncaught type error by `sticky-event` (#7566) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: mongoose update (#7659) @jam411
+- support: Elasticsearch8 (#7592) @miya
+- support: Replaced by IAttachmentHasId (#7629) @reiji-h
+- support: Dedupe packages (#7590) @yuki-takei
+- support: Omit textlint (#7578) @yuki-takei
+- support: Typescriptize CustomNav (#7584) @yuki-takei
+- support: Replaced by IAttachmentHasId (#7629) @reiji-h
+- support: Remove Blockdiag codes (#7576) @yuki-takei
+- support: Migrate to Turborepo (#7417) @yuki-takei
 
 ## [v6.0.15](https://github.com/weseek/growi/compare/v6.0.14...v6.0.15) - 2023-04-10
 
