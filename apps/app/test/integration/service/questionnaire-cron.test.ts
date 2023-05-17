@@ -328,7 +328,7 @@ describe('QuestionnaireCronService', () => {
     await crowi.questionnaireCronService.executeJob();
 
     const savedOrders = await QuestionnaireOrder.find()
-      .select('-condition._id -questions._id')
+      .select('-condition._id -questions._id -questions.createdAt -questions.updatedAt')
       .sort({ _id: 1 });
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {
