@@ -10,11 +10,11 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
+const path = require('path');
+
 const express = require('express');
 
 const router = express.Router();
-
-const path = require('path');
 
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
@@ -453,12 +453,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users/{id}/giveAdmin:
+   *    /users/{id}/grant-admin:
    *      put:
    *        tags: [Users]
-   *        operationId: giveAdminUser
-   *        summary: /users/{id}/giveAdmin
-   *        description: Give user admin
+   *        operationId: grantAdminUser
+   *        summary: /users/{id}/grant-admin
+   *        description: Grant user admin
    *        parameters:
    *          - name: id
    *            in: path
@@ -468,7 +468,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Give user admin success
+   *            description: Grant user admin success
    *            content:
    *              application/json:
    *                schema:
@@ -477,7 +477,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of admin user
    */
-  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.put('/:id/grant-admin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -486,7 +486,7 @@ module.exports = (crowi) => {
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GIVE_ADMIN });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_GRANT_ADMIN });
 
       return res.apiv3({ userData: serializedUserData });
     }
@@ -500,40 +500,40 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /users/{id}/removeAdmin:
+   *    /users/{id}/revoke-admin:
    *      put:
    *        tags: [Users]
-   *        operationId: removeAdminUser
-   *        summary: /users/{id}/removeAdmin
-   *        description: Remove user admin
+   *        operationId: revokeAdminUser
+   *        summary: /users/{id}/revoke-admin
+   *        description: Revoke user admin
    *        parameters:
    *          - name: id
    *            in: path
    *            required: true
-   *            description: id of user for removing admin
+   *            description: id of user for revoking admin
    *            schema:
    *              type: string
    *        responses:
    *          200:
-   *            description: Remove user admin success
+   *            description: Revoke user admin success
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    userData:
    *                      type: object
-   *                      description: data of removed admin user
+   *                      description: data of revoked admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
+  router.put('/:id/revoke-admin', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
       const userData = await User.findById(id);
-      await userData.removeFromAdmin();
+      await userData.revokeFromAdmin();
 
       const serializedUserData = serializeUserSecurely(userData);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE_ADMIN });
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REVOKE_ADMIN });
 
       return res.apiv3({ userData: serializedUserData });
     }

@@ -37,7 +37,7 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
 
   const clickRemoveAdminBtnHandler = useCallback(async() => {
     try {
-      const username = await adminUsersContainer.removeUserAdmin(user._id);
+      const username = await adminUsersContainer.revokeUserAdmin(user._id);
       toastSuccess(t('toaster.remove_user_admin', { username }));
     }
     catch (err) {
