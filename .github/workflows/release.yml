@@ -24,18 +24,19 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions
       run: |
         yarn bump-versions:patch
-        sh ./packages/app/bin/github-actions/update-readme.sh
+        sh ./apps/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0
@@ -48,7 +49,7 @@ jobs:
         release-notes: ${{ github.event.pull_request.body }}
 
     - name: Update README.md for docker image
-      working-directory: ./packages/app
+      working-directory: ./apps/app
       run: |
         sh ./bin/github-actions/update-readme.sh
       env:
@@ -85,13 +86,14 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |
@@ -213,7 +215,7 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         repository: weseek/growi
-        readme-filepath: ./packages/app/docker/README.md
+        readme-filepath: ./apps/app/docker/README.md
 
     - name: Slack Notification
       uses: weseek/ghaction-release-slack-notification@master

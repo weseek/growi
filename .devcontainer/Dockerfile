@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-16
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-18
 
 # The node image includes a non-root user with sudo access. Use the
 # "remoteUser" property in devcontainer.json to use it. On Linux, update
@@ -14,9 +14,9 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 RUN mkdir -p /workspace/growi/node_modules
-RUN mkdir -p /workspace/growi/packages/app/node_modules
-RUN mkdir -p /workspace/growi/packages/slackbot-proxy/node_modules
-RUN mkdir -p /workspace/growi/packages/app/.next
+RUN mkdir -p /workspace/growi/apps/app/node_modules
+RUN mkdir -p /workspace/growi/apps/slackbot-proxy/node_modules
+RUN mkdir -p /workspace/growi/apps/app/.next
 
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
@@ -37,17 +37,20 @@ RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable 
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 
 RUN apt-get update \
-   && apt-get -y install --no-install-recommends git-lfs \
-      # Chrome
-      google-chrome-stable \
-      # for Cypress
-      libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
+    && apt-get -y install --no-install-recommends git-lfs \
 
-   # Clean up
-   && apt-get autoremove -y \
-   && apt-get clean -y \
-   && rm -rf /var/lib/apt/lists/*
+    # Uncomment below lines to install Chrome and libs for Cypress
+    # --- works only on AMD64 ---
+    # && apt-get -y install --no-install-recommends google-chrome-stable \
+    #    libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
+
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
+
+RUN yarn global add turbo
 
 # Uncomment to default to non-root user
 # USER $USER_UID

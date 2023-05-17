@@ -1,0 +1,96 @@
+@use '~/styles/variables' as var;
+@use '~/styles/bootstrap/init' as bs;
+
+.on-search :global {
+  .page-wrapper {
+    padding-bottom: unset;
+  }
+
+  .search-control-include-options {
+    .card-body {
+      padding: 5px 10px;
+    }
+  }
+  .search-result-list {
+    .search-result-list-scroll {
+      // subtract the height of GrowiNavbar + (SearchControl component + other factors)
+      height: calc(100vh - ((var.$grw-navbar-height + var.$grw-navbar-border-width) + 110px));
+      overflow-y: scroll;
+
+      @include bs.media-breakpoint-down(sm) {
+        height: calc(100vh - ((var.$grw-navbar-height + var.$grw-navbar-border-width + var.$grw-navbar-bottom-height) + 123px));
+      }
+    }
+
+    .search-result-keyword {
+      font-size: 17.5px;
+      font-weight: bold;
+    }
+    .search-result-select-group {
+      > select {
+        max-width: 8rem;
+      }
+    }
+
+    // list group
+    .page-list {
+      // not show top label in search result list
+      .page-list-meta {
+        .top-label {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .search-result-content {
+    .search-result-content-nav {
+      min-height: var.$grw-subnav-search-preview-min-height;
+      overflow: auto;
+
+      .grw-subnav {
+        min-height: inherit;
+      }
+    }
+
+    .search-result-content {
+      height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
+
+      > h2 {
+        margin-right: 10px;
+        font-size: 22px;
+        line-height: 1em;
+      }
+
+      &:first-child > h2 {
+        margin-top: 0;
+      }
+
+      .search-result-content-body-container {
+        // correct apply overflow scrolling for react-markdown on Google Chrome
+        // see: https://github.com/weseek/growi/pull/6731
+        position: relative;
+
+        overflow-y: auto;
+
+        .wiki {
+          padding: 16px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+// style to apply when displaying search page
+.on-search :global {
+  // set sidebar height shown in search page
+  $search-page-sidebar-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
+
+  .grw-sidebar {
+    height: $search-page-sidebar-height;
+    .data-layout-container {
+      height: 100%;
+    }
+  }
+}

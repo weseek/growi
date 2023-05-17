@@ -11,7 +11,7 @@ import { visit } from 'unist-util-visit';
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except', 'isSharedPage'];
 
-const { addHeadingSlash, hasHeadingSlash } = pathUtils;
+const { hasHeadingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 
@@ -49,15 +49,6 @@ export const remarkPlugin: Plugin = function() {
 
         data.hName = 'lsx';
         data.hProperties = attributes;
-
-        // omit position to fix the key regardless of its position
-        // see:
-        //   https://github.com/remarkjs/react-markdown/issues/703
-        //   https://github.com/remarkjs/react-markdown/issues/466
-        //
-        //   https://github.com/remarkjs/react-markdown/blob/a80dfdee2703d84ac2120d28b0e4998a5b417c85/lib/ast-to-react.js#L201-L204
-        //   https://github.com/remarkjs/react-markdown/blob/a80dfdee2703d84ac2120d28b0e4998a5b417c85/lib/ast-to-react.js#L217-L222
-        delete node.position;
       }
     });
   };

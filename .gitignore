@@ -31,10 +31,13 @@ yarn-error.log*
 
 # Terraform
 **/.terraform/*
-# *.tfstate
 *.tfstate.*
 
 # IDE, dev #
 .idea
 *.orig
 *.code-workspace
+
+# turborepo
+.turbo
+out
