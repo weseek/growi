@@ -28,7 +28,7 @@ export default class AdminLocalSecurityContainer extends Container {
       retrieveError: null,
       // set dummy value tile for using suspense
       registrationMode: this.dummyRegistrationMode,
-      registrationWhiteList: [],
+      registrationWhitelist: [],
       useOnlyEnvVars: false,
       isPasswordResetEnabled: false,
       isEmailAuthenticationEnabled: false,
@@ -43,7 +43,7 @@ export default class AdminLocalSecurityContainer extends Container {
       this.setState({
         useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
-        registrationWhiteList: localSetting.registrationWhiteList,
+        registrationWhitelist: localSetting.registrationWhitelist,
         isPasswordResetEnabled: localSetting.isPasswordResetEnabled,
         isEmailAuthenticationEnabled: localSetting.isEmailAuthenticationEnabled,
       });
@@ -72,10 +72,10 @@ export default class AdminLocalSecurityContainer extends Container {
   }
 
   /**
-   * Change registration white list
+   * Change registration whitelist
    */
-  changeRegistrationWhiteList(value) {
-    this.setState({ registrationWhiteList: value.split('\n') });
+  changeRegistrationWhitelist(value) {
+    this.setState({ registrationWhitelist: value.split('\n') });
   }
 
   /**
@@ -96,10 +96,10 @@ export default class AdminLocalSecurityContainer extends Container {
    * update local security setting
    */
   async updateLocalSecuritySetting() {
-    const { registrationWhiteList, isPasswordResetEnabled, isEmailAuthenticationEnabled } = this.state;
+    const { registrationWhitelist, isPasswordResetEnabled, isEmailAuthenticationEnabled } = this.state;
     const response = await apiv3Put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
-      registrationWhiteList,
+      registrationWhitelist,
       isPasswordResetEnabled,
       isEmailAuthenticationEnabled,
     });
@@ -108,7 +108,7 @@ export default class AdminLocalSecurityContainer extends Container {
 
     this.setState({
       registrationMode: localSettingParams.registrationMode,
-      registrationWhiteList: localSettingParams.registrationWhiteList,
+      registrationWhitelist: localSettingParams.registrationWhitelist,
       isPasswordResetEnabled: localSettingParams.isPasswordResetEnabled,
       isEmailAuthenticationEnabled: localSettingParams.isEmailAuthenticationEnabled,
     });
