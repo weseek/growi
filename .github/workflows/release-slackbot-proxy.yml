@@ -108,7 +108,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |

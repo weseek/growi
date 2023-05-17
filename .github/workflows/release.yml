@@ -24,13 +24,14 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions
       run: |
@@ -85,13 +86,14 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |
