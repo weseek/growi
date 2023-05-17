@@ -11,7 +11,7 @@
     }
   }
 
-  font-size: 15px;
+  font-size: 16px;
 
   // @extend .text-break;
   // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
@@ -81,6 +81,10 @@
   p {
     margin: 15px 0;
     font-weight: normal;
+  }
+
+  table {
+    font-size: 0.95em;
   }
 
   blockquote {
