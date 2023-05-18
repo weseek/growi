@@ -23,7 +23,14 @@ import styles from './BookmarkFolderTree.module.scss';
 //   parentFolder: BookmarkFolderItems | null
 //  } & IPageHasId
 
-export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUserHomePage }) => {
+type Props = {
+  isUserHomePage?: boolean,
+  userId?: string,
+}
+
+export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
+  const { isUserHomePage, userId } = props;
+
   // const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
 
@@ -31,7 +38,7 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
-  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks(userId);
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
