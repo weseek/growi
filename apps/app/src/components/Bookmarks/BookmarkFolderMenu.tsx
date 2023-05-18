@@ -8,21 +8,20 @@ import { addBookmarkToFolder, toggleBookmark } from '~/client/util/bookmark-util
 import { toastError } from '~/client/util/toastr';
 import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxPageInfo } from '~/stores/page';
 
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 
-export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ children }): JSX.Element => {
+export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: string }> = ({ children, pageId }): JSX.Element => {
   const { t } = useTranslation();
 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
   const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
 
@@ -32,14 +31,14 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
 
   const toggleBookmarkHandler = useCallback(async() => {
     try {
-      if (currentPage != null) {
-        await toggleBookmark(currentPage._id, isBookmarked);
+      if (pageId != null) {
+        await toggleBookmark(pageId, isBookmarked);
       }
     }
     catch (err) {
       toastError(err);
     }
-  }, [currentPage, isBookmarked]);
+  }, [pageId, isBookmarked]);
 
   const onUnbookmarkHandler = useCallback(async() => {
     await toggleBookmarkHandler();
@@ -57,7 +56,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
-          if (bookmark.page._id === currentPage?._id) {
+          if (bookmark.page._id === pageId) {
             setSelectedItem(bookmarkFolder._id);
           }
         });
@@ -80,7 +79,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       }
     }
   },
-  [isOpen, bookmarkFolders, selectedItem, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
+  [isOpen, bookmarkFolders, selectedItem, isBookmarked, pageId, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
 
   const onMenuItemClickHandler = useCallback(async(e, itemId: string) => {
     e.stopPropagation();
@@ -91,8 +90,8 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       if (isBookmarked) {
         await toggleBookmarkHandler();
       }
-      if (currentPage != null) {
-        await addBookmarkToFolder(currentPage._id, itemId === 'root' ? null : itemId);
+      if (pageId != null) {
+        await addBookmarkToFolder(pageId, itemId === 'root' ? null : itemId);
       }
       mutateUserBookmarks();
       mutateBookmarkFolders();
@@ -101,7 +100,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
+  }, [mutateBookmarkFolders, isBookmarked, pageId, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
 
   const renderBookmarkMenuItem = () => {
     return (
@@ -120,7 +119,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
         {isBookmarkFolderExists && (
           <>
             <DropdownItem divider />
-            <div key='root'>
+            <div key="root">
               <div
                 className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
                 tabIndex={0}
@@ -128,48 +127,45 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                 onClick={e => onMenuItemClickHandler(e, 'root')}
               >
                 <BookmarkFolderMenuItem
-                  itemId='root'
+                  itemId="root"
                   itemName={t('bookmark_folder.root')}
                   isSelected={selectedItem === 'root'}
                 />
               </div>
             </div>
             {bookmarkFolders?.map(folder => (
-              <>
-                <div key={folder._id}>
-                  <div
-                    className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
-                    style={{ paddingLeft: '40px' }}
-                    tabIndex={0}
-                    role="menuitem"
-                    onClick={e => onMenuItemClickHandler(e, folder._id)}
-                  >
-                    <BookmarkFolderMenuItem
-                      itemId={folder._id}
-                      itemName={folder.name}
-                      isSelected={selectedItem === folder._id}
-                    />
-                  </div>
+              <div key={folder._id}>
+                <div
+                  className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
+                  style={{ paddingLeft: '40px' }}
+                  tabIndex={0}
+                  role="menuitem"
+                  onClick={e => onMenuItemClickHandler(e, folder._id)}
+                >
+                  <BookmarkFolderMenuItem
+                    itemId={folder._id}
+                    itemName={folder.name}
+                    isSelected={selectedItem === folder._id}
+                  />
                 </div>
-                <>
-                  {folder.children?.map(child => (
-                    <div key={child._id}>
-                      <div
-                        className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
-                        style={{ paddingLeft: '60px' }}
-                        tabIndex={0}
-                        role="menuitem"
-                        onClick={e => onMenuItemClickHandler(e, child._id)}>
-                        <BookmarkFolderMenuItem
-                          itemId={child._id}
-                          itemName={child.name}
-                          isSelected={selectedItem === child._id}
-                        />
-                      </div>
+                {folder.children?.map(child => (
+                  <div key={child._id}>
+                    <div
+                      className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
+                      style={{ paddingLeft: '60px' }}
+                      tabIndex={0}
+                      role="menuitem"
+                      onClick={e => onMenuItemClickHandler(e, child._id)}
+                    >
+                      <BookmarkFolderMenuItem
+                        itemId={child._id}
+                        itemName={child.name}
+                        isSelected={selectedItem === child._id}
+                      />
                     </div>
-                  ))}
-                </>
-              </>
+                  </div>
+                ))}
+              </div>
             ))}
           </>
         )}

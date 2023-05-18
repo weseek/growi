@@ -18,6 +18,7 @@ import UserPictureList from './User/UserPictureList';
 import styles from './BookmarkButtons.module.scss';
 
 interface Props {
+  pageId: string
   bookmarkedUsers?: IUser[]
   hideTotalNumber?: boolean
   bookmarkInfo? : IBookmarkInfo
@@ -26,7 +27,7 @@ interface Props {
 export const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const {
-    bookmarkedUsers, hideTotalNumber, bookmarkInfo,
+    pageId, bookmarkedUsers, hideTotalNumber, bookmarkInfo,
   } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -48,7 +49,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
 
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
-      <BookmarkFolderMenu >
+      <BookmarkFolderMenu pageId={pageId}>
         <DropdownToggle id='bookmark-dropdown-btn' color="transparent" className={`shadow-none btn btn-bookmark border-0
           ${bookmarkInfo?.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
           <i className={`fa ${bookmarkInfo?.isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
