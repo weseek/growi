@@ -8,11 +8,14 @@ import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNa
 import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
 import { FolderPlusIcon } from '~/components/Icons/FolderPlusIcon';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
+import { useCurrentUser } from '~/stores/context';
 
 export const BookmarkContents = (): JSX.Element => {
 
   const { t } = useTranslation();
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
+
+  const { data: currentUser } = useCurrentUser();
   const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
 
   const onClickNewBookmarkFolder = useCallback(() => {
@@ -53,7 +56,7 @@ export const BookmarkContents = (): JSX.Element => {
           />
         </div>
       )}
-      <BookmarkFolderTree />
+      <BookmarkFolderTree userId={currentUser?._id} />
     </>
   );
 };
