@@ -10,17 +10,17 @@ import { useCurrentUser } from '~/stores/context';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
-const RemoveAdminAlert = React.memo((): JSX.Element => {
+const RevokeAdminAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
 
   return (
     <div className="px-4">
-      <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.remove_admin_access')}
-      <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_remove')}</p>
+      <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.revoke_admin_access')}
+      <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_revoke')}</p>
     </div>
   );
 });
-RemoveAdminAlert.displayName = 'RemoveAdminAlert';
+RevokeAdminAlert.displayName = 'RevokeAdminAlert';
 
 
 type Props = {
@@ -28,17 +28,17 @@ type Props = {
   user: IUserHasId,
 }
 
-const RemoveAdminMenuItem = (props: Props): JSX.Element => {
+const RevokeAdminMenuItem = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { adminUsersContainer, user } = props;
 
   const { data: currentUser } = useCurrentUser();
 
-  const clickRemoveAdminBtnHandler = useCallback(async() => {
+  const clickRevokeAdminBtnHandler = useCallback(async() => {
     try {
       const username = await adminUsersContainer.revokeUserAdmin(user._id);
-      toastSuccess(t('toaster.remove_user_admin', { username }));
+      toastSuccess(t('toaster.revoke_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
@@ -48,17 +48,17 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
 
   return user.username !== currentUser?.username
     ? (
-      <button className="dropdown-item" type="button" onClick={clickRemoveAdminBtnHandler}>
-        <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.remove_admin_access')}
+      <button className="dropdown-item" type="button" onClick={clickRevokeAdminBtnHandler}>
+        <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.revoke_admin_access')}
       </button>
     )
-    : <RemoveAdminAlert />;
+    : <RevokeAdminAlert />;
 };
 
 /**
 * Wrapper component for using unstated
 */
 // eslint-disable-next-line max-len
-const RemoveAdminMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RemoveAdminMenuItem, [AdminUsersContainer]);
+const RevokeAdminMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RevokeAdminMenuItem, [AdminUsersContainer]);
 
-export default RemoveAdminMenuItemWrapper;
+export default RevokeAdminMenuItemWrapper;

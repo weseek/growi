@@ -9,40 +9,40 @@ import { useCurrentUser } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-type RemoveAdminButtonProps = {
+type RevokeAdminButtonProps = {
   adminUsersContainer: AdminUsersContainer,
   user: IUserHasId,
 }
 
-const RemoveAdminButton = (props: RemoveAdminButtonProps): JSX.Element => {
+const RevokeAdminButton = (props: RevokeAdminButtonProps): JSX.Element => {
 
   const { t } = useTranslation('admin');
   const { data: currentUser } = useCurrentUser();
   const { adminUsersContainer, user } = props;
 
-  const onClickRemoveAdminBtnHandler = useCallback(async() => {
+  const onClickRevokeAdminBtnHandler = useCallback(async() => {
     try {
       const username = await adminUsersContainer.revokeUserAdmin(user._id);
-      toastSuccess(t('toaster.remove_user_admin', { username }));
+      toastSuccess(t('toaster.revoke_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
     }
   }, [adminUsersContainer, t, user._id]);
 
-  const renderRemoveAdminBtn = () => {
+  const renderRevokeAdminBtn = () => {
     return (
-      <button className="dropdown-item" type="button" onClick={() => onClickRemoveAdminBtnHandler()}>
-        <i className="icon-fw icon-user-unfollow"></i>{t('user_management.user_table.remove_admin_access')}
+      <button className="dropdown-item" type="button" onClick={() => onClickRevokeAdminBtnHandler()}>
+        <i className="icon-fw icon-user-unfollow"></i>{t('user_management.user_table.revoke_admin_access')}
       </button>
     );
   };
 
-  const renderRemoveAdminAlert = () => {
+  const renderRevokeAdminAlert = () => {
     return (
       <div className="px-4">
-        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('user_management.user_table.remove_admin_access')}
-        <p className="alert alert-danger">{t('user_management.user_table.cannot_remove')}</p>
+        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('user_management.user_table.revoke_admin_access')}
+        <p className="alert alert-danger">{t('user_management.user_table.cannot_revoke')}</p>
       </div>
     );
   };
@@ -53,8 +53,8 @@ const RemoveAdminButton = (props: RemoveAdminButtonProps): JSX.Element => {
 
   return (
     <>
-      {user.username !== currentUser.username ? renderRemoveAdminBtn()
-        : renderRemoveAdminAlert()}
+      {user.username !== currentUser.username ? renderRevokeAdminBtn()
+        : renderRevokeAdminAlert()}
     </>
   );
 };
@@ -62,6 +62,6 @@ const RemoveAdminButton = (props: RemoveAdminButtonProps): JSX.Element => {
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButton, [AdminUsersContainer]);
+const RevokeAdminButtonWrapper = withUnstatedContainers(RevokeAdminButton, [AdminUsersContainer]);
 
-export default RemoveAdminButtonWrapper;
+export default RevokeAdminButtonWrapper;
