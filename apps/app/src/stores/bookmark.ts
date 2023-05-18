@@ -1,4 +1,3 @@
-import { IUserHasId } from '@growi/core';
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -21,8 +20,6 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
 };
 
 export const useSWRxCurrentUserBookmarks = (userId?: string): SWRResponse<IPageHasId[], Error> => {
-  // const { data: currentUser } = useCurrentUser();
-  // const user = currentUser as IUserHasId;
   return useSWRImmutable(
     userId != null ? `/bookmarks/${userId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
