@@ -347,7 +347,7 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
+    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhitelist');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
       return whitelist.some((allowedEmail) => {

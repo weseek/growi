@@ -96,6 +96,7 @@ RUN tar -cf packages.tar \
   apps/app/tmp \
   apps/app/.env.production* \
   apps/app/next.config.js \
+  apps/app/package.json \
   packages/*/package.json \
   packages/*/dist
 

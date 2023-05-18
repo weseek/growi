@@ -25,7 +25,7 @@ type LoginFormProps = {
   email?: string,
   isEmailAuthenticationEnabled: boolean,
   registrationMode: RegistrationMode,
-  registrationWhiteList: string[],
+  registrationWhitelist: string[],
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
@@ -41,7 +41,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
   const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
@@ -439,11 +439,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             />
           </div>
 
-          {registrationWhiteList.length > 0 && (
+          {registrationWhitelist.length > 0 && (
             <>
               <p className="form-text">{t('page_register.form_help.email')}</p>
               <ul>
-                {registrationWhiteList.map((elem) => {
+                {registrationWhitelist.map((elem) => {
                   return (
                     <li key={elem}>
                       <code>{elem}</code>
@@ -503,7 +503,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
-    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhiteList, switchForm, handleRegisterFormSubmit,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit,
   ]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {

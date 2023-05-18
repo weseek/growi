@@ -10,7 +10,7 @@ import {
 } from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
-import mongoose, { ObjectId, QueryCursor } from 'mongoose';
+import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -60,7 +60,7 @@ class PageCursorsForDescendantsFactory {
 
   private shouldIncludeEmpty: boolean;
 
-  private initialCursor: QueryCursor<any> | never[]; // TODO: wait for mongoose update
+  private initialCursor: Cursor<any> | never[]; // TODO: wait for mongoose update
 
   private Page: PageModel;
 
@@ -100,7 +100,7 @@ class PageCursorsForDescendantsFactory {
   /**
    * Generator that unorderedly yields descendant pages
    */
-  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
+  private async* generateOnlyDescendants(cursor: Cursor<any>) {
     for await (const page of cursor) {
       const nextCursor = await this.generateCursorToFindChildren(page);
       if (!this.isNeverArray(nextCursor)) {
@@ -111,7 +111,7 @@ class PageCursorsForDescendantsFactory {
     }
   }
 
-  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any> | never[]> {
+  private async generateCursorToFindChildren(page: any): Promise<Cursor<any> | never[]> {
     if (page == null) {
       return [];
     }
@@ -121,12 +121,12 @@ class PageCursorsForDescendantsFactory {
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
 
-    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
 
     return cursor;
   }
 
-  private isNeverArray(val: QueryCursor<any> | never[]): val is never[] {
+  private isNeverArray(val: Cursor<any> | never[]): val is never[] {
     return 'length' in val && val.length === 0;
   }
 
@@ -3206,7 +3206,7 @@ class PageService {
   /**
    * Recount descendantCount of pages one by one
    */
-  async recountAndUpdateDescendantCountOfPages(pageCursor: QueryCursor<any>, batchSize:number): Promise<void> {
+  async recountAndUpdateDescendantCountOfPages(pageCursor: Cursor<any>, batchSize:number): Promise<void> {
     const Page = this.crowi.model('Page');
     const recountWriteStream = new Writable({
       objectMode: true,

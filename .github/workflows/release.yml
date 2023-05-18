@@ -24,13 +24,14 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions
       run: |
@@ -68,7 +69,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete drafts
-      uses: hugo19941994/delete-draft-releases@v1.0.0
+      uses: hugo19941994/delete-draft-releases@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,13 +86,14 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        yarn global add turbo
+        yarn --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |
