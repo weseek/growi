@@ -19,7 +19,7 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
   );
 };
 
-export const useSWRxCurrentUserBookmarks = (userId?: string): SWRResponse<IPageHasId[], Error> => {
+export const useSWRxUserBookmarks = (userId?: string): SWRResponse<IPageHasId[], Error> => {
   return useSWRImmutable(
     userId != null ? `/bookmarks/${userId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {

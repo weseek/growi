@@ -6,7 +6,7 @@ import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 
 import { addBookmarkToFolder, toggleBookmark } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
-import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
@@ -21,7 +21,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
-  const { mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
 
   const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
