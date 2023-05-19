@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxCurrentUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
+import { useSWRxUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
@@ -23,16 +23,25 @@ import styles from './BookmarkFolderTree.module.scss';
 //   parentFolder: BookmarkFolderItems | null
 //  } & IPageHasId
 
-export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUserHomePage }) => {
+type Props = {
+  isUserHomePage?: boolean,
+  userId?: string,
+}
+
+export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
+  const { isUserHomePage, userId } = props;
+
   // const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
 
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
-  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
-  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
+  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId);
   const { open: openDeleteModal } = usePageDeleteModal();
+
+  console.log('bookmarkFolders', bookmarkFolders, userId);
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
