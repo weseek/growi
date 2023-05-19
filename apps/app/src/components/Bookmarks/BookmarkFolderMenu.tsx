@@ -88,9 +88,6 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     setSelectedItem(itemId);
 
     try {
-      if (isBookmarked) {
-        await toggleBookmarkHandler();
-      }
       if (currentPage != null) {
         await addBookmarkToFolder(currentPage._id, itemId === 'root' ? null : itemId);
       }
@@ -101,7 +98,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders, isBookmarked, currentPage, mutateBookmarkInfo, mutateUserBookmarks, toggleBookmarkHandler]);
+  }, [mutateBookmarkFolders, currentPage, mutateBookmarkInfo, mutateUserBookmarks]);
 
   const renderBookmarkMenuItem = () => {
     return (
