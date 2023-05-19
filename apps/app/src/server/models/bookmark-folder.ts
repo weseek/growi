@@ -99,8 +99,8 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
         model: 'Page',
         populate: {
           path: 'lastUpdateUser',
-          model: 'User'
-        }
+          model: 'User',
+        },
       },
     });
 
