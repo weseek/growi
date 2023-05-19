@@ -215,7 +215,7 @@ bookmarkFolderSchema.statics.updateBookmark = async function(pageId: Types.Objec
 Promise<BookmarkFolderDocument | null> {
   // If isBookmarked
   if (status) {
-    const bookmarkedPage = await Bookmark.findOne({ page: pageId });
+    const bookmarkedPage = await Bookmark.findOne({ page: pageId, userId });
     const bookmarkFolder = await this.findOne({ owner: userId, bookmarks: { $in: [bookmarkedPage?._id] } });
     if (bookmarkFolder != null) {
       await this.updateOne({ owner: userId, _id: bookmarkFolder._id }, { $pull: { bookmarks:  bookmarkedPage?._id } });
