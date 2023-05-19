@@ -8,6 +8,7 @@ import { addBookmarkToFolder, toggleBookmark } from '~/client/util/bookmark-util
 import { toastError } from '~/client/util/toastr';
 import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
+import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
@@ -18,10 +19,12 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
+  const { data: currentUser } = useCurrentUser();
+  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
-  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks();
+
+  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
   const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
 
   const isBookmarked = bookmarkInfo?.isBookmarked ?? false;

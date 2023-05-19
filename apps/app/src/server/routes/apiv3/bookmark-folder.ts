@@ -60,10 +60,12 @@ module.exports = (crowi) => {
   });
 
   // List bookmark folders and child
-  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/list/:userId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { userId } = req.params;
+    console.log('userId', userId);
 
     try {
-      const bookmarkFolderItems = await BookmarkFolder.findFolderAndChildren(req.user?._id);
+      const bookmarkFolderItems = await BookmarkFolder.findFolderAndChildren(userId);
 
       return res.apiv3({ bookmarkFolderItems });
     }
