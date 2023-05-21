@@ -2,12 +2,17 @@ import React from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
 
 const { convertToNewAffiliationPath } = pagePathUtils;
 
-function DuplicatedPathsTable(props) {
+type DuplicatedPathsTableProps = {
+  existingPaths: string[],
+  fromPath: string,
+  toPath: string
+}
+
+const DuplicatedPathsTable: React.FC<DuplicatedPathsTableProps> = (props: DuplicatedPathsTableProps) => {
   const { t } = useTranslation();
 
   const {
@@ -41,13 +46,6 @@ function DuplicatedPathsTable(props) {
       </tbody>
     </table>
   );
-}
-
-
-DuplicatedPathsTable.propTypes = {
-  existingPaths: PropTypes.array.isRequired,
-  fromPath: PropTypes.string.isRequired,
-  toPath: PropTypes.string.isRequired,
 };
 
 

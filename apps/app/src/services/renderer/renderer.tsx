@@ -57,8 +57,8 @@ let isInjectedCustomSanitaizeOption = false;
 
 export const injectCustomSanitizeOption = (config: RendererConfig): void => {
   if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhiteList ?? []);
-    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
+    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhitelist ?? []);
+    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhitelist ?? {});
     isInjectedCustomSanitaizeOption = true;
   }
 };
