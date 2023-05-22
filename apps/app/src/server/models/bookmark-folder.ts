@@ -188,20 +188,13 @@ Promise<BookmarkFolderDocument | null> {
     return null;
   }
 
-  // Verify if the operator and the owner of the bookmark folder match
-  const bookmarkFolder = await this.findOne({ _id: folderId, owner: userId });
-  const isOwner = bookmarkFolder?.owner.toString() === userId.toString();
-  if (!isOwner) {
-    throw new Error('You are not the owner of the BookmarkFolder');
-  }
+  const bookmarkFolder = await this.findByIdAndUpdate(
+    { _id: folderId, owner: userId },
+    { $addToSet: { bookmarks: bookmarkedPage } },
+    { new: true, upsert: true },
+  );
 
-  // Insert bookmark into bookmark folder
-  if (bookmarkFolder != null) {
-    const updatedBookmarkFolder = await bookmarkFolder.update({ $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
-    return updatedBookmarkFolder;
-  }
-
-  return null;
+  return bookmarkFolder;
 };
 
 bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function(userId: Types.ObjectId | string): Promise<MyBookmarkList> {
