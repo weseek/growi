@@ -199,22 +199,6 @@ Promise<BookmarkFolderDocument | null> {
   return null;
 };
 
-bookmarkFolderSchema.statics.findUserRootBookmarksItem = async function(userId: Types.ObjectId | string): Promise<MyBookmarkList> {
-  const bookmarkIdsInFolders = await this.distinct('bookmarks', { owner: userId });
-  const userRootBookmarks: MyBookmarkList = await Bookmark.find({
-    _id: { $nin: bookmarkIdsInFolders },
-    user: userId,
-  }).populate({
-    path: 'page',
-    model: 'Page',
-    populate: {
-      path: 'lastUpdateUser',
-      model: 'User',
-    },
-  });
-  return userRootBookmarks;
-};
-
 bookmarkFolderSchema.statics.updateBookmark = async function(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId | string):
 Promise<BookmarkFolderDocument | null> {
   // If isBookmarked
