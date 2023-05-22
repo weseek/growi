@@ -265,7 +265,7 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = async function() {
+  userSchema.methods.revokeFromAdmin = async function() {
     logger.debug('Remove from admin', this);
     this.admin = 0;
     return this.save();
