@@ -138,17 +138,26 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null):
 Promise<BookmarkFolderDocument | null> {
-
-  // Create bookmark or update existing
-  const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: pageId, user: userId }, { page: pageId, user: userId }, { new: true, upsert: true });
+  // Find bookmark
+  const bookmarkedPage = await Bookmark.findOne({ page: pageId, user: userId }, { new: true, upsert: true });
 
   // Remove existing bookmark in bookmark folder
-  await this.updateMany({}, { $pull: { bookmarks:  bookmarkedPage._id } });
+  await this.updateMany({ owner: userId }, { $pull: { bookmarks:  bookmarkedPage?._id } });
+  if (folderId == null) {
+    return null;
+  }
+
+  // Verify if the operator and the owner of the bookmark folder match
+  const bookmarkFolder = await this.findOne({ _id: folderId, owner: userId });
+  const isOwner = bookmarkFolder?.owner.toString() === userId.toString();
+  if (!isOwner) {
+    throw new Error('You are not the owner of the BookmarkFolder');
+  }
 
   // Insert bookmark into bookmark folder
-  if (folderId != null) {
-    const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
-    return bookmarkFolder;
+  if (bookmarkFolder != null) {
+    const updatedBookmarkFolder = await bookmarkFolder.update({ $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
+    return updatedBookmarkFolder;
   }
 
   return null;
