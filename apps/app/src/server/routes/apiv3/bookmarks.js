@@ -1,5 +1,6 @@
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { serializePageSecurely } from '~/server/models/serializers/page-serializer';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -201,8 +202,23 @@ module.exports = (crowi) => {
       return res.apiv3Err('User id is not found or forbidden', 400);
     }
     try {
-      const userRootBookmarks = await BookmarkFolder.findUserRootBookmarksItem(userId);
+      const bookmarkIdsInFolders = await BookmarkFolder.distinct('bookmarks', { owner: userId });
+      const userRootBookmarks = await Bookmark.find({
+        _id: { $nin: bookmarkIdsInFolders },
+        user: userId,
+      }).populate({
+        path: 'page',
+        model: 'Page',
+        populate: {
+          path: 'lastUpdateUser',
+          model: 'User',
+        },
+      });
+
       userRootBookmarks.forEach((bookmark) => {
+        if (bookmark.page != null && bookmark.page instanceof Page) {
+          bookmark.page = serializePageSecurely(bookmark.page);
+        }
         if (bookmark.page.lastUpdateUser != null && bookmark.page.lastUpdateUser instanceof User) {
           bookmark.page.lastUpdateUser = serializeUserSecurely(bookmark.page.lastUpdateUser);
         }
