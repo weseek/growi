@@ -122,61 +122,6 @@ module.exports = (crowi) => {
       return returnValue;
     };
 
-    const getBookmarkFolders = async(
-        userId: Types.ObjectId | string,
-        parentFolderId?: Types.ObjectId | string,
-    ) => {
-      const Page = crowi.model('Page');
-      const User = crowi.model('User');
-
-      const folders = await BookmarkFolder.find({ owner: userId, parent: parentFolderId })
-        .populate('children')
-        .populate({
-          path: 'bookmarks',
-          model: 'Bookmark',
-          populate: {
-            path: 'page',
-            model: 'Page',
-            populate: {
-              path: 'lastUpdateUser',
-              model: 'User',
-            },
-          },
-        });
-
-      const returnValue: BookmarkFolderItems[] = [];
-
-      // serialize page and user
-      folders.forEach((folder: BookmarkFolderItems) => {
-        folder.bookmarks.forEach((bookmark: BookmarkedPage) => {
-          if (bookmark.page != null && bookmark.page instanceof Page) {
-            bookmark.page = serializePageSecurely(bookmark.page);
-          }
-          if (bookmark.page.lastUpdateUser != null && bookmark.page.lastUpdateUser instanceof User) {
-            bookmark.page.lastUpdateUser = serializeUserSecurely(bookmark.page.lastUpdateUser);
-          }
-        });
-      });
-
-      const promises = folders.map(async(folder: BookmarkFolderItems) => {
-        const children = await getBookmarkFolders(userId, folder._id);
-
-        const res = {
-          _id: folder._id.toString(),
-          name: folder.name,
-          owner: folder.owner,
-          bookmarks: folder.bookmarks,
-          children,
-          parent: folder.parent,
-        };
-        return res;
-      });
-
-      const results = await Promise.all(promises) as unknown as BookmarkFolderItems[];
-      returnValue.push(...results);
-      return returnValue;
-    };
-
     try {
       const bookmarkFolderItems = await getBookmarkFolders(userId, undefined);
 
