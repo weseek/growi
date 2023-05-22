@@ -39,7 +39,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
         </h2>
         {/* TODO: In bookmark folders v1, the button to create a new folder does not exist. The button should be included in the bookmark component. */}
         <div className={`${isExpanded ? `${styles['grw-bookarks-contents-expanded']}` : `${styles['grw-bookarks-contents-compressed']}`}`}>
-          <BookmarkFolderTree isUserHomePage={true} />
+          <BookmarkFolderTree isUserHomePage={true} userId={creatorId} />
         </div>
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
