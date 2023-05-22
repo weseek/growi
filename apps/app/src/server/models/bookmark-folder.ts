@@ -147,6 +147,7 @@ Promise<BookmarkFolderDocument | null> {
     return null;
   }
 
+  // Insert bookmark into bookmark folder
   const bookmarkFolder = await this.findByIdAndUpdate(
     { _id: folderId, owner: userId },
     { $addToSet: { bookmarks: bookmarkedPage } },
