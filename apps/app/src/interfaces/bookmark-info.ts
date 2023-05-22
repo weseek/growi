@@ -25,7 +25,7 @@ export interface IBookmarkFolder {
 }
 
 export interface BookmarkFolderItems extends IBookmarkFolder {
-  _id: any;
+  _id: string;
   children: BookmarkFolderItems[];
   bookmarks: BookmarkedPage[];
 }
