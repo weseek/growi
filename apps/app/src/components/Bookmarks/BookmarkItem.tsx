@@ -6,7 +6,7 @@ import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
-import { unbookmark } from '~/client/services/page-operation';
+import { unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError } from '~/client/util/toastr';
@@ -20,6 +20,8 @@ import { PageListItemS } from '../PageList/PageListItemS';
 
 import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
+import { OnPutBackedFunction } from '~/interfaces/ui';
+import { usePutBackPageModal } from '~/stores/modal';
 
 type Props = {
   isReadOnlyUser: boolean
@@ -28,7 +30,8 @@ type Props = {
   parentFolder: BookmarkFolderItems | null,
   canMoveToRoot: boolean,
   onClickDeleteBookmarkHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
-  bookmarkFolderTreeMutation: () => void
+  bookmarkFolderTreeMutation: () => void,
+  onPagePutBacked?: OnPutBackedFunction
 }
 
 export const BookmarkItem = (props: Props): JSX.Element => {
@@ -39,9 +42,9 @@ export const BookmarkItem = (props: Props): JSX.Element => {
 
   const {
     isReadOnlyUser, bookmarkedPage, onClickDeleteBookmarkHandler,
-    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
+    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation, onPagePutBacked
   } = props;
-
+  const { open: openPutBackPageModal } = usePutBackPageModal();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
@@ -109,6 +112,24 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteBookmarkHandler(pageToDelete);
   }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteBookmarkHandler]);
 
+  const revertMenuItemClickHandler = useCallback(async() => {
+    const { _id: pageId, path } = bookmarkedPage;
+
+    const putBackedHandler = async(path) => {
+      try {
+        await unlink(bookmarkedPage.path);
+      }
+      catch (err) {
+        toastError(err);
+      }
+
+      if (onPagePutBacked != null) {
+        onPagePutBacked(path);
+      }
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
+  }, [onPagePutBacked, openPutBackPageModal, bookmarkedPage]);
+
   return (
     <DragAndDropWrapper
       item={dragItem}
@@ -140,6 +161,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            onClickRevertMenuItem={revertMenuItemClickHandler}
             additionalMenuItemOnTopRenderer={canMoveToRoot
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
               : undefined}
