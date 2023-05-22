@@ -52,7 +52,7 @@ const useSWRINFxPageTimeline = (path: string | undefined, limit: number) : SWRIn
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
-      if (path == undefined) return null;
+      if (path === undefined) return null;
 
       return ['/pages/list', path, pageIndex + 1, limit];
     },
