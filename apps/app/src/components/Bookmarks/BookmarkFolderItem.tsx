@@ -64,7 +64,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   // Rename for bookmark folder handler
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
-      await updateBookmarkFolder(folderId, folderName, parent);
+      // TODO: do not use any type
+      await updateBookmarkFolder(folderId, folderName, parent as any);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
