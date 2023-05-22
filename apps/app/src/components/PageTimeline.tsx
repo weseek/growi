@@ -48,7 +48,7 @@ type PageTimelineResult = {
   totalCount: number,
   offset: number,
 }
-const useSWRINFxPageTimeline = (path: string | null, limit: number) : SWRInfiniteResponse<PageTimelineResult, Error> => {
+const useSWRINFxPageTimeline = (path: string | undefined, limit: number) : SWRInfiniteResponse<PageTimelineResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
