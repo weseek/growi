@@ -66,6 +66,7 @@ module.exports = (crowi) => {
 
   // List bookmark folders and child
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { userId } = req.params;
 
     const getBookmarkFolders = async(
         userId: Types.ObjectId | string,
