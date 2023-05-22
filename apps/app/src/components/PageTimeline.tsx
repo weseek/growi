@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -11,7 +11,6 @@ import { useTimelineOptions } from '~/stores/renderer';
 
 import InfiniteScroll from './InfiniteScroll';
 import { RevisionLoader } from './Page/RevisionLoader';
-import PaginationWrapper from './PaginationWrapper';
 
 import styles from './PageTimeline.module.scss';
 
@@ -67,7 +66,7 @@ const useSWRINFxPageTimeline = (path: string, limit: number) : SWRInfiniteRespon
 
 export const PageTimeline = (): JSX.Element => {
 
-  const PER_PAGE = 5;
+  const PER_PAGE = 3;
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
   const swrInfinitexPageTimeline = useSWRINFxPageTimeline(currentPagePath, PER_PAGE);
