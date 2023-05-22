@@ -3,7 +3,7 @@ import monggoose, {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { IBookmarkFolder, BookmarkFolderItems, MyBookmarkList } from '~/interfaces/bookmark-info';
+import { IBookmarkFolder } from '~/interfaces/bookmark-info';
 import { IPageHasId } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
@@ -26,11 +26,9 @@ export interface BookmarkFolderDocument extends Document {
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): Promise<BookmarkFolderDocument>
-  findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): Promise<BookmarkFolderItems[]>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null): Promise<BookmarkFolderDocument | null>
-  findUserRootBookmarksItem(userId: Types.ObjectId| string): Promise<MyBookmarkList>
   updateBookmark(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId| string): Promise<BookmarkFolderDocument | null>
 }
 
@@ -81,49 +79,6 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
   }
 
   return bookmarkFolder;
-};
-
-bookmarkFolderSchema.statics.findFolderAndChildren = async function(
-    userId: Types.ObjectId | string,
-    parentId?: Types.ObjectId | string,
-): Promise<BookmarkFolderItems[]> {
-  const folderItems: BookmarkFolderItems[] = [];
-
-  const folders = await this.find({ owner: userId, parent: parentId })
-    .populate('children')
-    .populate({
-      path: 'bookmarks',
-      model: 'Bookmark',
-      populate: {
-        path: 'page',
-        model: 'Page',
-        populate: {
-          path: 'lastUpdateUser',
-          model: 'User',
-        },
-      },
-    });
-
-  const promises = folders.map(async(folder) => {
-    const children = await this.findFolderAndChildren(userId, folder._id);
-    const {
-      _id, name, owner, bookmarks, parent,
-    } = folder;
-
-    const res = {
-      _id: _id.toString(),
-      name,
-      owner,
-      bookmarks,
-      children,
-      parent,
-    };
-    return res;
-  });
-
-  const results = await Promise.all(promises) as unknown as BookmarkFolderItems[];
-  folderItems.push(...results);
-  return folderItems;
 };
 
 bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}> {
