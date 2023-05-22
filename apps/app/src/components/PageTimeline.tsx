@@ -52,6 +52,7 @@ const useSWRINFxPageTimeline = (path: string, limit: number) : SWRInfiniteRespon
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
+      if (path == null) return null;
 
       return ['/pages/list', path, pageIndex + 1, limit];
     },
@@ -69,6 +70,7 @@ export const PageTimeline = (): JSX.Element => {
   const PER_PAGE = 3;
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
+
   const swrInfinitexPageTimeline = useSWRINFxPageTimeline(currentPagePath, PER_PAGE);
   const { data } = swrInfinitexPageTimeline;
 
