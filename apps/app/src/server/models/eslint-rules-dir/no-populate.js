@@ -14,14 +14,12 @@ module.exports = {
    */
   create: (context) => {
     return {
-      Literal(node) {
-        if (node.value === 'hello') {
-          context.report({ node, message: '"hello" is not allowed' });
-        }
-      },
-      TemplateElement(node) {
-        if (node.value.cooked === 'hello') {
-          context.report({ node, message: '"hello" is not allowed' });
+      CallExpression(node) {
+        if (node.callee.property && node.callee.property.name === 'populate') {
+          context.report({
+            node,
+            message: "The 'populate' method should not be called in model modules.",
+          });
         }
       },
     };

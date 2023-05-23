@@ -7,6 +7,6 @@ module.exports = {
     'rulesdir',
   ],
   rules: {
-    'rulesdir/no-hello': 'error',
+    'rulesdir/no-populate': 'warn',
   },
 };
