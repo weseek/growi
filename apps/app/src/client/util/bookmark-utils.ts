@@ -41,6 +41,8 @@ export const toggleBookmark = async(pageId: string, status: boolean): Promise<vo
 };
 
 // Update Bookmark folder
-export const updateBookmarkFolder = async(bookmarkFolderId: string, name: string, parent: string | null): Promise<void> => {
-  await apiv3Put('/bookmark-folder', { bookmarkFolderId, name, parent });
+export const updateBookmarkFolder = async(bookmarkFolderId: string, name: string, parent: string | null, children: BookmarkFolderItems[]): Promise<void> => {
+  await apiv3Put('/bookmark-folder', {
+    bookmarkFolderId, name, parent, children,
+  });
 };

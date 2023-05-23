@@ -89,7 +89,9 @@ module.exports = (crowi) => {
 
       const promises = folders.map(async(folder: BookmarkFolderItems) => {
         const children = await getBookmarkFolders(userId, folder._id);
-        // serialize Bookmark
+
+        // !! DO NOT THIS SERIALIZING OUTSIDE OF PROMISES !! -- 05.23.2023 ryoji-s
+        // Serializing outside of promises will cause not populated.
         const bookmarks = folder.bookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
         const res = {
@@ -134,9 +136,11 @@ module.exports = (crowi) => {
   });
 
   router.put('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
-    const { bookmarkFolderId, name, parent } = req.body;
+    const {
+      bookmarkFolderId, name, parent, children,
+    } = req.body;
     try {
-      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent);
+      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent, children);
       return res.apiv3({ bookmarkFolder });
     }
     catch (err) {

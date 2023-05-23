@@ -66,14 +66,14 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
       // TODO: do not use any type
-      await updateBookmarkFolder(folderId, folderName, parent as any);
+      await updateBookmarkFolder(folderId, folderName, parent as any, children);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, folderId, parent]);
+  }, [bookmarkFolderTreeMutation, children, folderId, parent]);
 
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -100,7 +100,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
         if (item.bookmarkFolder != null) {
-          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id);
+          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id, item.bookmarkFolder.children);
           bookmarkFolderTreeMutation();
         }
       }
@@ -201,13 +201,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const onClickMoveToRootHandlerForBookmarkFolderItemControl = useCallback(async() => {
     try {
-      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null);
+      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.children);
       bookmarkFolderTreeMutation();
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolder._id, bookmarkFolder.name, bookmarkFolderTreeMutation]);
+  }, [bookmarkFolder._id, bookmarkFolder.children, bookmarkFolder.name, bookmarkFolderTreeMutation]);
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
