@@ -26,6 +26,7 @@ import styles from './BookmarkFolderTree.module.scss';
 type Props = {
   isUserHomePage?: boolean,
   userId?: string,
+  isOperable: boolean,
 }
 
 export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
@@ -100,6 +101,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
             <BookmarkFolderItem
               key={bookmarkFolder._id}
               isReadOnlyUser={!!isReadOnlyUser}
+              isOperable={props.isOperable}
               bookmarkFolder={bookmarkFolder}
               isOpen={false}
               level={0}
@@ -115,6 +117,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
             <BookmarkItem
               key={userBookmark._id}
               isReadOnlyUser={!!isReadOnlyUser}
+              isOperable={props.isOperable}
               bookmarkedPage={userBookmark}
               level={0}
               parentFolder={null}
