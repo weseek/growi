@@ -26,6 +26,7 @@ import styles from './BookmarkFolderTree.module.scss';
 type Props = {
   isUserHomePage?: boolean,
   userId?: string,
+  isOperable: boolean,
 }
 
 export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
@@ -40,8 +41,6 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId);
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  console.log('bookmarkFolders', bookmarkFolders, userId);
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
@@ -102,6 +101,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
             <BookmarkFolderItem
               key={bookmarkFolder._id}
               isReadOnlyUser={!!isReadOnlyUser}
+              isOperable={props.isOperable}
               bookmarkFolder={bookmarkFolder}
               isOpen={false}
               level={0}
@@ -117,6 +117,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
             <BookmarkItem
               key={userBookmark._id}
               isReadOnlyUser={!!isReadOnlyUser}
+              isOperable={props.isOperable}
               bookmarkedPage={userBookmark}
               level={0}
               parentFolder={null}
