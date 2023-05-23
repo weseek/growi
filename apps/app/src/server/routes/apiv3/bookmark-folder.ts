@@ -2,10 +2,10 @@ import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
 import { Types } from 'mongoose';
 
-import { BookmarkFolderItems, BookmarkedPage } from '~/interfaces/bookmark-info';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';
-import { serializePageSecurely } from '~/server/models/serializers/page-serializer';
+import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
 import loggerFactory from '~/utils/logger';
 
 import BookmarkFolder from '../../models/bookmark-folder';
@@ -70,8 +70,6 @@ module.exports = (crowi) => {
         userId: Types.ObjectId | string,
         parentFolderId?: Types.ObjectId | string,
     ) => {
-      const Page = crowi.model('Page');
-
       const folders = await BookmarkFolder.find({ owner: userId, parent: parentFolderId })
         .populate('children')
         .populate({
@@ -85,34 +83,20 @@ module.exports = (crowi) => {
               model: 'User',
             },
           },
-        });
+        }).exec();
 
       const returnValue: BookmarkFolderItems[] = [];
 
-      // serialize page
-      folders.map((folder: BookmarkFolderItems) => {
-        return {
-          ...folder,
-          bookmarks: folder.bookmarks.map((bookmark: BookmarkedPage) => {
-            if (bookmark.page != null && bookmark.page instanceof Page) {
-              return {
-                ...bookmark,
-                page: serializePageSecurely(bookmark.page),
-              };
-            }
-            return bookmark;
-          }),
-        };
-      });
-
       const promises = folders.map(async(folder: BookmarkFolderItems) => {
         const children = await getBookmarkFolders(userId, folder._id);
+        // serialize Bookmark
+        const bookmarks = folder.bookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
         const res = {
           _id: folder._id.toString(),
           name: folder.name,
           owner: folder.owner,
-          bookmarks: folder.bookmarks,
+          bookmarks,
           children,
           parent: folder.parent,
         };
