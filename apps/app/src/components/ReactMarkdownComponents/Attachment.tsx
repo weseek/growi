@@ -1,18 +1,29 @@
 import React, { useCallback } from 'react';
 
+import { LocaleStringLang } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { useTranslation } from 'next-i18next';
 import prettyBytes from 'pretty-bytes';
 
 import { useSWRxAttachment } from '~/stores/attachment';
 import { useDeleteAttachmentModal } from '~/stores/modal';
+
+import styles from './Attachment.module.scss';
+
+const getLocaleStringLocale = (language: string) => {
+  const mappedLocale = LocaleStringLang[language];
+  return mappedLocale || 'en-US';
+};
 
 export const Attachment: React.FC<{
   attachmentId: string,
   url: string,
   attachmentName: string
 }> = React.memo(({ attachmentId, url, attachmentName }) => {
+  const { i18n } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
+
   const onClickTrashButtonHandler = useCallback(() => {
     if (attachment == null) {
       return;
@@ -21,40 +32,43 @@ export const Attachment: React.FC<{
   }, [attachment, openDeleteAttachmentModal, remove]);
 
   if (attachment == null) {
-    return (
-      <span className='text-muted'>This attachment not found.</span>
-    );
+    return <span className='text-muted'>The attachment could not be found.</span>;
   }
 
-  // TODO: locale support
-  // TODO: User Picture Tooltip
-  // TODO: Ensure that the card style does not collapse when d-inline-blocked
+  const {
+    filePathProxied,
+    originalName,
+    downloadPathProxied,
+    creator,
+    createdAt,
+    fileSize,
+  } = attachment;
 
   return (
-    <div className="card my-3">
-      <div className="card-body py-1">
-        <div className='row'>
-          <div className='col-1 px-0 d-flex align-items-center justify-content-center'>
-            <img src='/images/icons/editor/attachment.svg'/>
+    <div className={`${styles.attachment} d-inline-block`}>
+      <div className="my-2 p-2 card">
+        <div className="p-1 card-body d-flex align-items-center">
+          <div className='mr-2 px-0 d-flex align-items-center justify-content-center'>
+            <img src='/images/icons/editor/attachment.svg' className="attachment-icon" alt='attachment icon'/>
           </div>
-          <div className='col-11 pl-0'>
-            <div>
-              <a target="_blank" rel="noopener noreferrer" href={attachment.filePathProxied}>{attachment.originalName}</a>
-              <span className='ml-2'>
-                <a className="attachment-download" href={attachment.downloadPathProxied}>
-                  <i className="icon-cloud-download" />
-                </a>
-              </span>
-              <span className='ml-2'>
-                <a className="text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                  <i className="icon-trash" />
-                </a>
-              </span>
+          <div className='pl-0'>
+            <div className='d-inline-block'>
+              <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
+                {attachmentName || originalName}
+              </a>
+              <a className="ml-2 attachment-download" href={downloadPathProxied}>
+                <i className="icon-cloud-download"/>
+              </a>
+              <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
+                <i className="icon-trash"/>
+              </a>
             </div>
-            <div>
-              <UserPicture user={attachment.creator} size="sm"></UserPicture>
-              <span className='ml-2 text-muted'>{new Date(attachment.createdAt).toLocaleString('ja-JP')}</span>
-              <span className='border-left ml-2 pl-2 text-muted'>{prettyBytes(attachment.fileSize)}</span>
+            <div className='d-flex align-items-center'>
+              <UserPicture user={creator} size="sm"/>
+              <span className='ml-2 text-muted'>
+                {new Date(createdAt).toLocaleString(getLocaleStringLocale(i18n.language))}
+              </span>
+              <span className='ml-2 pl-2 border-left text-muted'>{prettyBytes(fileSize)}</span>
             </div>
           </div>
         </div>
