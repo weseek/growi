@@ -56,7 +56,7 @@ export const BookmarkContents = (): JSX.Element => {
           />
         </div>
       )}
-      <BookmarkFolderTree userId={currentUser?._id} />
+      <BookmarkFolderTree isOperable userId={currentUser?._id} />
     </>
   );
 };
