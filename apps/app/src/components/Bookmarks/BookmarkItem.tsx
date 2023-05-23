@@ -132,27 +132,25 @@ export const BookmarkItem = (props: Props): JSX.Element => {
           />
         ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle}/>}
 
-        { isOperable && (
-          <div className='grw-foldertree-control'>
-            <PageItemControl
-              pageId={bookmarkedPage._id}
-              isEnableActions
-              isReadOnlyUser={isReadOnlyUser}
-              pageInfo={fetchedPageInfo}
-              forceHideMenuItems={[MenuItemType.DUPLICATE]}
-              onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-              onClickRenameMenuItem={renameMenuItemClickHandler}
-              onClickDeleteMenuItem={deleteMenuItemClickHandler}
-              additionalMenuItemOnTopRenderer={canMoveToRoot
-                ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
-                : undefined}
-            >
-              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                <i className="icon-options fa fa-rotate-90 p-1"></i>
-              </DropdownToggle>
-            </PageItemControl>
-          </div>
-        ) }
+        <div className='grw-foldertree-control'>
+          <PageItemControl
+            pageId={bookmarkedPage._id}
+            isEnableActions
+            isReadOnlyUser={isReadOnlyUser}
+            pageInfo={fetchedPageInfo}
+            forceHideMenuItems={[MenuItemType.DUPLICATE]}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            additionalMenuItemOnTopRenderer={canMoveToRoot
+              ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
+              : undefined}
+          >
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+              <i className="icon-options fa fa-rotate-90 p-1"></i>
+            </DropdownToggle>
+          </PageItemControl>
+        </div>
 
         <UncontrolledTooltip
           modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
