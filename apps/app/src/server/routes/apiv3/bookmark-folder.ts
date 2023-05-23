@@ -90,16 +90,19 @@ module.exports = (crowi) => {
       const returnValue: BookmarkFolderItems[] = [];
 
       // serialize page
-      folders.forEach((folder: BookmarkFolderItems) => {
-        folder.bookmarks.forEach((bookmark: BookmarkedPage) => {
-          if (bookmark.page != null && bookmark.page instanceof Page) {
-            const lastUpdateUser = bookmark.page.lastUpdateUser;
-
-            bookmark.page = serializePageSecurely(bookmark.page);
-
-            bookmark.page.lastUpdateUser = lastUpdateUser;
-          }
-        });
+      folders.map((folder: BookmarkFolderItems) => {
+        return {
+          ...folder,
+          bookmarks: folder.bookmarks.map((bookmark: BookmarkedPage) => {
+            if (bookmark.page != null && bookmark.page instanceof Page) {
+              return {
+                ...bookmark,
+                page: serializePageSecurely(bookmark.page),
+              };
+            }
+            return bookmark;
+          }),
+        };
       });
 
       const promises = folders.map(async(folder: BookmarkFolderItems) => {
