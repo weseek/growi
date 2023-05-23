@@ -215,14 +215,15 @@ module.exports = (crowi) => {
         },
       });
 
-      userRootBookmarks.forEach((bookmark) => {
+      // serialize page
+      userRootBookmarks.map((bookmark) => {
         if (bookmark.page != null && bookmark.page instanceof Page) {
-          const lastUpdateUser = bookmark.page.lastUpdateUser;
-
-          bookmark.page = serializePageSecurely(bookmark.page);
-
-          bookmark.page.lastUpdateUser = lastUpdateUser;
+          return {
+            ...bookmark,
+            page: serializePageSecurely(bookmark.page),
+          };
         }
+        return bookmark;
       });
 
       return res.apiv3({ userRootBookmarks });
