@@ -2,18 +2,16 @@ import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
 import { Types } from 'mongoose';
 
-import { BookmarkFolderItems, BookmarkedPage } from '~/interfaces/bookmark-info';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';
-import { serializePageSecurely } from '~/server/models/serializers/page-serializer';
+import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
 import loggerFactory from '~/utils/logger';
 
 import BookmarkFolder from '../../models/bookmark-folder';
 
 const logger = loggerFactory('growi:routes:apiv3:bookmark-folder');
 const express = require('express');
-
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -27,6 +25,8 @@ const validator = {
           throw new Error('Maximum folder hierarchy of 2 levels');
         }
       }),
+    body('children').optional().isArray().withMessage('Children must be an array'),
+    body('bookmarkFolderId').optional().isMongoId().withMessage('Bookark Folder ID must be a valid mongo ID'),
   ],
   bookmarkPage: [
     body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
@@ -72,9 +72,6 @@ module.exports = (crowi) => {
         userId: Types.ObjectId | string,
         parentFolderId?: Types.ObjectId | string,
     ) => {
-      const Page = crowi.model('Page');
-      const User = crowi.model('User');
-
       const folders = await BookmarkFolder.find({ owner: userId, parent: parentFolderId })
         .populate('children')
         .populate({
@@ -88,30 +85,22 @@ module.exports = (crowi) => {
               model: 'User',
             },
           },
-        });
+        }).exec();
 
       const returnValue: BookmarkFolderItems[] = [];
 
-      // serialize page and user
-      folders.forEach((folder: BookmarkFolderItems) => {
-        folder.bookmarks.forEach((bookmark: BookmarkedPage) => {
-          if (bookmark.page != null && bookmark.page instanceof Page) {
-            bookmark.page = serializePageSecurely(bookmark.page);
-          }
-          if (bookmark.page.lastUpdateUser != null && bookmark.page.lastUpdateUser instanceof User) {
-            bookmark.page.lastUpdateUser = serializeUserSecurely(bookmark.page.lastUpdateUser);
-          }
-        });
-      });
-
       const promises = folders.map(async(folder: BookmarkFolderItems) => {
         const children = await getBookmarkFolders(userId, folder._id);
+
+        // !! DO NOT THIS SERIALIZING OUTSIDE OF PROMISES !! -- 05.23.2023 ryoji-s
+        // Serializing outside of promises will cause not populated.
+        const bookmarks = folder.bookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
         const res = {
           _id: folder._id.toString(),
           name: folder.name,
           owner: folder.owner,
-          bookmarks: folder.bookmarks,
+          bookmarks,
           children,
           parent: folder.parent,
         };
@@ -149,9 +138,11 @@ module.exports = (crowi) => {
   });
 
   router.put('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
-    const { bookmarkFolderId, name, parent } = req.body;
+    const {
+      bookmarkFolderId, name, parent, children,
+    } = req.body;
     try {
-      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent);
+      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent, children);
       return res.apiv3({ bookmarkFolder });
     }
     catch (err) {

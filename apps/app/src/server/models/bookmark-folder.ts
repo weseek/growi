@@ -3,7 +3,7 @@ import monggoose, {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { IBookmarkFolder } from '~/interfaces/bookmark-info';
+import { BookmarkFolderItems, IBookmarkFolder } from '~/interfaces/bookmark-info';
 import { IPageHasId } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
@@ -27,7 +27,7 @@ export interface BookmarkFolderDocument extends Document {
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): Promise<BookmarkFolderDocument>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
-  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null): Promise<BookmarkFolderDocument>
+  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null, children: BookmarkFolderItems[]): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null): Promise<BookmarkFolderDocument | null>
   updateBookmark(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId| string): Promise<BookmarkFolderDocument | null>
 }
@@ -104,7 +104,12 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFo
   return { deletedCount };
 };
 
-bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parentId: string | null):
+bookmarkFolderSchema.statics.updateBookmarkFolder = async function(
+    bookmarkFolderId: string,
+    name: string,
+    parentId: string | null,
+    children: BookmarkFolderItems[],
+):
  Promise<BookmarkFolderDocument> {
   const updateFields: {name: string, parent: Types.ObjectId | null} = {
     name: '',
@@ -122,8 +127,7 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
     if (parentFolder?.parent != null) {
       throw new Error('Update bookmark folder failed');
     }
-    const bookmarkFolder = await this.findById(bookmarkFolderId);
-    if (bookmarkFolder?.children?.length !== 0) {
+    if (children.length !== 0) {
       throw new Error('Update bookmark folder failed');
     }
   }
