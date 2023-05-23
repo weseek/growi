@@ -25,7 +25,7 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData,
+  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
 } from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
@@ -231,6 +231,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
+  const {mutate: mutatePageInfo} = useSWRxPageInfo(pageId)
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
@@ -317,9 +318,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       else if (currentPathname != null) {
         router.push(currentPathname);
       }
+      mutatePageInfo()
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, openDeleteModal, router]);
+  }, [currentPathname, openDeleteModal, router, mutatePageInfo]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {

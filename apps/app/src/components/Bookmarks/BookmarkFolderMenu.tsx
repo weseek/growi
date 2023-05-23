@@ -135,7 +135,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
               </div>
             </div>
             {bookmarkFolders?.map(folder => (
-              <>
+               <React.Fragment key={`bookmark-folders-${folder._id}`}>
                 <div key={folder._id}>
                   <div
                     className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
@@ -169,7 +169,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                     </div>
                   ))}
                 </>
-              </>
+              </React.Fragment>
             ))}
           </>
         )}

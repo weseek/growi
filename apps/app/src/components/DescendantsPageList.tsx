@@ -11,6 +11,7 @@ import {
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import {
+  useCurrentUser,
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
 } from '~/stores/context';
 import {
@@ -21,6 +22,7 @@ import {
 import { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
+import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 
 
 type SubstanceProps = {
@@ -46,7 +48,8 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-
+  const { data: currentUser } = useCurrentUser();
+  const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
@@ -81,11 +84,11 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     toastSuccess(t('page_has_been_reverted', { path }));
 
     mutatePageTree();
-
+    mutateBookmarkFolders()
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [onPagePutBacked, t]);
+  }, [onPagePutBacked, t, mutateBookmarkFolders]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);

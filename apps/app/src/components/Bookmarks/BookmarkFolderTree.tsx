@@ -51,8 +51,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') return;
 
-      toastSuccess(isCompletely ? t('deleted_pages_completely', { pathOrPathsToDelete }) : t('deleted_pages', { pathOrPathsToDelete }));
-
+      toastSuccess(isCompletely ? t('deleted_pages_completely', { path: pathOrPathsToDelete }) : t('deleted_pages', { path: pathOrPathsToDelete }));
       bookmarkFolderTreeMutation();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
