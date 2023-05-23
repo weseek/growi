@@ -13,8 +13,6 @@ import BookmarkFolder from '../../models/bookmark-folder';
 const logger = loggerFactory('growi:routes:apiv3:bookmark-folder');
 const express = require('express');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-
 const router = express.Router();
 
 const validator = {
@@ -73,7 +71,6 @@ module.exports = (crowi) => {
         parentFolderId?: Types.ObjectId | string,
     ) => {
       const Page = crowi.model('Page');
-      const User = crowi.model('User');
 
       const folders = await BookmarkFolder.find({ owner: userId, parent: parentFolderId })
         .populate('children')
@@ -92,14 +89,15 @@ module.exports = (crowi) => {
 
       const returnValue: BookmarkFolderItems[] = [];
 
-      // serialize page and user
+      // serialize page
       folders.forEach((folder: BookmarkFolderItems) => {
         folder.bookmarks.forEach((bookmark: BookmarkedPage) => {
           if (bookmark.page != null && bookmark.page instanceof Page) {
+            const lastUpdateUser = bookmark.page.lastUpdateUser;
+
             bookmark.page = serializePageSecurely(bookmark.page);
-          }
-          if (bookmark.page.lastUpdateUser != null && bookmark.page.lastUpdateUser instanceof User) {
-            bookmark.page.lastUpdateUser = serializeUserSecurely(bookmark.page.lastUpdateUser);
+
+            bookmark.page.lastUpdateUser = lastUpdateUser;
           }
         });
       });
