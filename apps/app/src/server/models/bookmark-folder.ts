@@ -122,7 +122,7 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
     if (parentFolder?.parent != null) {
       throw new Error('Update bookmark folder failed');
     }
-    const bookmarkFolder = await this.findById(bookmarkFolderId);
+    const bookmarkFolder = await this.findById(bookmarkFolderId).populate('children');
     if (bookmarkFolder?.children?.length !== 0) {
       throw new Error('Update bookmark folder failed');
     }
