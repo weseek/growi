@@ -58,7 +58,11 @@ module.exports = (crowi) => {
     try {
       const attachmentId = req.query.attachmentId;
 
-      const attachment = await Attachment.findById(attachmentId);
+      const attachment = await Attachment.findById(attachmentId).populate('creator');
+
+      if (attachment.creator != null && attachment.creator instanceof User) {
+        attachment.creator = serializeUserSecurely(attachment.creator);
+      }
 
       return res.apiv3({ attachment });
     }
