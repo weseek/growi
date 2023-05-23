@@ -25,6 +25,8 @@ const validator = {
           throw new Error('Maximum folder hierarchy of 2 levels');
         }
       }),
+    body('children').optional().isArray().withMessage('Children must be an array'),
+    body('bookmarkFolderId').optional().isMongoId().withMessage('Bookark Folder ID must be a valid mongo ID'),
   ],
   bookmarkPage: [
     body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
