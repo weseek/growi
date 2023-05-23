@@ -23,6 +23,7 @@ import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 type Props = {
   isReadOnlyUser: boolean
+  isOperable: boolean,
   bookmarkedPage: IPageHasId,
   level: number,
   parentFolder: BookmarkFolderItems | null,
@@ -38,7 +39,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isReadOnlyUser, bookmarkedPage, onClickDeleteBookmarkHandler,
+    isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteBookmarkHandler,
     parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
 
@@ -113,7 +114,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     <DragAndDropWrapper
       item={dragItem}
       type={[DRAG_ITEM_TYPE.BOOKMARK]}
-      useDragMode={true}
+      useDragMode={isOperable}
     >
       <li
         className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
@@ -130,25 +131,29 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             validationTarget={ValidationTarget.PAGE}
           />
         ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle}/>}
-        <div className='grw-foldertree-control'>
-          <PageItemControl
-            pageId={bookmarkedPage._id}
-            isEnableActions
-            isReadOnlyUser={isReadOnlyUser}
-            pageInfo={fetchedPageInfo}
-            forceHideMenuItems={[MenuItemType.DUPLICATE]}
-            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-            onClickRenameMenuItem={renameMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            additionalMenuItemOnTopRenderer={canMoveToRoot
-              ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
-              : undefined}
-          >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
-          </PageItemControl>
-        </div>
+
+        { isOperable && (
+          <div className='grw-foldertree-control'>
+            <PageItemControl
+              pageId={bookmarkedPage._id}
+              isEnableActions
+              isReadOnlyUser={isReadOnlyUser}
+              pageInfo={fetchedPageInfo}
+              forceHideMenuItems={[MenuItemType.DUPLICATE]}
+              onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+              onClickRenameMenuItem={renameMenuItemClickHandler}
+              onClickDeleteMenuItem={deleteMenuItemClickHandler}
+              additionalMenuItemOnTopRenderer={canMoveToRoot
+                ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
+                : undefined}
+            >
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                <i className="icon-options fa fa-rotate-90 p-1"></i>
+              </DropdownToggle>
+            </PageItemControl>
+          </div>
+        ) }
+
         <UncontrolledTooltip
           modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
           autohide={false}
