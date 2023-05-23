@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
 import { test } from 'vitest';
 
-import noHello from './no-hello';
+import noHello from '../no-hello';
 
 const ruleTester = new RuleTester({
   parserOptions: {
