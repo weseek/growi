@@ -217,10 +217,11 @@ module.exports = (crowi) => {
 
       userRootBookmarks.forEach((bookmark) => {
         if (bookmark.page != null && bookmark.page instanceof Page) {
+          const lastUpdateUser = bookmark.page.lastUpdateUser;
+
           bookmark.page = serializePageSecurely(bookmark.page);
-        }
-        if (bookmark.page.lastUpdateUser != null && bookmark.page.lastUpdateUser instanceof User) {
-          bookmark.page.lastUpdateUser = serializeUserSecurely(bookmark.page.lastUpdateUser);
+
+          bookmark.page.lastUpdateUser = lastUpdateUser;
         }
       });
 
