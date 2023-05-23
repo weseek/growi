@@ -265,15 +265,15 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.revokeAdmin = async function() {
-    logger.debug('Revove admin', this);
-    this.admin = 0;
-    return this.save();
-  };
-
   userSchema.methods.grantAdmin = async function() {
     logger.debug('Grant Admin', this);
     this.admin = 1;
+    return this.save();
+  };
+
+  userSchema.methods.revokeAdmin = async function() {
+    logger.debug('Revove admin', this);
+    this.admin = 0;
     return this.save();
   };
 

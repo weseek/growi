@@ -529,7 +529,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
-      await userData.revokeFromAdmin();
+      await userData.revokeAdmin();
 
       const serializedUserData = serializeUserSecurely(userData);
 

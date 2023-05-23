@@ -752,7 +752,7 @@
       "deactivate_account": "停用帐户",
       "your_own": "您不能停用自己的帐户",
       "revoke_admin_access": "删除管理员访问权限",
-      "cannot_remove": "您不能从管理员中删除自己",
+      "cannot_revoke": "您不能从管理员中删除自己",
       "grant_admin_access": "授予管理员访问权限",
       "revoke_read_only_access": "取消只读访问",
       "grant_read_only_access": "给予只读权限",
