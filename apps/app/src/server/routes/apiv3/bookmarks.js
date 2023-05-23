@@ -1,6 +1,6 @@
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import { serializePageSecurely } from '~/server/models/serializers/page-serializer';
+import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -213,20 +213,12 @@ module.exports = (crowi) => {
           path: 'lastUpdateUser',
           model: 'User',
         },
-      });
+      }).exec();
 
-      // serialize page
-      userRootBookmarks.map((bookmark) => {
-        if (bookmark.page != null && bookmark.page instanceof Page) {
-          return {
-            ...bookmark,
-            page: serializePageSecurely(bookmark.page),
-          };
-        }
-        return bookmark;
-      });
+      // serialize Bookmark
+      const serializedUserRootBookmarks = userRootBookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
-      return res.apiv3({ userRootBookmarks });
+      return res.apiv3({ userRootBookmarks: serializedUserRootBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);
