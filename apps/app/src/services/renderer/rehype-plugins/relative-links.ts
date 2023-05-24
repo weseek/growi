@@ -1,22 +1,24 @@
 import { selectAll, type HastNode, type Element } from 'hast-util-select';
 import isAbsolute from 'is-absolute-url';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 
 export type IAnchorsSelector = (node: HastNode) => Element[];
-export type IHrefResolver = (relativeHref: string, basePath: string) => string;
+export type IUrlResolver = (relativeHref: string, basePath: string) => URL;
 
 const defaultAnchorsSelector: IAnchorsSelector = (node) => {
   return selectAll('a[href]', node);
 };
 
-const defaultHrefResolver: IHrefResolver = (relativeHref, basePath) => {
+const defaultUrlResolver: IUrlResolver = (relativeHref, basePath) => {
   // generate relative pathname
   const baseUrl = new URL(basePath, 'https://example.com');
-  const relativeUrl = new URL(relativeHref, baseUrl);
-
-  const { pathname, search, hash } = relativeUrl;
-  return `${pathname}${search}${hash}`;
+  return new URL(relativeHref, baseUrl);
 };
+
+const urlToHref = (url: URL): string => {
+  const { pathname, search, hash } = url;
+  return `${pathname}${search}${hash}`;
+}
 
 const isAnchorLink = (href: string): boolean => {
   return href.toString().length > 0 && href[0] === '#';
@@ -25,12 +27,12 @@ const isAnchorLink = (href: string): boolean => {
 export type RelativeLinksPluginParams = {
   pagePath?: string,
   anchorsSelector?: IAnchorsSelector,
-  hrefResolver?: IHrefResolver,
+  urlResolver?: IUrlResolver,
 }
 
 export const relativeLinks: Plugin<[RelativeLinksPluginParams]> = (options = {}) => {
   const anchorsSelector = options.anchorsSelector ?? defaultAnchorsSelector;
-  const hrefResolver = options.hrefResolver ?? defaultHrefResolver;
+  const urlResolver = options.urlResolver ?? defaultUrlResolver;
 
   return (tree) => {
     if (options.pagePath == null) {
@@ -50,7 +52,7 @@ export const relativeLinks: Plugin<[RelativeLinksPluginParams]> = (options = {})
         return;
       }
 
-      anchor.properties.href = hrefResolver(href, pagePath);
+      anchor.properties.href = urlToHref(urlResolver(href, pagePath));
     });
   };
 };
