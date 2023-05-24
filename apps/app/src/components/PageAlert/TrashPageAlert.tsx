@@ -14,6 +14,7 @@ import {
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxUserBookmarks } from '~/stores/bookmark';
 
 
 const onDeletedHandler = (pathOrPathsToDelete) => {
@@ -41,6 +42,7 @@ export const TrashPageAlert = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentUser } = useCurrentUser();
   const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
+  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
@@ -57,6 +59,7 @@ export const TrashPageAlert = (): JSX.Element => {
       try {
         unlink(currentPagePath);
         mutateBookmarkFolders();
+        mutateUserBookmarks();
         router.push(`/${pageId}`);
       }
       catch (err) {
@@ -64,7 +67,7 @@ export const TrashPageAlert = (): JSX.Element => {
       }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }, [currentPagePath, openPutBackPageModal, pageId, pagePath, router, mutateBookmarkFolders]);
+  }, [currentPagePath, openPutBackPageModal, pageId, pagePath, router, mutateBookmarkFolders, mutateUserBookmarks]);
 
   const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {

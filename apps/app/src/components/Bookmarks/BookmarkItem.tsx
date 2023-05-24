@@ -9,10 +9,10 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
-import { toastError } from '~/client/util/toastr';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { useSWRxPageInfo } from '~/stores/page';
+import { mutateAllPageInfo, useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -22,6 +22,7 @@ import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 import { OnPutBackedFunction } from '~/interfaces/ui';
 import { usePutBackPageModal } from '~/stores/modal';
+import { useRouter } from 'next/router';
 
 type Props = {
   isReadOnlyUser: boolean
@@ -39,6 +40,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const BASE_BOOKMARK_PADDING = 20;
 
   const { t } = useTranslation();
+  const router = useRouter();
 
   const {
     isReadOnlyUser, bookmarkedPage, onClickDeleteBookmarkHandler,
@@ -48,6 +50,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+  const { data: currentPage } = useSWRxCurrentPage();
 
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
@@ -112,23 +115,28 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteBookmarkHandler(pageToDelete);
   }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteBookmarkHandler]);
 
-  const revertMenuItemClickHandler = useCallback(async() => {
-    const { _id: pageId, path } = bookmarkedPage;
+  const putBackClickHandler = useCallback(async() => {
+      const { _id: pageId, path } = bookmarkedPage
+      const putBackedHandler = async() => {
+        try {
+          await unlink(path);
+          mutateAllPageInfo();
+          bookmarkFolderTreeMutation();
+          if(pageId === currentPage?._id){
+            router.push(`/${pageId}`);
+          }
+          toastSuccess(t('page_has_been_reverted', { path }))
+        }
+        catch (err) {
+          toastError(err);
+        }
+        if(onPagePutBacked != null){
+          onPagePutBacked(path)
+        }
+      };
+      openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
 
-    const putBackedHandler = async(path) => {
-      try {
-        await unlink(bookmarkedPage.path);
-      }
-      catch (err) {
-        toastError(err);
-      }
-
-      if (onPagePutBacked != null) {
-        onPagePutBacked(path);
-      }
-    };
-    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
-  }, [onPagePutBacked, openPutBackPageModal, bookmarkedPage]);
+  }, [bookmarkedPage, openPutBackPageModal, mutateAllPageInfo, bookmarkFolderTreeMutation, router]);
 
   return (
     <DragAndDropWrapper
@@ -161,7 +169,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            onClickRevertMenuItem={revertMenuItemClickHandler}
+            onClickRevertMenuItem={putBackClickHandler}
             additionalMenuItemOnTopRenderer={canMoveToRoot
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
               : undefined}

@@ -7,7 +7,7 @@ import { DropdownToggle } from 'reactstrap';
 import {
   addBookmarkToFolder, addNewFolder, hasChildren, updateBookmarkFolder,
 } from '~/client/util/bookmark-utils';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
@@ -21,7 +21,6 @@ import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
 import { BookmarkFolderNameInput } from './BookmarkFolderNameInput';
 import { BookmarkItem } from './BookmarkItem';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
-import { useTranslation } from 'react-i18next';
 
 type BookmarkFolderItemProps = {
   isReadOnlyUser: boolean
@@ -32,6 +31,7 @@ type BookmarkFolderItemProps = {
   isUserHomePage?: boolean
   onClickDeleteBookmarkHandler: (pageToDelete: IPageToDeleteWithMeta) => void
   bookmarkFolderTreeMutation: () => void
+  onPagePutBacked?: OnPutBackedFunction
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
@@ -39,10 +39,9 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
     isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
-    onClickDeleteBookmarkHandler, bookmarkFolderTreeMutation
+    onClickDeleteBookmarkHandler, bookmarkFolderTreeMutation, onPagePutBacked
   } = props;
 
-  const {t} = useTranslation();
   const {
     name, _id: folderId, children, parent, bookmarks,
   } = bookmarkFolder;
@@ -143,10 +142,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     return true;
   };
 
-  const pagePutBackedHandler: OnPutBackedFunction = useCallback((path) => {
-    toastSuccess(t('page_has_been_reverted', { path }));
-    bookmarkFolderTreeMutation();
-  }, [t]);
 
   const renderChildFolder = () => {
     return isOpen && children?.map((childFolder) => {
@@ -161,6 +156,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             isUserHomePage={isUserHomePage}
             onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
             bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
+            onPagePutBacked={onPagePutBacked}
           />
         </div>
       );
@@ -179,7 +175,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           canMoveToRoot={true}
           onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
           bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
-          onPagePutBacked={pagePutBackedHandler}
+          onPagePutBacked={onPagePutBacked}
         />
       );
     });

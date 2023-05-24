@@ -25,7 +25,7 @@ const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { 
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 // Fab
 const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
-
+const PutbackPageModal = dynamic(() => import('../PutbackPageModal'), { ssr: false });
 
 type Props = {
   children?: ReactNode
@@ -57,6 +57,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <PageRenameModal />
         <PageAccessoriesModal />
         <DeleteBookmarkFolderModal />
+        <PutbackPageModal />
       </DndProvider>
 
       <PagePresentationModal />
