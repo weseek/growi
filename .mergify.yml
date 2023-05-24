@@ -15,7 +15,6 @@ pull_request_rules:
   - name: Automatic merge for Preparing next version
     conditions:
       - author = github-actions[bot]
-      - '#approved-reviews-by >= 1'
       - label = "prepare next version"
     actions:
       merge:
