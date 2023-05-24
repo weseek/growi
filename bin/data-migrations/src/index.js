@@ -5,11 +5,11 @@
 var pagesCollection = db.getCollection('pages');
 var revisionsCollection = db.getCollection('revisions');
 
-var migrationFileName = process.env.MIGRATION_FILE_NAME;
-var migrationType = process.env.MIGRATION_TYPE;
-
 var batchSize = process.env.BATCH_SIZE ?? 100; // default 100 revisions in 1 bulkwrite
 var batchSizeInterval = process.env.BATCH_INTERVAL ?? 3000; // default 3 sec
+
+var migrationFileName = process.env.MIGRATION_FILE_NAME;
+var migrationType = process.env.MIGRATION_TYPE;
 
 var getProcessorArray = require(`./migrations/${migrationFileName}`);
 var processors = getProcessorArray(migrationType);
