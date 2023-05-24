@@ -1,5 +1,4 @@
-# by https://zenn.dev/nemuki/articles/dependabot-auto-merge
-name: Auto approve on dependabot PR at patch update
+name: Auto approve PR
 
 on:
   pull_request_target:
@@ -9,7 +8,9 @@ permissions:
   pull-requests: write
 
 jobs:
-  dependabot-auto-approve:
+  # Auto approve on dependabot PR at patch update
+  #   by https://zenn.dev/nemuki/articles/dependabot-auto-merge
+  approve-updating-patch-version:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
