@@ -1,8 +1,9 @@
+import { describe, test, expect } from 'vitest';
+
 import { type HastNode, select } from 'hast-util-select';
 import parse from 'remark-parse';
 import rehype from 'remark-rehype';
 import { unified } from 'unified';
-import { describe, test, expect } from 'vitest';
 
 import { pukiwikiLikeLinker } from '../remark-plugins/pukiwiki-like-linker';
 

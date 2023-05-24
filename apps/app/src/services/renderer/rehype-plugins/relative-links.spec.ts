@@ -1,9 +1,10 @@
 
+import { describe, test, expect } from 'vitest';
+
 import { select, type HastNode } from 'hast-util-select';
 import parse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
-import { describe, test, expect } from 'vitest';
 
 import { relativeLinks } from './relative-links';
 
