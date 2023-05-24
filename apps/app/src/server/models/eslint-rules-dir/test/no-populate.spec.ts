@@ -1,5 +1,6 @@
-import { RuleTester } from 'eslint';
 import { test } from 'vitest';
+
+import { RuleTester } from 'eslint';
 
 import noPopulate from '../no-populate';
 
