@@ -56,6 +56,8 @@ describe('relativeLinks', () => {
 
       // then
       const anchorElement = select('a', hastTree);
+      expect(anchorElement).not.toBeNull();
+      expect(anchorElement?.properties).not.toBeNull();
       expect(anchorElement?.properties?.href).toBe(expectedHref);
     });
 
