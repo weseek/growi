@@ -5,13 +5,13 @@
 var pagesCollection = db.getCollection('pages');
 var revisionsCollection = db.getCollection('revisions');
 
+var processorName = process.env.PROCESSOR_NAME;
 var migrationType = process.env.MIGRATION_TYPE;
-var processorVersion = process.env.PROCESSOR_VERSION;
 
 var batchSize = process.env.BATCH_SIZE ?? 100; // default 100 revisions in 1 bulkwrite
 var batchSizeInterval = process.env.BATCH_INTERVAL ?? 3000; // default 3 sec
 
-var getProcessorArray = require(`./processors/${processorVersion}`);
+var getProcessorArray = require(`./processors/${processorName}`);
 var processors = getProcessorArray(migrationType);
 
 if (processors.length === 0) {
@@ -51,4 +51,5 @@ pagesCollection.find({}).forEach((doc) => {
   }
 });
 revisionsCollection.bulkWrite(operations);
+
 print('migration complete!');
