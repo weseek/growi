@@ -1,11 +1,13 @@
+import { describe, test, expect } from 'vitest';
+
 import { HastNode, selectAll } from 'hast-util-select';
 import parse from 'remark-parse';
 import rehype from 'remark-rehype';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 
-import { relativeLinksByPukiwikiLikeLinker } from '../../../../src/services/renderer/rehype-plugins/relative-links-by-pukiwiki-like-linker';
-import { pukiwikiLikeLinker } from '../../../../src/services/renderer/remark-plugins/pukiwiki-like-linker';
+import { relativeLinksByPukiwikiLikeLinker } from '../rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import { pukiwikiLikeLinker } from './pukiwiki-like-linker';
 
 describe('pukiwikiLikeLinker', () => {
 
