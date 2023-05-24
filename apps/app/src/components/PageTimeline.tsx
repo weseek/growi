@@ -2,11 +2,10 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath } from '~/stores/page';
+import { useSWRINFxPageTimeline } from '~/stores/page-timeline';
 import { useTimelineOptions } from '~/stores/renderer';
 
 import InfiniteScroll from './InfiniteScroll';
@@ -43,28 +42,6 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
   );
 };
 
-type PageTimelineResult = {
-  pages: IPageHasId[],
-  totalCount: number,
-  offset: number,
-}
-const useSWRINFxPageTimeline = (path: string | undefined, limit: number) : SWRInfiniteResponse<PageTimelineResult, Error> => {
-  return useSWRInfinite(
-    (pageIndex, previousPageData) => {
-      if (previousPageData != null && previousPageData.pages.length === 0) return null;
-      if (path === undefined) return null;
-
-      return ['/pages/list', path, pageIndex + 1, limit];
-    },
-    ([endpoint, path, page, limit]) => apiv3Get<PageTimelineResult>(endpoint, { path, page, limit }).then(response => response.data),
-    {
-      revalidateFirstPage: false,
-      revalidateAll: false,
-    },
-  );
-};
-
-
 export const PageTimeline = (): JSX.Element => {
 
   const PER_PAGE = 3;
@@ -80,8 +57,7 @@ export const PageTimeline = (): JSX.Element => {
   if (data == null || isEmpty) {
     return (
       <div className="mt-2">
-        {/* eslint-disable-next-line react/no-danger */}
-        <p>{t('custom_navigation.no_page_list')}</p>
+        <p>{t('custom_navigation.no_pages_under_this_page')}</p>
       </div>
     );
   }
