@@ -169,7 +169,7 @@
     "could_not_creata_path": "パスを作成できませんでした。"
   },
   "custom_navigation": {
-    "no_page_list": "このページの配下にはページが存在しません。"
+    "no_pages_under_this_page": "このページの配下にはページが存在しません。"
   },
   "installer": {
     "tab": "アカウント作成",

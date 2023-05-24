@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath } from '~/stores/page';
+import { useSWRINFxPageTimeline } from '~/stores/page-timeline';
 import { useTimelineOptions } from '~/stores/renderer';
 
+import InfiniteScroll from './InfiniteScroll';
 import { RevisionLoader } from './Page/RevisionLoader';
-import PaginationWrapper from './PaginationWrapper';
 
 import styles from './PageTimeline.module.scss';
 
@@ -42,48 +42,38 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
   );
 };
 
-
 export const PageTimeline = (): JSX.Element => {
-  const [activePage, setActivePage] = useState(1);
-  const [totalPageItems, setTotalPageItems] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [pages, setPages] = useState<IPageHasId[] | null>(null);
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  const PER_PAGE = 3;
   const { t } = useTranslation();
+  const { data: currentPagePath } = useCurrentPagePath();
 
-  const handlePage = useCallback(async(selectedPage: number) => {
-    if (currentPagePath == null) { return }
-    const res = await apiv3Get('/pages/list', { path: currentPagePath, page: selectedPage });
-    setTotalPageItems(res.data.totalCount);
-    setPages(res.data.pages);
-    setLimit(res.data.limit);
-    setActivePage(selectedPage);
-  }, [currentPagePath]);
+  const swrInfinitexPageTimeline = useSWRINFxPageTimeline(currentPagePath, PER_PAGE);
+  const { data } = swrInfinitexPageTimeline;
 
-  useEffect(() => {
-    handlePage(1);
-  }, [handlePage]);
+  const isEmpty = data?.[0]?.pages.length === 0;
+  const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
-  if (pages == null || pages.length === 0) {
+  if (data == null || isEmpty) {
     return (
       <div className="mt-2">
-        {/* eslint-disable-next-line react/no-danger */}
-        <p>{t('custom_navigation.no_page_list')}</p>
+        <p>{t('custom_navigation.no_pages_under_this_page')}</p>
       </div>
     );
   }
 
   return (
     <div>
-      { pages.map(page => <TimelineCard key={page._id} page={page} />) }
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={handlePage}
-        totalItemsCount={totalPageItems}
-        pagingLimit={limit}
-        align="center"
-      />
+      <InfiniteScroll
+        swrInifiniteResponse={swrInfinitexPageTimeline}
+        isReachingEnd={isReachingEnd}
+      >
+        { data != null && data.flatMap(apiResult => apiResult.pages)
+          .map(page => (
+            <TimelineCard key={page._id} page={page} />
+          ))
+        }
+      </InfiniteScroll>
     </div>
   );
 };

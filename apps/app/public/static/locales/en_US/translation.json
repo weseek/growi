@@ -168,7 +168,7 @@
     "could_not_creata_path": "Couldn't create path."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_pages_under_this_page": "There are no pages under this page."
   },
   "installer": {
     "tab": "Create account",
