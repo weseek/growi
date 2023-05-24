@@ -14,7 +14,7 @@ import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
-import EnvVarsTable from './EnvVarsTable';
+import { EnvVarsTable } from './EnvVarsTable';
 import SystemInfomationTable from './SystemInfomationTable';
 
 const logger = loggerFactory('growi:admin');

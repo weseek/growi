@@ -1,8 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const EnvVarsTable = (props) => {
-  const envVarRows = [];
+type EnvVarsTableProps = {
+  envVars: Record<string, string | number | boolean>,
+}
+
+export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => {
+  const envVarRows: JSX.Element[] = [];
 
   for (const [key, value] of Object.entries(props.envVars)) {
     if (value != null) {
@@ -22,11 +25,4 @@ const EnvVarsTable = (props) => {
       </tbody>
     </table>
   );
-
 };
-
-EnvVarsTable.propTypes = {
-  envVars: PropTypes.object.isRequired,
-};
-
-export default EnvVarsTable;

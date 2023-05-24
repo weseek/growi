@@ -26,8 +26,8 @@ export default class AdminMarkDownContainer extends Container {
       isIndentSizeForced: false,
       isEnabledXss: false,
       xssOption: '',
-      tagWhiteList: '',
-      attrWhiteList: '{}',
+      tagWhitelist: '',
+      attrWhitelist: '{}',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -55,8 +55,8 @@ export default class AdminMarkDownContainer extends Container {
       isIndentSizeForced: markdownParams.isIndentSizeForced,
       isEnabledXss: markdownParams.isEnabledXss,
       xssOption: markdownParams.xssOption,
-      tagWhiteList: markdownParams.tagWhiteList || '',
-      attrWhiteList: markdownParams.attrWhiteList || '',
+      tagWhitelist: markdownParams.tagWhitelist || '',
+      attrWhitelist: markdownParams.attrWhitelist || '',
     });
   }
 
@@ -101,14 +101,14 @@ export default class AdminMarkDownContainer extends Container {
    * Update Xss Setting
    */
   async updateXssSetting() {
-    let { tagWhiteList } = this.state;
-    const { attrWhiteList } = this.state;
+    let { tagWhitelist } = this.state;
+    const { attrWhitelist } = this.state;
 
-    tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
+    tagWhitelist = Array.isArray(tagWhitelist) ? tagWhitelist : tagWhitelist.split(',');
 
     try {
       // Check if parsing is possible
-      JSON.parse(attrWhiteList);
+      JSON.parse(attrWhitelist);
     }
     catch (err) {
       throw Error(err);
@@ -117,8 +117,8 @@ export default class AdminMarkDownContainer extends Container {
     await apiv3Put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
-      tagWhiteList,
-      attrWhiteList: attrWhiteList ?? '{}',
+      tagWhitelist,
+      attrWhitelist: attrWhitelist ?? '{}',
     });
   }
 

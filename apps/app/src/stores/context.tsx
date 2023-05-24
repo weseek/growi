@@ -68,8 +68,8 @@ export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRRespo
   return useContextSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
 };
 
-export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
-  return useContextSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
+export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
+  return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
 };
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {

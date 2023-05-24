@@ -10,17 +10,17 @@ class Xss {
 
     xssOption = xssOption || {}; // eslint-disable-line no-param-reassign
 
-    const tagWhiteList = xssOption.tagWhiteList || [];
-    const attrWhiteList = xssOption.attrWhiteList || [];
+    const tagWhitelist = xssOption.tagWhitelist || [];
+    const attrWhitelist = xssOption.attrWhitelist || [];
 
-    const whiteListContent = {};
+    const whitelistContent = {};
 
     // default
     const option = {
       stripIgnoreTag: true,
       stripIgnoreTagBody: false, // see https://github.com/weseek/growi/pull/505
       css: false,
-      whiteList: whiteListContent,
+      whitelist: whitelistContent,
       escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
       onTag: (tag, html, options) => {
         // pass autolink
@@ -30,8 +30,8 @@ class Xss {
       },
     };
 
-    tagWhiteList.forEach((tag) => {
-      whiteListContent[tag] = attrWhiteList;
+    tagWhitelist.forEach((tag) => {
+      whitelistContent[tag] = attrWhitelist;
     });
 
     // create the XSS Filter instance
