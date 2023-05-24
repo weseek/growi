@@ -92,7 +92,7 @@ export const PageTimeline = (): JSX.Element => {
         swrInifiniteResponse={swrInfinitexPageTimeline}
         isReachingEnd={isReachingEnd}
       >
-        { data != null && data.map(apiResult => apiResult.pages).flat()
+        { data != null && data.flatMap(apiResult => apiResult.pages)
           .map(page => (
             <TimelineCard key={page._id} page={page} />
           ))
