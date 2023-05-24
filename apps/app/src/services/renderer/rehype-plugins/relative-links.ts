@@ -1,4 +1,4 @@
-import { selectAll, HastNode, Element } from 'hast-util-select';
+import { selectAll, type HastNode, type Element } from 'hast-util-select';
 import isAbsolute from 'is-absolute-url';
 import { Plugin } from 'unified';
 
@@ -14,7 +14,8 @@ const defaultHrefResolver: IHrefResolver = (relativeHref, basePath) => {
   const baseUrl = new URL(basePath, 'https://example.com');
   const relativeUrl = new URL(relativeHref, baseUrl);
 
-  return relativeUrl.pathname;
+  const { pathname, search, hash } = relativeUrl;
+  return `${pathname}${search}${hash}`;
 };
 
 const isAnchorLink = (href: string): boolean => {
