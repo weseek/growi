@@ -18,7 +18,7 @@ const defaultUrlResolver: IUrlResolver = (relativeHref, basePath) => {
 const urlToHref = (url: URL): string => {
   const { pathname, search, hash } = url;
   return `${pathname}${search}${hash}`;
-}
+};
 
 const isAnchorLink = (href: string): boolean => {
   return href.toString().length > 0 && href[0] === '#';

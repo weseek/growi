@@ -1,10 +1,9 @@
-import { describe, test, expect } from 'vitest';
 
 import { select, type HastNode } from 'hast-util-select';
-
-import { unified } from 'unified';
 import parse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
+import { unified } from 'unified';
+import { describe, test, expect } from 'vitest';
 
 import { relativeLinks } from './relative-links';
 
@@ -16,20 +15,20 @@ describe('relativeLinks', () => {
       ${'#header'}
     `('leaves the original href \'$originalHref\' as-is', ({ originalHref }) => {
 
-      // setup
-      const processor = unified()
-        .use(parse)
-        .use(remarkRehype)
-        .use(relativeLinks, {});
+    // setup
+    const processor = unified()
+      .use(parse)
+      .use(remarkRehype)
+      .use(relativeLinks, {});
 
-      // when
-      const mdastTree = processor.parse(`[link](${originalHref})`);
-      const hastTree = processor.runSync(mdastTree) as HastNode;
+    // when
+    const mdastTree = processor.parse(`[link](${originalHref})`);
+    const hastTree = processor.runSync(mdastTree) as HastNode;
 
-      // then
-      const anchorElement = select('a', hastTree);
-      expect(anchorElement?.properties?.href).toBe(originalHref);
-    });
+    // then
+    const anchorElement = select('a', hastTree);
+    expect(anchorElement?.properties?.href).toBe(originalHref);
+  });
 
   test.concurrent.each`
     originalHref                        | expectedHref
@@ -43,22 +42,22 @@ describe('relativeLinks', () => {
       ${'./Sandbox?q=foo#header'}       | ${'/foo/bar/Sandbox?q=foo#header'}
     `('rewrites the original href \'$originalHref\' to \'$expectedHref\'', ({ originalHref, expectedHref }) => {
 
-      // setup
-      const pagePath = '/foo/bar/baz';
-      const processor = unified()
-        .use(parse)
-        .use(remarkRehype)
-        .use(relativeLinks, { pagePath });
+    // setup
+    const pagePath = '/foo/bar/baz';
+    const processor = unified()
+      .use(parse)
+      .use(remarkRehype)
+      .use(relativeLinks, { pagePath });
 
-      // when
-      const mdastTree = processor.parse(`[link](${originalHref})`);
-      const hastTree = processor.runSync(mdastTree) as HastNode;
+    // when
+    const mdastTree = processor.parse(`[link](${originalHref})`);
+    const hastTree = processor.runSync(mdastTree) as HastNode;
 
-      // then
-      const anchorElement = select('a', hastTree);
-      expect(anchorElement).not.toBeNull();
-      expect(anchorElement?.properties).not.toBeNull();
-      expect(anchorElement?.properties?.href).toBe(expectedHref);
-    });
+    // then
+    const anchorElement = select('a', hastTree);
+    expect(anchorElement).not.toBeNull();
+    expect(anchorElement?.properties).not.toBeNull();
+    expect(anchorElement?.properties?.href).toBe(expectedHref);
+  });
 
-})
+});
