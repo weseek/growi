@@ -1,6 +1,6 @@
 {
   "name": "@growi/presentation",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "GROWI plugin for presentation",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
@@ -18,7 +18,7 @@
     "lint": "run-p lint:*"
   },
   "dependencies": {
-    "@growi/core": "^6.1.0"
+    "@growi/core": "^6.1.1"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^3.6.0",
