@@ -5,6 +5,7 @@
 // ===========================================
 // processors for old format
 // ===========================================
+
 function drawioProcessor(body) {
   var oldDrawioRegExp = /:::\s?drawio\n(.+?)\n:::/g; // drawio old format
   return body.replace(oldDrawioRegExp, '``` drawio\n$1\n```');
@@ -31,18 +32,6 @@ function bracketlinkProcessor(body) {
   return body.replace(oldBracketLinkRegExp, '[[$1]]');
 }
 
-function mdcontPrefixProcessor(body) {
-  var oldMdcontPrefixRegExp = /#mdcont-/g;
-  return body.replace(oldMdcontPrefixRegExp, '#');
-}
-
-// processor for MIGRATION_TYPE=custom
-function customProcessor(body) {
-  // ADD YOUR PROCESS HERE!
-  // https://github.com/weseek/growi/discussions/7180
-  return body;
-}
-
 // ===========================================
 // define processors
 // ===========================================
@@ -50,29 +39,23 @@ function customProcessor(body) {
 function getProcessorArray(migrationType) {
   var oldFormatProcessors;
   switch (migrationType) {
-    case 'v6-drawio':
+    case 'drawio':
       oldFormatProcessors = [drawioProcessor];
       break;
-    case 'v6-plantuml':
+    case 'plantuml':
       oldFormatProcessors = [plantumlProcessor];
       break;
-    case 'v6-tsv':
+    case 'tsv':
       oldFormatProcessors = [tsvProcessor];
       break;
-    case 'v6-csv':
+    case 'csv':
       oldFormatProcessors = [csvProcessor];
       break;
-    case 'v6-bracketlink':
+    case 'bracketlink':
       oldFormatProcessors = [bracketlinkProcessor];
       break;
-    case 'mdcont':
-      oldFormatProcessors = [mdcontPrefixProcessor];
-      break;
-    case 'v6':
+    case 'all':
       oldFormatProcessors = [drawioProcessor, plantumlProcessor, tsvProcessor, csvProcessor, bracketlinkProcessor];
-      break;
-    case 'custom':
-      oldFormatProcessors = [customProcessor];
       break;
     default:
       oldFormatProcessors = [];
