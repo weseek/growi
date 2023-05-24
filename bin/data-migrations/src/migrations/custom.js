@@ -6,6 +6,7 @@
 // processors for old format
 // ===========================================
 
+// processor for MIGRATION_FILE_NAME=custom, MIGRATION_TYPE=custom
 function customProcessor(body) {
   // ADD YOUR PROCESS HERE!
   // https://github.com/weseek/growi/discussions/7180
@@ -21,6 +22,7 @@ function getProcessorArray(migrationType) {
     default:
       oldFormatProcessors = [];
   }
+  return oldFormatProcessors;
 }
 
 module.exports = getProcessorArray;
