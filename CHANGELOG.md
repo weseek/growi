@@ -1,8 +1,19 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.1](https://github.com/weseek/growi/compare/v6.1.0...v6.1.1) - 2023-05-24
+
+### 🐛 Bug Fixes
+
+- fix: Bookmark folders owned by others are accessible for manipulation (#7688) @miya
+- fix: remark-attachment-refs does not work in production (#7681) @yuki-takei
+- fix: User picture of bookmark not showing inside bookmark folder (#7678) @mudana-grune
+- fix: Update name attribute of PageRenameModal.tsx (#7677) @jam411
+- fix: The user's bookmarks are displayed on unrelated user's home (#7668) @miya
+- fix: The user's bookmarks are updated by unrelated user's operation (#7670) @jam411
 
 ## [v6.1.0](https://github.com/weseek/growi/compare/v6.0.15...v6.1.0) - 2023-05-17
 
