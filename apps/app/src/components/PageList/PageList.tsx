@@ -51,7 +51,7 @@ const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
   if (pageList.length === 0) {
     return (
       <div className="mt-2">
-        <p>{t('custom_navigation.no_page_list')}</p>
+        <p>{t('custom_navigation.no_pages_under_this_page')}</p>
       </div>
     );
   }
