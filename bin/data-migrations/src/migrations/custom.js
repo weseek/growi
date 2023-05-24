@@ -6,23 +6,12 @@
 // processors for old format
 // ===========================================
 
-// processor for MIGRATION_FILE_NAME=custom, MIGRATION_TYPE=custom
-function customProcessor(body) {
-  // ADD YOUR PROCESS HERE!
-  // https://github.com/weseek/growi/discussions/7180
-  return body;
-}
+// processor for MIGRATION_MODULE=custom
 
-function getProcessorArray(migrationType) {
-  var oldFormatProcessors;
-  switch (migrationType) {
-    case 'custom':
-      oldFormatProcessors = [customProcessor];
-      break;
-    default:
-      oldFormatProcessors = [];
-  }
-  return oldFormatProcessors;
-}
-
-module.exports = getProcessorArray;
+module.exports = [
+  (body) => {
+    // ADD YOUR PROCESS HERE!
+    // https://github.com/weseek/growi/discussions/7180
+    return body;
+  },
+];

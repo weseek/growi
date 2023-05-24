@@ -8,20 +8,18 @@ var revisionsCollection = db.getCollection('revisions');
 var batchSize = process.env.BATCH_SIZE ?? 100; // default 100 revisions in 1 bulkwrite
 var batchSizeInterval = process.env.BATCH_INTERVAL ?? 3000; // default 3 sec
 
-var migrationFileName = process.env.MIGRATION_FILE_NAME;
-var migrationType = process.env.MIGRATION_TYPE;
+var migrationModule = process.env.MIGRATION_MODULE;
 
-var getProcessorArray = require(`./migrations/${migrationFileName}`);
-var processors = getProcessorArray(migrationType);
+var migrationModules = require(`./migrations/${migrationModule}`);
 
-if (processors.length === 0) {
-  throw Error('No valid processors found. Please enter a valid environment variable');
+if (migrationModules.length === 0) {
+  throw Error('No valid migrationModules found. Please enter a valid environment variable');
 }
 
-function replaceLatestRevisions(body, processors) {
+function replaceLatestRevisions(body, migrationModules) {
   var replacedBody = body;
-  processors.forEach((processor) => {
-    replacedBody = processor(replacedBody);
+  migrationModules.forEach((migrationModule) => {
+    replacedBody = migrationModule(replacedBody);
   });
   return replacedBody;
 }
@@ -30,7 +28,7 @@ var operations = [];
 pagesCollection.find({}).forEach((doc) => {
   if (doc.revision) {
     var revision = revisionsCollection.findOne({ _id: doc.revision });
-    var replacedBody = replaceLatestRevisions(revision.body, [...processors]);
+    var replacedBody = replaceLatestRevisions(revision.body, [...migrationModules]);
     var operation = {
       updateOne: {
         filter: { _id: revision._id },
