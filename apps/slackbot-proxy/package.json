@@ -1,6 +1,6 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "6.1.1",
+  "version": "6.1.2-slackbot-proxy.0",
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.9.0",
-    "@growi/slack": "^6.1.1",
+    "@growi/slack": "^6.1.2-RC.0",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.2.4",
     "@tsed/common": "^6.43.0",

@@ -1,6 +1,6 @@
 {
   "name": "@growi/ui",
-  "version": "6.1.1",
+  "version": "6.1.2-RC.0",
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": ["growi"],
@@ -16,7 +16,7 @@
     "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
-    "@growi/core": "^6.1.1"
+    "@growi/core": "^6.1.2-RC.0"
   },
   "devDependencies": {
     "react": "^18.2.0"
