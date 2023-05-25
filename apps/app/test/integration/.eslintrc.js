@@ -1,7 +1,5 @@
 module.exports = {
-  root: true,
   extends: [
-    'weseek/typescript',
     'plugin:jest/recommended',
   ],
   env: {
