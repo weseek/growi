@@ -224,8 +224,6 @@ Crowi.prototype.setupDatabase = function() {
   // mongoUri = mongodb://user:password@host/dbname
   const mongoUri = getMongoUri();
 
-  initMongooseGlobalSettings();
-
   return mongoose.connect(mongoUri, mongoOptions);
 };
 
