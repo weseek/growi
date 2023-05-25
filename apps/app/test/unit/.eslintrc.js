@@ -12,5 +12,5 @@ module.exports = {
       'error',
       { additionalTestBlockFunctions: ['each.test'] },
     ],
-  }
+  },
 };
