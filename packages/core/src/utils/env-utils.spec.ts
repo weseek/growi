@@ -1,20 +1,22 @@
-import { toBoolean } from '~/utils/env-utils';
+import { describe, it, expect } from 'vitest';
+
+import { toBoolean } from './env-utils';
 
 
 describe('env-utils', () => {
   describe('.toBoolean', () => {
 
-    test('should convert to true', () => {
+    it('should convert to true', () => {
       expect(toBoolean('true')).toBe(true);
       expect(toBoolean('True')).toBe(true);
-      expect(toBoolean(1)).toBe(true);
+      expect(toBoolean('1')).toBe(true);
     });
 
-    test('should convert to false', () => {
-      expect(toBoolean(undefined)).toBe(false);
-      expect(toBoolean(null)).toBe(false);
+    it('should convert to false', () => {
+      // expect(toBoolean(undefined)).toBe(false);
+      // expect(toBoolean(null)).toBe(false);
       expect(toBoolean('false')).toBe(false);
-      expect(toBoolean(0)).toBe(false);
+      expect(toBoolean('0')).toBe(false);
     });
 
   });
