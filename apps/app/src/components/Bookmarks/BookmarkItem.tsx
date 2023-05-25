@@ -45,7 +45,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
 
   const {
     isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteBookmarkHandler,
-    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation, onPagePutBacked
+    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation, onPagePutBacked,
   } = props;
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
@@ -61,7 +61,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     ...bookmarkedPage, parentFolder,
   };
 
-  const onClickMoveToRootHandler = useCallback(async () => {
+  const onClickMoveToRootHandler = useCallback(async() => {
     try {
       await addBookmarkToFolder(bookmarkedPage._id, null);
       bookmarkFolderTreeMutation();
@@ -71,7 +71,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     }
   }, [bookmarkFolderTreeMutation, bookmarkedPage._id]);
 
-  const bookmarkMenuItemClickHandler = useCallback(async () => {
+  const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
     bookmarkFolderTreeMutation();
   }, [bookmarkedPage._id, bookmarkFolderTreeMutation]);
@@ -80,7 +80,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, []);
 
-  const pressEnterForRenameHandler = useCallback(async (inputText: string) => {
+  const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
     if (newPagePath === bookmarkedPage.path) {
@@ -99,7 +99,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     }
   }, [bookmarkedPage, bookmarkFolderTreeMutation]);
 
-  const deleteMenuItemClickHandler = useCallback(async (_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
       throw Error('_id and path must not be null.');
     }
@@ -116,9 +116,9 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteBookmarkHandler(pageToDelete);
   }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteBookmarkHandler]);
 
-  const putBackClickHandler = useCallback(async () => {
-    const { _id: pageId, path } = bookmarkedPage
-    const putBackedHandler = async () => {
+  const putBackClickHandler = useCallback(async() => {
+    const { _id: pageId, path } = bookmarkedPage;
+    const putBackedHandler = async() => {
       try {
         await unlink(path);
         mutateAllPageInfo();
@@ -126,13 +126,13 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         if (pageId === currentPage?._id) {
           router.push(`/${pageId}`);
         }
-        toastSuccess(t('page_has_been_reverted', { path }))
+        toastSuccess(t('page_has_been_reverted', { path }));
       }
       catch (err) {
         toastError(err);
       }
       if (onPagePutBacked != null) {
-        onPagePutBacked(path)
+        onPagePutBacked(path);
       }
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });

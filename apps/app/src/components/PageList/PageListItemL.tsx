@@ -91,7 +91,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
-  const {data: currentUser } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
   const { mutate: mutateUserBookmark } = useSWRxUserBookmarks(currentUser?._id);

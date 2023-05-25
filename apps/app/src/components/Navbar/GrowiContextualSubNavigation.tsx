@@ -235,7 +235,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
-  const {mutate: mutatePageInfo} = useSWRxPageInfo(pageId)
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 

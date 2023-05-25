@@ -10,14 +10,13 @@ import { useSWRxUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, mutateAllPageInfo } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
 
 import styles from './BookmarkFolderTree.module.scss';
 import { unlink } from '~/client/services/page-operation';
-import { mutateAllPageInfo } from '~/stores/page';
 import { useRouter } from 'next/router';
 
 // type DragItemDataType = {
@@ -59,7 +58,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
       toastSuccess(isCompletely ? t('deleted_pages_completely', { path: pathOrPathsToDelete }) : t('deleted_pages', { path: pathOrPathsToDelete }));
       bookmarkFolderTreeMutation();
       mutateAllPageInfo();
-      if(pageToDelete.data._id === currentPage?._id && _isRecursively){
+      if (pageToDelete.data._id === currentPage?._id && _isRecursively) {
         router.push(`/trash${currentPage.path}`);
       }
     };
@@ -101,15 +100,15 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   // };
   const putBackClickHandler = useCallback(async(pagePath: string) => {
     const bookmarkedPage = userBookmarks?.filter(userBookmark => userBookmark._id === pagePath)[0];
-    if(bookmarkedPage != null){
-      const { _id: pageId, path } = bookmarkedPage
+    if (bookmarkedPage != null) {
+      const { _id: pageId, path } = bookmarkedPage;
       const putBackedHandler = async() => {
         try {
           await unlink(path);
           mutateAllPageInfo();
           bookmarkFolderTreeMutation();
           // Redirect to original page if current page id equal to bookmarked page
-          if(bookmarkedPage._id === currentPage?._id){
+          if (bookmarkedPage._id === currentPage?._id) {
             router.push(`/${pageId}`);
           }
           toastSuccess(t('page_has_been_reverted', { path }));

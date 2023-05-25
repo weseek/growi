@@ -40,7 +40,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
     isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomePage,
-    onClickDeleteBookmarkHandler, bookmarkFolderTreeMutation, onPagePutBacked
+    onClickDeleteBookmarkHandler, bookmarkFolderTreeMutation, onPagePutBacked,
   } = props;
 
   const {
@@ -58,13 +58,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const paddingLeft = BASE_FOLDER_PADDING * level;
 
-  const loadChildFolder = useCallback(async () => {
+  const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
     setTargetFolder(folderId);
   }, [folderId, isOpen]);
 
   // Rename for bookmark folder handler
-  const onPressEnterHandlerForRename = useCallback(async (folderName: string) => {
+  const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
       // TODO: do not use any type
       await updateBookmarkFolder(folderId, folderName, parent as any, children);
@@ -77,7 +77,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   }, [bookmarkFolderTreeMutation, children, folderId, parent]);
 
   // Create new folder / subfolder handler
-  const onPressEnterHandlerForCreate = useCallback(async (folderName: string) => {
+  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await addNewFolder(folderName, targetFolder);
       setIsOpen(true);
@@ -89,7 +89,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
   }, [bookmarkFolderTreeMutation, targetFolder]);
 
-  const onClickPlusButton = useCallback(async (e) => {
+  const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
     if (!isOpen && childrenExists) {
       setIsOpen(true);
@@ -97,7 +97,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     setIsCreateAction(true);
   }, [childrenExists, isOpen]);
 
-  const itemDropHandler = async (item: DragItemDataType, dragItemType: string | symbol | null) => {
+  const itemDropHandler = async(item: DragItemDataType, dragItemType: string | symbol | null) => {
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
         if (item.bookmarkFolder != null) {
@@ -203,7 +203,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     openDeleteBookmarkFolderModal(bookmarkFolder, { onDeleted: bookmarkFolderDeleteHandler });
   }, [bookmarkFolder, bookmarkFolderTreeMutation, openDeleteBookmarkFolderModal]);
 
-  const onClickMoveToRootHandlerForBookmarkFolderItemControl = useCallback(async () => {
+  const onClickMoveToRootHandlerForBookmarkFolderItemControl = useCallback(async() => {
     try {
       await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.children);
       bookmarkFolderTreeMutation();
