@@ -16,7 +16,7 @@ describe('config/migrate-mongo-config.js', () => {
     });
 
     const requireConfig = () => {
-      require('../../config/migrate-mongo-config');
+      require('./migrate-mongo-config');
     };
 
     expect(requireConfig).toThrow('An env var MIGRATIONS_DIR must be set.');
@@ -54,7 +54,7 @@ describe('config/migrate-mongo-config.js', () => {
         };
       });
 
-      const { mongodb, migrationsDir, changelogCollectionName } = require('../../config/migrate-mongo-config');
+      const { mongodb, migrationsDir, changelogCollectionName } = require('./migrate-mongo-config');
 
       jest.dontMock('../../src/server/util/mongoose-utils');
 
