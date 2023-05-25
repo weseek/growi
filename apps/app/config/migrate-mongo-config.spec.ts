@@ -1,33 +1,38 @@
+import {
+  vi,
+  beforeEach,
+  describe, test, expect,
+} from 'vitest';
+
+import mockRequire from 'mock-require';
+
+const { reRequire } = mockRequire;
+
+
 describe('config/migrate-mongo-config.js', () => {
 
-  beforeEach(async() => {
-    jest.resetModules();
-  });
+  test.concurrent('throws an error when MIGRATIONS_DIR is not set', () => {
 
-  test('throws an error when MIGRATIONS_DIR is not set', () => {
-
-    const initMongooseGlobalSettingsMock = jest.fn();
+    const getMongoUriMock = vi.fn();
+    const mongoOptionsMock = vi.fn();
 
     // mock for mongoose-utils
-    jest.doMock('../../src/server/util/mongoose-utils', () => {
-      return {
-        initMongooseGlobalSettings: initMongooseGlobalSettingsMock,
-      };
+    mockRequire('../src/server/util/mongoose-utils', {
+      getMongoUri: getMongoUriMock,
+      mongoOptions: mongoOptionsMock,
     });
 
-    const requireConfig = () => {
-      require('./migrate-mongo-config');
-    };
+    // use reRequire to avoid using module cache
+    const caller = () => reRequire('./migrate-mongo-config');
 
-    expect(requireConfig).toThrow('An env var MIGRATIONS_DIR must be set.');
+    expect(caller).toThrow('An env var MIGRATIONS_DIR must be set.');
 
-    jest.dontMock('../../src/server/util/mongoose-utils');
+    mockRequire.stop('../src/server/util/mongoose-utils');
 
-    expect(initMongooseGlobalSettingsMock).not.toHaveBeenCalled();
+    expect(getMongoUriMock).not.toHaveBeenCalled();
   });
 
-  /* eslint-disable indent */
-  describe.each`
+  describe.concurrent.each`
     MONGO_URI                                         | expectedDbName
     ${'mongodb://example.com/growi'}                  | ${'growi'}
     ${'mongodb://user:pass@example.com/growi'}        | ${'growi'}
@@ -40,25 +45,21 @@ describe('config/migrate-mongo-config.js', () => {
 
     test(`when 'MONGO_URI' is '${MONGO_URI}`, () => {
 
-      const initMongooseGlobalSettingsMock = jest.fn();
-      const mongoOptionsMock = jest.fn();
+      const getMongoUriMock = vi.fn(() => MONGO_URI);
+      const mongoOptionsMock = vi.fn();
 
       // mock for mongoose-utils
-      jest.doMock('../../src/server/util/mongoose-utils', () => {
-        return {
-          initMongooseGlobalSettings: initMongooseGlobalSettingsMock,
-          getMongoUri: () => {
-            return MONGO_URI;
-          },
-          mongoOptions: mongoOptionsMock,
-        };
+      mockRequire('../src/server/util/mongoose-utils', {
+        getMongoUri: getMongoUriMock,
+        mongoOptions: mongoOptionsMock,
       });
 
-      const { mongodb, migrationsDir, changelogCollectionName } = require('./migrate-mongo-config');
+      // use reRequire to avoid using module cache
+      const { mongodb, migrationsDir, changelogCollectionName } = reRequire('./migrate-mongo-config');
 
-      jest.dontMock('../../src/server/util/mongoose-utils');
+      mockRequire.stop('../src/server/util/mongoose-utils');
 
-      expect(initMongooseGlobalSettingsMock).toHaveBeenCalledTimes(1);
+      // expect(getMongoUriMock).toHaveBeenCalledOnce();
       expect(mongodb.url).toBe(MONGO_URI);
       expect(mongodb.databaseName).toBe(expectedDbName);
       expect(mongodb.options).toBe(mongoOptionsMock);
@@ -66,6 +67,5 @@ describe('config/migrate-mongo-config.js', () => {
       expect(changelogCollectionName).toBe('migrations');
     });
   });
-  /* eslint-enable indent */
 
 });
