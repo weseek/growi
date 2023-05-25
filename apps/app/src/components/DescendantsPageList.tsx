@@ -24,6 +24,7 @@ import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxUserBookmarks } from '~/stores/bookmark';
+import { mutateAllPageInfo } from '~/stores/page';
 
 
 type SubstanceProps = {
@@ -51,7 +52,9 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentUser } = useCurrentUser();
   const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const {  mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
+  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
+  const { mutate: mutateUserBookmark } = useSWRxUserBookmarks(currentUser?._id);
+
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
@@ -76,11 +79,13 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     }
 
     mutatePageTree();
-
+    mutateBookmarkFolders();
+    mutateUserBookmark();
+    mutateAllPageInfo();
     if (onPagesDeleted != null) {
       onPagesDeleted(...args);
     }
-  }, [onPagesDeleted, t]);
+  }, [onPagesDeleted, t, mutateBookmarkFolders, mutateUserBookmark, mutateAllPageInfo]);
 
   const pagePutBackedHandler: OnPutBackedFunction = useCallback((path) => {
     toastSuccess(t('page_has_been_reverted', { path }));
@@ -88,10 +93,11 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     mutatePageTree();
     mutateBookmarkFolders();
     mutateUserBookmarks();
+    mutateAllPageInfo();
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [onPagePutBacked, t, mutateBookmarkFolders]);
+  }, [onPagePutBacked, t, mutateBookmarkFolders, mutateUserBookmarks, mutateAllPageInfo]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
