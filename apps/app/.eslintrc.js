@@ -1,19 +1,14 @@
 module.exports = {
   extends: [
     'next/core-web-vitals',
+    'plugin:jest/recommended',
   ],
   plugins: [
+    'jest',
     'regex',
   ],
   env: {
-    jquery: true,
-  },
-  globals: {
-    $: true,
-    jquery: true,
-    hljs: true,
-    ScrollPosStyler: true,
-    window: true,
+    'jest/globals': true,
   },
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
@@ -41,6 +36,10 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': ['warn'],
     '@typescript-eslint/no-this-alias': ['warn'],
     'jest/no-done-callback': ['warn'],
+    'jest/no-standalone-expect': [
+      'error',
+      { additionalTestBlockFunctions: ['each.test'] },
+    ],
   },
   overrides: [
     {
