@@ -7,7 +7,6 @@ export default defineProject({
   ],
   test: {
     environment: 'node',
-    exclude: ['**/test/**'],
     clearMocks: true,
   },
 });

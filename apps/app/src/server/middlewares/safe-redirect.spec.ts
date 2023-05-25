@@ -1,6 +1,5 @@
 import {
   vi,
-  beforeEach,
   describe, test, expect,
 } from 'vitest';
 
@@ -29,12 +28,6 @@ describe('safeRedirect', () => {
       redirect,
     } as any as ResWithSafeRedirect;
     const next = vi.fn();
-
-    beforeEach(() => {
-      getFunc.mockClear();
-      redirect.mockClear();
-      next.mockClear();
-    });
 
     test('redirects to \'/\' because specified url causes open redirect vulnerability', () => {
       registerSafeRedirect(req, res, next);
