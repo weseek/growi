@@ -26,8 +26,8 @@ const validator = {
   ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').isArray(),
-    body('attrWhiteList').isString(),
+    body('tagWhitelist').isArray(),
+    body('attrWhitelist').isString(),
   ],
 };
 
@@ -73,15 +73,15 @@ const validator = {
  *          xssOption:
  *            type: number
  *            description: number of xss option
- *          tagWhiteList:
+ *          tagWhitelist:
  *            type: array
- *            description: array of tag whiteList
+ *            description: array of tag whitelist
  *            items:
  *              type: string
  *              description: tag whitelist
- *          attrWhiteList:
+ *          attrWhitelist:
  *            type: array
- *            description: array of attr whiteList
+ *            description: array of attr whitelist
  *            items:
  *              type: string
  *              description: attr whitelist
@@ -122,8 +122,8 @@ module.exports = (crowi) => {
       isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
       isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
       xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
+      tagWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+      attrWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
     };
 
     return res.apiv3({ markdownParams });
@@ -235,7 +235,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      JSON.parse(req.body.attrWhiteList);
+      JSON.parse(req.body.attrWhitelist);
     }
     catch (err) {
       const msg = 'Error occurred in updating xss';
@@ -246,8 +246,8 @@ module.exports = (crowi) => {
     const reqestXssParams = {
       'markdown:rehypeSanitize:isEnabledPrevention': req.body.isEnabledXss,
       'markdown:rehypeSanitize:option': req.body.xssOption,
-      'markdown:rehypeSanitize:tagNames': req.body.tagWhiteList,
-      'markdown:rehypeSanitize:attributes': req.body.attrWhiteList,
+      'markdown:rehypeSanitize:tagNames': req.body.tagWhitelist,
+      'markdown:rehypeSanitize:attributes': req.body.attrWhitelist,
     };
 
     try {
@@ -255,8 +255,8 @@ module.exports = (crowi) => {
       const xssParams = {
         isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
         xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
+        tagWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+        attrWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };

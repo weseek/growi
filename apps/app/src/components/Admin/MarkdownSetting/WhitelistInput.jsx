@@ -8,13 +8,13 @@ import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-class WhiteListInput extends React.Component {
+class WhitelistInput extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.tagWhiteList = React.createRef();
-    this.attrWhiteList = React.createRef();
+    this.tagWhitelist = React.createRef();
+    this.attrWhitelist = React.createRef();
 
     this.tags = sanitizeDefaultSchema.tagNames;
     this.attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
@@ -24,13 +24,13 @@ class WhiteListInput extends React.Component {
   }
 
   onClickRecommendTagButton() {
-    this.tagWhiteList.current.value = this.tags;
-    this.props.adminMarkDownContainer.setState({ tagWhiteList: this.tags });
+    this.tagWhitelist.current.value = this.tags;
+    this.props.adminMarkDownContainer.setState({ tagWhitelist: this.tags });
   }
 
   onClickRecommendAttrButton() {
-    this.attrWhiteList.current.value = this.attrs;
-    this.props.adminMarkDownContainer.setState({ attrWhiteList: this.attrs });
+    this.attrWhitelist.current.value = this.attrs;
+    this.props.adminMarkDownContainer.setState({ attrWhitelist: this.attrs });
   }
 
   render() {
@@ -50,9 +50,9 @@ class WhiteListInput extends React.Component {
             name="recommendedTags"
             rows="6"
             cols="40"
-            ref={this.tagWhiteList}
-            defaultValue={adminMarkDownContainer.state.tagWhiteList}
-            onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
+            ref={this.tagWhitelist}
+            defaultValue={adminMarkDownContainer.state.tagWhitelist}
+            onChange={(e) => { adminMarkDownContainer.setState({ tagWhitelist: e.target.value }) }}
           />
         </div>
         <div className="mt-4">
@@ -67,9 +67,9 @@ class WhiteListInput extends React.Component {
             name="recommendedAttrs"
             rows="6"
             cols="40"
-            ref={this.attrWhiteList}
-            defaultValue={adminMarkDownContainer.state.attrWhiteList}
-            onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
+            ref={this.attrWhitelist}
+            defaultValue={adminMarkDownContainer.state.attrWhitelist}
+            onChange={(e) => { adminMarkDownContainer.setState({ attrWhitelist: e.target.value }) }}
           />
         </div>
       </>
@@ -79,7 +79,7 @@ class WhiteListInput extends React.Component {
 }
 
 
-WhiteListInput.propTypes = {
+WhitelistInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
@@ -88,9 +88,9 @@ WhiteListInput.propTypes = {
 const PresentationFormWrapperFC = (props) => {
   const { t } = useTranslation('admin');
 
-  return <WhiteListInput t={t} {...props} />;
+  return <WhitelistInput t={t} {...props} />;
 };
 
-const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AdminMarkDownContainer]);
+const WhitelistWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AdminMarkDownContainer]);
 
-export default WhiteListWrapper;
+export default WhitelistWrapper;

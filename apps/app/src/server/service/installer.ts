@@ -146,7 +146,7 @@ export class InstallerService {
         name, username, email, password,
       } = firstAdminUserToSave;
       adminUser = await User.createUser(name, username, email, password, globalLang);
-      await adminUser.asyncMakeAdmin();
+      await adminUser.asyncGrantAdmin();
     }
     catch (err) {
       throw new FailedToCreateAdminUserError(err);

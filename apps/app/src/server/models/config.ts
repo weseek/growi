@@ -57,7 +57,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:restrictGuestMode'      : 'Deny',
 
   'security:registrationMode'      : 'Open',
-  'security:registrationWhiteList' : [],
+  'security:registrationWhitelist' : [],
 
   'security:list-policy:hideRestrictedByOwner' : false,
   'security:list-policy:hideRestrictedByGroup' : false,
@@ -142,8 +142,8 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
   // don't use it, but won't turn it off
-  'markdown:xss:tagWhiteList': [],
-  'markdown:xss:attrWhiteList': [],
+  'markdown:xss:tagWhitelist': [],
+  'markdown:xss:attrWhitelist': [],
 
   'markdown:rehypeSanitize:isEnabledPrevention': true,
   'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
