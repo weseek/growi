@@ -68,10 +68,8 @@ module.exports = [
   (body) => {
   var fooRegExp = /foo/g; // foo regex
   return body.replace(fooRegExp, 'bar'); // replace to bar
-    return body;
   },
 ];
-
 ```
 
 By passing `custom` in the environment variable `MIGRATION_MODULE` and executing it, you can apply the `custom.js` to all the latest `revisions`.
