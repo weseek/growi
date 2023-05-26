@@ -71,7 +71,7 @@ class LocalSecuritySettingContents extends React.Component {
                 id="isLocalEnabled"
                 checked={isLocalEnabled}
                 onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
-                disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
+                disabled
               />
               <label className="custom-control-label" htmlFor="isLocalEnabled">
                 {t('security_settings.Local.enable_local')}
