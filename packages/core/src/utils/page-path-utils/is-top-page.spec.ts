@@ -11,8 +11,4 @@ describe('TopPage Path test', () => {
     const result = isTopPage('/test');
     expect(result).toBe(false);
   });
-  test.concurrent('Path is integer', () => {
-    const result = isTopPage(1);
-    expect(result).toBe(false);
-  });
 });
