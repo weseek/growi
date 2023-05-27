@@ -41,6 +41,7 @@ type AwsConfig = {
   forcePathStyle?: boolean
 }
 
+// TODO: rewrite this module to be a type-safe implementation
 class AwsFileUploader extends AbstractFileUploader {
 
   /**
