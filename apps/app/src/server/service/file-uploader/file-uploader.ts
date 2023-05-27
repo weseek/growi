@@ -2,20 +2,47 @@ import { randomUUID } from 'crypto';
 
 import loggerFactory from '~/utils/logger';
 
+import { configManager } from '../config-manager';
+
 const logger = loggerFactory('growi:service:fileUploader');
 
-// file uploader virtual class
-// 各アップローダーで共通のメソッドはここで定義する
 
-class Uploader {
+export type SaveFileParam = {
+  filePath: string,
+  contentType: string,
+  data,
+}
+
+export type CheckLimitResult = {
+  isUploadable: boolean,
+  errorMessage?: string,
+}
+
+export interface FileUploader {
+  getIsUploadable(): boolean,
+  isWritable(): Promise<boolean>,
+  getIsReadable(): boolean,
+  isValidUploadSettings(): boolean,
+  getFileUploadEnabled(): boolean,
+  saveFile(param: SaveFileParam): Promise<any>,
+  deleteFiles(): void,
+  getFileUploadTotalLimit(): number,
+  getTotalFileSize(): Promise<number>,
+  doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
+  canRespond(): boolean
+  respond(res: Response, attachment: Response): void,
+}
+
+export abstract class AbstractFileUploader implements FileUploader {
+
+  private crowi;
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.configManager = crowi.configManager;
   }
 
   getIsUploadable() {
-    return !this.configManager.getConfig('crowi', 'app:fileUploadDisabled') && this.isValidUploadSettings();
+    return !configManager.getConfig('crowi', 'app:fileUploadDisabled') && this.isValidUploadSettings();
   }
 
   /**
@@ -47,21 +74,19 @@ class Uploader {
     return this.isValidUploadSettings();
   }
 
-  isValidUploadSettings() {
-    throw new Error('Implement this');
-  }
+  abstract isValidUploadSettings(): boolean;
 
   getFileUploadEnabled() {
     if (!this.getIsUploadable()) {
       return false;
     }
 
-    return !!this.configManager.getConfig('crowi', 'app:fileUpload');
+    return !!configManager.getConfig('crowi', 'app:fileUpload');
   }
 
-  deleteFiles() {
-    throw new Error('Implemnt this');
-  }
+  abstract saveFile(param: SaveFileParam);
+
+  abstract deleteFiles();
 
   /**
    * Returns file upload total limit in bytes.
@@ -70,12 +95,10 @@ class Uploader {
    * @returns file upload total limit in bytes
    */
   getFileUploadTotalLimit() {
-    const { getConfig } = this.configManager;
-
-    const fileUploadTotalLimit = getConfig('crowi', 'app:fileUploadType') === 'mongodb'
+    const fileUploadTotalLimit = configManager.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
       // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
-      ? getConfig('crowi', 'gridfs:totalLimit') ?? getConfig('crowi', 'app:fileUploadTotalLimit')
-      : getConfig('crowi', 'app:fileUploadTotalLimit');
+      ? configManager.getConfig('crowi', 'gridfs:totalLimit') ?? configManager.getConfig('crowi', 'app:fileUploadTotalLimit')
+      : configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return fileUploadTotalLimit;
   }
 
@@ -99,13 +122,8 @@ class Uploader {
   /**
    * Check files size limits for all uploaders
    *
-   * @param {*} uploadFileSize
-   * @param {*} maxFileSize
-   * @param {*} totalLimit
-   * @returns
-   * @memberof Uploader
    */
-  async doCheckLimit(uploadFileSize, maxFileSize, totalLimit) {
+  async doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult> {
     if (uploadFileSize > maxFileSize) {
       return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
     }
@@ -121,19 +139,13 @@ class Uploader {
   /**
    * Checks if Uploader can respond to the HTTP request.
    */
-  canRespond() {
+  canRespond(): boolean {
     return false;
   }
 
   /**
    * Respond to the HTTP request.
-   * @param {Response} res
-   * @param {Response} attachment
    */
-  respond(res, attachment) {
-    throw new Error('Implement this');
-  }
+  abstract respond(res: Response, attachment: Response): void;
 
 }
-
-module.exports = Uploader;

@@ -2,15 +2,17 @@ import { Readable } from 'stream';
 
 import loggerFactory from '~/utils/logger';
 
+import { configManager } from '../config-manager';
+
+import { AbstractFileUploader } from './file-uploader';
+
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
 const util = require('util');
 
 const mongoose = require('mongoose');
 
 module.exports = function(crowi) {
-  const Uploader = require('./uploader');
-  const { configManager } = crowi;
-  const lib = new Uploader(crowi);
+  const lib = new AbstractFileUploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
