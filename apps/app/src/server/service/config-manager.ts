@@ -48,6 +48,16 @@ class ConfigManager implements S2sMessageHandlable {
 
   private lastLoadedAt?: Date;
 
+  private get isInitialized() {
+    return this.lastLoadedAt != null;
+  }
+
+  private validateInitialized() {
+    if (!this.isInitialized) {
+      throw new Error('The config data has not loaded yet.');
+    }
+  }
+
   /**
    * load configs from the database and the environment variables
    */
@@ -62,67 +72,9 @@ class ConfigManager implements S2sMessageHandlable {
   }
 
   /**
-   * Set S2sMessagingServiceDelegator instance
-   * @param s2sMessagingService
-   */
-  setS2sMessagingService(s2sMessagingService: S2sMessagingService): void {
-    this.s2sMessagingService = s2sMessagingService;
-  }
-
-  /**
-   * get a config specified by namespace & key
-   *
-   * Basically, this searches a specified config from configs loaded from the database at first
-   * and then from configs loaded from the environment variables.
-   *
-   * In some case, this search method changes.
-   *
-   * the followings are the meanings of each special return value.
-   * - null:      a specified config is not set.
-   * - undefined: a specified config does not exist.
-   */
-  getConfig(namespace, key) {
-    let value;
-
-    if (this.shouldSearchedFromEnvVarsOnly(namespace, key)) {
-      value = this.searchOnlyFromEnvVarConfigs(namespace, key);
-    }
-    else {
-      value = this.defaultSearch(namespace, key);
-    }
-
-    logger.debug(key, value);
-    return value;
-  }
-
-  /**
-   * get a config specified by namespace and regular expression
-   */
-  getConfigByRegExp(namespace, regexp) {
-    const result = {};
-
-    for (const key of this.configKeys) {
-      if (regexp.test(key)) {
-        result[key] = this.getConfig(namespace, key);
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * get a config specified by namespace and prefix
-   */
-  getConfigByPrefix(namespace, prefix) {
-    const regexp = new RegExp(`^${prefix}`);
-
-    return this.getConfigByRegExp(namespace, regexp);
-  }
-
-  /**
    * generate an array of config keys from this.configObject
    */
-  getConfigKeys() {
+  private getConfigKeys() {
     // type: fromDB, fromEnvVars
     const types = Object.keys(this.configObject);
     let namespaces: string[] = [];
@@ -152,8 +104,37 @@ class ConfigManager implements S2sMessageHandlable {
     return keys;
   }
 
-  reloadConfigKeys() {
+  private reloadConfigKeys() {
     this.configKeys = this.getConfigKeys();
+  }
+
+
+  /**
+   * get a config specified by namespace & key
+   *
+   * Basically, this searches a specified config from configs loaded from the database at first
+   * and then from configs loaded from the environment variables.
+   *
+   * In some case, this search method changes.
+   *
+   * the followings are the meanings of each special return value.
+   * - null:      a specified config is not set.
+   * - undefined: a specified config does not exist.
+   */
+  getConfig(namespace, key) {
+    this.validateInitialized();
+
+    let value;
+
+    if (this.shouldSearchedFromEnvVarsOnly(namespace, key)) {
+      value = this.searchOnlyFromEnvVarConfigs(namespace, key);
+    }
+    else {
+      value = this.defaultSearch(namespace, key);
+    }
+
+    logger.debug(key, value);
+    return value;
   }
 
   /**
@@ -162,6 +143,7 @@ class ConfigManager implements S2sMessageHandlable {
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
   getConfigFromDB(namespace, key) {
+    this.validateInitialized();
     return this.searchOnlyFromDBConfigs(namespace, key);
   }
 
@@ -171,6 +153,7 @@ class ConfigManager implements S2sMessageHandlable {
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
   getConfigFromEnvVars(namespace, key) {
+    this.validateInitialized();
     return this.searchOnlyFromEnvVarConfigs(namespace, key);
   }
 
@@ -235,7 +218,7 @@ class ConfigManager implements S2sMessageHandlable {
   /**
    * return whether the specified namespace/key should be retrieved only from env vars
    */
-  shouldSearchedFromEnvVarsOnly(namespace, key) {
+  private shouldSearchedFromEnvVarsOnly(namespace, key) {
     return (namespace === 'crowi' && (
       // siteUrl
       (
@@ -273,7 +256,7 @@ class ConfigManager implements S2sMessageHandlable {
    * search a specified config from configs loaded from the database at first
    * and then from configs loaded from the environment variables
    */
-  defaultSearch(namespace, key) {
+  private defaultSearch(namespace, key) {
     // does not exist neither in db nor in env vars
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       logger.debug(`${namespace}.${key} does not exist neither in db nor in env vars`);
@@ -309,7 +292,7 @@ class ConfigManager implements S2sMessageHandlable {
   /**
    * search a specified config from configs loaded from the database
    */
-  searchOnlyFromDBConfigs(namespace, key) {
+  private searchOnlyFromDBConfigs(namespace, key) {
     if (!this.configExistsInDB(namespace, key)) {
       return undefined;
     }
@@ -320,7 +303,7 @@ class ConfigManager implements S2sMessageHandlable {
   /**
    * search a specified config from configs loaded from the environment variables
    */
-  searchOnlyFromEnvVarConfigs(namespace, key) {
+  private searchOnlyFromEnvVarConfigs(namespace, key) {
     if (!this.configExistsInEnvVars(namespace, key)) {
       return undefined;
     }
@@ -331,7 +314,7 @@ class ConfigManager implements S2sMessageHandlable {
   /**
    * check whether a specified config exists in configs loaded from the database
    */
-  configExistsInDB(namespace, key) {
+  private configExistsInDB(namespace, key) {
     if (this.configObject.fromDB[namespace] === undefined) {
       return false;
     }
@@ -342,7 +325,7 @@ class ConfigManager implements S2sMessageHandlable {
   /**
    * check whether a specified config exists in configs loaded from the environment variables
    */
-  configExistsInEnvVars(namespace, key) {
+  private configExistsInEnvVars(namespace, key) {
     if (this.configObject.fromEnvVars[namespace] === undefined) {
       return false;
     }
@@ -350,8 +333,16 @@ class ConfigManager implements S2sMessageHandlable {
     return this.configObject.fromEnvVars[namespace][key] !== undefined;
   }
 
-  convertInsertValue(value) {
+  private convertInsertValue(value) {
     return JSON.stringify(value === '' ? null : value);
+  }
+
+  /**
+   * Set S2sMessagingServiceDelegator instance
+   * @param s2sMessagingService
+   */
+  setS2sMessagingService(s2sMessagingService: S2sMessagingService): void {
+    this.s2sMessagingService = s2sMessagingService;
   }
 
   async publishUpdateMessage() {
