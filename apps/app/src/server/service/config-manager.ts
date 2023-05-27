@@ -36,7 +36,19 @@ const KEYS_FOR_GCS_USE_ONLY_ENV_OPTION = [
   'gcs:uploadNamespace',
 ];
 
-class ConfigManager implements S2sMessageHandlable {
+
+export interface ConfigManager {
+  loadConfigs(): Promise<void>,
+  getConfig(namespace: string, key: string): any,
+  getConfigFromDB(namespace: string, key: string): any,
+  getConfigFromEnvVars(namespace: string, key: string): any,
+  updateConfigsInTheSameNamespace(namespace: string, configs, withoutPublishingS2sMessage?: boolean): Promise<void>
+  removeConfigsInTheSameNamespace(namespace: string, configKeys: string[], withoutPublishingS2sMessage?: boolean): Promise<void>
+
+  getFileUploadTotalLimit(): number,
+}
+
+class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
 
   private configLoader: ConfigLoader = new ConfigLoader();
 
@@ -393,4 +405,4 @@ class ConfigManager implements S2sMessageHandlable {
 }
 
 // export the singleton instance
-export const configManager = new ConfigManager();
+export const configManager = new ConfigManagerImpl();
