@@ -37,7 +37,7 @@ import { PluginService } from '../service/plugin';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 
 const logger = loggerFactory('growi:crowi');
