@@ -148,7 +148,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            additionalMenuItemOnTopRenderer={canMoveToRoot
+            additionalMenuItemOnTopRenderer={canMoveToRoot && isOperable
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
               : undefined}
           >
