@@ -1,46 +1,54 @@
-import ConfigModel from '~/server/models/config';
+import {
+  vi,
+  beforeAll,
+  describe, expect, test,
+} from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
-const { getInstance } = require('../setup-crowi');
+import ConfigModel from '../models/config';
+
+import { configManager } from './config-manager';
+import type { S2sMessagingService } from './s2s-messaging/base';
 
 describe('ConfigManager test', () => {
-  let crowi;
-  let configManager;
 
-  beforeEach(async() => {
+  const s2sMessagingServiceMock = mock<S2sMessagingService>();
+
+  beforeAll(async() => {
     process.env.CONFIG_PUBSUB_SERVER_TYPE = 'nchan';
-
-    crowi = await getInstance();
-    configManager = crowi.configManager;
+    configManager.setS2sMessagingService(s2sMessagingServiceMock);
   });
 
 
   describe('updateConfigsInTheSameNamespace()', () => {
 
-    beforeEach(async() => {
-      configManager.s2sMessagingService = {};
-    });
+    test.concurrent('invoke publishUpdateMessage()', async() => {
+      // setup
+      ConfigModel.bulkWrite = vi.fn();
+      configManager.loadConfigs = vi.fn();
+      configManager.publishUpdateMessage = vi.fn();
 
-    test('invoke publishUpdateMessage()', async() => {
-      ConfigModel.bulkWrite = jest.fn();
-      configManager.loadConfigs = jest.fn();
-      configManager.publishUpdateMessage = jest.fn();
-
+      // when
       const dummyConfig = { dummyKey: 'dummyValue' };
       await configManager.updateConfigsInTheSameNamespace('dummyNs', dummyConfig);
 
+      // then
       expect(ConfigModel.bulkWrite).toHaveBeenCalledTimes(1);
       expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
-    test('does not invoke publishUpdateMessage()', async() => {
-      ConfigModel.bulkWrite = jest.fn();
-      configManager.loadConfigs = jest.fn();
-      configManager.publishUpdateMessage = jest.fn();
+    test.concurrent('does not invoke publishUpdateMessage()', async() => {
+      // setup
+      ConfigModel.bulkWrite = vi.fn();
+      configManager.loadConfigs = vi.fn();
+      configManager.publishUpdateMessage = vi.fn();
 
+      // when
       const dummyConfig = { dummyKey: 'dummyValue' };
       await configManager.updateConfigsInTheSameNamespace('dummyNs', dummyConfig, true);
 
+      // then
       expect(ConfigModel.bulkWrite).toHaveBeenCalledTimes(1);
       expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();

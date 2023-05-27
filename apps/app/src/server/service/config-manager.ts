@@ -6,8 +6,8 @@ import ConfigModel from '../models/config';
 import S2sMessage from '../models/vo/s2s-message';
 
 import ConfigLoader, { ConfigObject } from './config-loader';
-import { S2sMessagingService } from './s2s-messaging/base';
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { S2sMessagingService } from './s2s-messaging/base';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
@@ -192,7 +192,7 @@ export default class ConfigManager implements S2sMessageHandlable {
    *  );
    * ```
    */
-  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage?) {
+  async updateConfigsInTheSameNamespace(namespace: string, configs, withoutPublishingS2sMessage = false): Promise<void> {
     const queries: any[] = [];
     for (const key of Object.keys(configs)) {
       queries.push({
@@ -400,3 +400,6 @@ export default class ConfigManager implements S2sMessageHandlable {
   }
 
 }
+
+// export the singleton instance
+export const configManager = new ConfigManager();
