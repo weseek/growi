@@ -1,10 +1,3 @@
-/** **********************************************************
- *                           Caution
- *
- * Module aliases by compilerOptions.paths in tsconfig.json
- * are NOT available in setup scripts
- *********************************************************** */
-
 import mongoose from 'mongoose';
 
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
