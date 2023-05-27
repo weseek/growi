@@ -53,7 +53,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
     mutateBookmarkFolders();
   }, [mutateBookmarkFolders, mutateBookmarkInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
 
-  const onClickDeleteBookmarkHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+  const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') return;
 
@@ -112,7 +112,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
               level={0}
               root={bookmarkFolder._id}
               isUserHomePage={isUserHomePage}
-              onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
+              onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />
           );
@@ -127,7 +127,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
               level={0}
               parentFolder={null}
               canMoveToRoot={false}
-              onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
+              onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />
           </div>

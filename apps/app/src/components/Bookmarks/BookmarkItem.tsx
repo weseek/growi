@@ -28,7 +28,7 @@ type Props = {
   level: number,
   parentFolder: BookmarkFolderItems | null,
   canMoveToRoot: boolean,
-  onClickDeleteBookmarkHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
+  onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
   bookmarkFolderTreeMutation: () => void
 }
 
@@ -39,7 +39,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteBookmarkHandler,
+    isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteMenuItemHandler,
     parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
 
@@ -113,8 +113,8 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       meta: pageInfo,
     };
 
-    onClickDeleteBookmarkHandler(pageToDelete);
-  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteBookmarkHandler]);
+    onClickDeleteMenuItemHandler(pageToDelete);
+  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteMenuItemHandler]);
 
   return (
     <DragAndDropWrapper
