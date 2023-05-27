@@ -26,7 +26,7 @@ import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
-import ConfigManager from '../service/config-manager';
+import { configManager as configManagerSingletonInstance } from '../service/config-manager';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -274,7 +274,7 @@ Crowi.prototype.setupSessionConfig = async function() {
 };
 
 Crowi.prototype.setupConfigManager = async function() {
-  this.configManager = new ConfigManager();
+  this.configManager = configManagerSingletonInstance;
   return this.configManager.loadConfigs();
 };
 

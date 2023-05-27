@@ -36,7 +36,7 @@ const KEYS_FOR_GCS_USE_ONLY_ENV_OPTION = [
   'gcs:uploadNamespace',
 ];
 
-export default class ConfigManager implements S2sMessageHandlable {
+class ConfigManager implements S2sMessageHandlable {
 
   private configLoader: ConfigLoader = new ConfigLoader();
 
