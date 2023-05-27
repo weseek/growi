@@ -1,4 +1,7 @@
 import { Readable } from 'stream';
+import util from 'util';
+
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
@@ -7,12 +10,44 @@ import { configManager } from '../config-manager';
 import { AbstractFileUploader } from './file-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
-const util = require('util');
 
-const mongoose = require('mongoose');
+
+// TODO: rewrite this module to be a type-safe implementation
+class GridfsFileUploader extends AbstractFileUploader {
+
+  /**
+   * @inheritdoc
+   */
+  override isValidUploadSettings(): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override saveFile(param: SaveFileParam) {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override deleteFiles() {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override respond(res: Response, attachment: Response): void {
+    throw new Error('Method not implemented.');
+  }
+
+}
+
 
 module.exports = function(crowi) {
-  const lib = new AbstractFileUploader(crowi);
+  const lib = new GridfsFileUploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
@@ -35,7 +70,7 @@ module.exports = function(crowi) {
     return true;
   };
 
-  lib.deleteFile = async function(attachment) {
+  (lib as any).deleteFile = async function(attachment) {
     let filenameValue = attachment.fileName;
 
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
@@ -51,7 +86,7 @@ module.exports = function(crowi) {
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
   };
 
-  lib.deleteFiles = async function(attachments) {
+  (lib as any).deleteFiles = async function(attachments) {
     const filenameValues = attachments.map((attachment) => {
       return attachment.fileName;
     });
@@ -89,13 +124,13 @@ module.exports = function(crowi) {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
-  lib.checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async function(uploadFileSize) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = lib.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
-  lib.uploadAttachment = async function(fileStream, attachment) {
+  (lib as any).uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     return AttachmentFile.promisifiedWrite(
@@ -127,7 +162,7 @@ module.exports = function(crowi) {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async function(attachment) {
+  (lib as any).findDeliveryFile = async function(attachment) {
     let filenameValue = attachment.fileName;
 
     if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
@@ -147,7 +182,7 @@ module.exports = function(crowi) {
   /**
    * List files in storage
    */
-  lib.listFiles = async function() {
+  (lib as any).listFiles = async function() {
     const attachmentFiles = await AttachmentFile.find();
     return attachmentFiles.map(({ filename: name, length: size }) => ({
       name, size,
