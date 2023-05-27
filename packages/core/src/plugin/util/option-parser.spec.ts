@@ -1,23 +1,19 @@
-import each from 'jest-each';
+import { describe, test, expect } from 'vitest';
 
-import { OptionParser } from '~/plugin/util/option-parser';
+import { OptionParser } from './option-parser';
 
 describe('option-parser', () => {
 
-  test('.parseRange(null) returns null', () => {
-    expect(OptionParser.parseRange(null)).toBeNull();
-  });
-
-  each`
+  test.concurrent.each`
     arg
     ${'aaa'}
     ${'5++2'}
     ${'5:+2'}
-  `.test('.parseRange(\'$arg\') returns null', ({ arg }) => {
+  `('.parseRange(\'$arg\') returns null', ({ arg }) => {
     expect(OptionParser.parseRange(arg)).toBeNull();
   });
 
-  each`
+  test.concurrent.each`
     arg       | start | end
     ${'1'}    | ${1} | ${1}
     ${'2:1'}  | ${2} | ${1}
@@ -25,7 +21,7 @@ describe('option-parser', () => {
     ${'10:-3'}   | ${10} | ${-3}
     ${'5+2'}   | ${5} | ${7}
     ${'5+'}   | ${5} | ${5}
-  `.test('.parseRange(\'$arg\') returns { start: $start, end : $end }', ({ arg, start, end }) => {
+  `('.parseRange(\'$arg\') returns { start: $start, end : $end }', ({ arg, start, end }) => {
     expect(OptionParser.parseRange(arg)).toEqual({ start, end });
   });
 

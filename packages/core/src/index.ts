@@ -15,5 +15,4 @@ export * from './interfaces/vite';
 export * from './models/devided-page-path';
 export * from './models/vo/error-apiv3';
 export * from './plugin';
-export * from './service/localstorage-manager';
 export * from './utils';
