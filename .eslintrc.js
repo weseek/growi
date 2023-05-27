@@ -14,7 +14,7 @@ module.exports = {
       {
         pathGroups: [
           {
-            pattern: 'vitest',
+            pattern: '(vitest|vitest-mock-extended)',
             group: 'builtin',
             position: 'before',
           },
