@@ -64,6 +64,22 @@ class Uploader {
   }
 
   /**
+   * Returns file upload total limit in bytes.
+   * Reference to previous implementation is
+   * {@link https://github.com/weseek/growi/blob/798e44f14ad01544c1d75ba83d4dfb321a94aa0b/src/server/service/file-uploader/gridfs.js#L86-L88}
+   * @returns file upload total limit in bytes
+   */
+  getFileUploadTotalLimit() {
+    const { getConfig } = this.configManager;
+
+    const fileUploadTotalLimit = getConfig('crowi', 'app:fileUploadType') === 'mongodb'
+      // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
+      ? getConfig('crowi', 'gridfs:totalLimit') ?? getConfig('crowi', 'app:fileUploadTotalLimit')
+      : getConfig('crowi', 'app:fileUploadTotalLimit');
+    return fileUploadTotalLimit;
+  }
+
+  /**
    * Get total file size
    * @returns Total file size
    */

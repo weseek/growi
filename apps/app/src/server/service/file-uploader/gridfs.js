@@ -89,7 +89,7 @@ module.exports = function(crowi) {
    */
   lib.checkLimit = async function(uploadFileSize) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
-    const totalLimit = configManager.getFileUploadTotalLimit();
+    const totalLimit = lib.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 

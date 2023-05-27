@@ -44,8 +44,6 @@ export interface ConfigManager {
   getConfigFromEnvVars(namespace: string, key: string): any,
   updateConfigsInTheSameNamespace(namespace: string, configs, withoutPublishingS2sMessage?: boolean): Promise<void>
   removeConfigsInTheSameNamespace(namespace: string, configKeys: string[], withoutPublishingS2sMessage?: boolean): Promise<void>
-
-  getFileUploadTotalLimit(): number,
 }
 
 class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
@@ -386,20 +384,6 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
   async handleS2sMessage(s2sMessage) {
     logger.info('Reload configs by pubsub notification');
     return this.loadConfigs();
-  }
-
-  /**
-   * Returns file upload total limit in bytes.
-   * Reference to previous implementation is
-   * {@link https://github.com/weseek/growi/blob/798e44f14ad01544c1d75ba83d4dfb321a94aa0b/src/server/service/file-uploader/gridfs.js#L86-L88}
-   * @returns file upload total limit in bytes
-   */
-  getFileUploadTotalLimit(): number {
-    const fileUploadTotalLimit = this.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
-      // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
-      ? this.getConfig('crowi', 'gridfs:totalLimit') ?? this.getConfig('crowi', 'app:fileUploadTotalLimit')
-      : this.getConfig('crowi', 'app:fileUploadTotalLimit');
-    return fileUploadTotalLimit;
   }
 
 }
