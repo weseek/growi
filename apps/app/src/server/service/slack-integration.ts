@@ -15,6 +15,7 @@ import loggerFactory from '~/utils/logger';
 import { EventActionsPermission } from '../interfaces/slack-integration/events';
 import S2sMessage from '../models/vo/s2s-message';
 import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
+import { slackLegacyUtilFactory } from '../util/slack-legacy';
 
 import ConfigManager from './config-manager';
 import { S2sMessagingService } from './s2s-messaging/base';
@@ -230,7 +231,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   private async postMessageWithLegacyUtil(messageArgs: ChatPostMessageArguments | IncomingWebhookSendArguments): Promise<void> {
-    const slackLegacyUtil = require('../util/slack-legacy')(this.crowi);
+    const slackLegacyUtil = slackLegacyUtilFactory(this.configManager);
 
     try {
       await slackLegacyUtil.postMessage(messageArgs);
