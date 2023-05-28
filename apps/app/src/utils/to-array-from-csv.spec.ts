@@ -1,4 +1,6 @@
-import { toArrayFromCsv } from '~/utils/to-array-from-csv';
+import { describe, test, expect } from 'vitest';
+
+import { toArrayFromCsv } from './to-array-from-csv';
 
 describe('To array from csv', () => {
 

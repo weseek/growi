@@ -1,11 +1,13 @@
+import { describe, test, expect } from 'vitest';
+
 import ObjectId from 'bson-objectid';
 
-import { isValidObjectId } from '~/utils/objectid-utils';
+import { isValidObjectId } from './objectid-utils';
 
 describe('isValidObjectId', () => {
 
   /* eslint-disable indent */
-  describe.each`
+  describe.concurrent.each`
     arg                                           | expected
     ${undefined}                                  | ${false}
     ${null}                                       | ${false}

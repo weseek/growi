@@ -35,7 +35,7 @@
     "prelint:swagger2openapi": "yarn openapi:v3",
     "test": "run-p test:*",
     "test:jest": "cross-env NODE_ENV=test NODE_OPTIONS=\"--max-old-space-size=4096\" jest --logHeapUsage",
-    "test:vitest": "cross-env NODE_ENV=test vitest run src",
+    "test:vitest": "cross-env NODE_ENV=test vitest run config src --coverage",
     "jest:run": "cross-env NODE_ENV=test jest --passWithNoTests -- ",
     "reg:run": "reg-suit run",
     "//// misc": "",

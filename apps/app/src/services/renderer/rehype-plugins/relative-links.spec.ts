@@ -10,6 +10,22 @@ import { relativeLinks } from './relative-links';
 
 describe('relativeLinks', () => {
 
+  test('do nothing when the options does not have pagePath', () => {
+    // setup
+    const processor = unified()
+      .use(parse)
+      .use(remarkRehype)
+      .use(relativeLinks, {});
+
+    // when
+    const mdastTree = processor.parse('[link](/Sandbox)');
+    const hastTree = processor.runSync(mdastTree) as HastNode;
+
+    // then
+    const anchorElement = select('a', hastTree);
+    expect(anchorElement?.properties?.href).toBe('/Sandbox');
+  });
+
   test.concurrent.each`
     originalHref
       ${'http://example.com/Sandbox'}
@@ -17,10 +33,11 @@ describe('relativeLinks', () => {
     `('leaves the original href \'$originalHref\' as-is', ({ originalHref }) => {
 
     // setup
+    const pagePath = '/foo/bar/baz';
     const processor = unified()
       .use(parse)
       .use(remarkRehype)
-      .use(relativeLinks, {});
+      .use(relativeLinks, { pagePath });
 
     // when
     const mdastTree = processor.parse(`[link](${originalHref})`);

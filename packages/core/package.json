@@ -20,7 +20,7 @@
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
-    "test": "jest --verbose"
+    "test": "vitest run --coverage"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"

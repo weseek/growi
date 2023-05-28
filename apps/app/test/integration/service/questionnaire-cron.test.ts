@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import mongoose from 'mongoose';
 
 import { IProactiveQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
@@ -8,8 +10,6 @@ import QuestionnaireAnswer from '../../../src/features/questionnaire/server/mode
 import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
 import { getInstance } from '../setup-crowi';
-
-const axios = require('axios').default;
 
 const spyAxiosGet = jest.spyOn<typeof axios, 'get'>(
   axios,
