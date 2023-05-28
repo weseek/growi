@@ -6,17 +6,8 @@ import { configManager } from './config-manager';
 const logger = loggerFactory('growi:service:AclService');
 
 
-const labels = {
-  SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
-  SECURITY_RESTRICT_GUEST_MODE_READONLY: 'Readonly',
-  // --- unused labels ---
-  // SECURITY_REGISTRATION_MODE_OPEN: 'Open',
-  // SECURITY_REGISTRATION_MODE_RESTRICTED: 'Restricted',
-  // SECURITY_REGISTRATION_MODE_CLOSED: 'Closed',
-};
-
-
 export interface AclService {
+  get labels(): { [key: string]: string },
   isAclEnabled(): boolean,
   isWikiModeForced(): boolean,
   isGuestAllowedToRead(): boolean,
@@ -27,6 +18,16 @@ export interface AclService {
  * the service class of AclService
  */
 class AclServiceImpl implements AclService {
+
+  get labels() {
+    return {
+      SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
+      SECURITY_RESTRICT_GUEST_MODE_READONLY: 'Readonly',
+      SECURITY_REGISTRATION_MODE_OPEN: 'Open',
+      SECURITY_REGISTRATION_MODE_RESTRICTED: 'Restricted',
+      SECURITY_REGISTRATION_MODE_CLOSED: 'Closed',
+    };
+  }
 
   /**
    * @returns Whether Access Control is enabled or not
@@ -65,13 +66,13 @@ class AclServiceImpl implements AclService {
 
     // 'Readonly' => returns true (allow access to guests)
     // 'Deny', null, undefined, '', ... everything else => returns false (requires login)
-    return guestMode === labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
+    return guestMode === this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
   }
 
   getGuestModeValue() {
     return this.isGuestAllowedToRead()
-      ? labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
-      : labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
+      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
+      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
   }
 
 }

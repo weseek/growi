@@ -1,6 +1,17 @@
 import { aclService } from '../../../src/server/service/acl';
 import { configManager } from '../../../src/server/service/config-manager';
 
+
+describe('AclService', () => {
+  test("has consts 'isLabeledStatement'", () => {
+    expect(aclService.labels.SECURITY_RESTRICT_GUEST_MODE_DENY).toBe('Deny');
+    expect(aclService.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY).toBe('Readonly');
+    expect(aclService.labels.SECURITY_REGISTRATION_MODE_OPEN).toBe('Open');
+    expect(aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED).toBe('Restricted');
+    expect(aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED).toBe('Closed');
+  });
+});
+
 describe('AclService test', () => {
 
   const initialEnv = process.env;
@@ -12,7 +23,6 @@ describe('AclService test', () => {
   afterEach(() => {
     process.env = initialEnv;
   });
-
 
   describe('isAclEnabled()', () => {
 
