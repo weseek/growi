@@ -1,5 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '~/components/CustomNavigation/CustomNav';
@@ -9,6 +10,7 @@ import { LDAPGroupSyncSettingsForm } from './LDAPGroupSyncSettingsForm';
 export const ExternalGroupManagement: FC = () => {
   const [activeTab, setActiveTab] = useState('ldap');
   const [activeComponents, setActiveComponents] = useState(new Set(['ldap']));
+  const { t } = useTranslation('admin');
 
   const switchActiveTab = (selectedTab) => {
     setActiveTab(selectedTab);
@@ -25,7 +27,7 @@ export const ExternalGroupManagement: FC = () => {
   }, []);
 
   return <>
-    <h2 className="border-bottom">外部グループ管理</h2>
+    <h2 className="border-bottom">{t('external_group.management')}</h2>
     <CustomNav
       activeTab={activeTab}
       navTabMapping={navTabMapping}

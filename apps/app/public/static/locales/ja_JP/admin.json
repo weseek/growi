@@ -17,6 +17,7 @@
   "specified_users": "特定ユーザーのみ",
   "only_me": "自分のみ",
   "only_inside_the_group": "特定グループのみ",
+  "optional": "オプション",
   "security_settings": {
     "security_settings": "セキュリティ設定",
     "scope_of_page_disclosure": "ページの公開範囲",
@@ -97,7 +98,6 @@
     "enable_link_sharing": "リンクのシェアを許可",
     "all_share_links": "全てのシェアリンク",
     "configuration": "設定",
-    "optional": "オプション",
     "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
     "Treat username matching as identical_warn": "警告: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "Treat email matching as identical": "新規ログイン時、<code>email</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
@@ -1044,6 +1044,25 @@
     "transfer_success": "G2G移行が完了しました",
     "error_generate_growi_archive": "GROWI アーカイブファイルの作成に失敗しました",
     "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
+  },
+  "external_group": {
+    "management": "外部グループ管理",
+    "ldap": {
+      "group_sync_settings": "LDAP グループ同期設定",
+      "group_search_base_DN": "グループ検索ベース DN",
+      "group_search_base_dn_detail": "グループ検索をするベース DN",
+      "membership_attribute": "所属メンバーを表す LDAP 属性",
+      "membership_attribute_detail": "グループの所属メンバーを表すグループオブジェクトの属性",
+      "membership_attribute_type": "「所属メンバーを表す LDAP 属性」値の種類",
+      "membership_attribute_type_detail": "グループの所属メンバーを表すグループオブジェクトの属性値は DN か UID か",
+      "child_group_attribute": "子グループを表す LDAP 属性",
+      "child_group_attribute_detail": "グループに所属する子グループを表すグループオブジェクトの属性。属性値は DN である必要があります。",
+      "auto_generate_user_on_sync": "作成されていない GROWI アカウントを自動生成する",
+      "preserve_deleted_ldap_groups": "LDAP から削除されたグループを GROWI に残す",
+      "name_mapper_detail": "グループの「名前」として読み込む属性",
+      "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。",
+      "updated_group_sync_settings": "LDAP グループ同期設定を更新しました"
+    }
   },
   "toaster": {
     "grant_user_admin": "{{username}}を管理者に設定しました",

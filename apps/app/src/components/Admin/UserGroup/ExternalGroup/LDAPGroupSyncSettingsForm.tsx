@@ -34,7 +34,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
   const submitHandler = useCallback(async() => {
     try {
       await apiv3Put('/external-user-groups/ldap/sync-settings', formValues);
-      toastSuccess('更新しました');
+      toastSuccess(t('external_group.ldap.updated_group_sync_settings'));
     }
     catch (err) {
       toastError(err);
@@ -42,9 +42,9 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
   }, [formValues]);
 
   return <>
-    <h3 className="border-bottom">LDAP グループ同期設定</h3>
+    <h3 className="border-bottom">{t('external_group.ldap.group_sync_settings')}</h3>
     <div className="row form-group">
-      <label htmlFor="ldapGroupsDN" className="text-left text-md-right col-md-3 col-form-label">グループ検索ベース DN</label>
+      <label htmlFor="ldapGroupsDN" className="text-left text-md-right col-md-3 col-form-label">{t('external_group.ldap.group_search_base_DN')}</label>
       <div className="col-md-6">
         <input
           className="form-control"
@@ -55,12 +55,14 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
           onChange={e => setFormValues({ ...formValues, ldapGroupsDN: e.target.value })}
         />
         <p className="form-text text-muted">
-          <small>グループ検索をするベース DN</small>
+          <small>{t('external_group.ldap.group_search_base_dn_detail')}</small>
         </p>
       </div>
     </div>
     <div className="row form-group">
-      <label htmlFor="ldapGroupMembershipAttribute" className="text-left text-md-right col-md-3 col-form-label">所属メンバーを表す LDAP 属性</label>
+      <label htmlFor="ldapGroupMembershipAttribute" className="text-left text-md-right col-md-3 col-form-label">
+        {t('external_group.ldap.membership_attribute')}
+      </label>
       <div className="col-md-6">
         <input
           className="form-control"
@@ -72,7 +74,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
         />
         <p className="form-text text-muted">
           <small>
-            グループの所属メンバーを表すグループオブジェクトの属性 <br />
+            {t('external_group.ldap.membership_attribute_detail')} <br />
             e.g.) <code>member</code>, <code>memberUid</code>
           </small>
         </p>
@@ -80,7 +82,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
     </div>
     <div className="row form-group">
       <label htmlFor="ldapGroupMembershipAttributeType" className="text-left text-md-right col-md-3 col-form-label">
-        「所属メンバーを表す LDAP 属性」値の種類
+        {t('external_group.ldap.membership_attribute_type')}
       </label>
       <div className="col-md-6">
         <select
@@ -94,13 +96,15 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
         </select>
         <p className="form-text text-muted">
           <small>
-          グループの所属メンバーを表すグループオブジェクトの属性値は DN か UID か
+            {t('external_group.ldap.membership_attribute_type_detail')}
           </small>
         </p>
       </div>
     </div>
     <div className="row form-group">
-      <label htmlFor="ldapGroupChildGroupAttribute" className="text-left text-md-right col-md-3 col-form-label">子グループを表す LDAP 属性</label>
+      <label htmlFor="ldapGroupChildGroupAttribute" className="text-left text-md-right col-md-3 col-form-label">
+        {t('external_group.ldap.child_group_attribute')}
+      </label>
       <div className="col-md-6">
         <input
           className="form-control"
@@ -111,7 +115,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
           onChange={e => setFormValues({ ...formValues, ldapGroupChildGroupAttribute: e.target.value })}/>
         <p className="form-text text-muted">
           <small>
-            グループに所属する子グループを表すグループオブジェクトの属性。属性値は DN である必要があります。<br />
+            {t('external_group.ldap.child_group_attribute_detail')}<br />
             e.g.) <code>member</code>
           </small>
         </p>
@@ -121,7 +125,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
       <label
         className="text-left text-md-right col-md-3 col-form-label"
       >
-        {/* {t('admin:app_setting.file_uploading')} */}
+        {/* {t('external_group.ldap.auto_generate_user_on_sync')} */}
       </label>
       <div className="col-md-6">
         <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -137,7 +141,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
             className="custom-control-label"
             htmlFor="autoGenerateUserOnLDAPGroupSync"
           >
-            作成されていない GROWI アカウントを自動生成する
+            {t('external_group.ldap.auto_generate_user_on_sync')}
           </label>
         </div>
       </div>
@@ -146,7 +150,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
       <label
         className="text-left text-md-right col-md-3 col-form-label"
       >
-        {/* {t('admin:app_setting.file_uploading')} */}
+        {/* {t('external_group.ldap.preserve_deleted_ldap_groups')} */}
       </label>
       <div className="col-md-6">
         <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -162,14 +166,14 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
             className="custom-control-label"
             htmlFor="preserveDeletedLDAPGroups"
           >
-            LDAP から削除されたグループを GROWI に残す
+            {t('external_group.ldap.preserve_deleted_ldap_groups')}
           </label>
         </div>
       </div>
     </div>
-    <h3 className="border-bottom">Attribute Mapping(オプション)</h3>
+    <h3 className="border-bottom">Attribute Mapping ({t('optional')})</h3>
     <div className="row form-group">
-      <label htmlFor="ldapGroupNameAttribute" className="text-left text-md-right col-md-3 col-form-label">名前</label>
+      <label htmlFor="ldapGroupNameAttribute" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
       <div className="col-md-6">
         <input
           className="form-control"
@@ -182,14 +186,14 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
         />
         <p className="form-text text-muted">
           <small>
-            グループの「名前」として読み込む属性
+            {t('external_group.ldap.name_mapper_detail')}
           </small>
         </p>
       </div>
     </div>
     <div className="row form-group">
       <label htmlFor="ldapGroupDescriptionAttribute" className="text-left text-md-right col-md-3 col-form-label">
-        説明
+        {t('Description')}
       </label>
       <div className="col-md-6">
         <input
@@ -202,7 +206,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
         />
         <p className="form-text text-muted">
           <small>
-            グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。
+            {t('external_group.ldap.description_mapper_detail')}
           </small>
         </p>
       </div>

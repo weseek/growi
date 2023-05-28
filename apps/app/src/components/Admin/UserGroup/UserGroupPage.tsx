@@ -148,7 +148,7 @@ export const UserGroupPage: FC = () => {
 
   return (
     <div data-testid="admin-user-groups">
-      <h2 className="border-bottom">グループ管理</h2>
+      <h2 className="border-bottom">{t('admin:user_group_management.user_group_management')}</h2>
       {
         isAclEnabled ? (
           <div className="mb-3">
