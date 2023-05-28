@@ -1,10 +1,10 @@
-import { defineProject, mergeConfig } from 'vitest/config';
+import { defineConfig, mergeConfig } from 'vitest/config';
 
 import configShared from './vitest.config';
 
 export default mergeConfig(
   configShared,
-  defineProject({
+  defineConfig({
     test: {
       include: [
         '**/*.integ.ts',
@@ -12,6 +12,11 @@ export default mergeConfig(
       setupFiles: [
         './test-with-vite/setup/mongoms.ts',
       ],
+      coverage: {
+        exclude: [
+          '**/*{.,-}integ.ts',
+        ],
+      },
     },
   }),
 );
