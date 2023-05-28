@@ -1,29 +1,38 @@
 import loggerFactory from '~/utils/logger';
 
-// eslint-disable-next-line no-unused-vars
+import { configManager } from './config-manager';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AclService');
+
+
+const labels = {
+  SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
+  SECURITY_RESTRICT_GUEST_MODE_READONLY: 'Readonly',
+  // --- unused labels ---
+  // SECURITY_REGISTRATION_MODE_OPEN: 'Open',
+  // SECURITY_REGISTRATION_MODE_RESTRICTED: 'Restricted',
+  // SECURITY_REGISTRATION_MODE_CLOSED: 'Closed',
+};
+
+
+export interface AclService {
+  isAclEnabled(): boolean,
+  isWikiModeForced(): boolean,
+  isGuestAllowedToRead(): boolean,
+  getGuestModeValue(): string,
+}
 
 /**
  * the service class of AclService
  */
-class AclService {
-
-  constructor(configManager) {
-    this.configManager = configManager;
-    this.labels = {
-      SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
-      SECURITY_RESTRICT_GUEST_MODE_READONLY: 'Readonly',
-      SECURITY_REGISTRATION_MODE_OPEN: 'Open',
-      SECURITY_REGISTRATION_MODE_RESTRICTED: 'Restricted',
-      SECURITY_REGISTRATION_MODE_CLOSED: 'Closed',
-    };
-  }
+class AclServiceImpl implements AclService {
 
   /**
    * @returns Whether Access Control is enabled or not
    */
   isAclEnabled() {
-    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
     return wikiMode !== 'public';
   }
 
@@ -31,7 +40,7 @@ class AclService {
    * @returns Whether wiki mode is set
    */
   isWikiModeForced() {
-    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
     const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
 
     return isPrivateOrPublic;
@@ -41,7 +50,7 @@ class AclService {
    * @returns Whether guest users are allowed to read public pages
    */
   isGuestAllowedToRead() {
-    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 
     // return false if private wiki mode
     if (wikiMode === 'private') {
@@ -52,36 +61,19 @@ class AclService {
       return true;
     }
 
-    const guestMode = this.configManager.getConfig('crowi', 'security:restrictGuestMode');
+    const guestMode = configManager.getConfig('crowi', 'security:restrictGuestMode');
 
     // 'Readonly' => returns true (allow access to guests)
     // 'Deny', null, undefined, '', ... everything else => returns false (requires login)
-    return guestMode === this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
+    return guestMode === labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
   }
 
   getGuestModeValue() {
     return this.isGuestAllowedToRead()
-      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
-      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
-  }
-
-  getRestrictGuestModeLabels() {
-    const labels = {};
-    labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_settings.guest_mode.deny';
-    labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_settings.guest_mode.readonly';
-
-    return labels;
-  }
-
-  getRegistrationModeLabels() {
-    const labels = {};
-    labels[this.labels.SECURITY_REGISTRATION_MODE_OPEN] = 'security_settings.registration_mode.open';
-    labels[this.labels.SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_settings.registration_mode.restricted';
-    labels[this.labels.SECURITY_REGISTRATION_MODE_CLOSED] = 'security_settings.registration_mode.closed';
-
-    return labels;
+      ? labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
+      : labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
   }
 
 }
 
-module.exports = AclService;
+export const aclService = new AclServiceImpl();
