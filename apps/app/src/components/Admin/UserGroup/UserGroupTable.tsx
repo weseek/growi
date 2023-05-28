@@ -126,7 +126,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
 
   return (
     <div data-testid="grw-user-group-table">
-      <h2>{props.headerLabel}</h2>
+      <h3>{props.headerLabel}</h3>
 
       <table className="table table-bordered table-user-list">
         <thead>

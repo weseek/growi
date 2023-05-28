@@ -622,6 +622,8 @@ class PassportService implements S2sMessageHandlable {
           params: { scope: 'openid email profile' },
         },
         (tokenset, userinfo, done) => {
+          console.log('this is the tokenset');
+          console.log(tokenset);
           if (userinfo) {
             return done(null, userinfo);
           }

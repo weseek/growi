@@ -9,6 +9,8 @@ import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
+import { ExternalGroupManagement } from './ExternalGroup/ExternalGroupManagement';
+
 const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupModal = dynamic(() => import('./UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
 const UserGroupTable = dynamic(() => import('./UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
@@ -146,6 +148,7 @@ export const UserGroupPage: FC = () => {
 
   return (
     <div data-testid="admin-user-groups">
+      <h2 className="border-bottom">グループ管理</h2>
       {
         isAclEnabled ? (
           <div className="mb-3">
@@ -190,6 +193,9 @@ export const UserGroupPage: FC = () => {
         isShow={isDeleteModalShown}
         onHide={hideDeleteModal}
       />
+      <div className="mt-5">
+        <ExternalGroupManagement />
+      </div>
     </div>
   );
 };
