@@ -5,7 +5,6 @@ import { configManager } from './config-manager';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AclService');
 
-
 export interface AclService {
   get labels(): { [key: string]: string },
   isAclEnabled(): boolean,

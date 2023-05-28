@@ -7,7 +7,9 @@ export default defineProject({
   ],
   test: {
     environment: 'node',
-    exclude: ['**/test/**'],
+    exclude: [
+      '**/test/**',
+    ],
     clearMocks: true,
     globals: true,
   },
