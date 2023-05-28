@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
-import { mongoOptions } from '../../src/server/util/mongoose-utils';
+import { mongoOptions } from '~/server/util/mongoose-utils';
 
 
 beforeAll(async() => {
