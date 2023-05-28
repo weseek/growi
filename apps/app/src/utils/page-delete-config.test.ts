@@ -1,11 +1,9 @@
-import { describe, test } from 'vitest';
-
 import { PageDeleteConfigValue } from '../interfaces/page-delete-config';
 
 import { validateDeleteConfigs } from './page-delete-config';
 
 describe('validateDeleteConfigs utility function', () => {
-  test('Should validate delete configs', ({ expect }) => {
+  test('Should validate delete configs', () => {
     const Anyone = PageDeleteConfigValue.Anyone;
     const AdminAndAuthor = PageDeleteConfigValue.AdminAndAuthor;
     const AdminOnly = PageDeleteConfigValue.AdminOnly;

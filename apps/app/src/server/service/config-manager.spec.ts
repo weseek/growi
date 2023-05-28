@@ -1,8 +1,3 @@
-import {
-  vi,
-  beforeAll,
-  describe, expect, test,
-} from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import ConfigModel from '../models/config';

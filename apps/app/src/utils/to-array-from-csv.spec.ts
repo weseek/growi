@@ -1,5 +1,3 @@
-import { describe, test, expect } from 'vitest';
-
 import { toArrayFromCsv } from './to-array-from-csv';
 
 describe('To array from csv', () => {

@@ -1,5 +1,3 @@
-import { describe, test, expect } from 'vitest';
-
 import { isTopPage } from './is-top-page';
 
 describe('TopPage Path test', () => {
