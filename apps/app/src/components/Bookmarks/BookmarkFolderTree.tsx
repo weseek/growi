@@ -43,7 +43,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId);
-  const { mutate: mutateCurrentUserBookmarks } = useSWRxUserBookmarks(shouldMutateCurrentUserbookmarks ? currentUser?._id : null);
+  const { mutate: mutateCurrentUserBookmarks } = useSWRxUserBookmarks(shouldMutateCurrentUserbookmarks ? currentUser?._id : undefined);
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
