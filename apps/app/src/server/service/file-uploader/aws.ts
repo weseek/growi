@@ -15,7 +15,7 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import { AbstractFileUploader, SaveFileParam } from './file-uploader';
+import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
