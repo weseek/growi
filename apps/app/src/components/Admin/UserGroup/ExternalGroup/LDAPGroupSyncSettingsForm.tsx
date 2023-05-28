@@ -39,7 +39,7 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
     catch (err) {
       toastError(err);
     }
-  }, [formValues]);
+  }, [formValues, t]);
 
   return <>
     <h3 className="border-bottom">{t('external_group.ldap.group_sync_settings')}</h3>
