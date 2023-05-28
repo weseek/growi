@@ -1,6 +1,46 @@
-import { FC } from 'react';
+import {
+  FC, useCallback, useEffect, useState,
+} from 'react';
 
-export const LDAPGroupSyncSettings: FC = () => {
+import { useTranslation } from 'react-i18next';
+
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
+import { LDAPGroupSyncSettings } from '~/interfaces/external-user-group';
+import { useSWRxLDAPGroupSyncSettings } from '~/stores/external-user-group';
+
+export const LDAPGroupSyncSettingsForm: FC = () => {
+  const { t } = useTranslation('admin');
+
+  const { data: ldapGroupSyncSettings } = useSWRxLDAPGroupSyncSettings();
+
+  const [formValues, setFormValues] = useState<LDAPGroupSyncSettings>({
+    ldapGroupsDN: '',
+    ldapGroupMembershipAttribute: '',
+    ldapGroupMembershipAttributeType: '',
+    ldapGroupChildGroupAttribute: '',
+    autoGenerateUserOnLDAPGroupSync: false,
+    preserveDeletedLDAPGroups: false,
+    ldapGroupNameAttribute: '',
+    ldapGroupDescriptionAttribute: '',
+  });
+
+  useEffect(() => {
+    if (ldapGroupSyncSettings != null) {
+      setFormValues(ldapGroupSyncSettings);
+    }
+  }, [ldapGroupSyncSettings, setFormValues]);
+
+  const submitHandler = useCallback(async() => {
+    try {
+      await apiv3Put('/external-user-groups/ldap/sync-settings', formValues);
+      toastSuccess('更新しました');
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [formValues]);
+
   return <>
     <h3 className="border-bottom">LDAP グループ同期設定</h3>
     <div className="row form-group">
@@ -11,8 +51,8 @@ export const LDAPGroupSyncSettings: FC = () => {
           type="text"
           name="ldapGroupsDN"
           id="ldapGroupsDN"
-          defaultValue={''}
-          onChange={() => {}}
+          value={formValues.ldapGroupsDN}
+          onChange={e => setFormValues({ ...formValues, ldapGroupsDN: e.target.value })}
         />
         <p className="form-text text-muted">
           <small>グループ検索をするベース DN</small>
@@ -27,8 +67,8 @@ export const LDAPGroupSyncSettings: FC = () => {
           type="text"
           name="ldapGroupMembershipAttribute"
           id="ldapGroupMembershipAttribute"
-          defaultValue={''}
-          onChange={() => {}}
+          value={formValues.ldapGroupMembershipAttribute}
+          onChange={e => setFormValues({ ...formValues, ldapGroupMembershipAttribute: e.target.value })}
         />
         <p className="form-text text-muted">
           <small>
@@ -43,14 +83,15 @@ export const LDAPGroupSyncSettings: FC = () => {
         「所属メンバーを表す LDAP 属性」値の種類
       </label>
       <div className="col-md-6">
-        <input
+        <select
           className="form-control"
-          type="text"
           name="ldapGroupMembershipAttributeType"
           id="ldapGroupMembershipAttributeType"
-          defaultValue={''}
-          onChange={() => {}}
-        />
+          value={formValues.ldapGroupMembershipAttributeType}
+          onChange={e => setFormValues({ ...formValues, ldapGroupMembershipAttributeType: e.target.value })}>
+          <option value="DN">DN</option>
+          <option value="UID">UID</option>
+        </select>
         <p className="form-text text-muted">
           <small>
           グループの所属メンバーを表すグループオブジェクトの属性値は DN か UID か
@@ -66,9 +107,8 @@ export const LDAPGroupSyncSettings: FC = () => {
           type="text"
           name="ldapGroupChildGroupAttribute"
           id="ldapGroupChildGroupAttribute"
-          defaultValue={''}
-          onChange={() => {}}
-        />
+          value={formValues.ldapGroupChildGroupAttribute}
+          onChange={e => setFormValues({ ...formValues, ldapGroupChildGroupAttribute: e.target.value })}/>
         <p className="form-text text-muted">
           <small>
             グループに所属する子グループを表すグループオブジェクトの属性。属性値は DN である必要があります。<br />
@@ -90,8 +130,8 @@ export const LDAPGroupSyncSettings: FC = () => {
             className="custom-control-input"
             name="autoGenerateUserOnLDAPGroupSync"
             id="autoGenerateUserOnLDAPGroupSync"
-            checked={true}
-            onChange={(e) => {}}
+            checked={formValues.autoGenerateUserOnLDAPGroupSync}
+            onChange={() => setFormValues({ ...formValues, autoGenerateUserOnLDAPGroupSync: !formValues.autoGenerateUserOnLDAPGroupSync })}
           />
           <label
             className="custom-control-label"
@@ -115,8 +155,8 @@ export const LDAPGroupSyncSettings: FC = () => {
             className="custom-control-input"
             name="preserveDeletedLDAPGroups"
             id="preserveDeletedLDAPGroups"
-            checked={true}
-            onChange={(e) => {}}
+            checked={formValues.preserveDeletedLDAPGroups}
+            onChange={() => setFormValues({ ...formValues, preserveDeletedLDAPGroups: !formValues.preserveDeletedLDAPGroups })}
           />
           <label
             className="custom-control-label"
@@ -136,8 +176,8 @@ export const LDAPGroupSyncSettings: FC = () => {
           type="text"
           name="ldapGroupNameAttribute"
           id="ldapGroupNameAttribute"
-          defaultValue={''}
-          onChange={() => {}}
+          value={formValues.ldapGroupNameAttribute}
+          onChange={e => setFormValues({ ...formValues, ldapGroupNameAttribute: e.target.value })}
           placeholder="Default: cn"
         />
         <p className="form-text text-muted">
@@ -157,14 +197,26 @@ export const LDAPGroupSyncSettings: FC = () => {
           type="text"
           name="ldapGroupDescriptionAttribute"
           id="ldapGroupDescriptionAttribute"
-          defaultValue={''}
-          onChange={() => {}}
+          value={formValues.ldapGroupDescriptionAttribute}
+          onChange={e => setFormValues({ ...formValues, ldapGroupDescriptionAttribute: e.target.value })}
         />
         <p className="form-text text-muted">
           <small>
             グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。
           </small>
         </p>
+      </div>
+    </div>
+
+    <div className="row my-3">
+      <div className="offset-3 col-5">
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={submitHandler}
+        >
+          {t('Update')}
+        </button>
       </div>
     </div>
   </>;
