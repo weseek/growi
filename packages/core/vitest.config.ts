@@ -8,5 +8,6 @@ export default defineProject({
   test: {
     environment: 'node',
     clearMocks: true,
+    globals: true,
   },
 });
