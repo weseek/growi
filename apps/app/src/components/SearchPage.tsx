@@ -99,8 +99,6 @@ export const SearchPage = (): JSX.Element => {
   const initQ = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
-  type changeStyle = 'search' | 'browser';
-  const [changeState, setChangeState] = useState<changeStyle>('search');
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
@@ -167,10 +165,10 @@ export const SearchPage = (): JSX.Element => {
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
-      keyword,
+      keyword: initQ,
       limit: INITIAL_PAGIONG_SIZE,
     };
-  }, [keyword]);
+  }, [initQ]);
 
   // for bulk deletion
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
@@ -179,32 +177,8 @@ export const SearchPage = (): JSX.Element => {
   useEffect(() => {
     const newUrl = new URL('/_search', 'http://example.com');
     newUrl.searchParams.append('q', keyword);
-    switch (changeState) {
-      case 'search': {
-        window.history.pushState(keyword, `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
-        break;
-      }
-      case 'browser': {
-        break;
-      }
-      default: break;
-    }
-    setChangeState('search');
-  }, [keyword, setChangeState]);
-
-  // browser back and forward
-  useEffect(() => {
-    const browserButton = (k) => {
-      setChangeState('browser');
-      if (typeof k.state === 'string') {
-        setKeyword(k.state);
-      }
-    };
-    window.addEventListener('popstate', browserButton);
-    return () => {
-      window.removeEventListener('popstate', browserButton);
-    };
-  }, [setChangeState, setKeyword]);
+    router.push(`${newUrl.pathname}${newUrl.search}`);
+  }, [keyword]);
 
   const hitsCount = data?.meta.hitsCount;
 
