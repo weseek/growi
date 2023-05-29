@@ -8,6 +8,7 @@ import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { GrowiExternalAuthProviderType } from '~/features/questionnaire/interfaces/growi-info';
 
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
@@ -315,6 +316,9 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
+  const ExternalAccount = crowi.model('ExternalAccount');
+  const User = crowi.model('User');
+
   async function updateAndReloadStrategySettings(authId, params) {
     const { configManager, passportService } = crowi;
 
@@ -323,6 +327,44 @@ module.exports = (crowi) => {
 
     await passportService.setupStrategyById(authId);
     passportService.publishUpdatedMessage(authId);
+  }
+
+  async function isAbleToDisableAuthMethod() {
+    const activeExternalAccountTypes = Object.values(GrowiExternalAuthProviderType).filter((type) => {
+      return crowi.configManager.getConfig('crowi', `security:passport-${type}:isEnabled`);
+    });
+
+    const isAdminPromises = activeExternalAccountTypes.map(providerType => checkExternalAccountHasAdmin(providerType));
+    const isAdminResults = await Promise.all(isAdminPromises);
+    const isLocalAdminEnabled = await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled');
+    const isLocalHasAdmin = await checkLocalAccountHasAdmin();
+
+    const totalActiveAuthMethods = activeExternalAccountTypes.reduce((count, providerType, index) => {
+      if (isAdminResults[index] === true) {
+        return count + 1;
+      }
+      return count;
+    }, 0) + (isLocalAdminEnabled && isLocalHasAdmin ? 1 : 0);
+
+    return totalActiveAuthMethods > 1;
+  }
+
+
+  async function checkExternalAccountHasAdmin(providerType) {
+    const externalAccounts = await ExternalAccount.find({ providerType }).populate('user').exec();
+    for (const externalAccount of externalAccounts) {
+      const { user } = externalAccount;
+      if (user && user.isAdmin) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  async function checkLocalAccountHasAdmin() {
+    const adminAccounts = await User.find({ isAdmin: true }).exec();
+    return adminAccounts.length > 0;
   }
 
   /**
@@ -356,6 +398,7 @@ module.exports = (crowi) => {
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
+        isAbleToDisableAuthMethod: await isAbleToDisableAuthMethod(),
       },
       shareLinkSetting: {
         disableLinkSharing: await crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
