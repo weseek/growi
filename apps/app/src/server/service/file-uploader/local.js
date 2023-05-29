@@ -2,6 +2,8 @@ import { Readable } from 'stream';
 
 import loggerFactory from '~/utils/logger';
 
+import { AbstractFileUploader } from './file-uploader';
+
 const logger = loggerFactory('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
@@ -13,9 +15,8 @@ const streamToPromise = require('stream-to-promise');
 const urljoin = require('url-join');
 
 module.exports = function(crowi) {
-  const Uploader = require('./uploader');
   const { configManager } = crowi;
-  const lib = new Uploader(crowi);
+  const lib = new AbstractFileUploader(crowi);
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {

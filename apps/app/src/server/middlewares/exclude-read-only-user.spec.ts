@@ -1,6 +1,6 @@
 import { ErrorV3 } from '@growi/core';
 
-import { excludeReadOnlyUser } from '../../../src/server/middlewares/exclude-read-only-user';
+import { excludeReadOnlyUser } from './exclude-read-only-user';
 
 describe('excludeReadOnlyUser', () => {
   let req;
@@ -12,9 +12,9 @@ describe('excludeReadOnlyUser', () => {
       user: {},
     };
     res = {
-      apiv3Err: jest.fn(),
+      apiv3Err: vi.fn(),
     };
-    next = jest.fn();
+    next = vi.fn();
   });
 
   test('should call next if user is not found', () => {

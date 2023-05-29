@@ -1,25 +1,25 @@
-import * as pathUtils from '~/utils/path-utils';
+import * as pathUtils from './path-utils';
 
 
 describe('page-utils', () => {
   describe('.normalizePath', () => {
-    test('should return the root path with empty string', () => {
+    test.concurrent('should return the root path with empty string', () => {
       expect(pathUtils.normalizePath('')).toBe('/');
     });
 
-    test('should return the root path as is', () => {
+    test.concurrent('should return the root path as is', () => {
       expect(pathUtils.normalizePath('/')).toBe('/');
     });
 
-    test('should add heading slash', () => {
+    test.concurrent('should add heading slash', () => {
       expect(pathUtils.normalizePath('hoge/fuga')).toBe('/hoge/fuga');
     });
 
-    test('should remove trailing slash', () => {
+    test.concurrent('should remove trailing slash', () => {
       expect(pathUtils.normalizePath('/hoge/fuga/')).toBe('/hoge/fuga');
     });
 
-    test('should remove unnecessary slashes', () => {
+    test.concurrent('should remove unnecessary slashes', () => {
       expect(pathUtils.normalizePath('//hoge/fuga//')).toBe('/hoge/fuga');
     });
   });

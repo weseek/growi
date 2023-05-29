@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
 import { Collection } from 'mongodb';
+import mongoose from 'mongoose';
 
-const migrate = require('~/migrations/20210913153942-migrate-slack-app-integration-schema');
+import migrate from '~/migrations/20210913153942-migrate-slack-app-integration-schema';
 
 describe('migrate-slack-app-integration-schema', () => {
 
