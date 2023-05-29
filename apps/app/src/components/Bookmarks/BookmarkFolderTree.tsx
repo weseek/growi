@@ -35,6 +35,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   // const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
 
+  // In order to update the bookmark information in the sidebar when bookmarking or unbookmarking a page on someone else's user homepage
   const { data: currentUser } = useCurrentUser();
   const shouldMutateCurrentUserbookmarks = currentUser?._id !== userId;
 
