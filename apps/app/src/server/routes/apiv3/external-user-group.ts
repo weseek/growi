@@ -19,14 +19,14 @@ module.exports = (crowi: Crowi): Router => {
 
   const validators = {
     ldapSyncSettings: [
-      body('ldapGroupsDN').exists().isString(),
-      body('ldapGroupMembershipAttribute').exists().isString(),
-      body('ldapGroupMembershipAttributeType').exists().isString(),
-      body('ldapGroupChildGroupAttribute').exists().isString(),
+      body('ldapGroupsDN').exists({ checkFalsy: true }).isString(),
+      body('ldapGroupMembershipAttribute').exists({ checkFalsy: true }).isString(),
+      body('ldapGroupMembershipAttributeType').exists({ checkFalsy: true }).isString(),
+      body('ldapGroupChildGroupAttribute').exists({ checkFalsy: true }).isString(),
       body('autoGenerateUserOnLDAPGroupSync').exists().isBoolean(),
       body('preserveDeletedLDAPGroups').exists().isBoolean(),
-      body('ldapGroupNameAttribute').exists().isString(),
-      body('ldapGroupDescriptionAttribute').isString(),
+      body('ldapGroupNameAttribute').optional({ nullable: true }).isString(),
+      body('ldapGroupDescriptionAttribute').optional({ nullable: true }).isString(),
     ],
   };
 
@@ -46,7 +46,12 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const requestParams = {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: 'invalid body params' });
+    }
+
+    const params = {
       'external-user-group:ldap:groupsDN': req.body.ldapGroupsDN,
       'external-user-group:ldap:groupMembershipAttribute': req.body.ldapGroupMembershipAttribute,
       'external-user-group:ldap:groupMembershipAttributeType': req.body.ldapGroupMembershipAttributeType,
@@ -57,14 +62,14 @@ module.exports = (crowi: Crowi): Router => {
       'external-user-group:ldap:groupDescriptionAttribute': req.body.ldapGroupDescriptionAttribute,
     };
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.apiv3({}, 204);
+    if (params['external-user-group:ldap:groupNameAttribute'] == null || params['external-user-group:ldap:groupNameAttribute'] === '') {
+      // default is cn
+      params['external-user-group:ldap:groupNameAttribute'] = 'cn';
     }
 
     try {
-      await crowi.configManager?.updateConfigsInTheSameNamespace('crowi', requestParams, true);
-      return res.status(204).json();
+      await crowi.configManager?.updateConfigsInTheSameNamespace('crowi', params, true);
+      return res.apiv3({}, 204);
     }
     catch (err) {
       logger.error(err);
