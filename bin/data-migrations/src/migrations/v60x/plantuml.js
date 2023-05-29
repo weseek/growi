@@ -7,7 +7,7 @@ module.exports = [
    * @type {MigrationModule}
    */
   (body) => {
-    const oldDrawioRegExp = /:::\s?drawio\n(.+?)\n:::/g; // drawio old format
-    return body.replace(oldDrawioRegExp, '``` drawio\n$1\n```');
+    const oldPlantUmlRegExp = /@startuml\n([\s\S]*?)\n@enduml/g; // plantUML old format
+    return body.replace(oldPlantUmlRegExp, '``` plantuml\n$1\n```');
   },
 ];
