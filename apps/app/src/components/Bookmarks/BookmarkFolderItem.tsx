@@ -26,6 +26,7 @@ type BookmarkFolderItemProps = {
   isReadOnlyUser: boolean
   bookmarkFolder: BookmarkFolderItems
   isOpen?: boolean
+  isOperable: boolean,
   level: number
   root: string
   isUserHomePage?: boolean
@@ -37,7 +38,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
-    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, level, root, isUserHomePage,
+    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomePage,
     onClickDeleteBookmarkHandler, bookmarkFolderTreeMutation,
   } = props;
 
@@ -64,14 +65,15 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   // Rename for bookmark folder handler
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
-      await updateBookmarkFolder(folderId, folderName, parent);
+      // TODO: do not use any type
+      await updateBookmarkFolder(folderId, folderName, parent as any, children);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, folderId, parent]);
+  }, [bookmarkFolderTreeMutation, children, folderId, parent]);
 
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -98,7 +100,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
         if (item.bookmarkFolder != null) {
-          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id);
+          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id, item.bookmarkFolder.children);
           bookmarkFolderTreeMutation();
         }
       }
@@ -148,6 +150,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           <BookmarkFolderItem
             key={childFolder._id}
             isReadOnlyUser={isReadOnlyUser}
+            isOperable={props.isOperable}
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
@@ -166,6 +169,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         <BookmarkItem
           key={bookmark._id}
           isReadOnlyUser={isReadOnlyUser}
+          isOperable={props.isOperable}
           bookmarkedPage={bookmark.page}
           level={level + 1}
           parentFolder={bookmarkFolder}
@@ -197,13 +201,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const onClickMoveToRootHandlerForBookmarkFolderItemControl = useCallback(async() => {
     try {
-      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null);
+      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.children);
       bookmarkFolderTreeMutation();
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolder._id, bookmarkFolder.name, bookmarkFolderTreeMutation]);
+  }, [bookmarkFolder._id, bookmarkFolder.children, bookmarkFolder.name, bookmarkFolderTreeMutation]);
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
@@ -211,8 +215,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         key={folderId}
         type={acceptedTypes}
         item={props}
-        useDragMode={true}
-        useDropMode={true}
+        useDragMode={isOperable}
+        useDropMode={isOperable}
         onDropItem={itemDropHandler}
         isDropable={isDropable}
       >
@@ -252,33 +256,35 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               </div>
             </>
           )}
-          <div className="grw-foldertree-control d-flex">
-            <BookmarkFolderItemControl
-              onClickRename={onClickRenameHandler}
-              onClickDelete={onClickDeleteHandler}
-              onClickMoveToRoot={bookmarkFolder.parent != null
-                ? onClickMoveToRootHandlerForBookmarkFolderItemControl
-                : undefined
-              }
-            >
-              <div onClick={e => e.stopPropagation()}>
-                <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                  <i className="icon-options fa fa-rotate-90 p-1"></i>
-                </DropdownToggle>
-              </div>
-            </BookmarkFolderItemControl>
-            {/* Maximum folder hierarchy of 2 levels */}
-            {!(bookmarkFolder.parent != null) && (
-              <button
-                id='create-bookmark-folder-button'
-                type="button"
-                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-                onClick={onClickPlusButton}
+          { isOperable && (
+            <div className="grw-foldertree-control d-flex">
+              <BookmarkFolderItemControl
+                onClickRename={onClickRenameHandler}
+                onClickDelete={onClickDeleteHandler}
+                onClickMoveToRoot={bookmarkFolder.parent != null
+                  ? onClickMoveToRootHandlerForBookmarkFolderItemControl
+                  : undefined
+                }
               >
-                <i className="icon-plus d-block p-0" />
-              </button>
-            )}
-          </div>
+                <div onClick={e => e.stopPropagation()}>
+                  <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                    <i className="icon-options fa fa-rotate-90 p-1"></i>
+                  </DropdownToggle>
+                </div>
+              </BookmarkFolderItemControl>
+              {/* Maximum folder hierarchy of 2 levels */}
+              {!(bookmarkFolder.parent != null) && (
+                <button
+                  id='create-bookmark-folder-button'
+                  type="button"
+                  className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                  onClick={onClickPlusButton}
+                >
+                  <i className="icon-plus d-block p-0" />
+                </button>
+              )}
+            </div>
+          )}
         </li>
       </DragAndDropWrapper>
       {isCreateAction && (

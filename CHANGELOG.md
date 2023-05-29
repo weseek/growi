@@ -1,10 +1,50 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
 
+## [v6.1.2](https://github.com/weseek/growi/compare/v6.1.1...v6.1.2) - 2023-05-25
+
+### 🚀 Improvement
+
+- imprv: Unify whitelist description (#7638) @soumaeda
+- imprv: Refactoring migration script (#7694) @miya
+- imprv: Implement infinite scroll into PageTimeline (#7679) @reiji-h
+
+### 🐛 Bug Fixes
+
+- fix: Hash and search query in the relative link are omitted wrongly (#7697) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Restrict the 'populate' method in model modules (#7689) @yuki-takei
+- support: Refactor LinkEditModal (#7654) @yukendev
+- ci(deps): bump aws-actions/configure-aws-credentials from 1 to 2 (#7620) @dependabot
+- ci(deps): bump hugo19941994/delete-draft-releases from 1.0.0 to 1.0.1 (#7448) @dependabot
+
+## [v6.1.1](https://github.com/weseek/growi/compare/v6.1.0...v6.1.1) - 2023-05-24
+
+### 🐛 Bug Fixes
+
+- fix: Bookmark folders owned by others are accessible for manipulation (#7688) @miya
+- fix: remark-attachment-refs does not work in production (#7681) @yuki-takei
+- fix: User picture of bookmark not showing inside bookmark folder (#7678) @mudana-grune
+- fix: Update name attribute of PageRenameModal.tsx (#7677) @jam411
+- fix: The user's bookmarks are displayed on unrelated user's home (#7668) @miya
+- fix: The user's bookmarks are updated by unrelated user's operation (#7670) @jam411
+
 ## [v6.1.0](https://github.com/weseek/growi/compare/v6.0.15...v6.1.0) - 2023-05-17
+
+### BREAKING CHANGES
+
+- Node.js v14 is no longer supported.
+- Elasticsearch v6 is no longer supported.
+- imprv: Omit clobber prefix (#7627) @yuki-takei
+- support: Omit textlint (#7578) @yuki-takei
+- support: Remove Blockdiag codes (#7576) @yuki-takei
+
+See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin-guide/upgrading/61x.html) / [Japanese](https://docs.growi.org/ja/admin-guide/upgrading/61x.html)
 
 ### 💎 Features
 
@@ -25,7 +65,6 @@
 - imprv: Optimize fonts with next/font (#7633) @yuki-takei
 - imprv: GFM table performance 2 (#7640) @yuki-takei
 - imprv: GFM footnote styles (#7628) @yuki-takei
-- imprv: Omit clobber prefix (#7627) @yuki-takei
 - imprv: GFM table performance (#7619) @yuki-takei
 - imprv: Show unsaved warning when comment not posted (#7603) @arafubeatbox
 - imprv: Suppress UI Flickering for dropdowns (#7608) @jam411
@@ -41,7 +80,6 @@
 - fix: Cursor resetting occurs after updating with the built-in editor (#7644) @yuki-takei
 - fix: Revision schema migration for v5 to v6 (#7637) @yuki-takei
 - fix: Editor not resetting when the same markdown (#7625) @arafubeatbox
-- support: Replaced by IAttachmentHasId (#7629) @reiji-h
 - fix: AlignRight DropdownMenu flickering (#7606) @mudana-grune
 - fix: Not display page list count badge in trash page (#7600) @yukendev
 - fix: Reverted descendant pages do not appear in search results (#7587) @miya
@@ -55,10 +93,8 @@
 - support: Elasticsearch8 (#7592) @miya
 - support: Replaced by IAttachmentHasId (#7629) @reiji-h
 - support: Dedupe packages (#7590) @yuki-takei
-- support: Omit textlint (#7578) @yuki-takei
 - support: Typescriptize CustomNav (#7584) @yuki-takei
 - support: Replaced by IAttachmentHasId (#7629) @reiji-h
-- support: Remove Blockdiag codes (#7576) @yuki-takei
 - support: Migrate to Turborepo (#7417) @yuki-takei
 
 ## [v6.0.15](https://github.com/weseek/growi/compare/v6.0.14...v6.0.15) - 2023-04-10
