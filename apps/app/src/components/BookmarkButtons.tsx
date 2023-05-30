@@ -18,7 +18,6 @@ import UserPictureList from './User/UserPictureList';
 import styles from './BookmarkButtons.module.scss';
 
 interface Props {
-  pageId: string
   bookmarkedUsers?: IUser[]
   hideTotalNumber?: boolean
   bookmarkInfo? : IBookmarkInfo
@@ -27,7 +26,7 @@ interface Props {
 export const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const {
-    pageId, bookmarkedUsers, hideTotalNumber, bookmarkInfo,
+    bookmarkedUsers, hideTotalNumber, bookmarkInfo,
   } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -46,13 +45,16 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
     return 'tooltip.bookmark';
   }, [isGuestUser]);
 
+  if (bookmarkInfo == null) {
+    return <></>;
+  }
 
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
-      <BookmarkFolderMenu pageId={pageId}>
+      <BookmarkFolderMenu bookmarkInfo={bookmarkInfo}>
         <DropdownToggle id='bookmark-dropdown-btn' color="transparent" className={`shadow-none btn btn-bookmark border-0
-          ${bookmarkInfo?.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
-          <i className={`fa ${bookmarkInfo?.isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
+          ${bookmarkInfo.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
+          <i className={`fa ${bookmarkInfo.isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
         </DropdownToggle>
       </BookmarkFolderMenu>
 
@@ -66,9 +68,9 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
             type="button"
             id="po-total-bookmarks"
             className={`shadow-none btn btn-bookmark border-0
-              total-bookmarks ${bookmarkInfo?.isBookmarked ? 'active' : ''}`}
+              total-bookmarks ${bookmarkInfo.isBookmarked ? 'active' : ''}`}
           >
-            {bookmarkInfo?.sumOfBookmarks ?? 0}
+            {bookmarkInfo.sumOfBookmarks ?? 0}
           </button>
           { bookmarkedUsers != null && (
             <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">

@@ -6,6 +6,7 @@ import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 
 import { addBookmarkToFolder, toggleBookmark } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
+import { IBookmarkInfo } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useCurrentUser } from '~/stores/context';
@@ -13,7 +14,7 @@ import { useSWRxPageInfo } from '~/stores/page';
 
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 
-export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: string }> = ({ children, pageId }): JSX.Element => {
+export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkInfo: IBookmarkInfo }> = ({ children, bookmarkInfo }): JSX.Element => {
   const { t } = useTranslation();
 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
@@ -21,12 +22,12 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: s
 
   const { data: currentUser } = useCurrentUser();
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(bookmarkInfo.pageId);
 
   const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkInfo.pageId);
 
-  const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
+  const isBookmarked = bookmarkInfo.isBookmarked ?? false;
 
   const isBookmarkFolderExists = useMemo((): boolean => {
     return bookmarkFolders != null && bookmarkFolders.length > 0;
@@ -34,14 +35,12 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: s
 
   const toggleBookmarkHandler = useCallback(async() => {
     try {
-      if (pageId != null) {
-        await toggleBookmark(pageId, isBookmarked);
-      }
+      await toggleBookmark(bookmarkInfo.pageId, isBookmarked);
     }
     catch (err) {
       toastError(err);
     }
-  }, [pageId, isBookmarked]);
+  }, [bookmarkInfo.pageId, isBookmarked]);
 
   const onUnbookmarkHandler = useCallback(async() => {
     await toggleBookmarkHandler();
@@ -59,7 +58,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: s
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
-          if (bookmark.page._id === pageId) {
+          if (bookmark.page._id === bookmarkInfo.pageId) {
             setSelectedItem(bookmarkFolder._id);
           }
         });
@@ -82,7 +81,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: s
       }
     }
   },
-  [isOpen, bookmarkFolders, selectedItem, isBookmarked, pageId, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
+  [isOpen, bookmarkFolders, selectedItem, isBookmarked, bookmarkInfo.pageId, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
 
   const onMenuItemClickHandler = useCallback(async(e, itemId: string) => {
     e.stopPropagation();
@@ -90,9 +89,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: s
     setSelectedItem(itemId);
 
     try {
-      if (pageId != null) {
-        await addBookmarkToFolder(pageId, itemId === 'root' ? null : itemId);
-      }
+      await addBookmarkToFolder(bookmarkInfo.pageId, itemId === 'root' ? null : itemId);
       mutateUserBookmarks();
       mutateBookmarkFolders();
       mutateBookmarkInfo();
@@ -100,7 +97,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, pageId: s
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders, pageId, mutateBookmarkInfo, mutateUserBookmarks]);
+  }, [bookmarkInfo.pageId, mutateUserBookmarks, mutateBookmarkFolders, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = () => {
     return (
