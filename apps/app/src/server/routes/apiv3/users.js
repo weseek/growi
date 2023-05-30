@@ -181,38 +181,6 @@ module.exports = (crowi) => {
     return { failedToSendEmailList };
   };
 
-
-  const sendEmailByUser = async(user) => {
-    const { appService, mailService } = crowi;
-    const appTitle = appService.getAppTitle();
-    const failedToSendEmail = [];
-
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      await mailService.send({
-        to: user.email,
-        subject: `NewPassword for ${appTitle}`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.txt'),
-        vars: {
-          email: user.email,
-          password: user.password,
-          url: crowi.appService.getSiteUrl(),
-          appTitle,
-        },
-      });
-      // eslint-disable-next-line no-await-in-loop
-    }
-    catch (err) {
-      logger.error(err);
-      failedToSendEmail.push({
-        email: user.email,
-        reason: err.message,
-      });
-    }
-
-    return { failedToSendEmail };
-  };
-
   /**
    * @swagger
    *
@@ -988,17 +956,9 @@ module.exports = (crowi) => {
       const [newPassword, user] = await Promise.all([
         await User.resetPasswordByRandomString(id),
         await User.findById(id)]);
-      const userInfo = {
-        email: user.email,
-        password: newPassword,
-        user: { id },
-      };
-
-      const sendEmail = await sendEmailByUser(userInfo);
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_PASSWORD_RESET });
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_SEND_INVITATION_EMAIL });
-      return res.apiv3({ newPassword, user, failedToSendEmail: sendEmail.failedToSendEmail[0] });
+      return res.apiv3({ newPassword, user });
     }
     catch (err) {
       logger.error('Error', err);
