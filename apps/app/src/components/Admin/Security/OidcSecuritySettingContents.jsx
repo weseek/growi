@@ -296,7 +296,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <h3 className="alert-anchor border-bottom">
-              Attribute Mapping ({t('security_settings.optional')})
+              Attribute Mapping ({t('optional')})
             </h3>
 
             <div className="row mb-5 form-group">

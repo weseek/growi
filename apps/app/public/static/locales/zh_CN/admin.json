@@ -17,6 +17,7 @@
   "specified_users": "仅指定用户",
   "only_me": "只有我",
   "only_inside_the_group": "仅组内",
+  "optional": "可选的",
   "security_settings": {
     "security_settings": "安全设置",
     "scope_of_page_disclosure": "页面公开范围",
@@ -97,7 +98,6 @@
     "enable_link_sharing": "启用链接共享",
     "all_share_links": "所有共享链接",
 		"configuration": " 配置",
-		"optional": "可选的",
 		"Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
 		"Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
 		"Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>email</code> match",
@@ -1044,6 +1044,25 @@
     "transfer_success": "Completed GROWI to GROWI transfer successfully",
     "error_generate_growi_archive": "Failed to generate GROWI archive file",
     "error_send_growi_archive": "Failed to send GROWI archive file to the destination GROWI"
+  },
+  "external_group": {
+    "management": "External Group Management",
+    "ldap": {
+      "group_sync_settings": "LDAP Group Sync Settings",
+      "group_search_base_DN": "Group Search Base DN",
+      "group_search_base_dn_detail": "The base DN from which to search for groups",
+      "membership_attribute": "Membership Attribute",
+      "membership_attribute_detail": "Attribute of the group object which indicates user membership info",
+      "membership_attribute_type": "Membership Attribute Type",
+      "membership_attribute_type_detail": "Whether membership attribute value is of type DN or UID",
+      "child_group_attribute": "Child Group Attribute",
+      "child_group_attribute_detail": "Attribute of the group object which indicates child group info. The attribute value needs to be the DN of the child group.",
+      "auto_generate_user_on_sync": "Auto Generate User on Sync",
+      "preserve_deleted_ldap_groups": "Preserve Deleted LDAP Groups",
+      "name_mapper_detail": "Attribute to map as group name",
+      "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync.",
+      "updated_sync_settings": "Updated LDAP group sync settings"
+    }
   },
   "toaster": {
     "grant_user_admin": "Succeeded to grant {{username}} admin",
