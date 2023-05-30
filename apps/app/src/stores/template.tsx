@@ -8,7 +8,7 @@ const presetTemplates: ITemplate[] = [
   {
     id: '__preset1__',
     name: '日報',
-    markdown: `# yyyy/mm/dd 日報
+    markdown: `# {{yyyy}}/{{MM}}/{{dd}} 日報
 
 ## 今日の目標
 - 目標１
@@ -45,10 +45,10 @@ const presetTemplates: ITemplate[] = [
   {
     id: '__preset2__',
     name: '議事録',
-    markdown: `# ＜会議名＞
+    markdown: `# {{title}}{{^title}}＜会議名＞{{/title}}
 
 ## 日時
-yyyy/mm/dd hh:mm〜hh:mm
+{{yyyy}}/{{MM}}/{{dd}} {{HH}}:{{mm}}〜hh:mm
 
 
 ## 参加者
@@ -82,7 +82,7 @@ yyyy/mm/dd hh:mm〜hh:mm
 ## 次回会議
 - 会議内容
 - 会議時間
-    - yyyy/mm/dd
+    - {{yyyy}}/{{MM}}/dd
 `,
   },
 
@@ -90,7 +90,7 @@ yyyy/mm/dd hh:mm〜hh:mm
   {
     id: '__preset3__',
     name: '企画書',
-    markdown: `# ＜企画タイトル＞
+    markdown: `# {{title}}{{^title}}＜企画タイトル＞{{/title}}
 
 ## 目的
 

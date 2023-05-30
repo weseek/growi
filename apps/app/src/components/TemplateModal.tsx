@@ -1,6 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 
-import { ITemplate } from '@growi/core';
+import path from 'path';
+
+import type { ITemplate } from '@growi/core';
+import dateFnsFormat from 'date-fns/format';
+import mustache from 'mustache';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -10,10 +16,14 @@ import {
 } from 'reactstrap';
 
 import { useTemplateModal } from '~/stores/modal';
+import { useCurrentPagePath } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useTemplates } from '~/stores/template';
+import loggerFactory from '~/utils/logger';
 
 import Preview from './PageEditor/Preview';
+
+const logger = loggerFactory('growi:components:TemplateModal');
 
 
 type TemplateRadioButtonProps = {
@@ -44,6 +54,8 @@ const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioBu
 export const TemplateModal = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const { data: currentPagePath } = useCurrentPagePath();
+
   const { data: templateModalStatus, close } = useTemplateModal();
 
   const { data: rendererOptions } = usePreviewOptions();
@@ -51,16 +63,51 @@ export const TemplateModal = (): JSX.Element => {
 
   const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
 
+  const formattedMarkdown = useMemo(() => {
+    if (selectedTemplate == null) {
+      return null;
+    }
+
+    // replace placeholder
+    let markdown = selectedTemplate.markdown;
+    const now = new Date();
+    try {
+      markdown = mustache.render(selectedTemplate.markdown, {
+        title: path.basename(currentPagePath ?? '/'),
+        path: currentPagePath ?? '/',
+        yyyy: dateFnsFormat(now, 'yyyy'),
+        MM: dateFnsFormat(now, 'MM'),
+        dd: dateFnsFormat(now, 'dd'),
+        HH: dateFnsFormat(now, 'HH'),
+        mm: dateFnsFormat(now, 'mm'),
+      });
+    }
+    catch (err) {
+      logger.warn('An error occured while ejs processing.', err);
+    }
+
+    return markdown;
+  }, [currentPagePath, selectedTemplate]);
+
   const submitHandler = useCallback((template?: ITemplate) => {
-    if (templateModalStatus == null) { return }
+    if (templateModalStatus == null || formattedMarkdown == null) {
+      return;
+    }
+
     if (templateModalStatus.onSubmit == null || template == null) {
       close();
       return;
     }
 
-    templateModalStatus.onSubmit(template.markdown);
+    templateModalStatus.onSubmit(formattedMarkdown);
     close();
-  }, [close, templateModalStatus]);
+  }, [close, formattedMarkdown, templateModalStatus]);
+
+  useEffect(() => {
+    if (!templateModalStatus?.isOpened) {
+      setSelectedTemplate(undefined);
+    }
+  }, [templateModalStatus?.isOpened]);
 
   if (templates == null || templateModalStatus == null) {
     return <></>;
@@ -86,13 +133,13 @@ export const TemplateModal = (): JSX.Element => {
           </div>
         </div>
 
-        { rendererOptions != null && (
+        { rendererOptions != null && formattedMarkdown != null && (
           <>
             <hr />
             <h3>Preview</h3>
             <div className='card'>
               <div className="card-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                <Preview rendererOptions={rendererOptions} markdown={selectedTemplate?.markdown}/>
+                <Preview rendererOptions={rendererOptions} markdown={formattedMarkdown}/>
               </div>
             </div>
           </>
