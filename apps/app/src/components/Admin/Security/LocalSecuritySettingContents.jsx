@@ -39,7 +39,7 @@ class LocalSecuritySettingContents extends React.Component {
       isMailerSetup,
     } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
-    const { isLocalEnabled, isAbleToDisableAuthMethod } = adminGeneralSecurityContainer.state;
+    const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
     return (
       <>
@@ -71,7 +71,7 @@ class LocalSecuritySettingContents extends React.Component {
                 id="isLocalEnabled"
                 checked={isLocalEnabled}
                 onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
-                disabled={isLocalEnabled && !isAbleToDisableAuthMethod}
+                disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
               <label className="custom-control-label" htmlFor="isLocalEnabled">
                 {t('security_settings.Local.enable_local')}

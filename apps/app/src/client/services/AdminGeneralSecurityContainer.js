@@ -82,7 +82,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: generalAuth.isOidcEnabled,
       isGoogleEnabled: generalAuth.isGoogleEnabled,
       isGitHubEnabled: generalAuth.isGitHubEnabled,
-      isAbleToDisableAuthMethod: generalSetting.isAbleToDisableAuthMethod,
     });
   }
 
