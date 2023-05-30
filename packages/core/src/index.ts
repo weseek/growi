@@ -1,18 +1,3 @@
-import * as _envUtils from './utils/env-utils';
-
-// export utils by *.js
-export const envUtils = _envUtils;
-
-// export utils with namespace
-export * as customTagUtils from './plugin/util/custom-tag-utils';
-export * as templateChecker from './utils/template-checker';
-export * as objectIdUtils from './utils/objectid-utils';
-export * as pagePathUtils from './utils/page-path-utils';
-export * as pathUtils from './utils/path-utils';
-export * as pageUtils from './utils/page-utils';
-
-// export all
-export * from './plugin/interfaces/option-parser';
 export * from './interfaces/attachment';
 export * from './interfaces/color-scheme';
 export * from './interfaces/common';
@@ -29,8 +14,5 @@ export * from './interfaces/user';
 export * from './interfaces/vite';
 export * from './models/devided-page-path';
 export * from './models/vo/error-apiv3';
-export * from './service/localstorage-manager';
-export * from './utils/basic-interceptor';
-export * from './utils/browser-utils';
-export * from './utils/growi-theme-metadata';
-export * from './utils/with-utils';
+export * from './plugin';
+export * from './utils';

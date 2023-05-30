@@ -1,0 +1,71 @@
+@use '../../bootstrap/init' as bs;
+@use '../../mixins';
+@use './count-badge';
+
+@mixin override-list-group-item($color, $bgcolor, $color-hover: $color, $bgcolor-hover: $bgcolor, $color-active: $color, $bgcolor-active: $bgcolor) {
+  .list-group {
+    .list-group-item {
+      color: $color;
+      background-color: $bgcolor;
+      border-color: $border-color-global;
+
+      &.list-group-item-action {
+        &:hover {
+          background-color: $bgcolor-hover;
+        }
+        &.active {
+          color: $color-active;
+          background-color: $bgcolor-active;
+        }
+      }
+    }
+  }
+}
+
+@mixin override-list-group-item-for-pagetree($color, $bgcolor-hover, $bgcolor-active, $btn-color, $btn-color-hover, $btn-bgcolor-hover, $btn-bgcolor-active) {
+  .grw-pagetree-is-over {
+    background: $bgcolor-hover;
+  }
+  .list-group-item {
+    color: $color;
+    background-color: transparent;
+    border-color: $border-color-global;
+
+    .grw-count-badge {
+      @include count-badge.count-badge($btn-color, $bgcolor-hover, 28px);
+    }
+
+    .btn.btn-page-item-control {
+      color: $btn-color;
+      background-color: transparent;
+      @include bs.hover() {
+        color: $btn-color-hover;
+        background-color: $btn-bgcolor-hover;
+      }
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        color: $btn-color-hover;
+        background-color: $btn-bgcolor-active;
+      }
+    }
+
+    &.grw-pagetree-current-page-item {
+      background: $bgcolor-hover;
+    }
+
+    &.list-group-item-action {
+      &:hover {
+        background-color: $bgcolor-hover;
+      }
+      &:active {
+        background-color: $bgcolor-active;
+      }
+    }
+    .grw-pagetree-title-anchor,
+    .grw-foldertree-title-anchor {
+      .grw-sidebar-text-muted {
+        // color: rgba(desaturate($color, 50%), 0.6);
+      }
+    }
+  }
+}

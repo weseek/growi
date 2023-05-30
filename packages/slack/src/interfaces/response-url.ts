@@ -1,4 +1,4 @@
-import { KnownBlock, Block } from '@slack/web-api';
+import type { KnownBlock, Block } from '@slack/web-api';
 
 export type RespondBodyForResponseUrl = {
   text?: string,

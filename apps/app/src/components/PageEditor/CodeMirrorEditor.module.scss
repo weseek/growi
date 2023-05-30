@@ -1,0 +1,126 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.grw-codemirror-editor :global {
+  @import '~codemirror/lib/codemirror';
+
+  // addons
+  @import '~codemirror/addon/fold/foldgutter';
+  @import '~codemirror/addon/lint/lint';
+
+  // themes
+  @import '~codemirror/theme/elegant';
+  @import '~codemirror/theme/eclipse';
+
+  .CodeMirror {
+    font-family: var(--font-family-monospace);
+    font-size: 15px;
+
+    pre.CodeMirror-line.grw-cm-header-line {
+      padding-top: 0.16em;
+      padding-bottom: 0.08em;
+      font-family: var(--font-family-monospace);
+
+      // '#'
+      .cm-formatting-header {
+        font-style: italic;
+        font-weight: bold;
+        opacity: 0.5;
+      }
+
+      .cm-header-1 {
+        font-size: 1.9em;
+      }
+      .cm-header-2 {
+        font-size: 1.6em;
+      }
+      .cm-header-3 {
+        font-size: 1.4em;
+      }
+      .cm-header-4 {
+        font-size: 1.35em;
+      }
+      .cm-header-5 {
+        font-size: 1.25em;
+      }
+      .cm-header-6 {
+        font-size: 1.2em;
+      }
+    }
+
+    .cm-matchhighlight {
+      color: bs.$gray-900 !important;
+      background-color: cyan;
+    }
+
+    .CodeMirror-selection-highlight-scrollbar {
+      background-color: darkcyan;
+    }
+
+    // overwrite .CodeMirror-placeholder
+    pre.CodeMirror-line-like.CodeMirror-placeholder {
+      color: bs.$text-muted;
+    }
+
+    // overwrite .CodeMirror-scroll
+    .CodeMirror-scroll {
+      box-sizing: border-box;
+    }
+  }
+
+  // patch to fix https://github.com/codemirror/CodeMirror/issues/4089
+  // see also https://github.com/codemirror/CodeMirror/commit/51a1e7da60a99e019f026a118dc7c98c2b1f9d62
+  .CodeMirror-wrap > div > textarea {
+    font-size: #{bs.$line-height-base}rem;
+  }
+
+  // overwrite .CodeMirror-hints
+  .CodeMirror-hints {
+    max-height: 30em !important;
+
+    // active line
+    .CodeMirror-hint-active.crowi-emoji-autocomplete {
+      .img-container {
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+        font-size: 15px; // adjust to .wiki
+      }
+    }
+  }
+
+  // cheat sheat
+  .overlay.overlay-gfm-cheatsheet {
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    pointer-events: none;
+
+    .card.gfm-cheatsheet {
+      box-shadow: unset;
+      opacity: 0.6;
+      .card-body {
+        min-width: 30em;
+        padding-bottom: 0;
+        font-family: var(--font-family-monospace);
+        color: bs.$text-muted;
+      }
+      ul > li {
+        list-style: none;
+      }
+    }
+
+    .gfm-cheatsheet-modal-link {
+      color: bs.$text-muted;
+      pointer-events: all;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+
+      opacity: 0.6;
+
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+  }
+}

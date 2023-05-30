@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/coverage
+**/Dockerfile
+**/*.dockerignore
+**/.next
+**/.turbo
+out
+apps/slackbot-proxy

@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "isolatedModules": false,
+
+    "baseUrl": ".",
+    "paths": {
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

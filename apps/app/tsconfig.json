@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "types": [
+      "vitest/globals"
+    ],
+
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+
+      "debug": ["./src/server/utils/logger/alias-for-debug"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "config",
+    "src"
+  ],
+  "ts-node": {
+    "transpileOnly": true,
+    "swc": true
+  }
+}

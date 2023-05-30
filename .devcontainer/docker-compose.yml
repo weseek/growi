@@ -20,15 +20,15 @@ services:
     volumes:
       - ..:/workspace/growi:delegated
       - node_modules:/workspace/growi/node_modules
-      - node_modules_app:/workspace/growi/packages/app/node_modules
-      - node_modules_slackbot-proxy:/workspace/growi/packages/slackbot-proxy/node_modules
-      - buildcache_app:/workspace/growi/packages/app/.next
+      - node_modules_app:/workspace/growi/apps/app/node_modules
+      - node_modules_slackbot-proxy:/workspace/growi/apps/slackbot-proxy/node_modules
+      - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
 
     tty: true
 
   mongo:
-    image: mongo:4.4
+    image: mongo:6.0
     restart: unless-stopped
     ports:
       - 27017:27017
@@ -46,10 +46,10 @@ services:
   #   cloned from https://github.com/weseek/growi-docker-compose.git
   elasticsearch:
     build:
-      context: ../../growi-docker-compose/elasticsearch
+      context: ../../growi-docker-compose/elasticsearch/v8
       dockerfile: ./Dockerfile
       args:
-        - version=7.16.1
+        - version=8.7.0
     restart: unless-stopped
     ports:
       - 9200:9200
@@ -63,11 +63,11 @@ services:
         hard: -1
     volumes:
       - /usr/share/elasticsearch/data
-      - ../../growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.16.1
+    image: docker.elastic.co/kibana/kibana:8.7.0
     restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
