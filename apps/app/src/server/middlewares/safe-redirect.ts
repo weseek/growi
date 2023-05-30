@@ -4,7 +4,7 @@
  * Usage: app.use(require('middlewares/safe-redirect')(['example.com', 'some.example.com:8080']))
  */
 
-import {
+import type {
   Request, Response, NextFunction,
 } from 'express';
 
@@ -31,13 +31,13 @@ function isInWhitelist(whitelistOfHosts: string[], redirectToFqdn: string): bool
 }
 
 
-type ResWithSafeRedirect = Response & {
+export type ResWithSafeRedirect = Response & {
   safeRedirect: (redirectTo?: string) => void,
 }
 
-module.exports = (whitelistOfHosts: string[]) => {
+const factory = (whitelistOfHosts: string[]) => {
 
-  return function(req: Request, res: ResWithSafeRedirect, next: NextFunction) {
+  return (req: Request, res: ResWithSafeRedirect, next: NextFunction): void => {
 
     // extend res object
     res.safeRedirect = function(redirectTo?: string) {
@@ -75,3 +75,5 @@ module.exports = (whitelistOfHosts: string[]) => {
   };
 
 };
+
+export default factory;

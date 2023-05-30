@@ -2,6 +2,11 @@
 /* eslint-disable no-undef, no-var, vars-on-top, no-restricted-globals, regex/invalid, import/extensions */
 // ignore lint error because this file is js as mongoshell
 
+/**
+ * @typedef {import('./types').MigrationModule} MigrationModule
+ * @typedef {import('./types').ReplaceLatestRevisions} ReplaceLatestRevisions
+ */
+
 var pagesCollection = db.getCollection('pages');
 var revisionsCollection = db.getCollection('revisions');
 
@@ -10,12 +15,14 @@ var batchSizeInterval = process.env.BATCH_INTERVAL ?? 3000; // default 3 sec
 
 var migrationModule = process.env.MIGRATION_MODULE;
 
+/** @type {MigrationModule[]} */
 var migrationModules = require(`./migrations/${migrationModule}`);
 
 if (migrationModules.length === 0) {
   throw Error('No valid migrationModules found. Please enter a valid environment variable');
 }
 
+/** @type {ReplaceLatestRevisions} */
 function replaceLatestRevisions(body, migrationModules) {
   var replacedBody = body;
   migrationModules.forEach((migrationModule) => {

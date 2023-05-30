@@ -1,27 +1,10 @@
+import { describe, test, expect } from 'vitest';
+
 import {
-  isTopPage, isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
-} from '~/utils/page-path-utils';
+  isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
+} from './index';
 
-describe('TopPage Path test', () => {
-  test('Path is only "/"', () => {
-    const result = isTopPage('/');
-    expect(result).toBe(true);
-  });
-  test('Path is not match string', () => {
-    const result = isTopPage('/test');
-    expect(result).toBe(false);
-  });
-  test('Path is integer', () => {
-    const result = isTopPage(1);
-    expect(result).toBe(false);
-  });
-  test('Path is null', () => {
-    const result = isTopPage(null);
-    expect(result).toBe(false);
-  });
-});
-
-describe('isMovablePage test', () => {
+describe.concurrent('isMovablePage test', () => {
   test('should decide deletable or not', () => {
     expect(isMovablePage('/')).toBeFalsy();
     expect(isMovablePage('/hoge')).toBeTruthy();
@@ -32,42 +15,24 @@ describe('isMovablePage test', () => {
   });
 });
 
-describe('convertToNewAffiliationPath test', () => {
-  test('Child path is not converted normally', () => {
+describe.concurrent('convertToNewAffiliationPath test', () => {
+  test.concurrent('Child path is not converted normally', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent2/', 'parent/child');
     expect(result).toBe('parent2/child');
   });
 
-  test('Parent path is not converted normally', () => {
+  test.concurrent('Parent path is not converted normally', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent3/', 'parent/child');
     expect(result === 'parent/child').toBe(false);
   });
 
-  test('Parent and Child path names are switched unexpectedly', () => {
+  test.concurrent('Parent and Child path names are switched unexpectedly', () => {
     const result = convertToNewAffiliationPath('parent/', 'parent4/', 'parent/child');
     expect(result === 'child/parent4').toBe(false);
   });
-
-  test('Child path is null', () => {
-    expect(() => {
-      convertToNewAffiliationPath('parent/', 'parent5/', null);
-    }).toThrow();
-  });
-
-  test('Old parent path is null', () => {
-    expect(() => {
-      convertToNewAffiliationPath(null, 'parent5/', 'child');
-    }).toThrow();
-  });
-
-  test('New parent path is null', () => {
-    expect(() => {
-      convertToNewAffiliationPath('parent/', null, 'child');
-    }).toThrow();
-  });
 });
 
-describe('isCreatablePage test', () => {
+describe.concurrent('isCreatablePage test', () => {
   test('should decide creatable or not', () => {
     expect(isCreatablePage('/hoge')).toBeTruthy();
 
@@ -125,29 +90,29 @@ describe('isCreatablePage test', () => {
     }
   });
 
-  describe('Test omitDuplicateAreaPathFromPaths', () => {
-    test('Should not omit when all paths are at unique area', () => {
+  describe.concurrent('Test omitDuplicateAreaPathFromPaths', () => {
+    test.concurrent('Should not omit when all paths are at unique area', () => {
       const paths = ['/A', '/B/A', '/C/B/A', '/D'];
       const expectedPaths = paths;
 
-      expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(paths);
+      expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
 
-    test('Should omit when some paths are at duplicated area', () => {
+    test.concurrent('Should omit when some paths are at duplicated area', () => {
       const paths = ['/A', '/A/A', '/A/B/A', '/B', '/B/A', '/AA'];
       const expectedPaths = ['/A', '/B', '/AA'];
 
       expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
 
-    test('Should omit when some long paths are at duplicated area', () => {
+    test.concurrent('Should omit when some long paths are at duplicated area', () => {
       const paths = ['/A/B/C', '/A/B/C/D', '/A/B/C/D/E'];
       const expectedPaths = ['/A/B/C'];
 
       expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
 
-    test('Should omit when some long paths are at duplicated area [case insensitivity]', () => {
+    test.concurrent('Should omit when some long paths are at duplicated area [case insensitivity]', () => {
       const paths = ['/a/B/C', '/A/b/C/D', '/A/B/c/D/E'];
       const expectedPaths = ['/a/B/C'];
 

@@ -14,26 +14,6 @@ module.exports = {
 
   projects: [
     {
-      displayName: 'unit',
-
-      transform: {
-        '^.+\\.(t|j)sx?$': '@swc/jest',
-      },
-      // transform ESM to CJS (includes all packages in node_modules)
-      transformIgnorePatterns: [],
-
-      rootDir: '.',
-      roots: ['<rootDir>'],
-      testMatch: ['<rootDir>/test/unit/**/*.test.ts', '<rootDir>/test/unit/**/*.test.js'],
-
-      testEnvironment: 'node',
-
-      // Automatically clear mock calls and instances between every test
-      clearMocks: true,
-      moduleNameMapper: MODULE_NAME_MAPPING,
-
-    },
-    {
       displayName: 'server',
 
       transform: {

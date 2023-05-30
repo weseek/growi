@@ -6,13 +6,13 @@ import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
 
-import { IPage } from '~/interfaces/page';
-import { IUser } from '~/interfaces/user';
+import type { IPage } from '~/interfaces/page';
+import type { IUser } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
 import { generateConfigsForInstalling } from '../models/config';
 
-import ConfigManager from './config-manager';
+import type { ConfigManager } from './config-manager';
 import SearchService from './search';
 
 const logger = loggerFactory('growi:service:installer');
