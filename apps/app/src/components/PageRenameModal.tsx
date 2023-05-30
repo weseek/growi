@@ -255,7 +255,7 @@ const PageRenameModal = (): JSX.Element => {
             <div className="custom-control custom-radio custom-radio-warning">
               <input
                 className="custom-control-input"
-                name="withoutExistRecursively"
+                name="recursively"
                 id="cbRenameThisPageOnly"
                 type="radio"
                 checked={!isRenameRecursively}
@@ -268,7 +268,7 @@ const PageRenameModal = (): JSX.Element => {
             <div className="custom-control custom-radio custom-radio-warning mt-1">
               <input
                 className="custom-control-input"
-                name="recursively"
+                name="withoutExistRecursively"
                 id="cbForceRenameRecursively"
                 type="radio"
                 checked={isRenameRecursively}
