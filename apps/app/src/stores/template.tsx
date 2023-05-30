@@ -45,7 +45,7 @@ const presetTemplates: ITemplate[] = [
   {
     id: '__preset2__',
     name: '議事録',
-    markdown: `# {{title}}{{^title}}＜会議名＞{{/title}}
+    markdown: `# {{{title}}}{{^title}}＜会議名＞{{/title}}
 
 ## 日時
 {{yyyy}}/{{MM}}/{{dd}} {{HH}}:{{mm}}〜hh:mm
@@ -90,7 +90,7 @@ const presetTemplates: ITemplate[] = [
   {
     id: '__preset3__',
     name: '企画書',
-    markdown: `# {{title}}{{^title}}＜企画タイトル＞{{/title}}
+    markdown: `# {{{title}}}{{^title}}＜企画タイトル＞{{/title}}
 
 ## 目的
 
