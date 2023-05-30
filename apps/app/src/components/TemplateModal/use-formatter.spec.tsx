@@ -1,3 +1,6 @@
+import type { ITemplate } from '@growi/core/dist/interfaces/template';
+import { mock } from 'vitest-mock-extended';
+
 import { useFormatter } from './use-formatter';
 
 
@@ -25,6 +28,7 @@ describe('useFormatter', () => {
 
       // when
       const { format } = useFormatter();
+      // call with undefined
       const markdown = format(undefined);
 
       // then
@@ -33,4 +37,22 @@ describe('useFormatter', () => {
     });
 
   });
+
+  it('returns markdown as-is when mustache.render throws an error', () => {
+    // setup
+    const mastacheMock = {
+      render: vi.fn(() => { throw new Error() }),
+    };
+    vi.doMock('mustache', () => mastacheMock);
+
+    // when
+    const { format } = useFormatter();
+    const template = mock<ITemplate>();
+    template.markdown = 'markdown body';
+    const markdown = format(template);
+
+    // then
+    expect(markdown).toBe('markdown body');
+  });
+
 });
