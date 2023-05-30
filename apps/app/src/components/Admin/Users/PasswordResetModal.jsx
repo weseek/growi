@@ -20,7 +20,6 @@ class PasswordResetModal extends React.Component {
       temporaryPassword: [],
       isPasswordResetDone: false,
       sendEmail: false,
-      isCreateUserButtonPushed: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
