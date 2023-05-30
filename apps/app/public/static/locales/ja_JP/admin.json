@@ -765,7 +765,8 @@
       "password_reset_message": "対象ユーザーに下記のパスワードを伝え、すぐに新しく別のパスワードを設定するよう伝えてください。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
       "target_user": "対象ユーザー",
-      "new_password": "新しいパスワード"
+      "new_password": "新しいパスワード",
+      "send_password_email": "メールを送信する"
     },
     "external_account": "外部アカウントの管理",
     "external_accounts": "外部アカウント",

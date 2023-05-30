@@ -7,7 +7,8 @@ import {
 } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/toastr';
+import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useIsMailerSetup } from '~/stores/context';
 
 
 class PasswordResetModal extends React.Component {
@@ -18,9 +19,12 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
+      sendEmail: false,
+      isCreateUserButtonPushed: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
+    this.handleCheckBox = this.handleCheckBox.bind(this);
   }
 
   async resetPassword() {
@@ -28,6 +32,15 @@ class PasswordResetModal extends React.Component {
     try {
       const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
+      const { failedToSendEmail } = res.data;
+      if (failedToSendEmail == null) {
+        const msg = `Email has been sent<br>・${userForPasswordResetModal.email}`;
+        toastSuccess(msg);
+      }
+      else {
+        const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
+        toastError(msg);
+      }
       this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
     }
     catch (err) {
@@ -68,16 +81,40 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterBeforeReset() {
-    const { t } = this.props;
+    const { t, isMailerSetup } = this.props;
     return (
-      <button type="submit" className="btn btn-danger" onClick={this.resetPassword}>
-        {t('user_management.reset_password')}
-      </button>
+      <>
+        <div className="col text-left custom-control custom-checkbox custom-checkbox-info text-left" onChange={this.handleCheckBox}>
+          <input
+            type="checkbox"
+            id="sendEmail"
+            className="custom-control-input"
+            name="sendEmail"
+            defaultChecked={this.state.sendEmail}
+            disabled={!isMailerSetup}
+          />
+          <label className="custom-control-label" htmlFor="sendEmail">
+            {t('admin:user_management.reset_password_modal.send_password_email')}
+          </label>
+          {isMailerSetup
+            // eslint-disable-next-line react/no-danger
+            ? <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mail_setting_link') }} />
+            // eslint-disable-next-line react/no-danger
+            : <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          }
+        </div>
+        <div>
+          <button type="submit" className="btn btn-danger" onClick={this.resetPassword}>
+            {t('user_management.reset_password')}
+          </button>
+        </div>
+      </>
     );
   }
 
   returnModalFooterAfterReset() {
-    const { t } = this.props;
+    const { t, isMailerSetup } = this.props;
+    const { isCreateUserButtonPushed } = this.state;
 
     return (
       <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>
@@ -86,6 +123,10 @@ class PasswordResetModal extends React.Component {
     );
   }
 
+
+  handleCheckBox() {
+    this.setState({ sendEmail: !this.state.sendEmail });
+  }
 
   render() {
     const { t } = this.props;
@@ -109,7 +150,8 @@ class PasswordResetModal extends React.Component {
 
 const PasswordResetModalWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  return <PasswordResetModal t={t} {...props} />;
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <PasswordResetModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
 };
 
 /**
