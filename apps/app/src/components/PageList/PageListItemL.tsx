@@ -24,6 +24,7 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
+import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
@@ -37,6 +38,7 @@ type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
+  isReadOnlyUser: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
@@ -49,7 +51,7 @@ type Props = {
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
+    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions, isReadOnlyUser,
     forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
@@ -88,7 +90,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
-
+  const { mutate: mutateUserBookmark } = useSWRxUserBookmarks();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageData?._id);
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
@@ -125,6 +128,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
+    mutateUserBookmark();
+    mutateBookmarkInfo();
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
@@ -255,6 +260,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageId={pageData._id}
                   pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                   isEnableActions={isEnableActions}
+                  isReadOnlyUser={isReadOnlyUser}
                   forceHideMenuItems={forceHideMenuItems}
                   onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}

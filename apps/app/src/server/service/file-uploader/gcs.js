@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import { AbstractFileUploader } from './file-uploader';
+
 const logger = loggerFactory('growi:service:fileUploaderAws');
 
 const { Storage } = require('@google-cloud/storage');
@@ -9,9 +11,8 @@ let _instance;
 
 
 module.exports = function(crowi) {
-  const Uploader = require('./uploader');
   const { configManager } = crowi;
-  const lib = new Uploader(crowi);
+  const lib = new AbstractFileUploader(crowi);
 
   function getGcsBucket() {
     return configManager.getConfig('crowi', 'gcs:bucket');
@@ -201,7 +202,9 @@ module.exports = function(crowi) {
 
     const gcs = getGcsInstance();
     const bucket = gcs.bucket(getGcsBucket());
-    const [files] = await bucket.getFiles();
+    const [files] = await bucket.getFiles({
+      prefix: configManager.getConfig('crowi', 'gcs:uploadNamespace'),
+    });
 
     return files.map(({ name, metadata: { size } }) => {
       return { name, size };

@@ -19,6 +19,8 @@ https://github.com/weseek/growi.
 1. Lato (https://fonts.google.com/specimen/Lato)
 1. Press Start 2P (https://fonts.google.com/specimen/Press+Start+2P)
 1. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
+1. Source Han Code JP (https://github.com/adobe-fonts/source-han-code-jp)
+
 
 
 License Notice for Apache License, Version 2.0 Derivative Works
@@ -115,7 +117,7 @@ Designed by Łukasz Dziedzic
 License Notice for Press Start 2P
 ------------------------------
 
-https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+http://scripts.sil.org/OFL
 
 ```
 Designed by CodeMan38
@@ -129,4 +131,14 @@ https://creativecommons.org/licenses/by-sa/3.0/
 
 ```
 Copyright (c) 2018 Stephen Hutchings
+```
+
+
+License Notice for Source Han Code JP
+----------------------------------
+
+http://scripts.sil.org/OFL
+
+```
+Copyright (c) 2014-2020 Adobe Systems Incorporated
 ```

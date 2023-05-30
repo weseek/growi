@@ -6,6 +6,9 @@
 
     "jsx": "preserve",
     "resolveJsonModule": true,
+    "types": [
+      "vitest/globals"
+    ],
 
     "baseUrl": ".",
     "paths": {

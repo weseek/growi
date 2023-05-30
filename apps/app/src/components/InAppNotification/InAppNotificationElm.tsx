@@ -8,11 +8,12 @@ import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { SupportedTargetModel } from '~/interfaces/activity';
 import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel
 import PageModelNotification from './PageNotification/PageModelNotification';
-
+import UserModelNotification from './PageNotification/UserModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -40,6 +41,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   };
 
   const getActionUsers = () => {
+    if (notification.targetModel === SupportedTargetModel.MODEL_USER) {
+      return notification.target.username;
+    }
+
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
       return `@${user.name}`;
@@ -75,7 +80,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         <div className="position-absolute" style={{ top: 10, left: 10 }}>
           <UserPicture user={actionUsers[1]} size="md" noTooltip />
         </div>
-
       </div>
     );
   };
@@ -139,6 +143,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
       break;
+    case 'USER_REGISTRATION_APPROVAL_REQUEST':
+      actionMsg = 'requested registration approval';
+      actionIcon = 'icon-bubble';
+      break;
     default:
       actionMsg = '';
       actionIcon = '';
@@ -163,8 +171,17 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         >
         </span>
         {renderActionUserPictures()}
-        {notification.targetModel === 'Page' && (
+        {notification.targetModel === SupportedTargetModel.MODEL_PAGE && (
           <PageModelNotification
+            ref={notificationRef}
+            notification={notification}
+            actionMsg={actionMsg}
+            actionIcon={actionIcon}
+            actionUsers={actionUsers}
+          />
+        )}
+        {notification.targetModel === SupportedTargetModel.MODEL_USER && (
+          <UserModelNotification
             ref={notificationRef}
             notification={notification}
             actionMsg={actionMsg}

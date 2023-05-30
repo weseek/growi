@@ -106,8 +106,7 @@
       "password_reset_desc": "when forgot password, users are able to reset it by themselves.",
       "email_authentication": "Email authentication on user registration",
       "enable_email_authentication": "Enable email authentication",
-      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
-      "need_complete_mail_setting_warning": "To use the following functions, please complete the mail settings."
+      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
@@ -291,7 +290,7 @@
     "management_wiki": "Management Wiki",
     "system_information": "System information",
     "wiki_administrator": "Only wiki administrator can access this page",
-    "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give admin access' button",
+    "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Grant admin access' button",
     "package_name": "Package name",
     "specified_version": "Specified version",
     "installed_version": "Installed version",
@@ -339,7 +338,8 @@
       "title": "Site URL settings",
       "desc": "This is for the site URL setting.",
       "warn": "Some features don't work because the site URL is not set.",
-      "help": "Site full URL beginning from <code>http://</code> or <code>https://</code>."
+      "help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
+      "note_for_the_only_env_option": "The Site URL is fixed to the value of the environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
     },
     "confidential_name": "Confidential name",
     "confidential_example": "ex): internal use only",
@@ -388,7 +388,17 @@
     "enable": "Enable",
     "disable": "Disable",
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
-    "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
+    "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
+    "questionnaire_settings": "Questionnaire settings",
+    "questionnaire_settings_explanation": "This will enable/disable questionnaires on the whole system. When enabled, users can also enable/disable questionnaires individually from \"Other Settings\" in the personal settings page.",
+    "about_data_sent": "About information sent",
+    "docs_link": "https://docs.growi.org/en/admin-guide/management-cookbook/app-settings.html#questionnaire-settings",
+    "learn_more": "Learn more",
+    "other_info_will_be_sent": "Along with the questionnaire answer, information necessary to improve GROWI will be sent. Personal user info will not be included in the data sent.",
+    "we_will_use_the_data_to_improve_growi": "We will use the data to improve GROWI experience as much as possible.",
+    "anonymize_app_site_url": "Anonymize app site URL in data sent",
+    "url_anonymization_explanation": "The app site URL included in the questionnaire answer will be anonymized. By enabling this, the GROWI application that sends the questionnaire answer will not be identified.",
+    "enable_questionnaire": "Enable questionnaire"
   },
   "markdown_settings": {
     "markdown_settings": "Markdown Settings",
@@ -726,23 +736,26 @@
     },
     "user_table": {
       "administrator": "Administrator",
+      "read_only": "Read Only",
       "edit_menu": "Edit menu",
       "reset_password": "Reset password",
       "administrator_menu": "Administrator Menu",
       "accept": "Accept",
       "deactivate_account": "Deactivate account",
       "your_own": "You cannot deactivate your own account",
-      "remove_admin_access": "Remove admin access",
-      "cannot_remove": "You cannot remove yourself from administrator",
-      "give_admin_access": "Give admin access",
+      "revoke_admin_access": "Revoke admin access",
+      "cannot_revoke": "You cannot revoke yourself from administrator",
+      "grant_admin_access": "Grant admin access",
+      "revoke_read_only_access": "Revoke read only access",
+      "grant_read_only_access": "Grant read only access",
       "send_invitation_email": "Send invitation email",
       "resend_invitation_email": "Resend invitation email"
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {
-      "reset_password_info": "When a password is reset, a newly password is sent to the target user.",
-      "password_reset_message": "The temporary password was sent to the below user and strongly recommend to change another one immediately.",
-      "reset_password_alert": "If the e-mail transmission fails, please make sure that e-mail settings are correct and reset password again.",
+      "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
+      "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
+      "send_new_password": "Please send the new password to the user.",
       "target_user": "Target User",
       "new_password": "New Password"
     },
@@ -1005,8 +1018,10 @@
     "ADMIN_USERS_PASSWORD_RESET": "Reset user password",
     "ADMIN_USERS_ACTIVATE": "Activate user",
     "ADMIN_USERS_DEACTIVATE": "Deactivate user",
-    "ADMIN_USERS_GIVE_ADMIN": "Give admin access",
-    "ADMIN_USERS_REMOVE_ADMIN": "Remove admin access",
+    "ADMIN_USERS_GRANT_ADMIN": "Grant admin access",
+    "ADMIN_USERS_REVOKE_ADMIN": "Revoke admin access",
+    "ADMIN_USERS_GRANT_READ_ONLY": "Grant read only access",
+    "ADMIN_USERS_REVOKE_READ_ONLY": "Revoke read only access",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "Resend invitation email",
     "ADMIN_USERS_REMOVE": "Remove user",
     "ADMIN_USER_GROUP_CREATE": "Create User Group",
@@ -1023,8 +1038,10 @@
     "error_send_growi_archive": "Failed to send GROWI archive file to the destination GROWI"
   },
   "toaster": {
-    "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "grant_user_admin": "Succeeded to grant {{username}} admin",
+    "revoke_user_admin": "Succeeded to revoke {{username}} admin",
+    "grant_user_read_only": "Succeeded to grant {{username}} read only",
+    "revoke_user_read_only": "Succeeded to revoke {{username}} read only",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",

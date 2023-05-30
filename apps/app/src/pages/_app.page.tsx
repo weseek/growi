@@ -3,6 +3,8 @@ import React, { ReactElement, ReactNode, useEffect } from 'react';
 import { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
+import { Lato } from 'next/font/google';
+import localFont from 'next/font/local';
 import { SWRConfig } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
@@ -24,6 +26,21 @@ import '~/styles/prebuilt/apply-colors.css';
 
 const isDev = process.env.NODE_ENV === 'development';
 
+// define fonts
+const lato = Lato({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+const sourceHanCodeJPSubsetMain = localFont({
+  src: '../../resource/fonts/SourceHanCodeJP-Regular-subset-main.woff2',
+  display: 'optional',
+});
+const sourceHanCodeJPSubsetJis2 = localFont({
+  src: '../../resource/fonts/SourceHanCodeJP-Regular-subset-jis2.woff2',
+  display: 'optional',
+});
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -57,9 +74,18 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   const getLayout = Component.getLayout ?? (page => page);
 
   return (
-    <SWRConfig value={swrGlobalConfiguration}>
-      {getLayout(<Component {...pageProps} />)}
-    </SWRConfig>
+    <>
+      <style jsx global>{`
+        :root {
+          --font-family-sans-serif: ${lato.style.fontFamily}, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+          --font-family-serif: Georgia, 'Times New Roman', Times, serif;
+          --font-family-monospace: monospace, ${sourceHanCodeJPSubsetMain.style.fontFamily}, ${sourceHanCodeJPSubsetJis2.style.fontFamily};
+        }
+      `}</style>
+      <SWRConfig value={swrGlobalConfiguration}>
+        {getLayout(<Component {...pageProps} />)}
+      </SWRConfig>
+    </>
   );
 }
 

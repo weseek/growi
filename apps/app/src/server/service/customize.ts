@@ -7,9 +7,9 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
-import ConfigManager from './config-manager';
+import type { ConfigManager } from './config-manager';
 import type { IPluginService } from './plugin';
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 
 const logger = loggerFactory('growi:service:CustomizeService');

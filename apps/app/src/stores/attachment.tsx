@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 
 import {
-  HasObjectId,
-  IAttachment, Nullable, type SWRResponseWithUtils, withUtils,
+  IAttachmentHasId, Nullable, type SWRResponseWithUtils, withUtils,
 } from '@growi/core';
 import useSWR from 'swr';
 
@@ -15,7 +14,7 @@ type Util = {
 };
 
 type IDataAttachmentList = {
-  attachments: (IAttachment & HasObjectId)[]
+  attachments: (IAttachmentHasId)[]
   totalAttachments: number
   limit: number
 };

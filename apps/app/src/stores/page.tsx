@@ -19,7 +19,9 @@ import { IRevision, IRevisionHasId } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPathname, useShareLinkId, useIsGuestUser } from './context';
+import {
+  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
+} from './context';
 import { useStaticSWR } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -197,9 +199,10 @@ export const useSWRxIsGrantNormalized = (
 ): SWRResponse<IResIsGrantNormalized, Error> => {
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isNotFound } = useIsNotFound();
 
-  const key = !isGuestUser && !isNotFound && pageId != null
+  const key = !isGuestUser && !isReadOnlyUser && !isNotFound && pageId != null
     ? ['/page/is-grant-normalized', pageId]
     : null;
 

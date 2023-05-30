@@ -68,8 +68,8 @@ export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRRespo
   return useContextSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
 };
 
-export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
-  return useContextSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
+export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
+  return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
 };
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
@@ -215,16 +215,31 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   );
 };
 
+export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: isGuestUser, isLoading: isGuestUserLoding } = useIsGuestUser();
+
+  const isLoading = isCurrentUserLoading || isGuestUserLoding;
+  const isReadOnlyUser = !isGuestUser && !!currentUser?.readOnly;
+
+  return useSWRImmutable(
+    isLoading ? null : ['isReadOnlyUser', isReadOnlyUser, currentUser?._id],
+    () => isReadOnlyUser,
+    { fallbackData: isReadOnlyUser },
+  );
+};
+
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isIdenticalPath } = useIsIdenticalPath();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isForbidden, isNotCreatable, isIdenticalPath],
-    ([, isGuestUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
-      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser);
+    ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
+    ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
+      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
     },
   );
 };

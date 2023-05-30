@@ -13,6 +13,7 @@ export type IUser = {
   imageUrlCached: string,
   isGravatarEnabled: boolean,
   admin: boolean,
+  readOnly: boolean,
   apiToken?: string,
   isEmailPublished: boolean,
   isInvitationEmailSended: boolean,
@@ -22,6 +23,7 @@ export type IUser = {
   lastLoginAt?: Date,
   introduction: string,
   status: IUserStatus,
+  isQuestionnaireEnabled: boolean,
 }
 
 export type IUserGroupRelation = {

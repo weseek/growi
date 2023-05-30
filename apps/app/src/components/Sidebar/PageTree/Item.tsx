@@ -14,19 +14,22 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
-import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
+import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import ClosableTextInput from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
@@ -38,6 +41,7 @@ const logger = loggerFactory('growi:cli:Item');
 
 interface ItemProps {
   isEnableActions: boolean
+  isReadOnlyUser: boolean
   itemNode: ItemNode
   targetPathOrId?: Nullable<string>
   isOpen?: boolean
@@ -61,12 +65,6 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
     }
     return node;
   });
-};
-
-
-const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
-  const bookmarkOperation = _newValue ? bookmark : unbookmark;
-  await bookmarkOperation(_pageId);
 };
 
 /**
@@ -113,7 +111,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions,
+    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
   } = props;
 
   const { page, children } = itemNode;
@@ -126,6 +124,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -258,6 +258,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   }, [hasDescendants]);
 
+  const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+    const bookmarkOperation = _newValue ? bookmark : unbookmark;
+    await bookmarkOperation(_pageId);
+    mutateUserBookmarks();
+    mutateBookmarkInfo();
+  };
+
   const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {
       return;
@@ -365,16 +372,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
-  const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '' || title.trim() === '') {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.title_required'),
-      };
-    }
-
-    return null;
-  };
 
   /**
    * Users do not need to know if all pages have been renamed.
@@ -455,7 +452,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   placeholder={t('Input page name')}
                   onClickOutside={() => { setRenameInputShown(false) }}
                   onPressEnter={onPressEnterForRenameHandler}
-                  inputValidator={inputValidator}
+                  validationTarget={ValidationTarget.PAGE}
                 />
               </NotDraggableForClosableTextInput>
             </div>
@@ -491,6 +488,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <PageItemControl
               pageId={page._id}
               isEnableActions={isEnableActions}
+              isReadOnlyUser={isReadOnlyUser}
               onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
               onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
               onClickRenameMenuItem={renameMenuItemClickHandler}
@@ -510,14 +508,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
         {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
           <NotAvailableForGuest>
-            <button
-              id='page-create-button-in-page-tree'
-              type="button"
-              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-              onClick={onClickPlusButton}
-            >
-              <i className="icon-plus d-block p-0" />
-            </button>
+            <NotAvailableForReadOnlyUser>
+              <button
+                id='page-create-button-in-page-tree'
+                type="button"
+                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                onClick={onClickPlusButton}
+              >
+                <i className="icon-plus d-block p-0" />
+              </button>
+            </NotAvailableForReadOnlyUser>
           </NotAvailableForGuest>
         )}
       </li>
@@ -529,7 +529,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               placeholder={t('Input page name')}
               onClickOutside={() => { setNewPageInputShown(false) }}
               onPressEnter={onPressEnterForCreateHandler}
-              inputValidator={inputValidator}
+              validationTarget={ValidationTarget.PAGE}
             />
           </NotDraggableForClosableTextInput>
         </div>
@@ -539,6 +539,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
               isEnableActions={isEnableActions}
+              isReadOnlyUser={isReadOnlyUser}
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}

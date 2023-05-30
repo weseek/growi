@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import xss from 'xss';
+import { FilterXSS } from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPageHasId } from '~/interfaces/page';
@@ -25,13 +25,14 @@ const logger = loggerFactory('growi:service:search');
 const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // options for filtering xss
+// Do not change the property key name to 'whitelist" because it depends on the 'xss' library
 const filterXssOptions = {
   whiteList: {
     em: ['class'],
   },
 };
 
-const filterXss = new xss.FilterXSS(filterXssOptions);
+const filterXss = new FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
@@ -140,8 +141,14 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const pageEvent = this.crowi.event('page');
     pageEvent.on('create', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('update', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
-    pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
-    pageEvent.on('revert', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('delete', (targetPage, deletedPage, user) => {
+      this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator)(targetPage, user);
+      this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator)(deletedPage, user);
+    });
+    pageEvent.on('revert', (targetPage, revertedPage, user) => {
+      this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator)(targetPage, user);
+      this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator)(revertedPage, user);
+    });
     pageEvent.on('deleteCompletely', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('syncDescendantsDelete', this.fullTextSearchDelegator.syncDescendantsPagesDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));

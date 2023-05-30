@@ -176,7 +176,11 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   }, [mutateIsEnabledUnsavedWarning]);
 };
 
-export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => Promise<void>) | undefined => {
+export type UpdateStateAfterSaveOption = {
+  supressEditingMarkdownMutation: boolean,
+}
+
+export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: UpdateStateAfterSaveOption): (() => Promise<void>) | undefined => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
@@ -198,7 +202,12 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
 
     if (updatedPage == null) { return }
 
-    mutateEditingMarkdown(updatedPage.revision.body);
+    // supress to mutate only when updated from built-in editor
+    // and see: https://github.com/weseek/growi/pull/7118
+    const supressEditingMarkdownMutation = opts?.supressEditingMarkdownMutation ?? false;
+    if (!supressEditingMarkdownMutation) {
+      mutateEditingMarkdown(updatedPage.revision.body);
+    }
 
     const remoterevisionData = {
       remoteRevisionId: updatedPage.revision._id,
@@ -210,7 +219,9 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
     };
 
     setRemoteLatestPageData(remoterevisionData);
-  }, [mutateCurrentPage, mutateCurrentPageId, mutateEditingMarkdown, mutateTagsInfo, pageId, setRemoteLatestPageData, syncTagsInfoForEditor]);
+  },
+  // eslint-disable-next-line max-len
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, setRemoteLatestPageData, mutateEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {

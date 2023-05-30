@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback } from 'react';
 
-import { HasObjectId, IAttachment } from '@growi/core';
+import { IAttachmentHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import {
   Button,
@@ -25,10 +25,10 @@ function iconNameByFormat(format: string): string {
 type Props = {
   isOpen: boolean,
   toggle: () => void,
-  attachmentToDelete: IAttachment & HasObjectId | null,
+  attachmentToDelete: IAttachmentHasId | null,
   deleting: boolean,
   deleteError: string,
-  onAttachmentDeleteClickedConfirm?: (attachment: IAttachment & HasObjectId) => Promise<void>,
+  onAttachmentDeleteClickedConfirm?: (attachment: IAttachmentHasId) => Promise<void>,
 }
 
 export const DeleteAttachmentModal = (props: Props): JSX.Element => {

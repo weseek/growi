@@ -12,6 +12,9 @@
   @import '~codemirror/theme/eclipse';
 
   .CodeMirror {
+    font-family: var(--font-family-monospace);
+    font-size: 15px;
+
     pre.CodeMirror-line.grw-cm-header-line {
       padding-top: 0.16em;
       padding-bottom: 0.08em;
@@ -97,7 +100,7 @@
       .card-body {
         min-width: 30em;
         padding-bottom: 0;
-        font-family: monospace;
+        font-family: var(--font-family-monospace);
         color: bs.$text-muted;
       }
       ul > li {

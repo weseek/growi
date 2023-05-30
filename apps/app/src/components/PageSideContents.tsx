@@ -14,7 +14,7 @@ import TableOfContents from './TableOfContents';
 import styles from './PageSideContents.module.scss';
 
 
-const { isTopPage, isUsersHomePage } = pagePathUtils;
+const { isTopPage, isUsersHomePage, isTrashPage } = pagePathUtils;
 
 
 export type PageSideContentsProps = {
@@ -32,6 +32,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
   const isUsersHomePagePath = isUsersHomePage(pagePath);
+  const isTrash = isTrashPage(pagePath);
 
   return (
     <>
@@ -48,7 +49,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
               <PageListIcon />
             </div>
             {t('page_list')}
-            <CountBadge count={page?.descendantCount} offset={1} />
+
+            {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
+            { !isTrash ? <CountBadge count={page?.descendantCount} offset={1} /> : <div className='px-2'></div>}
           </button>
         )}
       </div>

@@ -11,7 +11,7 @@
     }
   }
 
-  font-size: 15px;
+  font-size: 16px;
 
   // @extend .text-break;
   // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
@@ -81,6 +81,10 @@
   p {
     margin: 15px 0;
     font-weight: normal;
+  }
+
+  table {
+    font-size: 0.95em;
   }
 
   blockquote {
@@ -155,6 +159,33 @@
         }
       }
     }
+  }
+
+  // see: https://github.com/micromark/micromark-extension-gfm-footnote#css
+  /* Style the footnotes section. */
+  .footnotes {
+    font-size: smaller;
+    color: bs.$text-muted;
+    border-top: 1px solid bs.$border-color;
+    /* Hide the section label for visual users. */
+    #footnote-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      word-wrap: normal;
+      border: 0;
+    }
+  }
+  /* Place `[` and `]` around footnote references. */
+  [data-footnote-ref]::before {
+    content: '[';
+  }
+
+  [data-footnote-ref]::after {
+    content: ']';
   }
 
   $ratio: 0.95;

@@ -1,5 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 
+import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
@@ -35,6 +38,7 @@ export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoAll };
 type CommonProps = {
   pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
+  isReadOnlyUser?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
 
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
@@ -61,7 +65,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
-    pageId, isLoading, pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
+    pageId, isLoading, pageInfo, isEnableActions, isReadOnlyUser, forceHideMenuItems, operationProcessData,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
     onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
@@ -173,7 +177,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Move/Rename */}
-        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && pageInfo.isMovable && (
           <DropdownItem
             onClick={renameItemClickedHandler}
             data-testid="open-page-move-rename-modal-btn"
@@ -185,7 +189,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Duplicate */}
-        { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
+        { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && !isReadOnlyUser && (
           <DropdownItem
             onClick={duplicateItemClickedHandler}
             data-testid="open-page-duplicate-modal-btn"
@@ -197,7 +201,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Revert */}
-        { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && pageInfo.isRevertible && (
+        { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && !isReadOnlyUser && pageInfo.isRevertible && (
           <DropdownItem
             onClick={revertItemClickedHandler}
             className="grw-page-control-dropdown-item"
@@ -215,7 +219,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* PathRecovery */}
-        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && shouldShowPathRecoveryButton && (
+        { !forceHideMenuItems?.includes(MenuItemType.PATH_RECOVERY) && isEnableActions && !isReadOnlyUser && shouldShowPathRecoveryButton && (
           <DropdownItem
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
@@ -227,7 +231,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && pageInfo.isMovable && (
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
@@ -248,9 +252,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   return (
     <DropdownMenu
       data-testid="page-item-control-menu"
-      modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
       right={alignRight}
+      modifiers={getCustomModifiers(alignRight)}
       container="body"
+      persist={!!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >
       {contents}

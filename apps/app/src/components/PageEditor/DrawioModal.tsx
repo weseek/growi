@@ -20,7 +20,7 @@ import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicat
 const logger = loggerFactory('growi:components:DrawioModal');
 
 const headerColor = '#334455';
-const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
+const fontFamily = "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 
 const drawioConfig: DrawioConfig = {
   css: `
@@ -32,7 +32,7 @@ const drawioConfig: DrawioConfig = {
     font-size: 8pt !important;
   }
   `,
-  customFonts: ['Lato', 'Charter'],
+  customFonts: ['Charter'],
   compressXml: true,
 };
 

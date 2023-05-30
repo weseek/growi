@@ -20,7 +20,7 @@ class XssSerivce {
     return this.xss.process(value);
   }
 
-  getTagWhiteList() {
+  getTagWhitelist() {
     const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
     const xssOpiton = this.configManager.getConfig('markdown', 'markdown:xss:option');
 
@@ -32,8 +32,8 @@ class XssSerivce {
         case 2: // recommended
           return tags;
 
-        case 3: // custom white list
-          return this.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList');
+        case 3: // custom whitelist
+          return this.configManager.getConfig('markdown', 'markdown:xss:tagWhitelist');
 
         default:
           return [];
@@ -44,7 +44,7 @@ class XssSerivce {
     }
   }
 
-  getAttrWhiteList() {
+  getAttrWhitelist() {
     const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
     const xssOpiton = this.configManager.getConfig('markdown', 'markdown:xss:option');
 
@@ -56,8 +56,8 @@ class XssSerivce {
         case 2: // recommended
           return attrs;
 
-        case 3: // custom white list
-          return this.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList');
+        case 3: // custom whitelist
+          return this.configManager.getConfig('markdown', 'markdown:xss:attrWhitelist');
 
         default:
           return [];

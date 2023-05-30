@@ -5,20 +5,21 @@ import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder'
 import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import type { RespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
-import { IncomingWebhookSendArguments } from '@slack/webhook';
+import { type ChatPostMessageArguments, WebClient } from '@slack/web-api';
+import type { IncomingWebhookSendArguments } from '@slack/webhook';
 import mongoose from 'mongoose';
 
 
 import loggerFactory from '~/utils/logger';
 
-import { EventActionsPermission } from '../interfaces/slack-integration/events';
+import type { EventActionsPermission } from '../interfaces/slack-integration/events';
 import S2sMessage from '../models/vo/s2s-message';
 import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
+import { slackLegacyUtilFactory } from '../util/slack-legacy';
 
-import ConfigManager from './config-manager';
-import { S2sMessagingService } from './s2s-messaging/base';
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { ConfigManager } from './config-manager';
+import type { S2sMessagingService } from './s2s-messaging/base';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 import { LinkSharedEventHandler } from './slack-event-handler/link-shared';
 
 const logger = loggerFactory('growi:service:SlackBotService');
@@ -230,7 +231,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   private async postMessageWithLegacyUtil(messageArgs: ChatPostMessageArguments | IncomingWebhookSendArguments): Promise<void> {
-    const slackLegacyUtil = require('../util/slack-legacy')(this.crowi);
+    const slackLegacyUtil = slackLegacyUtilFactory(this.configManager);
 
     try {
       await slackLegacyUtil.postMessage(messageArgs);

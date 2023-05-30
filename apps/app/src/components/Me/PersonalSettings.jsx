@@ -9,6 +9,7 @@ import ApiSettings from './ApiSettings';
 // import { EditorSettings } from './EditorSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import InAppNotificationSettings from './InAppNotificationSettings';
+import OtherSettings from './OtherSettings';
 import PasswordSettings from './PasswordSettings';
 import UserSettings from './UserSettings';
 
@@ -48,14 +49,27 @@ const PersonalSettings = () => {
         Content: InAppNotificationSettings,
         i18n: t('in_app_notification_settings.in_app_notification_settings'),
       },
+      other_settings: {
+        Icon: () => <i className="icon-fw icon-settings"></i>,
+        Content: OtherSettings,
+        i18n: t('Other Settings'),
+      },
     };
   }, [t]);
 
-  const onPasswordSettings = window.location.hash === '#password';
+  const getDefaultTabIndex = () => {
+    // e.g) '/me#password_settings' sets password settings tab as default
+    const tab = window.location.hash?.substring(1);
+    let defaultTabIndex;
+    Object.keys(navTabMapping).forEach((key, i) => {
+      if (key === tab) { defaultTabIndex = i }
+    });
+    return defaultTabIndex;
+  };
 
   return (
     <div data-testid="grw-personal-settings">
-      <CustomNavAndContents defaultTabIndex={onPasswordSettings && 2} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+      <CustomNavAndContents defaultTabIndex={getDefaultTabIndex()} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
     </div>
   );
 

@@ -1,13 +1,6 @@
-/** **********************************************************
- *                           Caution
- *
- * Module aliases by compilerOptions.paths in tsconfig.json
- * are NOT available in setup scripts
- *********************************************************** */
-
 import mongoose from 'mongoose';
 
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
@@ -15,8 +8,6 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = async() => {
-  initMongooseGlobalSettings();
-
   mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database

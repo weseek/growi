@@ -114,8 +114,7 @@
       "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。",
       "email_authentication": "ユーザー登録時のメール認証",
       "enable_email_authentication": "メール認証を有効にする",
-      "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
+      "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。"
     },
     "ldap": {
       "enable_ldap": "LDAP を有効にする",
@@ -347,7 +346,8 @@
       "title": "サイトURL設定",
       "desc": "サイトURLを設定します。",
       "warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
-      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL"
+      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
+      "note_for_the_only_env_option": "現在サイトURLは環境変数の値によって固定されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
     },
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
@@ -396,7 +396,17 @@
     "enable": "有効",
     "disable": "無効",
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
-    "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
+    "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
+    "questionnaire_settings": "アンケート設定",
+    "questionnaire_settings_explanation": "システム全体でアンケート機能を有効/無効にします。有効の場合、各ユーザーはユーザー設定ページの「その他の設定」から個別にアンケート機能を有効/無効にできます。",
+    "about_data_sent": "送信される情報について",
+    "docs_link": "https://docs.growi.org/ja/admin-guide/management-cookbook/app-settings.html#%E3%82%A2%E3%83%B3%E3%82%B1%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A",
+    "learn_more": "詳細",
+    "other_info_will_be_sent": "アンケートの回答と合わせて、GROWI の改善に必要な情報を送信します。送信されるデータにユーザーの個人情報は含まれません。",
+    "we_will_use_the_data_to_improve_growi": "私たちはそれらを活用し、最大限ユーザーの体験を向上させるよう努めます。",
+    "anonymize_app_site_url": "サイト URL を匿名化して送信する",
+    "url_anonymization_explanation": "アンケート回答データに含まれるサイト URL が匿名化されます。この設定を有効にすることで、アンケート回答データの送信元である GROWI アプリケーションが特定されなくなります。",
+    "enable_questionnaire": "アンケートを有効にする"
   },
   "markdown_settings": {
     "markdown_settings": "マークダウン設定",
@@ -734,23 +744,26 @@
     },
     "user_table": {
       "administrator": "管理者",
+      "read_only": "閲覧のみ",
       "edit_menu": "編集メニュー",
       "reset_password": "パスワードの再発行",
       "administrator_menu": "管理者メニュー",
       "accept": "承認する",
       "deactivate_account": "アカウント停止",
       "your_own": "自分自身のアカウントを停止することはできません",
-      "remove_admin_access": "管理者から外す",
-      "cannot_remove": "自分自身を管理者から外すことはできません",
-      "give_admin_access": "管理者にする",
+      "revoke_admin_access": "管理者から外す",
+      "cannot_revoke": "自分自身を管理者から外すことはできません",
+      "grant_admin_access": "管理者にする",
+      "revoke_read_only_access": "閲覧のみアクセス権を外す",
+      "grant_read_only_access": "閲覧のみアクセス権を付与する",
       "send_invitation_email": "招待メールの送信",
       "resend_invitation_email": "招待メールの再送信"
     },
     "reset_password": "パスワードのリセット",
     "reset_password_modal": {
-      "reset_password_info": "パスワードをリセットすると新規発行したパスワードを対象ユーザーに送信します。",
-      "password_reset_message": "対象ユーザーに一時的なパスワードを送信しました。新しく別のパスワードを設定するよう伝えてください。",
-      "reset_password_alert": "送信に失敗した場合はメール設定が正しいことを確認し再度パスワードのリセットを行ってください",
+      "password_never_seen": "表示されたパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。",
+      "password_reset_message": "対象ユーザーに下記のパスワードを伝え、すぐに新しく別のパスワードを設定するよう伝えてください。",
+      "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
       "target_user": "対象ユーザー",
       "new_password": "新しいパスワード"
     },
@@ -1013,8 +1026,10 @@
     "ADMIN_USERS_PASSWORD_RESET": "ユーザーのパスワードをリセット",
     "ADMIN_USERS_ACTIVATE": "ユーザーを承認する",
     "ADMIN_USERS_DEACTIVATE": "ユーザーを停止する",
-    "ADMIN_USERS_GIVE_ADMIN": "管理者にする",
-    "ADMIN_USERS_REMOVE_ADMIN": "管理者から外す",
+    "ADMIN_USERS_GRANT_ADMIN": "管理者にする",
+    "ADMIN_USERS_REVOKE_ADMIN": "管理者から外す",
+    "ADMIN_USERS_GRANT_READ_ONLY": "閲覧のみアクセス権を付与する",
+    "ADMIN_USERS_REVOKE_READ_ONLY": "閲覧のみアクセス権を外す",
     "ADMIN_USERS_SEND_INVITATION_EMAIL": "招待メールの再送信",
     "ADMIN_USERS_REMOVE": "ユーザーの削除",
     "ADMIN_USER_GROUP_CREATE": "ユーザーグループの作成",
@@ -1031,8 +1046,10 @@
     "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
   },
   "toaster": {
-    "give_user_admin": "{{username}}を管理者に設定しました",
-    "remove_user_admin": "{{username}}を管理者から外しました",
+    "grant_user_admin": "{{username}}を管理者に設定しました",
+    "revoke_user_admin": "{{username}}を管理者から外しました",
+    "grant_user_read_only": "{{username}}に閲覧のみアクセス権を付与しました",
+    "revoke_user_read_only": "{{username}}から閲覧のみアクセス権を外しました",
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",

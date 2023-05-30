@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 
 const crypto = require('crypto');
 
-const debug = require('debug')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
@@ -68,7 +67,9 @@ module.exports = function(crowi) {
     },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
+    readOnly: { type: Boolean, default: 0 },
     isInvitationEmailSended: { type: Boolean, default: false },
+    isQuestionnaireEnabled: { type: Boolean, default: true },
   }, {
     timestamps: true,
     toObject: {
@@ -264,32 +265,44 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = async function() {
-    debug('Remove from admin', this);
-    this.admin = 0;
-    return this.save();
-  };
-
-  userSchema.methods.makeAdmin = async function() {
-    debug('Admin', this);
+  userSchema.methods.grantAdmin = async function() {
+    logger.debug('Grant Admin', this);
     this.admin = 1;
     return this.save();
   };
 
-  userSchema.methods.asyncMakeAdmin = async function(callback) {
+  userSchema.methods.revokeAdmin = async function() {
+    logger.debug('Revove admin', this);
+    this.admin = 0;
+    return this.save();
+  };
+
+  userSchema.methods.grantReadOnly = async function() {
+    logger.debug('Grant read only access', this);
+    this.readOnly = 1;
+    return this.save();
+  };
+
+  userSchema.methods.revokeReadOnly = async function() {
+    logger.debug('Revoke read only access', this);
+    this.readOnly = 0;
+    return this.save();
+  };
+
+  userSchema.methods.asyncGrantAdmin = async function(callback) {
     this.admin = 1;
     return this.save();
   };
 
   userSchema.methods.statusActivate = async function() {
-    debug('Activate User', this);
+    logger.debug('Activate User', this);
     this.status = STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
   };
 
   userSchema.methods.statusSuspend = async function() {
-    debug('Suspend User', this);
+    logger.debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
       this.email = '-';
@@ -304,7 +317,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.statusDelete = async function() {
-    debug('Delete User', this);
+    logger.debug('Delete User', this);
 
     const now = new Date();
     const deletedLabel = `deleted_at_${now.getTime()}`;
@@ -334,7 +347,7 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
+    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhitelist');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
       return whitelist.some((allowedEmail) => {
@@ -728,6 +741,11 @@ module.exports = function(crowi) {
     const totalCount = (await this.find(conditions).distinct('username')).length;
 
     return { users, totalCount };
+  };
+
+  userSchema.methods.updateIsQuestionnaireEnabled = async function(value) {
+    this.isQuestionnaireEnabled = value;
+    return this.save();
   };
 
   class UserUpperLimitException {

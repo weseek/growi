@@ -4,19 +4,19 @@ import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
-  toggleBookmark, toggleLike, toggleSubscribe,
+  toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
-import BookmarkButtons from '../BookmarkButtons';
+import { BookmarkButtons } from '../BookmarkButtons';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
@@ -90,10 +90,11 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
-  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+  const { data: bookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
@@ -104,7 +105,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 15) : [];
 
   const subscribeClickhandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
+    if (isGuestUser ?? true) {
       return;
     }
     if (!isIPageInfoForOperation(pageInfo)) {
@@ -116,7 +117,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const likeClickhandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
+    if (isGuestUser ?? true) {
       return;
     }
     if (!isIPageInfoForOperation(pageInfo)) {
@@ -126,19 +127,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     await toggleLike(pageId, pageInfo.isLiked);
     mutatePageInfo();
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
-
-  const bookmarkClickHandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser) {
-      return;
-    }
-    if (!isIPageInfoForOperation(pageInfo)) {
-      return;
-    }
-
-    await toggleBookmark(pageId, pageInfo.isBookmarked);
-    mutatePageInfo();
-    mutateBookmarkInfo();
-  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
   const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDuplicateMenuItem == null || path == null) {
@@ -184,7 +172,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
-    if (onClickSwitchContentWidth == null || isGuestUser == null || isGuestUser) {
+    if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
       return;
     }
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -196,7 +184,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, onClickSwitchContentWidth, pageId, pageInfo]);
+  }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -214,7 +202,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }
 
   const {
-    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked,
   } = pageInfo;
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
@@ -240,10 +228,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       {revisionId != null && (
         <BookmarkButtons
           hideTotalNumber={isCompactMode}
-          bookmarkCount={bookmarkCount}
-          isBookmarked={isBookmarked}
           bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-          onBookMarkClicked={bookmarkClickHandler}
+          bookmarkInfo={bookmarkInfo}
         />
       )}
       {revisionId != null && !isCompactMode && (
@@ -259,8 +245,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
+          isReadOnlyUser={!!isReadOnlyUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
-          additionalMenuItemOnTopRenderer={additionalMenuItemOnTopRenderer}
+          additionalMenuItemOnTopRenderer={!isReadOnlyUser ? additionalMenuItemOnTopRenderer : undefined}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}

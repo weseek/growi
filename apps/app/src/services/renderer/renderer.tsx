@@ -35,9 +35,10 @@ const logger = loggerFactory('growi:services:renderer');
 type SanitizePlugin = PluginTuple<[SanitizeOption]>;
 
 const baseSanitizeSchema = {
-  tagNames: ['iframe', 'section'],
+  tagNames: ['iframe', 'section', 'video'],
   attributes: {
     iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
+    video: ['controls', 'src', 'muted', 'preload', 'width', 'height', 'autoplay'],
     // The special value 'data*' as a property name can be used to allow all data properties.
     // see: https://github.com/syntax-tree/hast-util-sanitize/
     '*': ['key', 'class', 'className', 'style', 'data*'],
@@ -48,7 +49,7 @@ export const commonSanitizeOption: SanitizeOption = deepmerge(
   rehypeSanitizeDefaultSchema,
   baseSanitizeSchema,
   {
-    clobberPrefix: 'mdcont-',
+    clobberPrefix: '', // remove clobber prefix
   },
 );
 
@@ -56,8 +57,8 @@ let isInjectedCustomSanitaizeOption = false;
 
 export const injectCustomSanitizeOption = (config: RendererConfig): void => {
   if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhiteList ?? []);
-    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhiteList ?? {});
+    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhitelist ?? []);
+    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhitelist ?? {});
     isInjectedCustomSanitaizeOption = true;
   }
 };
@@ -92,14 +93,14 @@ export const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastIt
 export const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
-      [toc, { maxDepth: 3, tight: true, prefix: 'mdcont-' }],
+      [toc, { maxDepth: 3, tight: true }],
       gfm,
       emoji,
       pukiwikiLikeLinker,
       growiDirective,
     ],
     remarkRehypeOptions: {
-      clobberPrefix: 'mdcont-',
+      clobberPrefix: '', // remove clobber prefix
       allowDangerousHtml: true,
     },
     rehypePlugins: [

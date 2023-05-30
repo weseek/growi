@@ -30,6 +30,8 @@
   $color-dropdown-link-active: var(--color-dropdown-link-active,var(--color-reversal));
   $bgcolor-dropdown-link-hover: hsl.darken(var(--bgcolor-global),15%);
   $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
+  $body-bg: var(--bgcolor-global);
+  $body-color: var(--color-global);
 
   // override bootstrap variables
   $text-muted: $gray-500;
@@ -225,7 +227,7 @@
       box-shadow: 0px 0px 3px rgba(black, 0.24);
     }
     // Pagetree
-    .grw-pagetree {
+    .grw-pagetree, .grw-foldertree {
       @include override-list-group-item-for-pagetree(
         var(--color-sidebar-context),
         hsl.darken(var(--bgcolor-sidebar-context),5%),
@@ -236,10 +238,20 @@
         hsl.darken(var(--bgcolor-sidebar-context),24%)
       );
 
-      .grw-pagetree-triangle-btn {
+      .grw-pagetree-triangle-btn, .grw-foldertree-triangle-btn {
         @include mixins-buttons.button-outline-svg-icon-variant($gray-400, var(--primary));
       }
     }
+
+    // bookmark
+    .grw-folder-tree-container {
+      .grw-drop-item-area, .grw-foldertree-item-container  {
+        .grw-accept-drop-item {
+          border-color: hsl.darken(var(--bgcolor-sidebar-context), 30%) !important;
+        }
+      }
+    }
+
     .private-legacy-pages-link {
       &:hover {
         background: $bgcolor-list-hover;
@@ -260,6 +272,50 @@
       color: var(--primary);
     }
     box-shadow: none !important;
+  }
+
+
+  // Bookmark item on user page
+  .grw-user-page-list-m {
+    @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+    .grw-foldertree {
+      @include override-list-group-item-for-pagetree(
+        $body-color,
+        hsl.darken($body-bg, 5%),
+        hsl.darken($body-bg, 12%),
+        hsl.lighten($body-color, 10%),
+        hsl.lighten($body-color, 8%),
+        hsl.darken($body-bg, 15%),
+        hsl.darken($body-bg, 24%)
+      );
+      .grw-foldertree-triangle-btn {
+        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
+      }
+    }
+    .grw-folder-tree-container {
+      .grw-drop-item-area, .grw-foldertree-item-container  {
+        .grw-accept-drop-item {
+          border-color: hsl.darken(var($body-bg), 30%) !important;
+        }
+      }
+    }
+  }
+
+  // Bookmark dropdown menu
+  .grw-bookmark-folder-dropdown  {
+    .grw-bookmark-folder-menu {
+      .form-control{
+        &:focus {
+          color: $body-color
+        }
+      }
+      .grw-bookmark-folder-menu-item {
+        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
+        .grw-bookmark-folder-menu-item-title {
+          color: $body-color
+        }
+      }
+    }
   }
 
   /*

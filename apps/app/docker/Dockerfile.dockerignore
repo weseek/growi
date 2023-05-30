@@ -5,3 +5,5 @@
 **/*.dockerignore
 **/.next
 **/.turbo
+out
+apps/slackbot-proxy

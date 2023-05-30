@@ -2,10 +2,10 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 
-import { HasObjectId, IAttachment } from '@growi/core';
+import { IAttachmentHasId } from '@growi/core';
 
 import { useSWRxAttachments } from '~/stores/attachment';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 
 import { DeleteAttachmentModal } from './PageAttachment/DeleteAttachmentModal';
@@ -25,10 +25,13 @@ const PageAttachment = (): JSX.Element => {
   // Static SWRs
   const { data: pageId } = useCurrentPageId();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+
+  const isPageAttachmentDisabled = !!isGuestUser || !!isReadOnlyUser;
 
   // States
   const [pageNumber, setPageNumber] = useState(1);
-  const [attachmentToDelete, setAttachmentToDelete] = useState<(IAttachment & HasObjectId) | null>(null);
+  const [attachmentToDelete, setAttachmentToDelete] = useState<(IAttachmentHasId) | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
@@ -58,7 +61,7 @@ const PageAttachment = (): JSX.Element => {
     setAttachmentToDelete(attachment);
   }, []);
 
-  const onAttachmentDeleteClickedConfirmHandler = useCallback(async(attachment: IAttachment & HasObjectId) => {
+  const onAttachmentDeleteClickedConfirmHandler = useCallback(async(attachment: IAttachmentHasId) => {
     setDeleting(true);
 
     try {
@@ -93,13 +96,13 @@ const PageAttachment = (): JSX.Element => {
         attachments={dataAttachments.attachments}
         inUse={inUseAttachmentsMap}
         onAttachmentDeleteClicked={onAttachmentDeleteClicked}
-        isUserLoggedIn={!isGuestUser}
+        isUserLoggedIn={!isPageAttachmentDisabled}
       />
     );
-  }, [dataAttachments, inUseAttachmentsMap, isGuestUser, onAttachmentDeleteClicked]);
+  }, [dataAttachments, inUseAttachmentsMap, isPageAttachmentDisabled, onAttachmentDeleteClicked]);
 
   const renderDeleteAttachmentModal = useCallback(() => {
-    if (isGuestUser) {
+    if (isPageAttachmentDisabled) {
       return <></>;
     }
 
@@ -120,7 +123,7 @@ const PageAttachment = (): JSX.Element => {
       />
     );
   // eslint-disable-next-line max-len
-  }, [attachmentToDelete, dataAttachments, deleteError, deleting, isGuestUser, onAttachmentDeleteClickedConfirmHandler, onToggleHandler]);
+  }, [attachmentToDelete, dataAttachments, deleteError, deleting, isPageAttachmentDisabled, onAttachmentDeleteClickedConfirmHandler, onToggleHandler]);
 
   const renderPaginationWrapper = useCallback(() => {
     if (dataAttachments == null || dataAttachments.attachments.length === 0) {

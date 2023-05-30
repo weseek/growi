@@ -10,17 +10,19 @@
     "display_name": "简体中文"
   },
   "toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
+    "add_succeeded": "Succeeded to add {{target}}",
     "create_failed": "Failed to create {{target}}",
-    "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
-
+    "create_succeeded": "Succeeded to create {{target}}",
+    "delete_succeeded": "Succeeded to delete {{target}}",
+    "remove_share_link": "Succeeded to remove {{count}} share links",
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
-    "remove_share_link": "Succeeded to remove {{count}} share links"
+    "update_failed": "Failed to update {{target}}",
+    "update_successed": "Succeeded to update {{target}}"
   },
   "alert": {
     "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
-    "please_enable_mailer": "请先设置邮件程序。"
+    "please_enable_mailer": "请先设置邮件程序。",
+    "password_reset_please_enable_mailer": "请先设置邮件程序。"
   },
   "headers": {
     "app_settings": "系统设置"
@@ -59,7 +61,8 @@
 		"color_mode": "颜色模式",
 		"sidebar_mode": "边栏模式",
 		"sidebar_mode_editor": "编辑器上的边栏模式",
-		"use_os_settings": "使用操作系统设置"
+		"use_os_settings": "使用操作系统设置",
+    "feedback": "意见和要求"
   },
 
 	"copy_to_clipboard": {
@@ -92,6 +95,30 @@
       "cancel": "取消",
       "import": "导入"
     }
+  },
+
+  "questionnaire_modal": {
+    "required": "必需的",
+    "submit": "发送",
+    "close": "Close",
+    "title": "改善服务的GROWI调查表",
+    "more_satisfied_services": "我们希望让使用GROWI的人更加满意",
+    "strive_to_improve_services": "我们将利用你的反馈来改善我们的服务。",
+    "length_of_experience": {
+      "more_than_two_years": "2年以上",
+      "one_to_two_years": "超过1年但少于2年",
+      "six_months_to_one_year": "超过6个月但少于1年",
+      "three_months_to_six_months": "超过3个月但少于6个月",
+      "one_month_to_three_months": "超过1个月但少于3个月",
+      "less_than_one_month": "不到1个月"
+    },
+    "satisfaction_with_growi": "对GROWI的满意程度",
+    "history_of_growi_usage": "GROWI的使用历史",
+    "occupation": "职位",
+    "position": "职业类型",
+    "comment_on_growi": "关于GROWI的评论",
+    "successfully_submitted": "问卷已经发出。",
+    "thanks_for_answering": "非常感谢您完成问卷调查。"
   },
 
   "not_found_page": {
