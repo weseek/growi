@@ -31,8 +31,7 @@ class PasswordResetModal extends React.Component {
     const { t, userForPasswordResetModal } = this.props;
     try {
       const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
-      const { newPassword } = res.data;
-      const { failedToSendEmail } = res.data;
+      const { newPassword, failedToSendEmail } = res.data;
       if (failedToSendEmail == null) {
         const msg = `Email has been sent<br>・${userForPasswordResetModal.email}`;
         toastSuccess(msg);
@@ -98,7 +97,7 @@ class PasswordResetModal extends React.Component {
           </label>
           {isMailerSetup
             // eslint-disable-next-line react/no-danger
-            ? <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mail_setting_link') }} />
+            ? <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.reset_password_modal.mail_setting_link') }} />
             // eslint-disable-next-line react/no-danger
             : <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
           }
@@ -113,8 +112,7 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterAfterReset() {
-    const { t, isMailerSetup } = this.props;
-    const { isCreateUserButtonPushed } = this.state;
+    const { t } = this.props;
 
     return (
       <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>

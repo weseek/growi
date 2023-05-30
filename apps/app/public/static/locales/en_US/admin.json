@@ -758,7 +758,8 @@
       "send_new_password": "Please send the new password to the user.",
       "target_user": "Target User",
       "new_password": "New Password",
-      "send_password_email": "Send the password to user"
+      "send_password_email": "Send the password to user",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>"
     },
     "external_account": "External Account Management",
     "external_accounts":"External accounts",
