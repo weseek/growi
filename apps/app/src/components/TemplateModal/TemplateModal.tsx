@@ -49,7 +49,7 @@ const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioBu
 };
 
 export const TemplateModal = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
 
   const { data: templateModalStatus, close } = useTemplateModal();
@@ -88,7 +88,7 @@ export const TemplateModal = (): JSX.Element => {
   return (
     <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
-        Template
+        {t('template.modal_label.Select template')}
       </ModalHeader>
 
       <ModalBody className="container">
@@ -98,7 +98,7 @@ export const TemplateModal = (): JSX.Element => {
               <TemplateRadioButton
                 key={template.id}
                 template={template}
-                onChange={t => setSelectedTemplate(t)}
+                onChange={selected => setSelectedTemplate(selected)}
                 isSelected={template.id === selectedTemplate?.id}
               />
             )) }
@@ -107,7 +107,7 @@ export const TemplateModal = (): JSX.Element => {
 
         <hr />
 
-        <h3>Preview</h3>
+        <h3>{t('Preview')}</h3>
         <div className='card'>
           <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
             { rendererOptions != null && selectedTemplate != null && (
@@ -122,7 +122,7 @@ export const TemplateModal = (): JSX.Element => {
           {t('Cancel')}
         </button>
         <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={() => submitHandler(selectedTemplate)} disabled={selectedTemplate == null}>
-          {t('Update')}
+          {t('commons:Insert')}
         </button>
       </ModalFooter>
     </Modal>
