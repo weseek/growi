@@ -5,6 +5,8 @@ import qs from 'qs';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
+import registerSafeRedirectFactory from '../middlewares/safe-redirect';
+
 const logger = loggerFactory('growi:crowi:express-init');
 
 module.exports = function(crowi, app) {
@@ -22,7 +24,7 @@ module.exports = function(crowi, app) {
   const mongoSanitize = require('express-mongo-sanitize');
 
   const promster = require('../middlewares/promster')(crowi, app);
-  const registerSafeRedirect = require('../middlewares/safe-redirect')();
+  const registerSafeRedirect = registerSafeRedirectFactory();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
 

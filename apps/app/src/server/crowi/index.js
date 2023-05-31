@@ -23,10 +23,10 @@ import GrowiPlugin from '../models/growi-plugin';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
-import AclService from '../service/acl';
+import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
-import ConfigManager from '../service/config-manager';
+import { configManager as configManagerSingletonInstance } from '../service/config-manager';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -37,7 +37,7 @@ import { PluginService } from '../service/plugin';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 
 const logger = loggerFactory('growi:crowi');
@@ -224,8 +224,6 @@ Crowi.prototype.setupDatabase = function() {
   // mongoUri = mongodb://user:password@host/dbname
   const mongoUri = getMongoUri();
 
-  initMongooseGlobalSettings();
-
   return mongoose.connect(mongoUri, mongoOptions);
 };
 
@@ -276,7 +274,7 @@ Crowi.prototype.setupSessionConfig = async function() {
 };
 
 Crowi.prototype.setupConfigManager = async function() {
-  this.configManager = new ConfigManager();
+  this.configManager = configManagerSingletonInstance;
   return this.configManager.loadConfigs();
 };
 
@@ -614,9 +612,7 @@ Crowi.prototype.setUpXss = async function() {
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
-  if (this.aclService == null) {
-    this.aclService = new AclService(this.configManager);
-  }
+  this.aclService = aclServiceSingletonInstance;
 };
 
 /**

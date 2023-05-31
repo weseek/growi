@@ -1,9 +1,10 @@
 // crowi-fileupload-none
 
+const { AbstractFileUploader } = require('./file-uploader');
+
 module.exports = function(crowi) {
   const debug = require('debug')('growi:service:fileUploaderNone');
-  const Uploader = require('./uploader');
-  const lib = new Uploader(crowi);
+  const lib = new AbstractFileUploader(crowi);
 
   lib.getIsUploadable = function() {
     return false;

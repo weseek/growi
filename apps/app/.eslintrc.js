@@ -5,16 +5,6 @@ module.exports = {
   plugins: [
     'regex',
   ],
-  env: {
-    jquery: true,
-  },
-  globals: {
-    $: true,
-    jquery: true,
-    hljs: true,
-    ScrollPosStyler: true,
-    window: true,
-  },
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
     'import/resolver': {
@@ -40,7 +30,6 @@ module.exports = {
     // set 'warn' temporarily -- 2021.08.02 Yuki Takei
     '@typescript-eslint/no-use-before-define': ['warn'],
     '@typescript-eslint/no-this-alias': ['warn'],
-    'jest/no-done-callback': ['warn'],
   },
   overrides: [
     {
