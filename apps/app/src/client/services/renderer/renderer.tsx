@@ -1,10 +1,10 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
-import * as refsGrowiPlugin from '@growi/remark-attachment-refs/dist/client/index.mjs';
-import * as drawioPlugin from '@growi/remark-drawio';
+import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client/index.mjs';
+import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
-import * as lsxGrowiPlugin from '@growi/remark-lsx/dist/client/index.mjs';
+import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client/index.mjs';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
@@ -18,7 +18,7 @@ import type { Pluggable } from 'unified';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
-import * as mermaidPlugin from '~/features/mermaid-plugin';
+import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -58,11 +58,11 @@ export const generateViewOptions = (
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
-    drawioPlugin.remarkPlugin,
+    drawio.remarkPlugin,
+    mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
-    refsGrowiPlugin.remarkPlugin,
-    mermaidPlugin.remarkPlugin,
+    lsxGrowiDirective.remarkPlugin,
+    refsGrowiDirective.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -75,18 +75,18 @@ export const generateViewOptions = (
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      refsGrowiPlugin.sanitizeOption,
-      mermaidPlugin.sanitizeOption,
+      drawio.sanitizeOption,
+      mermaid.sanitizeOption,
+      lsxGrowiDirective.sanitizeOption,
+      refsGrowiDirective.sanitizeOption,
     )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
-    [refsGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiDirective.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    [refsGrowiDirective.rehypePlugin, { pagePath }],
     rehypeSanitizePlugin,
     katex,
     [relocateToc.rehypePluginStore, { storeTocNode }],
@@ -100,15 +100,15 @@ export const generateViewOptions = (
     components.h4 = Header;
     components.h5 = Header;
     components.h6 = Header;
-    components.lsx = lsxGrowiPlugin.Lsx;
-    components.ref = refsGrowiPlugin.Ref;
-    components.refs = refsGrowiPlugin.Refs;
-    components.refimg = refsGrowiPlugin.RefImg;
-    components.refsimg = refsGrowiPlugin.RefsImg;
-    components.gallery = refsGrowiPlugin.Gallery;
+    components.lsx = lsxGrowiDirective.Lsx;
+    components.ref = refsGrowiDirective.Ref;
+    components.refs = refsGrowiDirective.Refs;
+    components.refimg = refsGrowiDirective.RefImg;
+    components.refsimg = refsGrowiDirective.RefsImg;
+    components.gallery = refsGrowiDirective.Gallery;
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
-    components.mermaid = mermaidPlugin.MermaidViewer;
+    components.mermaid = mermaid.MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -164,11 +164,11 @@ export const generateSimpleViewOptions = (
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
-    drawioPlugin.remarkPlugin,
+    drawio.remarkPlugin,
+    mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
-    refsGrowiPlugin.remarkPlugin,
-    mermaidPlugin.remarkPlugin,
+    lsxGrowiDirective.remarkPlugin,
+    refsGrowiDirective.remarkPlugin,
   );
 
   const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
@@ -185,17 +185,17 @@ export const generateSimpleViewOptions = (
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      refsGrowiPlugin.sanitizeOption,
-      mermaidPlugin.sanitizeOption,
+      drawio.sanitizeOption,
+      mermaid.sanitizeOption,
+      lsxGrowiDirective.sanitizeOption,
+      refsGrowiDirective.sanitizeOption,
     )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
-    [refsGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiDirective.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    [refsGrowiDirective.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
@@ -203,14 +203,14 @@ export const generateSimpleViewOptions = (
 
   // add components
   if (components != null) {
-    components.lsx = lsxGrowiPlugin.LsxImmutable;
-    components.ref = refsGrowiPlugin.RefImmutable;
-    components.refs = refsGrowiPlugin.RefsImmutable;
-    components.refimg = refsGrowiPlugin.RefImgImmutable;
-    components.refsimg = refsGrowiPlugin.RefsImgImmutable;
-    components.gallery = refsGrowiPlugin.GalleryImmutable;
-    components.drawio = drawioPlugin.DrawioViewer;
-    components.mermaid = mermaidPlugin.MermaidViewer;
+    components.lsx = lsxGrowiDirective.LsxImmutable;
+    components.ref = refsGrowiDirective.RefImmutable;
+    components.refs = refsGrowiDirective.RefsImmutable;
+    components.refimg = refsGrowiDirective.RefImgImmutable;
+    components.refsimg = refsGrowiDirective.RefsImgImmutable;
+    components.gallery = refsGrowiDirective.GalleryImmutable;
+    components.drawio = drawio.DrawioViewer;
+    components.mermaid = mermaid.MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -241,11 +241,11 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
-    drawioPlugin.remarkPlugin,
+    drawio.remarkPlugin,
+    mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
-    lsxGrowiPlugin.remarkPlugin,
-    refsGrowiPlugin.remarkPlugin,
-    mermaidPlugin.remarkPlugin,
+    lsxGrowiDirective.remarkPlugin,
+    refsGrowiDirective.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -258,18 +258,18 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      refsGrowiPlugin.sanitizeOption,
-      drawioPlugin.sanitizeOption,
+      drawio.sanitizeOption,
+      mermaid.sanitizeOption,
+      lsxGrowiDirective.sanitizeOption,
+      refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
-      mermaidPlugin.sanitizeOption,
     )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
-    [lsxGrowiPlugin.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
-    [refsGrowiPlugin.rehypePlugin, { pagePath }],
+    [lsxGrowiDirective.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
+    [refsGrowiDirective.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
     rehypeSanitizePlugin,
     katex,
@@ -277,14 +277,14 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = lsxGrowiPlugin.LsxImmutable;
-    components.ref = refsGrowiPlugin.RefImmutable;
-    components.refs = refsGrowiPlugin.RefsImmutable;
-    components.refimg = refsGrowiPlugin.RefImgImmutable;
-    components.refsimg = refsGrowiPlugin.RefsImgImmutable;
-    components.gallery = refsGrowiPlugin.GalleryImmutable;
-    components.drawio = drawioPlugin.DrawioViewer;
-    components.mermaid = mermaidPlugin.MermaidViewer;
+    components.lsx = lsxGrowiDirective.LsxImmutable;
+    components.ref = refsGrowiDirective.RefImmutable;
+    components.refs = refsGrowiDirective.RefsImmutable;
+    components.refimg = refsGrowiDirective.RefImgImmutable;
+    components.refsimg = refsGrowiDirective.RefsImgImmutable;
+    components.gallery = refsGrowiDirective.GalleryImmutable;
+    components.drawio = drawio.DrawioViewer;
+    components.mermaid = mermaid.MermaidViewer;
   }
 
   if (config.isEnabledXssPrevention) {
