@@ -1,7 +1,8 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { GrowiPluginHasId } from '~/interfaces/plugin';
+
+import type { GrowiPluginHasId } from '../interfaces';
 
 type Plugins = {
   plugins: GrowiPluginHasId[]

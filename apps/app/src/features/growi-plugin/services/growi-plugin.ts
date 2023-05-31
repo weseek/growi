@@ -8,13 +8,14 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
-import {
-  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta, GrowiPluginMeta,
-} from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-import type { GrowiPluginModel } from '../models/growi-plugin';
+import { GrowiPluginResourceType } from '../interfaces';
+import type {
+  GrowiPlugin, GrowiPluginOrigin, GrowiThemePluginMeta, GrowiPluginMeta,
+} from '../interfaces';
+import type { GrowiPluginModel } from '../models';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -40,14 +41,14 @@ type FindThemePluginResult = {
   themeHref: string,
 }
 
-export interface IPluginService {
+export interface IGrowiPluginService {
   install(origin: GrowiPluginOrigin): Promise<string>
   findThemePlugin(theme: string): Promise<FindThemePluginResult | null>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
   downloadNotExistPluginRepositories(): Promise<void>
 }
 
-export class PluginService implements IPluginService {
+export class GrowiPluginService implements IGrowiPluginService {
 
   /*
   * Downloading a non-existent repository to the file system
@@ -146,7 +147,7 @@ export class PluginService implements IPluginService {
       fs.renameSync(unzippedReposPath, temporaryReposPath);
 
       // detect plugins
-      plugins = await PluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
+      plugins = await GrowiPluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
 
       if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
 
@@ -409,3 +410,6 @@ export class PluginService implements IPluginService {
   }
 
 }
+
+
+export const growiPluginService = new GrowiPluginService();

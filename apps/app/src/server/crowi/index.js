@@ -19,7 +19,6 @@ import { projectRoot } from '~/utils/project-dir-utils';
 
 
 import Activity from '../models/activity';
-import GrowiPlugin from '../models/growi-plugin';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
@@ -32,8 +31,6 @@ import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
-// eslint-disable-next-line import/no-cycle
-import { PluginService } from '../service/plugin';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -308,7 +305,6 @@ Crowi.prototype.setupModels = async function() {
   allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
-  allModels.growiPlugin = GrowiPlugin;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
@@ -392,13 +388,6 @@ Crowi.prototype.setupPassport = async function() {
 
 Crowi.prototype.setupSearcher = async function() {
   this.searchService = new SearchService(this);
-};
-
-/**
- * setup PluginService
- */
-Crowi.prototype.setupPluginer = async function() {
-  this.pluginService = new PluginService(this);
 };
 
 Crowi.prototype.setupMailer = async function() {
@@ -718,7 +707,7 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupPluginService = async function() {
-  const { PluginService } = require('../service/plugin');
+  const { PluginService } = require('../../features/growi-plugin/services/growi-plugin');
   if (this.pluginService == null) {
     this.pluginService = new PluginService(this);
   }

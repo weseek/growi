@@ -3,11 +3,12 @@ import {
   Schema, Model, Document, Types,
 } from 'mongoose';
 
-import {
-  GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
-} from '~/interfaces/plugin';
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { GrowiPluginResourceType } from '../interfaces';
+import type {
+  GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin, GrowiThemePluginMeta,
+} from '../interfaces';
 
 export interface GrowiPluginDocument extends GrowiPlugin, Document {
 }

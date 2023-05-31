@@ -2,10 +2,12 @@ import express, { Request, Router } from 'express';
 import { body, query } from 'express-validator';
 import mongoose from 'mongoose';
 
-import Crowi from '../../crowi';
-import type { GrowiPluginModel } from '../../models/growi-plugin';
+import Crowi from '~/server/crowi';
+import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import type { GrowiPluginModel } from '../models/growi-plugin';
+import { growiPluginService } from '../services';
+
 
 const ObjectID = mongoose.Types.ObjectId;
 
@@ -22,17 +24,12 @@ const validator = {
 };
 
 module.exports = (crowi: Crowi): Router => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const router = express.Router();
-  const { pluginService } = crowi;
 
   router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
-    if (pluginService == null) {
-      return res.apiv3Err('\'pluginService\' is not set up', 500);
-    }
-
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
       const data = await GrowiPluginModel.find({});
@@ -44,14 +41,10 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
-    if (pluginService == null) {
-      return res.apiv3Err('\'pluginService\' is not set up', 500);
-    }
-
     const { pluginInstallerForm: formValue } = req.body;
 
     try {
-      const pluginName = await pluginService.install(formValue);
+      const pluginName = await growiPluginService.install(formValue);
       return res.apiv3({ pluginName });
     }
     catch (err) {
@@ -60,9 +53,6 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    if (pluginService == null) {
-      return res.apiv3Err('\'pluginService\' is not set up', 500);
-    }
     const { id } = req.params;
     const pluginId = new ObjectID(id);
 
@@ -77,10 +67,6 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    if (pluginService == null) {
-      return res.apiv3Err('\'pluginService\' is not set up', 500);
-    }
-
     const { id } = req.params;
     const pluginId = new ObjectID(id);
 
@@ -95,15 +81,11 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    if (pluginService == null) {
-      return res.apiv3Err('\'pluginService\' is not set up', 500);
-    }
-
     const { id } = req.params;
     const pluginId = new ObjectID(id);
 
     try {
-      const pluginName = await pluginService.deletePlugin(pluginId);
+      const pluginName = await growiPluginService.deletePlugin(pluginId);
       return res.apiv3({ pluginName });
     }
     catch (err) {

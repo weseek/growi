@@ -4,7 +4,8 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSWRxPlugins } from '~/stores/plugin';
+
+import { useSWRxPlugins } from '../../../stores/growi-plugin';
 
 export const PluginInstallerForm = (): JSX.Element => {
   const { mutate } = useSWRxPlugins();
