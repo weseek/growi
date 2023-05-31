@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
 
 
@@ -87,7 +87,7 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterBeforeReset() {
-    const { t, isMailerSetup } = this.props;
+    const { t } = this.props;
     return (
       <button type="submit" className="btn btn-danger" onClick={this.resetPassword}>
         {t('user_management.reset_password')}
@@ -105,10 +105,6 @@ class PasswordResetModal extends React.Component {
     );
   }
 
-
-  handleCheckBox() {
-    this.setState({ sendEmail: !this.state.sendEmail });
-  }
 
   render() {
     const { t } = this.props;
@@ -132,8 +128,7 @@ class PasswordResetModal extends React.Component {
 
 const PasswordResetModalWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  const { data: isMailerSetup } = useIsMailerSetup();
-  return <PasswordResetModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
+  return <PasswordResetModal t={t} {...props} />;
 };
 
 /**
