@@ -8,7 +8,6 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores/context';
 
 
 class PasswordResetModal extends React.Component {
@@ -19,8 +18,6 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
-      sendEmail: false,
-      isCreateUserButtonPushed: false,
       collapse: false,
     };
 
