@@ -105,17 +105,16 @@ export const TemplateModal = (): JSX.Element => {
           </div>
         </div>
 
-        { rendererOptions != null && selectedTemplate != null && (
-          <>
-            <hr />
-            <h3>Preview</h3>
-            <div className='card'>
-              <div className="card-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplate)}/>
-              </div>
-            </div>
-          </>
-        ) }
+        <hr />
+
+        <h3>Preview</h3>
+        <div className='card'>
+          <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
+            { rendererOptions != null && selectedTemplate != null && (
+              <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplate)}/>
+            ) }
+          </div>
+        </div>
 
       </ModalBody>
       <ModalFooter>
