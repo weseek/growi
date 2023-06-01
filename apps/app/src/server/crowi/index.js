@@ -23,7 +23,7 @@ import GrowiPlugin from '../models/growi-plugin';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
-import AclService from '../service/acl';
+import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
@@ -612,9 +612,7 @@ Crowi.prototype.setUpXss = async function() {
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
-  if (this.aclService == null) {
-    this.aclService = new AclService(this.configManager);
-  }
+  this.aclService = aclServiceSingletonInstance;
 };
 
 /**

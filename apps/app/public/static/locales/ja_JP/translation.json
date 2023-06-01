@@ -487,6 +487,7 @@
   },
   "template": {
     "modal_label": {
+      "Select template": "テンプレートの選択",
       "Create/Edit Template Page": "テンプレートページの作成/編集",
       "Create template under": "配下にテンプレートページを作成"
     },
