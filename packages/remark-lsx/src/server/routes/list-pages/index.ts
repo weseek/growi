@@ -8,7 +8,7 @@ import createError, { isHttpError } from 'http-errors';
 
 import { addNumCondition } from './add-num-condition';
 import { addSortCondition } from './add-sort-condition';
-import { generateBaseQuery } from './generate-base-query';
+import { generateBaseQuery, type PageQuery } from './generate-base-query';
 import { getToppageViewersCount } from './get-toppage-viewers-count';
 
 
@@ -18,7 +18,7 @@ const DEFAULT_PAGES_NUM = 50;
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
-function addDepthCondition(query, pagePath, optionsDepth) {
+function addDepthCondition(query, pagePath, optionsDepth): PageQuery {
   // when option strings is 'depth=', the option value is true
   if (optionsDepth == null || optionsDepth === true) {
     throw createError(400, 'The value of depth option is invalid.');
@@ -52,7 +52,7 @@ function addDepthCondition(query, pagePath, optionsDepth) {
 /**
  * add filter condition that filter fetched pages
  */
-function addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = false) {
+function addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = false): PageQuery {
   // when option strings is 'filter=', the option value is true
   if (optionsFilter == null || optionsFilter === true) {
     throw createError(400, 'filter option require value in regular expression.');
@@ -84,7 +84,7 @@ function addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = fal
   });
 }
 
-function addExceptCondition(query, pagePath, optionsFilter) {
+function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
   return this.addFilterCondition(query, pagePath, optionsFilter, true);
 }
 

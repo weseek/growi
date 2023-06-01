@@ -1,13 +1,13 @@
-import type { IPage } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/plugin';
 import createError from 'http-errors';
-import type { Query, Document } from 'mongoose';
+
+import type { PageQuery } from './generate-base-query';
 
 
 /**
  * add num condition that limit fetched pages
  */
-export const addNumCondition = (query: Query<IPage[], Document>, optionsNum: true | string | number | null): Query<IPage[], Document> => {
+export const addNumCondition = (query: PageQuery, optionsNum: true | string | number | null): PageQuery => {
   // when option strings is 'num=' or the option value is true
   if (optionsNum == null || optionsNum === true) {
     throw createError(400, 'The value of num option is invalid.');

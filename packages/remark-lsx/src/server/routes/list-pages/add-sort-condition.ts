@@ -1,6 +1,6 @@
-import type { IPage } from '@growi/core';
 import createError from 'http-errors';
-import type { Query, Document } from 'mongoose';
+
+import type { PageQuery } from './generate-base-query';
 
 /**
  * add sort condition(sort key & sort order)
@@ -9,7 +9,7 @@ import type { Query, Document } from 'mongoose';
  * If only the sort key is specified, the sort order is the ascending order.
  *
  */
-export const addSortCondition = (query: Query<IPage[], Document>, optionsSortArg?: string, optionsReverse?: string): Query<IPage[], Document> => {
+export const addSortCondition = (query: PageQuery, optionsSortArg?: string, optionsReverse?: string): PageQuery => {
   // init sort key
   const optionsSort = optionsSortArg ?? 'path';
 

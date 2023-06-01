@@ -1,14 +1,13 @@
-import type { IPage } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/plugin';
 import createError from 'http-errors';
-import type { Query, Document } from 'mongoose';
 import { mock } from 'vitest-mock-extended';
 
 import { addNumCondition } from './add-num-condition';
+import type { PageQuery } from './generate-base-query';
 
 describe('addNumCondition()', () => {
 
-  const queryMock = mock<Query<IPage[], Document>>();
+  const queryMock = mock<PageQuery>();
 
   it('throws 400 http-errors instance when the option value is null', () => {
     // when
@@ -30,7 +29,7 @@ describe('addNumCondition()', () => {
     // setup
     const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
 
-    const queryLimitResultMock = mock<Query<IPage[], Document>>();
+    const queryLimitResultMock = mock<PageQuery>();
     queryMock.limit.calledWith(99).mockImplementation(() => queryLimitResultMock);
 
     // when
@@ -81,12 +80,12 @@ describe('addNumCondition() set skip and limit with the range string', () => {
     optionsNum, expectedSkip, expectedLimit, isExpectedToSetLimit,
   }) => {
     // setup
-    const queryMock = mock<Query<IPage[], Document>>();
+    const queryMock = mock<PageQuery>();
 
-    const querySkipResultMock = mock<Query<IPage[], Document>>();
+    const querySkipResultMock = mock<PageQuery>();
     queryMock.skip.calledWith(expectedSkip).mockImplementation(() => querySkipResultMock);
 
-    const queryLimitResultMock = mock<Query<IPage[], Document>>();
+    const queryLimitResultMock = mock<PageQuery>();
     querySkipResultMock.limit.calledWith(expectedLimit).mockImplementation(() => queryLimitResultMock);
 
     const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');

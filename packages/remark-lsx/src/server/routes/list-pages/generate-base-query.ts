@@ -2,8 +2,10 @@ import { IPage, IUser } from '@growi/core';
 import { model } from 'mongoose';
 import type { Document, Query } from 'mongoose';
 
+export type PageQuery = Query<IPage[], Document>;
+
 export type PageQueryBuilder = {
-  query: Query<IPage[], Document>,
+  query: PageQuery,
   addConditionToListOnlyDescendants: (pagePath: string) => PageQueryBuilder,
   addConditionToFilteringByViewerForList: (builder: PageQueryBuilder, user: IUser) => PageQueryBuilder,
 };

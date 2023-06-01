@@ -1,8 +1,9 @@
 import { IPage, IUser } from '@growi/core';
 import type { Request, Response } from 'express';
 import createError from 'http-errors';
-import type { Query, Document } from 'mongoose';
 import { mock } from 'vitest-mock-extended';
+
+import type { PageQuery } from './generate-base-query';
 
 import { listPages } from '.';
 
@@ -52,7 +53,7 @@ describe('listPages', () => {
       reqMock.query = { pagePath: '/Sandbox' };
 
       const pageMock = mock<IPage>();
-      const queryMock = mock<Query<IPage[], Document>>();
+      const queryMock = mock<PageQuery>();
       queryMock.exec.mockImplementation(async() => [pageMock]);
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
 
