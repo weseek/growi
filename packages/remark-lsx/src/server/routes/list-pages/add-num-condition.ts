@@ -8,7 +8,7 @@ import type { Query, Document } from 'mongoose';
  * add num condition that limit fetched pages
  */
 export const addNumCondition = (query: Query<IPage[], Document>, optionsNum: true | string | number | null): Query<IPage[], Document> => {
-  // when option strings is 'num=', the option value is true
+  // when option strings is 'num=' or the option value is true
   if (optionsNum == null || optionsNum === true) {
     throw createError(400, 'The value of num option is invalid.');
   }
