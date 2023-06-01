@@ -26,12 +26,17 @@ export const addNumCondition = (query: Query<IPage[], Document>, optionsNum: tru
   const start = range.start;
   const end = range.end;
 
-  if (start < 1 || end < 1) {
-    throw createError(400, `specified num is [${start}:${end}] : start and end are must be larger than 1`);
+  // check start
+  if (start < 1) {
+    throw createError(400, `specified num is [${start}:${end}] : the start must be larger or equal than 1`);
   }
 
   const skip = start - 1;
   const limit = end - skip;
+
+  if (limit < 0) {
+    return query.skip(skip);
+  }
 
   return query.skip(skip).limit(limit);
 };

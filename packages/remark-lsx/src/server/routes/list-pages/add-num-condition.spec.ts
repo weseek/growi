@@ -50,9 +50,22 @@ describe('addNumCondition()', () => {
     const result = addNumCondition(queryMock, 'invalid string');
 
     // then
-    expect(queryMock.limit).not.toHaveBeenCalledWith(99);
+    expect(queryMock.limit).not.toHaveBeenCalled();
     expect(parseRangeSpy).toHaveBeenCalledWith('invalid string');
     expect(result).toEqual(queryMock);
+  });
+
+  it('throws 400 http-errors instance when the start value is smaller than 1', () => {
+    // setup
+    const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
+
+    // when
+    const caller = () => addNumCondition(queryMock, '-1:10');
+
+    // then
+    expect(caller).toThrowError(createError(400, 'specified num is [-1:10] : the start must be larger or equal than 1'));
+    expect(queryMock.limit).not.toHaveBeenCalledWith();
+    expect(parseRangeSpy).toHaveBeenCalledWith('-1:10');
   });
 
 });
@@ -61,9 +74,12 @@ describe('addNumCondition()', () => {
 describe('addNumCondition() set skip and limit with the range string', () => {
 
   it.concurrent.each`
-    optionsNum    | expectedSkip    | expectedLimit
-    ${'1:10'}     | ${0}            | ${10}
-  `("'$optionsNum", ({ optionsNum, expectedSkip, expectedLimit }) => {
+    optionsNum    | expectedSkip    | expectedLimit   | isExpectedToSetLimit
+    ${'1:10'}     | ${0}            | ${10}           | ${true}
+    ${'3:'}       | ${2}            | ${-1}           | ${false}
+  `("'$optionsNum", ({
+    optionsNum, expectedSkip, expectedLimit, isExpectedToSetLimit,
+  }) => {
     // setup
     const queryMock = mock<Query<IPage[], Document>>();
 
@@ -81,8 +97,14 @@ describe('addNumCondition() set skip and limit with the range string', () => {
     // then
     expect(parseRangeSpy).toHaveBeenCalledWith(optionsNum);
     expect(queryMock.skip).toHaveBeenCalledWith(expectedSkip);
-    expect(querySkipResultMock.limit).toHaveBeenCalledWith(expectedLimit);
-    expect(result).toEqual(queryLimitResultMock);
+    if (isExpectedToSetLimit) {
+      expect(querySkipResultMock.limit).toHaveBeenCalledWith(expectedLimit);
+      expect(result).toEqual(queryLimitResultMock);
+    }
+    else {
+      expect(querySkipResultMock.limit).not.toHaveBeenCalled();
+      expect(result).toEqual(querySkipResultMock);
+    }
   });
 
 });
