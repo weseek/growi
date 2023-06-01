@@ -777,6 +777,8 @@ module.exports = (crowi) => {
    *                    deletedPagePaths:
    *                      type: array
    *                      description: a list of deleted pages path
+   *                      items:
+   *                        type: string
    *                    isRecursively:
    *                      type: boolean
    *                      description: a flag indicating whether the page has been recursively deleted
