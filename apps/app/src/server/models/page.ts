@@ -958,22 +958,17 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
-schema.statics.removeUserHome = async function(
+schema.statics.findUserHomePage = async function(
     username: string,
-): Promise<{ deleteManyResult: DeleteResult, findOneAndRemoveResult: PageDocument & HasObjectId | null }> {
+): Promise<{ userHomePage: PageDocument & HasObjectId | null }> {
   const userHomePagePath = `/user/${username}`;
 
-  // https://regex101.com/r/PY1tI5/1
-  const regex = new RegExp(`^${userHomePagePath}/.+`);
+  const baseQuery = this.findOne({ path: userHomePagePath });
+  const queryBuilder = new PageQueryBuilder(baseQuery, false);
+  const userHomePage = queryBuilder.query.exec();
 
-  const [deleteManyResult, findOneAndRemoveResult] = await Promise.all([
-    this.deleteMany({ path: regex }),
-    this.findOneAndRemove({ path: userHomePagePath }),
-  ]);
-
-  return { deleteManyResult, findOneAndRemoveResult };
+  return userHomePage;
 };
-
 
 export type PageCreateOptions = {
   format?: string

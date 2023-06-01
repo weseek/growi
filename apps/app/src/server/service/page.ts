@@ -161,8 +161,8 @@ class PageService {
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
-  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) return false;
+  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean, isUserPageDeletionEnabled?: boolean): boolean {
+    if (operator == null || isTopPage(path) || isUsersProtectedPages(path, isUserPageDeletionEnabled)) return false;
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
@@ -215,8 +215,8 @@ class PageService {
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
+  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean, isUserPageDeletionEnabled?: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively, isUserPageDeletionEnabled));
   }
 
   filterPagesByCanDelete(pages, user, isRecursively: boolean) {
