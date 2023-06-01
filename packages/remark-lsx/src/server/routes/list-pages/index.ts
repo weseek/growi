@@ -144,11 +144,16 @@ function addSortCondition(query, pagePath, optionsSortArg, optionsReverse) {
 export const listPages = async(req: Request & { user: IUser }, res: Response): Promise<Response> => {
   const user = req.user;
 
-  let pagePath;
-  let options;
+  let pagePath: string;
+  let options: string | undefined;
 
   try {
-    pagePath = req.query.pagePath;
+    // TODO: use express-validator
+    if (req.query.pagePath == null) {
+      throw new Error("The 'pagePath' query must not be null.");
+    }
+
+    pagePath = req.query.pagePath?.toString();
     if (req.query.options != null) {
       options = JSON.parse(req.query.options.toString());
     }
