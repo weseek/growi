@@ -1,11 +1,13 @@
 
-import type { IPage, IUser } from '@growi/core';
+import type { IUser } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/plugin';
 import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
 import createError, { isHttpError } from 'http-errors';
-import { model } from 'mongoose';
+
+import { generateBaseQuery } from './generate-base-query';
+import { getToppageViewersCount } from './get-toppage-viewers-count';
 
 
 const DEFAULT_PAGES_NUM = 50;
@@ -139,22 +141,7 @@ function addSortCondition(query, pagePath, optionsSortArg, optionsReverse) {
   return query.sort(sortOption);
 }
 
-async function generateBaseQueryBuilder(pagePath: string, user: IUser) {
-  const Page = model<IPage>('Page');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const PageAny = Page as any;
-
-  const baseQuery = Page.find();
-
-  const builder = new PageAny.PageQueryBuilder(baseQuery);
-  builder.addConditionToListOnlyDescendants(pagePath);
-
-  return PageAny.addConditionToFilteringByViewerForList(builder, user);
-}
-
 export const listPages = async(req: Request & { user: IUser }, res: Response): Promise<Response> => {
-  const Page = model<IPage>('Page');
-
   const user = req.user;
 
   let pagePath;
@@ -170,19 +157,12 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
     return res.status(400).send(error);
   }
 
-  const builder = await generateBaseQueryBuilder(pagePath, user);
+  const builder = generateBaseQuery(pagePath, user);
 
   // count viewers of `/`
   let toppageViewersCount;
   try {
-    const aggRes = await Page.aggregate([
-      { $match: { path: '/' } },
-      { $project: { count: { $size: '$seenUsers' } } },
-    ]);
-
-    toppageViewersCount = aggRes.length > 0
-      ? aggRes[0].count
-      : 1;
+    toppageViewersCount = await getToppageViewersCount();
   }
   catch (error) {
     return res.status(500).send(error);

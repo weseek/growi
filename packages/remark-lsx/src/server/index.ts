@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 
-import { listPages } from './routes/lsx';
+import { listPages } from './routes/list-pages';
 
 const loginRequiredFallback = (req: Request, res: Response) => {
   return res.status(403).send('login required');
