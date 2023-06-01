@@ -41,7 +41,7 @@ export const isUsersHomePage = (path: string): boolean => {
  * @param path
  */
 export const isUsersProtectedPages = (path: string, isUserPageDeletionEnabled = false): boolean => {
-  return isUsersTopPage(path) || isUserPageDeletionEnabled ? false : isUsersHomePage(path);
+  return isUsersTopPage(path) || (isUserPageDeletionEnabled ? false : isUsersHomePage(path));
 };
 
 /**
