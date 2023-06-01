@@ -4,6 +4,10 @@
   "compilerOptions": {
     "jsx": "react-jsxdev",
 
+    "types": [
+      "vitest/globals"
+    ],
+
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
