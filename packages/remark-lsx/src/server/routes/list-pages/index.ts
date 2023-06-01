@@ -196,7 +196,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
     return res.status(200).send({ pages, toppageViewersCount });
   }
   catch (error) {
-    if (isHttpError) {
+    if (isHttpError(error)) {
       return res.status(error.status).send(error);
     }
     return res.status(500).send(error);
