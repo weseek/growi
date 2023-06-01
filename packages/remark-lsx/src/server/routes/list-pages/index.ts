@@ -1,11 +1,11 @@
 
 import type { IUser } from '@growi/core';
-import { OptionParser } from '@growi/core/dist/plugin';
-import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
+import { pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
 import createError, { isHttpError } from 'http-errors';
 
+import { addDepthCondition } from './add-depth-condition';
 import { addNumCondition } from './add-num-condition';
 import { addSortCondition } from './add-sort-condition';
 import { generateBaseQuery, type PageQuery } from './generate-base-query';
@@ -16,38 +16,6 @@ const DEFAULT_PAGES_NUM = 50;
 
 
 const { addTrailingSlash } = pathUtils;
-const { isTopPage } = pagePathUtils;
-
-function addDepthCondition(query, pagePath, optionsDepth): PageQuery {
-  // when option strings is 'depth=', the option value is true
-  if (optionsDepth == null || optionsDepth === true) {
-    throw createError(400, 'The value of depth option is invalid.');
-  }
-
-  const range = OptionParser.parseRange(optionsDepth);
-
-  if (range == null) {
-    return query;
-  }
-
-  const start = range.start;
-  const end = range.end;
-
-  if (start < 1 || end < 1) {
-    throw createError(400, `specified depth is [${start}:${end}] : start and end are must be larger than 1`);
-  }
-
-  // count slash
-  const slashNum = isTopPage(pagePath)
-    ? 1
-    : pagePath.split('/').length;
-  const depthStart = slashNum; // start is not affect to fetch page
-  const depthEnd = slashNum + end - 1;
-
-  return query.and({
-    path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`),
-  });
-}
 
 /**
  * add filter condition that filter fetched pages
