@@ -766,10 +766,7 @@
       "send_new_password": "Please send the new password to the user.",
       "target_user": "Target User",
       "new_password": "New Password",
-      "send_password_email": "Send the password to user",
-      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
-      "show_password": "Click to show password",
-      "hide_password": "hide"
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>"
     },
     "external_account": "外部账户管理",
     "external_accounts": "外部账户",
