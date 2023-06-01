@@ -119,7 +119,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
     return res.status(400).send(error);
   }
 
-  const builder = generateBaseQuery(pagePath, user);
+  const builder = await generateBaseQuery(pagePath, user);
 
   // count viewers of `/`
   let toppageViewersCount;

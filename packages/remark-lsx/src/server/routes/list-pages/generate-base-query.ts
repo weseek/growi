@@ -8,8 +8,8 @@ export type PageQueryBuilder = {
   addConditionToFilteringByViewerForList: (builder: PageQueryBuilder, user: IUser) => PageQueryBuilder,
 };
 
-export const generateBaseQuery = (pagePath: string, user: IUser): PageQueryBuilder => {
-  const Page = model<IPage[]>('Page');
+export const generateBaseQuery = async(pagePath: string, user: IUser): Promise<PageQueryBuilder> => {
+  const Page = model<IPage>('Page');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const PageAny = Page as any;
 
