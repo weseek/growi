@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter, Collapse,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -18,7 +18,6 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
-      collapse: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
@@ -35,10 +34,6 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-  }
-
-  toggle() {
-    this.setState({ collapse: !this.state.collapse });
   }
 
   renderModalBodyBeforeReset() {
