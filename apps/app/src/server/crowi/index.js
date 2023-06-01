@@ -131,7 +131,6 @@ Crowi.prototype.init = async function() {
     this.scanRuntimeVersions(),
     this.setupPassport(),
     this.setupSearcher(),
-    this.setupPluginer(),
     this.setupMailer(),
     this.setupSlackIntegrationService(),
     this.setupG2GTransferService(),
@@ -143,7 +142,7 @@ Crowi.prototype.init = async function() {
     this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
-    this.setupPluginService(),
+    this.setupGrowiPluginService(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
@@ -706,14 +705,12 @@ Crowi.prototype.setupImport = async function() {
   }
 };
 
-Crowi.prototype.setupPluginService = async function() {
-  const { PluginService } = require('../../features/growi-plugin/services/growi-plugin');
-  if (this.pluginService == null) {
-    this.pluginService = new PluginService(this);
-  }
+Crowi.prototype.setupGrowiPluginService = async function() {
+  const { growiPluginService } = require('~/features/growi-plugin/services');
+
   // download plugin repositories, if document exists but there is no repository
   // TODO: Cannot download unless connected to the Internet at setup.
-  await this.pluginService.downloadNotExistPluginRepositories();
+  await growiPluginService.downloadNotExistPluginRepositories();
 };
 
 Crowi.prototype.setupPageService = async function() {

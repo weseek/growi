@@ -2,10 +2,10 @@ import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import type { GrowiPluginHasId } from '../interfaces';
+import type { IGrowiPluginHasId } from '../interfaces';
 
 type Plugins = {
-  plugins: GrowiPluginHasId[]
+  plugins: IGrowiPluginHasId[]
 }
 
 const pluginsFetcher = () => {

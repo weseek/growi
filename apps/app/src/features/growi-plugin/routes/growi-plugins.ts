@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
-import type { GrowiPluginModel } from '../models/growi-plugin';
+import { GrowiPlugin } from '../models';
 import { growiPluginService } from '../services';
 
 
@@ -31,8 +31,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     try {
-      const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const data = await GrowiPluginModel.find({});
+      const data = await GrowiPlugin.find({});
       return res.apiv3({ plugins: data });
     }
     catch (err) {
@@ -57,8 +56,7 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const pluginName = await GrowiPluginModel.activatePlugin(pluginId);
+      const pluginName = await GrowiPlugin.activatePlugin(pluginId);
       return res.apiv3({ pluginName });
     }
     catch (err) {
@@ -71,8 +69,7 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const pluginName = await GrowiPluginModel.deactivatePlugin(pluginId);
+      const pluginName = await GrowiPlugin.deactivatePlugin(pluginId);
       return res.apiv3({ pluginName });
     }
     catch (err) {

@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 
 import { GrowiPluginResourceType } from '~/features/growi-plugin/interfaces';
+import { GrowiPlugin } from '~/features/growi-plugin/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
@@ -274,8 +275,7 @@ module.exports = (crowi) => {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
 
       // retrieve plugin manifests
-      const GrowiPluginModel = mongoose.model('GrowiPlugin');
-      const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+      const themePlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
 
       const pluginThemesMetadatas = themePlugins
         .map(themePlugin => themePlugin.meta.themes)
