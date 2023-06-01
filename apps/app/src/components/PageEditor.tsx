@@ -324,6 +324,7 @@ const PageEditor = React.memo((): JSX.Element => {
       editorRef.current.insertText(insertText);
 
       // when if created newly
+      // Not using 'mutateGrant' to inherit the grant of the parent page
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         setIsPageCreatedWithAttachmentUpload(true);
@@ -521,6 +522,8 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // when transitioning to a different page, if the initialValue is the same,
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  // Also, if an attachment is uploaded and a new page is created,
+  // "useCurrentPagePath" changes, but no page transition is made, so nothing is done.
   useEffect(() => {
     if (currentPagePath != null && !isPageCreatedWithAttachmentUpload) {
       editorRef.current?.setValue(initialValue);
