@@ -59,6 +59,11 @@ class PasswordResetModal extends React.Component {
 
   returnModalBodyAfterReset() {
     const { t, userForPasswordResetModal } = this.props;
+    const { temporaryPassword, showPassword } = this.state;
+
+    const maskedPassword = showPassword
+      ? temporaryPassword
+      : '·'.repeat(temporaryPassword.length);
 
     return (
       <>
@@ -68,16 +73,10 @@ class PasswordResetModal extends React.Component {
         </p>
         <p>
           {t('user_management.reset_password_modal.new_password')}:
-          <button className="btn btn-secondary mx-2 px-1 py-0" size="sm" onClick={this.toggle} aria-expanded="false">
-            {this.state.collapse ? t('user_management.reset_password_modal.hide_password') : t('user_management.reset_password_modal.show_password') }
+          <span className="masked-password ml-1"><code>{maskedPassword}</code></span>
+          <button className="btn btn-link mx-2 px-1 py-0" size="sm" onClick={() => this.setState({ showPassword: !showPassword })}>
+            <i className={showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'}></i>
           </button>
-          {this.state.collapse && (
-            <Collapse isOpen={this.state.collapse}>
-              <code>
-                {this.state.temporaryPassword}
-              </code>
-            </Collapse>
-          )}
         </p>
       </>
     );
