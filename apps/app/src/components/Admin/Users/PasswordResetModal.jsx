@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter, Collapse,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
@@ -22,12 +22,10 @@ class PasswordResetModal extends React.Component {
       isPasswordResetDone: false,
       sendEmail: false,
       isCreateUserButtonPushed: false,
-      collapse: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
     this.onClickSendNewPasswordButton = this.onClickSendNewPasswordButton.bind(this);
-    this.toggle = this.toggle.bind(this);
   }
 
   async resetPassword() {
@@ -40,10 +38,6 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-  }
-
-  toggle() {
-    this.setState({ collapse: !this.state.collapse });
   }
 
   renderModalBodyBeforeReset() {
