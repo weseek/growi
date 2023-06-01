@@ -859,6 +859,8 @@ module.exports = (crowi) => {
       pageIdToRevisionIdMap, isCompletely, isRecursively, isAnyoneWithTheLink,
     } = req.body;
 
+    // TODO: Commonize the page deletion logic
+    // see: https://redmine.weseek.co.jp/issues/123550
     const pageIds = Object.keys(pageIdToRevisionIdMap);
 
     if (pageIds.length === 0) {
