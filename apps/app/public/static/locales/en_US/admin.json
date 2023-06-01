@@ -757,7 +757,11 @@
       "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
       "send_new_password": "Please send the new password to the user.",
       "target_user": "Target User",
-      "new_password": "New Password"
+      "new_password": "New Password",
+      "send_password_email": "Send the password to user",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
+      "show_password": "Click to show password",
+      "hide_password": "hide"
     },
     "external_account": "External Account Management",
     "external_accounts":"External accounts",
