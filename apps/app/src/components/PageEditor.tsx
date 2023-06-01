@@ -132,6 +132,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
 
+  const [isPageCreatedWithAttachmentUpload, setIsPageCreatedWithAttachmentUpload] = useState(false);
+
   const { data: socket } = useGlobalSocket();
 
   const { mutate: mutateIsConflict } = useIsConflict();
@@ -324,8 +326,8 @@ const PageEditor = React.memo((): JSX.Element => {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
+        setIsPageCreatedWithAttachmentUpload(true);
         globalEmitter.emit('resetInitializedHackMdStatus');
-        mutateGrant(res.page.grant);
         mutateIsLatestRevision(true);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
@@ -338,7 +340,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -520,10 +522,11 @@ const PageEditor = React.memo((): JSX.Element => {
   // when transitioning to a different page, if the initialValue is the same,
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
   useEffect(() => {
-    if (currentPagePath != null) {
+    if (currentPagePath != null && !isPageCreatedWithAttachmentUpload) {
       editorRef.current?.setValue(initialValue);
     }
-  }, [currentPagePath, initialValue]);
+    setIsPageCreatedWithAttachmentUpload(false);
+  }, [currentPagePath, initialValue, isPageCreatedWithAttachmentUpload]);
 
   if (!isEditable) {
     return <></>;
