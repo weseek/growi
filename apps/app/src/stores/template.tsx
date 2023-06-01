@@ -7,43 +7,123 @@ const presetTemplates: ITemplate[] = [
   // preset 1
   {
     id: '__preset1__',
-    name: '[Preset] WESEEK Inner Wiki Style',
-    markdown: `# 関連ページ
+    name: '日報',
+    markdown: `# {{yyyy}}/{{MM}}/{{dd}} 日報
 
-$lsx()
+## 今日の目標
+- 目標１
+    - 〇〇の完了
+- 目標２
+    - 〇〇を〇件達成
 
-# `,
+
+## 内容
+- 10:00 ~ 10:20 今日のタスク確認
+- 10:20 ~ 11:00 全体会議
+
+
+## 進捗
+- 目標１
+    - 完了
+- 目標２
+    - 〇〇件達成
+
+
+## メモ
+- 改善できることの振り返り
+
+
+## 翌営業日の目標
+- 目標１
+    - 〇〇の完了
+- 目標２
+    - 〇〇を〇件達成
+`,
   },
 
   // preset 2
   {
     id: '__preset2__',
-    name: '[Preset] Qiita Style',
-    markdown: `# <会議体名>
+    name: '議事録',
+    markdown: `# {{{title}}}{{^title}}＜会議名＞{{/title}}
+
 ## 日時
-yyyy/mm/dd hh:mm〜hh:mm
+{{yyyy}}/{{MM}}/{{dd}} {{HH}}:{{mm}}〜hh:mm
 
-## 場所
 
-## 出席者
+## 参加者
 -
 
 ## 議題
-1. [議題1](#link)
+1.
 2.
-3.
 
-## 議事内容
-### <a name="link"></a>議題1
 
-## 決定事項
-- 決定事項1
+## 1.
+### 内容
 
-## アクション事項
-- [ ] アクション
 
-## 次回
-yyyy/mm/dd (予定、時間は追って連絡)`,
+### 決定事項
+
+
+### Next Action
+
+
+## 2.
+### 内容
+
+
+### 決定事項
+
+
+### Next Action
+
+
+## 次回会議
+- 会議内容
+- 会議時間
+    - {{yyyy}}/{{MM}}/dd
+`,
+  },
+
+  // preset 3
+  {
+    id: '__preset3__',
+    name: '企画書',
+    markdown: `# {{{title}}}{{^title}}＜企画タイトル＞{{/title}}
+
+## 目的
+
+
+## 現状の課題
+
+
+## 概要
+#### 企画の内容
+
+#### スケジュール
+
+
+## 効果
+#### メリット
+
+#### 数値目標
+
+
+## 参考資料
+
+`,
+  },
+
+  // preset 4
+  {
+    id: '__preset4__',
+    name: '関連ページの一覧表示',
+    markdown: `# 関連ページ
+
+## 子ページ一覧
+$lsx(depth=1)
+`,
   },
 ];
 
@@ -52,7 +132,7 @@ export const useTemplates = (): SWRResponse<ITemplate[], Error> => {
     'templates',
     () => [
       ...presetTemplates,
-      ...Object.values(getGrowiFacade().customTemplates ?? {}),
+      ...Object.values<ITemplate>(getGrowiFacade().customTemplates ?? {}),
     ],
     {
       fallbackData: presetTemplates,

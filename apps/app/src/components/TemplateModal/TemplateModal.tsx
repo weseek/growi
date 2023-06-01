@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
 
-import { ITemplate } from '@growi/core';
+import type { ITemplate } from '@growi/core/dist/interfaces/template';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -12,8 +14,13 @@ import {
 import { useTemplateModal } from '~/stores/modal';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useTemplates } from '~/stores/template';
+import loggerFactory from '~/utils/logger';
 
-import Preview from './PageEditor/Preview';
+import Preview from '../PageEditor/Preview';
+
+import { useFormatter } from './use-formatter';
+
+const logger = loggerFactory('growi:components:TemplateModal');
 
 
 type TemplateRadioButtonProps = {
@@ -42,7 +49,8 @@ const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioBu
 };
 
 export const TemplateModal = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
+
 
   const { data: templateModalStatus, close } = useTemplateModal();
 
@@ -51,16 +59,27 @@ export const TemplateModal = (): JSX.Element => {
 
   const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
 
+  const { format } = useFormatter();
+
   const submitHandler = useCallback((template?: ITemplate) => {
-    if (templateModalStatus == null) { return }
+    if (templateModalStatus == null || selectedTemplate == null) {
+      return;
+    }
+
     if (templateModalStatus.onSubmit == null || template == null) {
       close();
       return;
     }
 
-    templateModalStatus.onSubmit(template.markdown);
+    templateModalStatus.onSubmit(format(selectedTemplate));
     close();
-  }, [close, templateModalStatus]);
+  }, [close, format, selectedTemplate, templateModalStatus]);
+
+  useEffect(() => {
+    if (!templateModalStatus?.isOpened) {
+      setSelectedTemplate(undefined);
+    }
+  }, [templateModalStatus?.isOpened]);
 
   if (templates == null || templateModalStatus == null) {
     return <></>;
@@ -69,7 +88,7 @@ export const TemplateModal = (): JSX.Element => {
   return (
     <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
-        Template
+        {t('template.modal_label.Select template')}
       </ModalHeader>
 
       <ModalBody className="container">
@@ -79,24 +98,23 @@ export const TemplateModal = (): JSX.Element => {
               <TemplateRadioButton
                 key={template.id}
                 template={template}
-                onChange={t => setSelectedTemplate(t)}
+                onChange={selected => setSelectedTemplate(selected)}
                 isSelected={template.id === selectedTemplate?.id}
               />
             )) }
           </div>
         </div>
 
-        { rendererOptions != null && (
-          <>
-            <hr />
-            <h3>Preview</h3>
-            <div className='card'>
-              <div className="card-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                <Preview rendererOptions={rendererOptions} markdown={selectedTemplate?.markdown}/>
-              </div>
-            </div>
-          </>
-        ) }
+        <hr />
+
+        <h3>{t('Preview')}</h3>
+        <div className='card'>
+          <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
+            { rendererOptions != null && selectedTemplate != null && (
+              <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplate)}/>
+            ) }
+          </div>
+        </div>
 
       </ModalBody>
       <ModalFooter>
@@ -104,7 +122,7 @@ export const TemplateModal = (): JSX.Element => {
           {t('Cancel')}
         </button>
         <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={() => submitHandler(selectedTemplate)} disabled={selectedTemplate == null}>
-          {t('Update')}
+          {t('commons:Insert')}
         </button>
       </ModalFooter>
     </Modal>

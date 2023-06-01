@@ -14,6 +14,7 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
         sumOfBookmarks: response.data.sumOfBookmarks,
         isBookmarked: response.data.isBookmarked,
         bookmarkedUsers: response.data.bookmarkedUsers,
+        pageId: response.data.pageId,
       };
     }),
   );
