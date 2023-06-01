@@ -21,7 +21,6 @@ class PasswordResetModal extends React.Component {
     };
 
     this.resetPassword = this.resetPassword.bind(this);
-    this.toggle = this.toggle.bind(this);
   }
 
   async resetPassword() {
