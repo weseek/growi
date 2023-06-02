@@ -682,6 +682,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.STRING,
     default: null,
   },
+  SSR_MAX_REVISION_BODY_LENGTH: {
+    ns: 'crowi',
+    key: 'app:ssrMaxRevisionBodyLength',
+    type: ValueType.NUMBER,
+    default: 10,
+  },
 };
 
 
