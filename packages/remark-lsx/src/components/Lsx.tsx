@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 
-import { useSWRxLsx } from '../stores/lsx/lsx';
+import { useSWRxLsx } from '../stores/lsx';
 import { generatePageNodeTree } from '../utils/page-node';
 
 import { LsxListView } from './LsxPageList/LsxListView';
