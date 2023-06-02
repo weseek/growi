@@ -25,7 +25,14 @@ export const BasicInfoSettings = (): JSX.Element => {
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info'), ns: 'commons' }));
     }
     catch (err) {
-      toastError(err);
+      // toastError(err);
+      if (err.message === 'Failed to update personal data') {
+        toastError(t('alert.email_is_already_in_use', { ns: 'commons' }));
+      }
+      else {
+        toastError(err);
+      }
+
     }
   };
 
