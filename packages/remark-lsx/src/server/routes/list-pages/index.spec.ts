@@ -97,9 +97,9 @@ describe('listPages', () => {
       reqMock.query = { pagePath: '/Sandbox' };
 
       // an Error instance will be thrown by addNumConditionMock
-      const expectedError = new Error('error for test');
+      const error = new Error('error for test');
       mocks.addNumConditionMock.mockImplementation(() => {
-        throw expectedError;
+        throw error;
       });
 
       const resMock = mock<Response>();
@@ -115,7 +115,7 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith(expectedError);
+      expect(resStatusMock.send).toHaveBeenCalledWith(error.toString());
     });
 
     it('returns 400 HTTP response when the value is invalid', async() => {
@@ -124,9 +124,9 @@ describe('listPages', () => {
       reqMock.query = { pagePath: '/Sandbox' };
 
       // an http-errors instance will be thrown by addNumConditionMock
-      const expectedError = createError(400, 'error for test');
+      const error = createError(400, 'error for test');
       mocks.addNumConditionMock.mockImplementation(() => {
-        throw expectedError;
+        throw error;
       });
 
       const resMock = mock<Response>();
@@ -142,7 +142,7 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith(expectedError);
+      expect(resStatusMock.send).toHaveBeenCalledWith(error.toString());
     });
 
   });
