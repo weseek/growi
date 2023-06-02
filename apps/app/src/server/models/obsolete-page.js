@@ -67,7 +67,6 @@ export const extractToAncestorsPaths = (pagePath) => {
  */
 /* eslint-disable object-curly-newline, object-property-newline */
 export const populateDataToShowRevision = (page, userPublicFields, shouldExcludeBody = false) => {
-  console.log('shouldExcludeBody222222', shouldExcludeBody);
   return page
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
