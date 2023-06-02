@@ -21,7 +21,6 @@ class PasswordResetModal extends React.Component {
       temporaryPassword: [],
       isPasswordResetDone: false,
       sendEmail: false,
-      isCreateUserButtonPushed: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
@@ -38,6 +37,21 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+  renderButtons() {
+    const { t, isMailerSetup } = this.props;
+
+    return (
+      <>
+        <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
+          {t('Send')}
+        </button>
+        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
+          {t('Close')}
+        </button>
+      </>
+    );
   }
 
   renderModalBodyBeforeReset() {
@@ -89,16 +103,7 @@ class PasswordResetModal extends React.Component {
           <div>
             <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
           </div>
-          <div>
-            <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-              {t('Send')}
-            </button>
-          </div>
-          <div>
-            <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-              {t('Close')}
-            </button>
-          </div>
+          {this.renderButtons()}
         </>
       );
     }
@@ -109,16 +114,7 @@ class PasswordResetModal extends React.Component {
           <p className="mb-0">{userForPasswordResetModal.username}</p>
           <p className="mb-0">{userForPasswordResetModal.email}</p>
         </div>
-        <div>
-          <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-            {t('Send')}
-          </button>
-        </div>
-        <div>
-          <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-            {t('Close')}
-          </button>
-        </div>
+        {this.renderButtons()}
       </>
     );
   }
@@ -131,7 +127,7 @@ class PasswordResetModal extends React.Component {
 
 
     try {
-      const res = await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id });
+      const res = await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
       const { failedToSendEmail } = res.data;
       if (failedToSendEmail == null) {
         const msg = `Email has been sent ${userForPasswordResetModal.email}`;
@@ -144,9 +140,6 @@ class PasswordResetModal extends React.Component {
     }
     catch (err) {
       toastError(err);
-    }
-    finally {
-      this.setState({ isCreateUserButtonPushed: false });
     }
   }
 

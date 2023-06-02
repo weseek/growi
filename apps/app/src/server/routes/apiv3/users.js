@@ -999,19 +999,17 @@ module.exports = (crowi) => {
 
   router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
-    const user = await User.findById(id);
-    const newPassword = await User.resetPasswordByRandomString(id);
 
     try {
+      const user = await User.findById(id);
       const userInfo = {
         email: user.email,
-        password: newPassword,
-        user: { id },
+        password: req.body.newPassword,
       };
 
       const sendEmail = await sendEmailByUser(userInfo);
 
-      return res.apiv3({ newPassword, user, failedToSendEmail: sendEmail.failedToSendEmailList[0] });
+      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {
       logger.error('Error', err);
