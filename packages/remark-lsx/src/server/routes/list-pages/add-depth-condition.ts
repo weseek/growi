@@ -19,7 +19,11 @@ export const addDepthCondition = (query: PageQuery, pagePath: string, optionsDep
 
   // check start
   if (start < 1) {
-    throw createError(400, `specified depth is [${start}:${end}] : the start must be larger or equal than 1`);
+    throw createError(400, `The specified option 'depth' is { start: ${start}, end: ${end} } : the start must be larger or equal than 1`);
+  }
+  // check end
+  if (start > end && end > 0) {
+    throw createError(400, `The specified option 'depth' is { start: ${start}, end: ${end} } : the end must be larger or equal than the start`);
   }
 
   // count slash
