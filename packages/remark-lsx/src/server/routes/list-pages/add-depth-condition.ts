@@ -6,11 +6,7 @@ import type { PageQuery } from './generate-base-query';
 
 const { isTopPage } = pagePathUtils;
 
-export const addDepthCondition = (query: PageQuery, pagePath: string, optionsDepth: true | string | null): PageQuery => {
-  // when option strings is 'depth=', the option value is true
-  if (optionsDepth == null || optionsDepth === true) {
-    throw createError(400, 'The value of depth option is invalid.');
-  }
+export const addDepthCondition = (query: PageQuery, pagePath: string, optionsDepth: string): PageQuery => {
 
   const range = OptionParser.parseRange(optionsDepth);
 

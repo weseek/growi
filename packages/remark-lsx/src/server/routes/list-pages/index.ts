@@ -102,14 +102,14 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
   try {
     // depth
     if (options?.depth != null) {
-      query = addDepthCondition(query, pagePath, options?.depth);
+      query = addDepthCondition(query, pagePath, options.depth);
     }
     // filter
     if (options?.filter != null) {
-      query = addFilterCondition(query, pagePath, options?.filter);
+      query = addFilterCondition(query, pagePath, options.filter);
     }
     if (options?.except != null) {
-      query = addExceptCondition(query, pagePath, options?.except);
+      query = addExceptCondition(query, pagePath, options.except);
     }
     // num
     const optionsNum = options?.num || DEFAULT_PAGES_NUM;

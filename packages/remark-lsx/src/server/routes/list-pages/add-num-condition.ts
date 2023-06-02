@@ -7,11 +7,7 @@ import type { PageQuery } from './generate-base-query';
 /**
  * add num condition that limit fetched pages
  */
-export const addNumCondition = (query: PageQuery, optionsNum: true | string | number | null): PageQuery => {
-  // when option strings is 'num=' or the option value is true
-  if (optionsNum == null || optionsNum === true) {
-    throw createError(400, 'The value of num option is invalid.');
-  }
+export const addNumCondition = (query: PageQuery, optionsNum: string | number): PageQuery => {
 
   if (typeof optionsNum === 'number') {
     return query.limit(optionsNum);

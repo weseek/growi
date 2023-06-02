@@ -9,22 +9,6 @@ describe('addNumCondition()', () => {
 
   const queryMock = mock<PageQuery>();
 
-  it('throws 400 http-errors instance when the option value is null', () => {
-    // when
-    const caller = () => addNumCondition(queryMock, null);
-
-    // then
-    expect(caller).toThrowError(createError(400, 'The value of num option is invalid.'));
-  });
-
-  it('throws 400 http-errors instance when the option value is true', () => {
-    // when
-    const caller = () => addNumCondition(queryMock, true);
-
-    // then
-    expect(caller).toThrowError(createError(400, 'The value of num option is invalid.'));
-  });
-
   it('set limit with the specified number', () => {
     // setup
     const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
