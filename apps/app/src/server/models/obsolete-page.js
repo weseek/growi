@@ -287,7 +287,7 @@ export const getPageSchema = (crowi) => {
       });
   };
 
-  pageSchema.statics.getUserPagePath = function(user) {
+  pageSchema.statics.getUserHomePagePath = function(user) {
     return `/user/${user.username}`;
   };
 

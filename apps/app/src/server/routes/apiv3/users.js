@@ -747,6 +747,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
@@ -787,7 +788,7 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findById(id);
-      // !! DO NOT MOVE getUserPagePath FROM THIS POSITION !! -- 05.31.2023
+      // !! DO NOT MOVE getUserHomePagePath FROM THIS POSITION !! -- 05.31.2023
       // catch username before delete user because username will be change to deleted_at_*
       const userHomePagePath = Page.getUserHomePagePath(user);
 
