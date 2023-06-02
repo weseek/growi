@@ -9,12 +9,7 @@
     "typeRoots": ["./src/@types"],
     "types": [
       "vitest/globals"
-    ],
-
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"],
-    }
+    ]
   },
   "include": [
     "src"
