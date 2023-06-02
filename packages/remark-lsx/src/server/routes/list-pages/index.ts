@@ -5,14 +5,13 @@ import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
 import createError, { isHttpError } from 'http-errors';
 
+import { LsxApiParams } from '../../../interfaces/api';
+
 import { addDepthCondition } from './add-depth-condition';
 import { addNumCondition } from './add-num-condition';
 import { addSortCondition } from './add-sort-condition';
 import { generateBaseQuery, type PageQuery } from './generate-base-query';
 import { getToppageViewersCount } from './get-toppage-viewers-count';
-
-
-const DEFAULT_PAGES_NUM = 50;
 
 
 const { addTrailingSlash } = pathUtils;
@@ -57,37 +56,25 @@ function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
 }
 
 
-export type ListPagesOptions = {
-  depth?: string,
-  num?: string,
-  filter?: string,
-  except?: string,
-  sort?: string,
-  reverse?: string,
-}
-
 export const listPages = async(req: Request & { user: IUser }, res: Response): Promise<Response> => {
   const user = req.user;
 
-  let pagePath: string;
-  let options: ListPagesOptions | undefined;
-
-  try {
-    // TODO: use express-validator
-    if (req.query.pagePath == null) {
-      throw new Error("The 'pagePath' query must not be null.");
-    }
-
-    pagePath = req.query.pagePath?.toString();
-    if (req.query.options != null) {
-      options = JSON.parse(req.query.options.toString());
-    }
-  }
-  catch (error) {
-    return res.status(400).send(error);
+  // TODO: use express-validator
+  if (req.query.pagePath == null) {
+    return res.status(400).send("The 'pagePath' query must not be null.");
   }
 
-  const builder = await generateBaseQuery(pagePath, user);
+  const params: LsxApiParams = {
+    pagePath: req.query.pagePath.toString(),
+    offset: req.query?.offset != null ? Number(req.query.offset) : undefined,
+    limit: req.query?.limit != null ? Number(req.query?.limit) : undefined,
+    options: req.query?.options != null ? JSON.parse(req.query.options.toString()) : {},
+  };
+
+  const {
+    pagePath, offset, limit, options,
+  } = params;
+  const builder = await generateBaseQuery(params.pagePath, user);
 
   // count viewers of `/`
   let toppageViewersCount;
@@ -102,7 +89,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
   try {
     // depth
     if (options?.depth != null) {
-      query = addDepthCondition(query, pagePath, options.depth);
+      query = addDepthCondition(query, params.pagePath, options.depth);
     }
     // filter
     if (options?.filter != null) {
@@ -112,15 +99,13 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
       query = addExceptCondition(query, pagePath, options.except);
     }
 
-    const total = await query.clone().count();
-
     // num
-    const optionsNum = options?.num || DEFAULT_PAGES_NUM;
-    query = addNumCondition(query, optionsNum);
+    query = addNumCondition(query, offset, limit);
     // sort
     query = addSortCondition(query, options?.sort, options?.reverse);
 
     const pages = await query.exec();
+    const total = await query.clone().count();
     return res.status(200).send({ pages, total, toppageViewersCount });
   }
   catch (error) {

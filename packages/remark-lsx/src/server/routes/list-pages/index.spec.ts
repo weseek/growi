@@ -44,18 +44,32 @@ describe('listPages', () => {
 
   describe('with num option', () => {
 
-    mocks.generateBaseQueryMock.mockImplementation(() => vi.fn());
-    mocks.getToppageViewersCountMock.mockImplementation(() => 99);
+    beforeAll(() => {
+      mocks.generateBaseQueryMock.mockImplementation(() => vi.fn());
+      mocks.getToppageViewersCountMock.mockImplementation(() => 99);
+    });
 
     it('returns 200 HTTP response', async() => {
       // setup
       const reqMock = mock<Request & { user: IUser }>();
       reqMock.query = { pagePath: '/Sandbox' };
 
-      const pageMock = mock<IPage>();
       const queryMock = mock<PageQuery>();
+
+      // setup addNumCondition
+      mocks.addNumConditionMock.mockImplementation(() => queryMock);
+      // setup addSortCondition
+      mocks.addSortConditionMock.mockImplementation(() => queryMock);
+
+      // setup query.exec()
+      const pageMock = mock<IPage>();
       queryMock.exec.mockImplementation(async() => [pageMock]);
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
+
+      // setup query.clone().count()
+      const queryClonedMock = mock<PageQuery>();
+      queryMock.clone.mockImplementationOnce(() => queryClonedMock);
+      queryClonedMock.count.mockResolvedValue(9);
 
       const resMock = mock<Response>();
       const resStatusMock = mock<Response>();
@@ -72,6 +86,7 @@ describe('listPages', () => {
       expect(resMock.status).toHaveBeenCalledOnce();
       expect(resStatusMock.send).toHaveBeenCalledWith({
         pages: [pageMock],
+        total: 9,
         toppageViewersCount: 99,
       });
     });

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 
-import { useSWRxLsx } from '../stores/lsx';
+import { useSWRxLsx } from '../stores/lsx/lsx';
 import { generatePageNodeTree } from '../utils/page-node';
 
 import { LsxListView } from './LsxPageList/LsxListView';
@@ -38,7 +38,7 @@ const LsxSubstance = React.memo(({
     return new LsxContext(prefix, options);
   }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const { data, error, isLoading } = useSWRxLsx(lsxContext, isImmutable);
+  const { data, error, isLoading } = useSWRxLsx(lsxContext.pagePath, lsxContext.options, isImmutable);
 
   const hasError = error != null;
   const errorMessage = error?.message;
