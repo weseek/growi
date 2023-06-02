@@ -6,20 +6,16 @@ import type { PageQuery } from './generate-base-query';
 
 describe('addNumCondition() throws 400 http-errors instance ', () => {
 
-  it.concurrent.each`
-    offset  | limit
-    ${-1}   | ${9}
-    ${1}    | ${-9}
-  `('when the specified condition is { offset: $offset, limit: $limit }', ({ offset, limit }) => {
+  it("when the param 'offset' is a negative value", () => {
 
     // setup
     const queryMock = mock<PageQuery>();
 
     // when
-    const caller = () => addNumCondition(queryMock, offset, limit);
+    const caller = () => addNumCondition(queryMock, -1, 10);
 
     // then
-    expect(caller).toThrowError(createError(400, "Both specified 'offset' or 'limit must be larger or equal than 0"));
+    expect(caller).toThrowError(createError(400, "The param 'offset' must be larger or equal than 0"));
     expect(queryMock.skip).not.toHaveBeenCalledWith();
     expect(queryMock.limit).not.toHaveBeenCalledWith();
   });
@@ -29,11 +25,11 @@ describe('addNumCondition() throws 400 http-errors instance ', () => {
 describe('addNumCondition() set skip and limit with', () => {
 
   it.concurrent.each`
-    offset  | limit                   | expectedSkip   | expectedLimit
-    ${1}    | ${Number.MAX_VALUE}     | ${1}           | ${null}
-    ${0}    | ${10}                   | ${null}        | ${10}
-    ${0}    | ${Number.MAX_VALUE}     | ${null}        | ${null}
-    ${NaN}  | ${NaN}                  | ${null}        | ${null}
+    offset  | limit     | expectedSkip   | expectedLimit
+    ${1}    | ${-1}     | ${1}           | ${null}
+    ${0}    | ${0}      | ${null}        | ${0}
+    ${0}    | ${10}     | ${null}        | ${10}
+    ${NaN}  | ${NaN}    | ${null}        | ${null}
   `("{ offset: $offset, limit: $limit }'", ({
     offset, limit, expectedSkip, expectedLimit,
   }) => {

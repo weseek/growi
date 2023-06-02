@@ -20,6 +20,7 @@ export const useSWRxLsx = (pagePath: string, options?: Record<string, string|und
         const offsetAndLimit = options?.num != null
           ? parseNumOption(options.num)
           : null;
+        delete options?.num;
 
         const params: LsxApiParams = {
           pagePath,

@@ -36,8 +36,20 @@ describe('addNumCondition()', () => {
     const caller = () => parseNumOption('-1:10');
 
     // then
-    expect(caller).toThrowError();
+    expect(caller).toThrowError("The specified option 'num' is [-1:10] : the start must be larger or equal than 1");
     expect(parseRangeSpy).toHaveBeenCalledWith('-1:10');
+  });
+
+  it('throws an error when the end value is smaller than the start value', () => {
+    // setup
+    const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
+
+    // when
+    const caller = () => parseNumOption('3:2');
+
+    // then
+    expect(caller).toThrowError("The specified option 'num' is [3:2] : the end must be larger or equal than the start");
+    expect(parseRangeSpy).toHaveBeenCalledWith('3:2');
   });
 
 });
@@ -48,7 +60,8 @@ describe('addNumCondition() set skip and limit with the range string', () => {
   it.concurrent.each`
     optionsNum    | expected
     ${'1:10'}     | ${{ offset: 0, limit: 10 }}
-    ${'3:'}       | ${{ offset: 2, limit: Number.MAX_VALUE }}
+    ${'2:2'}      | ${{ offset: 1, limit: 1 }}
+    ${'3:'}       | ${{ offset: 2, limit: -1 }}
   `("'$optionsNum", ({ optionsNum, expected }) => {
     // setup
     const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');

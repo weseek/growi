@@ -24,12 +24,13 @@ export const parseNumOption = (optionsNum: string): ParseNumOptionResult | null 
   if (start < 1) {
     throw new Error(`The specified option 'num' is [${start}:${end}] : the start must be larger or equal than 1`);
   }
+  // check end
+  if (start > end && end > 0) {
+    throw new Error(`The specified option 'num' is [${start}:${end}] : the end must be larger or equal than the start`);
+  }
 
   const offset = start - 1;
-  const limit = end - offset;
+  const limit = Math.max(-1, end - offset);
 
-  return {
-    offset,
-    limit: (limit > 0) ? limit : Number.MAX_VALUE,
-  };
+  return { offset, limit };
 };
