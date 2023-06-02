@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 
 
-import { useSWRxNodeTree } from '../stores/lsx';
+import { useSWRxLsx } from '../stores/lsx';
+import { generatePageNodeTree } from '../utils/page-node';
 
 import { LsxListView } from './LsxPageList/LsxListView';
 import { LsxContext } from './lsx-context';
@@ -37,9 +38,8 @@ const LsxSubstance = React.memo(({
     return new LsxContext(prefix, options);
   }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const { data, error, isLoading: _isLoading } = useSWRxNodeTree(lsxContext, isImmutable);
+  const { data, error, isLoading } = useSWRxLsx(lsxContext, isImmutable);
 
-  const isLoading = _isLoading || data === undefined;
   const hasError = error != null;
   const errorMessage = error?.message;
 
@@ -77,12 +77,14 @@ const LsxSubstance = React.memo(({
   }, [hasError, isLoading, lsxContext]);
 
   const contents = useMemo(() => {
-    if (isLoading) {
+    if (data == null) {
       return <></>;
     }
 
-    return <LsxListView nodeTree={data.nodeTree} lsxContext={lsxContext} basisViewersCount={data.toppageViewersCount} />;
-  }, [data?.nodeTree, data?.toppageViewersCount, isLoading, lsxContext]);
+    const nodeTree = generatePageNodeTree(prefix, data.pages);
+
+    return <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={data.toppageViewersCount} />;
+  }, [data, lsxContext, prefix]);
 
   return (
     <div className={`lsx ${styles.lsx}`}>

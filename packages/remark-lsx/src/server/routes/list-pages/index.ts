@@ -111,6 +111,9 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
     if (options?.except != null) {
       query = addExceptCondition(query, pagePath, options.except);
     }
+
+    const total = await query.clone().count();
+
     // num
     const optionsNum = options?.num || DEFAULT_PAGES_NUM;
     query = addNumCondition(query, optionsNum);
@@ -118,7 +121,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
     query = addSortCondition(query, options?.sort, options?.reverse);
 
     const pages = await query.exec();
-    return res.status(200).send({ pages, toppageViewersCount });
+    return res.status(200).send({ pages, total, toppageViewersCount });
   }
   catch (error) {
     if (isHttpError(error)) {
