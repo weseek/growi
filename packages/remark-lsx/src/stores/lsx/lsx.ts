@@ -17,6 +17,7 @@ export const useSWRxLsx = (pagePath: string, options?: Record<string, string|und
     ['/_api/lsx', pagePath, options, isImmutable],
     async([endpoint, pagePath, options]) => {
       try {
+        // parse num option
         const offsetAndLimit = options?.num != null
           ? parseNumOption(options.num)
           : null;
