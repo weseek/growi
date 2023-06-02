@@ -248,6 +248,19 @@ export const getPageSchema = (crowi) => {
     return this.populate('revision');
   };
 
+  pageSchema.methods.shouldSSR = async function() {
+    if (!this.isLatestRevision()) {
+      return false;
+    }
+
+    if (this.latestRevisionBodyLength == null) {
+      return true;
+    }
+
+    const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    return ssrMaxRevisionBodyLength >= this.latestRevisionBodyLength;
+  };
+
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
     // Reset
     this.grantedUsers = [];
