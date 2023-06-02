@@ -62,17 +62,19 @@ export const extractToAncestorsPaths = (pagePath) => {
 /**
  * populate page (Query or Document) to show revision
  * @param {any} page Query or Document
- * @param {string} userPublicFields string to set to select
+ * @param {string | undefined} userPublicFields string to set to select
+ * @param {boolean} shouldExcludeBody
  */
 /* eslint-disable object-curly-newline, object-property-newline */
-export const populateDataToShowRevision = (page, userPublicFields) => {
+export const populateDataToShowRevision = (page, userPublicFields, shouldExcludeBody = false) => {
+  console.log('shouldExcludeBody222222', shouldExcludeBody);
   return page
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
       { path: 'creator', model: 'User', select: userPublicFields },
       { path: 'deleteUser', model: 'User', select: userPublicFields },
       { path: 'grantedGroup', model: 'UserGroup' },
-      { path: 'revision', model: 'Revision', populate: {
+      { path: 'revision', model: 'Revision', select: shouldExcludeBody ? '-body' : undefined, populate: {
         path: 'author', model: 'User', select: userPublicFields,
       } },
     ]);
@@ -233,11 +235,11 @@ export const getPageSchema = (crowi) => {
     }
   };
 
-  pageSchema.methods.populateDataToShowRevision = async function() {
+  pageSchema.methods.populateDataToShowRevision = async function(shouldExcludeBody) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL, shouldExcludeBody);
   };
 
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
