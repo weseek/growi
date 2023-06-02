@@ -958,18 +958,6 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
-schema.statics.findUserHomePage = async function(
-    username: string,
-): Promise<{ userHomePage: PageDocument & HasObjectId | null }> {
-  const userHomePagePath = `/user/${username}`;
-
-  const baseQuery = this.findOne({ path: userHomePagePath });
-  const queryBuilder = new PageQueryBuilder(baseQuery, false);
-  const userHomePage = queryBuilder.query.exec();
-
-  return userHomePage;
-};
-
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike

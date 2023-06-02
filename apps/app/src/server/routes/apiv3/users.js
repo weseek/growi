@@ -756,7 +756,7 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: removeUser
    *        summary: /users/{id}/remove
-   *        description: Delete user and if isUserPageDeletionEnabled delete user home pages
+   *        description: Delete user and if isUsersHomePageDeletionEnabled delete user home page and sub pages
    *        parameters:
    *          - name: id
    *            in: path
@@ -766,92 +766,61 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Deleting user success and if isUserPageDeletionEnabled delete user home pages success
+   *            description: Deleting user success and if isUsersHomePageDeletionEnabled delete user home page and sub pages success
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
-   *                    userData:
+   *                    user:
    *                      type: object
-   *                      description: data of delete user
-   *                    deletedPagePaths:
-   *                      type: array
-   *                      description: a list of deleted pages path
-   *                      items:
-   *                        type: string
-   *                    isRecursively:
+   *                      description: data of deleted user
+   *                    userHomePagePath:
+   *                      type: string
+   *                      description: a user home page path
+   *                    isUsersHomePageDeletionEnabled:
    *                      type: boolean
-   *                      description: a flag indicating whether the page has been recursively deleted
-   *                    isCompletely:
-   *                      type: boolean
-   *                      description: a flag indicating whether the page has been completely deleted
+   *                      description: is users home page deletion enabled
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
-    const isUserPageDeletionEnabled = crowi.configManager.getConfig('crowi', 'security:isUserPageDeletionEnabled');
-
-    const isCompletely = true;
-    const isRecursively = true;
+    const isUsersHomePageDeletionEnabled = crowi.configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled');
 
     try {
-      const userData = await User.findById(id);
-      // !! DO NOT MOVE username FROM THIS POSITION !! -- 05.31.2023
+      const user = await User.findById(id);
+      // !! DO NOT MOVE getUserPagePath FROM THIS POSITION !! -- 05.31.2023
       // catch username before delete user because username will be change to deleted_at_*
-      const username = userData.username;
+      const userHomePagePath = Page.getUserHomePagePath(user);
 
-      await UserGroupRelation.remove({ relatedUser: userData });
-      await userData.statusDelete();
-      await ExternalAccount.remove({ user: userData });
+      await UserGroupRelation.remove({ relatedUser: user });
+      await user.statusDelete();
+      await ExternalAccount.remove({ user });
 
-      const serializedUserData = serializeUserSecurely(userData);
+      const serializedUser = serializeUserSecurely(user);
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
-      // TODO: Check page deletion logic are correct
-      // see: https://redmine.weseek.co.jp/issues/123556
-      // TODO: Commonize the page deletion logic
-      // see: https://redmine.weseek.co.jp/issues/123550
-      if (isUserPageDeletionEnabled) {
-        const userHomePage = await Page.findUserHomePage(username);
+      if (isUsersHomePageDeletionEnabled) {
+        const userHomePage = await Page.findByPath(userHomePagePath, user);
 
         if (userHomePage == null) {
           logger.error('user home page is not found.');
           throw new ErrorV3('user collection deleted but user home page is not found');
         }
 
-        const pagesToDelete = [userHomePage];
-        const pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(
-          pagesToDelete,
+        await crowi.pageService.deleteUserHomePageAndSubPages(
+          userHomePage,
           req.user,
-          isRecursively,
-          isUserPageDeletionEnabled,
+          {
+            ip: req.ip,
+            endpoint: req.originalUrl,
+          },
         );
-
-        if (pagesCanBeDeleted.length === 0) {
-          logger.warn('no pages can be deleted.');
-          throw new ErrorV3('user collection deleted but no pages can be deleted');
-        }
-
-        const activityParameters = {
-          ip: req.ip,
-          endpoint: req.originalUrl,
-        };
-        const options = { isCompletely, isRecursively };
-        crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options, activityParameters);
-
-        return res.apiv3({
-          userData: serializedUserData,
-          deletedPagePaths: pagesCanBeDeleted.map(p => p.path),
-          isRecursively,
-          isCompletely,
-        });
       }
 
       return res.apiv3({
-        userData: serializedUserData,
-        deletedPagePaths: [],
-        isRecursively,
-        isCompletely,
+        user: serializedUser,
+        userHomePagePath,
+        isUsersHomePageDeletionEnabled,
       });
     }
     catch (err) {

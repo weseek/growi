@@ -40,8 +40,8 @@ export const isUsersHomePage = (path: string): boolean => {
  * Whether path is the protected pages for systems
  * @param path
  */
-export const isUsersProtectedPages = (path: string, isUserPageDeletionEnabled = false): boolean => {
-  return isUsersTopPage(path) || (isUserPageDeletionEnabled ? false : isUsersHomePage(path));
+export const isUsersProtectedPages = (path: string): boolean => {
+  return isUsersTopPage(path) || isUsersHomePage(path);
 };
 
 /**
