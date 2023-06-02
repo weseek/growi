@@ -22,11 +22,11 @@ export const parseNumOption = (optionsNum: string): ParseNumOptionResult | null 
 
   // check start
   if (start < 1) {
-    throw new Error(`The specified option 'num' is [${start}:${end}] : the start must be larger or equal than 1`);
+    throw new Error(`The specified option 'num' is { start: ${start}, end: ${end} } : the start must be larger or equal than 1`);
   }
   // check end
   if (start > end && end > 0) {
-    throw new Error(`The specified option 'num' is [${start}:${end}] : the end must be larger or equal than the start`);
+    throw new Error(`The specified option 'num' is { start: ${start}, end: ${end} } : the end must be larger or equal than the start`);
   }
 
   const offset = start - 1;

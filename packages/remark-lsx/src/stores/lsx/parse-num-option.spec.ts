@@ -36,7 +36,7 @@ describe('addNumCondition()', () => {
     const caller = () => parseNumOption('-1:10');
 
     // then
-    expect(caller).toThrowError("The specified option 'num' is [-1:10] : the start must be larger or equal than 1");
+    expect(caller).toThrowError("The specified option 'num' is { start: -1, end: 10 } : the start must be larger or equal than 1");
     expect(parseRangeSpy).toHaveBeenCalledWith('-1:10');
   });
 
@@ -48,7 +48,7 @@ describe('addNumCondition()', () => {
     const caller = () => parseNumOption('3:2');
 
     // then
-    expect(caller).toThrowError("The specified option 'num' is [3:2] : the end must be larger or equal than the start");
+    expect(caller).toThrowError("The specified option 'num' is { start: 3, end: 2 } : the end must be larger or equal than the start");
     expect(parseRangeSpy).toHaveBeenCalledWith('3:2');
   });
 
