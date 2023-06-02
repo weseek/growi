@@ -41,7 +41,8 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -172,6 +173,7 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
+  shouldSSR: boolean,
 
   grantData?: IPageGrantData,
 
@@ -235,11 +237,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(props.shouldSSR ? pageWithMeta?.data : null); // store initial data
+
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
@@ -261,6 +265,17 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
+
+  useEffect(() => {
+    const mutatePageData = async() => {
+      const pageData = await mutateCurrentPage();
+      mutateEditingMarkdown(pageData?.revision.body);
+    };
+
+    if (isClient() && currentPageId != null && !props.isNotFound && !props.shouldSSR) {
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.shouldSSR]);
 
   // sync grant data
   useEffect(() => {
@@ -464,7 +479,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
-    await page.populateDataToShowRevision();
+    props.shouldSSR = await page.shouldSSR();
+    await page.populateDataToShowRevision(!props.shouldSSR); // shouldExcludeBody = !shouldSSR
     props.isLatestRevision = page.isLatestRevision();
   }
 
