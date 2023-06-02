@@ -13,7 +13,7 @@ util.inherits(UserEvent, events.EventEmitter);
 UserEvent.prototype.onActivated = async function(user) {
   const Page = this.crowi.model('Page');
 
-  const userHomePagePath = Page.getUserHomePagePath(user);
+  const userHomePagePath = `/user/${user.username}`;
 
   const page = await Page.findByPath(userHomePagePath, user);
 

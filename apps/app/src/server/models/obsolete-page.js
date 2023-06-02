@@ -287,10 +287,6 @@ export const getPageSchema = (crowi) => {
       });
   };
 
-  pageSchema.statics.getUserHomePagePath = function(user) {
-    return `/user/${user.username}`;
-  };
-
   pageSchema.statics.getDeletedPageName = function(path) {
     if (path.match('/')) {
       // eslint-disable-next-line no-param-reassign

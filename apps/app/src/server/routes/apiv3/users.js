@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
+import { configManager } from '../../service/config-manager';
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
@@ -351,7 +351,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
     }
 
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const limit = parseInt(req.query.limit) || await configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
     const page = req.query.page;
     const offset = (page - 1) * limit;
     const queryOptions = { offset, limit };
@@ -784,13 +784,13 @@ module.exports = (crowi) => {
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
-    const isUsersHomePageDeletionEnabled = crowi.configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled');
+    const isUsersHomePageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled');
 
     try {
       const user = await User.findById(id);
-      // !! DO NOT MOVE getUserHomePagePath FROM THIS POSITION !! -- 05.31.2023
+      // !! DO NOT MOVE userHomePagePath FROM THIS POSITION !! -- 05.31.2023
       // catch username before delete user because username will be change to deleted_at_*
-      const userHomePagePath = Page.getUserHomePagePath(user);
+      const userHomePagePath = `/user/${user.username}`;
 
       await UserGroupRelation.remove({ relatedUser: user });
       await user.statusDelete();
@@ -801,15 +801,8 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       if (isUsersHomePageDeletionEnabled) {
-        const userHomePage = await Page.findByPath(userHomePagePath, user);
-
-        if (userHomePage == null) {
-          logger.error('user home page is not found.');
-          throw new ErrorV3('user collection deleted but user home page is not found');
-        }
-
-        await crowi.pageService.deleteUserHomePageAndSubPages(
-          userHomePage,
+        crowi.pageService.deleteUserHomePageAndSubPages(
+          userHomePagePath,
           req.user,
           {
             ip: req.ip,

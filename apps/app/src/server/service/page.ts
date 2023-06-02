@@ -1962,8 +1962,16 @@ class PageService {
     }
   }
 
-  async deleteUserHomePageAndSubPages(userHomePage, user, activityParameters): Promise<void> {
-    await this.deleteCompletely(userHomePage, user, {}, true, false, activityParameters);
+  async deleteUserHomePageAndSubPages(userHomePagePath, user, activityParameters): Promise<void> {
+    const Page = this.crowi.model('Page');
+    const userHomePage = await Page.findByPath(userHomePagePath, user);
+
+    if (userHomePage == null) {
+      logger.error('user home page is not found.');
+      throw new Error('user collection deleted but user home page is not found');
+    }
+
+    this.deleteCompletely(userHomePage, user, {}, true, false, activityParameters);
   }
 
   // use the same process in both v4 and v5
