@@ -453,7 +453,7 @@ class SecuritySetting extends React.Component {
           ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
-        <h4>ユーザーページの削除</h4>
+        <h4>{t('security_settings.user_home_page_deletion.user_home_page_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
@@ -465,10 +465,13 @@ class SecuritySetting extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchisUserPageDeletionEnabled() }}
               />
               <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
-                無効化 / 有効化
+                {t('security_settings.user_home_page_deletion.enable_user_home_page_deletion')}
               </label>
             </div>
-            <p className="form-text text-muted small" dangerouslySetInnerHTML={{ __html: 'ユーザー削除時にユーザーページも削除します。' }} />
+            <p
+              className="form-text text-muted small"
+              dangerouslySetInnerHTML={{ __html: t('security_settings.user_home_page_deletion.when_deleting_a_user_the_user_home_page_is_also_deleted') }}
+            />
           </div>
         </div>
 

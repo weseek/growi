@@ -53,6 +53,11 @@
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
+    "user_home_page_deletion": {
+      "user_home_page_deletion": "ユーザーページの削除",
+      "enable_user_home_page_deletion": "ユーザーページの削除を有効化",
+      "when_deleting_a_user_the_user_home_page_is_also_deleted": "ユーザー削除時にユーザーページも削除します。"
+    },
     "session": "セッション",
     "max_age": "有効期間 (ミリ秒)",
     "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
