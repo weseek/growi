@@ -1962,16 +1962,50 @@ class PageService {
     }
   }
 
-  async deleteUserHomePageAndSubPages(userHomePagePath, user, activityParameters): Promise<void> {
+  async deleteCompletelyUserHomePageAndSubpages(user, userHomePagePath, options = {}): Promise<void> {
     const Page = this.crowi.model('Page');
     const userHomePage = await Page.findByPath(userHomePagePath, user);
 
     if (userHomePage == null) {
       logger.error('user home page is not found.');
-      throw new Error('user collection deleted but user home page is not found');
+      return;
     }
 
-    this.deleteCompletely(userHomePage, user, {}, true, false, activityParameters);
+    const ids = [userHomePage._id];
+    const paths = [userHomePage.path];
+
+    let pageOp;
+    try {
+      // 1. update descendantCount
+      const inc = userHomePage.isEmpty ? -userHomePage.descendantCount : -(userHomePage.descendantCount + 1);
+      await this.updateDescendantCountOfAncestors(userHomePage.parent, inc, true);
+      // 2. delete target completely
+      await this.deleteCompletelyOperation(ids, paths);
+      // 3. delete leaf empty pages
+      await Page.removeLeafEmptyPagesRecursively(userHomePage.parent);
+
+      if (!userHomePage.isEmpty) {
+        this.pageEvent.emit('deleteCompletely', userHomePage, user);
+      }
+
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.DeleteCompletely,
+        actionStage: PageActionStage.Main,
+        page: userHomePage,
+        user,
+        fromPath: userHomePage.path,
+        options,
+      });
+
+      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, user, options, pageOp._id);
+    }
+    catch (err) {
+      logger.error('Error occurred while deleting user home page and subpages.', err);
+      if (pageOp != null) {
+        await PageOperation.deleteOne({ _id: pageOp._id });
+      }
+      throw err;
+    }
   }
 
   // use the same process in both v4 and v5

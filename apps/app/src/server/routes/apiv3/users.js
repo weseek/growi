@@ -757,7 +757,7 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: removeUser
    *        summary: /users/{id}/remove
-   *        description: Delete user and if isUsersHomePageDeletionEnabled delete user home page and sub pages
+   *        description: Delete user and if isUsersHomePageDeletionEnabled delete user home page and subpages
    *        parameters:
    *          - name: id
    *            in: path
@@ -767,7 +767,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Deleting user success and if isUsersHomePageDeletionEnabled delete user home page and sub pages success
+   *            description: Deleting user success and if isUsersHomePageDeletionEnabled delete user home page and subpages success
    *            content:
    *              application/json:
    *                schema:
@@ -801,14 +801,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       if (isUsersHomePageDeletionEnabled) {
-        crowi.pageService.deleteUserHomePageAndSubPages(
-          userHomePagePath,
-          req.user,
-          {
-            ip: req.ip,
-            endpoint: req.originalUrl,
-          },
-        );
+        crowi.pageService.deleteCompletelyUserHomePageAndSubpages(req.user, userHomePagePath);
       }
 
       return res.apiv3({
