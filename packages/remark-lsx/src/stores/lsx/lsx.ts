@@ -1,35 +1,40 @@
-import type { IPageHasId } from '@growi/core';
 import axios from 'axios';
-import useSWR, { SWRResponse } from 'swr';
+import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
-import { LsxApiParams } from '../../interfaces/api';
+import type { LsxApiParams, LsxApiResponseData } from '../../interfaces/api';
 
 import { parseNumOption } from './parse-num-option';
 
-type LsxResponse = {
-  pages: IPageHasId[],
-  total: number,
-  toppageViewersCount: number,
-}
 
-export const useSWRxLsx = (pagePath: string, options?: Record<string, string|undefined>, isImmutable?: boolean): SWRResponse<LsxResponse, Error> => {
-  return useSWR(
-    ['/_api/lsx', pagePath, options, isImmutable],
-    async([endpoint, pagePath, options]) => {
+export const useSWRxLsx = (
+    pagePath: string, options?: Record<string, string|undefined>, isImmutable?: boolean,
+): SWRInfiniteResponse<LsxApiResponseData, Error> => {
+
+  // parse num option
+  const initialOffsetAndLimit = options?.num != null
+    ? parseNumOption(options.num)
+    : null;
+  delete options?.num;
+
+  return useSWRInfinite(
+    (pageIndex, previousPageData) => {
+      if (previousPageData != null && previousPageData.pages.length === 0) return null;
+
+      if (pageIndex === 0 || previousPageData == null) {
+        return ['/_api/lsx', pagePath, options, initialOffsetAndLimit?.offset, initialOffsetAndLimit?.limit, isImmutable];
+      }
+
+      return ['/_api/lsx', pagePath, options, previousPageData.cursor, initialOffsetAndLimit?.limit, isImmutable];
+    },
+    async([endpoint, pagePath, options, offset, limit]) => {
       try {
-        // parse num option
-        const offsetAndLimit = options?.num != null
-          ? parseNumOption(options.num)
-          : null;
-        delete options?.num;
-
         const params: LsxApiParams = {
           pagePath,
-          offset: offsetAndLimit?.offset,
-          limit: offsetAndLimit?.limit,
+          offset,
+          limit,
           options,
         };
-        const res = await axios.get<LsxResponse>(endpoint, { params });
+        const res = await axios.get<LsxApiResponseData>(endpoint, { params });
         return res.data;
       }
       catch (err) {
@@ -44,6 +49,8 @@ export const useSWRxLsx = (pagePath: string, options?: Record<string, string|und
       revalidateIfStale: !isImmutable,
       revalidateOnFocus: !isImmutable,
       revalidateOnReconnect: !isImmutable,
+      revalidateFirstPage: false,
+      revalidateAll: false,
     },
   );
 };

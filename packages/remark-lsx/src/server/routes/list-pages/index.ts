@@ -5,7 +5,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
 import createError, { isHttpError } from 'http-errors';
 
-import { LsxApiParams } from '../../../interfaces/api';
+import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
 
 import { addDepthCondition } from './add-depth-condition';
 import { addNumCondition } from './add-num-condition';
@@ -99,14 +99,21 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
       query = addExceptCondition(query, pagePath, options.except);
     }
 
+    // get total num before adding num/sort conditions
+    const total = await query.clone().count();
+
     // num
     query = addNumCondition(query, offset, limit);
     // sort
     query = addSortCondition(query, options?.sort, options?.reverse);
 
     const pages = await query.exec();
-    const total = await query.clone().count();
-    return res.status(200).send({ pages, total, toppageViewersCount });
+    const cursor = (offset ?? 0) + pages.length;
+
+    const responseData: LsxApiResponseData = {
+      pages, cursor, total, toppageViewersCount,
+    };
+    return res.status(200).send(responseData);
   }
   catch (error) {
     if (isHttpError(error)) {

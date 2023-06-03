@@ -81,9 +81,10 @@ const LsxSubstance = React.memo(({
       return <></>;
     }
 
-    const nodeTree = generatePageNodeTree(prefix, data.pages);
+    const nodeTree = generatePageNodeTree(prefix, data.flatMap(d => d.pages));
+    const basisViewersCount = data.at(-1)?.toppageViewersCount;
 
-    return <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={data.toppageViewersCount} />;
+    return <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />;
   }, [data, lsxContext, prefix]);
 
   return (

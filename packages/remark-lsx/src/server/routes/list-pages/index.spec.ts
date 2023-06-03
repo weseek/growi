@@ -3,6 +3,8 @@ import type { Request, Response } from 'express';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
 
+import { LsxApiResponseData } from '../../../interfaces/api';
+
 import type { PageQuery } from './generate-base-query';
 
 import { listPages } from '.';
@@ -84,11 +86,13 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce();
       expect(mocks.addSortConditionMock).toHaveBeenCalledOnce();
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith({
+      const expectedResponseData: LsxApiResponseData = {
         pages: [pageMock],
+        cursor: 1,
         total: 9,
         toppageViewersCount: 99,
-      });
+      };
+      expect(resStatusMock.send).toHaveBeenCalledWith(expectedResponseData);
     });
 
     it('returns 500 HTTP response when an unexpected error occured', async() => {
