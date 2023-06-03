@@ -38,7 +38,9 @@ const LsxSubstance = React.memo(({
     return new LsxContext(prefix, options);
   }, [depth, filter, num, prefix, reverse, sort, except]);
 
-  const { data, error, isLoading } = useSWRxLsx(lsxContext.pagePath, lsxContext.options, isImmutable);
+  const {
+    data, error, isLoading, setSize,
+  } = useSWRxLsx(lsxContext.pagePath, lsxContext.options, isImmutable);
 
   const hasError = error != null;
   const errorMessage = error?.message;
@@ -87,11 +89,44 @@ const LsxSubstance = React.memo(({
     return <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />;
   }, [data, lsxContext, prefix]);
 
+
+  const LoadMore = useCallback(() => {
+    const lastResult = data?.at(-1);
+
+    if (lastResult == null) {
+      return <></>;
+    }
+
+    const { cursor, total } = lastResult;
+    const leftItemsNum = total - cursor;
+
+    if (leftItemsNum === 0) {
+      return <></>;
+    }
+
+    return (
+      <div className="row justify-content-center lsx-load-more-row">
+        <div className="col-12 col-sm-8 d-flex flex-column align-items-center lsx-load-more-container">
+          <button
+            type="button"
+            className="btn btn btn-block btn-outline-secondary btn-load-more"
+            onClick={() => setSize(size => size + 1)}
+          >
+            Load more<br />
+            <span className="text-muted small left-items-label">({leftItemsNum} pages left)</span>
+          </button>
+        </div>
+      </div>
+    );
+  }, [data, setSize]);
+
+
   return (
     <div className={`lsx ${styles.lsx}`}>
       <Error />
       <Loading />
       {contents}
+      <LoadMore />
     </div>
   );
 });

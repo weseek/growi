@@ -6,6 +6,9 @@ import type { LsxApiOptions, LsxApiParams, LsxApiResponseData } from '../../inte
 import { parseNumOption } from './parse-num-option';
 
 
+const LOADMORE_PAGES_NUM = 10;
+
+
 export const useSWRxLsx = (
     pagePath: string, options?: Record<string, string|undefined>, isImmutable?: boolean,
 ): SWRInfiniteResponse<LsxApiResponseData, Error> => {
@@ -19,11 +22,13 @@ export const useSWRxLsx = (
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
 
+      // the first loading
       if (pageIndex === 0 || previousPageData == null) {
         return ['/_api/lsx', pagePath, options, initialOffsetAndLimit?.offset, initialOffsetAndLimit?.limit, isImmutable];
       }
 
-      return ['/_api/lsx', pagePath, options, previousPageData.cursor, initialOffsetAndLimit?.limit, isImmutable];
+      // loading more
+      return ['/_api/lsx', pagePath, options, previousPageData.cursor, LOADMORE_PAGES_NUM, isImmutable];
     },
     async([endpoint, pagePath, options, offset, limit]) => {
       const apiOptions = Object.assign({}, options, { num: undefined }) as LsxApiOptions;
