@@ -79,6 +79,7 @@
       "outputMode": "new-only"
     },
     "@growi/app#dev:migrate": {
+      "dependsOn": ["@growi/core#dev"],
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migrations/*.js"],
       "outputMode": "new-only"

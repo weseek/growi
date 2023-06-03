@@ -67,7 +67,7 @@ declare global {
 }
 
 
-const GrowiPluginsActivator = dynamic(() => import('~/features/activate-plugin').then(mod => mod.GrowiPluginsActivator), { ssr: false });
+const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')

@@ -109,7 +109,7 @@ module.exports = (crowi, app) => {
     userActivation.validateCompleteRegistration,
     userActivation.completeRegistrationAction(crowi));
 
-  router.use('/plugins', require('./plugins')(crowi));
+  router.use('/plugins', require('~/features/growi-plugin/routes/growi-plugins')(crowi));
 
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
