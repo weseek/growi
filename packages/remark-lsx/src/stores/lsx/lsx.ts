@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
-import type { LsxApiParams, LsxApiResponseData } from '../../interfaces/api';
+import type { LsxApiOptions, LsxApiParams, LsxApiResponseData } from '../../interfaces/api';
 
 import { parseNumOption } from './parse-num-option';
 
@@ -14,7 +14,6 @@ export const useSWRxLsx = (
   const initialOffsetAndLimit = options?.num != null
     ? parseNumOption(options.num)
     : null;
-  delete options?.num;
 
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
@@ -27,13 +26,14 @@ export const useSWRxLsx = (
       return ['/_api/lsx', pagePath, options, previousPageData.cursor, initialOffsetAndLimit?.limit, isImmutable];
     },
     async([endpoint, pagePath, options, offset, limit]) => {
+      const apiOptions = Object.assign({}, options, { num: undefined }) as LsxApiOptions;
+      const params: LsxApiParams = {
+        pagePath,
+        offset,
+        limit,
+        options: apiOptions,
+      };
       try {
-        const params: LsxApiParams = {
-          pagePath,
-          offset,
-          limit,
-          options,
-        };
         const res = await axios.get<LsxApiResponseData>(endpoint, { params });
         return res.data;
       }
