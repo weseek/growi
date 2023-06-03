@@ -49,10 +49,12 @@ const LsxSubstance = React.memo(({
     }
 
     return (
-      <div className="text-warning">
-        <i className="fa fa-exclamation-triangle fa-fw"></i>
-        {lsxContext.toString()} (-&gt; <small>{errorMessage}</small>)
-      </div>
+      <details>
+        <summary className="text-warning">
+          <i className="fa fa-exclamation-triangle fa-fw"></i> {lsxContext.toString()}
+        </summary>
+        <small className="ml-3 text-muted">{errorMessage}</small>
+      </details>
     );
   }, [errorMessage, hasError, lsxContext]);
 
