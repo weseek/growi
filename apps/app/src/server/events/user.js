@@ -1,6 +1,6 @@
-import loggerFactory from '~/utils/logger';
+import EventEmitter from 'events';
 
-const EventEmitter = require('events');
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:events:user');
 
