@@ -1,4 +1,4 @@
-import { IPage, IUser } from '@growi/core';
+import { IPageHasId, IUser } from '@growi/core';
 import type { Request, Response } from 'express';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
@@ -64,7 +64,7 @@ describe('listPages', () => {
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
 
       // setup query.exec()
-      const pageMock = mock<IPage>();
+      const pageMock = mock<IPageHasId>();
       queryMock.exec.mockImplementation(async() => [pageMock]);
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
 
