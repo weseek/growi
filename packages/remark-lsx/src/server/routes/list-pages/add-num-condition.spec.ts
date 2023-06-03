@@ -25,11 +25,12 @@ describe('addNumCondition() throws 400 http-errors instance ', () => {
 describe('addNumCondition() set skip and limit with', () => {
 
   it.concurrent.each`
-    offset  | limit     | expectedSkip   | expectedLimit
-    ${1}    | ${-1}     | ${1}           | ${null}
-    ${0}    | ${0}      | ${null}        | ${0}
-    ${0}    | ${10}     | ${null}        | ${10}
-    ${NaN}  | ${NaN}    | ${null}        | ${null}
+    offset        | limit           | expectedSkip   | expectedLimit
+    ${1}          | ${-1}           | ${1}           | ${null}
+    ${0}          | ${0}            | ${null}        | ${0}
+    ${0}          | ${10}           | ${null}        | ${10}
+    ${NaN}        | ${NaN}          | ${null}        | ${null}
+    ${undefined}  | ${undefined}    | ${null}        | ${50}
   `("{ offset: $offset, limit: $limit }'", ({
     offset, limit, expectedSkip, expectedLimit,
   }) => {
