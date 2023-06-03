@@ -804,11 +804,7 @@ module.exports = (crowi) => {
         crowi.pageService.deleteCompletelyUserHomePageAndSubpages(req.user, userHomePagePath);
       }
 
-      return res.apiv3({
-        user: serializedUser,
-        userHomePagePath,
-        isUsersHomePageDeletionEnabled,
-      });
+      return res.apiv3({ user: serializedUser });
     }
     catch (err) {
       logger.error('Error', err);
