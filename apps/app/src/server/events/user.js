@@ -1,36 +1,39 @@
-const debug = require('debug')('growi:events:user');
+import loggerFactory from '~/utils/logger';
 
-const util = require('util');
-const events = require('events');
+const EventEmitter = require('events');
 
-function UserEvent(crowi) {
-  this.crowi = crowi;
+const logger = loggerFactory('growi:events:user');
 
-  events.EventEmitter.call(this);
-}
-util.inherits(UserEvent, events.EventEmitter);
+class UserEvent extends EventEmitter {
 
-UserEvent.prototype.onActivated = async function(user) {
-  const Page = this.crowi.model('Page');
+  constructor(crowi) {
+    super();
+    this.crowi = crowi;
+  }
 
-  const userHomePagePath = `/user/${user.username}`;
+  async onActivated(user) {
+    const Page = this.crowi.model('Page');
+    const userHomePagePath = `/user/${user.username}`;
+    let page = await Page.findByPath(userHomePagePath, user);
 
-  const page = await Page.findByPath(userHomePagePath, user);
-
-  if (page == null) {
-    const body = `# ${user.username}\nThis is ${user.username}'s page`;
-
-    // create user page
-    try {
-      await this.crowi.pageService.create(userHomePagePath, body, user, {});
-
-      // page created
-      debug('User page created', page);
+    if (page !== null && page.creator.toString() !== user._id.toString()) {
+      await this.crowi.pageService.deleteCompletelyUserHomePageAndSubpages(user, userHomePagePath);
+      page = null;
     }
-    catch (err) {
-      debug('Failed to create user page', err);
+
+    if (page == null) {
+      const body = `# ${user.username}\nThis is ${user.username}'s page`;
+
+      try {
+        await this.crowi.pageService.create(userHomePagePath, body, user, {});
+        logger.debug('User page created', page);
+      }
+      catch (err) {
+        logger.error('Failed to create user page', err);
+      }
     }
   }
-};
+
+}
 
 module.exports = UserEvent;
