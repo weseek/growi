@@ -3,9 +3,9 @@ import type { Request, Response } from 'express';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
 
-import { LsxApiResponseData } from '../../../interfaces/api';
+import type { LsxApiResponseData } from '../../../interfaces/api';
 
-import type { PageQuery } from './generate-base-query';
+import type { PageQuery, PageQueryBuilder } from './generate-base-query';
 
 import { listPages } from '.';
 
@@ -46,17 +46,22 @@ describe('listPages', () => {
 
   describe('with num option', () => {
 
-    beforeAll(() => {
-      mocks.generateBaseQueryMock.mockImplementation(() => vi.fn());
-      mocks.getToppageViewersCountMock.mockImplementation(() => 99);
-    });
+    const reqMock = mock<Request & { user: IUser }>();
+    reqMock.query = { pagePath: '/Sandbox' };
+
+    const builderMock = mock<PageQueryBuilder>();
+
+    mocks.generateBaseQueryMock.mockResolvedValue(builderMock);
+    mocks.getToppageViewersCountMock.mockImplementation(() => 99);
+
+    const queryMock = mock<PageQuery>();
+    builderMock.query = queryMock;
 
     it('returns 200 HTTP response', async() => {
-      // setup
-      const reqMock = mock<Request & { user: IUser }>();
-      reqMock.query = { pagePath: '/Sandbox' };
-
-      const queryMock = mock<PageQuery>();
+      // setup query.clone().count()
+      const queryClonedMock = mock<PageQuery>();
+      queryMock.clone.mockImplementation(() => queryClonedMock);
+      queryClonedMock.count.mockResolvedValue(9);
 
       // setup addNumCondition
       mocks.addNumConditionMock.mockImplementation(() => queryMock);
@@ -67,11 +72,6 @@ describe('listPages', () => {
       const pageMock = mock<IPageHasId>();
       queryMock.exec.mockImplementation(async() => [pageMock]);
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
-
-      // setup query.clone().count()
-      const queryClonedMock = mock<PageQuery>();
-      queryMock.clone.mockImplementationOnce(() => queryClonedMock);
-      queryClonedMock.count.mockResolvedValue(9);
 
       const resMock = mock<Response>();
       const resStatusMock = mock<Response>();
