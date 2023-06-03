@@ -38,7 +38,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      isUsersHomePageDeletionEnabled: false,
+      isUsersHomepageDeletionEnabled: false,
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
@@ -74,7 +74,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveCompleteDeletionAuthority: generalSetting.pageRecursiveCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
-      isUsersHomePageDeletionEnabled: generalSetting.isUsersHomePageDeletionEnabled,
+      isUsersHomepageDeletionEnabled: generalSetting.isUsersHomepageDeletionEnabled,
       sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
       disableLinkSharing: shareLinkSetting.disableLinkSharing,
@@ -196,10 +196,10 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch isUsersHomePageDeletionEnabled
+   * Switch isUsersHomepageDeletionEnabled
    */
-  switchIsUsersHomePageDeletionEnabled() {
-    this.setState({ isUsersHomePageDeletionEnabled: !this.state.isUsersHomePageDeletionEnabled });
+  switchIsUsersHomepageDeletionEnabled() {
+    this.setState({ isUsersHomepageDeletionEnabled: !this.state.isUsersHomepageDeletionEnabled });
   }
 
   /**
@@ -218,7 +218,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageRecursiveCompleteDeletionAuthority: this.state.currentPageRecursiveCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
-      isUsersHomePageDeletionEnabled: this.state.isUsersHomePageDeletionEnabled,
+      isUsersHomepageDeletionEnabled: this.state.isUsersHomepageDeletionEnabled,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);

@@ -5,18 +5,18 @@ import { useTranslation } from 'next-i18next';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
-import styles from '~/components/UsersHomePageFooter.module.scss';
+import styles from '~/components/UsersHomepageFooter.module.scss';
 import { useCurrentUser } from '~/stores/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
 import { CompressIcon } from './Icons/CompressIcon';
 import { ExpandIcon } from './Icons/ExpandIcon';
 
-export type UsersHomePageFooterProps = {
+export type UsersHomepageFooterProps = {
   creatorId: string,
 }
 
-export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Element => {
+export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Element => {
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
         </h2>
         {/* TODO: In bookmark folders v1, the button to create a new folder does not exist. The button should be included in the bookmark component. */}
         <div className={`${isExpanded ? `${styles['grw-bookarks-contents-expanded']}` : `${styles['grw-bookarks-contents-compressed']}`}`}>
-          <BookmarkFolderTree isUserHomePage={true} isOperable={isOperable} userId={creatorId} />
+          <BookmarkFolderTree isUserHomepage={true} isOperable={isOperable} userId={creatorId} />
         </div>
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">

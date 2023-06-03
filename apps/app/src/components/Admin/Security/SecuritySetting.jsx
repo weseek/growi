@@ -453,7 +453,7 @@ class SecuritySetting extends React.Component {
           ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
-        <h4>{t('security_settings.user_home_page_deletion.user_home_page_deletion')}</h4>
+        <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
@@ -461,16 +461,16 @@ class SecuritySetting extends React.Component {
                 type="checkbox"
                 className="custom-control-input"
                 id="is-user-page-deletion-enabled"
-                checked={adminGeneralSecurityContainer.state.isUsersHomePageDeletionEnabled}
-                onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomePageDeletionEnabled() }}
+                checked={adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomepageDeletionEnabled() }}
               />
               <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
-                {t('security_settings.user_home_page_deletion.enable_user_home_page_deletion')}
+                {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>
             <p
               className="form-text text-muted small"
-              dangerouslySetInnerHTML={{ __html: t('security_settings.user_home_page_deletion.when_deleting_a_user_the_user_home_page_is_also_deleted') }}
+              dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.when_deleting_a_user_the_user_homepage_is_also_deleted') }}
             />
           </div>
         </div>
