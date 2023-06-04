@@ -1,16 +1,11 @@
 import * as url from 'url';
 
 import { IPageHasId, ParseRangeResult, pathUtils } from '@growi/core';
-import { isTopPage } from '@growi/core/dist/utils/page-path-utils';
 
 import type { PageNode } from '../interfaces/page-node';
 
-function getDepthOfPath(path: string) {
-  if (isTopPage(path)) {
-    return 0;
-  }
-  return (path.match(/\//g) ?? []).length;
-}
+import { getDepthOfPath } from './depth-utils';
+
 
 function getParentPath(path: string) {
   return pathUtils.removeTrailingSlash(decodeURIComponent(url.resolve(path, './')));
