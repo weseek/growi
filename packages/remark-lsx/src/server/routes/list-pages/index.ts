@@ -1,5 +1,5 @@
 
-import type { IUser } from '@growi/core';
+import { type IUser, OptionParser } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
@@ -89,7 +89,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
   try {
     // depth
     if (options?.depth != null) {
-      query = addDepthCondition(query, params.pagePath, options.depth);
+      query = addDepthCondition(query, params.pagePath, OptionParser.parseRange(options.depth));
     }
     // filter
     if (options?.filter != null) {

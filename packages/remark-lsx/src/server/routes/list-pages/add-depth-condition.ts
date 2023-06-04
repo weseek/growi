@@ -1,21 +1,17 @@
-import { OptionParser } from '@growi/core/dist/plugin';
-import { pagePathUtils } from '@growi/core/dist/utils';
+import type { ParseRangeResult } from '@growi/core';
 import createError from 'http-errors';
+
+import { getDepthOfPath } from '../../../utils/depth-utils';
 
 import type { PageQuery } from './generate-base-query';
 
-const { isTopPage } = pagePathUtils;
+export const addDepthCondition = (query: PageQuery, pagePath: string, depthRange: ParseRangeResult | null): PageQuery => {
 
-export const addDepthCondition = (query: PageQuery, pagePath: string, optionsDepth: string): PageQuery => {
-
-  const range = OptionParser.parseRange(optionsDepth);
-
-  if (range == null) {
+  if (depthRange == null) {
     return query;
   }
 
-  const start = range.start;
-  const end = range.end;
+  const { start, end } = depthRange;
 
   // check start
   if (start < 1) {
@@ -26,20 +22,17 @@ export const addDepthCondition = (query: PageQuery, pagePath: string, optionsDep
     throw createError(400, `The specified option 'depth' is { start: ${start}, end: ${end} } : the end must be larger or equal than the start`);
   }
 
-  // count slash
-  const slashNum = isTopPage(pagePath)
-    ? 1
-    : pagePath.split('/').length;
-  const depthStart = slashNum + start - 1;
-  const depthEnd = slashNum + end - 1;
+  const depthOfPath = getDepthOfPath(pagePath);
+  const slashNumStart = depthOfPath + depthRange.start;
+  const slashNumEnd = depthOfPath + depthRange.end;
 
   if (end < 0) {
     return query.and([
-      { path: new RegExp(`^(\\/[^\\/]*){${depthStart},}$`) },
+      { path: new RegExp(`^(\\/[^\\/]*){${slashNumStart},}$`) },
     ]);
   }
 
   return query.and([
-    { path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`) },
+    { path: new RegExp(`^(\\/[^\\/]*){${slashNumStart},${slashNumEnd}}$`) },
   ]);
 };
