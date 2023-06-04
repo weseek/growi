@@ -9,7 +9,7 @@ function isEquals(path1: string, path2: string) {
 }
 
 function getParentPath(path: string) {
-  return pathUtils.addTrailingSlash(decodeURIComponent(url.resolve(path, '../')));
+  return pathUtils.removeTrailingSlash(decodeURIComponent(url.resolve(path, './')));
 }
 
 /**
@@ -54,11 +54,7 @@ export function generatePageNodeTree(rootPagePath: string, pages: IPageHasId[]):
   const pathToNodeMap: Record<string, PageNode> = {};
 
   pages.forEach((page) => {
-    // add slash ensure not to forward match to another page
-    // e.g. '/Java/' not to match to '/JavaScript'
-    const pagePath = pathUtils.addTrailingSlash(page.path);
-
-    const node = generatePageNode(pathToNodeMap, rootPagePath, pagePath); // this will not be null
+    const node = generatePageNode(pathToNodeMap, rootPagePath, page.path); // this will not be null
 
     // exclude rootPagePath itself
     if (node == null) {

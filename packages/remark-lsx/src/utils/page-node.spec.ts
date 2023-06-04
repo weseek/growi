@@ -18,7 +18,7 @@ function omitPageData(pageNode: PageNode): Omit<PageNode, 'page'> {
 
 describe('generatePageNodeTree()', () => {
 
-  it("returns with { rootPagePath : '/' }", () => {
+  it('returns with non-empty pages', () => {
     // setup
     const pages: IPageHasId[] = [
       '/',
@@ -28,9 +28,6 @@ describe('generatePageNodeTree()', () => {
       '/Sandbox/child2/child2-1',
       '/Sandbox/child2/child2-2',
       '/Sandbox/child2/child2-3',
-      '/user/foo',
-      '/user/bar',
-      '/user/bar/memo/2023/06/01',
     ].map(path => mock<IPageHasId>({ path }));
 
     // when
@@ -40,59 +37,26 @@ describe('generatePageNodeTree()', () => {
     // then
     expect(resultWithoutPageData).toStrictEqual([
       {
-        pagePath: '/Sandbox/',
+        pagePath: '/Sandbox',
         children: [
           {
-            pagePath: '/Sandbox/child1/',
+            pagePath: '/Sandbox/child1',
             children: [],
           },
           {
-            pagePath: '/Sandbox/child2/',
+            pagePath: '/Sandbox/child2',
             children: [
               {
-                pagePath: '/Sandbox/child2/child2-1/',
+                pagePath: '/Sandbox/child2/child2-1',
                 children: [],
               },
               {
-                pagePath: '/Sandbox/child2/child2-2/',
+                pagePath: '/Sandbox/child2/child2-2',
                 children: [],
               },
               {
-                pagePath: '/Sandbox/child2/child2-3/',
+                pagePath: '/Sandbox/child2/child2-3',
                 children: [],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        pagePath: '/user/',
-        children: [
-          {
-            pagePath: '/user/foo/',
-            children: [],
-          },
-          {
-            pagePath: '/user/bar/',
-            children: [
-              {
-                pagePath: '/user/bar/memo/',
-                children: [
-                  {
-                    pagePath: '/user/bar/memo/2023/',
-                    children: [
-                      {
-                        pagePath: '/user/bar/memo/2023/06/',
-                        children: [
-                          {
-                            pagePath: '/user/bar/memo/2023/06/01/',
-                            children: [],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
               },
             ],
           },
@@ -101,42 +65,62 @@ describe('generatePageNodeTree()', () => {
     ]);
   });
 
-  it("returns with { rootPagePath : '/Sandbox' }", () => {
+  it('returns with empty pages', () => {
     // setup
     const pages: IPageHasId[] = [
       '/',
-      '/Sandbox',
-      '/Sandbox/child1',
-      '/Sandbox/child2',
-      '/Sandbox/child2/child2-1',
-      '/Sandbox/child2/child2-2',
-      '/Sandbox/child2/child2-3',
+      '/user/foo',
+      '/user/bar',
+      '/user/bar/memo/2023/06/01',
+      '/user/bar/memo/2023/06/02/memo-test',
     ].map(path => mock<IPageHasId>({ path }));
 
     // when
-    const result = generatePageNodeTree('/Sandbox', pages);
+    const result = generatePageNodeTree('/', pages);
     const resultWithoutPageData = result.map(pageNode => omitPageData(pageNode));
 
     // then
     expect(resultWithoutPageData).toStrictEqual([
+
       {
-        pagePath: '/Sandbox/child1/',
-        children: [],
-      },
-      {
-        pagePath: '/Sandbox/child2/',
+        pagePath: '/user',
         children: [
           {
-            pagePath: '/Sandbox/child2/child2-1/',
+            pagePath: '/user/foo',
             children: [],
           },
           {
-            pagePath: '/Sandbox/child2/child2-2/',
-            children: [],
-          },
-          {
-            pagePath: '/Sandbox/child2/child2-3/',
-            children: [],
+            pagePath: '/user/bar',
+            children: [
+              {
+                pagePath: '/user/bar/memo',
+                children: [
+                  {
+                    pagePath: '/user/bar/memo/2023',
+                    children: [
+                      {
+                        pagePath: '/user/bar/memo/2023/06',
+                        children: [
+                          {
+                            pagePath: '/user/bar/memo/2023/06/01',
+                            children: [],
+                          },
+                          {
+                            pagePath: '/user/bar/memo/2023/06/02',
+                            children: [
+                              {
+                                pagePath: '/user/bar/memo/2023/06/02/memo-test',
+                                children: [],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
