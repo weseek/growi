@@ -128,6 +128,7 @@ module.exports = (crowi) => {
       }
       responsesParams.sumOfBookmarks = bookmarks.length;
       responsesParams.bookmarkedUsers = users;
+      responsesParams.pageId = pageId;
     }
     catch (err) {
       logger.error('get-bookmark-document-failed', err);

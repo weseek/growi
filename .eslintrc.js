@@ -14,11 +14,6 @@ module.exports = {
       {
         pathGroups: [
           {
-            pattern: 'vitest',
-            group: 'builtin',
-            position: 'before',
-          },
-          {
             pattern: 'react',
             group: 'builtin',
             position: 'before',

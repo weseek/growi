@@ -4,9 +4,10 @@ import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 
 export interface IBookmarkInfo {
-  sumOfBookmarks: number;
+  sumOfBookmarks: number,
   isBookmarked: boolean,
-  bookmarkedUsers: IUser[]
+  bookmarkedUsers: IUser[],
+  pageId: string,
 }
 
 export interface BookmarkedPage {

@@ -441,6 +441,7 @@
   },
 	"template": {
 		"modal_label": {
+      "Select template": "选择模板",
 			"Create/Edit Template Page": "创建/编辑模板页",
 			"Create template under": "在下面创建模板页"
 		},

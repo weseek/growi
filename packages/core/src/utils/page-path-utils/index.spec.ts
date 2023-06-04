@@ -1,5 +1,3 @@
-import { describe, test, expect } from 'vitest';
-
 import {
   isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
 } from './index';

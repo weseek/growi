@@ -1,5 +1,3 @@
-import { describe, test, expect } from 'vitest';
-
 import { OptionParser } from './option-parser';
 
 describe('option-parser', () => {

@@ -1,8 +1,3 @@
-import {
-  vi,
-  describe, test, expect,
-} from 'vitest';
-
 import type { Request } from 'express';
 
 import registerSafeRedirectFactory, { type ResWithSafeRedirect } from './safe-redirect';
