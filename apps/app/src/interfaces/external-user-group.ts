@@ -1,10 +1,10 @@
-export interface LDAPGroupSyncSettings {
-  ldapGroupsDN: string
+export interface LdapGroupSyncSettings {
+  ldapGroupSearchBase: string
   ldapGroupMembershipAttribute: string
   ldapGroupMembershipAttributeType: string
   ldapGroupChildGroupAttribute: string
-  autoGenerateUserOnLDAPGroupSync: boolean
-  preserveDeletedLDAPGroups: boolean
+  autoGenerateUserOnLdapGroupSync: boolean
+  preserveDeletedLdapGroups: boolean
   ldapGroupNameAttribute: string
   ldapGroupDescriptionAttribute?: string
 }

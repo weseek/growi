@@ -120,6 +120,7 @@
     "i18next-localstorage-backend": "^4.0.0",
     "is-absolute-url": "^4.0.1",
     "is-iso-date": "^0.0.1",
+    "ldapjs": "^3.0.2",
     "lucene-query-parser": "^1.2.0",
     "markdown-table": "^1.1.1",
     "md5": "^2.2.1",

@@ -1042,7 +1042,7 @@
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",
-      "group_search_base_dn_detail": "The base DN from which to search for groups",
+      "group_search_base_dn_detail": "The base DN for searching groups. The value set in security settings will be used if not set here.",
       "membership_attribute": "Membership Attribute",
       "membership_attribute_detail": "Attribute of the group object which indicates user membership info",
       "membership_attribute_type": "Membership Attribute Type",

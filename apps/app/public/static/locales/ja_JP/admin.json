@@ -1050,7 +1050,7 @@
     "ldap": {
       "group_sync_settings": "LDAP グループ同期設定",
       "group_search_base_DN": "グループ検索ベース DN",
-      "group_search_base_dn_detail": "グループ検索をするベース DN",
+      "group_search_base_dn_detail": "グループ検索をするベース DN。設定されていない場合、セキュリティ設定で設定されたものが利用されます。",
       "membership_attribute": "所属メンバーを表す LDAP 属性",
       "membership_attribute_detail": "グループの所属メンバーを表すグループオブジェクトの属性",
       "membership_attribute_type": "「所属メンバーを表す LDAP 属性」値の種類",

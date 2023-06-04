@@ -28,6 +28,7 @@ import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
+import LdapService from '../service/ldap';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
@@ -86,6 +87,7 @@ function Crowi() {
   this.xss = new Xss();
   this.questionnaireService = null;
   this.questionnaireCronService = null;
+  this.ldapService = null;
 
   this.tokens = null;
 
@@ -149,6 +151,7 @@ Crowi.prototype.init = async function() {
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
+    this.setupLdapService(),
     this.setUpCustomize(), // depends on pluginService
   ]);
 
@@ -318,6 +321,10 @@ Crowi.prototype.setupCron = function() {
 
 Crowi.prototype.setupQuestionnaireService = function() {
   this.questionnaireService = new QuestionnaireService(this);
+};
+
+Crowi.prototype.setupLdapService = function() {
+  this.ldapService = new LdapService(this);
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
