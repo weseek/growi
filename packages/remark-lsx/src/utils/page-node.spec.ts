@@ -18,15 +18,11 @@ function omitPageData(pageNode: PageNode): Omit<PageNode, 'page'> {
 
 describe('generatePageNodeTree()', () => {
 
-  it('returns when the pages are not empty', () => {
+  it("returns when the rootPagePath is '/'", () => {
     // setup
     const pages: IPageHasId[] = [
       '/',
       '/Sandbox',
-      '/Sandbox/level2',
-      '/Sandbox/level2/level3-1',
-      '/Sandbox/level2/level3-2',
-      '/Sandbox/level2/level3-3',
     ].map(path => mock<IPageHasId>({ path }));
 
     // when
@@ -37,23 +33,41 @@ describe('generatePageNodeTree()', () => {
     expect(resultWithoutPageData).toStrictEqual([
       {
         pagePath: '/Sandbox',
+        children: [],
+      },
+    ]);
+  });
+
+  it('returns when the pages are not empty', () => {
+    // setup
+    const pages: IPageHasId[] = [
+      '/Sandbox',
+      '/Sandbox/level2',
+      '/Sandbox/level2/level3-1',
+      '/Sandbox/level2/level3-2',
+      '/Sandbox/level2/level3-3',
+    ].map(path => mock<IPageHasId>({ path }));
+
+    // when
+    const result = generatePageNodeTree('/Sandbox', pages);
+    const resultWithoutPageData = result.map(pageNode => omitPageData(pageNode));
+
+    // then
+    expect(resultWithoutPageData).toStrictEqual([
+      {
+        pagePath: '/Sandbox/level2',
         children: [
           {
-            pagePath: '/Sandbox/level2',
-            children: [
-              {
-                pagePath: '/Sandbox/level2/level3-1',
-                children: [],
-              },
-              {
-                pagePath: '/Sandbox/level2/level3-2',
-                children: [],
-              },
-              {
-                pagePath: '/Sandbox/level2/level3-3',
-                children: [],
-              },
-            ],
+            pagePath: '/Sandbox/level2/level3-1',
+            children: [],
+          },
+          {
+            pagePath: '/Sandbox/level2/level3-2',
+            children: [],
+          },
+          {
+            pagePath: '/Sandbox/level2/level3-3',
+            children: [],
           },
         ],
       },

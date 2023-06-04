@@ -29,6 +29,11 @@ function generatePageNode(
     pathToNodeMap: Record<string, PageNode>, rootPagePath: string, pagePath: string, depthRange?: ParseRangeResult | null,
 ): PageNode | null {
 
+  // exclude rootPagePath itself
+  if (pagePath === rootPagePath) {
+    return null;
+  }
+
   const depthStartToProcess = getDepthOfPath(rootPagePath) + (depthRange?.start ?? 0); // at least 1
   const currentPageDepth = getDepthOfPath(pagePath);
 
