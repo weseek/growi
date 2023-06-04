@@ -117,9 +117,9 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
   }
   catch (error) {
     if (isHttpError(error)) {
-      return res.status(error.status).send(error.toString());
+      return res.status(error.status).send(error.message);
     }
-    return res.status(500).send(error.toString());
+    return res.status(500).send(error.message);
   }
 
 };

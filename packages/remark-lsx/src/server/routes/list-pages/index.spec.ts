@@ -119,7 +119,7 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith(error.toString());
+      expect(resStatusMock.send).toHaveBeenCalledWith('error for test');
     });
 
     it('returns 400 HTTP response when the value is invalid', async() => {
@@ -146,7 +146,7 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith(error.toString());
+      expect(resStatusMock.send).toHaveBeenCalledWith('error for test');
     });
 
   });
