@@ -18,16 +18,15 @@ function omitPageData(pageNode: PageNode): Omit<PageNode, 'page'> {
 
 describe('generatePageNodeTree()', () => {
 
-  it('returns with non-empty pages', () => {
+  it('returns when the pages are not empty', () => {
     // setup
     const pages: IPageHasId[] = [
       '/',
       '/Sandbox',
-      '/Sandbox/child1',
-      '/Sandbox/child2',
-      '/Sandbox/child2/child2-1',
-      '/Sandbox/child2/child2-2',
-      '/Sandbox/child2/child2-3',
+      '/Sandbox/level2',
+      '/Sandbox/level2/level3-1',
+      '/Sandbox/level2/level3-2',
+      '/Sandbox/level2/level3-3',
     ].map(path => mock<IPageHasId>({ path }));
 
     // when
@@ -40,22 +39,18 @@ describe('generatePageNodeTree()', () => {
         pagePath: '/Sandbox',
         children: [
           {
-            pagePath: '/Sandbox/child1',
-            children: [],
-          },
-          {
-            pagePath: '/Sandbox/child2',
+            pagePath: '/Sandbox/level2',
             children: [
               {
-                pagePath: '/Sandbox/child2/child2-1',
+                pagePath: '/Sandbox/level2/level3-1',
                 children: [],
               },
               {
-                pagePath: '/Sandbox/child2/child2-2',
+                pagePath: '/Sandbox/level2/level3-2',
                 children: [],
               },
               {
-                pagePath: '/Sandbox/child2/child2-3',
+                pagePath: '/Sandbox/level2/level3-3',
                 children: [],
               },
             ],
@@ -65,7 +60,7 @@ describe('generatePageNodeTree()', () => {
     ]);
   });
 
-  it('returns with empty pages', () => {
+  it('returns when the pages include some empty pages', () => {
     // setup
     const pages: IPageHasId[] = [
       '/',
@@ -81,7 +76,6 @@ describe('generatePageNodeTree()', () => {
 
     // then
     expect(resultWithoutPageData).toStrictEqual([
-
       {
         pagePath: '/user',
         children: [
@@ -130,39 +124,76 @@ describe('generatePageNodeTree()', () => {
   it("returns with 'depth=1:2'", () => {
     // setup
     const pages: IPageHasId[] = [
-      '/Sandbox/child1',
-      '/Sandbox/child2',
-      '/Sandbox/child2/child2-1',
-      '/Sandbox/child2/child2-2',
-      '/Sandbox/child2/child2-2/child2-2-1',
+      '/Sandbox',
+      '/Sandbox/level2-1',
+      '/Sandbox/level2-2',
+      '/user',
+      '/user/foo',
+      '/user/bar',
     ].map(path => mock<IPageHasId>({ path }));
 
     // when
     const depthRange = OptionParser.parseRange('1:2');
-    const result = generatePageNodeTree('/Sandbox', pages, depthRange);
+    const result = generatePageNodeTree('/', pages, depthRange);
     const resultWithoutPageData = result.map(pageNode => omitPageData(pageNode));
 
     // then
     expect(resultWithoutPageData).toStrictEqual([
       {
-        pagePath: '/Sandbox/child1',
-        children: [],
-      },
-      {
-        pagePath: '/Sandbox/child2',
+        pagePath: '/Sandbox',
         children: [
           {
-            pagePath: '/Sandbox/child2/child2-1',
+            pagePath: '/Sandbox/level2-1',
             children: [],
           },
           {
-            pagePath: '/Sandbox/child2/child2-2',
-            children: [
-              {
-                pagePath: '/Sandbox/child2/child2-2/child2-2-1',
-                children: [],
-              },
-            ],
+            pagePath: '/Sandbox/level2-2',
+            children: [],
+          },
+        ],
+      },
+      {
+        pagePath: '/user',
+        children: [
+          {
+            pagePath: '/user/foo',
+            children: [],
+          },
+          {
+            pagePath: '/user/bar',
+            children: [],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it("returns with 'depth=2:3'", () => {
+    // setup
+    const pages: IPageHasId[] = [
+      '/foo/level2',
+      '/foo/level2',
+      '/foo/level2/level3-1',
+      '/foo/level2/level3-2',
+    ].map(path => mock<IPageHasId>({ path }));
+
+    // when
+    const depthRange = OptionParser.parseRange('2:3');
+    const result = generatePageNodeTree('/', pages, depthRange);
+    const resultWithoutPageData = result.map(pageNode => omitPageData(pageNode));
+
+    // then
+    expect(resultWithoutPageData).toStrictEqual([
+      {
+        pagePath: '/foo/level2',
+        children: [
+          {
+            pagePath: '/foo/level2/level3-1',
+            children: [],
+          },
+          {
+            pagePath: '/foo/level2/level3-2',
+            children: [],
           },
         ],
       },

@@ -1,11 +1,15 @@
 import * as url from 'url';
 
 import { IPageHasId, ParseRangeResult, pathUtils } from '@growi/core';
+import { isTopPage } from '@growi/core/dist/utils/page-path-utils';
 
 import type { PageNode } from '../interfaces/page-node';
 
-function isEquals(path1: string, path2: string) {
-  return pathUtils.removeTrailingSlash(path1) === pathUtils.removeTrailingSlash(path2);
+function getDepthOfPath(path: string) {
+  if (isTopPage(path)) {
+    return 0;
+  }
+  return (path.match(/\//g) ?? []).length;
 }
 
 function getParentPath(path: string) {
@@ -21,9 +25,16 @@ function getParentPath(path: string) {
  * @returns
  * @memberof Lsx
  */
-function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath: string, pagePath: string): PageNode | null {
-  // exclude rootPagePath itself
-  if (isEquals(pagePath, rootPagePath)) {
+function generatePageNode(
+    pathToNodeMap: Record<string, PageNode>, rootPagePath: string, pagePath: string, depthRange?: ParseRangeResult | null,
+): PageNode | null {
+
+  const depthStartToProcess = getDepthOfPath(rootPagePath) + (depthRange?.start ?? 0); // at least 1
+  const currentPageDepth = getDepthOfPath(pagePath);
+
+  // return by the depth restriction
+  // '/' will also return null because the depth is 0
+  if (currentPageDepth < depthStartToProcess) {
     return null;
   }
 
@@ -41,7 +52,7 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
     */
   // get or create parent node
   const parentPath = getParentPath(pagePath);
-  const parentNode = generatePageNode(pathToNodeMap, rootPagePath, parentPath);
+  const parentNode = generatePageNode(pathToNodeMap, rootPagePath, parentPath, depthRange);
   // associate to patent
   if (parentNode != null) {
     parentNode.children.push(node);
@@ -54,7 +65,7 @@ export function generatePageNodeTree(rootPagePath: string, pages: IPageHasId[], 
   const pathToNodeMap: Record<string, PageNode> = {};
 
   pages.forEach((page) => {
-    const node = generatePageNode(pathToNodeMap, rootPagePath, page.path); // this will not be null
+    const node = generatePageNode(pathToNodeMap, rootPagePath, page.path, depthRange); // this will not be null
 
     // exclude rootPagePath itself
     if (node == null) {
