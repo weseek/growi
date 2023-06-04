@@ -1,6 +1,7 @@
 import * as url from 'url';
 
-import { IPageHasId, ParseRangeResult, pathUtils } from '@growi/core';
+import type { IPageHasId, ParseRangeResult } from '@growi/core';
+import { removeTrailingSlash } from '@growi/core/dist/utils/path-utils';
 
 import type { PageNode } from '../interfaces/page-node';
 
@@ -8,7 +9,7 @@ import { getDepthOfPath } from './depth-utils';
 
 
 function getParentPath(path: string) {
-  return pathUtils.removeTrailingSlash(decodeURIComponent(url.resolve(path, './')));
+  return removeTrailingSlash(decodeURIComponent(url.resolve(path, './')));
 }
 
 /**
