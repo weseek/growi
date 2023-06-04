@@ -1047,6 +1047,8 @@
   },
   "external_group": {
     "management": "外部グループ管理",
+    "execute_sync": "同期実行",
+    "sync": "同期",
     "ldap": {
       "group_sync_settings": "LDAP グループ同期設定",
       "group_search_base_DN": "グループ検索ベース DN",
@@ -1061,7 +1063,11 @@
       "preserve_deleted_ldap_groups": "LDAP から削除されたグループを GROWI に残す",
       "name_mapper_detail": "グループの「名前」として読み込む属性",
       "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。",
-      "updated_group_sync_settings": "LDAP グループ同期設定を更新しました"
+      "updated_group_sync_settings": "LDAP グループ同期設定を更新しました",
+      "sync_succeeded": "同期に成功しました",
+      "sync_failed": "同期に失敗しました。LDAP セキュリティ設定や、グループ同期設定が正しいことを確認してください。",
+      "password": "パスワード",
+      "password_detail": "認証設定がユーザ Bind のため、ログイン時のパスワードの入力が必要となります"
     }
   },
   "toaster": {
