@@ -80,8 +80,19 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
-      const groups = await crowi.ldapService?.searchGroup();
-      logger.debug(`ldap groups: ${groups}`);
+      const isUserBind = crowi.configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
+      if (isUserBind) {
+        const username = req.user.name;
+        const password = req.body.password;
+        const groups = await crowi.ldapService?.searchGroup(username, password);
+        console.log('ldap groups');
+        console.log(groups);
+      }
+      else {
+        const groups = await crowi.ldapService?.searchGroup();
+        console.log('ldap groups');
+        console.log(groups);
+      }
     }
     catch (e) {
       res.apiv3Err(e, 500);

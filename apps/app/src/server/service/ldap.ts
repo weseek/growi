@@ -20,7 +20,14 @@ class LdapService {
     this.crowi = crowi;
   }
 
-  search(filter?: string, base?: string): Promise<ldap.SearchEntry[]> {
+  /**
+   * Execute search on LDAP server and return result
+   * @param {string} username Necessary when bind type is user bind
+   * @param {string} password Necessary when bind type is user bind
+   * @param {string} filter Search filter
+   * @param {string} base Base DN to execute search on
+   */
+  search(username?: string, password?: string, filter?: string, base?: string): Promise<ldap.SearchEntry[]> {
     const { configManager } = this.crowi;
     const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
 
@@ -35,7 +42,6 @@ class LdapService {
     const serverUrl = configManager?.getConfig('crowi', 'security:passport-ldap:serverUrl');
     const bindDN = configManager?.getConfig('crowi', 'security:passport-ldap:bindDN');
     const bindCredentials = configManager?.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
-    const searchFilter = configManager?.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
 
     // parse serverUrl
     // see: https://regex101.com/r/0tuYBB/1
@@ -48,11 +54,17 @@ class LdapService {
     const url = match[1];
     const searchBase = match[2] || '';
 
+    // user bind
+    const fixedBindDN = (isUserBind)
+      ? bindDN.replace(/{{username}}/, username)
+      : bindDN;
+    const fixedBindCredentials = (isUserBind) ? password : bindCredentials;
+
     const client = ldap.createClient({
       url,
     });
 
-    client.bind(bindDN, bindCredentials, (err) => {
+    client.bind(fixedBindDN, fixedBindCredentials, (err) => {
       assert.ifError(err);
     });
 
@@ -64,6 +76,8 @@ class LdapService {
           reject(err);
         }
 
+        // @types/ldapjs is outdated, and pojo property (type SearchResultEntry) does not exist.
+        // Typecast and use SearchEntry in the meantime.
         res.on('searchEntry', (entry: any) => {
           const pojo = entry?.pojo as ldap.SearchEntry;
           searchResults.push(pojo);
@@ -83,13 +97,13 @@ class LdapService {
     });
   }
 
-  searchGroup(): Promise<ldap.SearchEntry[]> {
+  searchGroup(username?: string, password?: string): Promise<ldap.SearchEntry[]> {
     const { configManager } = this.crowi;
 
     const groupSearchBase = configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
     || configManager?.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
 
-    return this.search(undefined, groupSearchBase);
+    return this.search(username, password, undefined, groupSearchBase);
   }
 
 }

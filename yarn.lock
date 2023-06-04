@@ -3963,6 +3963,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/ldapjs@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@types/ldapjs/-/ldapjs-2.2.5.tgz#b6623bc5ad4fab85ef3cfa586db691d016a3598c"
+  integrity sha512-Lv/nD6QDCmcT+V1vaTRnEKE8UgOilVv5pHcQuzkU1LcRe4mbHHuUo/KHi0LKrpdHhQY8FJzryF38fcVdeUIrzg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/lodash@^4.14.161":
   version "4.14.178"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.178.tgz#341f6d2247db528d4a13ddbb374bcdc80406f4f8"
