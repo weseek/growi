@@ -1,4 +1,4 @@
-import { IPageHasId } from '@growi/core';
+import { IPageHasId, OptionParser } from '@growi/core';
 import { mock } from 'vitest-mock-extended';
 
 import { PageNode } from '../interfaces/page-node';
@@ -119,6 +119,48 @@ describe('generatePageNodeTree()', () => {
                     ],
                   },
                 ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it("returns with 'depth=1:2'", () => {
+    // setup
+    const pages: IPageHasId[] = [
+      '/Sandbox/child1',
+      '/Sandbox/child2',
+      '/Sandbox/child2/child2-1',
+      '/Sandbox/child2/child2-2',
+      '/Sandbox/child2/child2-2/child2-2-1',
+    ].map(path => mock<IPageHasId>({ path }));
+
+    // when
+    const depthRange = OptionParser.parseRange('1:2');
+    const result = generatePageNodeTree('/Sandbox', pages, depthRange);
+    const resultWithoutPageData = result.map(pageNode => omitPageData(pageNode));
+
+    // then
+    expect(resultWithoutPageData).toStrictEqual([
+      {
+        pagePath: '/Sandbox/child1',
+        children: [],
+      },
+      {
+        pagePath: '/Sandbox/child2',
+        children: [
+          {
+            pagePath: '/Sandbox/child2/child2-1',
+            children: [],
+          },
+          {
+            pagePath: '/Sandbox/child2/child2-2',
+            children: [
+              {
+                pagePath: '/Sandbox/child2/child2-2/child2-2-1',
+                children: [],
               },
             ],
           },

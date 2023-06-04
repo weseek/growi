@@ -1,6 +1,6 @@
 import * as url from 'url';
 
-import { IPageHasId, pathUtils } from '@growi/core';
+import { IPageHasId, ParseRangeResult, pathUtils } from '@growi/core';
 
 import type { PageNode } from '../interfaces/page-node';
 
@@ -50,7 +50,7 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
   return node;
 }
 
-export function generatePageNodeTree(rootPagePath: string, pages: IPageHasId[]): PageNode[] {
+export function generatePageNodeTree(rootPagePath: string, pages: IPageHasId[], depthRange?: ParseRangeResult | null): PageNode[] {
   const pathToNodeMap: Record<string, PageNode> = {};
 
   pages.forEach((page) => {
