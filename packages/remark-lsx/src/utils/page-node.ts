@@ -80,11 +80,6 @@ export function generatePageNodeTree(rootPagePath: string, pages: IPageHasId[], 
   // return root objects
   const rootNodes: PageNode[] = [];
   Object.keys(pathToNodeMap).forEach((pagePath) => {
-    // exclude '/'
-    if (pagePath === '/') {
-      return;
-    }
-
     const parentPath = getParentPath(pagePath);
 
     // pick up what parent doesn't exist
