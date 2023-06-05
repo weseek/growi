@@ -3,11 +3,14 @@ import { body, validationResult } from 'express-validator';
 
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import LdapService from '~/server/service/ldap';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
 const router = Router();
+
+const ldapService = new LdapService();
 
 interface AuthorizedRequest extends Request {
   user?: any
@@ -81,18 +84,20 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
       const isUserBind = crowi.configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
-      if (isUserBind) {
-        const username = req.user.name;
-        const password = req.body.password;
-        const groups = await crowi.ldapService?.searchGroup(username, password);
-        console.log('ldap groups');
-        console.log(groups);
-      }
-      else {
-        const groups = await crowi.ldapService?.searchGroup();
-        console.log('ldap groups');
-        console.log(groups);
-      }
+      const groups = async() => {
+        if (isUserBind) {
+          const username = req.user.name;
+          const password = req.body.password;
+          return ldapService.searchGroup(username, password);
+        }
+        return ldapService.searchGroup();
+      };
+
+      // Print searched groups for now
+      // TODO: implement LDAP group sync
+      // see: https://redmine.weseek.co.jp/issues/120030
+      console.log('ldap groups');
+      console.log(await groups);
     }
     catch (e) {
       res.apiv3Err(e, 500);

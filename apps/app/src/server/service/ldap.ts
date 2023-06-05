@@ -4,6 +4,8 @@ import ldap from 'ldapjs';
 
 import loggerFactory from '~/utils/logger';
 
+import { configManager } from './config-manager';
+
 
 const logger = loggerFactory('growi:service:ldap-service');
 
@@ -13,13 +15,6 @@ const logger = loggerFactory('growi:service:ldap-service');
 */
 class LdapService {
 
-  crowi: any;
-
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(crowi) {
-    this.crowi = crowi;
-  }
-
   /**
    * Execute search on LDAP server and return result
    * @param {string} username Necessary when bind type is user bind
@@ -28,7 +23,6 @@ class LdapService {
    * @param {string} base Base DN to execute search on
    */
   search(username?: string, password?: string, filter?: string, base?: string): Promise<ldap.SearchEntry[]> {
-    const { configManager } = this.crowi;
     const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
 
     if (!isLdapEnabled) {
@@ -98,8 +92,6 @@ class LdapService {
   }
 
   searchGroup(username?: string, password?: string): Promise<ldap.SearchEntry[]> {
-    const { configManager } = this.crowi;
-
     const groupSearchBase = configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
     || configManager?.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
 
