@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 
-import { LdapGroupSyncSettingsForm } from './LdapGroupsSyncSettingsForm';
+import { LdapGroupSyncSettingsForm } from './LdapGroupSyncSettingsForm';
 
 export const LdapGroupManagement: FC = () => {
   const [isUserBind, setIsUserBind] = useState(false);
@@ -42,7 +42,7 @@ export const LdapGroupManagement: FC = () => {
     catch (e) {
       toastError(t('external_group.ldap.sync_failed'));
     }
-  }, [t]);
+  }, [t, isUserBind]);
 
   return <>
     <LdapGroupSyncSettingsForm />
