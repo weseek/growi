@@ -1,9 +1,9 @@
 import axios from 'axios';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
+import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
 
 import type { LsxApiOptions, LsxApiParams, LsxApiResponseData } from '../../interfaces/api';
 
-import { ParseNumOptionResult, parseNumOption } from './parse-num-option';
+import { type ParseNumOptionResult, parseNumOption } from './parse-num-option';
 
 
 const LOADMORE_PAGES_NUM = 10;
