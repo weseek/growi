@@ -97,7 +97,7 @@ module.exports = (crowi: Crowi): Router => {
       // TODO: implement LDAP group sync
       // see: https://redmine.weseek.co.jp/issues/120030
       console.log('ldap groups');
-      console.log(await groups);
+      console.log(await groups());
     }
     catch (e) {
       res.apiv3Err(e, 500);

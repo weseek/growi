@@ -29,9 +29,14 @@ export const LdapGroupManagement: FC = () => {
 
   const onSyncBtnClick = useCallback(async(e) => {
     e.preventDefault();
-    const password = e.target.password.value;
     try {
-      await apiv3Put('/external-user-groups/ldap/sync', { password });
+      if (isUserBind) {
+        const password = e.target.password.value;
+        await apiv3Put('/external-user-groups/ldap/sync', { password });
+      }
+      else {
+        await apiv3Put('/external-user-groups/ldap/sync');
+      }
       toastSuccess(t('external_group.ldap.sync_succeeded'));
     }
     catch (e) {
