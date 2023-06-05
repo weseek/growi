@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import { isClient } from '@growi/core';
 import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -22,7 +23,7 @@ import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid,
 } from '~/stores/context';
-import { useCurrentPageId, useIsNotFound } from '~/stores/page';
+import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -43,6 +44,7 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
+  skipSSR: boolean,
 };
 
 type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
@@ -92,6 +94,18 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useIsContainerFluid(props.isContainerFluid);
 
+  const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
+
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (isClient() && props.shareLink?.relatedPage._id != null && !props.isNotFound && props.skipSSR) {
+      mutateCurrentPage();
+    }
+  }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
+
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
 
@@ -107,7 +121,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigationForSharedPage page={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
+          <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
@@ -115,7 +129,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <ShareLinkPageView
           pagePath={pagePath}
           rendererConfig={props.rendererConfig}
-          page={props.shareLinkRelatedPage}
+          page={currentPage ?? props.shareLinkRelatedPage}
           shareLink={props.shareLink}
           isExpired={props.isExpired}
           disableLinkSharing={props.disableLinkSharing}
@@ -213,6 +227,19 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
   const props: Props = result.props as Props;
 
+  const skipSSR = (shareLinkRelatedPage: IShareLinkRelatedPage) => {
+    if (shareLinkRelatedPage.latestRevisionBodyLength == null) {
+      return true;
+    }
+
+    const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    if (ssrMaxRevisionBodyLength < shareLinkRelatedPage.latestRevisionBodyLength) {
+      return true;
+    }
+
+    return false;
+  };
+
   try {
     const ShareLinkModel = crowi.model('ShareLink');
     const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
@@ -221,7 +248,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
     else {
       props.isNotFound = false;
-      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision();
+      props.skipSSR = skipSSR(shareLink.relatedPage);
+      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
     }
