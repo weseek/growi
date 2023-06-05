@@ -1,8 +1,8 @@
-import { IPage, IUser } from '@growi/core';
+import type { IPageHasId, IUser } from '@growi/core';
 import { model } from 'mongoose';
 import type { Document, Query } from 'mongoose';
 
-export type PageQuery = Query<IPage[], Document>;
+export type PageQuery = Query<IPageHasId[], Document>;
 
 export type PageQueryBuilder = {
   query: PageQuery,
@@ -11,7 +11,7 @@ export type PageQueryBuilder = {
 };
 
 export const generateBaseQuery = async(pagePath: string, user: IUser): Promise<PageQueryBuilder> => {
-  const Page = model<IPage>('Page');
+  const Page = model<IPageHasId>('Page');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const PageAny = Page as any;
 
