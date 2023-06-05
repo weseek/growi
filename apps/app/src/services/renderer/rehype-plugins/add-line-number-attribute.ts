@@ -12,7 +12,7 @@ export const rehypePlugin: Plugin = () => {
     visit(tree, 'element', (node: Element) => {
       if (REGEXP_TARGET_TAGNAMES.test(node.tagName as string)) {
         const properties = node.properties ?? {};
-        console.log(tree, node)
+
         // add class
         addClassToProperties(properties, 'has-data-line');
         // add attribute
