@@ -8,8 +8,7 @@ import {
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores/context';
+import { toastError } from '~/client/util/toastr';
 
 
 class PasswordResetModal extends React.Component {
@@ -72,6 +71,12 @@ class PasswordResetModal extends React.Component {
 
   returnModalBodyAfterReset() {
     const { t, userForPasswordResetModal } = this.props;
+    const { temporaryPassword, showPassword } = this.state;
+
+    const maskedPassword = showPassword
+      ? temporaryPassword
+      : '·'.repeat(temporaryPassword.length);
+
     return (
       <>
         <p className="text-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
@@ -79,7 +84,11 @@ class PasswordResetModal extends React.Component {
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <p>
-          {t('user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
+          {t('user_management.reset_password_modal.new_password')}:
+          <span className="masked-password ml-1"><code>{maskedPassword}</code></span>
+          <button className="btn btn-link mx-2 px-1 py-0" size="sm" onClick={() => this.setState({ showPassword: !showPassword })}>
+            <i className={showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'}></i>
+          </button>
         </p>
       </>
     );
@@ -166,8 +175,7 @@ class PasswordResetModal extends React.Component {
 
 const PasswordResetModalWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  const { data: isMailerSetup } = useIsMailerSetup();
-  return <PasswordResetModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
+  return <PasswordResetModal t={t} {...props} />;
 };
 
 /**
