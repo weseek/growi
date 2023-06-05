@@ -1,6 +1,6 @@
 import plantuml from '@akebifiky/remark-simple-plantuml';
 import { Plugin } from 'unified';
-import { Node } from 'unist';
+import { Parent, Node } from 'unist';
 import urljoin from 'url-join';
 
 type PlantUMLPluginParams = {
@@ -9,26 +9,29 @@ type PlantUMLPluginParams = {
 
 export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
   const plantumlUri = options.plantumlUri;
-  const baseUrl = urljoin(plantumlUri, '/svg');
+  const baseUri = urljoin(plantumlUri);
 
-  return (tree: Node) => {
-    const result = plantuml({ baseUrl })(tree);
+  return (tree: Parent) => {
+    const modifiedChildren: Node[] = [];
 
-    const children = result.children.map((child: Node) => {
-      const modifiedTree = {
-        type: 'paragraph',
-        children: [child],
-        properties: {
-          'data-line': child.position?.start.line,
-        },
-      };
-      return modifiedTree;
+    tree.children.forEach((child: Node) => {
+      console.log(child)
+      if (child.lang === 'plantuml') {
+        const modifiedChild: Parent = {
+          type: 'paragraph',
+          children: [child],
+        };
+        modifiedChildren.push(modifiedChild);
+      } else {
+        modifiedChildren.push(child);
+      }
     });
-    const wrappedTree = {
+
+    const wrappedTree: Parent = {
       type: 'root',
-      children
+      children: modifiedChildren,
     };
 
-    return wrappedTree;
+    return plantuml({ baseUri })(wrappedTree);
   };
 };
