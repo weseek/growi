@@ -1003,7 +1003,7 @@ module.exports = (crowi) => {
    *    /users/reset-password-email:
    *      put:
    *        tags: [Users]
-   *        operationId: resetPassword
+   *        operationId: resetPasswordEmail
    *        summary: /users/reset-password-email
    *        description: send new password email
    *        requestBody:
