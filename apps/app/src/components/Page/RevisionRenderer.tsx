@@ -71,8 +71,14 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   //  if (isSlidesOverviewEnabled && marp) {
   if (slideStyle === 'true' || slideStyle === 'marp') {
+    const options = {
+      rendererOptions,
+      isDarkMode: false,
+      disableSeparationsByHeader: false,
+    };
     return (
-      <div>
+      <div className = "slides">
+        <Slides options>{markdown}</Slides>
       </div>
     );
   }
