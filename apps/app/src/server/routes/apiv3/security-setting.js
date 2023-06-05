@@ -504,7 +504,7 @@ module.exports = (crowi) => {
     }
 
     // External auth methods
-    const externalAuthPromises = Object.values(GrowiExternalAuthProviderType).map(async (strategy) => {
+    const externalAuthPromises = Object.values(GrowiExternalAuthProviderType).map(async(strategy) => {
       const isExternalAuthEnabled = crowi.configManager.getConfig('crowi', `security:passport-${strategy}:isEnabled`);
       const hasAdmin = await checkExternalStrategyHasAdmin(strategy);
       if (isExternalAuthEnabled && hasAdmin && setupStrategies.includes(strategy)) {
