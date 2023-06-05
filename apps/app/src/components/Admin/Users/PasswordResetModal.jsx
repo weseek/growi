@@ -8,8 +8,8 @@ import {
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/toastr';
-
+import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
 
@@ -175,7 +175,8 @@ class PasswordResetModal extends React.Component {
 
 const PasswordResetModalWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  return <PasswordResetModal t={t} {...props} />;
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <PasswordResetModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
 };
 
 /**

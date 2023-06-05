@@ -185,10 +185,9 @@ module.exports = (crowi) => {
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-    const failedToSendEmailList = [];
+    const failedToSendNewPasswordEmail = [];
 
     try {
-      // eslint-disable-next-line no-await-in-loop
       await mailService.send({
         to: user.email,
         subject: `New password for ${appTitle}`,
@@ -203,13 +202,13 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      failedToSendEmailList.push({
+      failedToSendNewPasswordEmail.push({
         email: user.email,
         reason: err.message,
       });
     }
 
-    return { failedToSendEmailList };
+    return { failedToSendNewPasswordEmail };
   };
 
   /**
@@ -978,7 +977,7 @@ module.exports = (crowi) => {
    *                    description: user id for reset password
    *        responses:
    *          200:
-   *            description: success resrt password
+   *            description: success reset password
    */
   router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
@@ -997,6 +996,38 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/reset-password-email:
+   *      put:
+   *        tags: [Users]
+   *        operationId: resetPassword
+   *        summary: /users/reset-password-email
+   *        description: send new password email
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  newPassword:
+   *                    type: string
+   *                  user:
+   *                    type: string
+   *                    description: user id for send new password email
+   *        responses:
+   *          200:
+   *            description: success send new password email
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    failedToSendEmail:
+   *                      type: object
+   *                      description: email and reasons for new password email sending failure
+   */
+
   router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
@@ -1012,7 +1043,7 @@ module.exports = (crowi) => {
 
       const sendEmail = await sendEmailByUser(userInfo);
 
-      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendEmailList[0] });
+      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendNewPasswordEmail[0] });
     }
     catch (err) {
       logger.error('Error', err);
