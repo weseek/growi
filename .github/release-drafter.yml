@@ -18,7 +18,7 @@ categories:
 category-template: '### $TITLE'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 autolabeler:
-  - label: 'feature'
+  - label: 'type/feature'
     branch:
       - '/^feat\/.+/'
   - label: 'type/improvement'
