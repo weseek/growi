@@ -173,7 +173,7 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
-  shouldSSR: boolean,
+  skipSSR: boolean,
 
   grantData?: IPageGrantData,
 
@@ -237,7 +237,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(props.shouldSSR ? pageWithMeta?.data : null); // store initial data
+  useSWRxCurrentPage(!props.skipSSR ? pageWithMeta?.data : null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
@@ -266,16 +266,21 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
 
+
   useEffect(() => {
     const mutatePageData = async() => {
       const pageData = await mutateCurrentPage();
       mutateEditingMarkdown(pageData?.revision.body);
     };
 
-    if (isClient() && currentPageId != null && !props.isNotFound && !props.shouldSSR) {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (isClient() && currentPageId != null && !props.isNotFound && props.skipSSR) {
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.shouldSSR]);
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {
@@ -471,6 +476,19 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const pageWithMeta: IPageToShowRevisionWithMeta | null = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = pageWithMeta?.data as unknown as PageDocument;
 
+  const skipSSR = () => {
+    if (!props.isLatestRevision || page.latestRevisionBodyLength == null) {
+      return true;
+    }
+
+    const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
+      return true;
+    }
+
+    return false;
+  };
+
   // add user to seen users
   if (page != null && user != null) {
     await page.seen(user);
@@ -479,9 +497,9 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
-    props.shouldSSR = await page.shouldSSR();
-    await page.populateDataToShowRevision(!props.shouldSSR); // shouldExcludeBody = !shouldSSR
     props.isLatestRevision = page.isLatestRevision();
+    props.skipSSR = skipSSR();
+    await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
   if (page == null && user != null) {
