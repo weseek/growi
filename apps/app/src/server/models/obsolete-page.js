@@ -62,8 +62,8 @@ export const extractToAncestorsPaths = (pagePath) => {
 /**
  * populate page (Query or Document) to show revision
  * @param {any} page Query or Document
- * @param {string | undefined} userPublicFields string to set to select
- * @param {boolean} shouldExcludeBody
+ * @param {string} userPublicFields string to set to select
+ * @param {boolean} shouldExcludeBody boolean indicating whether to include 'revision.body' or not
  */
 /* eslint-disable object-curly-newline, object-property-newline */
 export const populateDataToShowRevision = (page, userPublicFields, shouldExcludeBody = false) => {
