@@ -26,6 +26,7 @@ class PasswordResetModal extends React.Component {
     this.onClickSendNewPasswordButton = this.onClickSendNewPasswordButton.bind(this);
   }
 
+  // Reset Password
   async resetPassword() {
     const { t, userForPasswordResetModal } = this.props;
     try {
