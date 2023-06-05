@@ -1002,6 +1002,9 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findById(id);
+      if (user == null) {
+        throw new Error('User not found');
+      }
       const userInfo = {
         email: user.email,
         password: req.body.newPassword,
