@@ -100,13 +100,22 @@ const useSWRxLsxResponse = (
 ): SWRResponse<LsxResponse, Error> => {
   return useSWR(
     ['/_api/lsx', pagePath, options, isImmutable],
-    ([endpoint, pagePath, options]) => {
-      return axios.get(endpoint, {
-        params: {
-          pagePath,
-          options,
-        },
-      }).then(result => result.data as LsxResponse);
+    async([endpoint, pagePath, options]) => {
+      try {
+        const res = await axios.get<LsxResponse>(endpoint, {
+          params: {
+            pagePath,
+            options,
+          },
+        });
+        return res.data;
+      }
+      catch (err) {
+        if (axios.isAxiosError(err)) {
+          throw new Error(err.response?.data.message);
+        }
+        throw err;
+      }
     },
     {
       keepPreviousData: true,
