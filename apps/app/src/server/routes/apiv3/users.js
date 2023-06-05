@@ -185,7 +185,7 @@ module.exports = (crowi) => {
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-    const failedToSendNewPasswordEmail = [];
+    const failedToSendNewPasswordEmail = { email: user.email, reazon: '' };
 
     try {
       await mailService.send({
@@ -202,10 +202,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      failedToSendNewPasswordEmail.push({
-        email: user.email,
-        reason: err.message,
-      });
+      failedToSendNewPasswordEmail.reazon = err.message;
     }
 
     return { failedToSendNewPasswordEmail };
