@@ -9,7 +9,7 @@ import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { GrowiExternalAuthProviderType } from '~/features/questionnaire/interfaces/growi-info';
-
+import { configManager } from '../../service/config-manager';
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -493,49 +493,51 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
     }
 
-    // Store active authentication methods with admin login enabled
-    const allActiveAuthMethodsWithAdmin = [];
+    const allActiveAuthMethodsWithAdmin = await getAllActiveAuthMethodsWithAdmin();
 
-    // Local auth method
-    const isLocalEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled');
-    const isLocalHasAdmin = await checkLocalStrategyHasAdmin();
-    if (isLocalEnabled && isLocalHasAdmin && setupStrategies.includes('local')) {
-      allActiveAuthMethodsWithAdmin.push('local');
+    // Return an error when disabling an authentication method when there are no active authentication methods with admin-enabled login
+    if (!isEnabled && allActiveAuthMethodsWithAdmin.length === 0) {
+      return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
     }
 
-    // External auth methods
-    const externalAuthPromises = Object.values(GrowiExternalAuthProviderType).map(async(strategy) => {
-      const isExternalAuthEnabled = crowi.configManager.getConfig('crowi', `security:passport-${strategy}:isEnabled`);
-      const hasAdmin = await checkExternalStrategyHasAdmin(strategy);
-      if (isExternalAuthEnabled && hasAdmin && setupStrategies.includes(strategy)) {
-        allActiveAuthMethodsWithAdmin.push(strategy);
+    // Get all authentication methods that have admin users
+    async function getAllActiveAuthMethodsWithAdmin() {
+      const activeAuthMethodsWithAdmin = [];
+
+      // Check the local auth method
+      await checkAndAddActiveAuthMethodWithAdmin('local', 'crowi', 'security:passport-local:isEnabled', checkLocalStrategyHasAdmin, activeAuthMethodsWithAdmin);
+
+      // Check external auth methods
+      const externalAuthTypes = Object.values(GrowiExternalAuthProviderType);
+      await Promise.all(externalAuthTypes.map(async(strategy) => {
+        const configKey = `security:passport-${strategy}:isEnabled`;
+        await checkAndAddActiveAuthMethodWithAdmin(strategy, 'crowi', configKey, checkExternalStrategyHasAdmin, activeAuthMethodsWithAdmin);
+      }));
+
+      return activeAuthMethodsWithAdmin;
+    }
+
+    // Check and add an authentication method with admin to the list
+    async function checkAndAddActiveAuthMethodWithAdmin(strategy, configNamespace, configKey, checkHasAdminFunction, activeAuthMethodsWithAdmin) {
+      const isEnabled = configManager.getConfig(configNamespace, configKey);
+      const hasAdmin = await checkHasAdminFunction(strategy);
+      if (isEnabled && hasAdmin && setupStrategies.includes(strategy)) {
+        activeAuthMethodsWithAdmin.push(strategy);
       }
-    });
+    }
 
-    await Promise.all(externalAuthPromises);
-
-    // Check if local accounts has admins
+    // Check if local accounts have admins
     async function checkLocalStrategyHasAdmin() {
       const adminAccounts = await User.find({ admin: true }).exec();
       return adminAccounts.length > 0;
     }
 
-    // Check if external accounts has admins
+    // Check if external accounts have admins
     async function checkExternalStrategyHasAdmin(providerType) {
       const externalAccounts = await ExternalAccount.find({ providerType }).populate('user').exec();
-      for (const externalAccount of externalAccounts) {
-        const { user } = externalAccount;
-        if (user && user.admin) {
-          return true;
-        }
-      }
-      return false;
+      return externalAccounts.some(externalAccount => externalAccount.user && externalAccount.user.admin);
     }
 
-    // Return error on disable an auth method when no active auth method with admin enabled login
-    if (!isEnabled && allActiveAuthMethodsWithAdmin.length === 0) {
-      return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
-    }
 
     const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
 
