@@ -99,6 +99,8 @@ export const SearchPage = (): JSX.Element => {
   const initQ = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
+  type changeStyle = 'search' | 'browser' | null;
+  const [changeState, setChangeState] = useState<changeStyle>(null);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
@@ -165,10 +167,10 @@ export const SearchPage = (): JSX.Element => {
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
-      keyword: initQ,
+      keyword,
       limit: INITIAL_PAGIONG_SIZE,
     };
-  }, [initQ]);
+  }, [keyword]);
 
   // for bulk deletion
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
@@ -177,8 +179,37 @@ export const SearchPage = (): JSX.Element => {
   useEffect(() => {
     const newUrl = new URL('/_search', 'http://example.com');
     newUrl.searchParams.append('q', keyword);
-    router.push(`${newUrl.pathname}${newUrl.search}`);
-  }, [keyword]);
+    switch (changeState) {
+      case 'search': {
+        router.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
+        break;
+      }
+      case 'browser': {
+        break;
+      }
+      default:
+        break;
+    }
+    setChangeState('search');
+  }, [keyword, setChangeState]);
+
+  // browser back and forward
+  useEffect(() => {
+    router.beforePopState(({ url }) => {
+      setChangeState('browser');
+
+      const newUrl = new URL(url, 'https://exmple.com');
+      const newKeyword = newUrl.searchParams.get('q');
+      if (typeof newKeyword === 'string') {
+        setKeyword(newKeyword);
+      }
+      else {
+        setChangeState('search');
+      }
+
+      return true;
+    });
+  }, [setChangeState, setKeyword]);
 
   const hitsCount = data?.meta.hitsCount;
 
