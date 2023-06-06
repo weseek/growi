@@ -7,7 +7,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
@@ -25,7 +24,6 @@ class PasswordResetModal extends React.Component {
     };
 
     this.resetPassword = this.resetPassword.bind(this);
-    this.onClickSendNewPasswordButton = this.onClickSendNewPasswordButton.bind(this);
   }
 
   async resetPassword() {
@@ -40,24 +38,6 @@ class PasswordResetModal extends React.Component {
     }
   }
 
-  showToaster() {
-    toastSuccess('Copied Password');
-  }
-
-  renderButtons() {
-    const { t, isMailerSetup } = this.props;
-
-    return (
-      <>
-        <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-          {t('Send')}
-        </button>
-        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-          {t('Close')}
-        </button>
-      </>
-    );
-  }
 
   renderModalBodyBeforeReset() {
     const { t, userForPasswordResetModal } = this.props;
@@ -119,52 +99,13 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterAfterReset() {
-    const { t, isMailerSetup, userForPasswordResetModal } = this.props;
+    const { t } = this.props;
 
-    if (!isMailerSetup) {
-      return (
-        <>
-          <div>
-            <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
-          </div>
-          {this.renderButtons()}
-        </>
-      );
-    }
     return (
-      <>
-        <p className="mb-4 mt-1">To:</p>
-        <div className="mr-3">
-          <p className="mb-0">{userForPasswordResetModal.username}</p>
-          <p className="mb-0">{userForPasswordResetModal.email}</p>
-        </div>
-        {this.renderButtons()}
-      </>
+      <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>
+        {t('Close')}
+      </button>
     );
-  }
-
-  async onClickSendNewPasswordButton() {
-
-    const {
-      userForPasswordResetModal,
-    } = this.props;
-
-
-    try {
-      const res = await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
-      const { failedToSendEmail } = res.data;
-      if (failedToSendEmail == null) {
-        const msg = `Email has been sent ${userForPasswordResetModal.email}`;
-        toastSuccess(msg);
-      }
-      else {
-        const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
-        toastError(msg);
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
 
@@ -204,8 +145,6 @@ PasswordResetModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userForPasswordResetModal: PropTypes.object,
-  onSuccessfullySentNewPasswordEmail: PropTypes.func.isRequired,
-  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
 };
 
