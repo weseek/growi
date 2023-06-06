@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -39,6 +40,10 @@ class PasswordResetModal extends React.Component {
     }
   }
 
+  showToaster() {
+    toastSuccess('Copied Password');
+  }
+
   renderButtons() {
     const { t, isMailerSetup } = this.props;
 
@@ -72,6 +77,12 @@ class PasswordResetModal extends React.Component {
 
   returnModalBodyAfterReset() {
     const { t, userForPasswordResetModal } = this.props;
+    const { temporaryPassword, showPassword } = this.state;
+
+    const maskedPassword = showPassword
+      ? temporaryPassword
+      : '•'.repeat(temporaryPassword.length);
+
     return (
       <>
         <p className="text-danger">{t('user_management.reset_password_modal.password_reset_message')}</p>
@@ -79,7 +90,20 @@ class PasswordResetModal extends React.Component {
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <p>
-          {t('user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
+          {t('user_management.reset_password_modal.new_password')}:{' '}
+          <code>
+            <span
+              onMouseEnter={() => this.setState({ showPassword: true })}
+              onMouseLeave={() => this.setState({ showPassword: false })}
+            >
+              {showPassword ? temporaryPassword : maskedPassword}
+            </span>
+          </code>
+          <CopyToClipboard text={ temporaryPassword } onCopy={this.showToaster}>
+            <button type="button" className="btn btn-outline-secondary border-0">
+              <i className="fa fa-clone" aria-hidden="true"></i>
+            </button>
+          </CopyToClipboard>
         </p>
       </>
     );
