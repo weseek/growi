@@ -1,19 +1,20 @@
 import { GrowiThemeMetadata, GrowiThemeSchemeType } from '@growi/core';
 import {
-  Schema, Model, Document, Types,
+  Schema, type Model, type Document, type Types,
 } from 'mongoose';
 
-import {
-  GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
-} from '~/interfaces/plugin';
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { GrowiPluginResourceType } from '../interfaces';
+import type {
+  IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginOrigin, IGrowiThemePluginMeta,
+} from '../interfaces';
 
-export interface GrowiPluginDocument extends GrowiPlugin, Document {
+export interface IGrowiPluginDocument extends IGrowiPlugin, Document {
 }
-export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
-  findEnabledPlugins(): Promise<GrowiPlugin[]>
-  findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
+export interface IGrowiPluginModel extends Model<IGrowiPluginDocument> {
+  findEnabledPlugins(): Promise<IGrowiPlugin[]>
+  findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginResourceType[]): Promise<IGrowiPlugin[]>
   activatePlugin(id: Types.ObjectId): Promise<string>
   deactivatePlugin(id: Types.ObjectId): Promise<string>
 }
@@ -32,7 +33,7 @@ const growiThemeMetadataSchema = new Schema<GrowiThemeMetadata>({
   accent: { type: String, required: true },
 });
 
-const growiPluginMetaSchema = new Schema<GrowiPluginMeta|GrowiThemePluginMeta>({
+const growiPluginMetaSchema = new Schema<IGrowiPluginMeta|IGrowiThemePluginMeta>({
   name: { type: String, required: true },
   types: {
     type: [String],
@@ -44,13 +45,13 @@ const growiPluginMetaSchema = new Schema<GrowiPluginMeta|GrowiThemePluginMeta>({
   themes: [growiThemeMetadataSchema],
 });
 
-const growiPluginOriginSchema = new Schema<GrowiPluginOrigin>({
+const growiPluginOriginSchema = new Schema<IGrowiPluginOrigin>({
   url: { type: String },
   ghBranch: { type: String },
   ghTag: { type: String },
 });
 
-const growiPluginSchema = new Schema<GrowiPluginDocument, GrowiPluginModel>({
+const growiPluginSchema = new Schema<IGrowiPluginDocument, IGrowiPluginModel>({
   isEnabled: { type: Boolean },
   installedPath: { type: String },
   organizationName: { type: String },
@@ -58,11 +59,11 @@ const growiPluginSchema = new Schema<GrowiPluginDocument, GrowiPluginModel>({
   meta: growiPluginMetaSchema,
 });
 
-growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<GrowiPlugin[]> {
+growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<IGrowiPlugin[]> {
   return this.find({ isEnabled: true });
 };
 
-growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(types: GrowiPluginResourceType[]): Promise<GrowiPlugin[]> {
+growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(types: GrowiPluginResourceType[]): Promise<IGrowiPlugin[]> {
   return this.find({
     isEnabled: true,
     'meta.types': { $in: types },
@@ -89,4 +90,4 @@ growiPluginSchema.statics.deactivatePlugin = async function(id: Types.ObjectId):
   return pluginName;
 };
 
-export default getOrCreateModel<GrowiPluginDocument, GrowiPluginModel>('GrowiPlugin', growiPluginSchema);
+export const GrowiPlugin = getOrCreateModel<IGrowiPluginDocument, IGrowiPluginModel>('GrowiPlugin', growiPluginSchema);
