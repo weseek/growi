@@ -1,9 +1,3 @@
-import {
-  vi,
-  beforeEach,
-  describe, test, expect,
-} from 'vitest';
-
 import mockRequire from 'mock-require';
 
 const { reRequire } = mockRequire;

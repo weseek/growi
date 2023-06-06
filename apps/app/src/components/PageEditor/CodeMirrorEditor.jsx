@@ -848,8 +848,8 @@ class CodeMirrorEditor extends AbstractEditor {
   // }
 
   showTemplateModal() {
-    const onSubmit = templateText => this.setValue(templateText);
-    this.props.onClickTemplateBtn(onSubmit);
+    const onSubmit = templateText => this.insertText(templateText);
+    this.props.onClickTemplateBtn({ onSubmit });
   }
 
   showLinkEditModal() {

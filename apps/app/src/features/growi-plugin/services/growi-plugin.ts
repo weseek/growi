@@ -8,13 +8,14 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
-import {
-  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta, GrowiPluginMeta,
-} from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-import type { GrowiPluginModel } from '../models/growi-plugin';
+import { GrowiPluginResourceType } from '../interfaces';
+import type {
+  IGrowiPlugin, IGrowiPluginOrigin, IGrowiThemePluginMeta, IGrowiPluginMeta,
+} from '../interfaces';
+import { GrowiPlugin } from '../models';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -27,7 +28,7 @@ const PLUGINS_STATIC_DIR = '/static/plugins'; // configured by express.static
 
 export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
-function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
+function retrievePluginManifest(growiPlugin: IGrowiPlugin): ViteManifest {
   const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
   const manifestStr: string = readFileSync(manifestPath, 'utf-8');
   return JSON.parse(manifestStr);
@@ -35,19 +36,19 @@ function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
 
 
 type FindThemePluginResult = {
-  growiPlugin: GrowiPlugin,
+  growiPlugin: IGrowiPlugin,
   themeMetadata: GrowiThemeMetadata,
   themeHref: string,
 }
 
-export interface IPluginService {
-  install(origin: GrowiPluginOrigin): Promise<string>
+export interface IGrowiPluginService {
+  install(origin: IGrowiPluginOrigin): Promise<string>
   findThemePlugin(theme: string): Promise<FindThemePluginResult | null>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
   downloadNotExistPluginRepositories(): Promise<void>
 }
 
-export class PluginService implements IPluginService {
+export class GrowiPluginService implements IGrowiPluginService {
 
   /*
   * Downloading a non-existent repository to the file system
@@ -55,7 +56,6 @@ export class PluginService implements IPluginService {
   async downloadNotExistPluginRepositories(): Promise<void> {
     try {
       // find all growi plugin documents
-      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
       const growiPlugins = await GrowiPlugin.find({});
 
       // if not exists repository in file system, download latest plugin repository
@@ -113,7 +113,7 @@ export class PluginService implements IPluginService {
   /*
   * Install a plugin from URL and save it in the DB and file system.
   */
-  async install(origin: GrowiPluginOrigin): Promise<string> {
+  async install(origin: IGrowiPluginOrigin): Promise<string> {
     const ghUrl = new URL(origin.url);
     const ghPathname = ghUrl.pathname;
     // TODO: Branch names can be specified.
@@ -137,7 +137,7 @@ export class PluginService implements IPluginService {
     const organizationPath = path.join(pluginStoringPath, ghOrganizationName);
 
 
-    let plugins: GrowiPlugin<GrowiPluginMeta>[];
+    let plugins: IGrowiPlugin<IGrowiPluginMeta>[];
 
     try {
       // download github repository to file system's temporary path
@@ -146,7 +146,7 @@ export class PluginService implements IPluginService {
       fs.renameSync(unzippedReposPath, temporaryReposPath);
 
       // detect plugins
-      plugins = await PluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
+      plugins = await GrowiPluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
 
       if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
 
@@ -184,7 +184,6 @@ export class PluginService implements IPluginService {
   }
 
   private async deleteOldPluginDocument(path: string): Promise<void> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
@@ -230,13 +229,12 @@ export class PluginService implements IPluginService {
     }
   }
 
-  private async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
-    const GrowiPlugin = mongoose.model('GrowiPlugin');
+  private async savePluginMetaData(plugins: IGrowiPlugin[]): Promise<void> {
     await GrowiPlugin.insertMany(plugins);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, max-len
-  private static async detectPlugins(origin: GrowiPluginOrigin, ghOrganizationName: string, ghReposName: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
+  private static async detectPlugins(origin: IGrowiPluginOrigin, ghOrganizationName: string, ghReposName: string, parentPackageJson?: any): Promise<IGrowiPlugin[]> {
     const packageJsonPath = path.resolve(pluginStoringPath, ghReposName, 'package.json');
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
@@ -279,7 +277,7 @@ export class PluginService implements IPluginService {
 
     // add theme metadata
     if (growiPlugin.types.includes(GrowiPluginResourceType.Theme)) {
-      (plugin as GrowiPlugin<GrowiThemePluginMeta>).meta = {
+      (plugin as IGrowiPlugin<IGrowiThemePluginMeta>).meta = {
         ...plugin.meta,
         themes: growiPlugin.themes,
       };
@@ -290,7 +288,7 @@ export class PluginService implements IPluginService {
     return [plugin];
   }
 
-  async listPlugins(): Promise<GrowiPlugin[]> {
+  async listPlugins(): Promise<IGrowiPlugin[]> {
     return [];
   }
 
@@ -302,7 +300,6 @@ export class PluginService implements IPluginService {
       return fs.promises.rm(path, { recursive: true });
     };
 
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.findById(pluginId);
 
     if (growiPlugins == null) {
@@ -330,14 +327,12 @@ export class PluginService implements IPluginService {
   }
 
   async findThemePlugin(theme: string): Promise<FindThemePluginResult | null> {
-    const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-
-    let matchedPlugin: GrowiPlugin | undefined;
+    let matchedPlugin: IGrowiPlugin | undefined;
     let matchedThemeMetadata: GrowiThemeMetadata | undefined;
 
     try {
       // retrieve plugin manifests
-      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]) as GrowiPlugin<GrowiThemePluginMeta>[];
+      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]) as IGrowiPlugin<IGrowiThemePluginMeta>[];
 
       growiPlugins
         .forEach(async(growiPlugin) => {
@@ -373,8 +368,6 @@ export class PluginService implements IPluginService {
 
   async retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries> {
 
-    const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-
     const entries: GrowiPluginResourceEntries = [];
 
     try {
@@ -409,3 +402,6 @@ export class PluginService implements IPluginService {
   }
 
 }
+
+
+export const growiPluginService = new GrowiPluginService();
