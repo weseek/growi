@@ -40,7 +40,6 @@ class PasswordResetModal extends React.Component {
     toastSuccess('Copied Password');
   }
 
-
   renderModalBodyBeforeReset() {
     const { t, userForPasswordResetModal } = this.props;
 
