@@ -8,8 +8,7 @@ import {
 } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores/context';
+import { toastError } from '~/client/util/toastr';
 
 
 class PasswordResetModal extends React.Component {
@@ -20,12 +19,12 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
-      sendEmail: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
   }
 
+  // Reset Password
   async resetPassword() {
     const { t, userForPasswordResetModal } = this.props;
     try {
@@ -37,7 +36,6 @@ class PasswordResetModal extends React.Component {
       toastError(err);
     }
   }
-
 
   renderModalBodyBeforeReset() {
     const { t, userForPasswordResetModal } = this.props;
@@ -131,8 +129,7 @@ class PasswordResetModal extends React.Component {
 
 const PasswordResetModalWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  const { data: isMailerSetup } = useIsMailerSetup();
-  return <PasswordResetModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
+  return <PasswordResetModal t={t} {...props} />;
 };
 
 /**
