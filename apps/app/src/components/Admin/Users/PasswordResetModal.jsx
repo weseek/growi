@@ -40,20 +40,6 @@ class PasswordResetModal extends React.Component {
     toastSuccess('Copied Password');
   }
 
-  renderButtons() {
-    const { t, isMailerSetup } = this.props;
-
-    return (
-      <>
-        <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-          {t('Send')}
-        </button>
-        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-          {t('Close')}
-        </button>
-      </>
-    );
-  }
 
   renderModalBodyBeforeReset() {
     const { t, userForPasswordResetModal } = this.props;
