@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/toastr';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
 class PasswordResetModal extends React.Component {
@@ -24,7 +24,6 @@ class PasswordResetModal extends React.Component {
     this.resetPassword = this.resetPassword.bind(this);
   }
 
-  // Reset Password
   async resetPassword() {
     const { t, userForPasswordResetModal } = this.props;
     try {
@@ -35,6 +34,25 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+  showToaster() {
+    toastSuccess('Copied Password');
+  }
+
+  renderButtons() {
+    const { t, isMailerSetup } = this.props;
+
+    return (
+      <>
+        <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
+          {t('Send')}
+        </button>
+        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
+          {t('Close')}
+        </button>
+      </>
+    );
   }
 
   renderModalBodyBeforeReset() {
