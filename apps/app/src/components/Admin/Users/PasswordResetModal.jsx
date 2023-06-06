@@ -144,7 +144,7 @@ class PasswordResetModal extends React.Component {
         toastSuccess(msg);
       }
       else {
-        const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
+        const msg = { message: `email: ${failedToSendEmail.email} reason: ${failedToSendEmail.reason}` };
         toastError(msg);
       }
     }
