@@ -68,8 +68,13 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
     }
     catch (err) {
       logger.error(err);
-      // throw new Error('Failed to update personal data');
-      throw new Error(err[0].message);
+      const message = err[0].message;
+
+      if (message.includes('User validation failed: email: Error, expected `email` to be unique.')) {
+        throw new Error('The email is already in use');
+      }
+
+      throw new Error('Failed to update personal data');
     }
   };
 

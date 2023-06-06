@@ -21,8 +21,12 @@ import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups, useSWRxUserGroupRelations,
 } from '~/stores/user-group';
+import loggerFactory from '~/utils/logger';
 
 import styles from './UserGroupDetailPage.module.scss';
+
+
+const logger = loggerFactory('growi:stores:personal-settings');
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
@@ -136,6 +140,8 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
+    logger.error(userGroupData?.parent);
+    logger.error(typeof userGroupData?.parent);
     if (typeof userGroupData?.parent === 'string') {
       toastError(t('Something went wrong. Please try again.'));
       return;
