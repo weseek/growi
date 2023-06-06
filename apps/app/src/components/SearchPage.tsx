@@ -93,14 +93,13 @@ export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
   const router = useRouter();
+  const routerRef = useRef(router);
 
   // parse URL Query
   const queries = router.query.q;
   const initQ = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
-  type changeStyle = 'search' | 'browser' | null;
-  const [changeState, setChangeState] = useState<changeStyle>(null);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
@@ -179,37 +178,20 @@ export const SearchPage = (): JSX.Element => {
   useEffect(() => {
     const newUrl = new URL('/_search', 'http://example.com');
     newUrl.searchParams.append('q', keyword);
-    switch (changeState) {
-      case 'search': {
-        router.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
-        break;
-      }
-      case 'browser': {
-        break;
-      }
-      default:
-        break;
-    }
-    setChangeState('search');
-  }, [keyword, setChangeState]);
+    routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
+  }, [keyword, routerRef]);
 
   // browser back and forward
   useEffect(() => {
-    router.beforePopState(({ url }) => {
-      setChangeState('browser');
-
+    routerRef.current.beforePopState(({ url }) => {
       const newUrl = new URL(url, 'https://exmple.com');
       const newKeyword = newUrl.searchParams.get('q');
-      if (typeof newKeyword === 'string') {
+      if (newKeyword != null) {
         setKeyword(newKeyword);
       }
-      else {
-        setChangeState('search');
-      }
-
       return true;
     });
-  }, [setChangeState, setKeyword]);
+  }, [setKeyword, routerRef]);
 
   const hitsCount = data?.meta.hitsCount;
 
