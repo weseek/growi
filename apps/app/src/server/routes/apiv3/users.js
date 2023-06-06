@@ -185,7 +185,7 @@ module.exports = (crowi) => {
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-    const failedToSendNewPasswordEmail = { email: user.email, reazon: '' };
+    const failedToSendNewPasswordEmail = { email: user.email, reason: '' };
 
     try {
       await mailService.send({
@@ -202,7 +202,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      failedToSendNewPasswordEmail.reazon = err.message;
+      failedToSendNewPasswordEmail.reason = err.message;
     }
 
     return { failedToSendNewPasswordEmail };
@@ -1024,7 +1024,6 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: email and reasons for new password email sending failure
    */
-
   router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
@@ -1040,7 +1039,7 @@ module.exports = (crowi) => {
 
       const sendEmail = await sendEmailByUser(userInfo);
 
-      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendNewPasswordEmail[0] });
+      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendNewPasswordEmail });
     }
     catch (err) {
       logger.error('Error', err);
