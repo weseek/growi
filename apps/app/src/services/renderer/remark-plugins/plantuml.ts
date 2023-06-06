@@ -4,7 +4,7 @@ import { Parent, Node } from 'unist';
 import urljoin from 'url-join';
 
 type PlantUMLPluginParams = {
-  plantumlUri: string;
+  plantumlUri: string,
 };
 
 export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
