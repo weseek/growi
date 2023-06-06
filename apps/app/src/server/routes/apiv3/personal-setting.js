@@ -247,7 +247,8 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('update-personal-settings-failed');
+      // return res.apiv3Err('update-personal-settings-failed');
+      return res.apiv3Err(err);
     }
 
   });

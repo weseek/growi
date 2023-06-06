@@ -68,7 +68,8 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Failed to update personal data');
+      // throw new Error('Failed to update personal data');
+      throw new Error(err[0].message);
     }
   };
 

@@ -26,7 +26,7 @@ export const BasicInfoSettings = (): JSX.Element => {
     }
     catch (err) {
       // toastError(err);
-      if (err.message === 'Failed to update personal data') {
+      if (err.message === 'User validation failed: email: Error, expected `email` to be unique. Value: `admin@example.com`') {
         toastError(t('alert.email_is_already_in_use', { ns: 'commons' }));
       }
       else {
