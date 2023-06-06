@@ -3,11 +3,14 @@ import { body, validationResult } from 'express-validator';
 
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import LdapService from '~/server/service/ldap';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
 const router = Router();
+
+const ldapService = new LdapService();
 
 interface AuthorizedRequest extends Request {
   user?: any
@@ -19,27 +22,28 @@ module.exports = (crowi: Crowi): Router => {
 
   const validators = {
     ldapSyncSettings: [
-      body('ldapGroupsDN').exists({ checkFalsy: true }).isString(),
+      body('ldapGroupSearchBase').optional({ nullable: true }).isString(),
       body('ldapGroupMembershipAttribute').exists({ checkFalsy: true }).isString(),
       body('ldapGroupMembershipAttributeType').exists({ checkFalsy: true }).isString(),
       body('ldapGroupChildGroupAttribute').exists({ checkFalsy: true }).isString(),
-      body('autoGenerateUserOnLDAPGroupSync').exists().isBoolean(),
-      body('preserveDeletedLDAPGroups').exists().isBoolean(),
+      body('autoGenerateUserOnLdapGroupSync').exists().isBoolean(),
+      body('preserveDeletedLdapGroups').exists().isBoolean(),
       body('ldapGroupNameAttribute').optional({ nullable: true }).isString(),
       body('ldapGroupDescriptionAttribute').optional({ nullable: true }).isString(),
     ],
   };
 
-  router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, (req: AuthorizedRequest, res: ApiV3Response) => {
+    const { configManager } = crowi;
     const settings = {
-      ldapGroupsDN: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:groupsDN'),
-      ldapGroupMembershipAttribute: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
-      ldapGroupMembershipAttributeType: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType'),
-      ldapGroupChildGroupAttribute: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute'),
-      autoGenerateUserOnLDAPGroupSync: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:autoGenerateUserOnGroupSync'),
-      preserveDeletedLDAPGroups: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups'),
-      ldapGroupNameAttribute: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute'),
-      ldapGroupDescriptionAttribute: await crowi.configManager?.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute'),
+      ldapGroupSearchBase: configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase'),
+      ldapGroupMembershipAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
+      ldapGroupMembershipAttributeType: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType'),
+      ldapGroupChildGroupAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute'),
+      autoGenerateUserOnLdapGroupSync: configManager?.getConfig('crowi', 'external-user-group:ldap:autoGenerateUserOnGroupSync'),
+      preserveDeletedLdapGroups: configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups'),
+      ldapGroupNameAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute'),
+      ldapGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute'),
     };
 
     return res.apiv3(settings);
@@ -52,12 +56,12 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     const params = {
-      'external-user-group:ldap:groupsDN': req.body.ldapGroupsDN,
+      'external-user-group:ldap:groupSearchBase': req.body.ldapGroupSearchBase,
       'external-user-group:ldap:groupMembershipAttribute': req.body.ldapGroupMembershipAttribute,
       'external-user-group:ldap:groupMembershipAttributeType': req.body.ldapGroupMembershipAttributeType,
       'external-user-group:ldap:groupChildGroupAttribute': req.body.ldapGroupChildGroupAttribute,
-      'external-user-group:ldap:autoGenerateUserOnGroupSync': req.body.autoGenerateUserOnLDAPGroupSync,
-      'external-user-group:ldap:preserveDeletedGroups': req.body.preserveDeletedLDAPGroups,
+      'external-user-group:ldap:autoGenerateUserOnGroupSync': req.body.autoGenerateUserOnLdapGroupSync,
+      'external-user-group:ldap:preserveDeletedGroups': req.body.preserveDeletedLdapGroups,
       'external-user-group:ldap:groupNameAttribute': req.body.ldapGroupNameAttribute,
       'external-user-group:ldap:groupDescriptionAttribute': req.body.ldapGroupDescriptionAttribute,
     };
@@ -75,6 +79,31 @@ module.exports = (crowi: Crowi): Router => {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }
+  });
+
+  router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    try {
+      const isUserBind = crowi.configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
+      const groups = async() => {
+        if (isUserBind) {
+          const username = req.user.name;
+          const password = req.body.password;
+          return ldapService.searchGroup(username, password);
+        }
+        return ldapService.searchGroup();
+      };
+
+      // Print searched groups for now
+      // TODO: implement LDAP group sync
+      // see: https://redmine.weseek.co.jp/issues/120030
+      console.log('ldap groups');
+      console.log(await groups());
+    }
+    catch (e) {
+      res.apiv3Err(e, 500);
+    }
+
+    return res.apiv3({}, 204);
   });
 
   return router;

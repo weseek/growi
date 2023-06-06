@@ -1039,10 +1039,12 @@
   },
   "external_group": {
     "management": "External Group Management",
+    "execute_sync": "Execute Sync",
+    "sync": "Sync",
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",
-      "group_search_base_dn_detail": "The base DN from which to search for groups",
+      "group_search_base_dn_detail": "The base DN for searching groups. The value set in security settings will be used if not set here.",
       "membership_attribute": "Membership Attribute",
       "membership_attribute_detail": "Attribute of the group object which indicates user membership info",
       "membership_attribute_type": "Membership Attribute Type",
@@ -1053,7 +1055,11 @@
       "preserve_deleted_ldap_groups": "Preserve Deleted LDAP Groups",
       "name_mapper_detail": "Attribute to map as group name",
       "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync.",
-      "updated_group_sync_settings": "Updated LDAP group sync settings"
+      "updated_group_sync_settings": "Updated LDAP group sync settings",
+      "sync_succeeded": "Sync succeeded",
+      "sync_failed": "Sync failed. Check LDAP security settings and group sync settings",
+      "password": "Password",
+      "password_detail": "Login password is necessary because Bind type is set to User Bind"
     }
   },
   "toaster": {

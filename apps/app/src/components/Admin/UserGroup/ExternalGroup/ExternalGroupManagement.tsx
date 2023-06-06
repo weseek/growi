@@ -5,7 +5,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '~/components/CustomNavigation/CustomNav';
 
-import { LDAPGroupSyncSettingsForm } from './LDAPGroupSyncSettingsForm';
+import { LdapGroupManagement } from './LdapGroupManagement';
 
 export const ExternalGroupManagement: FC = () => {
   const [activeTab, setActiveTab] = useState('ldap');
@@ -37,7 +37,7 @@ export const ExternalGroupManagement: FC = () => {
     />
     <TabContent activeTab={activeTab} className="p-5">
       <TabPane tabId="ldap">
-        {activeComponents.has('ldap') && <LDAPGroupSyncSettingsForm />}
+        {activeComponents.has('ldap') && <LdapGroupManagement />}
       </TabPane>
     </TabContent>
   </>;

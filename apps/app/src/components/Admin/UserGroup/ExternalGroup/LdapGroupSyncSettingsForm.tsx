@@ -6,21 +6,21 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { LDAPGroupSyncSettings } from '~/interfaces/external-user-group';
-import { useSWRxLDAPGroupSyncSettings } from '~/stores/external-user-group';
+import { LdapGroupSyncSettings } from '~/interfaces/external-user-group';
+import { useSWRxLdapGroupSyncSettings } from '~/stores/external-user-group';
 
-export const LDAPGroupSyncSettingsForm: FC = () => {
+export const LdapGroupSyncSettingsForm: FC = () => {
   const { t } = useTranslation('admin');
 
-  const { data: ldapGroupSyncSettings } = useSWRxLDAPGroupSyncSettings();
+  const { data: ldapGroupSyncSettings } = useSWRxLdapGroupSyncSettings();
 
-  const [formValues, setFormValues] = useState<LDAPGroupSyncSettings>({
-    ldapGroupsDN: '',
+  const [formValues, setFormValues] = useState<LdapGroupSyncSettings>({
+    ldapGroupSearchBase: '',
     ldapGroupMembershipAttribute: '',
     ldapGroupMembershipAttributeType: '',
     ldapGroupChildGroupAttribute: '',
-    autoGenerateUserOnLDAPGroupSync: false,
-    preserveDeletedLDAPGroups: false,
+    autoGenerateUserOnLdapGroupSync: false,
+    preserveDeletedLdapGroups: false,
     ldapGroupNameAttribute: '',
     ldapGroupDescriptionAttribute: '',
   });
@@ -43,19 +43,18 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
   }, [formValues, t]);
 
   return <>
-    <h3 className="border-bottom">{t('external_group.ldap.group_sync_settings')}</h3>
+    <h3 className="border-bottom mb-3">{t('external_group.ldap.group_sync_settings')}</h3>
     <form onSubmit={submitHandler}>
       <div className="row form-group">
-        <label htmlFor="ldapGroupsDN" className="text-left text-md-right col-md-3 col-form-label">{t('external_group.ldap.group_search_base_DN')}</label>
+        <label htmlFor="ldapGroupSearchBase" className="text-left text-md-right col-md-3 col-form-label">{t('external_group.ldap.group_search_base_DN')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
-            required
             type="text"
-            name="ldapGroupsDN"
-            id="ldapGroupsDN"
-            value={formValues.ldapGroupsDN}
-            onChange={e => setFormValues({ ...formValues, ldapGroupsDN: e.target.value })}
+            name="ldapGroupSearchBase"
+            id="ldapGroupSearchBase"
+            value={formValues.ldapGroupSearchBase}
+            onChange={e => setFormValues({ ...formValues, ldapGroupSearchBase: e.target.value })}
           />
           <p className="form-text text-muted">
             <small>{t('external_group.ldap.group_search_base_dn_detail')}</small>
@@ -138,14 +137,14 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
             <input
               type="checkbox"
               className="custom-control-input"
-              name="autoGenerateUserOnLDAPGroupSync"
-              id="autoGenerateUserOnLDAPGroupSync"
-              checked={formValues.autoGenerateUserOnLDAPGroupSync}
-              onChange={() => setFormValues({ ...formValues, autoGenerateUserOnLDAPGroupSync: !formValues.autoGenerateUserOnLDAPGroupSync })}
+              name="autoGenerateUserOnLdapGroupSync"
+              id="autoGenerateUserOnLdapGroupSync"
+              checked={formValues.autoGenerateUserOnLdapGroupSync}
+              onChange={() => setFormValues({ ...formValues, autoGenerateUserOnLdapGroupSync: !formValues.autoGenerateUserOnLdapGroupSync })}
             />
             <label
               className="custom-control-label"
-              htmlFor="autoGenerateUserOnLDAPGroupSync"
+              htmlFor="autoGenerateUserOnLdapGroupSync"
             >
               {t('external_group.ldap.auto_generate_user_on_sync')}
             </label>
@@ -163,21 +162,23 @@ export const LDAPGroupSyncSettingsForm: FC = () => {
             <input
               type="checkbox"
               className="custom-control-input"
-              name="preserveDeletedLDAPGroups"
-              id="preserveDeletedLDAPGroups"
-              checked={formValues.preserveDeletedLDAPGroups}
-              onChange={() => setFormValues({ ...formValues, preserveDeletedLDAPGroups: !formValues.preserveDeletedLDAPGroups })}
+              name="preserveDeletedLdapGroups"
+              id="preserveDeletedLdapGroups"
+              checked={formValues.preserveDeletedLdapGroups}
+              onChange={() => setFormValues({ ...formValues, preserveDeletedLdapGroups: !formValues.preserveDeletedLdapGroups })}
             />
             <label
               className="custom-control-label"
-              htmlFor="preserveDeletedLDAPGroups"
+              htmlFor="preserveDeletedLdapGroups"
             >
               {t('external_group.ldap.preserve_deleted_ldap_groups')}
             </label>
           </div>
         </div>
       </div>
-      <h3 className="border-bottom">Attribute Mapping ({t('optional')})</h3>
+      <div className="px-5">
+        <h4 className="border-bottom mb-3">Attribute Mapping ({t('optional')})</h4>
+      </div>
       <div className="row form-group">
         <label htmlFor="ldapGroupNameAttribute" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
         <div className="col-md-6">
