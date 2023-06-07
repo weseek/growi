@@ -67,6 +67,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
+
+  // useRef is used to avoid unnecessary selectedPageWithMeta changes.
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
   const selectedPageWithMetaRef = useRef(selectedPageWithMeta);
 
