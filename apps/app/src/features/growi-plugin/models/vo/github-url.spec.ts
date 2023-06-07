@@ -17,7 +17,7 @@ describe('GitHubUrl Constructor throws an error when the url string is', () => {
 
 });
 
-describe('GitHubUrl Constructor is successfully processed', () => {
+describe('The constructor is successfully processed', () => {
 
   it('with http schemed url', () => {
     // when
@@ -52,4 +52,17 @@ describe('GitHubUrl Constructor is successfully processed', () => {
     expect(githubUrl.branchName).toEqual('fix/bug');
   });
 
+});
+
+describe('archiveUrl()', () => {
+  it('returns zip url', () => {
+    // setup
+    const githubUrl = new GitHubUrl('https://github.com/org/repos', 'fix/bug');
+
+    // when
+    const { archiveUrl } = githubUrl;
+
+    // then
+    expect(archiveUrl).toEqual('https://github.com/org/repos/archive/refs/heads/fix/bug.zip');
+  });
 });

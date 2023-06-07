@@ -21,6 +21,11 @@ export class GitHubUrl {
     return this._branchName;
   }
 
+  get archiveUrl(): string {
+    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/heads/${this.branchName}.zip`, 'https://github.com');
+    return ghUrl.toString();
+  }
+
   constructor(url: string, branchName = 'main') {
 
     let matched;
