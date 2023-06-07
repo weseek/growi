@@ -1,6 +1,9 @@
+import assert from 'assert';
+
 import { selectAll, type HastNode, type Element } from 'hast-util-select';
 import isAbsolute from 'is-absolute-url';
 import type { Plugin } from 'unified';
+
 
 export type IAnchorsSelector = (node: HastNode) => Element[];
 export type IUrlResolver = (relativeHref: string, basePath: string) => URL;
@@ -43,9 +46,7 @@ export const relativeLinks: Plugin<[RelativeLinksPluginParams]> = (options = {})
     const anchors = anchorsSelector(tree as HastNode);
 
     anchors.forEach((anchor) => {
-      if (anchor.properties == null) {
-        return;
-      }
+      assert(anchor.properties != null);
 
       const href = anchor.properties.href;
       if (href == null || typeof href !== 'string' || isAbsolute(href) || isAnchorLink(href)) {

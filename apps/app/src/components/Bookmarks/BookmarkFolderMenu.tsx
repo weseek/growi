@@ -6,14 +6,15 @@ import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 
 import { addBookmarkToFolder, toggleBookmark } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
+import { IBookmarkInfo } from '~/interfaces/bookmark-info';
 import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxPageInfo } from '~/stores/page';
 
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 
-export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ children }): JSX.Element => {
+export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkInfo: IBookmarkInfo }> = ({ children, bookmarkInfo }): JSX.Element => {
   const { t } = useTranslation();
 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
@@ -21,13 +22,12 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
 
   const { data: currentUser } = useCurrentUser();
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(bookmarkInfo.pageId);
 
   const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(currentPage?._id);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkInfo.pageId);
 
-  const isBookmarked = bookmarkInfo?.isBookmarked ?? false;
+  const isBookmarked = bookmarkInfo.isBookmarked ?? false;
 
   const isBookmarkFolderExists = useMemo((): boolean => {
     return bookmarkFolders != null && bookmarkFolders.length > 0;
@@ -35,14 +35,12 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
 
   const toggleBookmarkHandler = useCallback(async() => {
     try {
-      if (currentPage != null) {
-        await toggleBookmark(currentPage._id, isBookmarked);
-      }
+      await toggleBookmark(bookmarkInfo.pageId, isBookmarked);
     }
     catch (err) {
       toastError(err);
     }
-  }, [currentPage, isBookmarked]);
+  }, [bookmarkInfo.pageId, isBookmarked]);
 
   const onUnbookmarkHandler = useCallback(async() => {
     await toggleBookmarkHandler();
@@ -60,7 +58,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
-          if (bookmark.page._id === currentPage?._id) {
+          if (bookmark.page._id === bookmarkInfo.pageId) {
             setSelectedItem(bookmarkFolder._id);
           }
         });
@@ -83,7 +81,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
       }
     }
   },
-  [isOpen, bookmarkFolders, selectedItem, isBookmarked, currentPage?._id, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
+  [isOpen, bookmarkFolders, selectedItem, isBookmarked, bookmarkInfo.pageId, toggleBookmarkHandler, mutateUserBookmarks, mutateBookmarkInfo, mutatePageInfo]);
 
   const onMenuItemClickHandler = useCallback(async(e, itemId: string) => {
     e.stopPropagation();
@@ -91,9 +89,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     setSelectedItem(itemId);
 
     try {
-      if (currentPage != null) {
-        await addBookmarkToFolder(currentPage._id, itemId === 'root' ? null : itemId);
-      }
+      await addBookmarkToFolder(bookmarkInfo.pageId, itemId === 'root' ? null : itemId);
       mutateUserBookmarks();
       mutateBookmarkFolders();
       mutateBookmarkInfo();
@@ -101,7 +97,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders, currentPage, mutateBookmarkInfo, mutateUserBookmarks]);
+  }, [bookmarkInfo.pageId, mutateUserBookmarks, mutateBookmarkFolders, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = () => {
     return (
@@ -112,7 +108,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
           className={'grw-bookmark-folder-menu-item text-danger'}
         >
           <i className="fa fa-bookmark"></i>{' '}
-          <span className="mx-2 ">
+          <span className="mx-2">
             {t('bookmark_folder.cancel_bookmark')}
           </span>
         </DropdownItem>
@@ -120,21 +116,21 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
         {isBookmarkFolderExists && (
           <>
             <DropdownItem divider />
-            <div key='root'>
+            <div key="root">
               <div
                 className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
                 tabIndex={0}
                 role="menuitem"
-                onClick={e => onMenuItemClickHandler(e, 'root')}
+                onClick={(e) => onMenuItemClickHandler(e, 'root')}
               >
                 <BookmarkFolderMenuItem
-                  itemId='root'
+                  itemId="root"
                   itemName={t('bookmark_folder.root')}
                   isSelected={selectedItem === 'root'}
                 />
               </div>
             </div>
-            {bookmarkFolders?.map(folder => (
+            {bookmarkFolders?.map((folder) => (
               <React.Fragment key={`bookmark-folders-${folder._id}`}>
                 <div key={folder._id}>
                   <div
@@ -142,7 +138,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                     style={{ paddingLeft: '40px' }}
                     tabIndex={0}
                     role="menuitem"
-                    onClick={e => onMenuItemClickHandler(e, folder._id)}
+                    onClick={(e) => onMenuItemClickHandler(e, folder._id)}
                   >
                     <BookmarkFolderMenuItem
                       itemId={folder._id}
@@ -151,24 +147,23 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode}> = ({ chi
                     />
                   </div>
                 </div>
-                <>
-                  {folder.children?.map(child => (
-                    <div key={child._id}>
-                      <div
-                        className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
-                        style={{ paddingLeft: '60px' }}
-                        tabIndex={0}
-                        role="menuitem"
-                        onClick={e => onMenuItemClickHandler(e, child._id)}>
-                        <BookmarkFolderMenuItem
-                          itemId={child._id}
-                          itemName={child.name}
-                          isSelected={selectedItem === child._id}
-                        />
-                      </div>
+                {folder.children?.map((child) => (
+                  <div key={child._id}>
+                    <div
+                      className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
+                      style={{ paddingLeft: '60px' }}
+                      tabIndex={0}
+                      role="menuitem"
+                      onClick={(e) => onMenuItemClickHandler(e, child._id)}
+                    >
+                      <BookmarkFolderMenuItem
+                        itemId={child._id}
+                        itemName={child.name}
+                        isSelected={selectedItem === child._id}
+                      />
                     </div>
-                  ))}
-                </>
+                  </div>
+                ))}
               </React.Fragment>
             ))}
           </>

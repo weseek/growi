@@ -478,12 +478,6 @@
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
-    "give_user_admin": "{{username}}を管理者に設定しました",
-    "remove_user_admin": "{{username}}を管理者から外しました",
-    "activate_user_success": "{{username}}を有効化しました",
-    "deactivate_user_success": "{{username}}を無効化しました",
-    "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました",
     "remove_share_link_success": "{{shareLinkId}}を削除しました",
     "issue_share_link": "共有リンクを作成しました",
     "remove_share_link": "共有リンクを{{count}}件削除しました",
@@ -493,6 +487,7 @@
   },
   "template": {
     "modal_label": {
+      "Select template": "テンプレートの選択",
       "Create/Edit Template Page": "テンプレートページの作成/編集",
       "Create template under": "配下にテンプレートページを作成"
     },
