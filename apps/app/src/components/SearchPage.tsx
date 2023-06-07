@@ -92,6 +92,8 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
+
+  // routerRef solve the problem of infinite redrawing that occurs with routers
   const router = useRouter();
   const routerRef = useRef(router);
 
