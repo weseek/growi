@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
-import { IPageWithMeta } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import {
@@ -44,8 +43,13 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
+
+const SearchResultContent = dynamic(() => import('./SearchResultContent').then(mod => mod.SearchResultContent), {
+  ssr: false,
+  loading: () => <></>,
+});
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
-  const SearchResultContent = dynamic(import('./SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
+
   const {
     pages,
     searchingKeyword,
@@ -64,6 +68,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
+  const selectedPageWithMetaRef = useRef(selectedPageWithMeta);
 
   // publish selectAll()
   useImperativeHandle(ref, () => ({
@@ -109,13 +114,15 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   // select first item on load
   useEffect(() => {
-    if (pages == null || pages?.length === 0) {
+    if ((pages == null || pages?.length === 0) && selectedPageWithMetaRef.current !== undefined) {
       setSelectedPageWithMeta(undefined);
+      selectedPageWithMetaRef.current = undefined;
     }
-    else if (pages != null && pages.length > 0) {
+    else if ((pages != null && pages.length > 0) && selectedPageWithMetaRef.current !== pages[0]) {
       setSelectedPageWithMeta(pages[0]);
+      selectedPageWithMetaRef.current = pages[0];
     }
-  }, [pages, setSelectedPageWithMeta]);
+  }, [pages, setSelectedPageWithMeta, selectedPageWithMetaRef]);
 
   // reset selectedPageIdsByCheckboxes
   useEffect(() => {
