@@ -121,7 +121,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkI
                 className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
                 tabIndex={0}
                 role="menuitem"
-                onClick={(e) => onMenuItemClickHandler(e, 'root')}
+                onClick={e => onMenuItemClickHandler(e, 'root')}
               >
                 <BookmarkFolderMenuItem
                   itemId="root"
@@ -130,7 +130,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkI
                 />
               </div>
             </div>
-            {bookmarkFolders?.map((folder) => (
+            {bookmarkFolders?.map(folder => (
               <React.Fragment key={`bookmark-folders-${folder._id}`}>
                 <div key={folder._id}>
                   <div
@@ -138,7 +138,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkI
                     style={{ paddingLeft: '40px' }}
                     tabIndex={0}
                     role="menuitem"
-                    onClick={(e) => onMenuItemClickHandler(e, folder._id)}
+                    onClick={e => onMenuItemClickHandler(e, folder._id)}
                   >
                     <BookmarkFolderMenuItem
                       itemId={folder._id}
@@ -147,14 +147,14 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkI
                     />
                   </div>
                 </div>
-                {folder.children?.map((child) => (
+                {folder.children?.map(child => (
                   <div key={child._id}>
                     <div
                       className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
                       style={{ paddingLeft: '60px' }}
                       tabIndex={0}
                       role="menuitem"
-                      onClick={(e) => onMenuItemClickHandler(e, child._id)}
+                      onClick={e => onMenuItemClickHandler(e, child._id)}
                     >
                       <BookmarkFolderMenuItem
                         itemId={child._id}
