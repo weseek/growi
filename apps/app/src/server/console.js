@@ -4,7 +4,7 @@ const repl = require('repl');
 
 const mongoose = require('mongoose');
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
+const { getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
 
 const models = require('./models');
 
@@ -33,8 +33,6 @@ fs.readFile(replHistoryPath, 'utf8', (err, data) => {
 
 replServer.context.mongoose = mongoose;
 replServer.context.models = models;
-
-initMongooseGlobalSettings();
 
 mongoose.connect(getMongoUri(), mongoOptions)
   .then(() => {

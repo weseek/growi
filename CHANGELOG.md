@@ -12,12 +12,13 @@
 - imprv: Refactoring migration script (#7694) @miya
 - imprv: Implement infinite scroll into PageTimeline (#7679) @reiji-h
 
-### 🧰 Maintenance
-
 ### 🐛 Bug Fixes
 
-- support: Restrict the 'populate' method in model modules (#7689) @yuki-takei
 - fix: Hash and search query in the relative link are omitted wrongly (#7697) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Restrict the 'populate' method in model modules (#7689) @yuki-takei
 - support: Refactor LinkEditModal (#7654) @yukendev
 - ci(deps): bump aws-actions/configure-aws-credentials from 1 to 2 (#7620) @dependabot
 - ci(deps): bump hugo19941994/delete-draft-releases from 1.0.0 to 1.0.1 (#7448) @dependabot

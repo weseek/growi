@@ -543,7 +543,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
         </div>
         <a href="https://growi.org" className="link-growi-org pl-3">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          <span className="growi">GROWI</span>.<span className="org">org</span>
         </a>
       </div>
     </div>

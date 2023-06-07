@@ -1,16 +1,12 @@
 import mongoose from 'mongoose';
 import type {
-  Model, Document, Schema, ConnectOptions,
+  Model, Document, ConnectOptions,
 } from 'mongoose';
 
 // suppress DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version
 type ConnectionOptionsExtend = {
   useUnifiedTopology: boolean
 }
-// No More Deprecation Warning Options
-// Removed useFindAndModify and useCreateIndex option
-// see: https://mongoosejs.com/docs/migrating_to_6.html#no-more-deprecation-warning-options
-export const initMongooseGlobalSettings = (): void => {};
 
 export const getMongoUri = (): string => {
   const { env } = process;
