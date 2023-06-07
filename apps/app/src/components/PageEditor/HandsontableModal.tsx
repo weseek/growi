@@ -21,6 +21,7 @@ import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
 
 const DEFAULT_HOT_HEIGHT = 300;
+const DEFAULT_HOT_WIDTH = 752;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
   r: 'htRight',
   c: 'htCenter',
@@ -88,6 +89,7 @@ export const HandsontableModal = (): JSX.Element => {
   const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(defaultMarkdownTable);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(defaultMarkdownTable);
   const [handsontableHeight, setHandsontableHeight] = useState<number>(DEFAULT_HOT_HEIGHT);
+  const [handsontableWidth, setHandsontableWidth] = useState<number>(DEFAULT_HOT_WIDTH);
 
   useEffect(() => {
     const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
@@ -369,8 +371,11 @@ export const HandsontableModal = (): JSX.Element => {
    *  according to the height of this.refs.hotTableContainer
    */
   const expandHotTableHeight = () => {
-    if (isWindowExpanded && hotTableContainer != null) {
+    // TODO: recalculate `hotTableContainer` height and width
+    if (!isWindowExpanded && hotTableContainer != null) {
       const height = hotTableContainer.getBoundingClientRect().height;
+      const width  = hotTableContainer.getBoundingClientRect().width + DEFAULT_HOT_WIDTH;
+      setHandsontableWidth(width);
       setHandsontableHeight(height);
     }
   };
@@ -381,12 +386,13 @@ export const HandsontableModal = (): JSX.Element => {
     // create debounced method for expanding HotTable
     // invoke updateHotTableHeight method with delay
     // cz. Resizing this.refs.hotTableContainer is completed after a little delay after 'isWindowExpanded' set with 'true'
-    debounce(100, expandHotTableHeight);
+    debounce(100, expandHotTableHeight());
   };
 
   const contractWindow = () => {
     setIsWindowExpanded(false);
     setHandsontableHeight(DEFAULT_HOT_HEIGHT);
+    setHandsontableWidth(DEFAULT_HOT_WIDTH);
   };
 
   const createCustomizedContextMenu = () => {
@@ -493,6 +499,7 @@ export const HandsontableModal = (): JSX.Element => {
             data={markdownTable.table}
             settings={handsontableSettings as Handsontable.DefaultSettings}
             height={handsontableHeight}
+            width={handsontableWidth}
             afterLoadData={afterLoadDataHandler}
             modifyColWidth={modifyColWidthHandler}
             beforeColumnMove={beforeColumnMoveHandler}
