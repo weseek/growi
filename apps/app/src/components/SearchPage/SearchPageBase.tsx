@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
+import { IPageWithMeta } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import {
@@ -108,10 +109,13 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   // select first item on load
   useEffect(() => {
-    if (selectedPageWithMeta == null && pages != null && pages.length > 0) {
+    if (pages == null || pages?.length === 0) {
+      setSelectedPageWithMeta(undefined);
+    }
+    else if (pages != null && pages.length > 0) {
       setSelectedPageWithMeta(pages[0]);
     }
-  }, [pages, selectedPageWithMeta]);
+  }, [pages, setSelectedPageWithMeta]);
 
   // reset selectedPageIdsByCheckboxes
   useEffect(() => {
@@ -189,7 +193,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
-                      onPageSelected={page => setSelectedPageWithMeta(page)}
+                      onPageSelected={page => (selectedPageWithMeta !== page ? setSelectedPageWithMeta(page) : false) }
                       onCheckboxChanged={checkboxChangedHandler}
                     />
                   </div>
