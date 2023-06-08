@@ -237,7 +237,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(!props.skipSSR ? pageWithMeta?.data : null); // store initial data
+  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
@@ -277,7 +277,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (isClient() && currentPageId != null && !props.isNotFound && props.skipSSR) {
+    if (currentPageId != null && !props.isNotFound && props.skipSSR) {
       mutatePageData();
     }
   }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
