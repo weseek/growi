@@ -1,3 +1,15 @@
+function openEditor() {
+  cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+  cy.waitUntil(() => {
+    // do
+    cy.get('@pageEditorModeManager').within(() => {
+      cy.get('button:nth-child(2)').click();
+    });
+    // until
+    return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+  })
+}
+
 context('Editor while navigation', () => {
 
   const ssPrefix = 'editor-while-navigation-';
@@ -16,16 +28,7 @@ context('Editor while navigation', () => {
 
     cy.visit(page1Path);
 
-    // open editor
-    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
+    openEditor();
 
     // page1
     const bodyHello = 'hello';
@@ -56,16 +59,7 @@ context('Editor while navigation', () => {
       cy.getByTestid('btn-duplicate').click();
     })
 
-    // open editor
-    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
+    openEditor();
 
     cy.get('.CodeMirror').screenshot(`${ssPrefix}-editor-for-page2`);
 
@@ -84,16 +78,7 @@ context('Editor while navigation', () => {
       cy.get("a:contains('page1')").click();
     });
 
-    // open editor
-    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
+    openEditor();
 
     cy.get('.CodeMirror').screenshot(`${ssPrefix}-editor-for-page1-returned`);
 
