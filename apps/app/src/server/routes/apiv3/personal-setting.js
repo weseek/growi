@@ -244,6 +244,7 @@ module.exports = (crowi) => {
         logger.error('email-is-unique');
       }
       else {
+        logger.error('email-is-not-unique');
         throw new Error('email-is-not-unique');
       }
 
