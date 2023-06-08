@@ -4,7 +4,7 @@ import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable, SWRInfinitePageRevisionsResponse,
 } from '@growi/core';
 import { Ref, isClient, pagePathUtils } from '@growi/core';
-import useSWR, { mutate, SWRResponse } from 'swr';
+import useSWR, { mutate, SWRResponse, useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { SWRMutationResponse } from 'swr/mutation';
@@ -50,15 +50,18 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
+  const { cache } = useSWRConfig();
+  const shouldMutate = initialData?._id !== cache.get(key)?.data?._id && initialData !== undefined;
+
   useEffect(() => {
-    if (initialData !== undefined) {
+    if (shouldMutate) {
       mutate(key, initialData, {
         optimisticData: initialData,
         populateCache: true,
         revalidate: false,
       });
     }
-  }, [initialData, key]);
+  }, [initialData, key, shouldMutate]);
 
   return useSWR(key, null, {
     keepPreviousData: true,
