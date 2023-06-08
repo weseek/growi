@@ -68,9 +68,9 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
     }
     catch (err) {
       logger.error(err);
-      const message = err[0].message;
+      const code = err[0].message;
 
-      if (message.includes('User validation failed: email: Error, expected `email` to be unique.')) {
+      if (code === 'email-is-already-in-use') {
         throw new Error('The email is already in use');
       }
 

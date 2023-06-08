@@ -238,6 +238,15 @@ module.exports = (crowi) => {
       user.isEmailPublished = req.body.isEmailPublished;
       user.slackMemberId = req.body.slackMemberId;
 
+      const isUniqueEmail = await user.isUniqueEmail();
+
+      if (isUniqueEmail) {
+        logger.error('email-is-unique');
+      }
+      else {
+        throw new Error('email-is-not-unique');
+      }
+
       const updatedUser = await user.save();
 
       const parameters = { action: SupportedAction.ACTION_USER_PERSONAL_SETTINGS_UPDATE };
@@ -247,7 +256,12 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err);
+
+      if (err.message === 'email-is-not-unique') {
+        return res.apiv3Err('email-is-already-in-use');
+      }
+
+      return res.apiv3Err('update-personal-data-failed');
     }
 
   });

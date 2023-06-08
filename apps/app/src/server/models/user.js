@@ -144,6 +144,20 @@ module.exports = function(crowi) {
     return hasher.digest('base64');
   }
 
+  userSchema.methods.isUniqueEmail = async function() {
+    const User = this.model('User');
+
+    const userData = await User.findOne({ email: this.email });
+
+    if (userData) {
+      if (this.username === userData.username) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  };
+
   userSchema.methods.isPasswordSet = function() {
     if (this.password) {
       return true;
