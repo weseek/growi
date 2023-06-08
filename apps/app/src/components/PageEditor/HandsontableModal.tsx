@@ -7,7 +7,6 @@ import {
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
@@ -21,7 +20,6 @@ import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
 
 const DEFAULT_HOT_HEIGHT = 300;
-const DEFAULT_HOT_WIDTH = 752;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
   r: 'htRight',
   c: 'htCenter',
@@ -88,8 +86,8 @@ export const HandsontableModal = (): JSX.Element => {
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
   const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(defaultMarkdownTable);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(defaultMarkdownTable);
-  const [handsontableHeight, setHandsontableHeight] = useState<number>(DEFAULT_HOT_HEIGHT);
-  const [handsontableWidth, setHandsontableWidth] = useState<number>(DEFAULT_HOT_WIDTH);
+  const [handsontableHeight, setHandsontableHeight] = useState<number>(0);
+  const [handsontableWidth, setHandsontableWidth] = useState<number>(0);
 
   useEffect(() => {
     const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
@@ -97,6 +95,18 @@ export const HandsontableModal = (): JSX.Element => {
     setMarkdownTableOnInit(initTableInstance);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
+
+  // useEffect to calculate Handsontable dimensions based on hotTableContainer and isWindowExpanded
+  useEffect(() => {
+    if (hotTableContainer != null) {
+      // Get the width and height of hotTableContainer
+      const { width, height } = hotTableContainer.getBoundingClientRect();
+
+      setHandsontableWidth(width);
+      // Set the Handsontable height based on the container height or default height if isWindowExpanded is false
+      setHandsontableHeight(!isWindowExpanded ? DEFAULT_HOT_HEIGHT : height);
+    }
+  }, [hotTableContainer, isWindowExpanded]);
 
   const markdownTableOption = {
     get latest() {
@@ -365,36 +375,6 @@ export const HandsontableModal = (): JSX.Element => {
     toggleDataImportArea();
   };
 
-  /**
-   * Expand the height of the Handsontable
-   *  by updating 'handsontableHeight' state
-   *  according to the height of this.refs.hotTableContainer
-   */
-  const expandHotTableHeight = () => {
-    // TODO: recalculate `hotTableContainer` height and width
-    if (!isWindowExpanded && hotTableContainer != null) {
-      const height = hotTableContainer.getBoundingClientRect().height;
-      const width  = hotTableContainer.getBoundingClientRect().width + DEFAULT_HOT_WIDTH;
-      setHandsontableWidth(width);
-      setHandsontableHeight(height);
-    }
-  };
-
-  const expandWindow = () => {
-    setIsWindowExpanded(true);
-
-    // create debounced method for expanding HotTable
-    // invoke updateHotTableHeight method with delay
-    // cz. Resizing this.refs.hotTableContainer is completed after a little delay after 'isWindowExpanded' set with 'true'
-    debounce(100, expandHotTableHeight());
-  };
-
-  const contractWindow = () => {
-    setIsWindowExpanded(false);
-    setHandsontableHeight(DEFAULT_HOT_HEIGHT);
-    setHandsontableWidth(DEFAULT_HOT_WIDTH);
-  };
-
   const createCustomizedContextMenu = () => {
     return {
       items: {
@@ -444,8 +424,8 @@ export const HandsontableModal = (): JSX.Element => {
       </button>
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
-        contractWindow={contractWindow}
-        expandWindow={expandWindow}
+        contractWindow={() => setIsWindowExpanded(false)}
+        expandWindow={() => setIsWindowExpanded(true)}
       />
     </span>
   );
