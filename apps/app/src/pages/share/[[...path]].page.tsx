@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-import { isClient } from '@growi/core';
 import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -28,7 +27,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
 import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps, skipSSR,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -227,19 +226,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
   const props: Props = result.props as Props;
 
-  const skipSSR = (shareLinkRelatedPage: IShareLinkRelatedPage) => {
-    if (shareLinkRelatedPage.latestRevisionBodyLength == null) {
-      return true;
-    }
-
-    const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-    if (ssrMaxRevisionBodyLength < shareLinkRelatedPage.latestRevisionBodyLength) {
-      return true;
-    }
-
-    return false;
-  };
-
   try {
     const ShareLinkModel = crowi.model('ShareLink');
     const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
@@ -248,7 +234,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
     else {
       props.isNotFound = false;
-      props.skipSSR = skipSSR(shareLink.relatedPage);
+      props.skipSSR = skipSSR(context, shareLink.relatedPage);
       props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();

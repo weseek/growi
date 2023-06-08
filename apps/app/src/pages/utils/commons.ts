@@ -11,6 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -167,4 +168,24 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+};
+
+
+export const skipSSR = (context: GetServerSidePropsContext, page: PageDocument): boolean => {
+  // page document only stores the bodyLength of the latest revision
+  if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
+    return true;
+  }
+
+  if (page.latestRevisionBodyLength == null) {
+    return true;
+  }
+
+  const req = context.req as CrowiRequest;
+  const ssrMaxRevisionBodyLength = req.crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+  if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
+    return true;
+  }
+
+  return false;
 };

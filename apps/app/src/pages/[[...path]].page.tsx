@@ -58,7 +58,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
 } from './utils/commons';
 
 
@@ -476,19 +476,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const pageWithMeta: IPageToShowRevisionWithMeta | null = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = pageWithMeta?.data as unknown as PageDocument;
 
-  const skipSSR = () => {
-    if (!props.isLatestRevision || page.latestRevisionBodyLength == null) {
-      return true;
-    }
-
-    const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-    if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
-      return true;
-    }
-
-    return false;
-  };
-
   // add user to seen users
   if (page != null && user != null) {
     await page.seen(user);
@@ -498,7 +485,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
-    props.skipSSR = skipSSR();
+    props.skipSSR = skipSSR(context, page);
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
