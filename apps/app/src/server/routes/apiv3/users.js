@@ -185,27 +185,18 @@ module.exports = (crowi) => {
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-    let failedToSendNewPasswordEmail = null;
 
-    try {
-      await mailService.send({
-        to: user.email,
-        subject: `New password for ${appTitle}`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.txt'),
-        vars: {
-          email: user.email,
-          password: user.password,
-          url: crowi.appService.getSiteUrl(),
-          appTitle,
-        },
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      failedToSendNewPasswordEmail = { email: user.email, reason: err.message };
-    }
-
-    return { failedToSendNewPasswordEmail };
+    await mailService.send({
+      to: user.email,
+      subject: `New password for ${appTitle}`,
+      template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.txt'),
+      vars: {
+        email: user.email,
+        password: user.password,
+        url: crowi.appService.getSiteUrl(),
+        appTitle,
+      },
+    });
   };
 
   /**
@@ -1037,13 +1028,13 @@ module.exports = (crowi) => {
         password: req.body.newPassword,
       };
 
-      const sendEmail = await sendEmailByUser(userInfo);
-
-      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendNewPasswordEmail });
+      await sendEmailByUser(userInfo);
+      return res.apiv3({});
     }
     catch (err) {
+      const msg = err.message;
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(err));
+      return res.apiv3Err(new ErrorV3(msg));
     }
   });
 
