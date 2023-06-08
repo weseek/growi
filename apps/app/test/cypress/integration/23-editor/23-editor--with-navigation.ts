@@ -8,9 +8,70 @@ function openEditor() {
     // until
     return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
   })
+  cy.get('.CodeMirror').should('be.visible');
 }
 
-context('Editor while navigation', () => {
+context('Editor while uploading to a new page', () => {
+
+  const ssPrefix = 'editor-while-uploading-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
+
+  // for https://redmine.weseek.co.jp/issues/122040
+  it('should not be cleared and should prevent GrantSelector from modified', { scrollBehavior: false }, () => {
+    cy.visit('/Sandbox/for-122040');
+
+    openEditor();
+
+    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-1`);
+
+    // input the body
+    const body = 'Hello World!';
+    cy.get('.CodeMirror').type(body + '\n\n');
+    cy.get('.CodeMirror').should('contain.text', body);
+
+    // open GrantSelector
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('grw-grant-selector').within(() => {
+        cy.get('button.dropdown-toggle').click({force: true});
+      });
+      // wait until
+      return cy.getByTestid('grw-grant-selector').within(() => {
+        return Cypress.$('.dropdown-menu.show').is(':visible');
+      });
+    });
+
+    // Select "Only me"
+    cy.getByTestid('grw-grant-selector').within(() => {
+      // click "Only me"
+      cy.get('.dropdown-menu.show').find('.dropdown-item').should('have.length', 4).then((menuItems) => {
+        menuItems[2].click();
+      });
+    });
+
+    cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
+    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-2`);
+
+    // drag-drop a file
+    const filePath = 'test/cypress/integration/23-editor/assets/example.txt';
+    cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
+
+    // expect
+    cy.get('.CodeMirror').should('contain.text', body);
+    cy.get('.CodeMirror').should('contain.text', '[example.txt](/attachment/');
+    cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
+    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-3`);
+  });
+
+});
+
+context.skip('Editor while navigation', () => {
 
   const ssPrefix = 'editor-while-navigation-';
 
