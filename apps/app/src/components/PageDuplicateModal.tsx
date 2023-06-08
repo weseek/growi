@@ -252,6 +252,7 @@ const PageDuplicateModal = (): JSX.Element => {
         <button
           type="button"
           className="btn btn-primary"
+          data-testid="btn-duplicate"
           onClick={duplicate}
           disabled={!submitButtonEnabled}
         >
