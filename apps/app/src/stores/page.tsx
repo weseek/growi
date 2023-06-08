@@ -47,6 +47,7 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
   return useStaticSWR<string, Error>('templateBodyData', initialData);
 };
 
+/** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
