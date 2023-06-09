@@ -1965,8 +1965,6 @@ class PageService {
   // TODO: Delete user arg.
   // see: https://redmine.weseek.co.jp/issues/124326
   /**
-   * Delete a user's homepage and its subpages completely by the system.
-   *
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
