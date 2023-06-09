@@ -181,7 +181,6 @@ module.exports = (crowi) => {
     return { failedToSendEmailList };
   };
 
-
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
@@ -1004,6 +1003,9 @@ module.exports = (crowi) => {
    *                  user:
    *                    type: string
    *                    description: user id for send new password email
+   *        responses:
+   *          200:
+   *            description: success send new password email
    */
   router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
@@ -1019,6 +1021,7 @@ module.exports = (crowi) => {
       };
 
       await sendEmailByUser(userInfo);
+      return res.apiv3({ user });
     }
     catch (err) {
       const msg = err.message;
