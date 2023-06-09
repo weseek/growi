@@ -181,6 +181,23 @@ module.exports = (crowi) => {
     return { failedToSendEmailList };
   };
 
+  const sendEmailByUser = async(user) => {
+    const { appService, mailService } = crowi;
+    const appTitle = appService.getAppTitle();
+
+    await mailService.send({
+      to: user.email,
+      subject: `New password for ${appTitle}`,
+      template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.txt'),
+      vars: {
+        email: user.email,
+        password: user.password,
+        url: crowi.appService.getSiteUrl(),
+        appTitle,
+      },
+    });
+  };
+
   /**
    * @swagger
    *
