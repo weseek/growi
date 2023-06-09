@@ -100,10 +100,15 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
-      const previousShowEditorIds = new Set(...previousState);
-      previousShowEditorIds.delete(commentId);
-      return previousShowEditorIds;
+      // Create a new Set of commentId from the previous state
+      const updatedShowEditorIds = new Set(previousState);
+      updatedShowEditorIds.delete(commentId);  // Delete the commentId from the Set
+      return updatedShowEditorIds;
     });
+  }, []);
+
+  const handleReplyButtonClick = useCallback((commentId: string) => {
+    setShowEditorIds((previousState) => new Set(previousState.add(commentId)));
   }, []);
 
   if (hideIfEmpty && comments?.length === 0) {
@@ -184,9 +189,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                             color="secondary"
                             size="sm"
                             className="btn-comment-reply"
-                            onClick={() => {
-                              setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
-                            }}
+                            onClick={() => handleReplyButtonClick(comment._id)}
                           >
                             <i className="icon-fw icon-action-undo"></i> Reply
                           </Button>
