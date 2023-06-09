@@ -1029,7 +1029,7 @@ module.exports = (crowi) => {
       };
 
       await sendEmailByUser(userInfo);
-      return res.apiv3({});
+      return res.apiv3({ user });
     }
     catch (err) {
       const msg = err.message;
