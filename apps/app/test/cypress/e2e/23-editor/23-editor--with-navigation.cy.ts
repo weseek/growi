@@ -24,7 +24,11 @@ context('Editor while uploading to a new page', () => {
     });
   });
 
-  // for https://redmine.weseek.co.jp/issues/122040
+  /**
+   * for the issues:
+   * @see https://redmine.weseek.co.jp/issues/122040
+   * @see https://redmine.weseek.co.jp/issues/124281
+   */
   it('should not be cleared and should prevent GrantSelector from modified', { scrollBehavior: false }, () => {
     cy.visit('/Sandbox/for-122040');
 
@@ -84,7 +88,10 @@ context.skip('Editor while navigation', () => {
     });
   });
 
-  // for https://redmine.weseek.co.jp/issues/115285
+  /**
+   * for the issue:
+   * @see https://redmine.weseek.co.jp/issues/115285
+   */
   it('Successfully updating the page body', { scrollBehavior: false }, () => {
     const page1Path = '/Sandbox/for-115285/page1';
     const page2Path = '/Sandbox/for-115285/page2';
