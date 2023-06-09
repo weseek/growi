@@ -1,7 +1,7 @@
-import { ITemplate } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type { ITemplate } from '@growi/core';
+import useSWR, { type SWRResponse } from 'swr';
 
-import { getGrowiFacade } from '~/features/activate-plugin';
+import { getGrowiFacade } from '~/features/growi-plugin/utils/growi-facade-utils.client';
 
 const presetTemplates: ITemplate[] = [
   // preset 1
