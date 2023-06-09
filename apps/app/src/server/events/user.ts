@@ -4,15 +4,13 @@ import type { IUserHasId } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../crowi';
-
 const logger = loggerFactory('growi:events:user');
 
 class UserEvent extends EventEmitter {
 
-  crowi: Crowi;
+  crowi: any;
 
-  constructor(crowi: Crowi) {
+  constructor(crowi: any) {
     super();
     this.crowi = crowi;
   }
