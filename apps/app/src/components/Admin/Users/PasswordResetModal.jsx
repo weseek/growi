@@ -8,7 +8,7 @@ import {
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
@@ -19,7 +19,6 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
-      sendEmail: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
