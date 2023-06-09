@@ -45,7 +45,7 @@ class PasswordResetModal extends React.Component {
     return (
       <>
         {isEmailSent ? (
-          <button type="submit" className="btn btn-primary" disabled>
+          <button type="submit" className="btn btn-secondary" disabled>
             {t('Done')}
           </button>
         ) : (
