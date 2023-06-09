@@ -1,3 +1,5 @@
+import path from 'path-browserify';
+
 function openEditor() {
   cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
   cy.waitUntil(() => {
@@ -59,7 +61,7 @@ context('Editor while uploading to a new page', () => {
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-2`);
 
     // drag-drop a file
-    const filePath = 'test/cypress/integration/23-editor/assets/example.txt';
+    const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
 
     // expect

@@ -289,7 +289,7 @@ jobs:
     - name: Determine spec expression
       id: determine-spec-exp
       run: |
-        SPEC=`node bin/github-actions/generate-cypress-spec-arg.mjs --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
+        SPEC=`node bin/github-actions/generate-cypress-spec-arg.mjs --prefix="test/cypress/e2e/" --suffix="-*/*.cy.{ts,tsx}" "${{ matrix.spec-group }}"`
         echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
