@@ -8,29 +8,29 @@ export const GrowiPluginResourceType = {
 } as const;
 export type GrowiPluginResourceType = typeof GrowiPluginResourceType[keyof typeof GrowiPluginResourceType];
 
-export type GrowiPluginOrigin = {
+export type IGrowiPluginOrigin = {
   url: string,
   ghBranch?: string,
   ghTag?: string,
 }
 
-export type GrowiPlugin<M extends GrowiPluginMeta = GrowiPluginMeta> = {
+export type IGrowiPlugin<M extends IGrowiPluginMeta = IGrowiPluginMeta> = {
   isEnabled: boolean,
   installedPath: string,
   organizationName: string,
-  origin: GrowiPluginOrigin,
+  origin: IGrowiPluginOrigin,
   meta: M,
 }
 
-export type GrowiPluginMeta = {
+export type IGrowiPluginMeta = {
   name: string,
   types: GrowiPluginResourceType[],
   desc?: string,
   author?: string,
 }
 
-export type GrowiThemePluginMeta = GrowiPluginMeta & {
+export type IGrowiThemePluginMeta = IGrowiPluginMeta & {
   themes: GrowiThemeMetadata[]
 }
 
-export type GrowiPluginHasId = GrowiPlugin & HasObjectId;
+export type IGrowiPluginHasId = IGrowiPlugin & HasObjectId;

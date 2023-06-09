@@ -1962,9 +1962,21 @@ class PageService {
     }
   }
 
-  async deleteCompletelyUserHomepageAndSubpages(user, userHomepagePath, options = {}): Promise<void> {
+  // TODO: Delete user arg.
+  // see: https://redmine.weseek.co.jp/issues/124326
+  /**
+   * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
+   * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
+   *
+   * @param {object} user - The user object.
+   * @param {string} userHomepagePath - The path of the user's homepage.
+   * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
+   * @throws {Error} - If an error occurs during the deletion process.
+   */
+  async deleteCompletelyUserHomeBySystem(user: object, userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, user);
+    const options = {};
 
     if (userHomepage == null) {
       logger.error('user homepage is not found.');
