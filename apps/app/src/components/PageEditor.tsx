@@ -521,6 +521,7 @@ const PageEditor = React.memo((): JSX.Element => {
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
   const onRouterChangeComplete = useCallback(() => {
     editorRef.current?.setValue(initialValue);
+    editorRef.current?.setCaretLine(0);
   }, [initialValue]);
 
   useEffect(() => {
