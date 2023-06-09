@@ -240,12 +240,9 @@ module.exports = (crowi) => {
 
       const isUniqueEmail = await user.isUniqueEmail();
 
-      if (isUniqueEmail) {
-        logger.error('email-is-unique');
-      }
-      else {
+      if (!isUniqueEmail) {
         logger.error('email-is-not-unique');
-        throw new Error('email-is-not-unique');
+        return res.apiv3Err('email-is-already-in-use');
       }
 
       const updatedUser = await user.save();
@@ -257,11 +254,6 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-
-      if (err.message === 'email-is-not-unique') {
-        return res.apiv3Err('email-is-already-in-use');
-      }
-
       return res.apiv3Err('update-personal-data-failed');
     }
 

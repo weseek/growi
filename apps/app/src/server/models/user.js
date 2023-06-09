@@ -149,10 +149,7 @@ module.exports = function(crowi) {
 
     const userData = await User.findOne({ email: this.email });
 
-    if (userData) {
-      if (this.username === userData.username) {
-        return true;
-      }
+    if (userData != null && this._id !== userData._id) {
       return false;
     }
     return true;
