@@ -140,6 +140,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
+    logger.error(userGroupData);
     logger.error(userGroupData?.parent);
     logger.error(typeof userGroupData?.parent);
     if (typeof userGroupData?.parent === 'string') {
