@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
+import { configManager } from '../../service/config-manager';
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
@@ -351,7 +351,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
     }
 
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const limit = parseInt(req.query.limit) || await configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
     const page = req.query.page;
     const offset = (page - 1) * limit;
     const queryOptions = { offset, limit };
@@ -747,6 +747,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
@@ -756,7 +757,7 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: removeUser
    *        summary: /users/{id}/remove
-   *        description: Delete user
+   *        description: Delete user and if isUsersHomePageDeletionEnabled delete user home page and subpages
    *        parameters:
    *          - name: id
    *            in: path
@@ -766,32 +767,44 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Deleting user success
+   *            description: Deleting user success and if isUsersHomePageDeletionEnabled delete user home page and subpages success
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
-   *                    userData:
+   *                    user:
    *                      type: object
-   *                      description: data of delete user
+   *                      description: data of deleted user
+   *                    userHomePagePath:
+   *                      type: string
+   *                      description: a user home page path
+   *                    isUsersHomePageDeletionEnabled:
+   *                      type: boolean
+   *                      description: is users home page deletion enabled
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
-    const isUserPageDeletionEnabled = crowi.configManager.getConfig('crowi', 'security:isUserPageDeletionEnabled');
+    const isUsersHomePageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled');
 
     try {
-      const userData = await User.findById(id);
-      const username = userData.username;
-      await UserGroupRelation.remove({ relatedUser: userData });
-      await userData.statusDelete();
-      await ExternalAccount.remove({ user: userData });
-      if (isUserPageDeletionEnabled) await Page.removeUserHome(username);
+      const user = await User.findById(id);
+      // !! DO NOT MOVE userHomePagePath FROM THIS POSITION !! -- 05.31.2023
+      // catch username before delete user because username will be change to deleted_at_*
+      const userHomePagePath = `/user/${user.username}`;
 
-      const serializedUserData = serializeUserSecurely(userData);
+      await UserGroupRelation.remove({ relatedUser: user });
+      await user.statusDelete();
+      await ExternalAccount.remove({ user });
+
+      const serializedUser = serializeUserSecurely(user);
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
-      return res.apiv3({ userData: serializedUserData });
+      if (isUsersHomePageDeletionEnabled) {
+        crowi.pageService.deleteCompletelyUserHomeBySystem(req.user, userHomePagePath);
+      }
+
+      return res.apiv3({ user: serializedUser });
     }
     catch (err) {
       logger.error('Error', err);

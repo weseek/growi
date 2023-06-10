@@ -38,7 +38,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      isUserPageDeletionEnabled: false,
+      isUsersHomePageDeletionEnabled: false,
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
@@ -74,7 +74,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveCompleteDeletionAuthority: generalSetting.pageRecursiveCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
-      isUserPageDeletionEnabled: generalSetting.isUserPageDeletionEnabled,
+      isUsersHomePageDeletionEnabled: generalSetting.isUsersHomePageDeletionEnabled,
       sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
       disableLinkSharing: shareLinkSetting.disableLinkSharing,
@@ -196,10 +196,10 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch isUserPageDeletionEnabled
+   * Switch isUsersHomePageDeletionEnabled
    */
-  switchisUserPageDeletionEnabled() {
-    this.setState({ isUserPageDeletionEnabled: !this.state.isUserPageDeletionEnabled });
+  switchIsUsersHomePageDeletionEnabled() {
+    this.setState({ isUsersHomePageDeletionEnabled: !this.state.isUsersHomePageDeletionEnabled });
   }
 
   /**
@@ -218,7 +218,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageRecursiveCompleteDeletionAuthority: this.state.currentPageRecursiveCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
-      isUserPageDeletionEnabled: this.state.isUserPageDeletionEnabled,
+      isUsersHomePageDeletionEnabled: this.state.isUsersHomePageDeletionEnabled,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);

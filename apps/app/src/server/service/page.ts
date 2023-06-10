@@ -1962,6 +1962,64 @@ class PageService {
     }
   }
 
+  // TODO: Delete user arg.
+  // see: https://redmine.weseek.co.jp/issues/124326
+  /**
+   * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
+   * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
+   *
+   * @param {object} user - The user object.
+   * @param {string} userHomePagePath - The path of the user's homepage.
+   * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
+   * @throws {Error} - If an error occurs during the deletion process.
+   */
+  async deleteCompletelyUserHomeBySystem(user: object, userHomePagePath: string): Promise<void> {
+    const Page = this.crowi.model('Page');
+    const userHomePage = await Page.findByPath(userHomePagePath, user);
+    const options = {};
+
+    if (userHomePage == null) {
+      logger.error('user home page is not found.');
+      return;
+    }
+
+    const ids = [userHomePage._id];
+    const paths = [userHomePage.path];
+
+    let pageOp;
+    try {
+      // 1. update descendantCount
+      const inc = userHomePage.isEmpty ? -userHomePage.descendantCount : -(userHomePage.descendantCount + 1);
+      await this.updateDescendantCountOfAncestors(userHomePage.parent, inc, true);
+      // 2. delete target completely
+      await this.deleteCompletelyOperation(ids, paths);
+      // 3. delete leaf empty pages
+      await Page.removeLeafEmptyPagesRecursively(userHomePage.parent);
+
+      if (!userHomePage.isEmpty) {
+        this.pageEvent.emit('deleteCompletely', userHomePage, user);
+      }
+
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.DeleteCompletely,
+        actionStage: PageActionStage.Main,
+        page: userHomePage,
+        user,
+        fromPath: userHomePage.path,
+        options,
+      });
+
+      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, user, options, pageOp._id);
+    }
+    catch (err) {
+      logger.error('Error occurred while deleting user home page and subpages.', err);
+      if (pageOp != null) {
+        await PageOperation.deleteOne({ _id: pageOp._id });
+      }
+      throw err;
+    }
+  }
+
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
