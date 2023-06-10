@@ -14,10 +14,19 @@ export interface IExternalUserGroupRelation extends Omit<IUserGroupRelation, 're
 export interface LdapGroupSyncSettings {
   ldapGroupSearchBase: string
   ldapGroupMembershipAttribute: string
-  ldapGroupMembershipAttributeType: string
+  ldapGroupMembershipAttributeType: 'DN' | 'UID'
   ldapGroupChildGroupAttribute: string
   autoGenerateUserOnLdapGroupSync: boolean
   preserveDeletedLdapGroups: boolean
   ldapGroupNameAttribute: string
   ldapGroupDescriptionAttribute?: string
+}
+
+// interface for objects before they are converted into ExternalUserGroup
+export interface LdapGroup {
+  dn: string
+  users: string[] // DN or UID
+  childGroups: string[] // DN
+  name: string
+  description?: string
 }

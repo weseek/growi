@@ -17,7 +17,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
   const [formValues, setFormValues] = useState<LdapGroupSyncSettings>({
     ldapGroupSearchBase: '',
     ldapGroupMembershipAttribute: '',
-    ldapGroupMembershipAttributeType: '',
+    ldapGroupMembershipAttributeType: 'DN',
     ldapGroupChildGroupAttribute: '',
     autoGenerateUserOnLdapGroupSync: false,
     preserveDeletedLdapGroups: false,
@@ -94,7 +94,11 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             name="ldapGroupMembershipAttributeType"
             id="ldapGroupMembershipAttributeType"
             value={formValues.ldapGroupMembershipAttributeType}
-            onChange={e => setFormValues({ ...formValues, ldapGroupMembershipAttributeType: e.target.value })}>
+            onChange={(e) => {
+              if (e.target.value === 'DN' || e.target.value === 'UID') {
+                setFormValues({ ...formValues, ldapGroupMembershipAttributeType: e.target.value });
+              }
+            }}>
             <option value="DN">DN</option>
             <option value="UID">UID</option>
           </select>
@@ -208,7 +212,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             type="text"
             name="ldapGroupDescriptionAttribute"
             id="ldapGroupDescriptionAttribute"
-            value={formValues.ldapGroupDescriptionAttribute}
+            value={formValues.ldapGroupDescriptionAttribute || ''}
             onChange={e => setFormValues({ ...formValues, ldapGroupDescriptionAttribute: e.target.value })}
           />
           <p className="form-text text-muted">
