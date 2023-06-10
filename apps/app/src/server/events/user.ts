@@ -17,6 +17,7 @@ class UserEvent extends EventEmitter {
 
   async onActivated(user: IUserHasId): Promise<void> {
     if (this.crowi.pageService === null) {
+      logger.warn('crowi pageService is null');
       return;
     }
 
