@@ -44,18 +44,24 @@ class PasswordResetModal extends React.Component {
 
     return (
       <>
-        {isEmailSent ? (
-          <button type="submit" className="btn btn-secondary" disabled>
-            {t('Done')}
-          </button>
-        ) : (
-          <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-            {t('Send')}
-          </button>
-        )}
-        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-          {t('Close')}
-        </button>
+        <div className="row justify-content-space-between">
+          <div className="mr-2">
+            {isEmailSent ? (
+              <button type="submit" className="btn btn-secondary" disabled>
+                {t('Done')}
+              </button>
+            ) : (
+              <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
+                {t('Send')}
+              </button>
+            )}
+          </div>
+          <div className="mr-3">
+            <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
+              {t('Close')}
+            </button>
+          </div>
+        </div>
       </>
     );
   }
@@ -138,12 +144,16 @@ class PasswordResetModal extends React.Component {
     }
     return (
       <>
-        <p className="mb-4 mt-1">To:</p>
-        <div className="mr-3">
-          <p className="mb-0">{userForPasswordResetModal.username}</p>
-          <p className="mb-0">{userForPasswordResetModal.email}</p>
+        <div className="d-flex col text-left ml-1 pl-0">
+          <p className="mr-3">To:</p>
+          <div>
+            <p className="mb-0">{userForPasswordResetModal.username}</p>
+            <p className="mb-0">{userForPasswordResetModal.email}</p>
+          </div>
         </div>
-        {this.renderButtons()}
+        <div>
+          {this.renderButtons()}
+        </div>
       </>
     );
   }
