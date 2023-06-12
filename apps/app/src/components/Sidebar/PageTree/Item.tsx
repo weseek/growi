@@ -22,8 +22,9 @@ import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnl
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
-import { useSWRMUTxBookmarkInfo, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
+import { useSWRMUTxPageInfo } from '~/stores/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -125,7 +126,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
-  const { trigger: mutateBookmarkInfo } = useSWRMUTxBookmarkInfo(page._id ?? null);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(page._id ?? null);
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -262,7 +263,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
     mutateCurrentUserBookmarks();
-    mutateBookmarkInfo();
+    mutatePageInfo();
   };
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
