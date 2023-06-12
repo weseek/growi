@@ -1,4 +1,5 @@
-import { SWRResponse } from 'swr';
+import { IUser } from '@growi/core';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
@@ -10,31 +11,10 @@ import { IBookmarkInfo } from '../interfaces/bookmark-info';
 
 import { useCurrentUser } from './context';
 
-export const useSWRxBookmarkInfo = (pageId: string | null): SWRResponse<IBookmarkInfo, Error> => {
-  return useSWRImmutable(
+export const useSWRxBookmarkedUsers = (pageId: string | null): SWRResponse<IUser[], Error> => {
+  return useSWR(
     pageId != null ? `/bookmarks/info?pageId=${pageId}` : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
-      return {
-        sumOfBookmarks: response.data.sumOfBookmarks,
-        isBookmarked: response.data.isBookmarked,
-        bookmarkedUsers: response.data.bookmarkedUsers,
-        pageId: response.data.pageId,
-      };
-    }),
-  );
-};
-
-export const useSWRMUTxBookmarkInfo = (pageId: string | null | undefined): SWRMutationResponse<IBookmarkInfo, Error> => {
-  return useSWRMutation(
-    pageId != null ? `/bookmarks/info?pageId=${pageId}` : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
-      return {
-        sumOfBookmarks: response.data.sumOfBookmarks,
-        isBookmarked: response.data.isBookmarked,
-        bookmarkedUsers: response.data.bookmarkedUsers,
-        pageId: response.data.pageId,
-      };
-    }),
+    endpoint => apiv3Get<IBookmarkInfo>(endpoint).then(response => response.data.bookmarkedUsers),
   );
 };
 
