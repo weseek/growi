@@ -43,13 +43,8 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
-
-const SearchResultContent = dynamic(() => import('./SearchResultContent').then(mod => mod.SearchResultContent), {
-  ssr: false,
-  loading: () => <></>,
-});
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
-
+  const SearchResultContent = dynamic(import('./SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
   const {
     pages,
     searchingKeyword,
@@ -67,7 +62,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
-
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
 
   // publish selectAll()
@@ -114,13 +108,10 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   // select first item on load
   useEffect(() => {
-    if ((pages == null || pages.length === 0)) {
-      setSelectedPageWithMeta(undefined);
-    }
-    else if ((pages != null && pages.length > 0)) {
+    if (selectedPageWithMeta == null && pages != null && pages.length > 0) {
       setSelectedPageWithMeta(pages[0]);
     }
-  }, [pages, setSelectedPageWithMeta]);
+  }, [pages, selectedPageWithMeta]);
 
   // reset selectedPageIdsByCheckboxes
   useEffect(() => {
@@ -198,7 +189,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
-                      onPageSelected={page => (setSelectedPageWithMeta(page)) }
+                      onPageSelected={page => setSelectedPageWithMeta(page)}
                       onCheckboxChanged={checkboxChangedHandler}
                     />
                   </div>
@@ -214,7 +205,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
         </div>
 
         <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-          {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
+          { selectedPageWithMeta != null && (
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
