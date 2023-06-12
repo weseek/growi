@@ -1006,13 +1006,6 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: success send new password email
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    failedToSendEmail:
-   *                      type: object
-   *                      description: email and reasons for new password email sending failure
    */
   router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
@@ -1028,7 +1021,6 @@ module.exports = (crowi) => {
       };
 
       await sendEmailByUser(userInfo);
-      return res.apiv3({ user });
     }
     catch (err) {
       const msg = err.message;

@@ -7,6 +7,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
@@ -19,7 +20,6 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
-      isEmailSent: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
@@ -36,6 +36,10 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+  showToaster() {
+    toastSuccess('Copied Password');
   }
 
   renderButtons() {
@@ -64,10 +68,6 @@ class PasswordResetModal extends React.Component {
         </div>
       </>
     );
-  }
-
-  showToaster() {
-    toastSuccess('Copied Password');
   }
 
   renderModalBodyBeforeReset() {
@@ -211,6 +211,8 @@ PasswordResetModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userForPasswordResetModal: PropTypes.object,
+  onSuccessfullySentNewPasswordEmail: PropTypes.func.isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
 };
 
