@@ -92,10 +92,7 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
-
-  // routerRef solve the problem of infinite redrawing that occurs with routers
   const router = useRouter();
-  const routerRef = useRef(router);
 
   // parse URL Query
   const queries = router.query.q;
@@ -168,10 +165,10 @@ export const SearchPage = (): JSX.Element => {
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
-      keyword,
+      keyword: initQ,
       limit: INITIAL_PAGIONG_SIZE,
     };
-  }, [keyword]);
+  }, [initQ]);
 
   // for bulk deletion
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
@@ -180,21 +177,8 @@ export const SearchPage = (): JSX.Element => {
   useEffect(() => {
     const newUrl = new URL('/_search', 'http://example.com');
     newUrl.searchParams.append('q', keyword);
-    routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
-  }, [keyword, routerRef]);
-
-  // browser back and forward
-  useEffect(() => {
-    routerRef.current.beforePopState(({ url }) => {
-      const newUrl = new URL(url, 'https://exmple.com');
-      const newKeyword = newUrl.searchParams.get('q');
-      if (newKeyword != null) {
-        setKeyword(newKeyword);
-      }
-      return true;
-    });
-  }, [setKeyword, routerRef]);
-
+    window.history.pushState('', `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
+  }, [keyword]);
   const hitsCount = data?.meta.hitsCount;
 
   const allControl = useMemo(() => {

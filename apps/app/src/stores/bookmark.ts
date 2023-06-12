@@ -20,8 +20,6 @@ export const useSWRxBookmarkInfo = (pageId: string | null): SWRResponse<IBookmar
         pageId: response.data.pageId,
       };
     }),
-    // supress unnecessary API requests when using for mutation purposes
-    { revalidateOnMount: false },
   );
 };
 
