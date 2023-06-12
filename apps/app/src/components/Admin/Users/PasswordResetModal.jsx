@@ -157,7 +157,6 @@ class PasswordResetModal extends React.Component {
       userForPasswordResetModal,
     } = this.props;
 
-
     try {
       await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
       this.setState({ isEmailSent: true });
