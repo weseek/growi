@@ -75,7 +75,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
-  // retrieve UserUISettings
+  // retrieve UserUISett ings
   const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
   const userUISettings = user != null && UserUISettings != null
     ? await UserUISettings.findOne({ user: user._id }).exec()
@@ -171,14 +171,15 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
 };
 
 
-export const skipSSR = (context: GetServerSidePropsContext, page: PageDocument): boolean => {
+export const skipSSR = async(page: PageDocument): Promise<boolean> => {
+  const { configManager } = await import('~/server/service/config-manager');
+
   // page document only stores the bodyLength of the latest revision
   if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
     return true;
   }
 
-  const req = context.req as CrowiRequest;
-  const ssrMaxRevisionBodyLength = req.crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+  const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
   if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
     return true;
   }
