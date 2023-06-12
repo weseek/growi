@@ -179,6 +179,7 @@ export const skipSSR = async(page: PageDocument): Promise<boolean> => {
     return true;
   }
 
+  await configManager.loadConfigs();
   const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
   if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
     return true;
