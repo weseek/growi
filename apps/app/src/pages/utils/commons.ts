@@ -177,10 +177,6 @@ export const skipSSR = (context: GetServerSidePropsContext, page: PageDocument):
     return true;
   }
 
-  if (page.latestRevisionBodyLength == null) {
-    return true;
-  }
-
   const req = context.req as CrowiRequest;
   const ssrMaxRevisionBodyLength = req.crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
   if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {

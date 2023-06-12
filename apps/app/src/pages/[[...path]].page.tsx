@@ -268,16 +268,16 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
 
   useEffect(() => {
-    const mutatePageData = async() => {
-      const pageData = await mutateCurrentPage();
-      mutateEditingMarkdown(pageData?.revision.body);
-    };
-
     if (!props.skipSSR) {
       return;
     }
 
-    if (currentPageId != null && !props.isNotFound && props.skipSSR) {
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
       mutatePageData();
     }
   }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);

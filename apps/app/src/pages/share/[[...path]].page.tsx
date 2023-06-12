@@ -100,7 +100,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (props.shareLink?.relatedPage._id != null && !props.isNotFound && props.skipSSR) {
+    if (props.shareLink?.relatedPage._id != null && !props.isNotFound) {
       mutateCurrentPage();
     }
   }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
