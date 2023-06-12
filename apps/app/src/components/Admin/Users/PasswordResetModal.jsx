@@ -43,6 +43,10 @@ class PasswordResetModal extends React.Component {
     toastSuccess('Copied Password');
   }
 
+  handleEmailSent() {
+    this.setState({ isEmailSent: true });
+  }
+
   renderButtons() {
     const { t, isMailerSetup } = this.props;
     const { isEmailSent } = this.state;
@@ -160,6 +164,7 @@ class PasswordResetModal extends React.Component {
     try {
       await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
       this.setState({ isEmailSent: true });
+      this.handleEmailSent();
     }
     catch (err) {
       toastError(err);
