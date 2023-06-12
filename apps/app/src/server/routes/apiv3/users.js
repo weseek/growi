@@ -1021,7 +1021,6 @@ module.exports = (crowi) => {
       };
 
       await sendEmailByUser(userInfo);
-      return res.apiv3();
     }
     catch (err) {
       const msg = err.message;
