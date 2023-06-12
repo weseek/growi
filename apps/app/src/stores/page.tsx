@@ -4,20 +4,20 @@ import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable, SWRInfinitePageRevisionsResponse,
 } from '@growi/core';
 import { Ref, isClient, pagePathUtils } from '@growi/core';
-import useSWR, { mutate, SWRResponse, useSWRConfig } from 'swr';
+import useSWR, { mutate, useSWRConfig, type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
-import useSWRMutation, { SWRMutationResponse } from 'swr/mutation';
+import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
+import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import {
+import type {
   IPageInfo, IPageInfoForOperation,
 } from '~/interfaces/page';
-import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import { IRevision, IRevisionHasId } from '~/interfaces/revision';
+import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
+import type { IRevision, IRevisionHasId } from '~/interfaces/revision';
 
-import { IPageTagsInfo } from '../interfaces/tag';
+import type { IPageTagsInfo } from '../interfaces/tag';
 
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
@@ -159,6 +159,24 @@ export const useSWRxPageInfo = (
   }, [initialData, key]);
 
   return swrResult;
+};
+
+export const useSWRMUTxPageInfo = (
+    pageId: string | null | undefined,
+    shareLinkId?: string | null,
+): SWRMutationResponse<IPageInfo | IPageInfoForOperation> => {
+
+  // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
+  const fixedShareLinkId = shareLinkId ?? null;
+
+  const key = useMemo(() => {
+    return pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null;
+  }, [fixedShareLinkId, pageId]);
+
+  return useSWRMutation(
+    key,
+    ([endpoint, pageId, shareLinkId]: [string, string, string|null]) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
+  );
 };
 
 export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>): SWRResponse<IRevisionHasId> => {

@@ -13,7 +13,6 @@ import {
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
-import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import { BookmarkButtons } from '../BookmarkButtons';
@@ -93,8 +92,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
-
-  const { data: bookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
@@ -227,9 +224,10 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       )}
       {revisionId != null && (
         <BookmarkButtons
+          pageId={pageId}
+          isBookmarked={pageInfo.isBookmarked}
+          bookmarkCount={pageInfo.bookmarkCount}
           hideTotalNumber={isCompactMode}
-          bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-          bookmarkInfo={bookmarkInfo}
         />
       )}
       {revisionId != null && !isCompactMode && (
