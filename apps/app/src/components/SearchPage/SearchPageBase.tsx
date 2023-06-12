@@ -214,7 +214,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
         </div>
 
         <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-          {pages != null && selectedPageWithMeta != null && (
+          {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
