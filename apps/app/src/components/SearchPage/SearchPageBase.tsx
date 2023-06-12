@@ -68,9 +68,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
 
-  // useRef is used to avoid unnecessary selectedPageWithMeta changes.
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
-  const selectedPageWithMetaRef = useRef(selectedPageWithMeta);
 
   // publish selectAll()
   useImperativeHandle(ref, () => ({
@@ -116,15 +114,13 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   // select first item on load
   useEffect(() => {
-    if ((pages == null || pages?.length === 0) && selectedPageWithMetaRef.current !== undefined) {
+    if ((pages == null || pages.length === 0)) {
       setSelectedPageWithMeta(undefined);
-      selectedPageWithMetaRef.current = undefined;
     }
-    else if ((pages != null && pages.length > 0) && selectedPageWithMetaRef.current !== pages[0]) {
+    else if ((pages != null && pages.length > 0)) {
       setSelectedPageWithMeta(pages[0]);
-      selectedPageWithMetaRef.current = pages[0];
     }
-  }, [pages, setSelectedPageWithMeta, selectedPageWithMetaRef]);
+  }, [pages, setSelectedPageWithMeta]);
 
   // reset selectedPageIdsByCheckboxes
   useEffect(() => {
@@ -202,7 +198,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
-                      onPageSelected={page => (selectedPageWithMeta !== page ? setSelectedPageWithMeta(page) : false) }
+                      onPageSelected={page => (setSelectedPageWithMeta(page)) }
                       onCheckboxChanged={checkboxChangedHandler}
                     />
                   </div>
@@ -218,7 +214,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
         </div>
 
         <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-          { selectedPageWithMeta != null && (
+          {pages != null && selectedPageWithMeta != null && (
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
