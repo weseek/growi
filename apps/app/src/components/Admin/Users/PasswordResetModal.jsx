@@ -48,24 +48,18 @@ class PasswordResetModal extends React.Component {
 
     return (
       <>
-        <div className="row justify-content-space-between">
-          <div className="mr-2">
-            {isEmailSent ? (
-              <button type="submit" className="btn btn-secondary" disabled>
-                {t('Done')}
-              </button>
-            ) : (
-              <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-                {t('Send')}
-              </button>
-            )}
-          </div>
-          <div className="mr-3">
-            <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-              {t('Close')}
-            </button>
-          </div>
-        </div>
+        {isEmailSent ? (
+          <button type="submit" className="btn btn-secondary" disabled>
+            {t('Done')}
+          </button>
+        ) : (
+          <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
+            {t('Send')}
+          </button>
+        )}
+        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
+          {t('Close')}
+        </button>
       </>
     );
   }
@@ -135,7 +129,7 @@ class PasswordResetModal extends React.Component {
     if (!isMailerSetup) {
       return (
         <>
-          <div>
+          <div className="d-flex col text-left ml-1 pl-0">
             <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
           </div>
           {this.renderButtons()}
@@ -145,15 +139,13 @@ class PasswordResetModal extends React.Component {
     return (
       <>
         <div className="d-flex col text-left ml-1 pl-0">
-          <p className="mr-3">To:</p>
+          <p className="mr-2">To:</p>
           <div>
             <p className="mb-0">{userForPasswordResetModal.username}</p>
             <p className="mb-0">{userForPasswordResetModal.email}</p>
           </div>
         </div>
-        <div>
-          {this.renderButtons()}
-        </div>
+        {this.renderButtons()}
       </>
     );
   }
