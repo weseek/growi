@@ -7,6 +7,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
@@ -116,8 +117,6 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterAfterReset() {
-    const { t } = this.props;
-
     const { t, isMailerSetup, userForPasswordResetModal } = this.props;
 
     if (!isMailerSetup) {
