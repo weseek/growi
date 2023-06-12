@@ -2,13 +2,14 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/toastr';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
@@ -25,7 +26,6 @@ class PasswordResetModal extends React.Component {
     this.onClickSendNewPasswordButton = this.onClickSendNewPasswordButton.bind(this);
   }
 
-  // Reset Password
   async resetPassword() {
     const { t, userForPasswordResetModal } = this.props;
     try {
@@ -36,6 +36,10 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+  showToaster() {
+    toastSuccess('Copied Password');
   }
 
   renderButtons() {
@@ -75,7 +79,7 @@ class PasswordResetModal extends React.Component {
 
     const maskedPassword = showPassword
       ? temporaryPassword
-      : '·'.repeat(temporaryPassword.length);
+      : '•'.repeat(temporaryPassword.length);
 
     return (
       <>
@@ -84,11 +88,20 @@ class PasswordResetModal extends React.Component {
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <p>
-          {t('user_management.reset_password_modal.new_password')}:
-          <span className="masked-password ml-1"><code>{maskedPassword}</code></span>
-          <button className="btn btn-link mx-2 px-1 py-0" size="sm" onClick={() => this.setState({ showPassword: !showPassword })}>
-            <i className={showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'}></i>
-          </button>
+          {t('user_management.reset_password_modal.new_password')}:{' '}
+          <code>
+            <span
+              onMouseEnter={() => this.setState({ showPassword: true })}
+              onMouseLeave={() => this.setState({ showPassword: false })}
+            >
+              {showPassword ? temporaryPassword : maskedPassword}
+            </span>
+          </code>
+          <CopyToClipboard text={ temporaryPassword } onCopy={this.showToaster}>
+            <button type="button" className="btn btn-outline-secondary border-0">
+              <i className="fa fa-clone" aria-hidden="true"></i>
+            </button>
+          </CopyToClipboard>
         </p>
       </>
     );
