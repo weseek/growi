@@ -983,6 +983,30 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/reset-password-email:
+   *      put:
+   *        tags: [Users]
+   *        operationId: resetPasswordEmail
+   *        summary: /users/reset-password-email
+   *        description: send new password email
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  newPassword:
+   *                    type: string
+   *                  user:
+   *                    type: string
+   *                    description: user id for send new password email
+   *        responses:
+   *          200:
+   *            description: success send new password email
+   */
   router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
@@ -996,13 +1020,12 @@ module.exports = (crowi) => {
         password: req.body.newPassword,
       };
 
-      const sendEmail = await sendEmailByUser(userInfo);
-
-      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendEmailList[0] });
+      await sendEmailByUser(userInfo);
     }
     catch (err) {
+      const msg = err.message;
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(err));
+      return res.apiv3Err(new ErrorV3(msg));
     }
   });
 
