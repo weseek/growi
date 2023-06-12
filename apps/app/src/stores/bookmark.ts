@@ -17,8 +17,6 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
         pageId: response.data.pageId,
       };
     }),
-    // supress unnecessary API requests when using for mutation purposes
-    { revalidateOnMount: false },
   );
 };
 
