@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { MARP_CONTAINER_CLASS_NAME, Slides } from '@growi/presentation';
+import { MARP_CONTAINER_CLASS_NAME } from '@growi/presentation';
+import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
@@ -17,6 +18,8 @@ import 'katex/dist/katex.min.css';
 
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
+
+const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });
 
 type Props = {
   rendererOptions: RendererOptions,
@@ -72,13 +75,13 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   //  if (isSlidesOverviewEnabled && marp) {
   if (slideStyle === 'true' || slideStyle === 'marp') {
     const options = {
-      rendererOptions,
+      rendererOptions: rendererOptions as ReactMarkdownOptions,
       isDarkMode: false,
       disableSeparationsByHeader: false,
     };
     return (
       <div className = "slides">
-        <Slides options>{markdown}</Slides>
+        <Slides options={options}>{markdown}</Slides>
       </div>
     );
   }
