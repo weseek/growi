@@ -5,7 +5,7 @@ import React, {
 import nodePath from 'path';
 
 import {
-  pathUtils, pagePathUtils, Nullable, DevidedPagePath,
+  pathUtils, pagePathUtils, Nullable,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -22,7 +22,7 @@ import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnl
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
-import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
+import { useSWRMUTxCurrentUserBookmarks, useSWRxBookmarkInfo } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -124,8 +124,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
-  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks();
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
+  const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
+  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(page._id ?? null);
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -261,7 +261,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
-    mutateUserBookmarks();
+    mutateCurrentUserBookmarks();
     mutateBookmarkInfo();
   };
 
