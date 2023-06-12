@@ -1,6 +1,7 @@
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import useSWRMutation, { SWRMutationResponse } from 'swr/mutation';
+import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
+
 
 import { IPageHasId } from '~/interfaces/page';
 
@@ -11,6 +12,20 @@ import { useCurrentUser } from './context';
 
 export const useSWRxBookmarkInfo = (pageId: string | null): SWRResponse<IBookmarkInfo, Error> => {
   return useSWRImmutable(
+    pageId != null ? `/bookmarks/info?pageId=${pageId}` : null,
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return {
+        sumOfBookmarks: response.data.sumOfBookmarks,
+        isBookmarked: response.data.isBookmarked,
+        bookmarkedUsers: response.data.bookmarkedUsers,
+        pageId: response.data.pageId,
+      };
+    }),
+  );
+};
+
+export const useSWRMUTxBookmarkInfo = (pageId: string | null | undefined): SWRMutationResponse<IBookmarkInfo, Error> => {
+  return useSWRMutation(
     pageId != null ? `/bookmarks/info?pageId=${pageId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {

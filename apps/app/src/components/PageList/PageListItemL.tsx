@@ -24,7 +24,7 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
-import { useSWRMUTxCurrentUserBookmarks, useSWRxBookmarkInfo } from '~/stores/bookmark';
+import { useSWRMUTxBookmarkInfo, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
@@ -91,7 +91,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
-  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(pageData?._id);
+  const { trigger: mutateBookmarkInfo } = useSWRMUTxBookmarkInfo(pageData?._id);
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 

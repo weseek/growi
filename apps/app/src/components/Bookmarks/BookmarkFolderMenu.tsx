@@ -7,7 +7,7 @@ import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 import { addBookmarkToFolder, toggleBookmark } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { IBookmarkInfo } from '~/interfaces/bookmark-info';
-import { useSWRMUTxCurrentUserBookmarks, useSWRxBookmarkInfo } from '~/stores/bookmark';
+import { useSWRMUTxBookmarkInfo, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -22,7 +22,7 @@ export const BookmarkFolderMenu: React.FC<{children?: React.ReactNode, bookmarkI
 
   const { data: currentUser } = useCurrentUser();
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(bookmarkInfo.pageId);
+  const { trigger: mutateBookmarkInfo } = useSWRMUTxBookmarkInfo(bookmarkInfo.pageId);
 
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkInfo.pageId);

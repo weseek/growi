@@ -22,7 +22,7 @@ import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnl
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
-import { useSWRMUTxCurrentUserBookmarks, useSWRxBookmarkInfo } from '~/stores/bookmark';
+import { useSWRMUTxBookmarkInfo, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -125,7 +125,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
-  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(page._id ?? null);
+  const { trigger: mutateBookmarkInfo } = useSWRMUTxBookmarkInfo(page._id ?? null);
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();

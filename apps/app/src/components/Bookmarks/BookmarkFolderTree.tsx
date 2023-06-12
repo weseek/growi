@@ -6,7 +6,9 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxUserBookmarks, useSWRxBookmarkInfo, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
+import {
+  useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks, useSWRMUTxBookmarkInfo,
+} from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
@@ -37,9 +39,9 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
 
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(currentPage?._id ?? null);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);
+  const { trigger: mutateBookmarkInfo } = useSWRMUTxBookmarkInfo(currentPage?._id ?? null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
