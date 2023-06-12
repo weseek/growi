@@ -181,6 +181,23 @@ module.exports = (crowi) => {
     return { failedToSendEmailList };
   };
 
+  const sendEmailByUser = async(user) => {
+    const { appService, mailService } = crowi;
+    const appTitle = appService.getAppTitle();
+
+    await mailService.send({
+      to: user.email,
+      subject: `New password for ${appTitle}`,
+      template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.txt'),
+      vars: {
+        email: user.email,
+        password: user.password,
+        url: crowi.appService.getSiteUrl(),
+        appTitle,
+      },
+    });
+  };
+
   /**
    * @swagger
    *
@@ -947,7 +964,7 @@ module.exports = (crowi) => {
    *                    description: user id for reset password
    *        responses:
    *          200:
-   *            description: success resrt password
+   *            description: success reset password
    */
   router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
@@ -959,6 +976,29 @@ module.exports = (crowi) => {
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_PASSWORD_RESET });
       return res.apiv3({ newPassword, user });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
+  router.put('/reset-password-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+    const { id } = req.body;
+
+    try {
+      const user = await User.findById(id);
+      if (user == null) {
+        throw new Error('User not found');
+      }
+      const userInfo = {
+        email: user.email,
+        password: req.body.newPassword,
+      };
+
+      const sendEmail = await sendEmailByUser(userInfo);
+
+      return res.apiv3({ user, failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {
       logger.error('Error', err);
