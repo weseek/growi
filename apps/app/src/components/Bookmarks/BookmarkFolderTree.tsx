@@ -6,11 +6,13 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxUserBookmarks, useSWRxBookmarkInfo, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
+import {
+  useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
+} from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
@@ -37,18 +39,18 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
 
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(currentPage?._id ?? null);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(currentPage?._id ?? null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
     mutateCurrentUserBookmarks();
-    mutateBookmarkInfo();
+    mutatePageInfo();
     mutateBookmarkFolders();
-  }, [mutateBookmarkFolders, mutateBookmarkInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
+  }, [mutateBookmarkFolders, mutatePageInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
 
   const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {

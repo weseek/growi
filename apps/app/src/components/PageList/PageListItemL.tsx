@@ -24,13 +24,13 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
-import { useSWRMUTxCurrentUserBookmarks, useSWRxBookmarkInfo } from '~/stores/bookmark';
+import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
-import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
@@ -90,8 +90,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageData?._id ?? null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
-  const { mutate: mutateBookmarkInfo } = useSWRxBookmarkInfo(pageData?._id);
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
@@ -129,7 +129,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
     mutateCurrentUserBookmarks();
-    mutateBookmarkInfo();
+    mutatePageInfo();
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
