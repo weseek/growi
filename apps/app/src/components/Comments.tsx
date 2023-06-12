@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { type IRevisionHasId, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
@@ -23,12 +23,13 @@ export type CommentsProps = {
   pagePath: string,
   revision: IRevisionHasId,
   onLoaded?: () => void,
+  onCommentUpdated?: () => void,
 }
 
 export const Comments = (props: CommentsProps): JSX.Element => {
 
   const {
-    pageId, pagePath, revision, onLoaded,
+    pageId, pagePath, revision, onLoaded, onCommentUpdated,
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
@@ -41,8 +42,8 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     const parent = pageCommentParentRef.current;
     if (parent == null) return;
 
-    const observerCallback = (mutationRecords:MutationRecord[]) => {
-      mutationRecords.forEach((record:MutationRecord) => {
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach((record: MutationRecord) => {
         const target = record.target as HTMLElement;
 
         for (const child of Array.from(target.children)) {
@@ -69,6 +70,13 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     return <></>;
   }
 
+  const onCommentButtonClickHandler = useCallback(() => {
+    mutate();
+    if (onCommentUpdated != null) {
+      onCommentUpdated()
+    }
+  }, [mutate, onCommentUpdated]);
+
   return (
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
       <div className="container-lg">
@@ -83,12 +91,12 @@ export const Comments = (props: CommentsProps): JSX.Element => {
             hideIfEmpty={false}
           />
         </div>
-        { !isDeleted && (
+        {!isDeleted && (
           <div id="page-comment-write">
             <CommentEditor
               pageId={pageId}
               isForNewComment
-              onCommentButtonClicked={mutate}
+              onCommentButtonClicked={onCommentButtonClickHandler}
               revisionId={revision._id}
             />
           </div>

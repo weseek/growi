@@ -11,7 +11,7 @@ import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
-import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
+import { useSWRxCurrentPage, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 
@@ -67,6 +67,7 @@ export const PageView = (props: Props): JSX.Element => {
 
   const { data: pageBySWR } = useSWRxCurrentPage();
   const { data: viewOptions } = useViewOptions();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page?.revision == null;
@@ -111,11 +112,11 @@ export const PageView = (props: Props): JSX.Element => {
     ? (
       <>
         <div id="comments-container" ref={commentsContainerRef}>
-          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} />
+          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} onCommentUpdated={mutateCurrentPage} />
         </div>
-        { (isUsersHomePagePath && page.creator != null) && (
-          <UsersHomePageFooter creatorId={page.creator._id}/>
-        ) }
+        {(isUsersHomePagePath && page.creator != null) && (
+          <UsersHomePageFooter creatorId={page.creator._id} />
+        )}
         <PageContentFooter page={page} />
       </>
     )
@@ -144,15 +145,15 @@ export const PageView = (props: Props): JSX.Element => {
     >
       <PageAlerts />
 
-      { specialContents }
-      { specialContents == null && (
+      {specialContents}
+      {specialContents == null && (
         <>
-          { (isUsersHomePagePath && page?.creator != null) && <UserInfo author={page.creator} /> }
+          {(isUsersHomePagePath && page?.creator != null) && <UserInfo author={page.creator} />}
           <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
             <Contents />
           </div>
         </>
-      ) }
+      )}
 
     </MainPane>
   );
