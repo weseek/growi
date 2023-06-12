@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.4",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
@@ -26,9 +26,9 @@
     "escape-string-regexp": "5.0.0 or above exports only ESM"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4-RC.0",
-    "@growi/remark-growi-directive": "^6.1.4-RC.0",
-    "@growi/ui": "^6.1.4-RC.0",
+    "@growi/core": "^6.1.4",
+    "@growi/remark-growi-directive": "^6.1.4",
+    "@growi/ui": "^6.1.4",
     "escape-string-regexp": "^4.0.0",
     "express": "^4.16.1",
     "mongoose": "^6.5.0",
