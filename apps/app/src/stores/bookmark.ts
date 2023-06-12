@@ -17,10 +17,12 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
         pageId: response.data.pageId,
       };
     }),
+    // supress unnecessary API requests when using for mutation purposes
+    { revalidateOnMount: false },
   );
 };
 
-export const useSWRxUserBookmarks = (userId?: string): SWRResponse<IPageHasId[], Error> => {
+export const useSWRxUserBookmarks = (userId: string | null): SWRResponse<IPageHasId[], Error> => {
   return useSWRImmutable(
     userId != null ? `/bookmarks/${userId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
