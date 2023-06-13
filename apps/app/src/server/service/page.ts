@@ -54,8 +54,6 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
 
-  private user: any; // TODO: Typescriptize model
-
   private rootPage: any; // TODO: wait for mongoose update
 
   private shouldIncludeEmpty: boolean;
@@ -64,8 +62,7 @@ class PageCursorsForDescendantsFactory {
 
   private Page: PageModel;
 
-  constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
-    this.user = user;
+  constructor(rootPage: any, shouldIncludeEmpty: boolean) {
     this.rootPage = rootPage;
     this.shouldIncludeEmpty = shouldIncludeEmpty;
 
@@ -836,7 +833,7 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+    const factory = new PageCursorsForDescendantsFactory(targetPage, true);
     const readStream = await factory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
@@ -1276,7 +1273,7 @@ class PageService {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
-    const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
+    const iterableFactory = new PageCursorsForDescendantsFactory(page, true);
     const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
@@ -1638,7 +1635,7 @@ class PageService {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
-      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      const factory = new PageCursorsForDescendantsFactory(targetPage, true);
       readStream = await factory.generateReadable();
     }
 
@@ -1895,7 +1892,7 @@ class PageService {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
-      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      const factory = new PageCursorsForDescendantsFactory(targetPage, true);
       readStream = await factory.generateReadable();
     }
 
