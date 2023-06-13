@@ -31,6 +31,7 @@ export type IPage = {
   deleteUser: Ref<IUser>,
   deletedAt: Date,
   latestRevision?: Ref<IRevision>,
+  latestRevisionBodyLength?: number,
   expandContentWidth?: boolean,
 }
 
