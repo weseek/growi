@@ -121,15 +121,11 @@ export const isCreatablePage = (path: string): boolean => {
 };
 
 /**
- * return user path
- * @param user
+ * return user's homepage path
+ * @param username
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const userPageRoot = (user: any): string => {
-  if (!user || !user.username) {
-    return '';
-  }
-  return `/user/${user.username}`;
+export const userHomepagePath = (username: string): string => {
+  return `/user/${username}`;
 };
 
 /**
