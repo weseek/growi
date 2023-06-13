@@ -790,7 +790,7 @@ module.exports = (crowi) => {
       const user = await User.findById(id);
       // !! DO NOT MOVE userHomePagePath FROM THIS POSITION !! -- 05.31.2023
       // catch username before delete user because username will be change to deleted_at_*
-      const userHomePagePath = pagePathUtils.userHomepagePath(user.username);
+      const userHomePagePath = pagePathUtils.userHomepagePath(user);
 
       await UserGroupRelation.remove({ relatedUser: user });
       await user.statusDelete();

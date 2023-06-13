@@ -35,7 +35,7 @@ const PageCreateModal = () => {
 
   const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
-  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser.username);
+  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');

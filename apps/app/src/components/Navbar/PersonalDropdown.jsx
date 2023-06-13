@@ -65,7 +65,7 @@ const PersonalDropdown = () => {
 
           <div className="btn-group btn-block mt-2" role="group">
             <Link
-              href={pagePathUtils.userHomepagePath(currentUser.username)}
+              href={pagePathUtils.userHomepagePath(currentUser)}
               className="btn btn-sm btn-outline-secondary col"
               data-testid="grw-personal-dropdown-menu-user-home"
             >

@@ -29,7 +29,7 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps
   const router = useRouter();
 
   const { user } = props;
-  const href = userHomepagePath(user.username || '');
+  const href = userHomepagePath(user);
 
   const clickHandler = useCallback(() => {
     router.push(href);

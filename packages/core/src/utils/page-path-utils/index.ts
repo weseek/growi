@@ -1,5 +1,7 @@
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { IUser, IUserHasId } from '~/interfaces/user';
+
 import { isValidObjectId } from '../objectid-utils';
 import { addTrailingSlash } from '../path-utils';
 
@@ -122,10 +124,13 @@ export const isCreatablePage = (path: string): boolean => {
 
 /**
  * return user's homepage path
- * @param username
+ * @param user
  */
-export const userHomepagePath = (username: string): string => {
-  return `/user/${username}`;
+export const userHomepagePath = (user?: string | IUser | IUserHasId): string => {
+  if (typeof user === 'string' || !user || !user.username) {
+    return '';
+  }
+  return `/user/${user.username}`;
 };
 
 /**

@@ -16,7 +16,7 @@ export const Username = (props: UsernameProps): JSX.Element => {
 
   const name = user.name || '(no name)';
   const username = user.username;
-  const href = pagePathUtils.userHomepagePath(user.username);
+  const href = pagePathUtils.userHomepagePath(user);
 
   return (
     <Link href={href} prefetch={false}>
