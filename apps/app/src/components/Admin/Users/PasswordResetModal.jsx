@@ -18,7 +18,7 @@ class PasswordResetModal extends React.Component {
     super(props);
 
     this.state = {
-      temporaryPassword: [],
+      temporaryPassword: '',
       isPasswordResetDone: false,
       isEmailSent: false,
     };
@@ -37,6 +37,10 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+  showToaster() {
+    toastSuccess('Copied Password');
   }
 
   renderButtons() {
@@ -59,10 +63,6 @@ class PasswordResetModal extends React.Component {
         </button>
       </>
     );
-  }
-
-  showToaster() {
-    toastSuccess('Copied Password');
   }
 
   renderModalBodyBeforeReset() {
@@ -127,24 +127,20 @@ class PasswordResetModal extends React.Component {
   returnModalFooterAfterReset() {
     const { t, isMailerSetup, userForPasswordResetModal } = this.props;
 
-    if (!isMailerSetup) {
-      return (
-        <>
-          <div className="d-flex col text-left ml-1 pl-0">
-            <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
-          </div>
-          {this.renderButtons()}
-        </>
-      );
-    }
     return (
       <>
         <div className="d-flex col text-left ml-1 pl-0">
-          <p className="mr-2">To:</p>
-          <div>
-            <p className="mb-0">{userForPasswordResetModal.username}</p>
-            <p className="mb-0">{userForPasswordResetModal.email}</p>
-          </div>
+          {(!isMailerSetup) ? (
+            <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          ) : (
+            <>
+              <p className="mr-2">To:</p>
+              <div>
+                <p className="mb-0">{userForPasswordResetModal.username}</p>
+                <p className="mb-0">{userForPasswordResetModal.email}</p>
+              </div>
+            </>
+          )}
         </div>
         {this.renderButtons()}
       </>
