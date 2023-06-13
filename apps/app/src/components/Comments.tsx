@@ -23,13 +23,13 @@ export type CommentsProps = {
   pagePath: string,
   revision: IRevisionHasId,
   onLoaded?: () => void,
-  onCommentUpdated?: () => void,
+  onCommentCountUpdated?: () => void,
 }
 
 export const Comments = (props: CommentsProps): JSX.Element => {
 
   const {
-    pageId, pagePath, revision, onLoaded, onCommentUpdated,
+    pageId, pagePath, revision, onLoaded, onCommentCountUpdated,
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
@@ -72,10 +72,10 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const onCommentButtonClickHandler = useCallback(() => {
     mutate();
-    if (onCommentUpdated != null) {
-      onCommentUpdated()
+    if (onCommentCountUpdated != null) {
+      onCommentCountUpdated()
     }
-  }, [mutate, onCommentUpdated]);
+  }, [mutate, onCommentCountUpdated]);
 
   return (
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
@@ -89,6 +89,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
             isReadOnly={false}
             titleAlign="left"
             hideIfEmpty={false}
+            onCommentCountUpdated={onCommentCountUpdated}
           />
         </div>
         {!isDeleted && (
