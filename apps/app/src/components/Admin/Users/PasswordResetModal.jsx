@@ -65,6 +65,28 @@ class PasswordResetModal extends React.Component {
     );
   }
 
+  renderAddress() {
+    const { t, isMailerSetup, userForPasswordResetModal } = this.props;
+
+    return (
+      <>
+        <div className="d-flex col text-left ml-1 pl-0">
+          {(!isMailerSetup) ? (
+            <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          ) : (
+            <>
+              <p className="mr-2">To:</p>
+              <div>
+                <p className="mb-0">{userForPasswordResetModal.username}</p>
+                <p className="mb-0">{userForPasswordResetModal.email}</p>
+              </div>
+            </>
+          )}
+        </div>
+      </>
+    );
+  }
+
   renderModalBodyBeforeReset() {
     const { t, userForPasswordResetModal } = this.props;
 
@@ -125,23 +147,9 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterAfterReset() {
-    const { t, isMailerSetup, userForPasswordResetModal } = this.props;
-
     return (
       <>
-        <div className="d-flex col text-left ml-1 pl-0">
-          {(!isMailerSetup) ? (
-            <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
-          ) : (
-            <>
-              <p className="mr-2">To:</p>
-              <div>
-                <p className="mb-0">{userForPasswordResetModal.username}</p>
-                <p className="mb-0">{userForPasswordResetModal.email}</p>
-              </div>
-            </>
-          )}
-        </div>
+        {this.renderAddress()}
         {this.renderButtons()}
       </>
     );
