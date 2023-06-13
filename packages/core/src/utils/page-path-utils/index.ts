@@ -124,6 +124,7 @@ export const isCreatablePage = (path: string): boolean => {
  * return user's homepage path
  * @param user
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const userHomepagePath = (user: any): string => {
   if (!user || !user.username) {
     return '';
