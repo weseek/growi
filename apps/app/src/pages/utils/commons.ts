@@ -1,6 +1,6 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
-  DevidedPagePath, Lang, AllLang,
+  DevidedPagePath, Lang, AllLang, isServer,
 } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
@@ -11,6 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -74,7 +75,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
-  // retrieve UserUISettings
+  // retrieve UserUISett ings
   const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
   const userUISettings = user != null && UserUISettings != null
     ? await UserUISettings.findOne({ user: user._id }).exec()
@@ -167,4 +168,25 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+};
+
+
+export const skipSSR = async(page: PageDocument): Promise<boolean> => {
+  if (!isServer()) {
+    throw new Error('This method is not available on the client-side');
+  }
+
+  // page document only stores the bodyLength of the latest revision
+  if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
+    return true;
+  }
+
+  const { configManager } = await import('~/server/service/config-manager');
+  await configManager.loadConfigs();
+  const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+  if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
+    return true;
+  }
+
+  return false;
 };
