@@ -4,12 +4,12 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody, ModalFooter, Tooltip,
 } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
@@ -20,6 +20,7 @@ class PasswordResetModal extends React.Component {
     this.state = {
       temporaryPassword: [],
       isPasswordResetDone: false,
+      showTooltip: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
@@ -36,10 +37,6 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-  }
-
-  showToaster() {
-    toastSuccess('Copied Password');
   }
 
   renderButtons() {
@@ -75,7 +72,7 @@ class PasswordResetModal extends React.Component {
 
   returnModalBodyAfterReset() {
     const { t, userForPasswordResetModal } = this.props;
-    const { temporaryPassword, showPassword } = this.state;
+    const { temporaryPassword, showPassword, showTooltip } = this.state;
 
     const maskedPassword = showPassword
       ? temporaryPassword
@@ -97,11 +94,19 @@ class PasswordResetModal extends React.Component {
               {showPassword ? temporaryPassword : maskedPassword}
             </span>
           </code>
-          <CopyToClipboard text={ temporaryPassword } onCopy={this.showToaster}>
-            <button type="button" className="btn btn-outline-secondary border-0">
+          <CopyToClipboard text={ temporaryPassword } onCopy={() => this.setState({ showTooltip: true })}>
+            <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
               <i className="fa fa-clone" aria-hidden="true"></i>
             </button>
           </CopyToClipboard>
+          <Tooltip
+            placement="right"
+            isOpen={showTooltip}
+            target="copy-tooltip"
+            toggle={() => this.setState({ showTooltip: false })}
+          >
+            {t('Copied!')}
+          </Tooltip>
         </p>
       </>
     );
