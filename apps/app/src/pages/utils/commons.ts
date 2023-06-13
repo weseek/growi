@@ -1,6 +1,6 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
-  DevidedPagePath, Lang, AllLang,
+  DevidedPagePath, Lang, AllLang, isServer,
 } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
@@ -172,13 +172,16 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
 
 
 export const skipSSR = async(page: PageDocument): Promise<boolean> => {
-  const { configManager } = await import('~/server/service/config-manager');
+  if (!isServer()) {
+    throw new Error('This method is not available on the client-side');
+  }
 
   // page document only stores the bodyLength of the latest revision
   if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
     return true;
   }
 
+  const { configManager } = await import('~/server/service/config-manager');
   await configManager.loadConfigs();
   const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
   if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
