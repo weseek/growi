@@ -106,13 +106,13 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     setShowEditorIds((previousState) => {
       // Create a new Set of commentId from the previous state
       const updatedShowEditorIds = new Set(previousState);
-      updatedShowEditorIds.delete(commentId);  // Delete the commentId from the Set
+      updatedShowEditorIds.delete(commentId); // Delete the commentId from the Set
       return updatedShowEditorIds;
     });
   }, []);
 
   const onReplyButtonClickHandler = useCallback((commentId: string) => {
-    setShowEditorIds((previousState) => new Set(previousState.add(commentId)));
+    setShowEditorIds(previousState => new Set(previousState.add(commentId)));
   }, []);
 
   const onCommentButtonClickHandler = useCallback((commentId: string) => {
@@ -121,7 +121,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     if (onCommentCountUpdated != null) {
       onCommentCountUpdated();
     }
-  }, [removeShowEditorId, mutate, onCommentCountUpdated])
+  }, [removeShowEditorId, mutate, onCommentCountUpdated]);
 
   if (hideIfEmpty && comments?.length === 0) {
     return <PageCommentRoot />;

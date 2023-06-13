@@ -112,7 +112,13 @@ export const PageView = (props: Props): JSX.Element => {
     ? (
       <>
         <div id="comments-container" ref={commentsContainerRef}>
-          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} onCommentCountUpdated={mutateCurrentPage} />
+          <Comments
+            pageId={page._id}
+            pagePath={pagePath}
+            revision={page.revision}
+            onLoaded={() => setCommentsLoaded(true)}
+            onCommentCountUpdated={mutateCurrentPage}
+          />
         </div>
         {(isUsersHomePagePath && page.creator != null) && (
           <UsersHomePageFooter creatorId={page.creator._id} />

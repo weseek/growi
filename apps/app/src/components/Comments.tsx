@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { type IRevisionHasId, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
@@ -70,12 +70,12 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     return <></>;
   }
 
-  const onCommentButtonClickHandler = useCallback(() => {
+  const onCommentButtonClickHandler = () => {
     mutate();
     if (onCommentCountUpdated != null) {
-      onCommentCountUpdated()
+      onCommentCountUpdated();
     }
-  }, [mutate, onCommentCountUpdated]);
+  };
 
   return (
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
