@@ -28,7 +28,7 @@ class UserEvent extends EventEmitter {
     let page = await Page.findByPath(userHomePagePath, user);
 
     if (page !== null && page.creator.toString() !== user._id.toString()) {
-      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(user, userHomePagePath);
+      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomePagePath);
       page = null;
     }
 

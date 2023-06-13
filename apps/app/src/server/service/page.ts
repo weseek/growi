@@ -1962,20 +1962,17 @@ class PageService {
     }
   }
 
-  // TODO: Delete user arg.
-  // see: https://redmine.weseek.co.jp/issues/124326
   /**
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
-   * @param {object} user - The user object.
    * @param {string} userHomePagePath - The path of the user's homepage.
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-  async deleteCompletelyUserHomeBySystem(user: object, userHomePagePath: string): Promise<void> {
+  async deleteCompletelyUserHomeBySystem(userHomePagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
-    const userHomePage = await Page.findByPath(userHomePagePath, user);
+    const userHomePage = await Page.findByPath(userHomePagePath);
     const options = {};
 
     if (userHomePage == null) {
@@ -1997,19 +1994,18 @@ class PageService {
       await Page.removeLeafEmptyPagesRecursively(userHomePage.parent);
 
       if (!userHomePage.isEmpty) {
-        this.pageEvent.emit('deleteCompletely', userHomePage, user);
+        this.pageEvent.emit('deleteCompletely', userHomePage);
       }
 
       pageOp = await PageOperation.create({
         actionType: PageActionType.DeleteCompletely,
         actionStage: PageActionStage.Main,
         page: userHomePage,
-        user,
         fromPath: userHomePage.path,
         options,
       });
 
-      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, user, options, pageOp._id);
+      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, options, pageOp._id);
     }
     catch (err) {
       logger.error('Error occurred while deleting user home page and subpages.', err);
