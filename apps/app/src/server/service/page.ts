@@ -1972,7 +1972,7 @@ class PageService {
    */
   async deleteCompletelyUserHomeBySystem(userHomePagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
-    const userHomePage = await Page.findByPath(userHomePagePath);
+    const userHomePage = await Page.findByPath(userHomePagePath, true);
     const options = {};
 
     if (userHomePage == null) {
