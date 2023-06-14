@@ -21,7 +21,7 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 import styles from './PageCreateModal.module.scss';
 
 const {
-  userPageRoot, isCreatablePage, generateEditorPath, isUsersHomepage,
+  isCreatablePage, generateEditorPath, isUsersHomepage,
 } = pagePathUtils;
 
 const PageCreateModal = () => {
@@ -35,7 +35,7 @@ const PageCreateModal = () => {
 
   const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
-  const userPageRootPath = userPageRoot(currentUser);
+  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -129,7 +129,7 @@ const PageCreateModal = () => {
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    redirectToEditor(userPageRootPath, tmpTodayInput1, now, todayInput2);
+    redirectToEditor(userHomepagePath, tmpTodayInput1, now, todayInput2);
   }
 
   /**
@@ -164,7 +164,7 @@ const PageCreateModal = () => {
 
             <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
               <div className="d-flex align-items-center">
-                <span>{userPageRootPath}/</span>
+                <span>{userHomepagePath}/</span>
                 <form onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
                   <input
                     type="text"

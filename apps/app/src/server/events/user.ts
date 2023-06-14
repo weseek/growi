@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import type { IUserHasId } from '@growi/core';
+import { type IUserHasId, pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
@@ -10,6 +10,7 @@ class UserEvent extends EventEmitter {
 
   crowi: any;
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi: any) {
     super();
     this.crowi = crowi;
@@ -22,7 +23,8 @@ class UserEvent extends EventEmitter {
     }
 
     const Page = this.crowi.model('Page');
-    const userHomepagePath = `/user/${user.username}`;
+    const userHomepagePath = pagePathUtils.userHomepagePath(user);
+
     // TODO: Delete user arg.
     // see: https://redmine.weseek.co.jp/issues/124326
     let page = await Page.findByPath(userHomepagePath, user);

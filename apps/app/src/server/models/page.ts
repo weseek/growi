@@ -94,6 +94,7 @@ const schema = new Schema<PageDocument, PageModel>({
     type: String, required: true, index: true,
   },
   revision: { type: ObjectId, ref: 'Revision' },
+  latestRevisionBodyLength: { type: Number },
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
@@ -715,6 +716,7 @@ export async function pushRevision(pageData, newRevision, user) {
   await newRevision.save();
 
   pageData.revision = newRevision;
+  pageData.latestRevisionBodyLength = newRevision.body.length;
   pageData.lastUpdateUser = user?._id ?? user;
   pageData.updatedAt = Date.now();
 
