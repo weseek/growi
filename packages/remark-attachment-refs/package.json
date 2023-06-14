@@ -21,7 +21,8 @@
     "lint:styles": "stylelint src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "test": ""
+    "test": "",
+    "version": "yarn version --no-git-tag-version"
   },
   "dependencies": {
     "bunyan": "^1.8.15",
