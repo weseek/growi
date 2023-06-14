@@ -23,11 +23,11 @@ class UserEvent extends EventEmitter {
     }
 
     const Page = this.crowi.model('Page');
-    const userHomePagePath = pagePathUtils.userHomepagePath(user);
-    let page = await Page.findByPath(userHomePagePath, true);
+    const userHomepagePath = pagePathUtils.userHomepagePath(user);
+    let page = await Page.findByPath(userHomepagePath, true);
 
     if (page !== null && page.creator.toString() !== user._id.toString()) {
-      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomePagePath);
+      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
       page = null;
     }
 
@@ -35,7 +35,7 @@ class UserEvent extends EventEmitter {
       const body = `# ${user.username}\nThis is ${user.username}'s page`;
 
       try {
-        await this.crowi.pageService.create(userHomePagePath, body, user, {});
+        await this.crowi.pageService.create(userHomepagePath, body, user, {});
         logger.debug('User page created', page);
       }
       catch (err) {

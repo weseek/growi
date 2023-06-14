@@ -28,7 +28,7 @@ const isV5Compatible = (meta: unknown): boolean => {
 const PageRenameModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { isUsersHomePage } = pagePathUtils;
+  const { isUsersHomepage } = pagePathUtils;
   const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
   const { data: isReachable } = useIsSearchServiceReachable();
@@ -54,7 +54,7 @@ const PageRenameModal = (): JSX.Element => {
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [expandOtherOptions, setExpandOtherOptions] = useState(false);
   const [subordinatedError] = useState(null);
-  const [isMatchedWithUserHomePagePath, setIsMatchedWithUserHomePagePath] = useState(false);
+  const [isMatchedWithUserHomepagePath, setIsMatchedWithUserHomepagePath] = useState(false);
 
   const updateSubordinatedList = useCallback(async() => {
     if (page == null) {
@@ -80,14 +80,14 @@ const PageRenameModal = (): JSX.Element => {
   }, [isOpened, page, updateSubordinatedList]);
 
   const canRename = useMemo(() => {
-    if (page == null || isMatchedWithUserHomePagePath || page.data.path === pageNameInput) {
+    if (page == null || isMatchedWithUserHomepagePath || page.data.path === pageNameInput) {
       return false;
     }
     if (isV5Compatible(page.meta)) {
       return existingPaths.length === 0; // v5 data
     }
     return isRenameRecursively; // v4 data
-  }, [existingPaths.length, isMatchedWithUserHomePagePath, isRenameRecursively, page, pageNameInput]);
+  }, [existingPaths.length, isMatchedWithUserHomepagePath, isRenameRecursively, page, pageNameInput]);
 
   const rename = useCallback(async() => {
     if (page == null || !canRename) {
@@ -151,20 +151,20 @@ const PageRenameModal = (): JSX.Element => {
     return debounce(1000, checkExistPaths);
   }, [checkExistPaths]);
 
-  const checkIsUsersHomePageDebounce = useMemo(() => {
+  const checkIsUsersHomepageDebounce = useMemo(() => {
     const checkIsPagePathRenameable = () => {
-      setIsMatchedWithUserHomePagePath(isUsersHomePage(pageNameInput));
+      setIsMatchedWithUserHomepagePath(isUsersHomepage(pageNameInput));
     };
 
     return debounce(1000, checkIsPagePathRenameable);
-  }, [isUsersHomePage, pageNameInput]);
+  }, [isUsersHomepage, pageNameInput]);
 
   useEffect(() => {
     if (isOpened && page != null && pageNameInput !== page.data.path) {
       checkExistPathsDebounce(page.data.path, pageNameInput);
-      checkIsUsersHomePageDebounce(pageNameInput);
+      checkIsUsersHomepageDebounce(pageNameInput);
     }
-  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomepageDebounce]);
 
   function ppacInputChangeHandler(value) {
     setErrs(null);
@@ -246,7 +246,7 @@ const PageRenameModal = (): JSX.Element => {
         { isTargetPageDuplicate && (
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
-        { isMatchedWithUserHomePagePath && (
+        { isMatchedWithUserHomepagePath && (
           <p className="text-danger">Error: Cannot move to directory under /user page.</p>
         ) }
 

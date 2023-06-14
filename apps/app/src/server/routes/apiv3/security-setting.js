@@ -27,7 +27,7 @@ const validator = {
     body('pageCompleteDeletionAuthority').if(value => value != null).isString().isIn(Object.values(PageDeleteConfigValue)),
     body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
     body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
-    body('isUsersHomePageDeletionEnabled').if(value => value != null).isBoolean(),
+    body('isUsersHomepageDeletionEnabled').if(value => value != null).isBoolean(),
   ],
   shareLinkSetting: [
     body('disableLinkSharing').if(value => value != null).isBoolean(),
@@ -355,7 +355,7 @@ module.exports = (crowi) => {
         pageRecursiveCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        isUsersHomePageDeletionEnabled: await crowi.configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled'),
+        isUsersHomepageDeletionEnabled: await crowi.configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled'),
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
@@ -614,7 +614,7 @@ module.exports = (crowi) => {
       'security:pageRecursiveCompleteDeletionAuthority': req.body.pageRecursiveCompleteDeletionAuthority,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
-      'security:isUsersHomePageDeletionEnabled': req.body.isUsersHomePageDeletionEnabled,
+      'security:isUsersHomepageDeletionEnabled': req.body.isUsersHomepageDeletionEnabled,
     };
 
     // Validate delete config
@@ -643,7 +643,7 @@ module.exports = (crowi) => {
         pageRecursiveCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        isUsersHomePageDeletionEnabled: await crowi.configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled'),
+        isUsersHomepageDeletionEnabled: await crowi.configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };

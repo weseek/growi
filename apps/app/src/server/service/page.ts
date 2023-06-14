@@ -1970,46 +1970,46 @@ class PageService {
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
-   * @param {string} userHomePagePath - The path of the user's homepage.
+   * @param {string} userHomepagePath - The path of the user's homepage.
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-  async deleteCompletelyUserHomeBySystem(userHomePagePath: string): Promise<void> {
+  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
-    const userHomePage = await Page.findByPath(userHomePagePath, true);
+    const userHomepage = await Page.findByPath(userHomepagePath, true);
     const options = {};
 
-    if (userHomePage == null) {
-      logger.error('user home page is not found.');
+    if (userHomepage == null) {
+      logger.error('user homepage is not found.');
       return;
     }
 
-    const ids = [userHomePage._id];
-    const paths = [userHomePage.path];
+    const ids = [userHomepage._id];
+    const paths = [userHomepage.path];
 
     let pageOp;
     try {
       // 1. update descendantCount
-      const inc = userHomePage.isEmpty ? -userHomePage.descendantCount : -(userHomePage.descendantCount + 1);
-      await this.updateDescendantCountOfAncestors(userHomePage.parent, inc, true);
+      const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
+      await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
       // 2. delete target completely
       await this.deleteCompletelyOperation(ids, paths);
       // 3. delete leaf empty pages
-      await Page.removeLeafEmptyPagesRecursively(userHomePage.parent);
+      await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
 
-      if (!userHomePage.isEmpty) {
-        this.pageEvent.emit('deleteCompletely', userHomePage);
+      if (!userHomepage.isEmpty) {
+        this.pageEvent.emit('deleteCompletely', userHomepage);
       }
 
       pageOp = await PageOperation.create({
         actionType: PageActionType.DeleteCompletely,
         actionStage: PageActionStage.Main,
-        page: userHomePage,
-        fromPath: userHomePage.path,
+        page: userHomepage,
+        fromPath: userHomepage.path,
         options,
       });
 
-      const factory = new PageCursorsForDescendantsFactory(userHomePage, true, true);
+      const factory = new PageCursorsForDescendantsFactory(userHomepage, true, true);
       const readStream = await factory.generateReadable();
 
       let count = 0;
@@ -2044,7 +2044,7 @@ class PageService {
       await PageOperation.deleteOne({ _id: pageOp._id });
     }
     catch (err) {
-      logger.error('Error occurred while deleting user home page and subpages.', err);
+      logger.error('Error occurred while deleting user homepage and subpages.', err);
       if (pageOp != null) {
         await PageOperation.deleteOne({ _id: pageOp._id });
       }
