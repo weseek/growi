@@ -217,13 +217,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin"disabled={isLoading}>
+            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isLoading}>
               <div className="eff"></div>
               <span className="btn-label">
-                {isLoading && (
+                {isLoading ? (
                   <i className="fa fa-spinner fa-pulse mr-1"></i>
+                ) : (
+                  <i className="icon-login"></i>
                 )}
-                <i className="icon-login"></i>
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
