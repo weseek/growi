@@ -121,10 +121,6 @@ class PageCursorsForDescendantsFactory {
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
 
-    if (this.isSystemDelete) {
-      await this.Page.addConditionToFilteringByViewerToEdit(builder, null, true);
-    }
-
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
 
     return cursor;
@@ -1977,7 +1973,6 @@ class PageService {
   async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, true);
-    const options = {};
 
     if (userHomepage == null) {
       logger.error('user homepage is not found.');
@@ -1987,7 +1982,6 @@ class PageService {
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
 
-    let pageOp;
     try {
       // 1. update descendantCount
       const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
@@ -2001,16 +1995,16 @@ class PageService {
         this.pageEvent.emit('deleteCompletely', userHomepage);
       }
 
-      pageOp = await PageOperation.create({
-        actionType: PageActionType.DeleteCompletely,
-        actionStage: PageActionStage.Main,
-        page: userHomepage,
-        fromPath: userHomepage.path,
-        options,
-      });
+      const { PageQueryBuilder } = Page;
 
-      const factory = new PageCursorsForDescendantsFactory(userHomepage, true, true);
-      const readStream = await factory.generateReadable();
+      const builder = new PageQueryBuilder(Page.find(), true)
+        .addConditionForSystemDelete()
+        .addConditionToListOnlyDescendants(userHomepage.path);
+
+      const readStream = await builder
+        .query
+        .lean()
+        .cursor({ batchSize: BULK_REINDEX_SIZE });
 
       let count = 0;
       const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
@@ -2019,7 +2013,7 @@ class PageService {
         async write(batch, encoding, callback) {
           try {
             count += batch.length;
-            await deleteMultipleCompletely(batch, null, options);
+            await deleteMultipleCompletely(batch, null, {});
             logger.debug(`Adding pages progressing: (count=${count})`);
           }
           catch (err) {
@@ -2040,14 +2034,9 @@ class PageService {
         .pipe(writeStream);
 
       await streamToPromise(writeStream);
-
-      await PageOperation.deleteOne({ _id: pageOp._id });
     }
     catch (err) {
       logger.error('Error occurred while deleting user homepage and subpages.', err);
-      if (pageOp != null) {
-        await PageOperation.deleteOne({ _id: pageOp._id });
-      }
       throw err;
     }
   }

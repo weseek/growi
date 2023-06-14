@@ -377,6 +377,12 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionForSystemDelete(): PageQueryBuilder {
+    const condition = generateGrantConditionForSystemDelete();
+    this.query = this.query.and(condition);
+    return this;
+  }
+
   addConditionToPagenate(offset, limit, sortOpt?): PageQueryBuilder {
     this.query = this.query
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
@@ -899,6 +905,23 @@ schema.statics.findParent = async function(pageId): Promise<PageDocument | null>
 };
 
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
+
+export function generateGrantConditionForSystemDelete(): { $or: any[] } {
+  const grantConditions: AnyObject[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+    { grant: GRANT_RESTRICTED },
+    { grant: GRANT_SPECIFIED },
+    { grant: GRANT_OWNER },
+    { grant: GRANT_USER_GROUP },
+  ];
+
+  return {
+    $or: grantConditions,
+  };
+}
+
+schema.statics.generateGrantConditionForSystemDelete = generateGrantConditionForSystemDelete;
 
 export function generateGrantCondition(
     user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
