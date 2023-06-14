@@ -530,7 +530,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} user
    * @param {boolean} showAnyoneKnowsLink
    */
-  async function addConditionToFilteringByViewerToEdit(builder, user) {
+  async function addConditionToFilteringByViewerToEdit(builder, user, showAnyoneKnowsLink = false) {
     validateCrowi();
 
     // determine UserGroup condition
@@ -540,7 +540,7 @@ export const getPageSchema = (crowi) => {
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    return builder.addConditionToFilteringByViewer(user, userGroups, false, false, false);
+    return builder.addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink, false, false);
   }
 
   /**

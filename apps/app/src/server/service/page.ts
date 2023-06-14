@@ -58,13 +58,16 @@ class PageCursorsForDescendantsFactory {
 
   private shouldIncludeEmpty: boolean;
 
+  private isSystemDelete: boolean;
+
   private initialCursor: Cursor<any> | never[]; // TODO: wait for mongoose update
 
   private Page: PageModel;
 
-  constructor(rootPage: any, shouldIncludeEmpty: boolean) {
+  constructor(rootPage: any, shouldIncludeEmpty: boolean, isSystemDelete: boolean) {
     this.rootPage = rootPage;
     this.shouldIncludeEmpty = shouldIncludeEmpty;
+    this.isSystemDelete = isSystemDelete;
 
     this.Page = mongoose.model('Page') as unknown as PageModel;
   }
@@ -117,6 +120,10 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
+
+    if (this.isSystemDelete) {
+      await this.Page.addConditionToFilteringByViewerToEdit(builder, null, true);
+    }
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
 
@@ -833,7 +840,7 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const factory = new PageCursorsForDescendantsFactory(targetPage, true);
+    const factory = new PageCursorsForDescendantsFactory(targetPage, true, false);
     const readStream = await factory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
@@ -1273,7 +1280,7 @@ class PageService {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
-    const iterableFactory = new PageCursorsForDescendantsFactory(page, true);
+    const iterableFactory = new PageCursorsForDescendantsFactory(page, true, false);
     const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
@@ -1635,7 +1642,7 @@ class PageService {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
-      const factory = new PageCursorsForDescendantsFactory(targetPage, true);
+      const factory = new PageCursorsForDescendantsFactory(targetPage, true, false);
       readStream = await factory.generateReadable();
     }
 
@@ -1892,7 +1899,7 @@ class PageService {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
-      const factory = new PageCursorsForDescendantsFactory(targetPage, true);
+      const factory = new PageCursorsForDescendantsFactory(targetPage, true, false);
       readStream = await factory.generateReadable();
     }
 
@@ -2002,7 +2009,39 @@ class PageService {
         options,
       });
 
-      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, null, options, pageOp._id);
+      const factory = new PageCursorsForDescendantsFactory(userHomePage, true, true);
+      const readStream = await factory.generateReadable();
+
+      let count = 0;
+      const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
+      const writeStream = new Writable({
+        objectMode: true,
+        async write(batch, encoding, callback) {
+          try {
+            count += batch.length;
+            await deleteMultipleCompletely(batch, null, options);
+            logger.debug(`Adding pages progressing: (count=${count})`);
+          }
+          catch (err) {
+            logger.error('addAllPages error on add anyway: ', err);
+          }
+
+          callback();
+        },
+        final(callback) {
+          logger.debug(`Adding pages has completed: (totalCount=${count})`);
+
+          callback();
+        },
+      });
+
+      readStream
+        .pipe(createBatchStream(BULK_REINDEX_SIZE))
+        .pipe(writeStream);
+
+      await streamToPromise(writeStream);
+
+      await PageOperation.deleteOne({ _id: pageOp._id });
     }
     catch (err) {
       logger.error('Error occurred while deleting user home page and subpages.', err);
