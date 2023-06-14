@@ -69,7 +69,7 @@ export const NextLink = (props: Props): JSX.Element => {
     const dlhref = href.replace('/attachment/', '/download/');
     return (
       <span>
-        <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
+        <a id={id} href={dlhref} className={className} target="_blank" rel="noopener noreferrer" download {...dataAttributes}>
           {children}
         </a>&nbsp;
         <a href={dlhref} className="attachment-download"><i className='icon-cloud-download'></i></a>
