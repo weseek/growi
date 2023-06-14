@@ -18,7 +18,7 @@
     "lint": "run-p lint:*"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4-RC.0"
+    "@growi/core": "link:../core"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^3.6.0",
