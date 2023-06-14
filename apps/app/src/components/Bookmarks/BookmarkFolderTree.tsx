@@ -26,13 +26,13 @@ import styles from './BookmarkFolderTree.module.scss';
 //  } & IPageHasId
 
 type Props = {
-  isUserHomePage?: boolean,
+  isUserHomepage?: boolean,
   userId?: string,
   isOperable: boolean,
 }
 
 export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
-  const { isUserHomePage, userId } = props;
+  const { isUserHomepage, userId } = props;
 
   // const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
@@ -110,7 +110,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
               isOpen={false}
               level={0}
               root={bookmarkFolder._id}
-              isUserHomePage={isUserHomePage}
+              isUserHomepage={isUserHomepage}
               onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />

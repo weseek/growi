@@ -757,7 +757,7 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: removeUser
    *        summary: /users/{id}/remove
-   *        description: Delete user and if isUsersHomePageDeletionEnabled delete user home page and subpages
+   *        description: Delete user and if isUsersHomepageDeletionEnabled delete user homepage and subpages
    *        parameters:
    *          - name: id
    *            in: path
@@ -767,7 +767,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Deleting user success and if isUsersHomePageDeletionEnabled delete user home page and subpages success
+   *            description: Deleting user success and if isUsersHomepageDeletionEnabled delete user homepage and subpages success
    *            content:
    *              application/json:
    *                schema:
@@ -775,22 +775,22 @@ module.exports = (crowi) => {
    *                    user:
    *                      type: object
    *                      description: data of deleted user
-   *                    userHomePagePath:
+   *                    userHomepagePath:
    *                      type: string
-   *                      description: a user home page path
-   *                    isUsersHomePageDeletionEnabled:
+   *                      description: a user homepage path
+   *                    isUsersHomepageDeletionEnabled:
    *                      type: boolean
-   *                      description: is users home page deletion enabled
+   *                      description: is users homepage deletion enabled
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
-    const isUsersHomePageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomePageDeletionEnabled');
+    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
 
     try {
       const user = await User.findById(id);
-      // !! DO NOT MOVE userHomePagePath FROM THIS POSITION !! -- 05.31.2023
+      // !! DO NOT MOVE userHomepagePath FROM THIS POSITION !! -- 05.31.2023
       // catch username before delete user because username will be change to deleted_at_*
-      const userHomePagePath = pagePathUtils.userHomepagePath(user);
+      const userHomepagePath = pagePathUtils.userHomepagePath(user);
 
       await UserGroupRelation.remove({ relatedUser: user });
       await user.statusDelete();
@@ -800,8 +800,8 @@ module.exports = (crowi) => {
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
-      if (isUsersHomePageDeletionEnabled) {
-        crowi.pageService.deleteCompletelyUserHomeBySystem(req.user, userHomePagePath);
+      if (isUsersHomepageDeletionEnabled) {
+        crowi.pageService.deleteCompletelyUserHomeBySystem(req.user, userHomepagePath);
       }
 
       return res.apiv3({ user: serializedUser });
