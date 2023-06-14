@@ -2002,7 +2002,7 @@ class PageService {
         options,
       });
 
-      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, options, pageOp._id);
+      await this.deleteCompletelyRecursivelyMainOperation(userHomePage, null, options, pageOp._id);
     }
     catch (err) {
       logger.error('Error occurred while deleting user home page and subpages.', err);
