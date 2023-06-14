@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IUser } from '@growi/core';
+import { type IUser, pagePathUtils } from '@growi/core';
 import Link from 'next/link';
 
 type UsernameProps = {
@@ -16,7 +16,7 @@ export const Username = (props: UsernameProps): JSX.Element => {
 
   const name = user.name || '(no name)';
   const username = user.username;
-  const href = `/user/${user.username}`;
+  const href = pagePathUtils.userHomepagePath(user);
 
   return (
     <Link href={href} prefetch={false}>
