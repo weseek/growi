@@ -25,12 +25,10 @@ class UserEvent extends EventEmitter {
     const Page = this.crowi.model('Page');
     const userHomepagePath = pagePathUtils.userHomepagePath(user);
 
-    // TODO: Delete user arg.
-    // see: https://redmine.weseek.co.jp/issues/124326
-    let page = await Page.findByPath(userHomepagePath, user);
+    let page = await Page.findByPath(userHomepagePath, true);
 
     if (page !== null && page.creator.toString() !== user._id.toString()) {
-      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(user, userHomepagePath);
+      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
       page = null;
     }
 

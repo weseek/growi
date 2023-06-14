@@ -1962,20 +1962,19 @@ class PageService {
     }
   }
 
-  // TODO: Delete user arg.
-  // see: https://redmine.weseek.co.jp/issues/124326
+  // TODO: Can be deleted even on the grant pages
+  // see: https://redmine.weseek.co.jp/issues/124592
   /**
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
-   * @param {object} user - The user object.
    * @param {string} userHomepagePath - The path of the user's homepage.
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-  async deleteCompletelyUserHomeBySystem(user: object, userHomepagePath: string): Promise<void> {
+  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
-    const userHomepage = await Page.findByPath(userHomepagePath, user);
+    const userHomepage = await Page.findByPath(userHomepagePath, true);
     const options = {};
 
     if (userHomepage == null) {
@@ -1996,26 +1995,26 @@ class PageService {
       // 3. delete leaf empty pages
       await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
 
-      if (!userHomepage.isEmpty) {
-        this.pageEvent.emit('deleteCompletely', userHomepage, user);
-      }
+      // if (!userHomepage.isEmpty) {
+      //   this.pageEvent.emit('deleteCompletely', userHomepage, user);
+      // }
 
-      pageOp = await PageOperation.create({
-        actionType: PageActionType.DeleteCompletely,
-        actionStage: PageActionStage.Main,
-        page: userHomepage,
-        user,
-        fromPath: userHomepage.path,
-        options,
-      });
+      // pageOp = await PageOperation.create({
+      //   actionType: PageActionType.DeleteCompletely,
+      //   actionStage: PageActionStage.Main,
+      //   page: userHomepage,
+      //   user,
+      //   fromPath: userHomepage.path,
+      //   options,
+      // });
 
-      await this.deleteCompletelyRecursivelyMainOperation(userHomepage, user, options, pageOp._id);
+      // await this.deleteCompletelyRecursivelyMainOperation(userHomepage, user, options, pageOp._id);
     }
     catch (err) {
       logger.error('Error occurred while deleting user homepage and subpages.', err);
-      if (pageOp != null) {
-        await PageOperation.deleteOne({ _id: pageOp._id });
-      }
+      // if (pageOp != null) {
+      //   await PageOperation.deleteOne({ _id: pageOp._id });
+      // }
       throw err;
     }
   }
