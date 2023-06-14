@@ -48,6 +48,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -93,6 +94,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
+    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -112,6 +114,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
+      setIsLoading(false);
     }
     return;
 
@@ -214,9 +217,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
+            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin"disabled={isLoading}>
               <div className="eff"></div>
               <span className="btn-label">
+                {isLoading && (
+                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                )}
                 <i className="icon-login"></i>
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
