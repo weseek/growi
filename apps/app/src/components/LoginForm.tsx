@@ -233,7 +233,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </>
     );
   }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
-      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, t]);
+      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, isLoading, t]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
