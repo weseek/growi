@@ -1,5 +1,7 @@
 import { IExternalUserGroup, LdapGroup } from '~/interfaces/external-user-group';
-import { IUser } from '~/interfaces/user';
+import { IUserHasId } from '~/interfaces/user';
+import ExternalUserGroup from '~/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 
 import { configManager } from '../config-manager';
 import ExternalAccountService from '../external-account';
@@ -51,14 +53,23 @@ class LdapUserGroupSyncService {
     */
   }
 
-  // // グループ生成/更新メソッド
-  // createUpdateExternalUserGroup(ldapGroup: LdapGroup): IExternalUserGroup {
-  //   /*
-  //    1. ldapGroup を元に ExternalUserGroup を生成/更新する
-  //    2. ldapGroup.users を元に ExternalUserGroup に所属していないメンバーについて getMemberUser を呼び出し、返却された各ユーザを ExternalUserGroup に所属させる (ExternalUserGroupRelation を生成する)
-  //    4. ExternalUserGroup を返却する
-  //   */
-  // }
+  /**
+   * 1. Create/Update ExternalUserGroup from ldapGroup
+   * 2. For every element in ldapGroup.users, call getMemberUser and create an ExternalUserGroupRelation with ExternalUserGroup if it does not have one
+   * 3. Retrun ExternalUserGroup
+  */
+  async createUpdateExternalUserGroup(ldapGroup: LdapGroup, parentId: string): Promise<IExternalUserGroup> {
+    const externalUserGroup = await ExternalUserGroup.createGroup(ldapGroup.name, ldapGroup.description, ldapGroup.dn, parentId);
+
+    await Promise.all(ldapGroup.users.map((userIdentifier) => {
+      return (async() => {
+        const user = await this.getMemberUser(userIdentifier);
+        await ExternalUserGroupRelation.findOrCreateRelation(externalUserGroup, user);
+      })();
+    }));
+
+    return externalUserGroup;
+  }
 
   /**
    * 1. Execute search on LDAP server for user using useridentifier
@@ -67,7 +78,7 @@ class LdapUserGroupSyncService {
    * @param {string} userIdentifier Search LDAP server using this identifier (DN or UID)
    * @returns {Promise<IUser | null>} IUser when found or created, null when neither
    */
-  async getMemberUser(userIdentifier: string): Promise<IUser | null> {
+  async getMemberUser(userIdentifier: string): Promise<IUserHasId | null> {
     const groupMembershipAttributeType = configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType');
 
     const getUser = async() => {
@@ -83,7 +94,7 @@ class LdapUserGroupSyncService {
 
     if (userEntryArr != null && userEntryArr.length > 0) {
       const userEntry = userEntryArr[0];
-      const uid = this.getStringValFromSearchResultEntry(userEntry, 'uid');
+      const uid = this.ldapService.getStringValFromSearchResultEntry(userEntry, 'uid');
       if (uid != null) {
         const externalAccount = await this.getExternalAccount(uid, userEntry);
         if (externalAccount != null) {
@@ -101,11 +112,11 @@ class LdapUserGroupSyncService {
     const groupNameAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
     const groupDescriptionAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
 
-    const childGroups = this.getArrayValFromSearchResultEntry(groupEntry, groupChildGroupAttribute);
-    const users = this.getArrayValFromSearchResultEntry(groupEntry, groupMembershipAttribute);
+    const childGroups = this.ldapService.getArrayValFromSearchResultEntry(groupEntry, groupChildGroupAttribute);
+    const users = this.ldapService.getArrayValFromSearchResultEntry(groupEntry, groupMembershipAttribute);
 
-    const name = this.getStringValFromSearchResultEntry(groupEntry, groupNameAttribute);
-    const description = this.getStringValFromSearchResultEntry(groupEntry, groupDescriptionAttribute);
+    const name = this.ldapService.getStringValFromSearchResultEntry(groupEntry, groupNameAttribute);
+    const description = this.ldapService.getStringValFromSearchResultEntry(groupEntry, groupDescriptionAttribute);
 
     return name != null ? {
       dn: groupEntry.objectName || '',
@@ -123,9 +134,9 @@ class LdapUserGroupSyncService {
       const attrMapUsername = this.crowi.passportService.getLdapAttrNameMappedToUsername();
       const attrMapName = this.crowi.passportService.getLdapAttrNameMappedToName();
       const attrMapMail = this.crowi.passportService.getLdapAttrNameMappedToMail();
-      const usernameToBeRegistered = attrMapUsername === 'uid' ? uid : this.getStringValFromSearchResultEntry(userEntry, attrMapUsername);
-      const nameToBeRegistered = this.getStringValFromSearchResultEntry(userEntry, attrMapName);
-      const mailToBeRegistered = this.getStringValFromSearchResultEntry(userEntry, attrMapMail);
+      const usernameToBeRegistered = attrMapUsername === 'uid' ? uid : this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapUsername);
+      const nameToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapName);
+      const mailToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapMail);
 
       const userInfo = {
         id: uid,
@@ -139,22 +150,6 @@ class LdapUserGroupSyncService {
 
     return this.crowi.models.ExternalAccount
       .findOne({ providerType: 'ldap', accountId: uid });
-  }
-
-  private getArrayValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string) {
-    const values: string | string[] = entry.attributes.find(attribute => attribute.type === attributeType)?.values || [];
-    return typeof values === 'string' ? [values] : values;
-  }
-
-  private getStringValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string): string | undefined {
-    const values: string | string[] | undefined = entry.attributes.find(attribute => attribute.type === attributeType)?.values;
-    if (typeof values === 'string' || values == null) {
-      return values;
-    }
-    if (values.length > 0) {
-      return values[0];
-    }
-    return undefined;
   }
 
 }

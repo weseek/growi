@@ -115,6 +115,22 @@ class LdapService {
     return this.search(undefined, groupSearchBase);
   }
 
+  getArrayValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string): string[] {
+    const values: string | string[] = entry.attributes.find(attribute => attribute.type === attributeType)?.values || [];
+    return typeof values === 'string' ? [values] : values;
+  }
+
+  getStringValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string): string | undefined {
+    const values: string | string[] | undefined = entry.attributes.find(attribute => attribute.type === attributeType)?.values;
+    if (typeof values === 'string' || values == null) {
+      return values;
+    }
+    if (values.length > 0) {
+      return values[0];
+    }
+    return undefined;
+  }
+
 }
 
 export default LdapService;

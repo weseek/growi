@@ -4,7 +4,7 @@ import { IUserGroup } from './user';
 
 export interface IExternalUserGroup extends Omit<IUserGroup, 'parent'> {
   parent: Ref<IExternalUserGroup> | null
-  externalID: string // identifier used in external app/server
+  externalId: string // identifier used in external app/server
 }
 
 export interface IExternalUserGroupRelation extends Omit<IUserGroupRelation, 'relatedGroup'> {
