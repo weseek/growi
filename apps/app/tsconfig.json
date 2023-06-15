@@ -14,8 +14,6 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      ""
-
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   },
