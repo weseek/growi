@@ -66,9 +66,11 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
       await apiv3Put('/personal-setting/', updateData);
       i18n.changeLanguage(updateData.lang);
     }
-    catch (err) {
-      logger.error(err);
-      const code = err[0].message;
+    catch (errs) {
+      logger.error(errs);
+
+      const err = errs[0];
+      const code = err.code;
 
       if (code === 'email-is-already-in-use') {
         throw new Error('The email is already in use');

@@ -1,4 +1,6 @@
+import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
+
 
 import { i18n } from '^/config/next-i18next.config';
 
@@ -242,7 +244,7 @@ module.exports = (crowi) => {
 
       if (!isUniqueEmail) {
         logger.error('email-is-not-unique');
-        return res.apiv3Err('email-is-already-in-use');
+        return res.apiv3Err(new ErrorV3('The email is already in use', 'email-is-already-in-use'));
       }
 
       const updatedUser = await user.save();
@@ -254,7 +256,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('update-personal-data-failed');
+      return res.apiv3Err(new ErrorV3(err.message, 'update-personal-settings-failed'));
     }
 
   });
