@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Logger } from 'browser-bunyan';
 import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
@@ -26,13 +25,14 @@ export const BasicInfoSettings = (): JSX.Element => {
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info'), ns: 'commons' }));
     }
     catch (err) {
-      const code = err.message;
+      const message = err.message;
+      const code = err.code;
 
-      if (code === 'The email is already in use') {
+      if (code === 'email-is-already-in-use') {
         toastError(t('alert.email_is_already_in_use', { ns: 'commons' }));
       }
       else {
-        toastError(code);
+        toastError(message);
       }
     }
   };

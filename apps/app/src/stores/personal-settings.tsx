@@ -1,3 +1,4 @@
+import { ErrorV3 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
@@ -9,6 +10,7 @@ import loggerFactory from '~/utils/logger';
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 
 import { useStaticSWR } from './use-static-swr';
+
 
 const logger = loggerFactory('growi:stores:personal-settings');
 
@@ -73,10 +75,10 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
       const code = err.code;
 
       if (code === 'email-is-already-in-use') {
-        throw new Error('The email is already in use');
+        throw new ErrorV3('The email is already in use', code);
       }
 
-      throw new Error('Failed to update personal data');
+      throw new ErrorV3('Failed to update personal data', 'failed-to-update-personal-data');
     }
   };
 
