@@ -214,7 +214,7 @@ const InstallerForm = memo((): JSX.Element => {
             />
           </div>
 
-          <div className="input-group mt-4 mb-3 d-flex justify-content-center">
+          <div className="input-group mt-4 d-flex justify-content-center">
             <button
               data-testid="btnSubmit"
               type="submit"
@@ -228,11 +228,12 @@ const InstallerForm = memo((): JSX.Element => {
             </button>
           </div>
 
-          <div className="input-group mt-4 d-flex justify-content-center">
+          <div>
             <a href="https://growi.org" className="link-growi-org">
-              <span className="growi">GROWI</span>.<span className="org">ORG</span>
+              <span className="growi">GROWI</span>.<span className="org">org</span>
             </a>
           </div>
+
         </form>
       </div>
     </div>
