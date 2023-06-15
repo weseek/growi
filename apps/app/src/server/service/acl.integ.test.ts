@@ -4,17 +4,17 @@
 //   describe, test, expect,
 // } from 'vitest';
 
-// import { AclService } from './acl';
+// import { aclService } from './acl';
 // import { configManager } from './config-manager';
 
 
 // describe('AclService', () => {
 //   test("has consts 'isLabeledStatement'", () => {
-//     expect(AclService.labels.SECURITY_RESTRICT_GUEST_MODE_DENY).toBe('Deny');
-//     expect(AclService.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY).toBe('Readonly');
-//     expect(AclService.labels.SECURITY_REGISTRATION_MODE_OPEN).toBe('Open');
-//     expect(AclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED).toBe('Restricted');
-//     expect(AclService.labels.SECURITY_REGISTRATION_MODE_CLOSED).toBe('Closed');
+//     expect(aclService.labels.SECURITY_RESTRICT_GUEST_MODE_DENY).toBe('Deny');
+//     expect(aclService.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY).toBe('Readonly');
+//     expect(aclService.labels.SECURITY_REGISTRATION_MODE_OPEN).toBe('Open');
+//     expect(aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED).toBe('Restricted');
+//     expect(aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED).toBe('Closed');
 //   });
 // });
 
@@ -38,7 +38,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isAclEnabled();
+//       const result = aclService.isAclEnabled();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe(undefined);
@@ -51,7 +51,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isAclEnabled();
+//       const result = aclService.isAclEnabled();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('dummy string');
@@ -64,7 +64,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isAclEnabled();
+//       const result = aclService.isAclEnabled();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('private');
@@ -77,7 +77,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isAclEnabled();
+//       const result = aclService.isAclEnabled();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('public');
@@ -95,7 +95,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isWikiModeForced();
+//       const result = aclService.isWikiModeForced();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe(undefined);
@@ -108,7 +108,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isWikiModeForced();
+//       const result = aclService.isWikiModeForced();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('dummy string');
@@ -121,7 +121,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isWikiModeForced();
+//       const result = aclService.isWikiModeForced();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('private');
@@ -134,7 +134,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isWikiModeForced();
+//       const result = aclService.isWikiModeForced();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('public');
@@ -158,7 +158,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isGuestAllowedToRead();
+//       const result = aclService.isGuestAllowedToRead();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('private');
@@ -172,7 +172,7 @@
 //       // reload
 //       await configManager.loadConfigs();
 
-//       const result = AclService.isGuestAllowedToRead();
+//       const result = aclService.isGuestAllowedToRead();
 
 //       const wikiMode = configManager.getConfig('crowi', 'security:wikiMode');
 //       expect(wikiMode).toBe('public');
@@ -206,7 +206,7 @@
 //           throw new Error('Unexpected behavior.');
 //         });
 
-//         const result = AclService.isGuestAllowedToRead();
+//         const result = aclService.isGuestAllowedToRead();
 
 //         expect(getConfigSpy).toHaveBeenCalledTimes(2);
 //         expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:wikiMode');
