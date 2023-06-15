@@ -1962,20 +1962,18 @@ class PageService {
     }
   }
 
-  // TODO: Can be deleted even on the grant pages
-  // see: https://redmine.weseek.co.jp/issues/124592
   /**
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
+   * @param {IUserHasId} user - The user object.
    * @param {string} userHomepagePath - The path of the user's homepage.
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
+  async deleteCompletelyUserHomeBySystem(user: IUserHasId, userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, true);
-    const options = {};
 
     if (userHomepage == null) {
       logger.error('user homepage is not found.');
@@ -1987,34 +1985,81 @@ class PageService {
 
     let pageOp;
     try {
-      // 1. update descendantCount
+      // Delete the user's homepage and ensure consistency of ancestors and leaf pages
       const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
       await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
-      // 2. delete target completely
       await this.deleteCompletelyOperation(ids, paths);
-      // 3. delete leaf empty pages
       await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
 
-      // if (!userHomepage.isEmpty) {
-      //   this.pageEvent.emit('deleteCompletely', userHomepage, user);
-      // }
+      if (!userHomepage.isEmpty) {
+        // Emit an event for the search service
+        this.pageEvent.emit('deleteCompletely', userHomepage, user);
+      }
 
-      // pageOp = await PageOperation.create({
-      //   actionType: PageActionType.DeleteCompletely,
-      //   actionStage: PageActionStage.Main,
-      //   page: userHomepage,
-      //   user,
-      //   fromPath: userHomepage.path,
-      //   options,
-      // });
+      // Create a PageOperation model
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.DeleteCompletely,
+        actionStage: PageActionStage.Main,
+        page: userHomepage,
+        user,
+        fromPath: userHomepage.path,
+      });
 
-      // await this.deleteCompletelyRecursivelyMainOperation(userHomepage, user, options, pageOp._id);
+      const { PageQueryBuilder } = Page;
+
+      // Find descendant pages with system deletion condition
+      const builder = new PageQueryBuilder(Page.find(), true)
+        .addConditionForSystemDeletion()
+        .addConditionToListOnlyDescendants(userHomepage.path);
+
+      // Stream processing to delete descendant pages
+      // ────────┤ start │─────────
+      const readStream = await builder
+        .query
+        .lean()
+        .cursor({ batchSize: BULK_REINDEX_SIZE });
+
+      let count = 0;
+
+      const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
+      const writeStream = new Writable({
+        objectMode: true,
+        async write(batch, encoding, callback) {
+          try {
+            count += batch.length;
+            // Delete multiple pages completely
+            await deleteMultipleCompletely(batch, null, {});
+
+            logger.debug(`Adding pages progressing: (count=${count})`);
+          }
+          catch (err) {
+            logger.error('addAllPages error on add anyway: ', err);
+          }
+
+          callback();
+        },
+        final(callback) {
+          logger.debug(`Adding pages has completed: (totalCount=${count})`);
+
+          callback();
+        },
+      });
+
+      readStream
+        .pipe(createBatchStream(BULK_REINDEX_SIZE))
+        .pipe(writeStream);
+
+      await streamToPromise(writeStream);
+      // ────────┤ end │─────────
+
+      // Clean up PageOperation
+      await PageOperation.deleteOne({ _id: pageOp._id });
     }
     catch (err) {
       logger.error('Error occurred while deleting user homepage and subpages.', err);
-      // if (pageOp != null) {
-      //   await PageOperation.deleteOne({ _id: pageOp._id });
-      // }
+      if (pageOp != null) {
+        await PageOperation.deleteOne({ _id: pageOp._id });
+      }
       throw err;
     }
   }

@@ -801,7 +801,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       if (isUsersHomepageDeletionEnabled) {
-        crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
+        crowi.pageService.deleteCompletelyUserHomeBySystem(user, userHomepagePath);
       }
 
       return res.apiv3({ user: serializedUser });
