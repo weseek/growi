@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { MARP_CONTAINER_CLASS_NAME } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
@@ -19,7 +17,6 @@ import 'katex/dist/katex.min.css';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
-const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });
 
 type Props = {
   rendererOptions: RendererOptions,
@@ -39,6 +36,8 @@ const ErrorFallback: React.FC<FallbackProps> = React.memo(({ error, resetErrorBo
 });
 ErrorFallback.displayName = 'ErrorFallback';
 
+const RevisionSlidePreview = dynamic(() => import('./RevisionSlidePreview').then(mod => mod.RevisionSlidePreview), { ssr: false });
+
 const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
@@ -47,7 +46,6 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   type presentationSlideStyle = 'marp' | 'true' | null;
   const [slideStyle, setSlideStyle] = useState<presentationSlideStyle>(null);
-  const [removedFrontMatterMarkdown, setRemovedFrontMatterMarkdown] = useState<string>(markdown);
 
   useEffect(() => {
     unified()
@@ -57,35 +55,39 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       .use(() => (obj) => {
         setSlideStyle(null);
         if (obj.children[0]?.type === 'yaml') {
-          for (const val of obj.children[0]?.value.split('\n')) {
+          for (const line of obj.children[0]?.value.split('\n')) {
             // obj.children[0].value is "presentation:true\ntitle: hoge\nclass: fuga" etc..
-            const value = val.split(':');
-            if (value[0].trim() === 'presentation') {
-              const v = value[1].trim();
+            // applay last presentation style in frontmatter
+            const parts = line.split(':');
+            if (parts.length !== 2) {
+              continue;
+            }
+            const key = parts[0].trim();
+            const value = parts[1].trim();
+            if (key === 'presentation') {
               setSlideStyle(
-                v === 'marp' || v === 'true' ? v : null,
+                value === 'marp' || value === 'true' ? value : null,
               );
+            }
+            else if (key === 'marp' && value === 'true') {
+              setSlideStyle('marp');
             }
           }
         }
       })
       .process(markdown);
-  }, [markdown]);
+  }, [markdown, setSlideStyle]);
 
   //  if (isSlidesOverviewEnabled && marp) {
   if (slideStyle === 'true' || slideStyle === 'marp') {
-    const options = {
-      rendererOptions: rendererOptions as ReactMarkdownOptions,
-      isDarkMode: false,
-      disableSeparationsByHeader: false,
-    };
     return (
-      <div className = "slides">
-        <Slides options={options}>{markdown}</Slides>
-      </div>
+      <RevisionSlidePreview
+        rendererOptions = {rendererOptions}
+        markdown = {markdown}
+        slideStyle = {slideStyle}
+      />
     );
   }
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
@@ -96,8 +98,8 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       </ReactMarkdown>
     </ErrorBoundary>
   );
-
 });
+
 RevisionRenderer.displayName = 'RevisionRenderer';
 
 export default RevisionRenderer;
