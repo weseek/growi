@@ -9,7 +9,7 @@ type PlantUMLPluginParams = {
 
 export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
   const plantumlUri = options.plantumlUri;
-  const baseUri = urljoin(plantumlUri);
+  const baseUrl = urljoin(plantumlUri, '/svg');
 
   return (tree: Parent) => {
     const modifiedChildren: Node[] = tree.children.map((child: Node) => {
@@ -37,6 +37,6 @@ export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
     };
 
     // Apply the plantuml plugin to the wrapped tree
-    return plantuml({ baseUri })(wrappedTree);
+    return plantuml({ baseUrl })(wrappedTree);
   };
 };
