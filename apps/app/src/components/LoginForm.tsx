@@ -48,6 +48,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -295,6 +296,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
     setIsSuccessToRagistration(false);
+    setIsLoading(true);
 
     const registerForm = {
       username: usernameForRegister,
@@ -323,6 +325,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       if (err != null || err.length > 0) {
         setRegisterErrors(err);
       }
+      setIsLoading(false);
     }
     return;
   }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled]);
@@ -478,11 +481,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button
               className="btn btn-fill rounded-0"
               id="register"
-              disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}
+              disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className="icon-user-follow"></i>
+                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} />
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -503,7 +506,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
-    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit, isLoading,
   ]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
