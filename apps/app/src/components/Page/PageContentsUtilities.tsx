@@ -31,7 +31,7 @@ export const PageContentsUtilities = () => {
 
   return (
     <>
-      {modalTypes.map((modalType) => (
+      {modalTypes.map(modalType => (
         <ModalLauncherUtility key={modalType} modalType={modalType} />
       ))}
     </>
