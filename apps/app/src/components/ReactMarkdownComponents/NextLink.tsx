@@ -47,18 +47,18 @@ export const NextLink = (props: Props): JSX.Element => {
 
   // Fetch and set contentType by given href
   useEffect(() => {
-    if (href != null) {
-      const fetchContentType = async() => {
-        try {
-          const response = await fetch(href);
-          const contentType = response.headers.get('content-type');
-          setContentType(contentType);
-        }
-        catch (error) {
-          console.error('Failed to fetch content type', error);
-        }
-      };
+    const fetchContentType = async() => {
+      try {
+        const response = await fetch(href);
+        const contentType = response.headers.get('content-type');
+        setContentType(contentType);
+      }
+      catch (error) {
+        console.error('Failed to fetch content type', error);
+      }
+    };
 
+    if (href != null) {
       fetchContentType();
     }
   }, [href]);
