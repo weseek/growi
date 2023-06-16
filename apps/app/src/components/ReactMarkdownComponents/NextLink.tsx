@@ -41,27 +41,27 @@ export const NextLink = (props: Props): JSX.Element => {
   const [contentType, setContentType] = useState<string | null>(null);
   const { data: siteUrl } = useSiteUrl();
 
-  if (href == null) {
-    return <a className={className}>{children}</a>;
-  }
-
   // Fetch and set contentType by given href
   useEffect(() => {
     const fetchContentType = async() => {
       try {
-        const response = await fetch(href);
-        const contentType = response.headers.get('content-type');
-        setContentType(contentType);
+        if (href != null) {
+          const response = await fetch(href);
+          const contentType = response.headers.get('content-type');
+          setContentType(contentType);
+        }
       }
       catch (error) {
         console.error('Failed to fetch content type', error);
       }
     };
 
-    if (href != null) {
-      fetchContentType();
-    }
+    fetchContentType();
   }, [href]);
+
+  if (href == null) {
+    return <a className={className}>{children}</a>;
+  }
 
   // extract 'data-*' props
   const dataAttributes = Object.fromEntries(
