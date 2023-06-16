@@ -2,7 +2,7 @@ import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
-
+import { useEffect, useState } from 'react';
 
 const logger = loggerFactory('growi:components:NextLink');
 
@@ -38,11 +38,28 @@ export const NextLink = (props: Props): JSX.Element => {
     id, href, children, className, ...rest
   } = props;
 
+  const [contentType, setContentType] = useState<string | null>(null);
   const { data: siteUrl } = useSiteUrl();
 
   if (href == null) {
     return <a className={className}>{children}</a>;
   }
+
+  // Fetch and set contentType by given href
+  useEffect(() => {
+    const fetchContentType = async () => {
+      if (href != null) {
+        try {
+          const response = await fetch(href);
+          const contentType = response.headers.get('content-type');
+          setContentType(contentType);
+        } catch (error) {
+          console.error('Failed to fetch content type', error);
+        }
+      };
+    };
+    fetchContentType();
+  }, [href]);
 
   // extract 'data-*' props
   const dataAttributes = Object.fromEntries(
@@ -67,9 +84,13 @@ export const NextLink = (props: Props): JSX.Element => {
   // when href is an attachment file
   if (isAttached(href)) {
     const dlhref = href.replace('/attachment/', '/download/');
+    // Conditional href and downloadable status by contentType
+    const isPdf = contentType === 'application/pdf'
+    const linkHref = isPdf ? href : dlhref;
+    const isDownloadAble = !isPdf;
     return (
       <span>
-        <a id={id} href={dlhref} className={className} target="_blank" rel="noopener noreferrer" download {...dataAttributes}>
+        <a id={id} href={linkHref} className={className} target="_blank" rel="noopener noreferrer" download={isDownloadAble} {...dataAttributes}>
           {children}
         </a>&nbsp;
         <a href={dlhref} className="attachment-download"><i className='icon-cloud-download'></i></a>
