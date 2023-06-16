@@ -6,7 +6,7 @@ import { useCurrentPageId } from '~/stores/page';
 import { useModalLauncherForView } from '~/client/services/side-effects/modal-launcher-for-view';
 import { SaveByModalType } from '~/interfaces/page-operation';
 
-export const PageContentsUtilities = (): null => {
+export const PageContentsUtilities = () => {
   const { t } = useTranslation();
 
   const { data: pageId } = useCurrentPageId();
@@ -14,10 +14,9 @@ export const PageContentsUtilities = (): null => {
 
   const modalTypes: SaveByModalType[] = Object.values(SaveByModalType);
 
-  // Iterate over each modalType and call useModalLauncherForView for every modal type
-  modalTypes.map((modalType) => {
+  const ModalLauncherUtility = ({ modalType }): null => {
     useModalLauncherForView(modalType, {
-      onSaveSuccess() {
+      onSaveSuccess: () => {
         toastSuccess(t('toaster.save_succeeded'));
 
         updateStateAfterSave?.();
@@ -25,8 +24,16 @@ export const PageContentsUtilities = (): null => {
       onSaveError: (error) => {
         toastError(error);
       },
-    })
-  });
+    });
 
-  return null;
+    return null;
+  };
+
+  return (
+    <>
+      {modalTypes.map((modalType) => (
+        <ModalLauncherUtility key={modalType} modalType={modalType} />
+      ))}
+    </>
+  );
 };
