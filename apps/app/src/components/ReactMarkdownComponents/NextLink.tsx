@@ -47,18 +47,20 @@ export const NextLink = (props: Props): JSX.Element => {
 
   // Fetch and set contentType by given href
   useEffect(() => {
-    const fetchContentType = async () => {
-      if (href != null) {
+    if (href != null) {
+      const fetchContentType = async() => {
         try {
           const response = await fetch(href);
           const contentType = response.headers.get('content-type');
           setContentType(contentType);
-        } catch (error) {
+        }
+        catch (error) {
           console.error('Failed to fetch content type', error);
         }
       };
-    };
-    fetchContentType();
+
+      fetchContentType();
+    }
   }, [href]);
 
   // extract 'data-*' props
@@ -85,7 +87,7 @@ export const NextLink = (props: Props): JSX.Element => {
   if (isAttached(href)) {
     const dlhref = href.replace('/attachment/', '/download/');
     // Conditional href and downloadable status by contentType
-    const isPdf = contentType === 'application/pdf'
+    const isPdf = contentType === 'application/pdf';
     const linkHref = isPdf ? href : dlhref;
     const isDownloadAble = !isPdf;
     return (
