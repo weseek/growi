@@ -220,11 +220,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isLoading}>
               <div className="eff"></div>
               <span className="btn-label">
-                {isLoading ? (
-                  <i className="fa fa-spinner fa-pulse mr-1"></i>
-                ) : (
-                  <i className="icon-login"></i>
-                )}
+                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
