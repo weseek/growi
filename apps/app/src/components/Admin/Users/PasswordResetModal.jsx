@@ -47,15 +47,10 @@ class PasswordResetModal extends React.Component {
 
     return (
       <>
-        {isEmailSent ? (
-          <button type="submit" className="btn btn-secondary" disabled>
-            {t('Done')}
-          </button>
-        ) : (
-          <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending}>
-            {t('Send')}
-          </button>
-        )}
+        <button type="submit" className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
+          onClick={isEmailSent ? undefined : this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending || isEmailSent}>
+          {isEmailSent ? t('Done') : t('Send')}
+        </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
           {t('Close')}
         </button>
@@ -165,14 +160,14 @@ class PasswordResetModal extends React.Component {
       userForPasswordResetModal,
     } = this.props;
 
+    this.setState({ isEmailSending: true });
+
     try {
-      this.setState({ isEmailSending: true });
       await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
       this.setState({ isEmailSent: true });
     }
     catch (err) {
-      this.setState({ isEmailSent: false });
-      this.setState({ isEmailSending: false });
+      this.setState({ isEmailSending: false, isEmailSent: false });
       toastError(err);
     }
   }
