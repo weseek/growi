@@ -70,15 +70,7 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
     }
     catch (errs) {
       logger.error(errs);
-
-      const err = errs[0];
-      const code = err.code;
-
-      if (code === 'email-is-already-in-use') {
-        throw new ErrorV3('The email is already in use', code);
-      }
-
-      throw new ErrorV3('Failed to update personal data', 'failed-to-update-personal-data');
+      throw errs;
     }
   };
 

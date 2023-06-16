@@ -24,7 +24,8 @@ export const BasicInfoSettings = (): JSX.Element => {
       sync();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info'), ns: 'commons' }));
     }
-    catch (err) {
+    catch (errs) {
+      const err = errs[0];
       const message = err.message;
       const code = err.code;
 
