@@ -28,10 +28,17 @@ export interface LdapGroupSyncSettings {
   ldapGroupDescriptionAttribute?: string
 }
 
+export type ExternalUserInfo = {
+  id: string, // external user id
+  username: string,
+  name: string,
+  email?: string,
+}
+
 // Data structure to express the tree structure of external groups, before converting to ExternalUserGroup model
 export interface ExternalUserGroupTreeNode {
   id: string
-  externalUserIds: string[]
+  userInfos: ExternalUserInfo[]
   childGroupNodes: ExternalUserGroupTreeNode[]
   name: string
   description?: string

@@ -1,17 +1,30 @@
-import { ExternalGroupProviderType, ExternalUserGroupTreeNode, IExternalUserGroupHasId } from '~/interfaces/external-user-group';
+import {
+  ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, IExternalUserGroupHasId,
+} from '~/interfaces/external-user-group';
 import { IUserHasId } from '~/interfaces/user';
 import ExternalUserGroup from '~/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { configManager } from '../config-manager';
+import ExternalAccountService from '../external-account';
 
 abstract class ExternalUserGroupSyncService {
 
-  provider: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap)
+  groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
-  constructor(provider: ExternalGroupProviderType) {
-    this.provider = provider;
+  authProviderType: string; // auth provider type (e.g: ldap, oidc)
+
+  externalAccountService: ExternalAccountService;
+
+  crowi: any;
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  constructor(crowi: any, groupProviderType: ExternalGroupProviderType, authProviderType: string) {
+    this.groupProviderType = groupProviderType;
+    this.authProviderType = authProviderType;
+    this.crowi = crowi;
+    this.externalAccountService = new ExternalAccountService(crowi);
   }
 
   /** External user group tree sync method
@@ -36,9 +49,9 @@ abstract class ExternalUserGroupSyncService {
       return syncNode(root);
     }));
 
-    const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.provider}:preserveDeletedGroups`);
+    const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     if (!preserveDeletedLdapGroups) {
-      await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, provider: this.provider });
+      await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
     }
   }
 
@@ -52,11 +65,11 @@ abstract class ExternalUserGroupSyncService {
   */
   async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
-      node.name, node.description, node.id, this.provider, parentId,
+      node.name, node.description, node.id, this.groupProviderType, parentId,
     );
-    await Promise.all(node.externalUserIds.map((externalUserId) => {
+    await Promise.all(node.userInfos.map((userInfo) => {
       return (async() => {
-        const user = await this.getMemberUser(externalUserId);
+        const user = await this.getMemberUser(userInfo);
 
         if (user != null) {
           const userGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(externalUserGroup);
@@ -76,20 +89,38 @@ abstract class ExternalUserGroupSyncService {
   }
 
   /** Method to get group member GROWI user
-   * 1. Execute search on external app/server for user info using externalUserId
+   * 1. If externalUserInfo is an id, execute search on external app/server for user info. If it is full user info, use it as it is in 2.
    * 2. Search for GROWI user based on user info of 1, and return user
    *   - if autoGenerateUserOnHogeGroupSync is true and GROWI user is not found, create new GROWI user
-   * @param {string} externalUserId Search LDAP server using this identifier (DN or UID)
+   * @param {ExternalUserInfo} externalUserInfo Search external app/server using this identifier
    * @returns {Promise<IUserHasId | null>} User when found or created, null when neither
    */
-  abstract getMemberUser(externalUserId: string): Promise<IUserHasId | null>
+  async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
+    const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
+
+    const getExternalAccount = async() => {
+      if (autoGenerateUserOnGroupSync) {
+        return this.externalAccountService.getOrCreateUser(userInfo, this.authProviderType);
+      }
+      return this.crowi.models.ExternalAccount
+        .findOne({ providerType: this.groupProviderType, accountId: userInfo.id });
+    };
+
+    const externalAccount = await getExternalAccount();
+
+    if (externalAccount != null) {
+      return externalAccount.getPopulatedUser();
+    }
+    return null;
+  }
 
   /** Method to generate external group tree structure
    * 1. Fetch user group info from external app/server
    * 2. Convert each group tree structure to ExternalUserGroupTreeNode
+   *   - Store the full user info in externalUserInfos if possible. Else just store the id and leave the user info fetching to getMemberUser.
    * 3. Return the root node of each tree
   */
-  abstract generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]>;
+  abstract generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]>
 
 }
 
