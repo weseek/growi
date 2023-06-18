@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import ldap from 'ldapjs';
+import ldap, { NoSuchObjectError } from 'ldapjs';
 
 import loggerFactory from '~/utils/logger';
 
@@ -11,7 +11,8 @@ const logger = loggerFactory('growi:service:ldap-service');
 
 // @types/ldapjs is outdated, and SearchResultEntry does not exist.
 // Declare it manually in the meantime.
-export interface SearchResultEntry extends Omit<ldap.SearchEntry, 'attributes'> {
+export interface SearchResultEntry {
+  objectName: string // DN
   attributes: {
     type: string,
     values: string | string[]
@@ -94,7 +95,12 @@ class LdapService {
           searchResults.push(pojo);
         });
         res.on('error', (err) => {
-          reject(err);
+          if (err instanceof NoSuchObjectError) {
+            resolve([]);
+          }
+          else {
+            reject(err);
+          }
         });
         res.on('end', (result) => {
           if (result?.status === 0) {
@@ -109,10 +115,7 @@ class LdapService {
   }
 
   searchGroupDir(): Promise<SearchResultEntry[]> {
-    const groupSearchBase = configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
-    || configManager?.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
-
-    return this.search(undefined, groupSearchBase);
+    return this.search(undefined, this.getGroupSearchBase());
   }
 
   getArrayValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string): string[] {
@@ -129,6 +132,11 @@ class LdapService {
       return values[0];
     }
     return undefined;
+  }
+
+  getGroupSearchBase(): string {
+    return configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
+    || configManager?.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
   }
 
 }

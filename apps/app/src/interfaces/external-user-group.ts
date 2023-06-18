@@ -1,11 +1,17 @@
-import { IUserGroupRelation, Ref } from '@growi/core';
+import { HasObjectId, IUserGroupRelation, Ref } from '@growi/core';
 
 import { IUserGroup } from './user';
+
+export const ExternalGroupProviderType = { ldap: 'ldap' } as const;
+export type ExternalGroupProviderType = typeof ExternalGroupProviderType[keyof typeof ExternalGroupProviderType];
 
 export interface IExternalUserGroup extends Omit<IUserGroup, 'parent'> {
   parent: Ref<IExternalUserGroup> | null
   externalId: string // identifier used in external app/server
+  provider: ExternalGroupProviderType
 }
+
+export type IExternalUserGroupHasId = IExternalUserGroup & HasObjectId;
 
 export interface IExternalUserGroupRelation extends Omit<IUserGroupRelation, 'relatedGroup'> {
   relatedGroup: Ref<IExternalUserGroup>
@@ -22,11 +28,11 @@ export interface LdapGroupSyncSettings {
   ldapGroupDescriptionAttribute?: string
 }
 
-// interface for objects before they are converted into ExternalUserGroup
-export interface LdapGroup {
-  dn: string
-  users: string[] // DN or UID
-  childGroups: string[] // DN
+// Data structure to express the tree structure of external groups, before converting to ExternalUserGroup model
+export interface ExternalUserGroupTreeNode {
+  id: string
+  externalUserIds: string[]
+  childGroupNodes: ExternalUserGroupTreeNode[]
   name: string
   description?: string
 }

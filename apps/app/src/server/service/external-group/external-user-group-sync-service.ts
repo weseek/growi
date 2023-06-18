@@ -1,35 +1,86 @@
-import { IExternalUserGroup } from '~/interfaces/external-user-group';
-import { IUser } from '~/interfaces/user';
+import { ExternalGroupProviderType, ExternalUserGroupTreeNode, IExternalUserGroupHasId } from '~/interfaces/external-user-group';
+import { IUserHasId } from '~/interfaces/user';
+import ExternalUserGroup from '~/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
+
+import { configManager } from '../config-manager';
 
 abstract class ExternalUserGroupSyncService {
 
-  // 全グループ同期メソッド
-  /* 継承先の実メソッドイメージ
-     1. 読み込まれたパラメータを元に外部グループを全て取得する
-     2. 各親グループについて、createUpdateExternalUserGroup を呼び出す
-     3. 子についても同様に呼び出し、返却された子グループを親グループと紐付ける
-     4. 2, 3 を再起的に行う
-         - 木探索アルゴリズムはなんでも良いが、実クラスで実装が容易になるように上手く抽象化したい
-     5. 「外部サービスから削除されたグループを GROWI に残すか」が false の場合、木探索の過程で見つからなかった ExternalUserGroup は削除する
-    */
-  abstract syncExternalUserGroups(): void
+  provider: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap)
 
-  // グループ生成/更新メソッド
-  /* 継承先の実メソッドイメージ
-     1. 読み込まれたパラメータを元に外部グループ情報をリクエストする
-     2. 読み込まれたパラメータと 1 で返却された外部グループ情報を元に ExternalUserGroup を生成/更新する
-     3. 外部グループ情報にある各ユーザ情報を元に、ExternalUserGroup に所属していないメンバーについて getMemberUser を呼び出し、返却されたユーザを ExternalUserGroup に所属させる (ExternalUserGroupRelation を生成する)
-     4. ExternalUserGroup を返却する
-    */
-  // abstract createUpdateExternalUserGroup(): IExternalUserGroup
+  constructor(provider: ExternalGroupProviderType) {
+    this.provider = provider;
+  }
 
-  // ユーザ検索メソッド
-  /* 継承先の実メソッドイメージ
-     1. 読み込まれたパラメータパラメータを元に外部ユーザ情報をリクエストする
-     2. 読み込まれたパラメータと 1 で返却された外部ユーザ情報を元に GROWI User を検索し、返却する
-       - 「作成されていない GROWI アカウントを自動生成するか」が true の場合、検索して見つからなければ生成して返却する
-    */
-  // abstract getMemberUser(): IUser
+  /** External user group tree sync method
+   * 1. Generate external user group tree
+   * 2. Use createUpdateExternalUserGroup on each node in the tree using DFS
+   * 3. If preserveDeletedLDAPGroups is false、delete all ExternalUserGroups that were not found during tree search
+  */
+  async syncExternalUserGroups(): Promise<void> {
+    const trees = await this.generateExternalUserGroupTrees();
+
+    const existingExternalUserGroupIds: string[] = [];
+
+    const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
+      const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
+      existingExternalUserGroupIds.push(externalUserGroup._id);
+      node.childGroupNodes.forEach((childNode) => {
+        syncNode(childNode, externalUserGroup._id);
+      });
+    };
+
+    await Promise.all(trees.map((root) => {
+      return syncNode(root);
+    }));
+
+    const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.provider}:preserveDeletedGroups`);
+    if (!preserveDeletedLdapGroups) {
+      await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, provider: this.provider });
+    }
+  }
+
+  /** External user group node sync method
+   * 1. Create/Update ExternalUserGroup from using information of ExternalUserGroupTreeNode
+   * 2. For every element in node.users, call getMemberUser and create an ExternalUserGroupRelation with ExternalUserGroup if it does not have one
+   * 3. Retrun ExternalUserGroup
+   * @param {string} node Node of external group tree
+   * @param {string} parentId Parent group id (id in GROWI) of the group we wan't to create/update
+   * @returns {Promise<IExternalUserGroupHasId>} ExternalUserGroup that was created/updated
+  */
+  async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
+    const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
+      node.name, node.description, node.id, this.provider, parentId,
+    );
+    await Promise.all(node.externalUserIds.map((externalUserId) => {
+      return (async() => {
+        const user = await this.getMemberUser(externalUserId);
+        // TODO: create relations for parent groups also
+        if (user != null) {
+          await ExternalUserGroupRelation.findOrCreateRelation(externalUserGroup, user);
+        }
+      })();
+    }));
+
+    return externalUserGroup;
+  }
+
+  /** Method to get group member GROWI user
+   * 1. Execute search on external app/server for user info using externalUserId
+   * 2. Search for GROWI user based on user info of 1, and return user
+   *   - if autoGenerateUserOnHogeGroupSync is true and GROWI user is not found, create new GROWI user
+   * @param {string} externalUserId Search LDAP server using this identifier (DN or UID)
+   * @returns {Promise<IUserHasId | null>} User when found or created, null when neither
+   */
+  abstract getMemberUser(externalUserId: string): Promise<IUserHasId | null>
+
+  /** Method to generate external group tree structure
+   * 1. Fetch user group info from external app/server
+   * 2. Convert each group tree structure to ExternalUserGroupTreeNode
+   * 3. Return the root node of each tree
+  */
+  abstract generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]>;
 
 }
 

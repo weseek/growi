@@ -81,12 +81,12 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
-      const ldapUserGroupSyncService = new LdapUserGroupSyncService(req.user.name, req.body.password);
-      console.log(await ldapUserGroupSyncService.getMemberUser('cn=customuser2,ou=users,dc=example,dc=org'));
-      // console.log(schema.statics);
+      const ldapUserGroupSyncService = new LdapUserGroupSyncService(crowi, req.user.name, req.body.password);
+      await ldapUserGroupSyncService.syncExternalUserGroups();
     }
-    catch (e) {
-      res.apiv3Err(e, 500);
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
     }
 
     return res.apiv3({}, 204);

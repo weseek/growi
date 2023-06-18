@@ -16,14 +16,15 @@ const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
   parent: { type: Schema.Types.ObjectId, ref: 'ExternalUserGroup', index: true },
   description: { type: String, default: '' },
   externalId: { type: String, required: true, unique: true },
+  provider: { type: String, required: true },
 }, {
   timestamps: true,
 });
 
-schema.statics.createGroup = async function(name, description, externalId, parentId) {
+schema.statics.findAndUpdateOrCreateGroup = async function(name, description, externalId, provider, parentId) {
   // create without parent
   if (parentId == null) {
-    return this.create({ name, description, externalId });
+    return this.findOneAndUpdate({ name }, { description, externalId, provider }, { upsert: true });
   }
 
   // create with parent
@@ -31,13 +32,9 @@ schema.statics.createGroup = async function(name, description, externalId, paren
   if (parent == null) {
     throw Error('Parent does not exist.');
   }
-  return this.create({
-    name, description, externalId, parent,
-  });
-};
-
-schema.statics.getByExternalIdOrCreateGroup = async function(name, description, externalId, parentId) {
-  return this.createGroup(name, description, externalId, parentId);
+  return this.findOneAndUpdate({ name }, {
+    description, externalId, provider, parent,
+  }, { upsert: true });
 };
 
 export default getOrCreateModel<ExternalUserGroupDocument, ExternalUserGroupModel>('ExternalUserGroup', schema);
