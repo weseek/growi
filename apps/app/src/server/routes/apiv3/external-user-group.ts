@@ -86,7 +86,7 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(err.message, 500);
     }
 
     return res.apiv3({}, 204);

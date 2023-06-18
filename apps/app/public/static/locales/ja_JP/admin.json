@@ -1049,7 +1049,7 @@
     "error_generate_growi_archive": "GROWI アーカイブファイルの作成に失敗しました",
     "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
   },
-  "external_group": {
+  "external_user_group": {
     "management": "外部グループ管理",
     "execute_sync": "同期実行",
     "sync": "同期",
@@ -1069,9 +1069,11 @@
       "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。",
       "updated_group_sync_settings": "LDAP グループ同期設定を更新しました",
       "sync_succeeded": "同期に成功しました",
-      "sync_failed": "同期に失敗しました。LDAP セキュリティ設定や、グループ同期設定が正しいことを確認してください。",
       "password": "パスワード",
-      "password_detail": "認証設定がユーザ Bind のため、ログイン時のパスワードの入力が必要となります"
+      "password_detail": "認証設定がユーザ Bind のため、ログイン時のパスワードの入力が必要となります",
+      "circular_reference": "LDAP グループの木構造に循環参照が行われている可能性があるため、同期に失敗しました",
+      "group_search_failed": "LDAP グループ検索に失敗しました。LDAP セキュリティ設定、グループ同期設定が正しいことを確認してください。",
+      "user_search_failed": "LDAP ユーザ検索に失敗しました。LDAP セキュリティ設定、グループ同期設定が正しいことを確認してください。"
     }
   },
   "toaster": {

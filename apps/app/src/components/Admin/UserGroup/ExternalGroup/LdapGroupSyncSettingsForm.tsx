@@ -35,7 +35,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
     e.preventDefault();
     try {
       await apiv3Put('/external-user-groups/ldap/sync-settings', formValues);
-      toastSuccess(t('external_group.ldap.updated_group_sync_settings'));
+      toastSuccess(t('external_user_group.ldap.updated_group_sync_settings'));
     }
     catch (err) {
       toastError(err);
@@ -43,10 +43,14 @@ export const LdapGroupSyncSettingsForm: FC = () => {
   }, [formValues, t]);
 
   return <>
-    <h3 className="border-bottom mb-3">{t('external_group.ldap.group_sync_settings')}</h3>
+    <h3 className="border-bottom mb-3">{t('external_user_group.ldap.group_sync_settings')}</h3>
     <form onSubmit={submitHandler}>
       <div className="row form-group">
-        <label htmlFor="ldapGroupSearchBase" className="text-left text-md-right col-md-3 col-form-label">{t('external_group.ldap.group_search_base_DN')}</label>
+        <label
+          htmlFor="ldapGroupSearchBase"
+          className="text-left text-md-right col-md-3 col-form-label">
+          {t('external_user_group.ldap.group_search_base_DN')}
+        </label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -57,13 +61,13 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             onChange={e => setFormValues({ ...formValues, ldapGroupSearchBase: e.target.value })}
           />
           <p className="form-text text-muted">
-            <small>{t('external_group.ldap.group_search_base_dn_detail')}</small>
+            <small>{t('external_user_group.ldap.group_search_base_dn_detail')}</small>
           </p>
         </div>
       </div>
       <div className="row form-group">
         <label htmlFor="ldapGroupMembershipAttribute" className="text-left text-md-right col-md-3 col-form-label">
-          {t('external_group.ldap.membership_attribute')}
+          {t('external_user_group.ldap.membership_attribute')}
         </label>
         <div className="col-md-6">
           <input
@@ -77,15 +81,15 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           />
           <p className="form-text text-muted">
             <small>
-              {t('external_group.ldap.membership_attribute_detail')} <br />
-            e.g.) <code>member</code>, <code>memberUid</code>
+              {t('external_user_group.ldap.membership_attribute_detail')} <br />
+              e.g.) <code>member</code>, <code>memberUid</code>
             </small>
           </p>
         </div>
       </div>
       <div className="row form-group">
         <label htmlFor="ldapGroupMembershipAttributeType" className="text-left text-md-right col-md-3 col-form-label">
-          {t('external_group.ldap.membership_attribute_type')}
+          {t('external_user_group.ldap.membership_attribute_type')}
         </label>
         <div className="col-md-6">
           <select
@@ -104,14 +108,14 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           </select>
           <p className="form-text text-muted">
             <small>
-              {t('external_group.ldap.membership_attribute_type_detail')}
+              {t('external_user_group.ldap.membership_attribute_type_detail')}
             </small>
           </p>
         </div>
       </div>
       <div className="row form-group">
         <label htmlFor="ldapGroupChildGroupAttribute" className="text-left text-md-right col-md-3 col-form-label">
-          {t('external_group.ldap.child_group_attribute')}
+          {t('external_user_group.ldap.child_group_attribute')}
         </label>
         <div className="col-md-6">
           <input
@@ -124,7 +128,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             onChange={e => setFormValues({ ...formValues, ldapGroupChildGroupAttribute: e.target.value })}/>
           <p className="form-text text-muted">
             <small>
-              {t('external_group.ldap.child_group_attribute_detail')}<br />
+              {t('external_user_group.ldap.child_group_attribute_detail')}<br />
             e.g.) <code>member</code>
             </small>
           </p>
@@ -134,7 +138,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
-          {/* {t('external_group.ldap.auto_generate_user_on_sync')} */}
+          {/* {t('external_user_group.ldap.auto_generate_user_on_sync')} */}
         </label>
         <div className="col-md-6">
           <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -150,7 +154,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
               className="custom-control-label"
               htmlFor="autoGenerateUserOnLdapGroupSync"
             >
-              {t('external_group.ldap.auto_generate_user_on_sync')}
+              {t('external_user_group.ldap.auto_generate_user_on_sync')}
             </label>
           </div>
         </div>
@@ -159,7 +163,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
-          {/* {t('external_group.ldap.preserve_deleted_ldap_groups')} */}
+          {/* {t('external_user_group.ldap.preserve_deleted_ldap_groups')} */}
         </label>
         <div className="col-md-6">
           <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -175,7 +179,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
               className="custom-control-label"
               htmlFor="preserveDeletedLdapGroups"
             >
-              {t('external_group.ldap.preserve_deleted_ldap_groups')}
+              {t('external_user_group.ldap.preserve_deleted_ldap_groups')}
             </label>
           </div>
         </div>
@@ -197,7 +201,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           />
           <p className="form-text text-muted">
             <small>
-              {t('external_group.ldap.name_mapper_detail')}
+              {t('external_user_group.ldap.name_mapper_detail')}
             </small>
           </p>
         </div>
@@ -217,7 +221,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           />
           <p className="form-text text-muted">
             <small>
-              {t('external_group.ldap.description_mapper_detail')}
+              {t('external_user_group.ldap.description_mapper_detail')}
             </small>
           </p>
         </div>

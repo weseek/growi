@@ -1,5 +1,3 @@
-import assert from 'assert';
-
 import ldap, { NoSuchObjectError } from 'ldapjs';
 
 import loggerFactory from '~/utils/logger';
@@ -76,13 +74,15 @@ class LdapService {
       url,
     });
 
-    client.bind(fixedBindDN, fixedBindCredentials, (err) => {
-      assert.ifError(err);
-    });
-
     const searchResults: SearchResultEntry[] = [];
 
     return new Promise((resolve, reject) => {
+      client.bind(fixedBindDN, fixedBindCredentials, (err) => {
+        if (err != null) {
+          reject(err);
+        }
+      });
+
       client.search(base || searchBase, { scope, filter }, (err, res) => {
         if (err != null) {
           reject(err);

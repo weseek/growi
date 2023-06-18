@@ -35,7 +35,13 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
       }
     };
 
-    const userEntryArr = await getUser();
+    let userEntryArr: SearchResultEntry[] | undefined;
+    try {
+      userEntryArr = await getUser();
+    }
+    catch (e) {
+      throw Error('external_user_group.ldap.user_search_failed');
+    }
 
     if (userEntryArr != null && userEntryArr.length > 0) {
       const userEntry = userEntryArr[0];
@@ -58,7 +64,13 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
     const groupDescriptionAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
     const groupBase: string = this.ldapService.getGroupSearchBase();
 
-    const groupEntries = await this.ldapService.searchGroupDir();
+    let groupEntries: SearchResultEntry[];
+    try {
+      groupEntries = await this.ldapService.searchGroupDir();
+    }
+    catch (e) {
+      throw Error('external_user_group.ldap.group_search_failed');
+    }
 
     const getChildGroupDnsFromGroupEntry = (groupEntry: SearchResultEntry) => {
       // groupChildGroupAttribute and groupMembershipAttribute may be the same,
@@ -73,7 +85,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
     const convert = (entry: SearchResultEntry, converted: string[]): ExternalUserGroupTreeNode | null => {
       if (converted.includes(entry.objectName)) {
-        throw Error('There is a possible circular reference in your LDAP group tree structure');
+        throw Error('external_user_group.ldap.circular_reference');
       }
       converted.push(entry.objectName);
 
