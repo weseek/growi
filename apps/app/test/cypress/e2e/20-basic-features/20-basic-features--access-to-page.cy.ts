@@ -1,3 +1,16 @@
+function openEditor() {
+  cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
+  cy.waitUntil(() => {
+    // do
+    cy.get('@pageEditorModeManager').within(() => {
+      cy.get('button:nth-child(2)').click();
+    });
+    // until
+    return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
+  })
+  cy.get('.CodeMirror').should('be.visible');
+}
+
 context('Access to page', () => {
   const ssPrefix = 'access-to-page-';
 
@@ -72,17 +85,7 @@ context('Access to page', () => {
     const body1 = 'hello';
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
-    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
-
-    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    openEditor();
 
     // check edited contents after save
     cy.get('.CodeMirror').type(body1);
@@ -100,17 +103,7 @@ context('Access to page', () => {
 
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
-    cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
-
-    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    openEditor();
 
     // check editing contents with shortcut key
     cy.get('.CodeMirror-line').children().first().invoke('text').then((text) => {

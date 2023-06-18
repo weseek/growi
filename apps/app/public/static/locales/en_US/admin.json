@@ -857,8 +857,12 @@
   "plugins": {
     "plugins": "Plugins",
     "plugin_installer": "Plugin Installer",
-    "repository_url": "Repository URL",
-    "description": "You can install plugins by inputting the URL",
+    "form": {
+      "label_url": "Repository URL",
+      "desc_url": "You can install plugins by inputting the URL",
+      "label_branch": "Repository Branch Name",
+      "desc_branch": "You can specify the branch name to install. Default: `main`"
+    },
     "plugin_card": "Plugin Card",
     "plugin_is_not_installed": "Plugin is not installed",
     "install": "Install",
