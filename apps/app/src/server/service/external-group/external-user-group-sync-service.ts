@@ -2,6 +2,7 @@ import { ExternalGroupProviderType, ExternalUserGroupTreeNode, IExternalUserGrou
 import { IUserHasId } from '~/interfaces/user';
 import ExternalUserGroup from '~/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
+import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { configManager } from '../config-manager';
 
@@ -56,9 +57,17 @@ abstract class ExternalUserGroupSyncService {
     await Promise.all(node.externalUserIds.map((externalUserId) => {
       return (async() => {
         const user = await this.getMemberUser(externalUserId);
-        // TODO: create relations for parent groups also
+
         if (user != null) {
-          await ExternalUserGroupRelation.findOrCreateRelation(externalUserGroup, user);
+          const userGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(externalUserGroup);
+          const userGroupIds = userGroups.map(g => g._id);
+
+          // remove existing relations from list to create
+          const existingRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
+          const existingGroupIds = existingRelations.map(r => r.relatedGroup);
+          const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
+
+          await ExternalUserGroupRelation.createRelations(groupIdsToCreateRelation, user);
         }
       })();
     }));

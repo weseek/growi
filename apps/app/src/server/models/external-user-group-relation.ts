@@ -25,4 +25,15 @@ schema.statics.findOrCreateRelation = function(userGroup, user) {
   }, {}, { upsert: true });
 };
 
+schema.statics.createRelations = async function(userGroupIds, user) {
+  const documentsToInsert = userGroupIds.map((groupId) => {
+    return {
+      relatedGroup: groupId,
+      relatedUser: user._id,
+    };
+  });
+
+  return this.insertMany(documentsToInsert);
+};
+
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

@@ -24,7 +24,7 @@ const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
 schema.statics.findAndUpdateOrCreateGroup = async function(name, description, externalId, provider, parentId) {
   // create without parent
   if (parentId == null) {
-    return this.findOneAndUpdate({ name }, { description, externalId, provider }, { upsert: true });
+    return this.findOneAndUpdate({ name }, { description, externalId, provider }, { upsert: true, new: true });
   }
 
   // create with parent
@@ -34,7 +34,29 @@ schema.statics.findAndUpdateOrCreateGroup = async function(name, description, ex
   }
   return this.findOneAndUpdate({ name }, {
     description, externalId, provider, parent,
-  }, { upsert: true });
+  }, { upsert: true, new: true });
+};
+
+/**
+ * Find all ancestor groups starting from the UserGroup of the initial "group".
+ * Set "ancestors" as "[]" if the initial group is unnecessary as result.
+ * @param groups ExternalUserGroupDocument
+ * @param ancestors ExternalUserGroupDocument[]
+ * @returns ExternalUserGroupDocument[]
+ */
+schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancestors = [group]) {
+  if (group == null) {
+    return ancestors;
+  }
+
+  const parent = await this.findOne({ _id: group.parent });
+  if (parent == null) {
+    return ancestors;
+  }
+
+  ancestors.unshift(parent);
+
+  return this.findGroupsWithAncestorsRecursively(parent, ancestors);
 };
 
 export default getOrCreateModel<ExternalUserGroupDocument, ExternalUserGroupModel>('ExternalUserGroup', schema);
