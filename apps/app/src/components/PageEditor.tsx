@@ -132,8 +132,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
 
-  const [isPageCreatedWithAttachmentUpload, setIsPageCreatedWithAttachmentUpload] = useState(false);
-
   const { data: socket } = useGlobalSocket();
 
   const { mutate: mutateIsConflict } = useIsConflict();
@@ -327,7 +325,6 @@ const PageEditor = React.memo((): JSX.Element => {
       // Not using 'mutateGrant' to inherit the grant of the parent page
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        setIsPageCreatedWithAttachmentUpload(true);
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateIsLatestRevision(true);
         await mutateCurrentPageId(res.page._id);
@@ -522,14 +519,17 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // when transitioning to a different page, if the initialValue is the same,
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
-  // Also, if an attachment is uploaded and a new page is created,
-  // "useCurrentPagePath" changes, but no page transition is made, so nothing is done.
+  const onRouterChangeComplete = useCallback(() => {
+    editorRef.current?.setValue(initialValue);
+    editorRef.current?.setCaretLine(0);
+  }, [initialValue]);
+
   useEffect(() => {
-    if (currentPagePath != null && !isPageCreatedWithAttachmentUpload) {
-      editorRef.current?.setValue(initialValue);
-    }
-    setIsPageCreatedWithAttachmentUpload(false);
-  }, [currentPagePath, initialValue, isPageCreatedWithAttachmentUpload]);
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
 
   if (!isEditable) {
     return <></>;
