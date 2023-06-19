@@ -47,9 +47,6 @@ const InstallerForm = memo((): JSX.Element => {
     }
 
     setSubmittingDisabled(true);
-    setTimeout(() => {
-      setSubmittingDisabled(false);
-    }, 3000);
 
     if (e.target.elements == null) {
       return;
@@ -81,6 +78,7 @@ const InstallerForm = memo((): JSX.Element => {
     catch (errs) {
       const err = errs[0];
       const code = err.code;
+      setSubmittingDisabled(false);
 
       if (code === 'failed_to_login_after_install') {
         toastError(t('installer.failed_to_login_after_install'));
@@ -223,7 +221,7 @@ const InstallerForm = memo((): JSX.Element => {
               disabled={isSubmittingDisabled}
             >
               <div className="eff"></div>
-              <span className="btn-label"><i className="icon-user-follow" /></span>
+              <span className="btn-label"><i className={isSubmittingDisabled ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
               <span className="btn-label-text">{ t('Create') }</span>
             </button>
           </div>
