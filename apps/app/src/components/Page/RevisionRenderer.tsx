@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
+import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
+import { visit } from 'unist-util-visit';
 
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -36,7 +38,7 @@ const ErrorFallback: React.FC<FallbackProps> = React.memo(({ error, resetErrorBo
 });
 ErrorFallback.displayName = 'ErrorFallback';
 
-const RevisionSlidePreview = dynamic(() => import('./RevisionSlidePreview').then(mod => mod.RevisionSlidePreview), { ssr: false });
+const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });
 
 const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
@@ -52,42 +54,47 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       .use(remarkParse)
       .use(remarkStringify)
       .use(remarkFrontmatter, ['yaml'])
-      .use(() => (obj) => {
+      .use(() => (tree) => {
         setSlideStyle(null);
-        if (obj.children[0]?.type === 'yaml') {
-          for (const line of obj.children[0]?.value.split('\n')) {
-            // obj.children[0].value is "presentation:true\ntitle: hoge\nclass: fuga" etc..
-            // applay last presentation style in frontmatter
-            const parts = line.split(':');
-            if (parts.length !== 2) {
-              continue;
-            }
-            const key = parts[0].trim();
-            const value = parts[1].trim();
-            if (key === 'presentation') {
-              setSlideStyle(
-                value === 'marp' || value === 'true' ? value : null,
-              );
-            }
-            else if (key === 'marp' && value === 'true') {
-              setSlideStyle('marp');
+        visit(tree, (node) => {
+          if (node.type === 'yaml') {
+            for (const line of node.value?.split('\n')) {
+            // node.value is "presentation:true\ntitle: hoge\nclass: fuga" etc..
+              const parts = line.split(':');
+              if (parts.length !== 2) {
+                continue;
+              }
+              const key = parts[0].trim();
+              const value = parts[1].trim();
+              if (key === 'presentation') {
+                setSlideStyle(
+                  value === 'marp' || value === 'true' ? value : null,
+                );
+              }
+              else if (key === 'marp' && value === 'true') {
+                setSlideStyle('marp');
+              }
             }
           }
-        }
+        });
       })
       .process(markdown);
   }, [markdown, setSlideStyle]);
 
-  //  if (isSlidesOverviewEnabled && marp) {
-  if (slideStyle === 'true' || slideStyle === 'marp') {
+  if (slideStyle != null) {
+    const options = {
+      rendererOptions: rendererOptions as ReactMarkdownOptions,
+      isDarkMode: false,
+      disableSeparationsByHeader: false,
+    };
     return (
-      <RevisionSlidePreview
-        rendererOptions = {rendererOptions}
-        markdown = {markdown}
-        slideStyle = {slideStyle}
-      />
+      <Slides
+        options={options}
+        slideStyle={slideStyle}
+      >{markdown}</Slides>
     );
   }
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
