@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-labels: ['phase/new']
+labels: ['0️⃣ phase/new']
 ---
 
 Environment

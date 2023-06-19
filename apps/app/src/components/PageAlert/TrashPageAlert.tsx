@@ -9,7 +9,7 @@ import { unlink } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage,
+  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage,
 } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
@@ -33,11 +33,11 @@ export const TrashPageAlert = (): JSX.Element => {
   const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
-
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const { data: currentPagePath } = useCurrentPagePath();
 
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
@@ -55,13 +55,14 @@ export const TrashPageAlert = (): JSX.Element => {
       try {
         unlink(currentPagePath);
         router.push(`/${pageId}`);
+        mutateCurrentPage();
       }
       catch (err) {
         toastError(err);
       }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }, [currentPagePath, openPutBackPageModal, pageId, pagePath, router]);
+  }, [currentPagePath, mutateCurrentPage, openPutBackPageModal, pageId, pagePath, router]);
 
   const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {

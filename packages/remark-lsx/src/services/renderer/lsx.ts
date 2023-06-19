@@ -11,7 +11,7 @@ import { visit } from 'unist-util-visit';
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except', 'isSharedPage'];
 
-const { hasHeadingSlash } = pathUtils;
+const { hasHeadingSlash, removeTrailingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 
@@ -70,7 +70,7 @@ const pathResolver = (href: string, basePath: string): string => {
   const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
   const relativeUrl = new URL(href, baseUrl);
 
-  return relativeUrl.pathname;
+  return removeTrailingSlash(relativeUrl.pathname);
 };
 
 export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
