@@ -865,8 +865,12 @@
   "plugins": {
     "plugins": "プラグイン",
     "plugin_installer": "プラグインインストーラー",
-    "repository_url": "URL",
-    "description": "リポジトリのURLの入力してください。",
+    "form": {
+      "label_url": "リポジトリURL",
+      "desc_url": "リポジトリのURLの入力してください。",
+      "label_branch": "ブランチの指定",
+      "desc_branch": "インストール対象のブランチを設定できます。デフォルト: `main`"
+    },
     "plugin_card": "プラグインカード",
     "plugin_is_not_installed": "プラグインがインストールされていません",
     "install": "インストール",

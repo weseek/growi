@@ -1,92 +1,77 @@
-import { OptionParser } from '@growi/core/dist/plugin';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
 
 import { addNumCondition } from './add-num-condition';
 import type { PageQuery } from './generate-base-query';
 
-describe('addNumCondition()', () => {
+describe('addNumCondition() throws 400 http-errors instance ', () => {
 
-  const queryMock = mock<PageQuery>();
+  it("when the param 'offset' is a negative value", () => {
 
-  it('set limit with the specified number', () => {
     // setup
-    const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
-
-    const queryLimitResultMock = mock<PageQuery>();
-    queryMock.limit.calledWith(99).mockImplementation(() => queryLimitResultMock);
+    const queryMock = mock<PageQuery>();
 
     // when
-    const result = addNumCondition(queryMock, 99);
+    const caller = () => addNumCondition(queryMock, -1, 10);
 
     // then
-    expect(queryMock.limit).toHaveBeenCalledWith(99);
-    expect(result).toEqual(queryLimitResultMock);
-    expect(parseRangeSpy).not.toHaveBeenCalled();
-  });
-
-  it('returns the specified qeury as-is when the option value is invalid', () => {
-    // setup
-    const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
-
-    // when
-    const result = addNumCondition(queryMock, 'invalid string');
-
-    // then
-    expect(queryMock.limit).not.toHaveBeenCalled();
-    expect(parseRangeSpy).toHaveBeenCalledWith('invalid string');
-    expect(result).toEqual(queryMock);
-  });
-
-  it('throws 400 http-errors instance when the start value is smaller than 1', () => {
-    // setup
-    const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
-
-    // when
-    const caller = () => addNumCondition(queryMock, '-1:10');
-
-    // then
-    expect(caller).toThrowError(createError(400, 'specified num is [-1:10] : the start must be larger or equal than 1'));
+    expect(caller).toThrowError(createError(400, "The param 'offset' must be larger or equal than 0"));
+    expect(queryMock.skip).not.toHaveBeenCalledWith();
     expect(queryMock.limit).not.toHaveBeenCalledWith();
-    expect(parseRangeSpy).toHaveBeenCalledWith('-1:10');
   });
-
 });
 
 
-describe('addNumCondition() set skip and limit with the range string', () => {
+describe('addNumCondition() set skip and limit with', () => {
 
   it.concurrent.each`
-    optionsNum    | expectedSkip    | expectedLimit   | isExpectedToSetLimit
-    ${'1:10'}     | ${0}            | ${10}           | ${true}
-    ${'3:'}       | ${2}            | ${-1}           | ${false}
-  `("'$optionsNum", ({
-    optionsNum, expectedSkip, expectedLimit, isExpectedToSetLimit,
+    offset        | limit           | expectedSkip   | expectedLimit
+    ${1}          | ${-1}           | ${1}           | ${null}
+    ${0}          | ${0}            | ${null}        | ${0}
+    ${0}          | ${10}           | ${null}        | ${10}
+    ${NaN}        | ${NaN}          | ${null}        | ${null}
+    ${undefined}  | ${undefined}    | ${null}        | ${50}
+  `("{ offset: $offset, limit: $limit }'", ({
+    offset, limit, expectedSkip, expectedLimit,
   }) => {
     // setup
     const queryMock = mock<PageQuery>();
 
+    // result for q.skip()
     const querySkipResultMock = mock<PageQuery>();
     queryMock.skip.calledWith(expectedSkip).mockImplementation(() => querySkipResultMock);
-
+    // result for q.limit()
     const queryLimitResultMock = mock<PageQuery>();
-    querySkipResultMock.limit.calledWith(expectedLimit).mockImplementation(() => queryLimitResultMock);
-
-    const parseRangeSpy = vi.spyOn(OptionParser, 'parseRange');
+    queryMock.limit.calledWith(expectedLimit).mockImplementation(() => queryLimitResultMock);
+    // result for q.skil().limit()
+    const querySkipAndLimitResultMock = mock<PageQuery>();
+    querySkipResultMock.limit.calledWith(expectedLimit).mockImplementation(() => querySkipAndLimitResultMock);
 
     // when
-    const result = addNumCondition(queryMock, optionsNum);
+    const result = addNumCondition(queryMock, offset, limit);
 
     // then
-    expect(parseRangeSpy).toHaveBeenCalledWith(optionsNum);
-    expect(queryMock.skip).toHaveBeenCalledWith(expectedSkip);
-    if (isExpectedToSetLimit) {
-      expect(querySkipResultMock.limit).toHaveBeenCalledWith(expectedLimit);
-      expect(result).toEqual(queryLimitResultMock);
+    if (expectedSkip != null) {
+      expect(queryMock.skip).toHaveBeenCalledWith(expectedSkip);
+      if (expectedLimit != null) {
+        expect(querySkipResultMock.limit).toHaveBeenCalledWith(expectedLimit);
+        expect(result).toEqual(querySkipAndLimitResultMock); // q.skip().limit()
+      }
+      else {
+        expect(querySkipResultMock.limit).not.toHaveBeenCalled();
+        expect(result).toEqual(querySkipResultMock); // q.skil()
+      }
     }
     else {
-      expect(querySkipResultMock.limit).not.toHaveBeenCalled();
-      expect(result).toEqual(querySkipResultMock);
+      expect(queryMock.skip).not.toHaveBeenCalled();
+      if (expectedLimit != null) {
+        expect(queryMock.limit).toHaveBeenCalledWith(expectedLimit);
+        expect(result).toEqual(queryLimitResultMock); // q.limit()
+      }
+      else {
+        expect(queryMock.limit).not.toHaveBeenCalled();
+        expect(result).toEqual(queryMock); // as-is
+      }
     }
   });
 

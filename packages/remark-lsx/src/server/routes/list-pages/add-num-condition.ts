@@ -1,38 +1,31 @@
-import { OptionParser } from '@growi/core/dist/plugin';
 import createError from 'http-errors';
 
 import type { PageQuery } from './generate-base-query';
 
 
+const DEFAULT_PAGES_NUM = 50;
+
 /**
  * add num condition that limit fetched pages
  */
-export const addNumCondition = (query: PageQuery, optionsNum: string | number): PageQuery => {
+export const addNumCondition = (query: PageQuery, offset = 0, limit = DEFAULT_PAGES_NUM): PageQuery => {
 
-  if (typeof optionsNum === 'number') {
-    return query.limit(optionsNum);
+  // check offset
+  if (offset < 0) {
+    throw createError(400, "The param 'offset' must be larger or equal than 0");
+  }
+  // check offset
+  if (offset < 0) {
+    throw createError(400, "The param 'offset' must be larger or equal than 0");
   }
 
-  const range = OptionParser.parseRange(optionsNum);
-
-  if (range == null) {
-    return query;
+  let q = query;
+  if (offset > 0) {
+    q = q.skip(offset);
+  }
+  if (limit >= 0) {
+    q = q.limit(limit);
   }
 
-  const start = range.start;
-  const end = range.end;
-
-  // check start
-  if (start < 1) {
-    throw createError(400, `specified num is [${start}:${end}] : the start must be larger or equal than 1`);
-  }
-
-  const skip = start - 1;
-  const limit = end - skip;
-
-  if (limit < 0) {
-    return query.skip(skip);
-  }
-
-  return query.skip(skip).limit(limit);
+  return q;
 };
