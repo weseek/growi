@@ -119,11 +119,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
+    const elasticsearchRejectUnauthorized = this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
+    const encryptionOption = this.isElasticsearchV7
+      ? { ssl: { rejectUnauthorized: elasticsearchRejectUnauthorized } }
+      : { tls: { rejectUnauthorized: elasticsearchRejectUnauthorized } };
+
     this.client = new ElasticsearchClient(new this.elasticsearch.Client({
       node: host,
-      ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
       auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
+      ...encryptionOption,
     }));
     this.indexName = indexName;
   }
