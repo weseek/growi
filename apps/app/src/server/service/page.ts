@@ -1987,16 +1987,17 @@ class PageService {
 
     let pageOp;
     try {
-      // Delete the user's homepage and ensure consistency of ancestors and leaf pages
-      const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-
       if (!shouldUseV4Process) {
+        // Ensure consistency of ancestors
+        const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
         await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
       }
 
+      // Delete the user's homepage
       await this.deleteCompletelyOperation(ids, paths);
 
       if (!shouldUseV4Process) {
+        // Remove leaf empty pages
         await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
       }
 
