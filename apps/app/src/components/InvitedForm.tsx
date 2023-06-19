@@ -20,11 +20,13 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { data: user } = useCurrentUser();
   const [isConnectSuccess, setIsConnectSuccess] = useState<boolean>(false);
   const [loginErrors, setLoginErrors] = useState<Error[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { invitedFormUsername, invitedFormName } = props;
 
   const submitHandler = useCallback(async(e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const formData = e.target.elements;
 
@@ -48,6 +50,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     }
     catch (err) {
       setLoginErrors(err);
+      setIsLoading(false);
     }
   }, [router]);
 
@@ -154,9 +157,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Create Button */}
         <div className="input-group justify-content-center d-flex mt-4">
-          <button type="submit" className="btn btn-fill" id="register">
+          <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
             <div className="eff"></div>
-            <span className="btn-label"><i className="icon-user-follow"></i></span>
+            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
             <span className="btn-label-text">{t('Create')}</span>
           </button>
         </div>
