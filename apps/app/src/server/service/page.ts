@@ -1980,6 +1980,8 @@ class PageService {
       return;
     }
 
+    const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
+
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
 
@@ -1987,9 +1989,16 @@ class PageService {
     try {
       // Delete the user's homepage and ensure consistency of ancestors and leaf pages
       const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-      await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
+
+      if (!shouldUseV4Process) {
+        await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
+      }
+
       await this.deleteCompletelyOperation(ids, paths);
-      await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
+
+      if (!shouldUseV4Process) {
+        await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
+      }
 
       if (!userHomepage.isEmpty) {
         // Emit an event for the search service
@@ -2029,18 +2038,15 @@ class PageService {
             count += batch.length;
             // Delete multiple pages completely
             await deleteMultipleCompletely(batch, null, {});
-
             logger.debug(`Adding pages progressing: (count=${count})`);
           }
           catch (err) {
             logger.error('addAllPages error on add anyway: ', err);
           }
-
           callback();
         },
         final(callback) {
           logger.debug(`Adding pages has completed: (totalCount=${count})`);
-
           callback();
         },
       });
