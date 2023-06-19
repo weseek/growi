@@ -49,6 +49,7 @@ class PasswordResetModal extends React.Component {
       <>
         <button type="submit" className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
           onClick={isEmailSent ? undefined : this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending || isEmailSent}>
+          {isEmailSending && <i className='fa fa-spinner fa-pulse mr-1'/>}
           {isEmailSent ? t('Done') : t('Send')}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
@@ -164,7 +165,7 @@ class PasswordResetModal extends React.Component {
 
     try {
       await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
-      this.setState({ isEmailSent: true });
+      this.setState({ isEmailSent: true, isEmailSending: false });
     }
     catch (err) {
       this.setState({ isEmailSending: false, isEmailSent: false });
