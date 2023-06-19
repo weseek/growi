@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
@@ -18,6 +18,7 @@ import { MarkdownTableDataImportForm } from './MarkdownTableDataImportForm';
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
+import { debounce }  from 'throttle-debounce';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -89,24 +90,35 @@ export const HandsontableModal = (): JSX.Element => {
   const [handsontableHeight, setHandsontableHeight] = useState<number>(0);
   const [handsontableWidth, setHandsontableWidth] = useState<number>(0);
 
-  useEffect(() => {
-    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
-    setMarkdownTable(table ?? defaultMarkdownTable);
-    setMarkdownTableOnInit(initTableInstance);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpened]);
-
-  // useEffect to calculate Handsontable dimensions based on hotTableContainer and isWindowExpanded
-  useEffect(() => {
+  const handleWindowExpandedChange = () => {
     if (hotTableContainer != null) {
       // Get the width and height of hotTableContainer
       const { width, height } = hotTableContainer.getBoundingClientRect();
-
       setHandsontableWidth(width);
-      // Set the Handsontable height based on the container height or default height if isWindowExpanded is false
-      setHandsontableHeight(!isWindowExpanded ? DEFAULT_HOT_HEIGHT : height);
+      setHandsontableHeight(height);
     }
-  }, [hotTableContainer, isWindowExpanded]);
+  };
+
+  const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
+
+  const handleModalOpen = () => {
+    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
+    setMarkdownTable(table ?? defaultMarkdownTable);
+    setMarkdownTableOnInit(initTableInstance);
+    debouncedHandleWindowExpandedChange();
+  };
+
+  const expandWindow = () => {
+    setIsWindowExpanded(true);
+    debouncedHandleWindowExpandedChange();
+  };
+
+  const contractWindow = () => {
+    setIsWindowExpanded(false);
+    // Set the height to the default value
+    setHandsontableHeight(DEFAULT_HOT_HEIGHT);
+    debouncedHandleWindowExpandedChange();
+  };
 
   const markdownTableOption = {
     get latest() {
@@ -424,8 +436,8 @@ export const HandsontableModal = (): JSX.Element => {
       </button>
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
-        contractWindow={() => setIsWindowExpanded(false)}
-        expandWindow={() => setIsWindowExpanded(true)}
+        contractWindow={contractWindow}
+        expandWindow={expandWindow}
       />
     </span>
   );
@@ -439,6 +451,7 @@ export const HandsontableModal = (): JSX.Element => {
       size="lg"
       wrapClassName={`${styles['grw-handsontable']}`}
       className={`handsontable-modal ${isWindowExpanded && 'grw-modal-expanded'}`}
+      onOpened={handleModalOpen}
     >
       <ModalHeader tag="h4" toggle={cancel} close={closeButton} className="bg-primary text-light">
         {t('handsontable_modal.title')}
