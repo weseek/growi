@@ -10,6 +10,7 @@ import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
+import remarkFrontmatter from 'remark-frontmatter';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
@@ -18,6 +19,7 @@ import type { Pluggable } from 'unified';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
+import * as frontmatterHider from '~/features/frontmatter-hider';
 import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -60,6 +62,7 @@ export const generateViewOptions = (
     [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
+    frontmatterHider.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
@@ -109,6 +112,7 @@ export const generateViewOptions = (
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
+    components.frontmatterHider = frontmatterHider.FrontmatterHideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -166,6 +170,8 @@ export const generateSimpleViewOptions = (
     [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
+    remarkFrontmatter,
+    frontmatterHider.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
@@ -187,6 +193,7 @@ export const generateSimpleViewOptions = (
       commonSanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      frontmatterHider.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
     )]
@@ -211,6 +218,7 @@ export const generateSimpleViewOptions = (
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.frontmatterHider = frontmatterHider.FrontmatterHideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -243,6 +251,8 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
+    remarkFrontmatter,
+    frontmatterHider.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
@@ -260,6 +270,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       commonSanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      frontmatterHider.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
@@ -285,6 +296,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.frontmatterHider = frontmatterHider.FrontmatterHideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
