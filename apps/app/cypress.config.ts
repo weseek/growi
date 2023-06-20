@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress';
 export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
-    specPattern: 'test/cypress/integration/',
+    specPattern: 'test/cypress/e2e/**/*.cy.{ts,tsx}',
     supportFile: 'test/cypress/support/index.ts',
     setupNodeEvents: (on) => {
       // change screen size

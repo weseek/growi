@@ -9,7 +9,7 @@ import { unlink } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage,
+  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage,
 } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 import { useCurrentUser } from '~/stores/context';
@@ -36,13 +36,12 @@ export const TrashPageAlert = (): JSX.Element => {
   const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
-
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentUser } = useCurrentUser();
-  const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
+
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
@@ -61,13 +60,14 @@ export const TrashPageAlert = (): JSX.Element => {
         mutateBookmarkFolders();
         mutateUserBookmarks();
         router.push(`/${pageId}`);
+        mutateCurrentPage();
       }
       catch (err) {
         toastError(err);
       }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }, [currentPagePath, openPutBackPageModal, pageId, pagePath, router, mutateBookmarkFolders, mutateUserBookmarks]);
+  }, [currentPagePath, mutateCurrentPage, openPutBackPageModal, pageId, pagePath, router]);
 
   const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
@@ -94,7 +94,7 @@ export const TrashPageAlert = (): JSX.Element => {
           data-toggle="modal"
           data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
+          <i className="icon-action-undo" aria-hidden="true"></i> {t('Put Back')}
         </button>
         <button
           type="button"
@@ -102,7 +102,7 @@ export const TrashPageAlert = (): JSX.Element => {
           disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
-          <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
+          <i className="icon-fire" aria-hidden="true"></i> {t('Delete Completely')}
         </button>
       </>
     );
@@ -120,11 +120,11 @@ export const TrashPageAlert = (): JSX.Element => {
           <br />
           <UserPicture user={deleteUser} />
           <span className="ml-2">
-            Deleted by { deleteUser?.name } at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
+            Deleted by {deleteUser?.name} at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
           </span>
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
-          { isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+          {isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
         </div>
       </div>
     </>

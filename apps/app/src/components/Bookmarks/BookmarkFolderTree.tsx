@@ -6,11 +6,13 @@ import { useTranslation } from 'next-i18next';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
+import {
+  useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
+} from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useIsReadOnlyUser, useCurrentUser } from '~/stores/context';
-import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
-import { useSWRxCurrentPage, mutateAllPageInfo } from '~/stores/page';
+import { useIsReadOnlyUser } from '~/stores/context';
+import { usePageDeleteModal } from '~/stores/modal';
+import { useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
@@ -38,25 +40,21 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  // In order to update the bookmark information in the sidebar when bookmarking or unbookmarking a page on someone else's user homepage
-  const { data: currentUser } = useCurrentUser();
-  const shouldMutateCurrentUserbookmarks = currentUser?._id !== userId;
-
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
-  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId);
-  const { mutate: mutateCurrentUserBookmarks } = useSWRxUserBookmarks(shouldMutateCurrentUserbookmarks ? currentUser?._id : undefined);
+  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(currentPage?._id ?? null);
+  const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
     mutateCurrentUserBookmarks();
-    mutateBookmarkInfo();
+    mutatePageInfo();
     mutateBookmarkFolders();
-  }, [mutateBookmarkFolders, mutateBookmarkInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
+  }, [mutateBookmarkFolders, mutatePageInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
 
   const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -104,11 +102,11 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   //   return !isRootBookmark;
 
   // };
-  const putBackClickHandler = useCallback(async(pagePath: string) => {
+  const putBackClickHandler = useCallback(async (pagePath: string) => {
     const bookmarkedPage = userBookmarks?.filter(userBookmark => userBookmark._id === pagePath)[0];
     if (bookmarkedPage != null) {
       const { _id: pageId, path } = bookmarkedPage;
-      const putBackedHandler = async() => {
+      const putBackedHandler = async () => {
         try {
           await unlink(path);
           mutateAllPageInfo();
@@ -130,7 +128,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
 
 
   return (
-    <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}` } >
+    <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`} >
       <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
         {bookmarkFolders?.map((bookmarkFolder) => {
           return (
