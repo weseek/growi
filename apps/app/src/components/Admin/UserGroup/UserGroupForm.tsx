@@ -1,9 +1,12 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useState, useEffect,
+} from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
+import { useSWRxUserGroup } from '~/stores/user-group';
 
 type Props = {
   userGroup: IUserGroupHasId,
@@ -20,12 +23,18 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     userGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
   } = props;
 
+  const parentUserGroupId = userGroup?.parent;
+  const { data: parentUserGroup } = useSWRxUserGroup(parentUserGroupId as string);
   /*
    * State
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(userGroup?.parent as IUserGroupHasId);
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>();
+
+  useEffect(() => {
+    setSelectedParent(parentUserGroup);
+  }, [parentUserGroup]);
 
   /*
    * Function
