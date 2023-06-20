@@ -81,7 +81,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.elasticsearch = this.isElasticsearchV7 ? elasticsearch7 : elasticsearch8;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
@@ -127,7 +126,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
     };
 
-    this.client = new ElasticsearchClient(this.elasticsearch, options, rejectUnauthorized);
+    this.client = new ElasticsearchClient(this.isElasticsearchV7, options, rejectUnauthorized);
     this.indexName = indexName;
   }
 

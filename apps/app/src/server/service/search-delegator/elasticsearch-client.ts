@@ -1,7 +1,7 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-confusing-arrow */
 import elasticsearch7, { Client as ES7Client, ApiResponse as ES7ApiResponse, RequestParams as ES7RequestParams } from '@elastic/elasticsearch7';
-import { Client as ES8Client, estypes } from '@elastic/elasticsearch8';
+import elasticsearch8, { Client as ES8Client, estypes } from '@elastic/elasticsearch8';
 
 import {
   BulkResponse,
@@ -21,16 +21,14 @@ export default class ElasticsearchClient {
 
   client: ES7Client | ES8Client;
 
-  constructor(elasticserch, options, rejectUnauthorized: boolean) {
+  constructor(isElasticsearch7: boolean, options, rejectUnauthorized: boolean) {
+    const elasticsearch = isElasticsearch7 ? elasticsearch7 : elasticsearch8;
 
-    const encryptionOption = elasticserch === elasticsearch7
+    const encryptionOption = isElasticsearch7
       ? { ssl: { rejectUnauthorized } }
       : { tls: { rejectUnauthorized } };
 
-    this.client = new elasticserch.Client({
-      ...options,
-      ...encryptionOption,
-    });
+    this.client = new elasticsearch.Client({ ...options, ...encryptionOption });
   }
 
   async bulk(params: ES7RequestParams.Bulk & estypes.BulkRequest): Promise<BulkResponse | estypes.BulkResponse> {
