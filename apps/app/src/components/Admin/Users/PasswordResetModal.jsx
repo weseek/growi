@@ -49,8 +49,8 @@ class PasswordResetModal extends React.Component {
       <>
         <button type="submit" className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
           onClick={isEmailSent ? undefined : this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending || isEmailSent}>
-          {isEmailSending && <i className='fa fa-spinner fa-pulse mr-1'/>}
-          {isEmailSent ? t('Done') : t('Send')}
+          {isEmailSending && <i className='fa fa-spinner fa-pulse mx-2' />}
+          {!isEmailSending && (isEmailSent ? t('Done') : t('Send'))}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
           {t('Close')}
