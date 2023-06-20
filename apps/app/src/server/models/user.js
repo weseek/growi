@@ -145,11 +145,16 @@ module.exports = function(crowi) {
   }
 
   userSchema.methods.isUniqueEmail = async function() {
-    const User = this.model('User');
+    const query = this.model('User').find();
 
-    const userData = await User.findOne({ email: this.email });
+    const count = await query.count((
+      {
+        username: { $not: this.username },
+        email: this.email,
+      }
+    ));
 
-    if (userData != null && this.username !== userData.username) {
+    if (count > 0) {
       return false;
     }
     return true;
