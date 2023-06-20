@@ -2,4 +2,4 @@
 
 ----------------------
 
-Growi: <%- appTitle %>
+GROWI: <%- appTitle %>
