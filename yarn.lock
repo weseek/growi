@@ -2320,6 +2320,11 @@
 "@growi/hackmd@link:packages/hackmd":
   version "6.1.4-RC.0"
 
+"@growi/pluginkit@link:packages/pluginkit":
+  version "6.1.4-RC.0"
+  dependencies:
+    extensible-custom-error "^0.0.7"
+
 "@growi/presentation@link:packages/presentation":
   version "6.1.4-RC.0"
   dependencies:
