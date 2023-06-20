@@ -317,9 +317,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       else if (currentPathname != null) {
         router.push(currentPathname);
       }
+
+      mutateCurrentPage();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, openDeleteModal, router]);
+  }, [currentPathname, mutateCurrentPage, openDeleteModal, router]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {

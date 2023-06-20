@@ -41,7 +41,8 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -57,7 +58,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
 } from './utils/commons';
 
 
@@ -172,6 +173,7 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
+  skipSSR: boolean,
 
   grantData?: IPageGrantData,
 
@@ -237,9 +239,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
@@ -261,6 +265,22 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
+
+
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {
@@ -464,8 +484,9 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
-    await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+    props.skipSSR = await skipSSR(page);
+    await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
   if (page == null && user != null) {

@@ -14,7 +14,7 @@ import { generateBaseQuery, type PageQuery } from './generate-base-query';
 import { getToppageViewersCount } from './get-toppage-viewers-count';
 
 
-const { addTrailingSlash } = pathUtils;
+const { addTrailingSlash, removeTrailingSlash } = pathUtils;
 
 /**
  * add filter condition that filter fetched pages
@@ -65,7 +65,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
   }
 
   const params: LsxApiParams = {
-    pagePath: req.query.pagePath.toString(),
+    pagePath: removeTrailingSlash(req.query.pagePath.toString()),
     offset: req.query?.offset != null ? Number(req.query.offset) : undefined,
     limit: req.query?.limit != null ? Number(req.query?.limit) : undefined,
     options: req.query?.options != null ? JSON.parse(req.query.options.toString()) : {},
