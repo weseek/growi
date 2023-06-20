@@ -40,14 +40,13 @@ export type PageCommentProps = {
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
   hideIfEmpty?: boolean,
-  onCommentCountUpdated?: () => void,
 }
 
 export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): JSX.Element => {
 
   const {
     rendererOptions: rendererOptionsByProps,
-    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty, onCommentCountUpdated,
+    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -85,10 +84,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const onDeleteCommentAfterOperation = useCallback(() => {
     onCancelDeleteComment();
     mutate();
-    if (onCommentCountUpdated != null) {
-      onCommentCountUpdated();
-    }
-  }, [mutate, onCancelDeleteComment, onCommentCountUpdated]);
+  }, [mutate, onCancelDeleteComment]);
 
   const onDeleteComment = useCallback(async() => {
     if (commentToBeDeleted == null) return;
@@ -118,10 +114,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const onCommentButtonClickHandler = useCallback((commentId: string) => {
     removeShowEditorId(commentId);
     mutate();
-    if (onCommentCountUpdated != null) {
-      onCommentCountUpdated();
-    }
-  }, [removeShowEditorId, mutate, onCommentCountUpdated]);
+  }, [removeShowEditorId, mutate]);
 
   if (hideIfEmpty && comments?.length === 0) {
     return <PageCommentRoot />;

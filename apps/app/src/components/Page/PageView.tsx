@@ -11,7 +11,7 @@ import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
-import { useSWRxCurrentPage, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 
@@ -67,7 +67,6 @@ export const PageView = (props: Props): JSX.Element => {
 
   const { data: pageBySWR } = useSWRxCurrentPage();
   const { data: viewOptions } = useViewOptions();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page?.revision == null;
@@ -117,7 +116,6 @@ export const PageView = (props: Props): JSX.Element => {
             pagePath={pagePath}
             revision={page.revision}
             onLoaded={() => setCommentsLoaded(true)}
-            onCommentCountUpdated={mutateCurrentPage}
           />
         </div>
         {(isUsersHomePagePath && page.creator != null) && (

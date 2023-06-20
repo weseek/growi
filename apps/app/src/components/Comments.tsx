@@ -23,13 +23,12 @@ export type CommentsProps = {
   pagePath: string,
   revision: IRevisionHasId,
   onLoaded?: () => void,
-  onCommentCountUpdated?: () => void,
 }
 
 export const Comments = (props: CommentsProps): JSX.Element => {
 
   const {
-    pageId, pagePath, revision, onLoaded, onCommentCountUpdated,
+    pageId, pagePath, revision, onLoaded,
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
@@ -72,9 +71,6 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const onCommentButtonClickHandler = () => {
     mutate();
-    if (onCommentCountUpdated != null) {
-      onCommentCountUpdated();
-    }
   };
 
   return (
@@ -89,7 +85,6 @@ export const Comments = (props: CommentsProps): JSX.Element => {
             isReadOnly={false}
             titleAlign="left"
             hideIfEmpty={false}
-            onCommentCountUpdated={onCommentCountUpdated}
           />
         </div>
         {!isDeleted && (
