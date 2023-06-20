@@ -145,8 +145,8 @@ ul.pagination {
 //
 
 .grw-logo {
-  set transition for fill
-  svg * {
+  // set transition for fill
+  svg, svg * {
     transition: fill 0.8s ease-out;
   }
 
