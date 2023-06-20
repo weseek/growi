@@ -48,6 +48,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -93,6 +94,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
+    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -112,6 +114,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
+      setIsLoading(false);
     }
     return;
 
@@ -214,10 +217,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
+            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isLoading}>
               <div className="eff"></div>
               <span className="btn-label">
-                <i className="icon-login"></i>
+                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -226,7 +229,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </>
     );
   }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
-      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, t]);
+      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, isLoading, t]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
@@ -295,6 +298,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
     setIsSuccessToRagistration(false);
+    setIsLoading(true);
 
     const registerForm = {
       username: usernameForRegister,
@@ -323,6 +327,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       if (err != null || err.length > 0) {
         setRegisterErrors(err);
       }
+      setIsLoading(false);
     }
     return;
   }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled]);
@@ -478,11 +483,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button
               className="btn btn-fill rounded-0"
               id="register"
-              disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}
+              disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className="icon-user-follow"></i>
+                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} />
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -503,7 +508,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
-    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit, isLoading,
   ]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
