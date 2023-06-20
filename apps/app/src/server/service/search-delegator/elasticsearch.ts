@@ -2,7 +2,7 @@ import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
 import elasticsearch7 from '@elastic/elasticsearch7';
-import elasticsearch8 from '@elastic/elasticsearch8';
+import elasticsearch8, { Client } from '@elastic/elasticsearch8';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -119,17 +119,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
-    const elasticsearchRejectUnauthorized = this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
-    const encryptionOption = this.isElasticsearchV7
-      ? { ssl: { rejectUnauthorized: elasticsearchRejectUnauthorized } }
-      : { tls: { rejectUnauthorized: elasticsearchRejectUnauthorized } };
+    const rejectUnauthorized = this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
 
-    this.client = new ElasticsearchClient(new this.elasticsearch.Client({
+    const options = {
       node: host,
       auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
-      ...encryptionOption,
-    }));
+    };
+
+    this.client = new ElasticsearchClient(this.elasticsearch, options, rejectUnauthorized);
     this.indexName = indexName;
   }
 
