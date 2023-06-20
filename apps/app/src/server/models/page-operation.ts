@@ -96,7 +96,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   toPath: { type: String, index: true },
   page: { type: pageSchemaForResuming, required: true },
   exPage: { type: pageSchemaForResuming, required: false },
-  user: { type: userSchemaForResuming },
+  user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
   unprocessableExpiryDate: { type: Date, default: () => addSeconds(new Date(), 10) },

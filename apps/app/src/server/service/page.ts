@@ -1984,7 +1984,6 @@ class PageService {
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
 
-    let pageOp;
     try {
       if (!shouldUseV4Process) {
         // Ensure consistency of ancestors
@@ -2004,14 +2003,6 @@ class PageService {
         // Emit an event for the search service
         this.pageEvent.emit('deleteCompletely', userHomepage);
       }
-
-      // Create a PageOperation model
-      pageOp = await PageOperation.create({
-        actionType: PageActionType.DeleteCompletely,
-        actionStage: PageActionStage.Main,
-        page: userHomepage,
-        fromPath: userHomepage.path,
-      });
 
       const { PageQueryBuilder } = Page;
 
@@ -2056,15 +2047,9 @@ class PageService {
 
       await streamToPromise(writeStream);
       // ────────┤ end │─────────
-
-      // Clean up PageOperation
-      await PageOperation.deleteOne({ _id: pageOp._id });
     }
     catch (err) {
       logger.error('Error occurred while deleting user homepage and subpages.', err);
-      if (pageOp != null) {
-        await PageOperation.deleteOne({ _id: pageOp._id });
-      }
       throw err;
     }
   }
