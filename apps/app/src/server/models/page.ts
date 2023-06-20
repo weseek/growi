@@ -377,6 +377,12 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionForSystemDeletion(): PageQueryBuilder {
+    const condition = generateGrantConditionForSystemDeletion();
+    this.query = this.query.and(condition);
+    return this;
+  }
+
   addConditionToPagenate(offset, limit, sortOpt?): PageQueryBuilder {
     this.query = this.query
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
@@ -942,6 +948,23 @@ export function generateGrantCondition(
 }
 
 schema.statics.generateGrantCondition = generateGrantCondition;
+
+function generateGrantConditionForSystemDeletion(): { $or: any[] } {
+  const grantCondition: AnyObject[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+    { grant: GRANT_RESTRICTED },
+    { grant: GRANT_SPECIFIED },
+    { grant: GRANT_OWNER },
+    { grant: GRANT_USER_GROUP },
+  ];
+
+  return {
+    $or: grantCondition,
+  };
+}
+
+schema.statics.generateGrantConditionForSystemDeletion = generateGrantConditionForSystemDeletion;
 
 // find ancestor page with isEmpty: false. If parameter path is '/', return undefined
 schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {
