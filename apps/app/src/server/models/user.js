@@ -149,7 +149,7 @@ module.exports = function(crowi) {
 
     const count = await query.count((
       {
-        username: { $not: this.username },
+        username: { $ne: this.username },
         email: this.email,
       }
     ));
