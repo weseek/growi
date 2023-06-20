@@ -1966,12 +1966,11 @@ class PageService {
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
-   * @param {IUserHasId} user - The user object.
    * @param {string} userHomepagePath - The path of the user's homepage.
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-  async deleteCompletelyUserHomeBySystem(user: IUserHasId, userHomepagePath: string): Promise<void> {
+  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, true);
 
@@ -1985,7 +1984,6 @@ class PageService {
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
 
-    let pageOp;
     try {
       if (!shouldUseV4Process) {
         // Ensure consistency of ancestors
@@ -2003,17 +2001,8 @@ class PageService {
 
       if (!userHomepage.isEmpty) {
         // Emit an event for the search service
-        this.pageEvent.emit('deleteCompletely', userHomepage, user);
+        this.pageEvent.emit('deleteCompletely', userHomepage);
       }
-
-      // Create a PageOperation model
-      pageOp = await PageOperation.create({
-        actionType: PageActionType.DeleteCompletely,
-        actionStage: PageActionStage.Main,
-        page: userHomepage,
-        user,
-        fromPath: userHomepage.path,
-      });
 
       const { PageQueryBuilder } = Page;
 
@@ -2058,15 +2047,9 @@ class PageService {
 
       await streamToPromise(writeStream);
       // ────────┤ end │─────────
-
-      // Clean up PageOperation
-      await PageOperation.deleteOne({ _id: pageOp._id });
     }
     catch (err) {
       logger.error('Error occurred while deleting user homepage and subpages.', err);
-      if (pageOp != null) {
-        await PageOperation.deleteOne({ _id: pageOp._id });
-      }
       throw err;
     }
   }
