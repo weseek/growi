@@ -53,12 +53,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
 
-  logger.error('上手くいってる方の確認');
-  logger.error(currentUserGroupId);
-  logger.error(currentUserGroup);
-  logger.error(typeof currentUserGroup);
-  logger.error(currentUserGroup?.name);
-
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
@@ -147,9 +141,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
-    logger.error(userGroupData);
-    logger.error(userGroupData?.parent);
-    logger.error(typeof userGroupData?.parent);
     if (typeof userGroupData?.parent === 'string') {
       toastError(t('Something went wrong. Please try again.'));
       return;
