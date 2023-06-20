@@ -46,8 +46,6 @@ import type { SubNavButtonsProps } from './SubNavButtons';
 
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useSWRxUserBookmarks } from '~/stores/bookmark';
 
 const { isUsersHomePage } = pagePathUtils;
 
@@ -225,8 +223,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
-  const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
 
   // eslint-disable-next-line max-len
   const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
@@ -324,9 +320,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       }
 
       mutateCurrentPage();
+      mutatePageInfo();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, mutateCurrentPage, openDeleteModal, router]);
+  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
 
   const switchContentWidthHandler = useCallback(async (pageId: string, value: boolean) => {
     if (!isSharedPage) {

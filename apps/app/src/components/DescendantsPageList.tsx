@@ -10,10 +10,7 @@ import {
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
-import {
-  useCurrentUser,
-  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
-} from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores/context';
 import {
   mutatePageTree,
   useSWRxPageInfoForList, useSWRxPageList,
@@ -22,10 +19,6 @@ import {
 import { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useSWRxUserBookmarks } from '~/stores/bookmark';
-import { mutateAllPageInfo } from '~/stores/page';
-
 
 type SubstanceProps = {
   pagingResult: IPagingResult<IPageHasId> | undefined,
@@ -50,10 +43,6 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: currentUser } = useCurrentUser();
-  const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
-  const { mutate: mutateUserBookmarks } = useSWRxUserBookmarks(currentUser?._id);
-  const { mutate: mutateUserBookmark } = useSWRxUserBookmarks(currentUser?._id);
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
@@ -79,25 +68,19 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     }
 
     mutatePageTree();
-    mutateBookmarkFolders();
-    mutateUserBookmark();
-    mutateAllPageInfo();
     if (onPagesDeleted != null) {
       onPagesDeleted(...args);
     }
-  }, [onPagesDeleted, t, mutateBookmarkFolders, mutateUserBookmark, mutateAllPageInfo]);
+  }, [onPagesDeleted, t]);
 
   const pagePutBackedHandler: OnPutBackedFunction = useCallback((path) => {
     toastSuccess(t('page_has_been_reverted', { path }));
 
     mutatePageTree();
-    mutateBookmarkFolders();
-    mutateUserBookmarks();
-    mutateAllPageInfo();
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [onPagePutBacked, t, mutateBookmarkFolders, mutateUserBookmarks, mutateAllPageInfo]);
+  }, [onPagePutBacked, t]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);

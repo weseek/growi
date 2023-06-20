@@ -12,9 +12,6 @@ import {
   useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage,
 } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
-import { useCurrentUser } from '~/stores/context';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useSWRxUserBookmarks } from '~/stores/bookmark';
 
 
 const onDeletedHandler = (pathOrPathsToDelete) => {
@@ -57,8 +54,6 @@ export const TrashPageAlert = (): JSX.Element => {
       }
       try {
         unlink(currentPagePath);
-        mutateBookmarkFolders();
-        mutateUserBookmarks();
         router.push(`/${pageId}`);
         mutateCurrentPage();
       }

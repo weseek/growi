@@ -11,8 +11,8 @@ import {
 } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
-import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
+import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
+import { mutateAllPageInfo, useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';

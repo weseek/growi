@@ -11,16 +11,12 @@ import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
-import { useCurrentUser, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { PageListItemL } from '../PageList/PageListItemL';
-import { useSWRxPageInfo } from '~/stores/page';
-import { useSWRBookmarkInfo, useSWRxUserBookmarks } from '~/stores/bookmark';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-
 
 type Props = {
   pages: IPageWithSearchMeta[],
@@ -43,15 +39,10 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     .filter(page => (page.meta?.elasticSearchResult?.snippet?.length ?? 0) === 0)
     .map(page => page.data._id);
 
-  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, null, true, true);
 
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(selectedPageId);
-  const { mutate: mutateUserBookmark } = useSWRxUserBookmarks(currentUser?._id);
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(selectedPageId);
-  const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
   const itemsRef = useRef<(ISelectable|null)[]>([]);
 
   // publish selectAll()
@@ -128,10 +119,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     }
     mutatePageTree();
     mutateSearching();
-    mutatePageInfo();
-    mutateUserBookmark();
-    mutateBookmarkInfo();
-    mutateBookmarkFolders();
   }, [t]);
 
   return (

@@ -33,9 +33,6 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
-import { useCurrentUser } from '~/stores/context';
-import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { mutateSearching } from '~/stores/search';
 
 type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
@@ -91,7 +88,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
-  const { data: currentUser } = useCurrentUser();
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageData?._id ?? null);
@@ -164,11 +160,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       try {
         // pageData path should be `/trash/fuga` (`/trash` should be included to the prefix)
         await unlink(pageData.path);
-        mutateSearching();
-        mutatePageInfo();
-        mutateUserBookmark();
-        mutateBookmarkInfo();
-        mutateBookmarkFolders();
       }
       catch (err) {
         toastError(err);
@@ -180,7 +171,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       }
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
-  }, [onPagePutBacked, openPutBackPageModal, pageData, mutateSearching, mutatePageInfo, mutateUserBookmark, mutateBookmarkInfo, mutateBookmarkFolders]);
+  }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
