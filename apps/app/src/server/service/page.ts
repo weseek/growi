@@ -1966,12 +1966,11 @@ class PageService {
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
    * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
    *
-   * @param {IUserHasId} user - The user object.
    * @param {string} userHomepagePath - The path of the user's homepage.
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-  async deleteCompletelyUserHomeBySystem(user: IUserHasId, userHomepagePath: string): Promise<void> {
+  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
     const Page = this.crowi.model('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, true);
 
@@ -2003,7 +2002,7 @@ class PageService {
 
       if (!userHomepage.isEmpty) {
         // Emit an event for the search service
-        this.pageEvent.emit('deleteCompletely', userHomepage, user);
+        this.pageEvent.emit('deleteCompletely', userHomepage);
       }
 
       // Create a PageOperation model
@@ -2011,7 +2010,6 @@ class PageService {
         actionType: PageActionType.DeleteCompletely,
         actionStage: PageActionStage.Main,
         page: userHomepage,
-        user,
         fromPath: userHomepage.path,
       });
 
