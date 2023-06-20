@@ -1,14 +1,12 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useState, useEffect,
+} from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
 import { useSWRxUserGroup } from '~/stores/user-group';
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:stores:personal-settings');
-
 
 type Props = {
   userGroup: IUserGroupHasId,
@@ -23,28 +21,20 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
   const {
     userGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
-  } = props; // 受け取ったpropsを代入
+  } = props;
 
   const parentUserGroupId = userGroup?.parent;
   const { data: parentUserGroup } = useSWRxUserGroup(parentUserGroupId as string);
-
-  logger.error('ここから先確認事項');
-  logger.error(parentUserGroupId);
-  logger.error(parentUserGroup);
-  logger.error(typeof parentUserGroup);
-  logger.error(parentUserGroup?.name);
-  console.dir(parentUserGroup);
   /*
    * State
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(parentUserGroup as IUserGroupHasId);
-  // ここでステートを定義, userGroup?.parentはidであって、データ本体ではない。
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>();
 
-  logger.error(selectedParent);
-  logger.error(typeof selectedParent);
-  logger.error(selectedParent?.name);
+  useEffect(() => {
+    setSelectedParent(parentUserGroup);
+  }, [parentUserGroup]);
 
   /*
    * Function
@@ -59,7 +49,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
   const onChangeParerentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
     if (userGroup._id !== selectedParent?._id) {
-      setSelectedParent(userGroup); // ここでラベルが変更されたときにステートも変更している
+      setSelectedParent(userGroup);
     }
   }, [selectedParent, setSelectedParent]);
 
@@ -70,7 +60,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
         name: currentName,
         description: currentDescription,
         parent: selectedParent,
-      }); // 送信するデータのまとめ
+      });
     }}
     >
 
@@ -125,9 +115,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
                 btn btn-outline-secondary dropdown-toggle mb-3 ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
               `}
             >
-              {/* {selectedParent?.name ?? t('user_group_management.select_parent_group')} */}
-              {selectedParent?.name}
-              {/* selectedParent?.nameがnullなら、後者を、nullじゃないなら前者を表示 */}
+              {selectedParent?.name ?? t('user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
