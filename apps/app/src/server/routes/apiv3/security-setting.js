@@ -528,7 +528,19 @@ module.exports = (crowi) => {
 
     // Check if local accounts have admins
     async function checkLocalStrategyHasAdmin() {
-      const adminAccounts = await User.find({ admin: true }).exec();
+      // Get all local admin accounts and filter local admins that are not in external accounts
+      const adminAccounts = await User.aggregate([
+        { $match: { admin: true } },
+        {
+          $lookup: {
+            from: 'externalaccounts',
+            localField: '_id',
+            foreignField: 'user',
+            as: 'externalAccounts',
+          },
+        },
+        { $match: { externalAccounts: [] } },
+      ]);
       return adminAccounts.length > 0;
     }
 
