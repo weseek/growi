@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
+import dompurify from 'dompurify';
 import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
@@ -9,7 +10,6 @@ import type { PresentationOptions } from '../consts';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
-import { string } from 'yargs';
 
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
@@ -77,8 +77,17 @@ export const Slides = (props: Props): JSX.Element => {
   }
 
   if (slideStyle === 'marp') {
+    marp.themeSet.default = marpSlideTheme;
+    const { html, css } = marp.render(children ?? '');
     return (
-      <></>
+      <>
+        <Head>
+          <style>{css}</style>
+        </Head>
+        <div
+          dangerouslySetInnerHTML={{ __html: dompurify.sanitize(html) }}
+        />
+      </>
     );
   }
 
