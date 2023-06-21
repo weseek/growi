@@ -125,7 +125,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
-  const bookmarkMenuItemClickHandler = async (_pageId: string, _newValue: boolean): Promise<void> => {
+  const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
     mutateCurrentUserBookmarks();
@@ -153,10 +153,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
   }, [pageData, openDeleteModal, onPageDeleted]);
 
-  const revertMenuItemClickHandler = useCallback(async () => {
+  const revertMenuItemClickHandler = useCallback(async() => {
     const { _id: pageId, path } = pageData;
 
-    const putBackedHandler = async (path) => {
+    const putBackedHandler = async(path) => {
       try {
         // pageData path should be `/trash/fuga` (`/trash` should be included to the prefix)
         await unlink(pageData.path);

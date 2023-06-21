@@ -258,7 +258,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const isViewMode = editorMode === EditorMode.View;
 
 
-  const tagsUpdatedHandlerForViewMode = useCallback(async (newTags: string[]) => {
+  const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     if (currentPage == null) {
       return;
     }
@@ -289,14 +289,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     }
   }, [currentPathname, router]);
 
-  const duplicateItemClickedHandler = useCallback(async (page: IPageForPageDuplicateModal) => {
+  const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       router.push(toPath);
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal, router]);
 
-  const renameItemClickedHandler = useCallback(async (page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
       reload();
     };
@@ -325,7 +325,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
 
-  const switchContentWidthHandler = useCallback(async (pageId: string, value: boolean) => {
+  const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {
       await updateContentWidth(pageId, value);
       mutateCurrentPage();
