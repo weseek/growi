@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import EventEmitter from 'events';
 
 import { pagePathUtils } from '@growi/core';
+import { isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -72,7 +73,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isRootPage = isTopPage(currentPagePath ?? '');
+  const isGrantSelectorDisabledPage = isTopPage(currentPagePath ?? '') || isUsersProtectedPages(currentPagePath ?? '');
   const labelSubmitButton = pageId == null ? t('Create') : t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
@@ -84,7 +85,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           <div className="mr-2">
             <GrantSelector
               grant={grant}
-              disabled={isRootPage}
+              disabled={isGrantSelectorDisabledPage}
               grantGroupId={grantedGroup?.id}
               grantGroupName={grantedGroup?.name}
               onUpdateGrant={updateGrantHandler}
