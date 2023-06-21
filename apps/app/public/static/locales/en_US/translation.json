@@ -454,6 +454,7 @@
   },
   "template": {
     "modal_label": {
+      "Select template": "Select template",
       "Create/Edit Template Page": "Create/Edit template page",
       "Create template under": "Create template page under this page"
     },

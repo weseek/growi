@@ -1,8 +1,36 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.3](https://github.com/weseek/growi/compare/v6.1.2...v6.1.3) - 2023-06-07
+
+### 💎 Features
+
+- feat(lsx):  Load more (#7774) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Insert template (#7764) @yuki-takei
+- imprv: Update preset templates (#7762) @yuki-takei
+- imprv: Make migration script type safe (#7702) @miya
+- imprv: Update migration script docs (#7699) @miya
+
+### 🐛 Bug Fixes
+
+- fix(lsx): Parsing num/depth options (#7769) @yuki-takei
+- fix: When uploading an attachment and creating a new page, it does not inherit the grant of the parent page (#7768) @miya
+- fix: Unable to perform bookmark operations from bookmark item control (#7750) @miya
+- fix: Bookmarks status not updated on search result (#7667) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Refactor plugin related modules (#7765) @yuki-takei
+- support: Refactor AclService (#7754) @yuki-takei
+- support: typescriptize SlackLegacyUtil (#7751) @yuki-takei
+- support: Refactor ConfigManager (#7752) @yuki-takei
+- support: Convert unit tests by Jest to Vitest (#7749) @yuki-takei
 
 ## [v6.1.2](https://github.com/weseek/growi/compare/v6.1.1...v6.1.2) - 2023-05-25
 

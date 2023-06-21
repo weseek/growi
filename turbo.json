@@ -160,8 +160,17 @@
       "dependsOn": ["@growi/slack#dev"],
       "outputMode": "new-only"
     },
+    "@growi/remark-lsx#test": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputMode": "new-only"
+    },
     "test": {
       "outputMode": "new-only"
+    },
+    "version": {
+      "outputMode": "new-only",
+      "outputs": ["package.json"],
+      "inputs": ["package.json"]
     }
 
   }

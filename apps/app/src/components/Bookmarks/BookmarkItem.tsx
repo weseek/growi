@@ -6,7 +6,7 @@ import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
-import { unbookmark } from '~/client/services/page-operation';
+import { bookmark, unbookmark } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError } from '~/client/util/toastr';
@@ -28,7 +28,7 @@ type Props = {
   level: number,
   parentFolder: BookmarkFolderItems | null,
   canMoveToRoot: boolean,
-  onClickDeleteBookmarkHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
+  onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
   bookmarkFolderTreeMutation: () => void
 }
 
@@ -39,14 +39,13 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteBookmarkHandler,
+    isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteMenuItemHandler,
     parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-  const { data: fetchedPageInfo } = useSWRxPageInfo(bookmarkedPage._id);
-
+  const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
@@ -65,10 +64,16 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     }
   }, [bookmarkFolderTreeMutation, bookmarkedPage._id]);
 
-  const bookmarkMenuItemClickHandler = useCallback(async() => {
-    await unbookmark(bookmarkedPage._id);
+  const bookmarkMenuItemClickHandler = useCallback(async(pageId: string, shouldBookmark: boolean) => {
+    if (shouldBookmark) {
+      await bookmark(pageId);
+    }
+    else {
+      await unbookmark(pageId);
+    }
     bookmarkFolderTreeMutation();
-  }, [bookmarkedPage._id, bookmarkFolderTreeMutation]);
+    mutatePageInfo();
+  }, [bookmarkFolderTreeMutation, mutatePageInfo]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     setRenameInputShown(true);
@@ -86,12 +91,13 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       setRenameInputShown(false);
       await renamePage(bookmarkedPage._id, bookmarkedPage.revision, newPagePath);
       bookmarkFolderTreeMutation();
+      mutatePageInfo();
     }
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage, bookmarkFolderTreeMutation]);
+  }, [bookmarkedPage.path, bookmarkedPage._id, bookmarkedPage.revision, bookmarkFolderTreeMutation, mutatePageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
@@ -107,8 +113,8 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       meta: pageInfo,
     };
 
-    onClickDeleteBookmarkHandler(pageToDelete);
-  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteBookmarkHandler]);
+    onClickDeleteMenuItemHandler(pageToDelete);
+  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteMenuItemHandler]);
 
   return (
     <DragAndDropWrapper
@@ -137,12 +143,12 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             pageId={bookmarkedPage._id}
             isEnableActions
             isReadOnlyUser={isReadOnlyUser}
-            pageInfo={fetchedPageInfo}
+            pageInfo={pageInfo}
             forceHideMenuItems={[MenuItemType.DUPLICATE]}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            additionalMenuItemOnTopRenderer={canMoveToRoot
+            additionalMenuItemOnTopRenderer={canMoveToRoot && isOperable
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
               : undefined}
           >

@@ -322,10 +322,10 @@ const PageEditor = React.memo((): JSX.Element => {
       editorRef.current.insertText(insertText);
 
       // when if created newly
+      // Not using 'mutateGrant' to inherit the grant of the parent page
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
-        mutateGrant(res.page.grant);
         mutateIsLatestRevision(true);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
@@ -338,7 +338,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -519,11 +519,17 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // when transitioning to a different page, if the initialValue is the same,
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  const onRouterChangeComplete = useCallback(() => {
+    editorRef.current?.setValue(initialValue);
+    editorRef.current?.setCaretLine(0);
+  }, [initialValue]);
+
   useEffect(() => {
-    if (currentPagePath != null) {
-      editorRef.current?.setValue(initialValue);
-    }
-  }, [currentPagePath, initialValue]);
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
 
   if (!isEditable) {
     return <></>;

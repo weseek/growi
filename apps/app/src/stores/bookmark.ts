@@ -1,27 +1,42 @@
-import { SWRResponse } from 'swr';
+import { IUser } from '@growi/core';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
+import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
+
 
 import { IPageHasId } from '~/interfaces/page';
 
 import { apiv3Get } from '../client/util/apiv3-client';
 import { IBookmarkInfo } from '../interfaces/bookmark-info';
 
-export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRResponse<IBookmarkInfo, Error> => {
-  return useSWRImmutable(
+import { useCurrentUser } from './context';
+
+export const useSWRxBookmarkedUsers = (pageId: string | null): SWRResponse<IUser[], Error> => {
+  return useSWR(
     pageId != null ? `/bookmarks/info?pageId=${pageId}` : null,
+    endpoint => apiv3Get<IBookmarkInfo>(endpoint).then(response => response.data.bookmarkedUsers),
+  );
+};
+
+export const useSWRxUserBookmarks = (userId: string | null): SWRResponse<IPageHasId[], Error> => {
+  return useSWRImmutable(
+    userId != null ? `/bookmarks/${userId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
-      return {
-        sumOfBookmarks: response.data.sumOfBookmarks,
-        isBookmarked: response.data.isBookmarked,
-        bookmarkedUsers: response.data.bookmarkedUsers,
-      };
+      const { userRootBookmarks } = response.data;
+      return userRootBookmarks.map((item) => {
+        return {
+          ...item.page,
+        };
+      });
     }),
   );
 };
 
-export const useSWRxUserBookmarks = (userId?: string): SWRResponse<IPageHasId[], Error> => {
-  return useSWRImmutable(
-    userId != null ? `/bookmarks/${userId}` : null,
+export const useSWRMUTxCurrentUserBookmarks = (): SWRMutationResponse<IPageHasId[], Error> => {
+  const { data: currentUser } = useCurrentUser();
+
+  return useSWRMutation(
+    currentUser != null ? `/bookmarks/${currentUser?._id}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       const { userRootBookmarks } = response.data;
       return userRootBookmarks.map((item) => {

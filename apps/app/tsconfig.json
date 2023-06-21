@@ -14,14 +14,13 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   },
   "include": [
     "next-env.d.ts",
     "config",
-    "src"
+    "src",
   ],
   "ts-node": {
     "transpileOnly": true,

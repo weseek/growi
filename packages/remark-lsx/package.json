@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.1.3-RC.0",
+  "version": "6.1.4-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
@@ -19,16 +19,20 @@
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
-    "lint": "run-p lint:*"
+    "lint": "run-p lint:*",
+    "test": "vitest run --coverage",
+    "version": "yarn version --no-git-tag-version"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"
   },
   "dependencies": {
-    "@growi/core": "^6.1.3-RC.0",
-    "@growi/remark-growi-directive": "^6.1.3-RC.0",
-    "@growi/ui": "^6.1.3-RC.0",
+    "@growi/core": "link:../core",
+    "@growi/remark-growi-directive": "link:../remark-growi-directive",
+    "@growi/ui": "link:../ui",
     "escape-string-regexp": "^4.0.0",
+    "express": "^4.16.1",
+    "mongoose": "^6.5.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {

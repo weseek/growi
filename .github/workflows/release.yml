@@ -35,7 +35,8 @@ jobs:
 
     - name: Bump versions
       run: |
-        yarn bump-versions:patch
+        turbo run bump-versions:patch
+        yarn upgrade --scope=@growi
         sh ./apps/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
@@ -97,8 +98,8 @@ jobs:
 
     - name: Bump versions for next RC
       run: |
-        yarn bump-versions:rc
-        yarn bump-versions:slackbot-proxy
+        turbo run bump-versions:rc
+        yarn upgrade --scope=@growi
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0
