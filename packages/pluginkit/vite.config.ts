@@ -23,6 +23,7 @@ export default defineConfig({
         preserveModulesRoot: 'src',
       },
       external: [
+        'assert',
         'fs',
         'path',
         'util',

@@ -1,3 +1,4 @@
+import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
@@ -109,9 +110,7 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
   return status;
 };
 
-export const scanAllTemplateStatus = async(projectDirRoot: string): Promise<TemplateStatus[]> => {
-  const data = await validateTemplatePluginPackageJson(projectDirRoot);
-
+export const scanAllTemplateStatus = async(projectDirRoot: string, data: GrowiTemplatePluginValidationData): Promise<TemplateStatus[]> => {
   const status: TemplateStatus[] = [];
 
   const distDirPath = path.resolve(projectDirRoot, 'dist');
@@ -122,4 +121,42 @@ export const scanAllTemplateStatus = async(projectDirRoot: string): Promise<Temp
   }
 
   return status;
+};
+
+
+export const validateTemplatePlugin = async(projectDirRoot: string): Promise<boolean> => {
+  const data = await validateTemplatePluginPackageJson(projectDirRoot);
+
+  const results = await scanAllTemplateStatus(projectDirRoot, data);
+
+  if (results.length === 0) {
+    throw new Error('This plugin does not have any templates');
+  }
+
+  // construct map
+  // key: id
+  // value: isValid properties
+  const idValidMap: { [id: string]: boolean[] } = {};
+  results.forEach((status) => {
+    const validMap = idValidMap[status.id] ?? [];
+    validMap.push(status.isValid);
+    idValidMap[status.id] = validMap;
+  });
+
+  for (const [id, validMap] of Object.entries(idValidMap)) {
+    assert(validMap.length === data.supportingLocales.length);
+
+    // warn
+    if (!validMap.every(bool => bool)) {
+      // eslint-disable-next-line no-console
+      console.warn(`[WARN] Template '${id}' has invalid status`);
+    }
+
+    // This means the template directory does not have any valid template
+    if (!validMap.some(bool => bool)) {
+      return false;
+    }
+  }
+
+  return true;
 };

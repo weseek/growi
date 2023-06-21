@@ -1,12 +1,12 @@
 import path from 'node:path';
 
-import { scanAllTemplateStatus, validateTemplatePluginPackageJson } from '@growi/pluginkit/dist/server/utils/v4';
+import { scanAllTemplateStatus, validateTemplatePluginPackageJson, validateTemplatePlugin } from '@growi/pluginkit/dist/server/utils/v4';
 
 
 const projectDirRoot = path.resolve(__dirname, '../');
 
 
-it('Validation should be passed', () => {
+it('Validation for package.json should be passed', () => {
 
   // when
   const caller = () => validateTemplatePluginPackageJson(projectDirRoot);
@@ -15,45 +15,22 @@ it('Validation should be passed', () => {
   expect(caller).not.toThrow();
 });
 
+it('Scanning the templates ends up with no errors', async() => {
 
-describe('Scanning the template package', () => {
+  // setup
+  const data = await validateTemplatePluginPackageJson(projectDirRoot);
 
-  it('ends up with no errors', () => {
-    // when
-    const caller = () => scanAllTemplateStatus(projectDirRoot);
+  // when
+  const caller = () => scanAllTemplateStatus(projectDirRoot, data);
 
-    // then
-    expect(caller).not.toThrow();
-  });
+  // then
+  expect(caller).not.toThrow();
+});
 
-  it('successfully returns results that each template has at least one valid template', async() => {
-    // setup
-    const data = await validateTemplatePluginPackageJson(projectDirRoot);
+it('Validation templates returns true', async() => {
+  // when
+  const result = await validateTemplatePlugin(projectDirRoot);
 
-    // when 1
-    const results = await scanAllTemplateStatus(projectDirRoot);
-
-    // then 1
-    expect(results.length).toBeGreaterThan(0);
-
-    // when 2
-    const idValidMap: { [id: string]: boolean[] } = {};
-    results.forEach((status) => {
-      const validMap = idValidMap[status.id] ?? [];
-      validMap.push(status.isValid);
-      idValidMap[status.id] = validMap;
-    });
-
-    // then 2
-    Object.entries(idValidMap).forEach(([id, validMap]) => {
-      assert(validMap.length === data.supportingLocales.length);
-
-      if (!validMap.every(bool => bool)) {
-        // eslint-disable-next-line no-console
-        console.warn(`[WARN] Template '${id}' has invalid status`);
-      }
-      expect(validMap.some(bool => bool)).toBeTruthy();
-    });
-  });
-
+  // then
+  expect(result).toBeTruthy();
 });
