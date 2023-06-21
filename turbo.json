@@ -79,6 +79,7 @@
       "outputMode": "new-only"
     },
     "@growi/app#dev:migrate": {
+      "dependsOn": ["@growi/core#dev"],
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migrations/*.js"],
       "outputMode": "new-only"
@@ -157,6 +158,10 @@
     },
     "@growi/slackbot-proxy#test": {
       "dependsOn": ["@growi/slack#dev"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-lsx#test": {
+      "dependsOn": ["@growi/core#dev"],
       "outputMode": "new-only"
     },
     "test": {

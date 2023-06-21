@@ -6,11 +6,13 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxCurrentUserBookmarks, useSWRBookmarkInfo } from '~/stores/bookmark';
+import {
+  useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
+} from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
@@ -23,24 +25,34 @@ import styles from './BookmarkFolderTree.module.scss';
 //   parentFolder: BookmarkFolderItems | null
 //  } & IPageHasId
 
-export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUserHomePage }) => {
+type Props = {
+  isUserHomePage?: boolean,
+  userId?: string,
+  isOperable: boolean,
+}
+
+export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
+  const { isUserHomePage, userId } = props;
+
   // const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const { t } = useTranslation();
 
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
-  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild();
-  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
+  const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(currentPage?._id ?? null);
+  const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
-    mutateBookmarkInfo();
+    mutateCurrentUserBookmarks();
+    mutatePageInfo();
     mutateBookmarkFolders();
-  }, [mutateBookmarkFolders, mutateBookmarkInfo, mutateUserBookmarks]);
+  }, [mutateBookmarkFolders, mutatePageInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
 
-  const onClickDeleteBookmarkHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+  const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') return;
 
@@ -93,12 +105,13 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
             <BookmarkFolderItem
               key={bookmarkFolder._id}
               isReadOnlyUser={!!isReadOnlyUser}
+              isOperable={props.isOperable}
               bookmarkFolder={bookmarkFolder}
               isOpen={false}
               level={0}
               root={bookmarkFolder._id}
               isUserHomePage={isUserHomePage}
-              onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
+              onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />
           );
@@ -108,11 +121,12 @@ export const BookmarkFolderTree: React.FC<{isUserHomePage?: boolean}> = ({ isUse
             <BookmarkItem
               key={userBookmark._id}
               isReadOnlyUser={!!isReadOnlyUser}
+              isOperable={props.isOperable}
               bookmarkedPage={userBookmark}
               level={0}
               parentFolder={null}
               canMoveToRoot={false}
-              onClickDeleteBookmarkHandler={onClickDeleteBookmarkHandler}
+              onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
             />
           </div>

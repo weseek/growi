@@ -6,6 +6,36 @@
       animation: lsx-fadeIn 1s ease 0s infinite alternate;
     }
   }
+
+  .lsx-load-more-row {
+    opacity: .5;
+
+    .left-items-label {
+      display: none;
+    }
+    .btn-load-more {
+      border-right-style: hidden;
+      border-bottom-style: hidden;
+      border-left-style: hidden;
+      border-radius: 0;
+    }
+  }
+  .lsx-load-more-row:hover {
+    opacity: 1;
+
+    .left-items-label {
+      display: inline;
+    }
+    .btn-load-more {
+      border-style: solid;
+    }
+  }
+
+  .lsx-load-more-container {
+    max-width: 250px;
+    border-top: 1px black;
+  }
+
 }
 
 @keyframes lsx-fadeIn {

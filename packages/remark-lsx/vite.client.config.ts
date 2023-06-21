@@ -29,6 +29,7 @@ export default defineConfig({
         'next/link',
         'unified',
         'swr',
+        /^swr\/.*/,
         /^hast-.*/,
         /^unist-.*/,
         /^@growi\/.*/,

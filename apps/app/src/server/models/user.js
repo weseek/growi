@@ -265,31 +265,31 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = async function() {
-    logger.debug('Remove from admin', this);
-    this.admin = 0;
-    return this.save();
-  };
-
-  userSchema.methods.makeAdmin = async function() {
-    logger.debug('Admin', this);
+  userSchema.methods.grantAdmin = async function() {
+    logger.debug('Grant Admin', this);
     this.admin = 1;
     return this.save();
   };
 
+  userSchema.methods.revokeAdmin = async function() {
+    logger.debug('Revove admin', this);
+    this.admin = 0;
+    return this.save();
+  };
+
   userSchema.methods.grantReadOnly = async function() {
-    logger.debug('Grant read only flag', this);
+    logger.debug('Grant read only access', this);
     this.readOnly = 1;
     return this.save();
   };
 
   userSchema.methods.revokeReadOnly = async function() {
-    logger.debug('Revoke read only flag', this);
+    logger.debug('Revoke read only access', this);
     this.readOnly = 0;
     return this.save();
   };
 
-  userSchema.methods.asyncMakeAdmin = async function(callback) {
+  userSchema.methods.asyncGrantAdmin = async function(callback) {
     this.admin = 1;
     return this.save();
   };

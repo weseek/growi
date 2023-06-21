@@ -175,7 +175,7 @@
     "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_pages_under_this_page": "There are no pages under this page."
   },
 	"installer": {
     "tab": "创建账户",
@@ -434,12 +434,6 @@
     "file_upload_succeeded": "文件上传成功",
     "file_upload_failed": "文件上传失败",
     "initialize_successed": "Succeeded to initialize {{target}}",
-		"give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin ",
-		"activate_user_success": "Succeeded to activating {{username}}",
-		"deactivate_user_success": "Succeeded to deactivate {{username}}",
-		"remove_user_success": "Succeeded to removing {{username}} ",
-    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",
     "failed_to_reset_password":"Failed to reset password",
     "save_succeeded": "已成功保存",
@@ -447,6 +441,7 @@
   },
 	"template": {
 		"modal_label": {
+      "Select template": "选择模板",
 			"Create/Edit Template Page": "创建/编辑模板页",
 			"Create template under": "在下面创建模板页"
 		},

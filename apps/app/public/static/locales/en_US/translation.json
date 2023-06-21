@@ -168,7 +168,7 @@
     "could_not_creata_path": "Couldn't create path."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_pages_under_this_page": "There are no pages under this page."
   },
   "installer": {
     "tab": "Create account",
@@ -445,12 +445,6 @@
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
     "initialize_successed": "Succeeded to initialize {{target}}",
-    "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "activate_user_success": "Succeeded to activating {{username}}",
-    "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}}",
-    "remove_external_user_success": "Succeeded to remove {{accountId}}",
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
@@ -460,6 +454,7 @@
   },
   "template": {
     "modal_label": {
+      "Select template": "Select template",
       "Create/Edit Template Page": "Create/Edit template page",
       "Create template under": "Create template page under this page"
     },
