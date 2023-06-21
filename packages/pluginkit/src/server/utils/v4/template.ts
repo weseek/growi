@@ -22,7 +22,7 @@ export const validateTemplatePluginPackageJson = async(projectDirRoot: string): 
   const pkg = await importPackageJson(projectDirRoot);
 
   // check supporting locales
-  const supportingLocales: string[] | undefined = pkg.supportingLocales;
+  const supportingLocales: string[] | undefined = pkg.growiPlugin.locales;
   if (supportingLocales == null || supportingLocales.length === 0) {
     throw new GrowiPluginValidationError<GrowiPluginValidationData & { supportingLocales?: string[] }>(
       "Template plugin must have 'supportingLocales' and that must have one or more locales",
