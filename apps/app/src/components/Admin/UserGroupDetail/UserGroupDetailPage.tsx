@@ -48,8 +48,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { userGroupId: currentUserGroupId } = props;
 
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
-  const parentUserGroupId = currentUserGroup?.parent;
-  const { data: parentUserGroup } = useSWRxUserGroup(parentUserGroupId as string);
 
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -94,6 +92,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
+  const parentUserGroup = selectableParentUserGroups?.find(selectableParentUserGroup => selectableParentUserGroup._id === currentUserGroup?.parent);
   /*
    * Function
    */

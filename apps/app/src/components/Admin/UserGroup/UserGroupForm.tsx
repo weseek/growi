@@ -23,8 +23,8 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
-  const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
+  const [currentName, setName] = useState<string>(userGroup.name);
+  const [currentDescription, setDescription] = useState<string>(userGroup.description);
   const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(parentUserGroup);
   /*
    * Function
