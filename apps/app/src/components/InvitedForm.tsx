@@ -18,7 +18,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: user } = useCurrentUser();
-  const [isConnectSuccess, setIsConnectSuccess] = useState<boolean>(false);
   const [loginErrors, setLoginErrors] = useState<Error[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,7 +43,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/invited', { invitedForm });
-      setIsConnectSuccess(true);
       const { redirectTo } = res.data;
       router.push(redirectTo ?? '/');
     }
@@ -55,14 +53,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   }, [router]);
 
   const formNotification = useCallback(() => {
-
-    if (isConnectSuccess) {
-      return (
-        <p className="alert alert-success">
-          <strong>{ t('message.successfully_connected') }</strong><br></br>
-        </p>
-      );
-    }
 
     return (
       <>
@@ -80,7 +70,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         ) }
       </>
     );
-  }, [isConnectSuccess, loginErrors, t]);
+  }, [loginErrors, t]);
 
   if (user == null) {
     return <></>;
