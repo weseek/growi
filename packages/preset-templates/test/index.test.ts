@@ -27,9 +27,16 @@ describe('Scanning the template package', () => {
   });
 
   it('successfully returns results that each template has at least one valid template', async() => {
-    // when
+    // setup
+    const data = await validateTemplatePluginPackageJson(projectDirRoot);
+
+    // when 1
     const results = await scanAllTemplateStatus(projectDirRoot);
 
+    // then 1
+    expect(results.length).toBeGreaterThan(0);
+
+    // when 2
     const idValidMap: { [id: string]: boolean[] } = {};
     results.forEach((status) => {
       const validMap = idValidMap[status.id] ?? [];
@@ -37,11 +44,15 @@ describe('Scanning the template package', () => {
       idValidMap[status.id] = validMap;
     });
 
-    // then
-    expect(results.length).toBeGreaterThan(0);
+    // then 2
+    Object.entries(idValidMap).forEach(([id, validMap]) => {
+      assert(validMap.length === data.supportingLocales.length);
 
-    Object.entries(idValidMap).forEach(([, validMap]) => {
-      expect(validMap.some(bool => bool === true)).toBeTruthy();
+      if (!validMap.every(bool => bool)) {
+        // eslint-disable-next-line no-console
+        console.warn(`[WARN] Template '${id}' has invalid status`);
+      }
+      expect(validMap.some(bool => bool)).toBeTruthy();
     });
   });
 
