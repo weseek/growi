@@ -21,7 +21,13 @@ export const remarkPlugin: Plugin = function() {
 };
 
 export const rehypePlugin: Plugin = function() {
-  return;
+  return (tree) => {
+    visit(tree, (node) => {
+      if (node.type === 'yaml') {
+        return;
+      }
+    });
+  };
 };
 
 export const sanitizeOption: SanitizeOption = {

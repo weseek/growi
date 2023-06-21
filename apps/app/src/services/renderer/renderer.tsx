@@ -101,7 +101,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       pukiwikiLikeLinker,
       growiDirective,
       remarkFrontmatter,
-      frontmatterHider.remarkPlugin,
+      // frontmatterHider.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -114,7 +114,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       [addClass.rehypePlugin, {
         table: 'table table-bordered',
       }],
-      frontmatterHider.rehypePlugin,
+      // frontmatterHider.rehypePlugin,
     ],
     components: {
       a: NextLink,
