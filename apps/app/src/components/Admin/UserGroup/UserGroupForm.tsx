@@ -43,6 +43,10 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     }
   }, [selectedParent, setSelectedParent]);
 
+  const nullAndEmptyArrayChecks = (userGroups: IUserGroupHasId[] | undefined) => {
+    return userGroups != null && userGroups.length > 0;
+  };
+
   return (
     <form onSubmit={(e) => {
       e.preventDefault();
@@ -102,17 +106,17 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
               id="dropdownMenuButton"
               data-toggle="dropdown"
               className={`
-                btn btn-outline-secondary dropdown-toggle mb-3 ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
+                btn btn-outline-secondary dropdown-toggle mb-3 ${nullAndEmptyArrayChecks(selectableParentUserGroups) ? '' : 'disabled'}
               `}
             >
               {selectedParent?.name ?? t('user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                (selectableParentUserGroups != null && selectableParentUserGroups.length > 0) && (
+                (nullAndEmptyArrayChecks(selectableParentUserGroups)) && (
                   <>
                     {
-                      selectableParentUserGroups.map(userGroup => (
+                      selectableParentUserGroups?.map(userGroup => (
                         <button
                           key={userGroup._id}
                           type="button"
