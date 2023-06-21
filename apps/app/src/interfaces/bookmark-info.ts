@@ -3,13 +3,14 @@ import { Ref } from '@growi/core';
 import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 
-export type IBookmarkInfo = {
-  sumOfBookmarks: number;
+export interface IBookmarkInfo {
+  sumOfBookmarks: number,
   isBookmarked: boolean,
-  bookmarkedUsers: IUser[]
-};
+  bookmarkedUsers: IUser[],
+  pageId: string,
+}
 
-type BookmarkedPage = {
+export interface BookmarkedPage {
   _id: string,
   page: IPageHasId,
   user: Ref<IUser>,
@@ -24,12 +25,10 @@ export interface IBookmarkFolder {
   parent?: Ref<this>
 }
 
-export interface BookmarkFolderItems {
-  _id: string
-  name: string
-  parent: string
-  children: this[]
-  bookmarks: BookmarkedPage[]
+export interface BookmarkFolderItems extends IBookmarkFolder {
+  _id: string;
+  children: BookmarkFolderItems[];
+  bookmarks: BookmarkedPage[];
 }
 
 export const DRAG_ITEM_TYPE = {
@@ -37,15 +36,14 @@ export const DRAG_ITEM_TYPE = {
   BOOKMARK: 'BOOKMARK',
 } as const;
 
-type BookmarkDragItem = {
+interface BookmarkDragItem {
   bookmarkFolder: BookmarkFolderItems
   level: number
   root: string
 }
 
-export type DragItemDataType = BookmarkDragItem & {
+export interface DragItemDataType extends BookmarkDragItem, IPageHasId {
   parentFolder: BookmarkFolderItems | null
-} & IPageHasId
-
+}
 
 export type DragItemType = typeof DRAG_ITEM_TYPE[keyof typeof DRAG_ITEM_TYPE];

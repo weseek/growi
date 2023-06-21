@@ -2,17 +2,7 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "type": "pwa-node",
-        "request": "attach",
-        "name": "Debug: Attach Debugger to Server",
-        "port": 9229,
-        "cwd": "${workspaceFolder}/apps/app",
-        "sourceMapPathOverrides": {
-          "webpack://@growi/app/*": "${workspaceFolder}/apps/app/*"
-        }
-      },
-      {
-        "type": "pwa-node",
+        "type": "node",
         "request": "launch",
         "name": "Debug: Current File",
         "skipFiles": [
@@ -25,6 +15,27 @@
           "-r", "@swc-node/register",
           "${file}"
         ]
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug: Current File with Vitest",
+        "autoAttachChildProcesses": true,
+        "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+        "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+        "args": ["run", "${relativeFile}"],
+        "smartStep": true,
+        "console": "integratedTerminal"
+      },
+      {
+        "type": "pwa-node",
+        "request": "attach",
+        "name": "Debug: Attach Debugger to Server",
+        "port": 9229,
+        "cwd": "${workspaceFolder}/apps/app",
+        "sourceMapPathOverrides": {
+          "webpack://@growi/app/*": "${workspaceFolder}/apps/app/*"
+        }
       },
       {
         "type": "pwa-node",

@@ -628,13 +628,17 @@ export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalS
 /*
  * TemplateModal
  */
-type TemplateModalStatus = {
+
+type TemplateSelectedCallback = (templateText: string) => void;
+type TemplateModalOptions = {
+  onSubmit?: TemplateSelectedCallback,
+}
+type TemplateModalStatus = TemplateModalOptions & {
   isOpened: boolean,
-  onSubmit?: (templateText: string) => void
 }
 
 type TemplateModalUtils = {
-  open(onSubmit: (templateText: string) => void): void,
+  open(opts: TemplateModalOptions): void,
   close(): void,
 }
 
@@ -644,8 +648,8 @@ export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & Te
   const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: (onSubmit: (templateText: string) => void) => {
-      swrResponse.mutate({ isOpened: true, onSubmit });
+    open: (opts: TemplateModalOptions) => {
+      swrResponse.mutate({ isOpened: true, onSubmit: opts.onSubmit });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });

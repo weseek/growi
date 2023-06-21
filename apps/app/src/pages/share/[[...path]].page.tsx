@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
 import type {
@@ -22,12 +22,12 @@ import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid,
 } from '~/stores/context';
-import { useCurrentPageId, useIsNotFound } from '~/stores/page';
+import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
 import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps, skipSSR,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -43,6 +43,7 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
+  skipSSR: boolean,
 };
 
 type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
@@ -92,6 +93,18 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useIsContainerFluid(props.isContainerFluid);
 
+  const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
+
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (props.shareLink?.relatedPage._id != null && !props.isNotFound) {
+      mutateCurrentPage();
+    }
+  }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
+
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
 
@@ -107,7 +120,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigationForSharedPage page={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
+          <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
@@ -115,7 +128,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <ShareLinkPageView
           pagePath={pagePath}
           rendererConfig={props.rendererConfig}
-          page={props.shareLinkRelatedPage}
+          page={currentPage ?? props.shareLinkRelatedPage}
           shareLink={props.shareLink}
           isExpired={props.isExpired}
           disableLinkSharing={props.disableLinkSharing}
@@ -221,7 +234,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
     else {
       props.isNotFound = false;
-      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision();
+      props.skipSSR = await skipSSR(shareLink.relatedPage);
+      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
     }
