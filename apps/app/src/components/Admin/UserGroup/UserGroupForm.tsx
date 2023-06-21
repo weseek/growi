@@ -1,15 +1,13 @@
-import React, {
-  FC, useCallback, useState, useEffect,
-} from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
-import { useSWRxUserGroup } from '~/stores/user-group';
 
 type Props = {
   userGroup: IUserGroupHasId,
+  parentUserGroup: IUserGroupHasId | undefined,
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: string;
   onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
@@ -20,22 +18,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
 
   const {
-    userGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
+    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
   } = props;
-
-  const parentUserGroupId = userGroup?.parent;
-  const { data: parentUserGroup } = useSWRxUserGroup(parentUserGroupId as string);
   /*
    * State
    */
   const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
   const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>();
-
-  useEffect(() => {
-    setSelectedParent(parentUserGroup);
-  }, [parentUserGroup]);
-
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(parentUserGroup);
   /*
    * Function
    */

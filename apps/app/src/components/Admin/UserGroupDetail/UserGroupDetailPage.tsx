@@ -48,6 +48,9 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { userGroupId: currentUserGroupId } = props;
 
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
+  const parentUserGroupId = currentUserGroup?.parent;
+  const { data: parentUserGroup } = useSWRxUserGroup(parentUserGroupId as string);
+
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
@@ -356,6 +359,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={currentUserGroup}
+          parentUserGroup={parentUserGroup}
           selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}
