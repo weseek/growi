@@ -20,6 +20,10 @@ export const remarkPlugin: Plugin = function() {
   };
 };
 
+export const rehypePlugin: Plugin = function() {
+  return;
+};
+
 export const sanitizeOption: SanitizeOption = {
   tagNames: ['frontmatter'],
 };

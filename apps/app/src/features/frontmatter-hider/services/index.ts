@@ -1,1 +1,1 @@
-export { remarkPlugin, sanitizeOption } from './frontmatter-hider';
+export { remarkPlugin, rehypePlugin, sanitizeOption } from './frontmatter-hider';
