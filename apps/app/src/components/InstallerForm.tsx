@@ -44,10 +44,6 @@ const InstallerForm = memo((): JSX.Element => {
 
     setIsLoading(true);
 
-    if (e.target.elements == null) {
-      return;
-    }
-
     const formData = e.target.elements;
 
     const {
