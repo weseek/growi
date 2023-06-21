@@ -160,6 +160,10 @@
       "dependsOn": ["@growi/slack#dev"],
       "outputMode": "new-only"
     },
+    "@growi/preset-templates#test": {
+      "dependsOn": ["@growi/pluginkit#dev"],
+      "outputMode": "new-only"
+    },
     "@growi/remark-lsx#test": {
       "dependsOn": ["@growi/core#dev"],
       "outputMode": "new-only"
