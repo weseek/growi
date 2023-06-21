@@ -85,7 +85,10 @@ export const Slides = (props: Props): JSX.Element => {
           <style>{css}</style>
         </Head>
         <div
-          dangerouslySetInnerHTML={{ __html: dompurify.sanitize(html) }}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: dompurify.sanitize(html),
+          }}
         />
       </>
     );
