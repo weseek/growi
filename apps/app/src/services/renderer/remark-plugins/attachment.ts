@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { Plugin } from 'unified';
 import { Node } from 'unist';
@@ -12,11 +14,11 @@ const isAttachmentLink = (url: string) => {
 };
 
 const rewriteNode = (node: Node) => {
-  const pathName = (node.url as string).split('/');
+  const attachmentId = path.basename(node.url as string);
   const data = node.data ?? (node.data = {});
   data.hName = 'attachment';
   data.hProperties = {
-    attachmentId:  pathName[2],
+    attachmentId,
     url: node.url,
     attachmentName: (node.children as any)[0]?.value,
   };

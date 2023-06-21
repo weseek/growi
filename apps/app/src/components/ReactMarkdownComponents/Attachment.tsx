@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { LocaleStringLang } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
-import { useTranslation } from 'next-i18next';
 import prettyBytes from 'pretty-bytes';
 
 import { useSWRxAttachment } from '~/stores/attachment';
@@ -10,17 +8,11 @@ import { useDeleteAttachmentModal } from '~/stores/modal';
 
 import styles from './Attachment.module.scss';
 
-const getLocaleStringLocale = (language: string) => {
-  const mappedLocale = LocaleStringLang[language];
-  return mappedLocale || 'en-US';
-};
-
 export const Attachment: React.FC<{
   attachmentId: string,
   url: string,
   attachmentName: string
 }> = React.memo(({ attachmentId, url, attachmentName }) => {
-  const { i18n } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
 
@@ -66,7 +58,7 @@ export const Attachment: React.FC<{
             <div className='d-flex align-items-center'>
               <UserPicture user={creator} size="sm"/>
               <span className='ml-2 text-muted'>
-                {new Date(createdAt).toLocaleString(getLocaleStringLocale(i18n.language))}
+                {new Date(createdAt).toLocaleString('en-US')}
               </span>
               <span className='ml-2 pl-2 border-left text-muted'>{prettyBytes(fileSize)}</span>
             </div>

@@ -5,8 +5,3 @@ export const Lang = {
 } as const;
 export const AllLang = Object.values(Lang);
 export type Lang = typeof Lang[keyof typeof Lang];
-export const LocaleStringLang = {
-  en_US: 'en-US',
-  ja_JP: 'ja-JP',
-  zh_CN: 'zh-CN',
-} as const;
