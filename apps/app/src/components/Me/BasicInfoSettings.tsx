@@ -24,8 +24,17 @@ export const BasicInfoSettings = (): JSX.Element => {
       sync();
       toastSuccess(t('toaster.update_successed', { target: t('Basic Info'), ns: 'commons' }));
     }
-    catch (err) {
-      toastError(err);
+    catch (errs) {
+      const err = errs[0];
+      const message = err.message;
+      const code = err.code;
+
+      if (code === 'email-is-already-in-use') {
+        toastError(t('alert.email_is_already_in_use', { ns: 'commons' }));
+      }
+      else {
+        toastError(message);
+      }
     }
   };
 
