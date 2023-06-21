@@ -700,6 +700,7 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
     open,
     close,
   };
+};
 
 /*
  * LinkEditModal
