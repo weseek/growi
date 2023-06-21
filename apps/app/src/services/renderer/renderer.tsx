@@ -16,7 +16,6 @@ import type { Pluggable, PluginTuple } from 'unified';
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import * as frontmatterHider from '~/features/frontmatter-hider';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -101,7 +100,6 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       pukiwikiLikeLinker,
       growiDirective,
       remarkFrontmatter,
-      // frontmatterHider.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -114,7 +112,6 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       [addClass.rehypePlugin, {
         table: 'table table-bordered',
       }],
-      // frontmatterHider.rehypePlugin,
     ],
     components: {
       a: NextLink,
