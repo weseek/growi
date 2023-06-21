@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import {
@@ -11,14 +11,13 @@ import {
 } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsReadOnlyUser } from '~/stores/context';
-import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
+import { usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
 
 import styles from './BookmarkFolderTree.module.scss';
-import { unlink } from '~/client/services/page-operation';
 import { useRouter } from 'next/router';
 
 // type DragItemDataType = {
@@ -47,7 +46,6 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(currentPage?._id ?? null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { open: openPutBackPageModal } = usePutBackPageModal();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();
@@ -102,30 +100,6 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   //   return !isRootBookmark;
 
   // };
-  const putBackClickHandler = useCallback(async (pagePath: string) => {
-    const bookmarkedPage = userBookmarks?.filter(userBookmark => userBookmark._id === pagePath)[0];
-    if (bookmarkedPage != null) {
-      const { _id: pageId, path } = bookmarkedPage;
-      const putBackedHandler = async () => {
-        try {
-          await unlink(path);
-          mutateAllPageInfo();
-          bookmarkFolderTreeMutation();
-          // Redirect to original page if current page id equal to bookmarked page
-          if (bookmarkedPage._id === currentPage?._id) {
-            router.push(`/${pageId}`);
-          }
-          toastSuccess(t('page_has_been_reverted', { path }));
-        }
-        catch (err) {
-          toastError(err);
-        }
-
-      };
-      openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
-    }
-  }, [userBookmarks, openPutBackPageModal, mutateAllPageInfo]);
-
 
   return (
     <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`} >
@@ -158,7 +132,6 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
               canMoveToRoot={false}
               onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
               bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
-              onPagePutBacked={putBackClickHandler}
             />
           </div>
         ))}

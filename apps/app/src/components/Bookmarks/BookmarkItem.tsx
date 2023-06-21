@@ -13,7 +13,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { mutateAllPageInfo, useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -52,8 +52,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
-  const { data: currentPage } = useSWRxCurrentPage();
-
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
@@ -131,9 +130,8 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         await unlink(path);
         mutateAllPageInfo();
         bookmarkFolderTreeMutation();
-        if (pageId === currentPage?._id) {
-          router.push(`/${pageId}`);
-        }
+        router.push(`/${pageId}`);
+        mutateCurrentPage();
         toastSuccess(t('page_has_been_reverted', { path }));
       }
       catch (err) {
@@ -145,7 +143,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
 
-  }, [bookmarkedPage, openPutBackPageModal, mutateAllPageInfo, bookmarkFolderTreeMutation, router]);
+  }, [bookmarkedPage, openPutBackPageModal, mutateAllPageInfo, bookmarkFolderTreeMutation, router, mutateCurrentPage]);
 
   return (
     <DragAndDropWrapper
