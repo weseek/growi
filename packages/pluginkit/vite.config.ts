@@ -23,6 +23,9 @@ export default defineConfig({
         preserveModulesRoot: 'src',
       },
       external: [
+        'fs',
+        'path',
+        'util',
       ],
     },
   },

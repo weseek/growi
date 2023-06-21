@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-import { GrowiPluginType } from '../../../consts/types';
-import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '../../../model/growi-plugin-validation-data';
-import { GrowiPluginValidationError } from '../../../model/growi-plugin-validation-error';
+import { GrowiPluginType } from '../../../consts';
+import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '../../../model';
+import { GrowiPluginValidationError } from '../../../model';
 
 import { importPackageJson, validatePackageJson } from './package-json';
 

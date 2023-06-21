@@ -1,5 +1,2 @@
-
-
-export const validate = async(projectDirRoot: string): Promise<boolean> => {
-  return false;
-};
+export * from './package-json';
+export * from './template';
