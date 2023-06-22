@@ -50,7 +50,7 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ error: 'invalid body params' });
+      return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
     }
 
     const params = {

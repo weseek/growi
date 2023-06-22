@@ -37,8 +37,8 @@ export const LdapGroupSyncSettingsForm: FC = () => {
       await apiv3Put('/external-user-groups/ldap/sync-settings', formValues);
       toastSuccess(t('external_user_group.ldap.updated_group_sync_settings'));
     }
-    catch (err) {
-      toastError(err);
+    catch (errs) {
+      toastError(t(errs[0]?.message));
     }
   }, [formValues, t]);
 
