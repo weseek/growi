@@ -548,9 +548,7 @@ module.exports = (crowi) => {
 
       // Check if external accounts have admins
       const externalAccounts = await ExternalAccount.find({ providerType: strategy }).populate('user').exec();
-      const externalAccountHasAdmin = externalAccounts.some(externalAccount =>
-        externalAccount.user?.admin && externalAccount.user?.status == User.STATUS_ACTIVE
-      );
+      const externalAccountHasAdmin = externalAccounts.some(externalAccount => externalAccount.user?.admin && externalAccount.user?.status === User.STATUS_ACTIVE);
 
       return externalAccountHasAdmin;
     }
