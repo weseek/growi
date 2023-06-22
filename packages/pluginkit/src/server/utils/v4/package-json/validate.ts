@@ -1,13 +1,8 @@
-import path from 'path';
+import { GrowiPluginType } from '~/consts';
+import { type GrowiPluginValidationData, GrowiPluginValidationError } from '~/model';
 
-import { GrowiPluginType } from '../../../consts';
-import { type GrowiPluginValidationData, GrowiPluginValidationError } from '../../../model';
+import { importPackageJson } from './import';
 
-
-export const importPackageJson = async(projectDirRoot: string): Promise<any> => {
-  const packageJsonUrl = path.resolve(projectDirRoot, 'package.json');
-  return import(packageJsonUrl);
-};
 
 export const validatePackageJson = async(projectDirRoot: string, expectedPluginType?: GrowiPluginType): Promise<GrowiPluginValidationData> => {
   const pkg = await importPackageJson(projectDirRoot);
