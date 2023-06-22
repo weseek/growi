@@ -87,7 +87,7 @@ export const HandsontableModal = (): JSX.Element => {
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
   const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(defaultMarkdownTable);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(defaultMarkdownTable);
-  const [handsontableHeight, setHandsontableHeight] = useState<number>(0);
+  const [handsontableHeight, setHandsontableHeight] = useState<number>(DEFAULT_HOT_HEIGHT);
   const [handsontableWidth, setHandsontableWidth] = useState<number>(0);
 
   const handleWindowExpandedChange = () => {
