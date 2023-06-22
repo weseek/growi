@@ -9,5 +9,11 @@ export default defineConfig({
     environment: 'node',
     clearMocks: true,
     globals: true,
+    coverage: {
+      lines: 100,
+      functions: 100,
+      branches: 100,
+      statements: 100,
+    },
   },
 });
