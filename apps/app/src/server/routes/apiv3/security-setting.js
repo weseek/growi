@@ -509,7 +509,7 @@ module.exports = (crowi) => {
 
       // Check external auth methods
       const externalAuthTypes = Object.values(GrowiExternalAuthProviderType);
-      await Promise.all(externalAuthTypes.map(async (strategy) => {
+      await Promise.all(externalAuthTypes.map(async(strategy) => {
         await checkAndAddActiveAuthMethodWithAdmin(strategy, activeAuthMethodsWithAdmin);
       }));
 
