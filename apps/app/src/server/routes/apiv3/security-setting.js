@@ -505,49 +505,52 @@ module.exports = (crowi) => {
       const activeAuthMethodsWithAdmin = [];
 
       // Check the local auth method
-      await checkAndAddActiveAuthMethodWithAdmin('local', 'crowi', 'security:passport-local:isEnabled', checkLocalStrategyHasAdmin, activeAuthMethodsWithAdmin);
+      await checkAndAddActiveAuthMethodWithAdmin('local', activeAuthMethodsWithAdmin);
 
       // Check external auth methods
       const externalAuthTypes = Object.values(GrowiExternalAuthProviderType);
-      await Promise.all(externalAuthTypes.map(async(strategy) => {
-        const configKey = `security:passport-${strategy}:isEnabled`;
-        await checkAndAddActiveAuthMethodWithAdmin(strategy, 'crowi', configKey, checkExternalStrategyHasAdmin, activeAuthMethodsWithAdmin);
+      await Promise.all(externalAuthTypes.map(async (strategy) => {
+        await checkAndAddActiveAuthMethodWithAdmin(strategy, activeAuthMethodsWithAdmin);
       }));
 
       return activeAuthMethodsWithAdmin;
     }
 
     // Check and add an authentication method with admin to the list
-    async function checkAndAddActiveAuthMethodWithAdmin(strategy, configNamespace, configKey, checkHasAdminFunction, activeAuthMethodsWithAdmin) {
-      const isEnabled = configManager.getConfig(configNamespace, configKey);
-      const hasAdmin = await checkHasAdminFunction(strategy);
+    async function checkAndAddActiveAuthMethodWithAdmin(strategy, activeAuthMethodsWithAdmin) {
+      const configKey = `security:passport-${strategy}:isEnabled`;
+      const isEnabled = configManager.getConfig('crowi', configKey);
+      const hasAdmin = await checkAuthStrategyHasAdmin(strategy);
       if (isEnabled && hasAdmin && setupStrategies.includes(strategy)) {
         activeAuthMethodsWithAdmin.push(strategy);
       }
     }
 
-    // Check if local accounts have admins
-    async function checkLocalStrategyHasAdmin() {
-      // Get all local admin accounts and filter local admins that are not in external accounts
-      const adminAccounts = await User.aggregate([
-        { $match: { admin: true } },
-        {
-          $lookup: {
-            from: 'externalaccounts',
-            localField: '_id',
-            foreignField: 'user',
-            as: 'externalAccounts',
+    // Check auth strategy has admin user
+    async function checkAuthStrategyHasAdmin(strategy) {
+      // Check if local accounts have admins
+      if (strategy === 'local') {
+        // Get all local admin accounts and filter local admins that are not in external accounts
+        const localAdmins = await User.aggregate([
+          { $match: { admin: true } },
+          {
+            $lookup: {
+              from: 'externalaccounts',
+              localField: '_id',
+              foreignField: 'user',
+              as: 'externalAccounts',
+            },
           },
-        },
-        { $match: { externalAccounts: [] } },
-      ]);
-      return adminAccounts.length > 0;
-    }
+          { $match: { externalAccounts: [] } },
+        ]).exec();
+        return localAdmins.length > 0;
+      }
 
-    // Check if external accounts have admins
-    async function checkExternalStrategyHasAdmin(providerType) {
-      const externalAccounts = await ExternalAccount.find({ providerType }).populate('user').exec();
-      return externalAccounts.some(externalAccount => externalAccount.user && externalAccount.user.admin);
+      // Check if external accounts have admins
+      const externalAccounts = await ExternalAccount.find({ providerType: strategy }).populate('user').exec();
+      const externalAccountHasAdmin = externalAccounts.some(externalAccount => externalAccount.user && externalAccount.user.admin);
+
+      return externalAccountHasAdmin;
     }
 
 
