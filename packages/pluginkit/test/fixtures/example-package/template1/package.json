@@ -1,6 +1,7 @@
 {
   "name": "example-package-template1",
   "version": "1.0.0",
+  "main": "index.js",
   "growiPlugin": {
     "schemaVersion": "4",
     "types": [

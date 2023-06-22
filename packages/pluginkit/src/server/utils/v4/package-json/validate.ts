@@ -33,7 +33,7 @@ export const validatePackageJson = async(projectDirRoot: string, expectedPluginT
     data.expectedPluginType = expectedPluginType;
 
     if (!types.includes(expectedPluginType)) {
-      throw new GrowiPluginValidationError("The growiPlugin directive does not have 'types' directive.", data);
+      throw new GrowiPluginValidationError("The growiPlugin directive does not have expected plugin type in 'types' directive.", data);
     }
   }
 
