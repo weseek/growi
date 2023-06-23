@@ -13,10 +13,11 @@
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
-    "lint": "npm-run-all -p lint:*"
+    "lint": "npm-run-all -p lint:*",
+    "version": "yarn version --no-git-tag-version"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4-RC.0"
+    "@growi/core": "link:../core"
   },
   "devDependencies": {
     "react": "^18.2.0"

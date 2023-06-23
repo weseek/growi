@@ -112,8 +112,9 @@ jobs:
         yarn --frozen-lockfile
 
     - name: Bump versions for next RC
+      working-directory: ./apps/slackbot-proxy
       run: |
-        yarn bump-versions:slackbot-proxy
+        yarn version --no-git-tag-version --prepatch --preid=slackbot-proxy
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0

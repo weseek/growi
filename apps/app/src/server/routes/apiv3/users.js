@@ -2,11 +2,11 @@ import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
@@ -150,6 +150,7 @@ module.exports = (crowi) => {
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
+    const locale = configManager.getConfig('crowi', 'app:globalLang');
     const failedToSendEmailList = [];
 
     for (const user of userList) {
@@ -158,7 +159,7 @@ module.exports = (crowi) => {
         await mailService.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
-          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+          template: path.join(crowi.localeDir, `${locale}/admin/userInvitation.ejs`),
           vars: {
             email: user.email,
             password: user.password,
