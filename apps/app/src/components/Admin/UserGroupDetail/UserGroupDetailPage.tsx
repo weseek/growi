@@ -137,9 +137,8 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     [t, updateUserGroup],
   );
 
-  const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
-    if (typeof userGroupData?.parent === 'string') {
-      toastError(t('Something went wrong. Please try again.'));
+  const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: IUserGroupHasId) => {
+    if (typeof userGroupData.parent === 'string') {
       return;
     }
 

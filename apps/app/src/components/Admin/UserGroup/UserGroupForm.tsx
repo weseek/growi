@@ -10,7 +10,7 @@ type Props = {
   parentUserGroup?: IUserGroupHasId,
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: string;
-  onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
+  onSubmit: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void>
 };
 
 export const UserGroupForm: FC<Props> = (props: Props) => {
@@ -48,7 +48,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   return (
     <form onSubmit={(e) => {
       e.preventDefault();
-      onSubmit?.(props.userGroup, {
+      onSubmit(props.userGroup, {
         name: currentName,
         description: currentDescription,
         parent: selectedParent,
