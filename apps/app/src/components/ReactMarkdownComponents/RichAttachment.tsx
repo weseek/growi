@@ -38,6 +38,17 @@ export const RichAttachment: React.FC<{
     fileSize,
   } = attachment;
 
+  // Guard here because attachment properties might be deleted in turn when an attachment is removed
+  if (filePathProxied == null
+    || originalName == null
+    || downloadPathProxied == null
+    || creator == null
+    || createdAt == null
+    || fileSize == null
+  ) {
+    return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
+  }
+
   return (
     <div className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 p-2 card">

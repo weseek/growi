@@ -36,7 +36,7 @@ export const useSWRxAttachment = (attachmentId: string): SWRResponseWithUtils<Ut
   const remove = useCallback(async(body: { attachment_id: string }) => {
     try {
       await apiPost('/attachments.remove', body);
-      swrResponse.mutate();
+      swrResponse.mutate(body.attachment_id);
     }
     catch (err) {
       throw err;
