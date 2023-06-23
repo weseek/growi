@@ -58,7 +58,12 @@ module.exports = (crowi) => {
     try {
       const attachmentId = req.query.attachmentId;
 
-      const attachment = await Attachment.findById(attachmentId).populate('creator');
+      const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
+
+      if (attachment == null) {
+        const message = 'Attachment not found';
+        return res.apiv3Err(message, 404);
+      }
 
       if (attachment.creator != null && attachment.creator instanceof User) {
         attachment.creator = serializeUserSecurely(attachment.creator);
@@ -67,7 +72,7 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     }
     catch (err) {
-      logger.error('Attachment not found', err);
+      logger.error('Attachment retrieval failed', err);
       return res.apiv3Err(err, 500);
     }
   });
