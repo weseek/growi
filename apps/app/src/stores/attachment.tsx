@@ -24,9 +24,7 @@ export const useSWRxAttachment = (attachmentId: string): SWRResponseWithUtils<Ut
   const swrResponse = useSWR(
     ['/attachment', attachmentId],
     useCallback(async([endpoint, attachmentId]) => {
-      const params = {
-        attachmentId,
-      };
+      const params = { attachmentId };
       const res = await apiv3Get(endpoint, params);
       return res.data.attachment;
     }, []),
