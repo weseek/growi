@@ -7,7 +7,7 @@ import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   userGroup: IUserGroupHasId,
-  parentUserGroup: IUserGroupHasId | undefined,
+  parentUserGroup?: IUserGroupHasId,
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: string;
   onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
@@ -43,9 +43,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     }
   }, [selectedParent, setSelectedParent]);
 
-  const nullAndEmptyArrayChecks = (userGroups: IUserGroupHasId[] | undefined) => {
-    return userGroups != null && userGroups.length > 0;
-  };
+  const isSelectableParentUserGroups = selectableParentUserGroups != null && selectableParentUserGroups.length > 0;
 
   return (
     <form onSubmit={(e) => {
@@ -106,17 +104,17 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
               id="dropdownMenuButton"
               data-toggle="dropdown"
               className={`
-                btn btn-outline-secondary dropdown-toggle mb-3 ${nullAndEmptyArrayChecks(selectableParentUserGroups) ? '' : 'disabled'}
+                btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
               `}
             >
               {selectedParent?.name ?? t('user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                (nullAndEmptyArrayChecks(selectableParentUserGroups)) && (
+                (isSelectableParentUserGroups) && (
                   <>
                     {
-                      selectableParentUserGroups?.map(userGroup => (
+                      selectableParentUserGroups.map(userGroup => (
                         <button
                           key={userGroup._id}
                           type="button"
