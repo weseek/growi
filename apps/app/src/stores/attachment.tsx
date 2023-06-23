@@ -4,7 +4,7 @@ import {
   IAttachmentHasId, Nullable, type SWRResponseWithUtils, withUtils,
 } from '@growi/core';
 import { Util } from 'reactstrap';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -15,7 +15,7 @@ type Util = {
 };
 
 type IDataAttachmentList = {
-  attachments: (IAttachmentHasId)[]
+  attachments: IAttachmentHasId[]
   totalAttachments: number
   limit: number
 };
@@ -47,6 +47,7 @@ export const useSWRxAttachment = (attachmentId: string): SWRResponseWithUtils<Ut
 };
 
 export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: number): SWRResponseWithUtils<Util, IDataAttachmentList, Error> => {
+  const { mutate: mutateUseSWRxAttachment } = useSWRConfig();
   const shouldFetch = pageId != null && pageNumber != null;
 
   const fetcher = useCallback(async([endpoint, pageId, pageNumber]) => {
@@ -72,11 +73,13 @@ export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: numbe
     try {
       await apiPost('/attachments.remove', body);
       mutate();
+      // Mutation for rich attachment rendering
+      mutateUseSWRxAttachment(['/attachment', body.attachment_id], body.attachment_id);
     }
     catch (err) {
       throw err;
     }
-  }, [swrResponse]);
+  }, [mutateUseSWRxAttachment, swrResponse]);
 
   return withUtils<Util, IDataAttachmentList, Error>(swrResponse, { remove });
 };
