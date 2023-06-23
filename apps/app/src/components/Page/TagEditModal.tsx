@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -60,12 +59,5 @@ function TagEditModal(props: Props): JSX.Element {
   );
 
 }
-
-TagEditModal.propTypes = {
-  tags: PropTypes.array,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-  onTagsUpdated: PropTypes.func,
-};
 
 export default TagEditModal;
