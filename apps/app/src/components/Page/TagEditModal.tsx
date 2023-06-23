@@ -9,10 +9,10 @@ import {
 import TagsInput from './TagsInput';
 
 function TagEditModal(props) {
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
 
-  function onTagsUpdatedByTagsInput(tags) {
+  function onTagsUpdatedByTagsInput(tags: string[]) {
     setTags(tags);
   }
 
