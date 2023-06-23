@@ -111,7 +111,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                (isSelectableParentUserGroups) && (
+                isSelectableParentUserGroups && (
                   <>
                     {
                       selectableParentUserGroups.map(userGroup => (
