@@ -4,6 +4,7 @@ import React, {
 
 import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -26,6 +27,7 @@ export const DeleteAttachmentModal: React.FC = () => {
   const [deleting, setDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>('');
 
+  const { t } = useTranslation();
   const { data: deleteAttachmentModal, close: closeDeleteAttachmentModal } = useDeleteAttachmentModal();
   const isOpen = deleteAttachmentModal?.isOpened;
   const attachment = deleteAttachmentModal?.attachment;
@@ -52,7 +54,7 @@ export const DeleteAttachmentModal: React.FC = () => {
     }
     catch (err) {
       setDeleting(false);
-      setDeleteError('Something went wrong.');
+      setDeleteError('Attachment could not be deleted.');
       toastError(err);
       logger.error(err);
     }
@@ -100,7 +102,7 @@ export const DeleteAttachmentModal: React.FC = () => {
       fade={false}
     >
       <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
-        <span id="contained-modal-title-lg">Delete attachment?</span>
+        <span id="contained-modal-title-lg">{t('delete_attachment_modal.confirm_delete_attachment')}</span>
       </ModalHeader>
       <ModalBody>
         {attachmentFileFormat}
@@ -113,7 +115,7 @@ export const DeleteAttachmentModal: React.FC = () => {
           color="danger"
           onClick={onClickDeleteButtonHandler}
           disabled={deleting}
-        >Delete
+        >{t('commons:Delete')}
         </Button>
       </ModalFooter>
     </Modal>
