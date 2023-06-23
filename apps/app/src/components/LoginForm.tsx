@@ -498,7 +498,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <div className="row">
           <div className="text-right col-12 mt-2 py-2">
-            <a href="#login" id="login" className="link-switch" onClick={switchForm}>
+            <a href="#login" id="login" className="link-switch" onClick={isLoading ? undefined : switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -534,7 +534,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
                   <div className="text-right mb-2">
-                    <a href="#register" id="register" className="link-switch" onClick={switchForm}>
+                    <a
+                      href="#register" id="register" className="link-switch" onClick={isLoading ? undefined : switchForm}>
                       <i className="ti ti-check-box"></i> {t('Sign up is here')}
                     </a>
                   </div>
