@@ -15,19 +15,21 @@ export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
     const modifiedChildren: Node[] = tree.children.map((child: Node) => {
       const { lang, value, position } = child;
       // Check if the node is a 'plantuml' code block and has a non-empty value
-      if (lang === 'plantuml' && value !== '') {
-        const line = position?.start?.line;
-        const modifiedChild: Parent = {
-          type: 'paragraph',
-          children: [child],
-          data: {
-            // Add 'data-line' attribute to the paragraph's hProperties
-            hProperties: line ? { 'data-line': line } : {},
-          },
-        };
-        return modifiedChild; // Return the modified child node
+      if (!lang || lang !== 'plantuml' || !value) {
+        return child; // Return early if the conditions are not met
       }
-      return child; // Return the original child node
+
+      const line = position?.start?.line;
+      const modifiedChild: Parent = {
+        type: 'paragraph',
+        children: [child],
+        data: {
+          // Add 'data-line' attribute to the paragraph's hProperties
+          hProperties: line ? { 'data-line': line } : {},
+        },
+      };
+
+      return modifiedChild; // Return the modified child node
     });
 
     // Create the wrapped tree with modified children
