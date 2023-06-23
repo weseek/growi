@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { initializeGrowiFacade, registerGrowiFacade } from '../utils/growi-facade-utils.client';
+import { initializeGrowiFacade, registerGrowiFacade } from '../utils/growi-facade-utils';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var

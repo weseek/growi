@@ -5,8 +5,8 @@ import mongoose from 'mongoose';
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
-import { GrowiPlugin } from '../models';
-import { growiPluginService } from '../services';
+import { GrowiPlugin } from '../../../models';
+import { growiPluginService } from '../../../services';
 
 
 const ObjectID = mongoose.Types.ObjectId;

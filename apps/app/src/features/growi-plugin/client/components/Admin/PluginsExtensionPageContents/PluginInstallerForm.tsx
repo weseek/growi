@@ -5,11 +5,11 @@ import { useTranslation } from 'next-i18next';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
-import type { IGrowiPluginOrigin } from '../../../interfaces';
-import { useSWRxPlugins } from '../../../stores/growi-plugin';
+import type { IGrowiPluginOrigin } from '../../../../interfaces';
+import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
 
 export const PluginInstallerForm = (): JSX.Element => {
-  const { mutate } = useSWRxPlugins();
+  const { mutate } = useSWRxAdminPlugins();
   const { t } = useTranslation('admin');
 
   const submitHandler = useCallback(async(e) => {

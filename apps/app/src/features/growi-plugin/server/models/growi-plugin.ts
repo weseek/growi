@@ -5,10 +5,10 @@ import {
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { GrowiPluginResourceType } from '../interfaces';
+import { GrowiPluginResourceType } from '../../interfaces';
 import type {
   IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginOrigin, IGrowiThemePluginMeta,
-} from '../interfaces';
+} from '../../interfaces';
 
 export interface IGrowiPluginDocument extends IGrowiPlugin, Document {
 }

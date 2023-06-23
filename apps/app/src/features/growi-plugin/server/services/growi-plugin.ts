@@ -11,10 +11,10 @@ import unzipper from 'unzipper';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-import { GrowiPluginResourceType } from '../interfaces';
+import { GrowiPluginResourceType } from '../../interfaces';
 import type {
   IGrowiPlugin, IGrowiPluginOrigin, IGrowiThemePluginMeta, IGrowiPluginMeta,
-} from '../interfaces';
+} from '../../interfaces';
 import { GrowiPlugin } from '../models';
 import { GitHubUrl } from '../models/vo/github-url';
 

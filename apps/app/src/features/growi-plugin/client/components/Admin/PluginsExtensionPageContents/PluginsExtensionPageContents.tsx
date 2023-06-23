@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { Spinner } from 'reactstrap';
 
-import { useSWRxPlugins } from '../../../stores/growi-plugin';
+import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
 
 import { PluginCard } from './PluginCard';
 import { PluginInstallerForm } from './PluginInstallerForm';
@@ -19,7 +19,7 @@ const Loading = (): JSX.Element => {
 export const PluginsExtensionPageContents = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
-  const { data, mutate } = useSWRxPlugins();
+  const { data, mutate } = useSWRxAdminPlugins();
 
   return (
     <div>
