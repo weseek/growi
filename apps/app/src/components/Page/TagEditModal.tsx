@@ -8,7 +8,14 @@ import {
 
 import TagsInput from './TagsInput';
 
-function TagEditModal(props) {
+type Props = {
+  tags: string[],
+  isOpen: boolean,
+  onClose: () => void,
+  onTagsUpdated?: (tags: string[]) => Promise<void> | void,
+};
+
+function TagEditModal(props: Props): JSX.Element {
   const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
 
