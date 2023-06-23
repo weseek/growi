@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "^/*": ["./*"],
+      "~/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}
