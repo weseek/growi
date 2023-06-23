@@ -1,18 +1,20 @@
 import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { useTranslation } from 'next-i18next';
 import prettyBytes from 'pretty-bytes';
 
 import { useSWRxAttachment } from '~/stores/attachment';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 
-import styles from './Attachment.module.scss';
+import styles from './RichAttachment.module.scss';
 
-export const Attachment: React.FC<{
+export const RichAttachment: React.FC<{
   attachmentId: string,
   url: string,
   attachmentName: string
 }> = React.memo(({ attachmentId, url, attachmentName }) => {
+  const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
 
@@ -24,7 +26,7 @@ export const Attachment: React.FC<{
   }, [attachment, openDeleteAttachmentModal, remove]);
 
   if (attachment == null) {
-    return <span className='text-muted'>The attachment could not be found.</span>;
+    return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
   const {
@@ -68,4 +70,4 @@ export const Attachment: React.FC<{
     </div>
   );
 });
-Attachment.displayName = 'Attachment';
+RichAttachment.displayName = 'RichAttachment';
