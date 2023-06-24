@@ -79,9 +79,6 @@ const InstallerForm = memo((): JSX.Element => {
 
       toastError(t('installer.failed_to_install'));
     }
-    finally {
-      setIsLoading(false);
-    }
   }, [currentLocale, router, t]);
 
   const hasErrorClass = isValidUserName ? '' : ' has-error';
