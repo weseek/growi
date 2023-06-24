@@ -30,6 +30,7 @@ const getTranspilePackages = () => {
     'hastscript',
     'html-void-elements',
     'is-absolute-url',
+    'is-plain-obj',
     'longest-streak',
     'micromark',
     'property-information',
