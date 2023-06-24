@@ -172,9 +172,10 @@
       "outputMode": "new-only"
     },
     "version": {
-      "outputMode": "new-only",
-      "outputs": ["package.json"],
-      "inputs": ["package.json"]
+      "cache": false
+    },
+    "//#version": {
+      "cache": false
     }
 
   }
