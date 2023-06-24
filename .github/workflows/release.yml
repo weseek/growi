@@ -98,7 +98,7 @@ jobs:
 
     - name: Bump versions for next RC
       run: |
-        turbo run bump-versions:rc
+        yarn bump-versions:rc
         yarn upgrade --scope=@growi
 
     - name: Retrieve information from package.json
