@@ -1,7 +1,7 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 
-import { GrowiThemeMetadata, ViteManifest } from '@growi/core';
+import { GrowiPluginType, GrowiThemeMetadata, ViteManifest } from '@growi/core';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
@@ -11,7 +11,6 @@ import unzipper from 'unzipper';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-import { GrowiPluginResourceType } from '../../interfaces';
 import type {
   IGrowiPlugin, IGrowiPluginOrigin, IGrowiThemePluginMeta, IGrowiPluginMeta,
 } from '../../interfaces';
@@ -255,7 +254,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     };
 
     // add theme metadata
-    if (growiPlugin.types.includes(GrowiPluginResourceType.Theme)) {
+    if (growiPlugin.types.includes(GrowiPluginType.Theme)) {
       (plugin as IGrowiPlugin<IGrowiThemePluginMeta>).meta = {
         ...plugin.meta,
         themes: growiPlugin.themes,
@@ -311,7 +310,7 @@ export class GrowiPluginService implements IGrowiPluginService {
 
     try {
       // retrieve plugin manifests
-      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]) as IGrowiPlugin<IGrowiThemePluginMeta>[];
+      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginType.Theme]) as IGrowiPlugin<IGrowiThemePluginMeta>[];
 
       growiPlugins
         .forEach(async(growiPlugin) => {
@@ -358,12 +357,12 @@ export class GrowiPluginService implements IGrowiPluginService {
           const manifest = await retrievePluginManifest(growiPlugin);
 
           // add script
-          if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Template)) {
+          if (types.includes(GrowiPluginType.Script)) {
             const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`;
             entries.push([growiPlugin.installedPath, href]);
           }
           // add link
-          if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
+          if (types.includes(GrowiPluginType.Script) || types.includes(GrowiPluginType.Style)) {
             const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`;
             entries.push([growiPlugin.installedPath, href]);
           }

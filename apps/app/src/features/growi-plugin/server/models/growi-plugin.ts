@@ -1,11 +1,10 @@
-import { GrowiThemeMetadata, GrowiThemeSchemeType } from '@growi/core';
+import { GrowiPluginType, GrowiThemeMetadata, GrowiThemeSchemeType } from '@growi/core';
 import {
   Schema, type Model, type Document, type Types,
 } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { GrowiPluginResourceType } from '../../interfaces';
 import type {
   IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginOrigin, IGrowiThemePluginMeta,
 } from '../../interfaces';
@@ -14,7 +13,7 @@ export interface IGrowiPluginDocument extends IGrowiPlugin, Document {
 }
 export interface IGrowiPluginModel extends Model<IGrowiPluginDocument> {
   findEnabledPlugins(): Promise<IGrowiPlugin[]>
-  findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginResourceType[]): Promise<IGrowiPlugin[]>
+  findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginType[]): Promise<IGrowiPlugin[]>
   activatePlugin(id: Types.ObjectId): Promise<string>
   deactivatePlugin(id: Types.ObjectId): Promise<string>
 }
@@ -37,7 +36,7 @@ const growiPluginMetaSchema = new Schema<IGrowiPluginMeta|IGrowiThemePluginMeta>
   name: { type: String, required: true },
   types: {
     type: [String],
-    enum: GrowiPluginResourceType,
+    enum: GrowiPluginType,
     require: true,
   },
   desc: { type: String },
@@ -63,7 +62,7 @@ growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<IGrowiP
   return this.find({ isEnabled: true });
 };
 
-growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(types: GrowiPluginResourceType[]): Promise<IGrowiPlugin[]> {
+growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(types: GrowiPluginType[]): Promise<IGrowiPlugin[]> {
   return this.find({
     isEnabled: true,
     'meta.types': { $in: types },

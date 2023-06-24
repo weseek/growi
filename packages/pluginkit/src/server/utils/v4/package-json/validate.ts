@@ -1,4 +1,5 @@
-import { GrowiPluginType } from '~/consts';
+import { GrowiPluginType } from '@growi/core/dist/consts';
+
 import { type GrowiPluginValidationData, GrowiPluginValidationError } from '~/model';
 
 import { importPackageJson } from './import';

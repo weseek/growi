@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-import { GrowiPluginType } from '~/consts';
+import { GrowiPluginType } from '@growi/core/dist/consts';
+
 import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '~/model';
 import { GrowiPluginValidationError } from '~/model';
 
@@ -18,7 +19,7 @@ const statAsync = promisify(fs.stat);
  * @param projectDirRoot
  */
 export const validateTemplatePluginPackageJson = async(projectDirRoot: string): Promise<GrowiTemplatePluginValidationData> => {
-  const data = await validatePackageJson(projectDirRoot, GrowiPluginType.TEMPLATE);
+  const data = await validatePackageJson(projectDirRoot, GrowiPluginType.Template);
 
   const pkg = await importPackageJson(projectDirRoot);
 

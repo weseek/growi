@@ -1,6 +1,7 @@
+import { GrowiPluginType } from '@growi/core/dist/consts';
+
 import examplePkg from '^/test/fixtures/example-package/template1/package.json';
 
-import { GrowiPluginType } from '~/consts';
 
 import { validatePackageJson } from './validate';
 
@@ -32,7 +33,7 @@ describe('validatePackageJson()', () => {
     mocks.importPackageJsonMock.mockResolvedValue(examplePkg);
 
     // when
-    const data = await validatePackageJson('package.json', GrowiPluginType.TEMPLATE);
+    const data = await validatePackageJson('package.json', GrowiPluginType.Template);
 
     // then
     expect(data).not.toBeNull();
@@ -101,12 +102,12 @@ describe('validatePackageJson()', () => {
       mocks.importPackageJsonMock.mockResolvedValue({
         growiPlugin: {
           schemaVersion: 4,
-          types: [GrowiPluginType.TEMPLATE],
+          types: [GrowiPluginType.Template],
         },
       });
 
       // when
-      const caller = async() => { await validatePackageJson('package.json', GrowiPluginType.SCRIPT) };
+      const caller = async() => { await validatePackageJson('package.json', GrowiPluginType.Script) };
 
       // then
       await expect(caller).rejects.toThrow("The growiPlugin directive does not have expected plugin type in 'types' directive.");
