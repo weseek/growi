@@ -16,7 +16,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@growi/core": "^6.1.5-RC",
+    "@growi/core": "link:../core",
     "extensible-custom-error": "^0.0.7"
   },
   "devDependencies": {
