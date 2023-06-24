@@ -94,7 +94,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
-    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -298,7 +297,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
     setIsSuccessToRagistration(false);
-    setIsLoading(true);
 
     const registerForm = {
       username: usernameForRegister,
