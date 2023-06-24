@@ -55,12 +55,12 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
-// Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
-//   if (isHidden(Cypress.$('.grw-skeleton'))) {
-//     return;
-//   }
-//   cy.get('.grw-skeleton').should('not.exist');
-// });
+Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
+  if (isHidden(Cypress.$('.grw-skeleton'))) {
+    return;
+  }
+  cy.get('.grw-skeleton').should('not.exist');
+});
 
 Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
   if (isHidden(Cypress.$('.fa-spinner'))) {
