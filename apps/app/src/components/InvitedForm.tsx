@@ -50,6 +50,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       setLoginErrors(err);
       setIsLoading(false);
     }
+    finally {
+      setIsLoading(false);
+    }
   }, [router]);
 
   const formNotification = useCallback(() => {

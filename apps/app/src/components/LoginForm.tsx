@@ -116,6 +116,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       setLoginErrors(errs);
       setIsLoading(false);
     }
+    finally {
+      setIsLoading(false);
+    }
     return;
 
   }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
@@ -327,6 +330,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       if (err != null || err.length > 0) {
         setRegisterErrors(err);
       }
+      setIsLoading(false);
+    }
+    finally {
       setIsLoading(false);
     }
     return;
