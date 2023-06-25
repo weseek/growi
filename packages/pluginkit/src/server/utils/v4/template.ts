@@ -111,7 +111,9 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
   return status;
 };
 
-export const scanAllTemplateStatus = async(projectDirRoot: string, data: GrowiTemplatePluginValidationData): Promise<TemplateStatus[]> => {
+export const scanAllTemplateStatus = async(projectDirRoot: string, _data?: GrowiTemplatePluginValidationData): Promise<TemplateStatus[]> => {
+  const data = _data ?? await validateTemplatePluginPackageJson(projectDirRoot);
+
   const status: TemplateStatus[] = [];
 
   const distDirPath = path.resolve(projectDirRoot, 'dist');
