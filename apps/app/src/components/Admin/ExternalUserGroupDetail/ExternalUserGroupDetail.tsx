@@ -22,9 +22,9 @@ import {
 import { ExternalUserGroupEditModal } from '../UserGroup/ExternalUserGroup/ExternalUserGroupEditModal';
 import { UserGroupDeleteModal } from '../UserGroup/UserGroupDeleteModal';
 import { UserGroupTable } from '../UserGroup/UserGroupTable';
+import { UserGroupUserTable } from '../UserGroupDetail/UserGroupUserTable';
 
 import { ExternalUserGroupEditForm } from './ExternalUserGroupEditForm';
-import { ExternalUserGroupUserTable } from './ExternalUserGroupUserTable';
 
 import styles from '../UserGroupDetail/UserGroupDetailPage.module.scss';
 
@@ -174,8 +174,9 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
         }/>
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
-      <ExternalUserGroupUserTable
-        externalUserGroupRelations={externalUserGroupRelations}
+      <UserGroupUserTable
+        userGroupRelations={externalUserGroupRelations}
+        isExternalGroup={true}
       />
 
       <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
@@ -194,7 +195,7 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
         onEdit={showUpdateModal}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
-        isExternal={true}
+        isExternalGroup={true}
       />
 
       <UserGroupDeleteModal

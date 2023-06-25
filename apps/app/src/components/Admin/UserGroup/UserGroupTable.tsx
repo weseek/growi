@@ -16,7 +16,7 @@ type Props = {
   onEdit?: (userGroup: IUserGroupHasId) => void | Promise<void>,
   onRemove?: (userGroup: IUserGroupHasId) => void | Promise<void>,
   onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>,
-  isExternal?: boolean
+  isExternalGroup?: boolean
 };
 
 /*
@@ -62,7 +62,7 @@ export const UserGroupTable: FC<Props> = ({
   onEdit,
   onRemove,
   onDelete,
-  isExternal = false,
+  isExternalGroup = false,
 }: Props) => {
   const { t } = useTranslation('admin');
 
@@ -127,7 +127,7 @@ export const UserGroupTable: FC<Props> = ({
     onDelete(userGroup);
   };
 
-  const groupDetailPageName = isExternal ? 'external-user-group-detail' : 'user-group-detail';
+  const groupDetailPageName = isExternalGroup ? 'external-user-group-detail' : 'user-group-detail';
 
   /*
    * useEffect

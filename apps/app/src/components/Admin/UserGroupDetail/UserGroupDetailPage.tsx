@@ -25,7 +25,7 @@ import {
 import styles from './UserGroupDetailPage.module.scss';
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
-const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
+const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable').then(mod => mod.UserGroupUserTable), { ssr: false });
 
 const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 

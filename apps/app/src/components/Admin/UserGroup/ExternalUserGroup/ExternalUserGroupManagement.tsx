@@ -136,7 +136,7 @@ export const ExternalGroupManagement: FC = () => {
       onEdit={showUpdateModal}
       onDelete={showDeleteModal}
       userGroupRelations={externalUserGroupRelations}
-      isExternal={true}
+      isExternalGroup={true}
     />
 
     <ExternalUserGroupEditModal

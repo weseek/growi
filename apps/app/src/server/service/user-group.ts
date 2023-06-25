@@ -117,9 +117,9 @@ class UserGroupService {
     return userGroup.save();
   }
 
-  async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user, isExternal = false) {
-    const userGroupModel = isExternal ? ExternalUserGroup : UserGroup;
-    const userGroupRelationModel = isExternal ? ExternalUserGroupRelation : UserGroupRelation;
+  async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user, isExternalGroup = false) {
+    const userGroupModel = isExternalGroup ? ExternalUserGroup : UserGroup;
+    const userGroupRelationModel = isExternalGroup ? ExternalUserGroupRelation : UserGroupRelation;
 
     const rootGroup = await userGroupModel.findById(deleteRootGroupId);
     if (rootGroup == null) {

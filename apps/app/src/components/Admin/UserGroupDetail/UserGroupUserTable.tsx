@@ -10,14 +10,14 @@ type Props = {
   userGroupRelations: IUserGroupRelationHasIdPopulatedUser[] | undefined,
   onClickRemoveUserBtn: (username: string) => Promise<void>,
   onClickPlusBtn: () => void,
+  isExternalGroup?: false
+} | {
+  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[] | undefined,
+  isExternalGroup: true
 }
 
 export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
-
-  const {
-    userGroupRelations, onClickRemoveUserBtn, onClickPlusBtn,
-  } = props;
 
   return (
     <table className="table table-bordered table-user-list">
@@ -30,11 +30,11 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
           <th>{t('Name')}</th>
           <th style={{ width: '100px' }}>{t('Created')}</th>
           <th style={{ width: '160px' }}>{t('last_login')}</th>
-          <th style={{ width: '70px' }}></th>
+          {!props.isExternalGroup && <th style={{ width: '70px' }}></th>}
         </tr>
       </thead>
       <tbody>
-        {userGroupRelations != null && userGroupRelations.map((relation) => {
+        {props.userGroupRelations != null && props.userGroupRelations.map((relation) => {
           const { relatedUser } = relation;
 
           return (
@@ -48,7 +48,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
               <td>{relatedUser.name}</td>
               <td>{relatedUser.createdAt ? dateFnsFormat(new Date(relatedUser.createdAt), 'yyyy-MM-dd') : ''}</td>
               <td>{relatedUser.lastLoginAt ? dateFnsFormat(new Date(relatedUser.lastLoginAt), 'yyyy-MM-dd HH:mm:ss') : ''}</td>
-              <td>
+              {!props.isExternalGroup && <td>
                 <div className="btn-group admin-user-menu">
                   <button
                     type="button"
@@ -62,21 +62,21 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                     <button
                       className="dropdown-item"
                       type="button"
-                      onClick={() => onClickRemoveUserBtn(relatedUser.username)}
+                      onClick={() => props.onClickRemoveUserBtn(relatedUser.username)}
                     >
                       <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
                     </button>
                   </div>
                 </div>
-              </td>
+              </td>}
             </tr>
           );
         })}
 
-        <tr>
+        {!props.isExternalGroup && <tr>
           <td></td>
           <td className="text-center">
-            <button className="btn btn-outline-secondary" type="button" onClick={onClickPlusBtn}>
+            <button className="btn btn-outline-secondary" type="button" onClick={props.onClickPlusBtn}>
               <i className="ti ti-plus"></i>
             </button>
           </td>
@@ -84,11 +84,9 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
           <td></td>
           <td></td>
           <td></td>
-        </tr>
+        </tr>}
 
       </tbody>
     </table>
   );
 };
-
-export default UserGroupUserTable;
