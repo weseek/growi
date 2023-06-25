@@ -9,6 +9,7 @@ import Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import ExternalUserGroup from '~/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
 import LdapUserGroupSyncService from '~/server/service/external-group/ldap-user-group-sync-service';
@@ -44,6 +45,9 @@ module.exports = (crowi: Crowi): Router => {
       query('parentIds').optional().isArray(),
       query('includeGrandChildren').optional().isBoolean(),
     ],
+    ancestorGroup: [
+      query('groupId').isString(),
+    ],
     update: [
       body('description').optional().isString(),
     ],
@@ -51,6 +55,9 @@ module.exports = (crowi: Crowi): Router => {
       param('id').trim().exists({ checkFalsy: true }),
       query('actionName').trim().exists({ checkFalsy: true }),
       query('transferToUserGroupId').trim(),
+    ],
+    detail: [
+      param('id').isString(),
     ],
   };
 
@@ -66,12 +73,27 @@ module.exports = (crowi: Crowi): Router => {
       const result = await ExternalUserGroup.findWithPagination({
         page, limit, offset, pagination,
       });
-      const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
-      return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
+      const { docs: externalUserGroups, totalDocs: totalExternalUserGroups, limit: pagingLimit } = result;
+      return res.apiv3({ externalUserGroups, totalExternalUserGroups, pagingLimit });
     }
     catch (err) {
       const msg = 'Error occurred in fetching external user group list';
       logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+  });
+
+  router.get('/ancestors', loginRequiredStrictly, adminRequired, validators.ancestorGroup, apiV3FormValidator, async(req, res: ApiV3Response) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await ExternalUserGroup.findById(groupId);
+      const ancestorExternalUserGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      return res.apiv3({ ancestorExternalUserGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
     }
   });
@@ -88,6 +110,20 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       const msg = 'Error occurred in fetching child user group list';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+  });
+
+  router.get('/:id', loginRequiredStrictly, adminRequired, validators.detail, async(req, res: ApiV3Response) => {
+    const { id } = req.params;
+
+    try {
+      const externalUserGroup = await ExternalUserGroup.findById(id);
+      return res.apiv3({ externalUserGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred while getting external user group';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
     }
@@ -129,6 +165,22 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       const msg = 'Error occurred in updating an external user group';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+  });
+
+  router.get('/:id/external-user-group-relations', loginRequiredStrictly, adminRequired, async(req, res: ApiV3Response) => {
+    const { id } = req.params;
+
+    try {
+      const externalUserGroup = await ExternalUserGroup.findById(id);
+      const userGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: externalUserGroup })
+        .populate('relatedUser');
+      return res.apiv3({ userGroupRelations });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching user group relations for external user group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
     }

@@ -37,12 +37,11 @@ schema.statics.createRelations = async function(userGroupIds, user) {
 };
 
 /**
-   * remove all relation for UserGroup
+   * remove all relation for ExternalUserGroup
    *
    * @static
-   * @param {UserGroup} userGroup related group for remove
+   * @param {ExternalUserGroup} userGroup related group for remove
    * @returns {Promise<any>}
-   * @memberof UserGroupRelation
    */
 schema.statics.removeAllByUserGroups = function(groupsToDelete) {
   if (!Array.isArray(groupsToDelete)) {

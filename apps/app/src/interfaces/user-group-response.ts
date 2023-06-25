@@ -2,15 +2,15 @@ import { HasObjectId, Ref } from '@growi/core';
 
 import { IPageHasId } from './page';
 import {
-  IUser, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId,
+  IUserHasId, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId,
 } from './user';
 
 export type UserGroupResult = {
   userGroup: IUserGroupHasId,
 }
 
-export type UserGroupListResult<TUSERGROUP = IUserGroupHasId> = {
-  userGroups: TUSERGROUP[],
+export type UserGroupListResult = {
+  userGroups: IUserGroupHasId[],
 };
 
 export type ChildUserGroupListResult<TUSERGROUP = IUserGroupHasId> = {
@@ -22,9 +22,9 @@ export type UserGroupRelationListResult<TUSERGROUPRELATION = IUserGroupRelationH
   userGroupRelations: TUSERGROUPRELATION[],
 };
 
-export type IUserGroupRelationHasIdPopulatedUser = {
-  relatedGroup: Ref<IUserGroup>,
-  relatedUser: IUser & HasObjectId,
+export type IUserGroupRelationHasIdPopulatedUser<TUSERGROUP = IUserGroup> = {
+  relatedGroup: Ref<TUSERGROUP>,
+  relatedUser: IUserHasId,
   createdAt: Date,
 } & HasObjectId;
 

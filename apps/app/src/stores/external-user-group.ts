@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/interfaces/external-user-group';
-import { ChildUserGroupListResult, UserGroupListResult, UserGroupRelationListResult } from '~/interfaces/user-group-response';
+import { ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupRelationListResult } from '~/interfaces/user-group-response';
 
 export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSettings, Error> => {
   return useSWR(
@@ -14,10 +14,17 @@ export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSetting
   );
 };
 
+export const useSWRxExternalUserGroup = (groupId: string): SWRResponse<IExternalUserGroupHasId, Error> => {
+  return useSWRImmutable(
+    `/external-user-groups/${groupId}`,
+    endpoint => apiv3Get(endpoint).then(result => result.data.externalUserGroup),
+  );
+};
+
 export const useSWRxExternalUserGroupList = (initialData?: IExternalUserGroupHasId[]): SWRResponse<IExternalUserGroupHasId[], Error> => {
   return useSWRImmutable(
     '/external-user-groups',
-    endpoint => apiv3Get<UserGroupListResult<IExternalUserGroupHasId>>(endpoint, { pagination: false }).then(result => result.data.userGroups),
+    endpoint => apiv3Get(endpoint, { pagination: false }).then(result => result.data.externalUserGroups),
     {
       fallbackData: initialData,
     },
@@ -36,6 +43,13 @@ export const useSWRxChildExternalUserGroupList = (
   );
 };
 
+export const useSWRxExternalUserGroupRelations = (groupId: string): SWRResponse<IUserGroupRelationHasIdPopulatedUser[], Error> => {
+  return useSWRImmutable(
+    groupId != null ? `/external-user-groups/${groupId}/external-user-group-relations` : null,
+    endpoint => apiv3Get(endpoint).then(result => result.data.userGroupRelations),
+  );
+};
+
 export const useSWRxExternalUserGroupRelationList = (
     groupIds: string[] | undefined, childGroupIds?: string[], initialData?: IExternalUserGroupRelationHasId[],
 ): SWRResponse<IExternalUserGroupRelationHasId[], Error> => {
@@ -47,5 +61,12 @@ export const useSWRxExternalUserGroupRelationList = (
     {
       fallbackData: initialData,
     },
+  );
+};
+
+export const useSWRxAncestorExternalUserGroups = (groupId: string | undefined): SWRResponse<IExternalUserGroupHasId[], Error> => {
+  return useSWRImmutable(
+    groupId != null ? ['/external-user-groups/ancestors', groupId] : null,
+    ([endpoint, groupId]) => apiv3Get(endpoint, { groupId }).then(result => result.data.ancestorExternalUserGroups),
   );
 };

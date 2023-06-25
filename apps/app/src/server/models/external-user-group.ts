@@ -2,9 +2,11 @@ import { Schema, Model, Document } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { IExternalUserGroup } from '~/interfaces/external-user-group';
+import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
+const logger = loggerFactory('growi:models:external-user-groups');
 
 export interface ExternalUserGroupDocument extends IExternalUserGroup, Document {}
 
@@ -37,7 +39,7 @@ schema.statics.findWithPagination = function(opts) {
 
   return this.paginate(query, options)
     .catch((err) => {
-      // debug('Error on pagination:', err); TODO: add logger
+      logger.error(err);
     });
 };
 
