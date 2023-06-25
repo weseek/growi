@@ -1,7 +1,14 @@
+import { ErrorV3 } from '@growi/core';
 import { Router, Request } from 'express';
-import { body, validationResult } from 'express-validator';
+import {
+  body, param, query, validationResult,
+} from 'express-validator';
 
+import { SupportedAction } from '~/interfaces/activity';
 import Crowi from '~/server/crowi';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import ExternalUserGroup from '~/server/models/external-user-group';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
 import LdapUserGroupSyncService from '~/server/service/external-group/ldap-user-group-sync-service';
@@ -18,6 +25,9 @@ interface AuthorizedRequest extends Request {
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const validators = {
     ldapSyncSettings: [
@@ -30,7 +40,99 @@ module.exports = (crowi: Crowi): Router => {
       body('ldapGroupNameAttribute').optional({ nullable: true }).isString(),
       body('ldapGroupDescriptionAttribute').optional({ nullable: true }).isString(),
     ],
+    listChildren: [
+      query('parentIds').optional().isArray(),
+      query('includeGrandChildren').optional().isBoolean(),
+    ],
+    update: [
+      body('description').optional().isString(),
+    ],
+    delete: [
+      param('id').trim().exists({ checkFalsy: true }),
+      query('actionName').trim().exists({ checkFalsy: true }),
+      query('transferToUserGroupId').trim(),
+    ],
   };
+
+  router.get('/', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const { query } = req;
+
+    try {
+      const page = query.page != null ? parseInt(query.page as string) : undefined;
+      const limit = query.limit != null ? parseInt(query.limit as string) : undefined;
+      const offset = query.offset != null ? parseInt(query.offset as string) : undefined;
+      const pagination = query.pagination != null ? query.pagination !== 'false' : undefined;
+
+      const result = await ExternalUserGroup.findWithPagination({
+        page, limit, offset, pagination,
+      });
+      const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
+      return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching external user group list';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+  });
+
+  router.get('/children', loginRequiredStrictly, adminRequired, validators.listChildren, async(req, res) => {
+    try {
+      const { parentIds, includeGrandChildren = false } = req.query;
+
+      const externalUserGroupsResult = await ExternalUserGroup.findChildrenByParentIds(parentIds, includeGrandChildren);
+      return res.apiv3({
+        childUserGroups: externalUserGroupsResult.childUserGroups,
+        grandChildUserGroups: externalUserGroupsResult.grandChildUserGroups,
+      });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching child user group list';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+  });
+
+  router.delete('/:id', loginRequiredStrictly, adminRequired, validators.delete, apiV3FormValidator, addActivity,
+    async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const { id: deleteGroupId } = req.params;
+      const { actionName, transferToUserGroupId } = req.query;
+
+      try {
+        const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user, true);
+
+        const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
+        return res.apiv3({ userGroups });
+      }
+      catch (err) {
+        const msg = 'Error occurred while deleting user groups';
+        logger.error(msg, err);
+        return res.apiv3Err(new ErrorV3(msg));
+      }
+    });
+
+  router.put('/:id', loginRequiredStrictly, adminRequired, validators.update, apiV3FormValidator, addActivity, async(req, res: ApiV3Response) => {
+    const { id } = req.params;
+    const {
+      description,
+    } = req.body;
+
+    try {
+      const externalUserGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { description });
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3({ externalUserGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating an external user group';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+  });
 
   router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {

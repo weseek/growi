@@ -9,17 +9,17 @@ export type UserGroupResult = {
   userGroup: IUserGroupHasId,
 }
 
-export type UserGroupListResult = {
-  userGroups: IUserGroupHasId[],
+export type UserGroupListResult<TUSERGROUP = IUserGroupHasId> = {
+  userGroups: TUSERGROUP[],
 };
 
-export type ChildUserGroupListResult = {
-  childUserGroups: IUserGroupHasId[],
-  grandChildUserGroups: IUserGroupHasId[],
+export type ChildUserGroupListResult<TUSERGROUP = IUserGroupHasId> = {
+  childUserGroups: TUSERGROUP[],
+  grandChildUserGroups: TUSERGROUP[],
 };
 
-export type UserGroupRelationListResult = {
-  userGroupRelations: IUserGroupRelationHasId[],
+export type UserGroupRelationListResult<TUSERGROUPRELATION = IUserGroupRelationHasId> = {
+  userGroupRelations: TUSERGROUPRELATION[],
 };
 
 export type IUserGroupRelationHasIdPopulatedUser = {

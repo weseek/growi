@@ -36,4 +36,20 @@ schema.statics.createRelations = async function(userGroupIds, user) {
   return this.insertMany(documentsToInsert);
 };
 
+/**
+   * remove all relation for UserGroup
+   *
+   * @static
+   * @param {UserGroup} userGroup related group for remove
+   * @returns {Promise<any>}
+   * @memberof UserGroupRelation
+   */
+schema.statics.removeAllByUserGroups = function(groupsToDelete) {
+  if (!Array.isArray(groupsToDelete)) {
+    throw Error('groupsToDelete must be an array.');
+  }
+
+  return this.deleteMany({ relatedGroup: { $in: groupsToDelete } });
+};
+
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

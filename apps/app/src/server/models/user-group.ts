@@ -32,7 +32,7 @@ schema.plugin(mongoosePaginate);
 
 const PAGE_ITEMS = 10;
 
-schema.statics.findUserGroupsWithPagination = function(opts) {
+schema.statics.findWithPagination = function(opts) {
   const query = { parent: null };
   const options = Object.assign({}, opts);
   if (options.page == null) {
@@ -49,7 +49,7 @@ schema.statics.findUserGroupsWithPagination = function(opts) {
 };
 
 
-schema.statics.findChildUserGroupsByParentIds = async function(parentIds, includeGrandChildren = false) {
+schema.statics.findChildrenByParentIds = async function(parentIds, includeGrandChildren = false) {
   if (!Array.isArray(parentIds)) {
     throw Error('parentIds must be an array.');
   }

@@ -1046,6 +1046,7 @@
     "execute_sync": "Execute Sync",
     "sync": "Sync",
     "invalid_sync_settings": "Invalid sync settings",
+    "description_form_detail": "Please note that edited value will be overwritten on next sync if description mapper is set in sync settings",
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",

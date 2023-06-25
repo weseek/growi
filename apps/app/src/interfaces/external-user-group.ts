@@ -17,6 +17,8 @@ export interface IExternalUserGroupRelation extends Omit<IUserGroupRelation, 're
   relatedGroup: Ref<IExternalUserGroup>
 }
 
+export type IExternalUserGroupRelationHasId = IExternalUserGroupRelation & HasObjectId;
+
 export interface LdapGroupSyncSettings {
   ldapGroupSearchBase: string
   ldapGroupMembershipAttribute: string

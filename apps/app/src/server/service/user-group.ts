@@ -3,9 +3,12 @@ import mongoose from 'mongoose';
 
 import { IUser } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import ExternalUserGroup from '~/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
@@ -114,20 +117,24 @@ class UserGroupService {
     return userGroup.save();
   }
 
-  async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user) {
-    const rootGroup = await UserGroup.findById(deleteRootGroupId);
+  async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user, isExternal = false) {
+    const userGroupModel = isExternal ? ExternalUserGroup : UserGroup;
+    const userGroupRelationModel = isExternal ? ExternalUserGroupRelation : UserGroupRelation;
+
+    const rootGroup = await userGroupModel.findById(deleteRootGroupId);
     if (rootGroup == null) {
       throw new Error(`UserGroup data does not exist. id: ${deleteRootGroupId}`);
     }
 
-    const groupsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([rootGroup]);
+    const groupsToDelete = await userGroupModel.findGroupsWithDescendantsRecursively([rootGroup]);
 
     // 1. update page & remove all groups
+    // TODO: update pageService logic to handle external user groups (https://redmine.weseek.co.jp/issues/124385)
     await this.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user);
     // 2. remove all groups
-    const deletedGroups = await UserGroup.deleteMany({ _id: { $in: groupsToDelete.map(g => g._id) } });
+    const deletedGroups = await userGroupModel.deleteMany({ _id: { $in: groupsToDelete.map(g => g._id) } });
     // 3. remove all relations
-    await UserGroupRelation.removeAllByUserGroups(groupsToDelete);
+    await userGroupRelationModel.removeAllByUserGroups(groupsToDelete);
 
     return deletedGroups;
   }
