@@ -1,3 +1,4 @@
+export * from './attachment';
 export * from './color-scheme';
 export * from './common';
 export * from './growi-facade';
