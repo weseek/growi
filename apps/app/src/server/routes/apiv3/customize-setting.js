@@ -5,7 +5,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
-import { GrowiPlugin } from '~/features/growi-plugin/models';
+import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';

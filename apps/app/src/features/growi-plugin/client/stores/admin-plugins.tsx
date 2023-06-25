@@ -10,7 +10,7 @@ type Plugins = {
 
 export const useSWRxAdminPlugins = (): SWRResponse<Plugins, Error> => {
   return useSWR(
-    '/admin/plugins',
+    '/plugins',
     async(endpoint) => {
       try {
         const res = await apiv3Get<Plugins>(endpoint);
