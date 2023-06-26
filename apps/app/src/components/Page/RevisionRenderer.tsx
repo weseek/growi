@@ -81,7 +81,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       .process(markdown);
   }, [markdown, setSlideStyle]);
 
-  if (slideStyle != null) {
+  if (isSlidesOverviewEnabled && slideStyle != null) {
     const options = {
       rendererOptions: rendererOptions as ReactMarkdownOptions,
       isDarkMode: false,
