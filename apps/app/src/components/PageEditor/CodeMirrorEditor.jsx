@@ -105,7 +105,6 @@ class CodeMirrorEditor extends AbstractEditor {
       startPosWithEmojiPickerModeTurnedOn: null,
       isEmojiPickerMode: false,
       isTemplateModalOpened: false,
-      isCursorActivityEvent: false,
     };
 
     this.cm = React.createRef();
@@ -522,7 +521,6 @@ class CodeMirrorEditor extends AbstractEditor {
       .then(() => {
         if (context.handlers.length === 0) {
           markdownListUtil.newlineAndIndentContinueMarkdownList(this);
-          this.setState({ isCursorActivityEvent: false });
         }
       });
   }
@@ -537,15 +535,13 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   scrollCursorIntoViewHandler(editor, event) {
-    // Prevent onScrollCursorIntoView if isCursorActivityEvent is true
-    if (this.props.onScrollCursorIntoView != null && !this.state.isCursorActivityEvent) {
+    if (this.props.onScrollCursorIntoView != null) {
       const line = editor.getCursor().line;
       this.props.onScrollCursorIntoView(line);
     }
   }
 
   cursorHandler(editor, event) {
-    this.setState({ isCursorActivityEvent: true });
     const { additionalClassSet } = this.state;
     const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
     const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
