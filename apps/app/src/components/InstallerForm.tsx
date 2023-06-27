@@ -65,7 +65,7 @@ const InstallerForm = memo((): JSX.Element => {
 
     try {
       await apiv3Post('/installer', data);
-      router.push('/');
+      router.push('/').then(() => setIsLoading(false));
     }
     catch (errs) {
       const err = errs[0];
