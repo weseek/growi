@@ -2,7 +2,11 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
+import assert from 'assert';
+
+import { Lang } from '@growi/core';
 import type { ITemplate } from '@growi/core/dist/interfaces/template';
+import type { TemplateSummary } from '@growi/pluginkit/dist/interfaces/v4';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -12,8 +16,9 @@ import {
 } from 'reactstrap';
 
 import { useTemplateModal } from '~/stores/modal';
+import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
-import { useTemplates } from '~/stores/template';
+import { useSWRxTemplates } from '~/stores/template';
 import loggerFactory from '~/utils/logger';
 
 import Preview from '../PageEditor/Preview';
@@ -24,25 +29,35 @@ const logger = loggerFactory('growi:components:TemplateModal');
 
 
 type TemplateRadioButtonProps = {
-  template: ITemplate,
-  onChange: (selectedTemplate: ITemplate) => void,
+  templateSummary: TemplateSummary,
+  onChange: (selectedTemplate: TemplateSummary) => void,
+  usersDefaultLang?: Lang,
   isSelected?: boolean,
 }
 
-const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioButtonProps): JSX.Element => {
-  const radioButtonId = `rb-${template.id}`;
+const TemplateRadioButton = ({
+  templateSummary, onChange, usersDefaultLang, isSelected,
+}: TemplateRadioButtonProps): JSX.Element => {
+  const templateId = templateSummary.default.id;
+  const radioButtonId = `rb-${templateId}`;
+
+  const template = usersDefaultLang != null && usersDefaultLang in templateSummary
+    ? templateSummary[usersDefaultLang]
+    : templateSummary.default;
+
+  assert(template.isValid);
 
   return (
-    <div key={template.id} className="custom-control custom-radio mb-2">
+    <div key={templateId} className="custom-control custom-radio mb-2">
       <input
         id={radioButtonId}
         type="radio"
         className="custom-control-input"
         checked={isSelected}
-        onChange={() => onChange(template)}
+        onChange={() => onChange(templateSummary)}
       />
       <label className="custom-control-label" htmlFor={radioButtonId}>
-        {template.name}
+        {template.title}
       </label>
     </div>
   );
@@ -54,15 +69,17 @@ export const TemplateModal = (): JSX.Element => {
 
   const { data: templateModalStatus, close } = useTemplateModal();
 
+  const { data: personalSettingsInfo } = usePersonalSettings();
   const { data: rendererOptions } = usePreviewOptions();
-  const { data: templates } = useTemplates();
+  const { data: templateSummaries } = useSWRxTemplates();
 
-  const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
+  // const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
 
   const { format } = useFormatter();
 
   const submitHandler = useCallback((template?: ITemplate) => {
-    if (templateModalStatus == null || selectedTemplate == null) {
+    if (templateModalStatus == null || selectedTemplateId == null) {
       return;
     }
 
@@ -71,17 +88,17 @@ export const TemplateModal = (): JSX.Element => {
       return;
     }
 
-    templateModalStatus.onSubmit(format(selectedTemplate));
+    // templateModalStatus.onSubmit(format(selectedTemplate));
     close();
-  }, [close, format, selectedTemplate, templateModalStatus]);
+  }, [close, selectedTemplateId, templateModalStatus]);
 
   useEffect(() => {
     if (!templateModalStatus?.isOpened) {
-      setSelectedTemplate(undefined);
+      setSelectedTemplateId(undefined);
     }
   }, [templateModalStatus?.isOpened]);
 
-  if (templates == null || templateModalStatus == null) {
+  if (templateSummaries == null || templateModalStatus == null) {
     return <></>;
   }
 
@@ -94,12 +111,13 @@ export const TemplateModal = (): JSX.Element => {
       <ModalBody className="container">
         <div className="row">
           <div className="col-12">
-            { templates.map(template => (
+            { Object.entries(templateSummaries).map(([templateId, templateSummary]) => (
               <TemplateRadioButton
-                key={template.id}
-                template={template}
-                onChange={selected => setSelectedTemplate(selected)}
-                isSelected={template.id === selectedTemplate?.id}
+                key={templateId}
+                templateSummary={templateSummary}
+                usersDefaultLang={personalSettingsInfo?.lang}
+                onChange={() => setSelectedTemplateId(templateId)}
+                isSelected={templateId === selectedTemplateId}
               />
             )) }
           </div>
@@ -110,8 +128,8 @@ export const TemplateModal = (): JSX.Element => {
         <h3>{t('Preview')}</h3>
         <div className='card'>
           <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
-            { rendererOptions != null && selectedTemplate != null && (
-              <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplate)}/>
+            { rendererOptions != null && selectedTemplateId != null && (
+              <Preview rendererOptions={rendererOptions} markdown={'' /* format(selectedTemplate) */}/>
             ) }
           </div>
         </div>
@@ -121,7 +139,11 @@ export const TemplateModal = (): JSX.Element => {
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>
-        <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={() => submitHandler(selectedTemplate)} disabled={selectedTemplate == null}>
+        <button
+          type="submit"
+          className="btn btn-sm btn-primary mx-1"
+          // onClick={() => submitHandler(selectedTemplate)}
+          disabled={selectedTemplateId == null}>
           {t('commons:Insert')}
         </button>
       </ModalFooter>

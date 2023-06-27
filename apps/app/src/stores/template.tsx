@@ -1,141 +1,145 @@
-import type { ITemplate } from '@growi/core';
+import type { TemplateSummaries } from '@growi/pluginkit/dist/interfaces/v4';
 import useSWR, { type SWRResponse } from 'swr';
 
-import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facade-utils';
+import { apiv3Get } from '~/client/util/apiv3-client';
 
-const presetTemplates: ITemplate[] = [
-  // preset 1
-  {
-    id: '__preset1__',
-    name: '日報',
-    markdown: `# {{yyyy}}/{{MM}}/{{dd}} 日報
+// const presetTemplates: ITemplate[] = [
+//   // preset 1
+//   {
+//     id: '__preset1__',
+//     name: '日報',
+//     markdown: `# {{yyyy}}/{{MM}}/{{dd}} 日報
 
-## 今日の目標
-- 目標１
-    - 〇〇の完了
-- 目標２
-    - 〇〇を〇件達成
-
-
-## 内容
-- 10:00 ~ 10:20 今日のタスク確認
-- 10:20 ~ 11:00 全体会議
+// ## 今日の目標
+// - 目標１
+//     - 〇〇の完了
+// - 目標２
+//     - 〇〇を〇件達成
 
 
-## 進捗
-- 目標１
-    - 完了
-- 目標２
-    - 〇〇件達成
+// ## 内容
+// - 10:00 ~ 10:20 今日のタスク確認
+// - 10:20 ~ 11:00 全体会議
 
 
-## メモ
-- 改善できることの振り返り
+// ## 進捗
+// - 目標１
+//     - 完了
+// - 目標２
+//     - 〇〇件達成
 
 
-## 翌営業日の目標
-- 目標１
-    - 〇〇の完了
-- 目標２
-    - 〇〇を〇件達成
-`,
-  },
-
-  // preset 2
-  {
-    id: '__preset2__',
-    name: '議事録',
-    markdown: `# {{{title}}}{{^title}}＜会議名＞{{/title}}
-
-## 日時
-{{yyyy}}/{{MM}}/{{dd}} {{HH}}:{{mm}}〜hh:mm
+// ## メモ
+// - 改善できることの振り返り
 
 
-## 参加者
--
+// ## 翌営業日の目標
+// - 目標１
+//     - 〇〇の完了
+// - 目標２
+//     - 〇〇を〇件達成
+// `,
+//   },
 
-## 議題
-1.
-2.
+//   // preset 2
+//   {
+//     id: '__preset2__',
+//     name: '議事録',
+//     markdown: `# {{{title}}}{{^title}}＜会議名＞{{/title}}
 
-
-## 1.
-### 内容
-
-
-### 決定事項
-
-
-### Next Action
-
-
-## 2.
-### 内容
+// ## 日時
+// {{yyyy}}/{{MM}}/{{dd}} {{HH}}:{{mm}}〜hh:mm
 
 
-### 決定事項
+// ## 参加者
+// -
+
+// ## 議題
+// 1.
+// 2.
 
 
-### Next Action
+// ## 1.
+// ### 内容
 
 
-## 次回会議
-- 会議内容
-- 会議時間
-    - {{yyyy}}/{{MM}}/dd
-`,
-  },
-
-  // preset 3
-  {
-    id: '__preset3__',
-    name: '企画書',
-    markdown: `# {{{title}}}{{^title}}＜企画タイトル＞{{/title}}
-
-## 目的
+// ### 決定事項
 
 
-## 現状の課題
+// ### Next Action
 
 
-## 概要
-#### 企画の内容
-
-#### スケジュール
+// ## 2.
+// ### 内容
 
 
-## 効果
-#### メリット
-
-#### 数値目標
+// ### 決定事項
 
 
-## 参考資料
+// ### Next Action
 
-`,
-  },
 
-  // preset 4
-  {
-    id: '__preset4__',
-    name: '関連ページの一覧表示',
-    markdown: `# 関連ページ
+// ## 次回会議
+// - 会議内容
+// - 会議時間
+//     - {{yyyy}}/{{MM}}/dd
+// `,
+//   },
 
-## 子ページ一覧
-$lsx(depth=1)
-`,
-  },
-];
+//   // preset 3
+//   {
+//     id: '__preset3__',
+//     name: '企画書',
+//     markdown: `# {{{title}}}{{^title}}＜企画タイトル＞{{/title}}
 
-export const useTemplates = (): SWRResponse<ITemplate[], Error> => {
+// ## 目的
+
+
+// ## 現状の課題
+
+
+// ## 概要
+// #### 企画の内容
+
+// #### スケジュール
+
+
+// ## 効果
+// #### メリット
+
+// #### 数値目標
+
+
+// ## 参考資料
+
+// `,
+//   },
+
+//   // preset 4
+//   {
+//     id: '__preset4__',
+//     name: '関連ページの一覧表示',
+//     markdown: `# 関連ページ
+
+// ## 子ページ一覧
+// $lsx(depth=1)
+// `,
+//   },
+// ];
+
+export const useSWRxTemplates = (): SWRResponse<TemplateSummaries, Error> => {
+  // return useSWR(
+  //   'templates',
+  //   () => [
+  //     ...presetTemplates,
+  //     ...Object.values<ITemplate>(getGrowiFacade().customTemplates ?? {}),
+  //   ],
+  //   {
+  //     fallbackData: presetTemplates,
+  //   },
+  // );
   return useSWR(
-    'templates',
-    () => [
-      ...presetTemplates,
-      ...Object.values<ITemplate>(getGrowiFacade().customTemplates ?? {}),
-    ],
-    {
-      fallbackData: presetTemplates,
-    },
+    ['/templates'],
+    ([endpoint]) => apiv3Get<TemplateSummaries>(endpoint).then(res => res.data),
   );
 };
