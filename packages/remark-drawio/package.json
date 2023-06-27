@@ -28,7 +28,7 @@
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "pako": "^2.1.0"

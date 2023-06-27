@@ -38,9 +38,7 @@
     "app:server": "cd apps/app && yarn server",
     "slackbot-proxy:build": "turbo run build --filter @growi/slackbot-proxy",
     "slackbot-proxy:server": "cd apps/slackbot-proxy && yarn start:prod",
-    "bump-versions:patch": "turbo run version -- --patch",
-    "bump-versions:rc": "turbo run version -- --prepatch --preid=RC",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "cross-env": "^7.0.0",

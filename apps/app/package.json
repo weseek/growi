@@ -47,7 +47,7 @@
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "ts-node": "node -r ts-node/register -r tsconfig-paths/register -r dotenv-flow/config",
     "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM",
@@ -211,8 +211,8 @@
     "handsontable": "v7.0.0 or above is no loger MIT lisence."
   },
   "devDependencies": {
-    "@growi/presentation": "^6.1.4-RC.0",
-    "@growi/ui": "^6.1.4-RC.0",
+    "@growi/presentation": "link:../../packages/presentation",
+    "@growi/ui": "link:../../packages/ui",
     "@handsontable/react": "=2.1.0",
     "@icon/themify-icons": "1.0.1-alpha.3",
     "@next/bundle-analyzer": "^13.2.3",
