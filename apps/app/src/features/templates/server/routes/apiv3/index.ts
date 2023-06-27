@@ -1,6 +1,6 @@
-import { scanAllTemplateStatus } from '@growi/pluginkit/dist/server/utils/v4';
+import { scanAllTemplateStatus, getMarkdown } from '@growi/pluginkit/dist/server/utils/v4';
 import express from 'express';
-import { query } from 'express-validator';
+import { param, query } from 'express-validator';
 
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
@@ -15,6 +15,12 @@ const validator = {
   list: [
     query('includeInvalidTemplates').optional().isBoolean(),
   ],
+  get: [
+    param('organizationName').isString(),
+    param('reposName').isString(),
+    param('templateId').isString(),
+    param('locale').isString(),
+  ],
 };
 
 module.exports = (crowi) => {
@@ -27,6 +33,17 @@ module.exports = (crowi) => {
     const status = await scanAllTemplateStatus(presetTemplatesRoot, { returnsInvalidTemplates: includeInvalidTemplates });
 
     return res.apiv3(status);
+  });
+
+  router.get('/:organizationName/:reposName/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {
+    const {
+      organizationName, reposName, templateId, locale,
+    } = req.params;
+
+    const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
+    const markdown = await getMarkdown(presetTemplatesRoot, templateId, locale);
+
+    return res.apiv3({ markdown });
   });
 
   return router;

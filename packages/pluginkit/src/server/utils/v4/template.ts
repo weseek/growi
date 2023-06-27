@@ -186,3 +186,14 @@ export const validateTemplatePlugin = async(projectDirRoot: string): Promise<boo
 
   return true;
 };
+
+export const getMarkdown = async(projectDirRoot: string, templateId: string, locale: string): Promise<string> => {
+  const tplDir = path.resolve(projectDirRoot, 'dist', templateId, locale);
+
+  const { isTemplateExists } = await getStats(tplDir);
+
+  if (!isTemplateExists) throw new Error("'template.md does not exist.");
+
+  const markdownPath = path.resolve(tplDir, 'template.md');
+  return fs.readFileSync(markdownPath, { encoding: 'utf-8' });
+};
