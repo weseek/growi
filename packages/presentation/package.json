@@ -24,7 +24,7 @@
     "version": "yarn version --no-git-tag-version"
   },
   "dependencies": {
-    "@growi/core": "link:../core"
+    "@growi/core": "^6.1.4-RC.0"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^3.6.0",
