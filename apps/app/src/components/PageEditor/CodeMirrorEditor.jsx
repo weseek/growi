@@ -32,6 +32,7 @@ import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import SimpleCheatsheet from './SimpleCheatsheet';
+import markdownPlantUmlUtils from './MarkdownPlantUMLUtil';
 
 import styles from './CodeMirrorEditor.module.scss';
 
@@ -152,6 +153,7 @@ class CodeMirrorEditor extends AbstractEditor {
     // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
+    this.foldPlantUMLSection = this.foldPlantUMLSection.bind(this);
     this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
     this.clickTableIconHandler = this.clickTableIconHandler.bind(this);
 
@@ -183,6 +185,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
     // fold drawio section
     this.foldDrawioSection();
+    this.foldPlantUMLSection();
 
     // initialize commentMentionHelper if comment editor is opened
     if (this.props.isComment) {
@@ -204,6 +207,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
     // fold drawio section
     this.foldDrawioSection();
+    this.foldPlantUMLSection();
   }
 
   initializeEditorSettings(editorSettings) {
@@ -866,6 +870,14 @@ class CodeMirrorEditor extends AbstractEditor {
   foldDrawioSection() {
     const editor = this.getCodeMirror();
     const lineNumbers = mdu.findAllDrawioSection(editor);
+    lineNumbers.forEach((lineNumber) => {
+      editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
+    });
+  }
+
+  foldPlantUMLSection() {
+    const editor = this.getCodeMirror();
+    const lineNumbers = markdownPlantUmlUtils.findAllPlantUMLSections(editor);
     lineNumbers.forEach((lineNumber) => {
       editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
     });
