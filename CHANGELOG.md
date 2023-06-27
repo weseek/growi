@@ -1,8 +1,24 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.4](https://github.com/weseek/growi/compare/v6.1.3...v6.1.4) - 2023-06-12
+
+### 💎 Features
+
+- feat(plugin): Specify repository branch name (#7783) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Suppress unnecessary bookmark API requests (#7798) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Bookmarks mutation for the current user (#7797) @yuki-takei
+- fix: Slack channels data for User Triggered Notification is not loaded (#7794) @yuki-takei
+- fix: The input of the editor is cleared when an attachment is added when a new page editing (#7788) @miya
 
 ## [v6.1.3](https://github.com/weseek/growi/compare/v6.1.2...v6.1.3) - 2023-06-07
 
