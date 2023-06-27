@@ -41,12 +41,6 @@ export const validateTemplatePluginPackageJson = async(projectDirRoot: string): 
   };
 };
 
-export type TemplateStatus = {
-  id: string,
-  locale: string,
-  isValid: boolean,
-  invalidReason?: string,
-}
 
 type TemplateDirStatus = {
   isTemplateExists: boolean,
@@ -76,11 +70,21 @@ async function getStats(tplDir: string): Promise<TemplateDirStatus> {
   return result;
 }
 
+
+export type TemplateStatus = {
+  id: string,
+  locale: string,
+  isValid: boolean,
+  isDefault: boolean,
+  invalidReason?: string,
+}
+
 export const scanTemplateStatus = async(projectDirRoot: string, templateId: string, data: GrowiTemplatePluginValidationData): Promise<TemplateStatus[]> => {
   const status: TemplateStatus[] = [];
 
   const tplRootDirPath = path.resolve(projectDirRoot, 'dist', templateId);
 
+  let isDefaultPushed = false;
   for await (const locale of data.supportingLocales) {
     const tplDir = path.resolve(tplRootDirPath, locale);
 
@@ -93,13 +97,21 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
       if (!isMetaDataFileExists) throw new Error("'meta.md does not exist.");
       if (meta?.title == null) throw new Error("'meta.md does not contain the title.");
 
-      status.push({ id: templateId, locale, isValid: true });
+      const isDefault = !isDefaultPushed;
+      status.push({
+        id: templateId,
+        locale,
+        isValid: true,
+        isDefault,
+      });
+      isDefaultPushed = true;
     }
     catch (err) {
       status.push({
         id: templateId,
         locale,
         isValid: false,
+        isDefault: false,
         invalidReason: err.message,
       });
     }
@@ -111,28 +123,51 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
   return status;
 };
 
-export const scanAllTemplateStatus = async(projectDirRoot: string, _data?: GrowiTemplatePluginValidationData): Promise<TemplateStatus[]> => {
-  const data = _data ?? await validateTemplatePluginPackageJson(projectDirRoot);
+export type TemplateSummary = {
+  default: TemplateStatus | null,
+  [locale: string]: TemplateStatus | null,
+}
 
-  const status: TemplateStatus[] = [];
+export const scanAllTemplateStatus = async(
+    projectDirRoot: string,
+    opts?: {
+      data?: GrowiTemplatePluginValidationData,
+      returnsInvalidTemplates?: boolean,
+    },
+): Promise<{ [templateId: string]: TemplateSummary }> => {
+
+  const data = opts?.data ?? await validateTemplatePluginPackageJson(projectDirRoot);
+
+  const summaries = {};
 
   const distDirPath = path.resolve(projectDirRoot, 'dist');
   const distDirFiles = fs.readdirSync(distDirPath);
 
   for await (const templateId of distDirFiles) {
-    status.push(...await scanTemplateStatus(projectDirRoot, templateId, data));
+    const status = (await scanTemplateStatus(projectDirRoot, templateId, data))
+      // omit invalid templates if `returnsInvalidTemplates` is true
+      .filter(s => (opts?.returnsInvalidTemplates ? true : s.isValid));
+
+    // determine default locale
+    const defaultTemplateStatus = status.find(s => s.isDefault);
+
+    summaries[templateId] = Object.assign(
+      // for the 'default' key
+      { default: defaultTemplateStatus ?? null },
+      // for each locale keys
+      Object.fromEntries(status.map(templateStatus => [templateStatus.locale, templateStatus])),
+    );
   }
 
-  return status;
+  return summaries;
 };
-
 
 export const validateTemplatePlugin = async(projectDirRoot: string): Promise<boolean> => {
   const data = await validateTemplatePluginPackageJson(projectDirRoot);
 
-  const results = await scanAllTemplateStatus(projectDirRoot, data);
+  const results = await scanAllTemplateStatus(projectDirRoot, { data, returnsInvalidTemplates: true });
 
-  if (results.length === 0) {
+  if (Object.keys(results).length === 0) {
     throw new Error('This plugin does not have any templates');
   }
 
@@ -140,19 +175,15 @@ export const validateTemplatePlugin = async(projectDirRoot: string): Promise<boo
   // key: id
   // value: isValid properties
   const idValidMap: { [id: string]: boolean[] } = {};
-  results.forEach((status) => {
-    const validMap = idValidMap[status.id] ?? [];
-    validMap.push(status.isValid);
-    idValidMap[status.id] = validMap;
+  Object.entries(results).forEach(([templateId, status]) => {
+    idValidMap[templateId] = Object.values(status).map(s => s?.isValid ?? false);
   });
 
   for (const [id, validMap] of Object.entries(idValidMap)) {
-    assert(validMap.length === data.supportingLocales.length);
-
     // warn
     if (!validMap.every(bool => bool)) {
       // eslint-disable-next-line no-console
-      console.warn(`[WARN] Template '${id}' has invalid status`);
+      console.warn(`[WARN] Template '${id}' has some locales that status is invalid`);
     }
 
     // This means the template directory does not have any valid template
