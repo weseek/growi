@@ -1,4 +1,3 @@
-import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
@@ -7,6 +6,8 @@ import { GrowiPluginType } from '@growi/core/dist/consts';
 
 import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '~/model';
 import { GrowiPluginValidationError } from '~/model';
+
+import type { TemplateStatus, TemplateSummaries } from '../../../interfaces/v4';
 
 import { importPackageJson, validatePackageJson } from './package-json';
 
@@ -71,14 +72,6 @@ async function getStats(tplDir: string): Promise<TemplateDirStatus> {
 }
 
 
-export type TemplateStatus = {
-  id: string,
-  locale: string,
-  isValid: boolean,
-  isDefault: boolean,
-  invalidReason?: string,
-}
-
 export const scanTemplateStatus = async(projectDirRoot: string, templateId: string, data: GrowiTemplatePluginValidationData): Promise<TemplateStatus[]> => {
   const status: TemplateStatus[] = [];
 
@@ -103,6 +96,7 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
         locale,
         isValid: true,
         isDefault,
+        title: meta.title,
       });
       isDefaultPushed = true;
     }
@@ -111,7 +105,6 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
         id: templateId,
         locale,
         isValid: false,
-        isDefault: false,
         invalidReason: err.message,
       });
     }
@@ -123,18 +116,13 @@ export const scanTemplateStatus = async(projectDirRoot: string, templateId: stri
   return status;
 };
 
-export type TemplateSummary = {
-  default: TemplateStatus | null,
-  [locale: string]: TemplateStatus | null,
-}
-
 export const scanAllTemplateStatus = async(
     projectDirRoot: string,
     opts?: {
       data?: GrowiTemplatePluginValidationData,
       returnsInvalidTemplates?: boolean,
     },
-): Promise<{ [templateId: string]: TemplateSummary }> => {
+): Promise<TemplateSummaries> => {
 
   const data = opts?.data ?? await validateTemplatePluginPackageJson(projectDirRoot);
 
@@ -149,11 +137,15 @@ export const scanAllTemplateStatus = async(
       .filter(s => (opts?.returnsInvalidTemplates ? true : s.isValid));
 
     // determine default locale
-    const defaultTemplateStatus = status.find(s => s.isDefault);
+    const defaultTemplateStatus = status.find(s => 'isDefault' in s && s.isDefault);
+
+    if (defaultTemplateStatus == null) {
+      continue;
+    }
 
     summaries[templateId] = Object.assign(
       // for the 'default' key
-      { default: defaultTemplateStatus ?? null },
+      { default: defaultTemplateStatus },
       // for each locale keys
       Object.fromEntries(status.map(templateStatus => [templateStatus.locale, templateStatus])),
     );
