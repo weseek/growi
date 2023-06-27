@@ -32,9 +32,9 @@
     "escape-string-regexp": "5.0.0 or above exports only ESM"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4-RC.0",
-    "@growi/remark-growi-directive": "^6.1.4-RC.0",
-    "@growi/ui": "^6.1.4-RC.0",
+    "@growi/core": "link:../core",
+    "@growi/remark-growi-directive": "link:../remark-growi-directive",
+    "@growi/ui": "link:../ui",
     "escape-string-regexp": "^4.0.0",
     "express": "^4.16.1",
     "mongoose": "^6.5.0",

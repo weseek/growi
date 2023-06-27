@@ -21,7 +21,7 @@
     "version": "yarn version --no-git-tag-version"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4-RC.0"
+    "@growi/core": "link:../core"
   },
   "devDependencies": {
     "react": "^18.2.0"
