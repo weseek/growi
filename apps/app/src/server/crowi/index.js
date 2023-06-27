@@ -86,6 +86,7 @@ function Crowi() {
   this.xss = new Xss();
   this.questionnaireService = null;
   this.questionnaireCronService = null;
+  this.externalAccountService = null;
 
   this.tokens = null;
 
@@ -150,6 +151,7 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
+    this.setupExternalAccountService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -777,6 +779,13 @@ Crowi.prototype.setupG2GTransferService = async function() {
   }
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
+  }
+};
+
+Crowi.prototype.setupExternalAccountService = function() {
+  const ExternalAccountService = require('../service/external-account');
+  if (this.externalAccountService == null) {
+    this.externalAccountService = new ExternalAccountService(this);
   }
 };
 

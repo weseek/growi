@@ -17,10 +17,13 @@ export interface IExternalUserGroupRelation extends Omit<IUserGroupRelation, 're
   relatedGroup: Ref<IExternalUserGroup>
 }
 
+export const LdapGroupMembershipAttributeType = { dn: 'DN', uid: 'UID' } as const;
+type LdapGroupMembershipAttributeType = typeof LdapGroupMembershipAttributeType[keyof typeof LdapGroupMembershipAttributeType];
+
 export interface LdapGroupSyncSettings {
   ldapGroupSearchBase: string
   ldapGroupMembershipAttribute: string
-  ldapGroupMembershipAttributeType: 'DN' | 'UID'
+  ldapGroupMembershipAttributeType: LdapGroupMembershipAttributeType
   ldapGroupChildGroupAttribute: string
   autoGenerateUserOnLdapGroupSync: boolean
   preserveDeletedLdapGroups: boolean

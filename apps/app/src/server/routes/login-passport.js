@@ -9,9 +9,6 @@ import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
-import ExternalAccountService from '../service/external-account';
-
-
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi, app) {
@@ -20,7 +17,6 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
-  const externalAccountService = new ExternalAccountService(crowi);
 
   const activityEvent = crowi.event('activity');
 
@@ -218,7 +214,7 @@ module.exports = function(crowi, app) {
 
     let externalAccount;
     try {
-      externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
+      externalAccount = await crowi.externalAccountService.getOrCreateUser(userInfo, providerId);
     }
     catch (error) {
       return next(error);
@@ -392,7 +388,7 @@ module.exports = function(crowi, app) {
       userInfo.username = userInfo.email.slice(0, userInfo.email.indexOf('@'));
     }
 
-    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
+    const externalAccount = await crowi.externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
@@ -435,7 +431,7 @@ module.exports = function(crowi, app) {
       name: response.displayName,
     };
 
-    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
+    const externalAccount = await crowi.externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
@@ -485,7 +481,7 @@ module.exports = function(crowi, app) {
     };
     debug('mapping response to userInfo', userInfo, response, attrMapId, attrMapUserName, attrMapMail);
 
-    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
+    const externalAccount = await crowi.externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return new ExternalAccountLoginError('message.sign_in_failure');
     }
@@ -544,7 +540,7 @@ module.exports = function(crowi, app) {
       return next(new ExternalAccountLoginError('Sign in failure due to insufficient privileges.'));
     }
 
-    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
+    const externalAccount = await crowi.externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }

@@ -1,4 +1,6 @@
-import { ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo } from '~/interfaces/external-user-group';
+import {
+  ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, LdapGroupMembershipAttributeType,
+} from '~/interfaces/external-user-group';
 
 import { configManager } from '../config-manager';
 import LdapService, { SearchResultEntry } from '../ldap';
@@ -90,10 +92,10 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
     // get full user info from LDAP server using externalUserInfo (DN or UID)
     const getUserEntries = async() => {
-      if (groupMembershipAttributeType === 'DN') {
+      if (groupMembershipAttributeType === LdapGroupMembershipAttributeType.dn) {
         return this.ldapService.search(undefined, userId, 'base');
       }
-      if (groupMembershipAttributeType === 'UID') {
+      if (groupMembershipAttributeType === LdapGroupMembershipAttributeType.uid) {
         return this.ldapService.search(`(uid=${userId})`, undefined);
       }
     };

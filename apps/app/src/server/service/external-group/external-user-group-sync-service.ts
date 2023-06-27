@@ -7,15 +7,12 @@ import ExternalUserGroupRelation from '~/server/models/external-user-group-relat
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { configManager } from '../config-manager';
-import ExternalAccountService from '../external-account';
 
 abstract class ExternalUserGroupSyncService {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
   authProviderType: string; // auth provider type (e.g: ldap, oidc)
-
-  externalAccountService: ExternalAccountService;
 
   crowi: any;
 
@@ -24,7 +21,6 @@ abstract class ExternalUserGroupSyncService {
     this.groupProviderType = groupProviderType;
     this.authProviderType = authProviderType;
     this.crowi = crowi;
-    this.externalAccountService = new ExternalAccountService(crowi);
   }
 
   /** External user group tree sync method
@@ -99,7 +95,7 @@ abstract class ExternalUserGroupSyncService {
 
     const getExternalAccount = async() => {
       if (autoGenerateUserOnGroupSync) {
-        return this.externalAccountService.getOrCreateUser(userInfo, this.authProviderType);
+        return this.crowi.externalAccountService.getOrCreateUser(userInfo, this.authProviderType);
       }
       return this.crowi.models.ExternalAccount
         .findOne({ providerType: this.groupProviderType, accountId: userInfo.id });
