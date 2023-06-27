@@ -26,6 +26,7 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
+import ExternalAccountService from '../service/external-account';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -783,7 +784,6 @@ Crowi.prototype.setupG2GTransferService = async function() {
 };
 
 Crowi.prototype.setupExternalAccountService = function() {
-  const ExternalAccountService = require('../service/external-account');
   if (this.externalAccountService == null) {
     this.externalAccountService = new ExternalAccountService(this);
   }
