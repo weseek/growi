@@ -106,10 +106,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
-        return router.push(redirectTo).then(() => setIsLoading(false));
+        return router.push(redirectTo);
       }
 
-      return router.push('/').then(() => setIsLoading(false));
+      return router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -314,7 +314,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
       const { redirectTo } = res.data;
       if (redirectTo != null) {
-        router.push(redirectTo).then(() => setIsLoading(false));
+        router.push(redirectTo);
       }
 
       if (isEmailAuthenticationEnabled) {
