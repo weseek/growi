@@ -90,7 +90,7 @@ export const useModalLauncherForView = (modalType: SaveByModalType, opts?: Modal
 
     // Set default value of handler and eventName
     let handler: HandlerType = () => {};
-    let eventName: string = '';
+    let eventName = '';
 
     // Choose appropriate handler and eventName name based on modalType
     switch (modalType) {
