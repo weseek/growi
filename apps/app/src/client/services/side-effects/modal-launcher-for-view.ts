@@ -1,6 +1,4 @@
 import EventEmitter from 'events';
-import { useCallback, useEffect } from 'react';
-import MarkdownTable from '~/client/models/MarkdownTable';
 import mdu from '~/components/PageEditor/MarkdownDrawioUtil';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
 import { OptionsToSave, SaveByModalType } from '~/interfaces/page-operation';
@@ -23,6 +21,8 @@ type ModalLauncherOpts = {
   onSaveError?: (error: any) => void,
 }
 
+type HandlerType = ((data: DrawioEditByViewerProps) => void) | ((bol: number, eol: number) => void);
+
 export const useModalLauncherForView = (modalType: SaveByModalType, opts?: ModalLauncherOpts): void => {
 
   const { data: shareLinkId } = useShareLinkId();
@@ -33,16 +33,14 @@ export const useModalLauncherForView = (modalType: SaveByModalType, opts?: Modal
 
   const saveOrUpdate = useSaveOrUpdate();
 
-  const saveByModal = useCallback(async(data: string | MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || tagsInfo == null || shareLinkId != null) {
-      return;
-    }
+  // Return early if any of the conditions are met
+  if (currentPage == null || tagsInfo == null || shareLinkId != null) {
+    return;
+  }
 
-    const currentMarkdown = currentPage.revision.body;
-    // Replace markdown based on `modalType`
-    const newMarkdown = modalType === SaveByModalType.DRAWIO
-      ? mdu.replaceDrawioInMarkdown(data as string, currentMarkdown, bol, eol)
-      : mtu.replaceMarkdownTableInMarkdown(data as MarkdownTable, currentMarkdown, bol, eol);
+  const currentMarkdown = currentPage.revision.body;
+
+  const saveByModal = async(newMarkdown: string) => {
 
     const optionsToSave: OptionsToSave = {
       isSlackEnabled: false,
@@ -67,34 +65,55 @@ export const useModalLauncherForView = (modalType: SaveByModalType, opts?: Modal
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  }, [currentPage, modalType, opts, saveOrUpdate, shareLinkId, tagsInfo]);
+  };
 
-  // Set handler to open modal based on modalType
-  useEffect(() => {
-    if (currentPage == null || shareLinkId != null) {
-      return;
-    }
+  // Open modal handler based on modalType
+  const handleModalLaunch = () => {
 
     // Open drawio modal handler
     const drawioHandler = (data: DrawioEditByViewerProps) => {
-      openDrawioModal(data.drawioMxFile, drawioMxFile => saveByModal(drawioMxFile, data.bol, data.eol));
+      const { bol, eol, drawioMxFile } = data;
+      openDrawioModal(drawioMxFile, (drawio) => {
+        const newMarkdown = mdu.replaceDrawioInMarkdown(drawio, currentMarkdown, bol, eol);
+        saveByModal(newMarkdown);
+      });
     };
 
     // Open handsontable modal handler
     const handsontableHandler = (bol: number, eol: number) => {
-      const markdown = currentPage.revision.body;
-      const currentMarkdownTable = mtu.getMarkdownTableFromLine(markdown, bol, eol);
-      openHandsontableModal(currentMarkdownTable, undefined, false, table => saveByModal(table, bol, eol));
+      const currentMarkdownTable = mtu.getMarkdownTableFromLine(currentMarkdown, bol, eol);
+      openHandsontableModal(currentMarkdownTable, undefined, false, (table) => {
+        const newMarkdown = mtu.replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
+        saveByModal(newMarkdown);
+      });
     };
 
-    // Choose appropriate handler and eventName name based on modalType
-    const handler = modalType === SaveByModalType.DRAWIO ? drawioHandler : handsontableHandler;
-    const eventName = modalType === SaveByModalType.DRAWIO ? 'launchDrawioModal' : 'launchHandsonTableModal';
+    // Set default value of handler and eventName
+    let handler: HandlerType = () => {};
+    let eventName: string = '';
 
+    // Choose appropriate handler and eventName name based on modalType
+    switch (modalType) {
+      case SaveByModalType.DRAWIO:
+        handler = drawioHandler;
+        eventName = 'launchDrawioModal';
+        break;
+      case SaveByModalType.HANDSONTABLE:
+        handler = handsontableHandler;
+        eventName = 'launchHandsonTableModal';
+        break;
+      default:
+        break;
+    }
+
+    // Subscribe to the global event using the event name and handler function
     globalEmitter.on(eventName, handler);
 
+    // Clean up the subscription by removing the event listener
     return function cleanup() {
       globalEmitter.removeListener(eventName, handler);
     };
-  }, [currentPage, modalType, openDrawioModal, openHandsontableModal, saveByModal, shareLinkId]);
+  };
+
+  handleModalLaunch();
 };
