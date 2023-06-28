@@ -18,8 +18,10 @@ class PasswordResetModal extends React.Component {
     super(props);
 
     this.state = {
-      temporaryPassword: [],
+      temporaryPassword: '',
       isPasswordResetDone: false,
+      isEmailSent: false,
+      isEmailSending: false,
       showTooltip: false,
     };
 
@@ -41,16 +43,39 @@ class PasswordResetModal extends React.Component {
 
   renderButtons() {
     const { t, isMailerSetup } = this.props;
+    const { isEmailSent, isEmailSending } = this.state;
 
     return (
       <>
-        <button type="submit" className="btn btn-primary" onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup}>
-          {t('Send')}
+        <button type="submit" className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
+          onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending || isEmailSent}>
+          {isEmailSending && <i className='fa fa-spinner fa-pulse mx-2' />}
+          {!isEmailSending && (isEmailSent ? t('commons:Done') : t('commons:Send'))}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
-          {t('Close')}
+          {t('commons:Close')}
         </button>
       </>
+    );
+  }
+
+  renderAddress() {
+    const { t, isMailerSetup, userForPasswordResetModal } = this.props;
+
+    return (
+      <div className="d-flex col text-left ml-1 pl-0">
+        {!isMailerSetup ? (
+          <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+        ) : (
+          <>
+            <p className="mr-2">To:</p>
+            <div>
+              <p className="mb-0">{userForPasswordResetModal.username}</p>
+              <p className="mb-0">{userForPasswordResetModal.email}</p>
+            </div>
+          </>
+        )}
+      </div>
     );
   }
 
@@ -122,25 +147,9 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterAfterReset() {
-    const { t, isMailerSetup, userForPasswordResetModal } = this.props;
-
-    if (!isMailerSetup) {
-      return (
-        <>
-          <div>
-            <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
-          </div>
-          {this.renderButtons()}
-        </>
-      );
-    }
     return (
       <>
-        <p className="mb-4 mt-1">To:</p>
-        <div className="mr-3">
-          <p className="mb-0">{userForPasswordResetModal.username}</p>
-          <p className="mb-0">{userForPasswordResetModal.email}</p>
-        </div>
+        {this.renderAddress()}
         {this.renderButtons()}
       </>
     );
@@ -152,12 +161,18 @@ class PasswordResetModal extends React.Component {
       userForPasswordResetModal,
     } = this.props;
 
+    this.setState({ isEmailSending: true });
 
     try {
       await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
+      this.setState({ isEmailSent: true });
     }
     catch (err) {
+      this.setState({ isEmailSent: false });
       toastError(err);
+    }
+    finally {
+      this.setState({ isEmailSending: false });
     }
   }
 

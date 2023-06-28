@@ -5,6 +5,9 @@
   "Reset": "重启",
 	"Sign out": "退出",
   "New": "新建",
+  "Send": "发送",
+  "Close": "关闭",
+  "Done": "完成",
 
   "meta": {
     "display_name": "简体中文"
