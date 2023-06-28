@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
-import dompurify from 'dompurify';
 import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
@@ -25,16 +24,30 @@ const marp = new Marp({
   math: false,
 });
 
-const marpDefaultTheme = marp.themeSet.default;
-const marpSlideTheme = marp.themeSet.add(`
+const marpSlide = new Marp({
+  container: [
+    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
+    new Element('div', { class: 'slides' }),
+  ],
+  inlineSVG: true,
+  emoji: undefined,
+  html: false,
+  math: false,
+});
+
+marpSlide.themeSet.default = marpSlide.themeSet.add(`
     /*!
-     * @theme slide_preview
-     */
-    section {
-      max-width: 90%;
+    * @theme growi_slide_preview
+    */
+    svg[data-marpit-svg] {
+      box-shadow: 0 5px 10px rgb(0 0 0 / 25%);
+      display: block;
+      margin: 20px;
+    }
+    h1 {
+      color: #7cf;
     }
 `);
-
 
 type Props = {
   options: PresentationOptions,
@@ -58,7 +71,6 @@ export const Slides = (props: Props): JSX.Element => {
 
 
   if (slideStyle === 'true') {
-    marp.themeSet.default = marpSlideTheme;
     const { css } = marp.render('', { htmlAsArray: true });
     return (
       <>
@@ -77,8 +89,7 @@ export const Slides = (props: Props): JSX.Element => {
   }
 
   if (slideStyle === 'marp') {
-    marp.themeSet.default = marpSlideTheme;
-    const { html, css } = marp.render(children ?? '');
+    const { html, css } = marpSlide.render(children ?? '');
     return (
       <>
         <Head>
@@ -87,7 +98,8 @@ export const Slides = (props: Props): JSX.Element => {
         <div
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
-            __html: dompurify.sanitize(html),
+            // DOMpurify.sanitize delete elements in <svg> so sanitize is not used here.
+            __html: html,
           }}
         />
       </>
@@ -95,7 +107,6 @@ export const Slides = (props: Props): JSX.Element => {
   }
 
 
-  marp.themeSet.default = marpDefaultTheme;
   const { css } = marp.render('', { htmlAsArray: true });
   return (
     <>
