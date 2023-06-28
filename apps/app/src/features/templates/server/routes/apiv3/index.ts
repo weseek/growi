@@ -28,9 +28,11 @@ module.exports = (crowi) => {
     const { includeInvalidTemplates } = req.query;
 
     const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
-    const status = await scanAllTemplateStatus(presetTemplatesRoot, { returnsInvalidTemplates: includeInvalidTemplates });
+    const summaries = await scanAllTemplateStatus(presetTemplatesRoot, {
+      returnsInvalidTemplates: includeInvalidTemplates,
+    });
 
-    return res.apiv3(status);
+    return res.apiv3({ summaries });
   });
 
   router.get('/preset-templates/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {

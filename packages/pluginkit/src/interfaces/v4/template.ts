@@ -1,4 +1,5 @@
 export type TemplateStatusBasis = {
+  namespace?: string,
   id: string,
   locale: string,
 }
@@ -6,6 +7,7 @@ export type TemplateStatusValid = TemplateStatusBasis & {
   isValid: true,
   isDefault: boolean,
   title: string,
+  desc?: string,
 }
 export type TemplateStatusInvalid = TemplateStatusBasis & {
   isValid: false,
@@ -13,11 +15,11 @@ export type TemplateStatusInvalid = TemplateStatusBasis & {
 }
 export type TemplateStatus = TemplateStatusValid | TemplateStatusInvalid;
 
+export function isTemplateStatusValid(status: TemplateStatus): status is TemplateStatusValid {
+  return status.isValid;
+}
+
 export type TemplateSummary = {
   default: TemplateStatusValid,
   [locale: string]: TemplateStatus,
-}
-
-export type TemplateSummaries = {
-  [templateId: string]: TemplateSummary,
 }

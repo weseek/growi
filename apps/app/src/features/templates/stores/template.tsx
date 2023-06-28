@@ -1,4 +1,4 @@
-import type { TemplateSummaries } from '@growi/pluginkit/dist/interfaces/v4';
+import type { TemplateSummary } from '@growi/pluginkit/dist/interfaces/v4';
 import useSWR, { type SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -127,7 +127,7 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 //   },
 // ];
 
-export const useSWRxTemplates = (): SWRResponse<TemplateSummaries, Error> => {
+export const useSWRxTemplates = (): SWRResponse<TemplateSummary[], Error> => {
   // return useSWR(
   //   'templates',
   //   () => [
@@ -140,6 +140,6 @@ export const useSWRxTemplates = (): SWRResponse<TemplateSummaries, Error> => {
   // );
   return useSWR(
     ['/templates'],
-    ([endpoint]) => apiv3Get<TemplateSummaries>(endpoint).then(res => res.data),
+    ([endpoint]) => apiv3Get<{ summaries: TemplateSummary[] }>(endpoint).then(res => res.data.summaries),
   );
 };
