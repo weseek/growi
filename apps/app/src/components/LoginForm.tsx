@@ -106,10 +106,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
-        return await router.push(redirectTo);
+        return router.push(redirectTo);
       }
 
-      await router.push('/');
+      return router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
