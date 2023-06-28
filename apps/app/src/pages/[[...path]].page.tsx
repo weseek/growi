@@ -35,7 +35,7 @@ import {
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig,
+  useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
@@ -175,6 +175,8 @@ type Props = CommonProps & {
   disableLinkSharing: boolean,
   skipSSR: boolean,
 
+  growiCloudUri: string,
+
   grantData?: IPageGrantData,
 
   rendererConfig: RendererConfig,
@@ -226,6 +228,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
+
+  useGrowiCloudUri(props.growiCloudUri);
 
   const { pageWithMeta } = props;
 
@@ -593,6 +597,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
   props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+
+  props.growiCloudUri = configManager.getConfig('crowi', 'app:growiCloudUri');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
