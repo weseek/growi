@@ -10,7 +10,7 @@ import TagsInput from './TagsInput';
 type Props = {
   tags: string[],
   isOpen: boolean,
-  onClose: () => void,
+  onClose?: () => void,
   onTagsUpdated?: (tags: string[]) => Promise<void> | void,
 };
 
