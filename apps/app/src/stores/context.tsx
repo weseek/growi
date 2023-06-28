@@ -232,7 +232,7 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
 export const useIsAdmin = (): SWRResponse<boolean, Error> => {
   const { data: currentUser, isLoading } = useCurrentUser();
 
-  const isAdminUser = currentUser?.admin !== undefined ? currentUser.admin : false;
+  const isAdminUser = currentUser != null ? currentUser.admin : false;
 
   return useSWRImmutable(
     isLoading ? null : ['isAdminUser', currentUser?._id],
