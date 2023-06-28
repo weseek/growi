@@ -6,8 +6,8 @@ import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
 
+import { growiPluginService, type GrowiPluginResourceEntries } from '~/features/growi-plugin/services';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { IPluginService, GrowiPluginResourceEntries } from '~/server/service/plugin';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:page:_document');
@@ -49,7 +49,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const { crowi } = ctx.req as CrowiRequest<any>;
-    const { customizeService, pluginService } = crowi;
+    const { customizeService } = crowi;
 
     const { themeHref } = customizeService;
     const customScript: string | null = customizeService.getCustomScript();
@@ -57,7 +57,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const customNoscript: string | null = customizeService.getCustomNoscript();
 
     // retrieve plugin manifests
-    const pluginResourceEntries = await (pluginService as IPluginService).retrieveAllPluginResourceEntries();
+    const pluginResourceEntries = await growiPluginService.retrieveAllPluginResourceEntries();
 
     return {
       ...initialProps,

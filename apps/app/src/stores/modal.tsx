@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import type { IAttachmentHasId } from '@growi/core';
 import { SWRResponse } from 'swr';
 
 import Linker from '~/client/models/Linker';
@@ -627,13 +628,17 @@ export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalS
 /*
  * TemplateModal
  */
-type TemplateModalStatus = {
+
+type TemplateSelectedCallback = (templateText: string) => void;
+type TemplateModalOptions = {
+  onSubmit?: TemplateSelectedCallback,
+}
+type TemplateModalStatus = TemplateModalOptions & {
   isOpened: boolean,
-  onSubmit?: (templateText: string) => void
 }
 
 type TemplateModalUtils = {
-  open(onSubmit: (templateText: string) => void): void,
+  open(opts: TemplateModalOptions): void,
   close(): void,
 }
 
@@ -643,13 +648,58 @@ export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & Te
   const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: (onSubmit: (templateText: string) => void) => {
-      swrResponse.mutate({ isOpened: true, onSubmit });
+    open: (opts: TemplateModalOptions) => {
+      swrResponse.mutate({ isOpened: true, onSubmit: opts.onSubmit });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+/**
+ * DeleteAttachmentModal
+ */
+type Remove =
+  (body: {
+    attachment_id: string;
+  }) => Promise<void>
+
+type DeleteAttachmentModalStatus = {
+  isOpened: boolean,
+  attachment?: IAttachmentHasId,
+  remove?: Remove,
+}
+
+type DeleteAttachmentModalUtils = {
+  open(
+    attachment: IAttachmentHasId,
+    remove: Remove,
+  ): void,
+  close(): void,
+}
+
+export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalStatus, Error> & DeleteAttachmentModalUtils => {
+  const initialStatus: DeleteAttachmentModalStatus = {
+    isOpened: false,
+    attachment: undefined,
+    remove: undefined,
+  };
+  const swrResponse = useStaticSWR<DeleteAttachmentModalStatus, Error>('deleteAttachmentModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
+
+  const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
+    mutate({ isOpened: true, attachment, remove });
+  }, [mutate]);
+  const close = useCallback((): void => {
+    mutate({ isOpened: false });
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
 };
 
 /*

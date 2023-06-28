@@ -1,6 +1,6 @@
 {
   "name": "@growi/hackmd",
-  "version": "6.1.1-RC.0",
+  "version": "6.1.5-RC.0",
   "description": "GROWI js and css files to use hackmd",
   "license": "MIT",
   "type": "module",
@@ -14,7 +14,8 @@
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
-    "lint": "npm-run-all -p lint:*"
+    "lint": "npm-run-all -p lint:*",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {},
   "devDependencies": {

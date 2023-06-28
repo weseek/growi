@@ -1,71 +1,145 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.4](https://github.com/weseek/growi/compare/v6.1.3...v6.1.4) - 2023-06-12
+
+### 💎 Features
+
+- feat(plugin): Specify repository branch name (#7783) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Suppress unnecessary bookmark API requests (#7798) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Bookmarks mutation for the current user (#7797) @yuki-takei
+- fix: Slack channels data for User Triggered Notification is not loaded (#7794) @yuki-takei
+- fix: The input of the editor is cleared when an attachment is added when a new page editing (#7788) @miya
+
+## [v6.1.3](https://github.com/weseek/growi/compare/v6.1.2...v6.1.3) - 2023-06-07
+
+### 💎 Features
+
+- feat(lsx):  Load more (#7774) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Insert template (#7764) @yuki-takei
+- imprv: Update preset templates (#7762) @yuki-takei
+- imprv: Make migration script type safe (#7702) @miya
+- imprv: Update migration script docs (#7699) @miya
+
+### 🐛 Bug Fixes
+
+- fix(lsx): Parsing num/depth options (#7769) @yuki-takei
+- fix: When uploading an attachment and creating a new page, it does not inherit the grant of the parent page (#7768) @miya
+- fix: Unable to perform bookmark operations from bookmark item control (#7750) @miya
+- fix: Bookmarks status not updated on search result (#7667) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Refactor plugin related modules (#7765) @yuki-takei
+- support: Refactor AclService (#7754) @yuki-takei
+- support: typescriptize SlackLegacyUtil (#7751) @yuki-takei
+- support: Refactor ConfigManager (#7752) @yuki-takei
+- support: Convert unit tests by Jest to Vitest (#7749) @yuki-takei
+
+## [v6.1.2](https://github.com/weseek/growi/compare/v6.1.1...v6.1.2) - 2023-05-25
+
+### 🚀 Improvement
+
+- imprv: Unify whitelist description (#7638) @soumaeda
+- imprv: Refactoring migration script (#7694) @miya
+- imprv: Implement infinite scroll into PageTimeline (#7679) @reiji-h
+
+### 🐛 Bug Fixes
+
+- fix: Hash and search query in the relative link are omitted wrongly (#7697) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Restrict the 'populate' method in model modules (#7689) @yuki-takei
+- support: Refactor LinkEditModal (#7654) @yukendev
+- ci(deps): bump aws-actions/configure-aws-credentials from 1 to 2 (#7620) @dependabot
+- ci(deps): bump hugo19941994/delete-draft-releases from 1.0.0 to 1.0.1 (#7448) @dependabot
+
+## [v6.1.1](https://github.com/weseek/growi/compare/v6.1.0...v6.1.1) - 2023-05-24
+
+### 🐛 Bug Fixes
+
+- fix: Bookmark folders owned by others are accessible for manipulation (#7688) @miya
+- fix: remark-attachment-refs does not work in production (#7681) @yuki-takei
+- fix: User picture of bookmark not showing inside bookmark folder (#7678) @mudana-grune
+- fix: Update name attribute of PageRenameModal.tsx (#7677) @jam411
+- fix: The user's bookmarks are displayed on unrelated user's home (#7668) @miya
+- fix: The user's bookmarks are updated by unrelated user's operation (#7670) @jam411
 
 ## [v6.1.0](https://github.com/weseek/growi/compare/v6.0.15...v6.1.0) - 2023-05-17
 
 ### BREAKING CHANGES
 
-* Node.js v14 is no longer supported.
-* Elasticsearch v6 is no longer supported.
-* imprv: Omit clobber prefix (#7627) @yuki-takei
-* support: Omit textlint (#7578) @yuki-takei
-* support: Remove Blockdiag codes (#7576) @yuki-takei
+- Node.js v14 is no longer supported.
+- Elasticsearch v6 is no longer supported.
+- imprv: Omit clobber prefix (#7627) @yuki-takei
+- support: Omit textlint (#7578) @yuki-takei
+- support: Remove Blockdiag codes (#7576) @yuki-takei
 
 See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin-guide/upgrading/61x.html) / [Japanese](https://docs.growi.org/ja/admin-guide/upgrading/61x.html)
 
 ### 💎 Features
 
-* feat: Add read-only user feature (#7648) @jam411
-* feat: Support Mermaid (move into the feature dierctory) (#7647) @miya
-* feat: Fix APP\_SITE\_URL with an environment variable (#7646) @yuki-takei
-* feat: Support Mermaid (#7645) @miya
-* feat: Support Elasticsearch v8 (#7623) @miya
-* feat: Elasticsearchv8 module (#7623) @miya
-* feat: Bookmarks folder and sidebar menu (#7450) @mudana-grune
-* feat: GROWI Questionnaire (#7316) @hakumizuki
-* feat: Revive attachment-refs with remark (#7597) @arafubeatbox
+- feat: Add read-only user feature (#7648) @jam411
+- feat: Support Mermaid (move into the feature dierctory) (#7647) @miya
+- feat: Fix APP_SITE_URL with an environment variable (#7646) @yuki-takei
+- feat: Support Mermaid (#7645) @miya
+- feat: Support Elasticsearch v8 (#7623) @miya
+- feat: Elasticsearchv8 module (#7623) @miya
+- feat: Bookmarks folder and sidebar menu (#7450) @mudana-grune
+- feat: GROWI Questionnaire (#7316) @hakumizuki
+- feat: Revive attachment-refs with remark (#7597) @arafubeatbox
 
 ### 🚀 Improvement
 
-* imprv: Font size (#7663) @yuki-takei
-* imprv: Admin user can use `reset-password` without email settings (#7650) @jam411
-* imprv: Optimize fonts with next/font (#7633) @yuki-takei
-* imprv: GFM table performance 2 (#7640) @yuki-takei
-* imprv: GFM footnote styles (#7628) @yuki-takei
-* imprv: GFM table performance (#7619) @yuki-takei
-* imprv: Show unsaved warning when comment not posted (#7603) @arafubeatbox
-* imprv: Suppress UI Flickering for dropdowns (#7608) @jam411
-* imprv: Allow registering without GROWI email settings for ID/Password authentication's restricted registration (#7591) @jam411
-* imprv: Enable browsing video (for v6.1.0) (#7589) @yuki-takei
-* imprv: Show a spinner into the save button while the saving process (#7579) @yuki-takei
-* imprv: Inject PlantUML URI with config-loader (#7577) @yuki-takei
-* imprv: Loading draw.io (diagrams.net) resources (#7575) @yuki-takei
+- imprv: Font size (#7663) @yuki-takei
+- imprv: Admin user can use `reset-password` without email settings (#7650) @jam411
+- imprv: Optimize fonts with next/font (#7633) @yuki-takei
+- imprv: GFM table performance 2 (#7640) @yuki-takei
+- imprv: GFM footnote styles (#7628) @yuki-takei
+- imprv: GFM table performance (#7619) @yuki-takei
+- imprv: Show unsaved warning when comment not posted (#7603) @arafubeatbox
+- imprv: Suppress UI Flickering for dropdowns (#7608) @jam411
+- imprv: Allow registering without GROWI email settings for ID/Password authentication's restricted registration (#7591) @jam411
+- imprv: Enable browsing video (for v6.1.0) (#7589) @yuki-takei
+- imprv: Show a spinner into the save button while the saving process (#7579) @yuki-takei
+- imprv: Inject PlantUML URI with config-loader (#7577) @yuki-takei
+- imprv: Loading draw.io (diagrams.net) resources (#7575) @yuki-takei
 
 ### 🐛 Bug Fixes
 
-* fix: The environment variable for disabling link sharing (#7652) @yuki-takei
-* fix: Cursor resetting occurs after updating with the built-in editor (#7644) @yuki-takei
-* fix: Revision schema migration for v5 to v6 (#7637) @yuki-takei
-* fix: Editor not resetting when the same markdown (#7625) @arafubeatbox
-* fix: AlignRight DropdownMenu flickering (#7606) @mudana-grune
-* fix: Not display page list count badge in trash page (#7600) @yukendev
-* fix: Reverted descendant pages do not appear in search results (#7587) @miya
-* fix: Deleted descendant pages do not appear in search results (#7583) @miya
-* fix: Show lsx page list in trash page correctly (#7582) @yukendev
-* fix: Uncaught type error by `sticky-event` (#7566) @mudana-grune
+- fix: The environment variable for disabling link sharing (#7652) @yuki-takei
+- fix: Cursor resetting occurs after updating with the built-in editor (#7644) @yuki-takei
+- fix: Revision schema migration for v5 to v6 (#7637) @yuki-takei
+- fix: Editor not resetting when the same markdown (#7625) @arafubeatbox
+- fix: AlignRight DropdownMenu flickering (#7606) @mudana-grune
+- fix: Not display page list count badge in trash page (#7600) @yukendev
+- fix: Reverted descendant pages do not appear in search results (#7587) @miya
+- fix: Deleted descendant pages do not appear in search results (#7583) @miya
+- fix: Show lsx page list in trash page correctly (#7582) @yukendev
+- fix: Uncaught type error by `sticky-event` (#7566) @mudana-grune
 
 ### 🧰 Maintenance
 
-* support: mongoose update (#7659) @jam411
-* support: Elasticsearch8 (#7592) @miya
-* support: Replaced by IAttachmentHasId (#7629) @reiji-h
-* support: Dedupe packages (#7590) @yuki-takei
-* support: Typescriptize CustomNav (#7584) @yuki-takei
-* support: Replaced by IAttachmentHasId (#7629) @reiji-h
-* support: Migrate to Turborepo (#7417) @yuki-takei
+- support: mongoose update (#7659) @jam411
+- support: Elasticsearch8 (#7592) @miya
+- support: Replaced by IAttachmentHasId (#7629) @reiji-h
+- support: Dedupe packages (#7590) @yuki-takei
+- support: Typescriptize CustomNav (#7584) @yuki-takei
+- support: Replaced by IAttachmentHasId (#7629) @reiji-h
+- support: Migrate to Turborepo (#7417) @yuki-takei
 
 ## [v6.0.15](https://github.com/weseek/growi/compare/v6.0.14...v6.0.15) - 2023-04-10
 

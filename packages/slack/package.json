@@ -1,6 +1,6 @@
 {
   "name": "@growi/slack",
-  "version": "6.1.1-RC.0",
+  "version": "6.1.5-RC.0",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -12,7 +12,9 @@
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
-    "lint": "npm-run-all -p lint:*"
+    "lint": "npm-run-all -p lint:*",
+    "test": "vitest run --coverage",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "@slack/oauth": "^2.0.1",
