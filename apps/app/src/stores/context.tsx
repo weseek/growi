@@ -229,6 +229,18 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
   );
 };
 
+export const useIsAdmin = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser, isLoading } = useCurrentUser();
+
+  const isAdminUser = currentUser?.admin !== undefined ? currentUser.admin : false;
+
+  return useSWRImmutable(
+    isLoading ? null : ['isAdminUser', currentUser?._id],
+    () => isAdminUser,
+    { fallbackData: isAdminUser },
+  );
+};
+
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
