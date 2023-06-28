@@ -6,6 +6,7 @@
   "Reset": "重启",
 	"Sign out": "退出",
   "New": "新建",
+  "Delete": "删除",
 
   "meta": {
     "display_name": "简体中文"
@@ -23,7 +24,8 @@
   "alert": {
     "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
     "please_enable_mailer": "请先设置邮件程序。",
-    "password_reset_please_enable_mailer": "请先设置邮件程序。"
+    "password_reset_please_enable_mailer": "请先设置邮件程序。",
+    "email_is_already_in_use": "这个电子邮件地址已经在使用了。"
   },
   "headers": {
     "app_settings": "系统设置"

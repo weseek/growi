@@ -1,4 +1,5 @@
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 // disable all of linting
@@ -10,7 +11,7 @@ module.exports = function(crowi, app) {
   const path = require('path');
   const User = crowi.model('User');
   const {
-    configManager, appService, aclService, mailService, activityService,
+    appService, aclService, mailService, activityService,
   } = crowi;
   const activityEvent = crowi.event('activity');
 
@@ -19,14 +20,14 @@ module.exports = function(crowi, app) {
   async function sendEmailToAllAdmins(userData) {
     // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
     const admins = await User.findAdmins();
-
     const appTitle = appService.getAppTitle();
+    const locale = configManager.getConfig('crowi', 'app:globalLang');
 
     const promises = admins.map((admin) => {
       return mailService.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
+        template: path.join(crowi.localeDir, `${locale}/admin/userWaitingActivation.ejs`),
         vars: {
           adminUser: admin,
           createdUser: userData,
