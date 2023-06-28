@@ -16,8 +16,6 @@ const validator = {
     query('includeInvalidTemplates').optional().isBoolean(),
   ],
   get: [
-    param('organizationName').isString(),
-    param('reposName').isString(),
     param('templateId').isString(),
     param('locale').isString(),
   ],
@@ -35,15 +33,23 @@ module.exports = (crowi) => {
     return res.apiv3(status);
   });
 
-  router.get('/:organizationName/:reposName/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {
+  router.get('/preset-templates/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const {
-      organizationName, reposName, templateId, locale,
+      templateId, locale,
     } = req.params;
 
     const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
     const markdown = await getMarkdown(presetTemplatesRoot, templateId, locale);
 
     return res.apiv3({ markdown });
+  });
+
+  router.get('/plugin-templates/:pluginId/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {
+    const {
+      pluginId, templateId, locale,
+    } = req.params;
+
+    return res.apiv3({});
   });
 
   return router;
