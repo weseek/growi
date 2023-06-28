@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import TagsInput from './TagsInput';
 
-function TagEditModal(props) {
-  const [tags, setTags] = useState([]);
+type Props = {
+  tags: string[],
+  isOpen: boolean,
+  onClose?: () => void,
+  onTagsUpdated?: (tags: string[]) => Promise<void> | void,
+};
+
+function TagEditModal(props: Props): JSX.Element {
+  const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
 
-  function onTagsUpdatedByTagsInput(tags) {
+  function onTagsUpdatedByTagsInput(tags: string[]) {
     setTags(tags);
   }
 
@@ -53,12 +59,5 @@ function TagEditModal(props) {
   );
 
 }
-
-TagEditModal.propTypes = {
-  tags: PropTypes.array,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-  onTagsUpdated: PropTypes.func,
-};
 
 export default TagEditModal;
