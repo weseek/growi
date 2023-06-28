@@ -15,10 +15,10 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import { useSWRxTemplates } from '~/features/templates/stores';
 import { useTemplateModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
-import { useSWRxTemplates } from '~/stores/template';
 import loggerFactory from '~/utils/logger';
 
 import Preview from '../PageEditor/Preview';
