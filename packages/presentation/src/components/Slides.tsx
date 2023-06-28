@@ -9,10 +9,10 @@ import type { PresentationOptions } from '../consts';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
-import { string } from 'yargs';
 
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
+export type presentationSlideStyle = 'true' | 'marp' | null;
 
 const marp = new Marp({
   container: [
@@ -25,6 +25,8 @@ const marp = new Marp({
   math: false,
 });
 
+// TODO: スライド表示したときのスタイルを整える
+// https://redmine.weseek.co.jp/issues/125680
 const marpDefaultTheme = marp.themeSet.default;
 const marpSlideTheme = marp.themeSet.add(`
     /*!
@@ -39,7 +41,7 @@ const marpSlideTheme = marp.themeSet.add(`
 type Props = {
   options: PresentationOptions,
   children?: string,
-  slideStyle?: 'true' | 'marp' | null,
+  slideStyle?: presentationSlideStyle,
 }
 
 export const Slides = (props: Props): JSX.Element => {
@@ -58,6 +60,11 @@ export const Slides = (props: Props): JSX.Element => {
 
 
   if (slideStyle === 'true') {
+    // TODO: スライド表示したときのスタイルを整える
+    // https://redmine.weseek.co.jp/issues/125680
+    // Presentation と違い RevisionRenderer が Dynamic import ではなく、
+    // classname = marpit とできない。
+    // RevisionRenderer 内に Slides でスライドを表示するための条件分岐
     marp.themeSet.default = marpSlideTheme;
     const { css } = marp.render('', { htmlAsArray: true });
     return (
@@ -76,6 +83,8 @@ export const Slides = (props: Props): JSX.Element => {
     );
   }
 
+  // TODO: Marp でレンダリングできる
+  // https://redmine.weseek.co.jp/issues/115673
   if (slideStyle === 'marp') {
     return (
       <></>
@@ -95,4 +104,6 @@ export const Slides = (props: Props): JSX.Element => {
       </ReactMarkdown>
     </>
   );
+
+
 };

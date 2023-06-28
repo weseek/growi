@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import type { presentationSlideStyle } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
@@ -46,38 +47,35 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName, isSlidesOverviewEnabled,
   } = props;
 
-  type presentationSlideStyle = 'marp' | 'true' | null;
   const [slideStyle, setSlideStyle] = useState<presentationSlideStyle>(null);
 
+  // useEffect avoid ssr
   useEffect(() => {
+    const processMarkdown = () => (tree) => {
+      setSlideStyle(null);
+      visit(tree, 'yaml', (node) => {
+        if (node.value != null) {
+          const lines = node.value.split('\n');
+
+          lines.forEach((line) => {
+            const [key, value] = line.split(':').map(part => part.trim());
+
+            if (key === 'presentation') {
+              setSlideStyle(value === 'marp' || value === 'true' ? value : null);
+            }
+            else if (key === 'marp' && value === 'true') {
+              setSlideStyle('marp');
+            }
+          });
+        }
+      });
+    };
+
     unified()
       .use(remarkParse)
       .use(remarkStringify)
       .use(remarkFrontmatter, ['yaml'])
-      .use(() => (tree) => {
-        setSlideStyle(null);
-        visit(tree, (node) => {
-          if (node.type === 'yaml') {
-            for (const line of node.value?.split('\n')) {
-            // node.value is "presentation:true\ntitle: hoge\nclass: fuga" etc..
-              const parts = line.split(':');
-              if (parts.length !== 2) {
-                continue;
-              }
-              const key = parts[0].trim();
-              const value = parts[1].trim();
-              if (key === 'presentation') {
-                setSlideStyle(
-                  value === 'marp' || value === 'true' ? value : null,
-                );
-              }
-              else if (key === 'marp' && value === 'true') {
-                setSlideStyle('marp');
-              }
-            }
-          }
-        });
-      })
+      .use(processMarkdown)
       .process(markdown);
   }, [markdown, setSlideStyle]);
 
