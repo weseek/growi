@@ -103,14 +103,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
-      setIsLoading(false);
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
-        return router.push(redirectTo);
+        return await router.push(redirectTo);
       }
 
-      return router.push('/');
+      await router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
