@@ -6,13 +6,13 @@ import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
+import { presentationSlideStyle } from '../interfaces';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
 
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
-export type presentationSlideStyle = 'true' | 'marp' | null;
 
 const marp = new Marp({
   container: [
