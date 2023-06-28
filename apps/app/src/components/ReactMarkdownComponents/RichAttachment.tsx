@@ -36,6 +36,7 @@ export const RichAttachment: React.FC<{
     creator,
     createdAt,
     fileSize,
+    fileFormat,
   } = attachment;
 
   // Guard here because attachment properties might be deleted in turn when an attachment is removed
@@ -45,8 +46,15 @@ export const RichAttachment: React.FC<{
     || creator == null
     || createdAt == null
     || fileSize == null
+    || fileFormat == null
   ) {
     return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
+  }
+
+  if (fileFormat === 'application/pdf') {
+    // TODO: Show pdf preview
+    // https://redmine.weseek.co.jp/issues/125416
+    return <>This is PDF file</>;
   }
 
   return (
