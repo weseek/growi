@@ -186,6 +186,7 @@
     "remark-math": "^5.1.1",
     "remark-toc": "^8.0.1",
     "remark-wiki-link": "^1.0.4",
+    "remark-frontmatter": "^4.0.1",
     "socket.io": "^4.2.0",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
