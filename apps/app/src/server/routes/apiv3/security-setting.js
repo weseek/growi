@@ -545,11 +545,13 @@ module.exports = (crowi) => {
       return activeAuthMethodsWithAdmin;
     }
 
-    const allActiveAuthMethodsWithAdmin = await getAllActiveAuthMethodsWithAdmin();
+    if (!isEnabled) {
+      const allActiveAuthMethodsWithAdmin = await getAllActiveAuthMethodsWithAdmin();
 
-    // Return an error when disabling an authentication method when there are no active authentication methods with admin-enabled login
-    if (!isEnabled && allActiveAuthMethodsWithAdmin.length === 0) {
-      return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
+      // Return an error when disabling an authentication method when there are no active authentication methods with admin-enabled login
+      if (allActiveAuthMethodsWithAdmin.length === 0) {
+        return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
+      }
     }
 
     const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
