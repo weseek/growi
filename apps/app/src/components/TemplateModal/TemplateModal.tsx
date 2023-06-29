@@ -5,8 +5,7 @@ import React, {
 import assert from 'assert';
 
 import { Lang } from '@growi/core';
-import type { ITemplate } from '@growi/core/dist/interfaces/template';
-import { getLocalizedTemplate, type TemplateSummary } from '@growi/pluginkit/dist/v4';
+import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,

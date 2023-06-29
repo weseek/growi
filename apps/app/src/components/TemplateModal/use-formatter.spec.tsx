@@ -1,6 +1,3 @@
-import type { ITemplate } from '@growi/core/dist/interfaces/template';
-import { mock } from 'vitest-mock-extended';
-
 import { useFormatter } from './use-formatter';
 
 
