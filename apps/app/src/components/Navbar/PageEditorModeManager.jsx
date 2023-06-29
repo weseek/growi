@@ -47,10 +47,9 @@ function PageEditorModeManager(props) {
 
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { data: currentUser } = useIsAdmin();
   const { data: hackmdUri } = useHackmdUri();
 
-  const isAdmin = currentUser?.admin;
+  const { data: isAdmin } = useIsAdmin();
   const isHackmdEnabled = hackmdUri != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
 
