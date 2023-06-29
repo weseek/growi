@@ -19,18 +19,23 @@
       "cache": false
     },
 
+    "@growi/pluginkit#build": {
+      "dependsOn": ["@growi/core#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "@growi/remark-attachment-refs#build": {
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-lsx#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
     "@growi/ui#build": {
       "dependsOn": ["@growi/core#build"],
-      "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
-    "@growi/remark-lsx#build": {
-      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
