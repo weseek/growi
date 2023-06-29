@@ -29,25 +29,15 @@ const marpSlide = new Marp({
     new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
     new Element('div', { class: 'slides' }),
   ],
+  slideContainer: [
+    new Element('div', { class: 'shadow rounded', style: 'margin: 20px' }),
+  ],
   inlineSVG: true,
   emoji: undefined,
   html: false,
   math: false,
 });
 
-marpSlide.themeSet.default = marpSlide.themeSet.add(`
-    /*!
-    * @theme growi_slide_preview
-    */
-    svg[data-marpit-svg] {
-      box-shadow: 0 5px 10px rgb(0 0 0 / 25%);
-      display: block;
-      margin: 20px;
-    }
-    h1 {
-      color: #7cf;
-    }
-`);
 
 type Props = {
   options: PresentationOptions,
