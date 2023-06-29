@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { SaveByModalType } from '~/interfaces/page-operation';
 import { useCurrentPageId } from '~/stores/page';
 
-const ModalLauncherUtility: FC<{modalType: SaveByModalType}> = ({ modalType }) => {
+const ModalLauncherUtility: FC<{ modalType: SaveByModalType }> = ({ modalType }) => {
   const { t } = useTranslation();
   const { data: pageId } = useCurrentPageId();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);

@@ -1,13 +1,16 @@
 import EventEmitter from 'events';
+
+import { DrawioEditByViewerProps } from '@growi/remark-drawio';
+
 import mdu from '~/components/PageEditor/MarkdownDrawioUtil';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
-import { OptionsToSave, SaveByModalType } from '~/interfaces/page-operation';
+import { type OptionsToSave, SaveByModalType } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
+import { useDrawioModal, useHandsontableModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
+
 import { useSaveOrUpdate } from '../page-operation';
-import { DrawioEditByViewerProps } from '@growi/remark-drawio';
-import { useDrawioModal, useHandsontableModal } from '~/stores/modal';
 
 const logger = loggerFactory('growi:cli:side-effects:useModalLauncherForView');
 
@@ -21,7 +24,15 @@ type ModalLauncherOpts = {
   onSaveError?: (error: any) => void,
 }
 
-type HandlerType = ((data: DrawioEditByViewerProps) => void) | ((bol: number, eol: number) => void);
+interface DrawioEditByViewerHandler {
+  (data: DrawioEditByViewerProps): void;
+}
+
+interface HandsontableHandler {
+  (bol: number, eol: number): void;
+}
+
+type HandlerType = DrawioEditByViewerHandler | HandsontableHandler;
 
 export const useModalLauncherForView = (modalType: SaveByModalType, opts?: ModalLauncherOpts): void => {
 
