@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
-import { presentationSlideStyle } from '../interfaces';
+import { originalSlideStyle, presentationSlideStyle } from '../interfaces';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
@@ -25,7 +25,7 @@ const marp = new Marp({
   math: false,
 });
 
-// TODO: スライド表示したときのスタイルを整える
+// TODO: to change better slide style
 // https://redmine.weseek.co.jp/issues/125680
 const marpDefaultTheme = marp.themeSet.default;
 const marpSlideTheme = marp.themeSet.add(`
@@ -59,12 +59,12 @@ export const Slides = (props: Props): JSX.Element => {
   ]);
 
 
-  if (slideStyle === 'true') {
-    // TODO: スライド表示したときのスタイルを整える
+  if (slideStyle === originalSlideStyle.true) {
+    // TODO: to change better slide style
     // https://redmine.weseek.co.jp/issues/125680
-    // Presentation と違い RevisionRenderer が Dynamic import ではなく、
-    // classname = marpit とできない。
-    // RevisionRenderer 内に Slides でスライドを表示するための条件分岐
+    // classname = "marpit" cannot be used in SSR.
+    // And RevisionRenderer.tsx is used in SSR.
+    // so use classname = "marpit" in Slides.tsx is dynamic imported.
     marp.themeSet.default = marpSlideTheme;
     const { css } = marp.render('', { htmlAsArray: true });
     return (
@@ -83,9 +83,9 @@ export const Slides = (props: Props): JSX.Element => {
     );
   }
 
-  // TODO: Marp でレンダリングできる
+  // TODO: can Marp rendering
   // https://redmine.weseek.co.jp/issues/115673
-  if (slideStyle === 'marp') {
+  if (slideStyle === originalSlideStyle.marp) {
     return (
       <></>
     );

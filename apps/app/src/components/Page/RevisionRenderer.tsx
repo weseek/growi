@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import type { presentationSlideStyle } from '@growi/presentation';
+import { presentationSlideStyle } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
@@ -47,37 +47,39 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName, isSlidesOverviewEnabled,
   } = props;
 
-  const [slideStyle, setSlideStyle] = useState<presentationSlideStyle>(null);
+  const [slideStyle, setSlideStyle] = useState<presentationSlideStyle | null>();
 
   // useEffect avoid ssr
   useEffect(() => {
-    const processMarkdown = () => (tree) => {
-      setSlideStyle(null);
-      visit(tree, 'yaml', (node) => {
-        if (node.value != null) {
-          const lines = node.value.split('\n');
+    if (isSlidesOverviewEnabled) {
+      const processMarkdown = () => (tree) => {
+        setSlideStyle(null);
+        visit(tree, 'yaml', (node) => {
+          if (node.value != null) {
+            const lines = node.value.split('\n');
 
-          lines.forEach((line) => {
-            const [key, value] = line.split(':').map(part => part.trim());
+            lines.forEach((line) => {
+              const [key, value] = line.split(':').map(part => part.trim());
 
-            if (key === 'presentation') {
-              setSlideStyle(value === 'marp' || value === 'true' ? value : null);
-            }
-            else if (key === 'marp' && value === 'true') {
-              setSlideStyle('marp');
-            }
-          });
-        }
-      });
-    };
+              if (key === 'presentation') {
+                setSlideStyle(value === 'marp' || value === 'true' ? value : null);
+              }
+              else if (key === 'marp' && value === 'true') {
+                setSlideStyle('marp');
+              }
+            });
+          }
+        });
+      };
 
-    unified()
-      .use(remarkParse)
-      .use(remarkStringify)
-      .use(remarkFrontmatter, ['yaml'])
-      .use(processMarkdown)
-      .process(markdown);
-  }, [markdown, setSlideStyle]);
+      unified()
+        .use(remarkParse)
+        .use(remarkStringify)
+        .use(remarkFrontmatter, ['yaml'])
+        .use(processMarkdown)
+        .process(markdown);
+    }
+  }, [markdown, setSlideStyle, isSlidesOverviewEnabled]);
 
   if (isSlidesOverviewEnabled && slideStyle != null) {
     const options = {
