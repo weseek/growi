@@ -1,4 +1,4 @@
-import { assert } from 'console';
+import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
@@ -44,11 +44,10 @@ export const validateTemplatePluginPackageJson = async(projectDirRoot: string): 
 };
 
 
-type TemplateDirStatus = { isTemplateExists: boolean } &
-  (
-    { isMetaDataFileExists: false } |
-    { isMetaDataFileExists: true, meta: { [key: string]: string } }
-  )
+type TemplateDirStatus = {
+  isTemplateExists: boolean,
+  meta?: { [key: string]: string },
+}
 
 async function getStats(tplDir: string): Promise<TemplateDirStatus> {
   const markdownPath = path.resolve(tplDir, 'template.md');
@@ -61,7 +60,6 @@ async function getStats(tplDir: string): Promise<TemplateDirStatus> {
 
   const result: TemplateDirStatus = {
     isTemplateExists,
-    isMetaDataFileExists,
     meta: isMetaDataFileExists ? await import(metaDataPath) : undefined,
   };
 
@@ -88,16 +86,12 @@ export const scanTemplateStatus = async(
     try {
       const stats = await getStats(tplDir);
       const {
-        isTemplateExists, isMetaDataFileExists,
+        isTemplateExists, meta,
       } = stats;
 
       if (!isTemplateExists) throw new Error("'template.md does not exist.");
-      if (!isMetaDataFileExists) throw new Error("'meta.md does not exist.");
-
-      assert(isMetaDataFileExists);
-      const { meta } = stats;
-
-      if (meta?.title) throw new Error("'meta.md does not contain the title.");
+      if (meta == null) throw new Error("'meta.md does not exist.");
+      if (meta?.title == null) throw new Error("'meta.md does not contain the title.");
 
       const isDefault = !isDefaultPushed;
       status.push({
