@@ -4,16 +4,20 @@ import {
 
 import { configManager } from '../config-manager';
 import LdapService, { SearchResultEntry } from '../ldap';
+import PassportService from '../passport';
 
 import ExternalUserGroupSyncService from './external-user-group-sync-service';
 
 class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
+  passportService: PassportService;
+
   ldapService: LdapService;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(crowi: any, userBindUsername?: string, userBindPassword?: string) {
-    super(crowi, ExternalGroupProviderType.ldap, 'ldap');
+  constructor(passportService, userBindUsername?: string, userBindPassword?: string) {
+    super(ExternalGroupProviderType.ldap, 'ldap');
+    this.passportService = passportService;
     this.ldapService = new LdapService(userBindUsername, userBindPassword);
   }
 
@@ -86,9 +90,9 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
   private async getUserInfo(userId: string): Promise<ExternalUserInfo | null> {
     const groupMembershipAttributeType = configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType');
-    const attrMapUsername = this.crowi.passportService.getLdapAttrNameMappedToUsername();
-    const attrMapName = this.crowi.passportService.getLdapAttrNameMappedToName();
-    const attrMapMail = this.crowi.passportService.getLdapAttrNameMappedToMail();
+    const attrMapUsername = this.passportService.getLdapAttrNameMappedToUsername();
+    const attrMapName = this.passportService.getLdapAttrNameMappedToName();
+    const attrMapMail = this.passportService.getLdapAttrNameMappedToMail();
 
     // get full user info from LDAP server using externalUserInfo (DN or UID)
     const getUserEntries = async() => {
@@ -116,10 +120,10 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
         const nameToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapName);
         const mailToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapMail);
 
-        return usernameToBeRegistered != null ? {
+        return usernameToBeRegistered != null && mailToBeRegistered != null ? {
           id: uid,
-          username: usernameToBeRegistered || '',
-          name: nameToBeRegistered || '',
+          username: usernameToBeRegistered,
+          name: nameToBeRegistered,
           email: mailToBeRegistered,
         } : null;
       }

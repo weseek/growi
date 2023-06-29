@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import {
   ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, IExternalUserGroupHasId,
 } from '~/interfaces/external-user-group';
@@ -7,6 +9,7 @@ import ExternalUserGroupRelation from '~/server/models/external-user-group-relat
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { configManager } from '../config-manager';
+import { externalAccountService } from '../external-account';
 
 abstract class ExternalUserGroupSyncService {
 
@@ -14,13 +17,10 @@ abstract class ExternalUserGroupSyncService {
 
   authProviderType: string; // auth provider type (e.g: ldap, oidc)
 
-  crowi: any;
-
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(crowi: any, groupProviderType: ExternalGroupProviderType, authProviderType: string) {
+  constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string) {
     this.groupProviderType = groupProviderType;
     this.authProviderType = authProviderType;
-    this.crowi = crowi;
   }
 
   /** External user group tree sync method
@@ -92,13 +92,15 @@ abstract class ExternalUserGroupSyncService {
    */
   async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
     const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
+    const ExternalAccount = mongoose.model('ExternalAccount');
 
     const getExternalAccount = async() => {
-      if (autoGenerateUserOnGroupSync) {
-        return this.crowi.externalAccountService.getOrCreateUser(userInfo, this.authProviderType);
+      if (autoGenerateUserOnGroupSync && externalAccountService != null) {
+        return externalAccountService.getOrCreateUser({
+          id: userInfo.id, username: userInfo.username, name: userInfo.name, email: userInfo.email,
+        }, this.authProviderType);
       }
-      return this.crowi.models.ExternalAccount
-        .findOne({ providerType: this.groupProviderType, accountId: userInfo.id });
+      return ExternalAccount.findOne({ providerType: this.groupProviderType, accountId: userInfo.id });
     };
 
     const externalAccount = await getExternalAccount();
