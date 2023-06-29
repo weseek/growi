@@ -14,7 +14,7 @@ import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
-  useCurrentUser, useIsSearchPage,
+  useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig,
@@ -88,6 +88,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   // commons
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);

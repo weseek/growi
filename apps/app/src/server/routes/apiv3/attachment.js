@@ -26,12 +26,57 @@ module.exports = (crowi) => {
   const Attachment = crowi.model('Attachment');
 
   const validator = {
+    attachment: [
+      query('attachmentId').isMongoId().withMessage('attachmentId is required'),
+    ],
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('pageNumber').optional().isInt().withMessage('pageNumber must be a number'),
       query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
     ],
   };
+
+  /**
+   * @swagger
+   *
+   *    /attachment:
+   *      get:
+   *        tags: [Attachment]
+   *        description: Get attachment
+   *        responses:
+   *          200:
+   *            description: Return attachment
+   *        parameters:
+   *          - name: attachemnt_id
+   *            in: query
+   *            required: true
+   *            description: attachment id
+   *            schema:
+   *              type: string
+   */
+  router.get('/', accessTokenParser, loginRequired, validator.attachment, apiV3FormValidator, async(req, res) => {
+    try {
+      const attachmentId = req.query.attachmentId;
+
+      const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
+
+      if (attachment == null) {
+        const message = 'Attachment not found';
+        return res.apiv3Err(message, 404);
+      }
+
+      if (attachment.creator != null && attachment.creator instanceof User) {
+        attachment.creator = serializeUserSecurely(attachment.creator);
+      }
+
+      return res.apiv3({ attachment });
+    }
+    catch (err) {
+      logger.error('Attachment retrieval failed', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   /**
    * @swagger
    *

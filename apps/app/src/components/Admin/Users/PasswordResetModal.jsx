@@ -2,13 +2,15 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody, ModalFooter, Tooltip,
 } from 'reactstrap';
 
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-
+import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
 
@@ -16,11 +18,15 @@ class PasswordResetModal extends React.Component {
     super(props);
 
     this.state = {
-      temporaryPassword: [],
+      temporaryPassword: '',
       isPasswordResetDone: false,
+      isEmailSent: false,
+      isEmailSending: false,
+      showTooltip: false,
     };
 
     this.resetPassword = this.resetPassword.bind(this);
+    this.onClickSendNewPasswordButton = this.onClickSendNewPasswordButton.bind(this);
   }
 
   async resetPassword() {
@@ -33,6 +39,44 @@ class PasswordResetModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+  renderButtons() {
+    const { t, isMailerSetup } = this.props;
+    const { isEmailSent, isEmailSending } = this.state;
+
+    return (
+      <>
+        <button type="submit" className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
+          onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending || isEmailSent}>
+          {isEmailSending && <i className='fa fa-spinner fa-pulse mx-2' />}
+          {!isEmailSending && (isEmailSent ? t('commons:Done') : t('commons:Send'))}
+        </button>
+        <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
+          {t('commons:Close')}
+        </button>
+      </>
+    );
+  }
+
+  renderAddress() {
+    const { t, isMailerSetup, userForPasswordResetModal } = this.props;
+
+    return (
+      <div className="d-flex col text-left ml-1 pl-0">
+        {!isMailerSetup ? (
+          <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+        ) : (
+          <>
+            <p className="mr-2">To:</p>
+            <div>
+              <p className="mb-0">{userForPasswordResetModal.username}</p>
+              <p className="mb-0">{userForPasswordResetModal.email}</p>
+            </div>
+          </>
+        )}
+      </div>
+    );
   }
 
   renderModalBodyBeforeReset() {
@@ -53,6 +97,11 @@ class PasswordResetModal extends React.Component {
 
   returnModalBodyAfterReset() {
     const { t, userForPasswordResetModal } = this.props;
+    const { temporaryPassword, showPassword, showTooltip } = this.state;
+
+    const maskedPassword = showPassword
+      ? temporaryPassword
+      : '•'.repeat(temporaryPassword.length);
 
     return (
       <>
@@ -61,7 +110,28 @@ class PasswordResetModal extends React.Component {
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <p>
-          {t('user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
+          {t('user_management.reset_password_modal.new_password')}:{' '}
+          <code>
+            <span
+              onMouseEnter={() => this.setState({ showPassword: true })}
+              onMouseLeave={() => this.setState({ showPassword: false })}
+            >
+              {showPassword ? temporaryPassword : maskedPassword}
+            </span>
+          </code>
+          <CopyToClipboard text={ temporaryPassword } onCopy={() => this.setState({ showTooltip: true })}>
+            <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
+              <i className="fa fa-clone" aria-hidden="true"></i>
+            </button>
+          </CopyToClipboard>
+          <Tooltip
+            placement="right"
+            isOpen={showTooltip}
+            target="copy-tooltip"
+            toggle={() => this.setState({ showTooltip: false })}
+          >
+            {t('Copied!')}
+          </Tooltip>
         </p>
       </>
     );
@@ -77,13 +147,33 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalFooterAfterReset() {
-    const { t } = this.props;
-
     return (
-      <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>
-        {t('Close')}
-      </button>
+      <>
+        {this.renderAddress()}
+        {this.renderButtons()}
+      </>
     );
+  }
+
+  async onClickSendNewPasswordButton() {
+
+    const {
+      userForPasswordResetModal,
+    } = this.props;
+
+    this.setState({ isEmailSending: true });
+
+    try {
+      await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
+      this.setState({ isEmailSent: true });
+    }
+    catch (err) {
+      this.setState({ isEmailSent: false });
+      toastError(err);
+    }
+    finally {
+      this.setState({ isEmailSending: false });
+    }
   }
 
 
@@ -109,7 +199,8 @@ class PasswordResetModal extends React.Component {
 
 const PasswordResetModalWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  return <PasswordResetModal t={t} {...props} />;
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <PasswordResetModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
 };
 
 /**
@@ -122,6 +213,8 @@ PasswordResetModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userForPasswordResetModal: PropTypes.object,
+  onSuccessfullySentNewPasswordEmail: PropTypes.func.isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
 };
 

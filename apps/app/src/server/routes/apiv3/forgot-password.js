@@ -5,12 +5,12 @@ import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import httpErrorHandler from '../../middlewares/http-error-handler';
 import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
-
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
@@ -22,7 +22,7 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
 const router = express.Router();
 
 module.exports = (crowi) => {
-  const { appService, mailService, configManager } = crowi;
+  const { appService, mailService } = crowi;
   const User = crowi.model('User');
   const path = require('path');
 
@@ -30,7 +30,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+  const minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
 
   const validator = {
     password: [
@@ -47,11 +47,11 @@ module.exports = (crowi) => {
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
 
-  async function sendPasswordResetEmail(txtFileName, i18n, email, url, expiredAt) {
+  async function sendPasswordResetEmail(templateFileName, locale, email, url, expiredAt) {
     return mailService.send({
       to: email,
       subject: '[GROWI] Password Reset',
-      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
+      template: path.join(crowi.localeDir, `${locale}/notifications/${templateFileName}.ejs`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
@@ -63,7 +63,7 @@ module.exports = (crowi) => {
 
   router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
     const { email } = req.body;
-    const i18n = configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
@@ -71,7 +71,7 @@ module.exports = (crowi) => {
 
       // when the user is not found or active
       if (user == null || user.status !== 2) {
-        await sendPasswordResetEmail('notActiveUser', i18n, email, appUrl);
+        await sendPasswordResetEmail('notActiveUser', locale, email, appUrl);
         return res.apiv3();
       }
 
@@ -81,7 +81,7 @@ module.exports = (crowi) => {
       const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
       const expiredAt = subSeconds(passwordResetOrderData.expiredAt, grwTzoffsetSec);
       const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
-      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl, formattedExpiredAt);
+      await sendPasswordResetEmail('passwordReset', locale, email, oneTimeUrl, formattedExpiredAt);
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_USER_FOGOT_PASSWORD });
 
