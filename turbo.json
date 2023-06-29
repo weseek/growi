@@ -168,6 +168,10 @@
       "dependsOn": ["@growi/slack#dev"],
       "outputMode": "new-only"
     },
+    "@growi/pluginkit#test": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputMode": "new-only"
+    },
     "@growi/preset-templates#test": {
       "dependsOn": ["@growi/pluginkit#dev"],
       "outputMode": "new-only"
