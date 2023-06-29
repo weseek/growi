@@ -139,14 +139,17 @@
       "persistent": true
     },
 
+    "@growi/pluginkit#lint": {
+      "dependsOn": ["@growi/core#dev"]
+    },
     "@growi/remark-attachment-refs#lint": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
+    },
+    "@growi/remark-lsx#lint": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
     "@growi/ui#lint": {
       "dependsOn": ["@growi/core#dev"]
-    },
-    "@growi/remark-lsx#lint": {
-      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
     "@growi/app#lint": {
       "dependsOn": ["^dev", "@growi/app#dev:styles-prebuilt"]
