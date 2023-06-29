@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
-import { originalSlideStyle, presentationSlideStyle } from '../interfaces';
+import { SLIDE_STYLE, presentationSlideStyle } from '../interfaces';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
@@ -59,7 +59,7 @@ export const Slides = (props: Props): JSX.Element => {
   ]);
 
 
-  if (slideStyle === originalSlideStyle.true) {
+  if (slideStyle === SLIDE_STYLE.true) {
     // TODO: to change better slide style
     // https://redmine.weseek.co.jp/issues/125680
     // classname = "marpit" cannot be used in SSR.
@@ -85,7 +85,7 @@ export const Slides = (props: Props): JSX.Element => {
 
   // TODO: can Marp rendering
   // https://redmine.weseek.co.jp/issues/115673
-  if (slideStyle === originalSlideStyle.marp) {
+  if (slideStyle === SLIDE_STYLE.marp) {
     return (
       <></>
     );
