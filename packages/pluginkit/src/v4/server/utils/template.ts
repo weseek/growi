@@ -1,4 +1,3 @@
-import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
@@ -8,7 +7,7 @@ import { GrowiPluginType } from '@growi/core/dist/consts';
 import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '~/model';
 import { GrowiPluginValidationError } from '~/model';
 
-import { isTemplateStatusValid, type TemplateStatus, type TemplateSummary } from '../../../interfaces/v4';
+import { isTemplateStatusValid, type TemplateStatus, type TemplateSummary } from '../../interfaces';
 
 import { importPackageJson, validatePackageJson } from './package-json';
 

@@ -1,4 +1,4 @@
-import { scanAllTemplateStatus, getMarkdown } from '@growi/pluginkit/dist/server/utils/v4';
+import { scanAllTemplateStatus, getMarkdown } from '@growi/pluginkit/dist/v4/server';
 import express from 'express';
 import { param, query } from 'express-validator';
 

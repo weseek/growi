@@ -6,7 +6,7 @@ import assert from 'assert';
 
 import { Lang } from '@growi/core';
 import type { ITemplate } from '@growi/core/dist/interfaces/template';
-import type { TemplateSummary } from '@growi/pluginkit/dist/interfaces/v4';
+import { getLocalizedTemplate, type TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -15,7 +15,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import { useSWRxTemplates } from '~/features/templates/stores';
+import { useSWRxTemplate, useSWRxTemplates } from '~/features/templates/stores';
 import { useTemplateModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -80,28 +80,30 @@ export const TemplateModal = (): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
   const { data: templateSummaries } = useSWRxTemplates();
 
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateSummary>();
-  // const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
+  const [selectedTemplateSummary, setSelectedTemplateSummary] = useState<TemplateSummary>();
+  const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
+
+  const { data: selectedTemplateMarkdown } = useSWRxTemplate(selectedTemplateSummary, selectedTemplateLocale);
 
   const { format } = useFormatter();
 
-  const submitHandler = useCallback((template?: ITemplate) => {
-    if (templateModalStatus == null || selectedTemplate == null) {
+  const submitHandler = useCallback((markdown?: string) => {
+    if (templateModalStatus == null || markdown == null) {
       return;
     }
 
-    if (templateModalStatus.onSubmit == null || template == null) {
+    if (templateModalStatus.onSubmit == null) {
       close();
       return;
     }
 
-    // templateModalStatus.onSubmit(format(selectedTemplate));
+    templateModalStatus.onSubmit(format(selectedTemplateMarkdown));
     close();
-  }, [close, selectedTemplate, templateModalStatus]);
+  }, [close, format, selectedTemplateMarkdown, templateModalStatus]);
 
   useEffect(() => {
     if (!templateModalStatus?.isOpened) {
-      setSelectedTemplate(undefined);
+      setSelectedTemplateSummary(undefined);
     }
   }, [templateModalStatus?.isOpened]);
 
@@ -127,8 +129,8 @@ export const TemplateModal = (): JSX.Element => {
                     key={templateId}
                     templateSummary={templateSummary}
                     usersDefaultLang={personalSettingsInfo?.lang}
-                    onClick={() => setSelectedTemplate(templateSummary)}
-                    isSelected={selectedTemplate != null && constructTemplateId(selectedTemplate) === templateId}
+                    onClick={() => setSelectedTemplateSummary(templateSummary)}
+                    isSelected={selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId}
                   />
                 );
               }) }
@@ -139,8 +141,8 @@ export const TemplateModal = (): JSX.Element => {
             <h3>{t('Preview')}</h3>
             <div className='card'>
               <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
-                { rendererOptions != null && selectedTemplate != null && (
-                  <Preview rendererOptions={rendererOptions} markdown={'' /* format(selectedTemplate) */}/>
+                { rendererOptions != null && selectedTemplateSummary != null && (
+                  <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplateMarkdown)}/>
                 ) }
               </div>
             </div>
@@ -155,8 +157,8 @@ export const TemplateModal = (): JSX.Element => {
         <button
           type="submit"
           className="btn btn-primary mx-1"
-          // onClick={() => submitHandler(selectedTemplate)}
-          disabled={selectedTemplate == null}>
+          onClick={() => submitHandler(selectedTemplateMarkdown)}
+          disabled={selectedTemplateSummary == null}>
           {t('commons:Insert')}
         </button>
       </ModalFooter>

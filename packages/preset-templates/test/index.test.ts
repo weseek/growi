@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { scanAllTemplateStatus, validateTemplatePluginPackageJson, validateTemplatePlugin } from '@growi/pluginkit/dist/server/utils/v4';
+import { scanAllTemplateStatus, validateTemplatePluginPackageJson, validateTemplatePlugin } from '@growi/pluginkit/dist/v4/server';
 
 
 const projectDirRoot = path.resolve(__dirname, '../');
