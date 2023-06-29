@@ -22,6 +22,7 @@ import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
+import { useSWRMUTxCurrentPage } from '~/stores/page';
 
 export const ROOT_ELEM_ID = 'page-comments' as const;
 
@@ -56,6 +57,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
@@ -84,7 +86,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const onDeleteCommentAfterOperation = useCallback(() => {
     onCancelDeleteComment();
     mutate();
-  }, [mutate, onCancelDeleteComment]);
+    mutateCurrentPage();
+  }, [mutate, onCancelDeleteComment, mutateCurrentPage]);
 
   const onDeleteComment = useCallback(async() => {
     if (commentToBeDeleted == null) return;
@@ -114,7 +117,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const onCommentButtonClickHandler = useCallback((commentId: string) => {
     removeShowEditorId(commentId);
     mutate();
-  }, [removeShowEditorId, mutate]);
+    mutateCurrentPage();
+  }, [removeShowEditorId, mutate, mutateCurrentPage]);
 
   if (hideIfEmpty && comments?.length === 0) {
     return <PageCommentRoot />;
