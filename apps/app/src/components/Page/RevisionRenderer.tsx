@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { presentationSlideStyle } from '@growi/presentation';
+import { SLIDE_STYLE, presentationSlideStyle } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
@@ -62,10 +62,18 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
               const [key, value] = line.split(':').map(part => part.trim());
 
               if (key === 'presentation') {
-                setSlideStyle(value === 'marp' || value === 'true' ? value : null);
+                if (value === 'marp') {
+                  setSlideStyle(SLIDE_STYLE.marp);
+                }
+                else if (value === 'true') {
+                  setSlideStyle(SLIDE_STYLE.true);
+                }
+                else {
+                  setSlideStyle(null);
+                }
               }
               else if (key === 'marp' && value === 'true') {
-                setSlideStyle('marp');
+                setSlideStyle(SLIDE_STYLE.marp);
               }
             });
           }
