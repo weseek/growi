@@ -31,19 +31,19 @@ const logger = loggerFactory('growi:components:TemplateModal');
 function constructTemplateId(templateSummary: TemplateSummary): string {
   const defaultTemplate = templateSummary.default;
 
-  return `${defaultTemplate.namespace ?? ''}_${defaultTemplate.id}`;
+  return `${defaultTemplate.pluginId ?? ''}_${defaultTemplate.id}`;
 }
 
 
 type TemplateRadioButtonProps = {
   templateSummary: TemplateSummary,
-  onChange: (selectedTemplate: TemplateSummary) => void,
+  onClick?: () => void,
   usersDefaultLang?: Lang,
   isSelected?: boolean,
 }
 
 const TemplateListGroupItem = ({
-  templateSummary, onChange, usersDefaultLang, isSelected,
+  templateSummary, onClick, usersDefaultLang, isSelected,
 }: TemplateRadioButtonProps): JSX.Element => {
   const templateId = constructTemplateId(templateSummary);
   const locales = new Set(Object.values(templateSummary).map(s => s.locale));
@@ -55,7 +55,12 @@ const TemplateListGroupItem = ({
   assert(template.isValid);
 
   return (
-    <a key={templateId} className={`list-group-item list-group-item-action ${isSelected ? 'active' : ''}`} aria-current="true">
+    <a
+      key={templateId}
+      className={`list-group-item list-group-item-action ${isSelected ? 'active' : ''}`}
+      onClick={onClick}
+      aria-current="true"
+    >
       <h4 className="mb-1">{template.title}</h4>
       <p className="mb-2">{template.desc}</p>
       { Array.from(locales).map(locale => (
@@ -115,15 +120,15 @@ export const TemplateModal = (): JSX.Element => {
           <div className="d-none d-lg-block col-lg-4">
             <div className="list-group">
               { templateSummaries.map((templateSummary) => {
-                const templateId = (templateSummary.default.namespace ?? '') + templateSummary.default.id;
+                const templateId = constructTemplateId(templateSummary);
 
                 return (
                   <TemplateListGroupItem
                     key={templateId}
                     templateSummary={templateSummary}
                     usersDefaultLang={personalSettingsInfo?.lang}
-                    onChange={() => setSelectedTemplate(templateSummary)}
-                    isSelected={selectedTemplate != null && constructTemplateId(selectedTemplate) === constructTemplateId(templateSummary)}
+                    onClick={() => setSelectedTemplate(templateSummary)}
+                    isSelected={selectedTemplate != null && constructTemplateId(selectedTemplate) === templateId}
                   />
                 );
               }) }

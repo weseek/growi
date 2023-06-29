@@ -72,7 +72,7 @@ export const scanTemplateStatus = async(
     templateId: string,
     data: GrowiTemplatePluginValidationData,
     opts?: {
-      namespace?: string,
+      pluginId?: string,
     },
 ): Promise<TemplateStatus[]> => {
   const status: TemplateStatus[] = [];
@@ -95,7 +95,7 @@ export const scanTemplateStatus = async(
 
       const isDefault = !isDefaultPushed;
       status.push({
-        namespace: opts?.namespace,
+        pluginId: opts?.pluginId,
         id: templateId,
         locale,
         isValid: true,
@@ -107,7 +107,7 @@ export const scanTemplateStatus = async(
     }
     catch (err) {
       status.push({
-        namespace: opts?.namespace,
+        pluginId: opts?.pluginId,
         id: templateId,
         locale,
         isValid: false,
@@ -126,7 +126,7 @@ export const scanAllTemplateStatus = async(
     projectDirRoot: string,
     opts?: {
       data?: GrowiTemplatePluginValidationData,
-      namespace?: string,
+      pluginId?: string,
       returnsInvalidTemplates?: boolean,
     },
 ): Promise<TemplateSummary[]> => {
@@ -139,7 +139,7 @@ export const scanAllTemplateStatus = async(
   const distDirFiles = fs.readdirSync(distDirPath);
 
   for await (const templateId of distDirFiles) {
-    const status = (await scanTemplateStatus(projectDirRoot, templateId, data, { namespace: opts?.namespace }))
+    const status = (await scanTemplateStatus(projectDirRoot, templateId, data, { pluginId: opts?.pluginId }))
       // omit invalid templates if `returnsInvalidTemplates` is true
       .filter(s => (opts?.returnsInvalidTemplates ? true : s.isValid));
 
@@ -174,7 +174,7 @@ export const validateTemplatePlugin = async(projectDirRoot: string): Promise<boo
   // key: id
   // value: isValid properties
   const idValidMap: { [id: string]: boolean[] } = {};
-  Object.entries(results).forEach(([index, summary]) => {
+  results.forEach((summary) => {
     idValidMap[summary.default.id] = Object.values(summary).map(s => s?.isValid ?? false);
   });
 

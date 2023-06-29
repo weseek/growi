@@ -1,7 +1,7 @@
 export type TemplateStatusBasis = {
-  namespace?: string,
   id: string,
   locale: string,
+  pluginId?: string,
 }
 export type TemplateStatusValid = TemplateStatusBasis & {
   isValid: true,
