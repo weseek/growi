@@ -1,6 +1,5 @@
 import { ErrorV3 } from '@growi/core';
 
-import { GrowiExternalAuthProviderType } from '~/features/questionnaire/interfaces/growi-info';
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import { configManager } from '~/server/service/config-manager';
@@ -513,43 +512,30 @@ module.exports = (crowi) => {
       }
 
       // Check if external accounts have admins
-      const externalAccounts = await ExternalAccount.find({ providerType: strategy }).populate('user').exec();
-      const hasAdmin = externalAccounts.some(account => account.user?.admin && account.user?.status === User.STATUS_ACTIVE);
+      const externalAccounts = await ExternalAccount.find({ providerType: strategy })
+        .populate('user', null, { admin: true, status: User.STATUS_ACTIVE })
+        .exec();
+
+      const hasAdmin = externalAccounts.some(account => account.user !== null);
 
       return hasAdmin;
     }
 
-    // Check and add an authentication method with admin to the list
-    async function checkAndAddActiveAuthMethodWithAdmin(strategy, activeAuthMethodsWithAdmin) {
-      const configKey = `security:passport-${strategy}:isEnabled`;
-      const isEnabled = configManager.getConfig('crowi', configKey);
-      const hasAdmin = await checkAuthStrategyHasAdmin(strategy);
-      if (isEnabled && hasAdmin && setupStrategies.includes(strategy)) {
-        activeAuthMethodsWithAdmin.push(strategy);
-      }
-    }
-
-    // Get all authentication methods that have admin users
-    async function getAllActiveAuthMethodsWithAdmin() {
-      const activeAuthMethodsWithAdmin = [];
-
-      // Check the local auth method
-      await checkAndAddActiveAuthMethodWithAdmin('local', activeAuthMethodsWithAdmin);
-
-      // Check external auth methods
-      const externalAuthTypes = Object.values(GrowiExternalAuthProviderType);
-      await Promise.all(externalAuthTypes.map(async(strategy) => {
-        await checkAndAddActiveAuthMethodWithAdmin(strategy, activeAuthMethodsWithAdmin);
+    // Check all setup strategies that have admin users
+    async function checkAllSetupStrategiesHasAdmin() {
+      const results = await Promise.all(setupStrategies.map(async(strategy) => {
+        const hasAdmin = await checkAuthStrategyHasAdmin(strategy);
+        return hasAdmin;
       }));
 
-      return activeAuthMethodsWithAdmin;
+      return results.some(hasAdmin => hasAdmin);
     }
 
     if (!isEnabled) {
-      const allActiveAuthMethodsWithAdmin = await getAllActiveAuthMethodsWithAdmin();
+      const isSetupStrategiesHasAdmin = await checkAllSetupStrategiesHasAdmin();
 
-      // Return an error when disabling an authentication method when there are no active authentication methods with admin-enabled login
-      if (allActiveAuthMethodsWithAdmin.length === 0) {
+      // Return an error when disabling an strategy when there are no setup strategies with admin-enabled login
+      if (!isSetupStrategiesHasAdmin) {
         return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
       }
     }
