@@ -1,10 +1,10 @@
+import { configManager } from '~/server/service/config-manager';
+import LdapService, { SearchResultEntry } from '~/server/service/ldap';
+import PassportService from '~/server/service/passport';
+
 import {
   ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, LdapGroupMembershipAttributeType,
-} from '~/interfaces/external-user-group';
-
-import { configManager } from '../config-manager';
-import LdapService, { SearchResultEntry } from '../ldap';
-import PassportService from '../passport';
+} from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync-service';
 

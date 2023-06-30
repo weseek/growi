@@ -1,15 +1,15 @@
 import mongoose from 'mongoose';
 
-import {
-  ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, IExternalUserGroupHasId,
-} from '~/interfaces/external-user-group';
 import { IUserHasId } from '~/interfaces/user';
-import ExternalUserGroup from '~/server/models/external-user-group';
-import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
-import { configManager } from '../config-manager';
-import { externalAccountService } from '../external-account';
+import { configManager } from '../../../../server/service/config-manager';
+import { externalAccountService } from '../../../../server/service/external-account';
+import {
+  ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, IExternalUserGroupHasId,
+} from '../../interfaces/external-user-group';
+import ExternalUserGroup from '../models/external-user-group';
+import ExternalUserGroupRelation from '../models/external-user-group-relation';
 
 abstract class ExternalUserGroupSyncService {
 

@@ -1,6 +1,6 @@
 import { HasObjectId, IUserGroupRelation, Ref } from '@growi/core';
 
-import { IUserGroup } from './user';
+import { IUserGroup } from '../../../interfaces/user';
 
 export const ExternalGroupProviderType = { ldap: 'ldap' } as const;
 export type ExternalGroupProviderType = typeof ExternalGroupProviderType[keyof typeof ExternalGroupProviderType];

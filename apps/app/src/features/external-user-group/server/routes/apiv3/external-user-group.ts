@@ -4,8 +4,9 @@ import { body, validationResult } from 'express-validator';
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import LdapUserGroupSyncService from '~/server/service/external-group/ldap-user-group-sync-service';
 import loggerFactory from '~/utils/logger';
+
+import LdapUserGroupSyncService from '../../service/ldap-user-group-sync-service';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
@@ -17,7 +18,7 @@ interface AuthorizedRequest extends Request {
 
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validators = {
     ldapSyncSettings: [

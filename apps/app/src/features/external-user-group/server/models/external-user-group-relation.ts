@@ -1,8 +1,7 @@
 import { Schema, Model, Document } from 'mongoose';
 
-import { IExternalUserGroupRelation } from '~/interfaces/external-user-group';
-
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
+import { IExternalUserGroupRelation } from '../../interfaces/external-user-group';
 
 
 export interface ExternalUserGroupRelationDocument extends IExternalUserGroupRelation, Document {}
