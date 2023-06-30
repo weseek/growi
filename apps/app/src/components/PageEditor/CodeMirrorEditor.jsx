@@ -157,7 +157,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.showTemplateModal = this.showTemplateModal.bind(this);
     this.showLinkEditModal = this.showLinkEditModal.bind(this);
-
+    this.isCursorInPlantUMLBlock = this.isCursorInPlantUMLBlock.bind(this);
   }
 
   init() {
@@ -535,7 +535,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   scrollCursorIntoViewHandler(editor, event) {
-    if (this.props.onScrollCursorIntoView != null) {
+    if ( this.props.onScrollCursorIntoView != null && !this.isCursorInPlantUMLBlock(editor)) {
       const line = editor.getCursor().line;
       this.props.onScrollCursorIntoView(line);
     }
@@ -682,6 +682,42 @@ class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
+  }
+
+  // Checks whether the cursor is within a "plantuml" block in the CodeMirror editor.
+  // Returns true if the cursor is inside the block, false otherwise.
+  isCursorInPlantUMLBlock(editor) {
+    const cursor = editor.getCursor();
+    const line = cursor.line;
+    const startRegex = /^```(?:\s*)plantuml/;
+    const endRegex = /^```\s*$/;
+
+    let startLine = null;
+    let endLine = null;
+
+    // Find the start line of the plantuml block
+    for (let i = line; i >= 0; i--) {
+      const currentLineContent = editor.getLine(i);
+      if (startRegex.test(currentLineContent)) {
+        startLine = i;
+        break;
+      }
+    }
+
+    // If the start line is found, find the end line of the plantuml block
+    if (startLine !== null) {
+      const lineCount = editor.lineCount();
+      for (let i = startLine + 1; i < lineCount; i++) {
+        const currentLineContent = editor.getLine(i);
+        if (endRegex.test(currentLineContent)) {
+          endLine = i;
+          break;
+        }
+      }
+    }
+
+    // Check if the cursor line is within the plantuml block
+    return startLine !== null && endLine !== null && line >= startLine && line <= endLine;
   }
 
   /**
