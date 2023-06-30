@@ -9,6 +9,7 @@ import { Button } from 'reactstrap';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import { RendererOptions } from '~/interfaces/renderer-options';
+import { useSWRMUTxCurrentPage } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -22,7 +23,6 @@ import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
-import { useSWRMUTxCurrentPage } from '~/stores/page';
 
 export const ROOT_ELEM_ID = 'page-comments' as const;
 
@@ -103,15 +103,12 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
 
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
-      // Create a new Set of commentId from the previous state
-      const updatedShowEditorIds = new Set(previousState);
-      updatedShowEditorIds.delete(commentId); // Delete the commentId from the Set
-      return updatedShowEditorIds;
+      return new Set([...previousState].filter(id => id !== commentId));
     });
   }, []);
 
   const onReplyButtonClickHandler = useCallback((commentId: string) => {
-    setShowEditorIds(previousState => new Set(previousState.add(commentId)));
+    setShowEditorIds(previousState => new Set([...previousState, commentId]));
   }, []);
 
   const onCommentButtonClickHandler = useCallback((commentId: string) => {
