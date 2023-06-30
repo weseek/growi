@@ -27,7 +27,16 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   return (
     <>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      <div className="mx-2" style={{ lineHeight: 1.2 }}>
+      <div
+        className="mx-2"
+        style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          lineHeight: '1.2',
+        }}
+      >
         {pagePathElement}
       </div>
       <span className="ml-2">
