@@ -535,7 +535,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   scrollCursorIntoViewHandler(editor, event) {
-    if ( this.props.onScrollCursorIntoView != null && !this.isCursorInPlantUMLBlock(editor)) {
+    if (this.props.onScrollCursorIntoView != null && !this.isCursorInPlantUMLBlock(editor)) {
       const line = editor.getCursor().line;
       this.props.onScrollCursorIntoView(line);
     }
