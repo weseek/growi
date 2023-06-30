@@ -120,7 +120,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
         const nameToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapName);
         const mailToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapMail);
 
-        return usernameToBeRegistered != null && mailToBeRegistered != null ? {
+        return usernameToBeRegistered != null ? {
           id: uid,
           username: usernameToBeRegistered,
           name: nameToBeRegistered,

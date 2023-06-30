@@ -20,7 +20,7 @@ class ExternalAccountService {
     this.passportService = passportService;
   }
 
-  async getOrCreateUser(userInfo: {id: string, username: string, name?: string, email: string}, providerId: string): Promise<IExternalAccount | undefined> {
+  async getOrCreateUser(userInfo: {id: string, username: string, name?: string, email?: string}, providerId: string): Promise<IExternalAccount | undefined> {
     // get option
     const isSameUsernameTreatedAsIdenticalUser = this.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
     const isSameEmailTreatedAsIdenticalUser = this.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
