@@ -2,7 +2,10 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
-import type { ITemplate } from '@growi/core/dist/interfaces/template';
+import assert from 'assert';
+
+import { Lang } from '@growi/core';
+import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -11,9 +14,10 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import { useSWRxTemplate, useSWRxTemplates } from '~/features/templates/stores';
 import { useTemplateModal } from '~/stores/modal';
+import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
-import { useTemplates } from '~/stores/template';
 import loggerFactory from '~/utils/logger';
 
 import Preview from '../PageEditor/Preview';
@@ -23,28 +27,45 @@ import { useFormatter } from './use-formatter';
 const logger = loggerFactory('growi:components:TemplateModal');
 
 
+function constructTemplateId(templateSummary: TemplateSummary): string {
+  const defaultTemplate = templateSummary.default;
+
+  return `${defaultTemplate.pluginId ?? ''}_${defaultTemplate.id}`;
+}
+
+
 type TemplateRadioButtonProps = {
-  template: ITemplate,
-  onChange: (selectedTemplate: ITemplate) => void,
+  templateSummary: TemplateSummary,
+  onClick?: () => void,
+  usersDefaultLang?: Lang,
   isSelected?: boolean,
 }
 
-const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioButtonProps): JSX.Element => {
-  const radioButtonId = `rb-${template.id}`;
+const TemplateListGroupItem = ({
+  templateSummary, onClick, usersDefaultLang, isSelected,
+}: TemplateRadioButtonProps): JSX.Element => {
+  const templateId = constructTemplateId(templateSummary);
+  const locales = new Set(Object.values(templateSummary).map(s => s.locale));
+
+  const template = usersDefaultLang != null && usersDefaultLang in templateSummary
+    ? templateSummary[usersDefaultLang]
+    : templateSummary.default;
+
+  assert(template.isValid);
 
   return (
-    <div key={template.id} className="custom-control custom-radio mb-2">
-      <input
-        id={radioButtonId}
-        type="radio"
-        className="custom-control-input"
-        checked={isSelected}
-        onChange={() => onChange(template)}
-      />
-      <label className="custom-control-label" htmlFor={radioButtonId}>
-        {template.name}
-      </label>
-    </div>
+    <a
+      key={templateId}
+      className={`list-group-item list-group-item-action ${isSelected ? 'active' : ''}`}
+      onClick={onClick}
+      aria-current="true"
+    >
+      <h4 className="mb-1">{template.title}</h4>
+      <p className="mb-2">{template.desc}</p>
+      { Array.from(locales).map(locale => (
+        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+      ))}
+    </a>
   );
 };
 
@@ -54,74 +75,89 @@ export const TemplateModal = (): JSX.Element => {
 
   const { data: templateModalStatus, close } = useTemplateModal();
 
+  const { data: personalSettingsInfo } = usePersonalSettings();
   const { data: rendererOptions } = usePreviewOptions();
-  const { data: templates } = useTemplates();
+  const { data: templateSummaries } = useSWRxTemplates();
 
-  const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
+  const [selectedTemplateSummary, setSelectedTemplateSummary] = useState<TemplateSummary>();
+  const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
+
+  const { data: selectedTemplateMarkdown } = useSWRxTemplate(selectedTemplateSummary, selectedTemplateLocale);
 
   const { format } = useFormatter();
 
-  const submitHandler = useCallback((template?: ITemplate) => {
-    if (templateModalStatus == null || selectedTemplate == null) {
+  const submitHandler = useCallback((markdown?: string) => {
+    if (templateModalStatus == null || markdown == null) {
       return;
     }
 
-    if (templateModalStatus.onSubmit == null || template == null) {
+    if (templateModalStatus.onSubmit == null) {
       close();
       return;
     }
 
-    templateModalStatus.onSubmit(format(selectedTemplate));
+    templateModalStatus.onSubmit(format(selectedTemplateMarkdown));
     close();
-  }, [close, format, selectedTemplate, templateModalStatus]);
+  }, [close, format, selectedTemplateMarkdown, templateModalStatus]);
 
   useEffect(() => {
     if (!templateModalStatus?.isOpened) {
-      setSelectedTemplate(undefined);
+      setSelectedTemplateSummary(undefined);
     }
   }, [templateModalStatus?.isOpened]);
 
-  if (templates == null || templateModalStatus == null) {
+  if (templateSummaries == null || templateModalStatus == null) {
     return <></>;
   }
 
   return (
-    <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
+    <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="xl" autoFocus={false}>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         {t('template.modal_label.Select template')}
       </ModalHeader>
 
       <ModalBody className="container">
         <div className="row">
-          <div className="col-12">
-            { templates.map(template => (
-              <TemplateRadioButton
-                key={template.id}
-                template={template}
-                onChange={selected => setSelectedTemplate(selected)}
-                isSelected={template.id === selectedTemplate?.id}
-              />
-            )) }
+          <div className="d-none d-lg-block col-lg-4">
+            <div className="list-group">
+              { templateSummaries.map((templateSummary) => {
+                const templateId = constructTemplateId(templateSummary);
+
+                return (
+                  <TemplateListGroupItem
+                    key={templateId}
+                    templateSummary={templateSummary}
+                    usersDefaultLang={personalSettingsInfo?.lang}
+                    onClick={() => setSelectedTemplateSummary(templateSummary)}
+                    isSelected={selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId}
+                  />
+                );
+              }) }
+            </div>
           </div>
-        </div>
 
-        <hr />
-
-        <h3>{t('Preview')}</h3>
-        <div className='card'>
-          <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
-            { rendererOptions != null && selectedTemplate != null && (
-              <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplate)}/>
-            ) }
+          <div className="col-12 col-lg-8">
+            <h3>{t('Preview')}</h3>
+            <div className='card'>
+              <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
+                { rendererOptions != null && selectedTemplateSummary != null && (
+                  <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplateMarkdown)}/>
+                ) }
+              </div>
+            </div>
           </div>
         </div>
 
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
+        <button type="button" className="btn btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>
-        <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={() => submitHandler(selectedTemplate)} disabled={selectedTemplate == null}>
+        <button
+          type="submit"
+          className="btn btn-primary mx-1"
+          onClick={() => submitHandler(selectedTemplateMarkdown)}
+          disabled={selectedTemplateSummary == null}>
           {t('commons:Insert')}
         </button>
       </ModalFooter>
