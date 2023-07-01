@@ -12,6 +12,7 @@ import {
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDeleteModal';
+import { UserGroupForm } from '~/components/Admin/UserGroup/UserGroupForm';
 import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import styles from '~/components/Admin/UserGroupDetail/UserGroupDetailPage.module.scss';
@@ -22,10 +23,6 @@ import {
 } from '~/features/external-user-group/client/stores/external-user-group';
 import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
-
-
-import { ExternalUserGroupEditForm } from './ExternalUserGroupEditForm';
-
 
 type Props = {
   externalUserGroupId: string,
@@ -128,6 +125,18 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
     }
   }, [mutateExternalChildUserGroups, setSelectedExternalUserGroup, setDeleteModalShown]);
 
+  const onClickSubmitForm = useCallback(async(targetGroup: IExternalUserGroupHasId, userGroupData: IExternalUserGroupHasId) => {
+    try {
+      await apiv3Put(`/external-user-groups/${targetGroup._id}`, {
+        description: userGroupData.description,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('ExternalUserGroup'), ns: 'commons' }));
+    }
+    catch {
+      toastError(t('toaster.update_failed', { target: t('ExternalUserGroup'), ns: 'commons' }));
+    }
+  }, [t]);
+
   /*
    * Dependencies
    */
@@ -172,10 +181,14 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
       </nav>
 
       <div className="mt-4 form-box">
-        <ExternalUserGroupEditForm externalUserGroup={currentExternalUserGroup} parent={
-          ancestorExternalUserGroups != null && ancestorExternalUserGroups.length > 0
-            ? ancestorExternalUserGroups[ancestorExternalUserGroups.length - 1] : undefined
-        }/>
+        <UserGroupForm
+          userGroup={currentExternalUserGroup}
+          parentUserGroup={ancestorExternalUserGroups != null && ancestorExternalUserGroups.length > 1
+            ? ancestorExternalUserGroups[ancestorExternalUserGroups.length - 2] : undefined}
+          submitButtonLabel={t('Update')}
+          onSubmit={onClickSubmitForm}
+          isExternalGroup={true}
+        />
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
       <UserGroupUserTable

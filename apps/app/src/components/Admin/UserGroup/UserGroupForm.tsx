@@ -11,6 +11,7 @@ type Props = {
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: string;
   onSubmit: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void>
+  isExternalGroup?: boolean
 };
 
 export const UserGroupForm: FC<Props> = (props: Props) => {
@@ -18,7 +19,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
 
   const {
-    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
+    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit, isExternalGroup = false,
   } = props;
   /*
    * State
@@ -72,16 +73,17 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('user_group_management.group_name')}
           </label>
-          <div className="col-md-4">
-            <input
-              className="form-control"
-              type="text"
-              name="name"
-              placeholder={t('user_group_management.group_example')}
-              value={currentName}
-              onChange={onChangeNameHandler}
-              required
-            />
+          <div className="col-md-4 my-auto">
+            {isExternalGroup ? currentName
+              : <input
+                className="form-control"
+                type="text"
+                name="name"
+                placeholder={t('user_group_management.group_example')}
+                value={currentName}
+                onChange={onChangeNameHandler}
+                required
+              />}
           </div>
         </div>
 
@@ -98,47 +100,48 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           <label htmlFor="parent" className="col-md-2 col-form-label">
             {t('user_group_management.parent_group')}
           </label>
-          <div className="dropdown col-md-4">
-            <button
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              className={`
+          {isExternalGroup ? <div className="col-md-4 my-auto">{parentUserGroup?.name}</div>
+            : <div className="dropdown col-md-4">
+              <button
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                className={`
                 btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
               `}
-            >
-              {selectedParent?.name ?? t('user_group_management.select_parent_group')}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {
-                isSelectableParentUserGroups && (
-                  <>
-                    {
-                      selectableParentUserGroups.map(userGroup => (
-                        <button
-                          key={userGroup._id}
-                          type="button"
-                          className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
-                          onClick={() => onChangeParerentButtonHandler(userGroup)}
-                        >
-                          {userGroup.name}
-                        </button>
-                      ))
-                    }
-                  </>
-                )
-              }
-
-              <div className="dropdown-divider" />
-
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => { setSelectedParent(undefined) }}
-              >{t('user_group_management.release_parent_group')}
+              >
+                {selectedParent?.name ?? t('user_group_management.select_parent_group')}
               </button>
-            </div>
-          </div>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {
+                  isSelectableParentUserGroups && (
+                    <>
+                      {
+                        selectableParentUserGroups.map(userGroup => (
+                          <button
+                            key={userGroup._id}
+                            type="button"
+                            className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
+                            onClick={() => onChangeParerentButtonHandler(userGroup)}
+                          >
+                            {userGroup.name}
+                          </button>
+                        ))
+                      }
+                    </>
+                  )
+                }
+
+                <div className="dropdown-divider" />
+
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { setSelectedParent(undefined) }}
+                >{t('user_group_management.release_parent_group')}
+                </button>
+              </div>
+            </div>}
         </div>
 
         <div className="form-group row">
