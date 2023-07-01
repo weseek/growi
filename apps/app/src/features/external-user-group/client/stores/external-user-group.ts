@@ -64,7 +64,7 @@ export const useSWRxExternalUserGroupRelationList = (
   );
 };
 
-export const useSWRxAncestorExternalUserGroups = (groupId: string | undefined): SWRResponse<IExternalUserGroupHasId[], Error> => {
+export const useSWRxAncestorExternalUserGroups = (groupId?: string): SWRResponse<IExternalUserGroupHasId[], Error> => {
   return useSWRImmutable(
     groupId != null ? ['/external-user-groups/ancestors', groupId] : null,
     ([endpoint, groupId]) => apiv3Get(endpoint, { groupId }).then(result => result.data.ancestorExternalUserGroups),

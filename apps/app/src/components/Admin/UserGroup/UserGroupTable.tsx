@@ -127,8 +127,6 @@ export const UserGroupTable: FC<Props> = ({
     onDelete(userGroup);
   };
 
-  const groupDetailPageName = isExternalGroup ? 'external-user-group-detail' : 'user-group-detail';
-
   /*
    * useEffect
    */
@@ -160,7 +158,7 @@ export const UserGroupTable: FC<Props> = ({
               <tr key={group._id}>
                 {isAclEnabled
                   ? (
-                    <td><a href={`/admin/${groupDetailPageName}/${group._id}`}>{group.name}</a></td>
+                    <td><a href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</a></td>
                   )
                   : (
                     <td>{group.name}</td>
@@ -181,7 +179,7 @@ export const UserGroupTable: FC<Props> = ({
                         <li key={group._id} className="list-inline-item badge badge-success">
                           {isAclEnabled
                             ? (
-                              <a href={`/admin/${groupDetailPageName}/${group._id}`}>{group.name}</a>
+                              <a href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</a>
                             )
                             : (
                               <p>{group.name}</p>

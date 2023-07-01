@@ -155,7 +155,12 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
                 { ancestorExternalUserGroup._id === currentExternalUserGroupId ? (
                   <span>{ancestorExternalUserGroup.name}</span>
                 ) : (
-                  <Link href={`/admin/external-user-group-detail/${ancestorExternalUserGroup._id}`} prefetch={false}>
+                  <Link
+                    href={{
+                      pathname: `/admin/user-group-detail/${ancestorExternalUserGroup._id}`,
+                      query: { isExternalGroup: 'true' },
+                    }}
+                    prefetch={false}>
                     {ancestorExternalUserGroup.name}
                   </Link>
                 ) }

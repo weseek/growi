@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+import ExternalUserGroupDetailPage from '~/features/external-user-group/client/components/ExternalUserGroupDetail/ExternalUserGroupDetail';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
@@ -25,12 +26,14 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
   const router = useRouter();
-  const { userGroupId } = router.query;
+  const { userGroupId, isExternalGroup } = router.query;
 
   const title = t('user_group_management.user_group_management');
   const customTitle = generateCustomTitle(props, title);
 
   const currentUserGroupId = Array.isArray(userGroupId) ? userGroupId[0] : userGroupId;
+
+  const isExternalGroupBool = isExternalGroup === 'true';
 
   useIsAclEnabled(props.isAclEnabled);
 
@@ -41,7 +44,9 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
       </Head>
       {
         currentUserGroupId != null && router.isReady
-      && <UserGroupDetailPage userGroupId={currentUserGroupId} />
+      && (isExternalGroupBool
+        ? <ExternalUserGroupDetailPage externalUserGroupId={currentUserGroupId}/>
+        : <UserGroupDetailPage userGroupId={currentUserGroupId} />)
       }
     </AdminLayout>
   );
