@@ -12,10 +12,10 @@ import {
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDeleteModal';
+import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import styles from '~/components/Admin/UserGroupDetail/UserGroupDetailPage.module.scss';
 import { UserGroupUserTable } from '~/components/Admin/UserGroupDetail/UserGroupUserTable';
-import { ExternalUserGroupEditModal } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupEditModal';
 import {
   useSWRxAncestorExternalUserGroups,
   useSWRxChildExternalUserGroupList, useSWRxExternalUserGroup, useSWRxExternalUserGroupRelationList, useSWRxExternalUserGroupRelations,
@@ -185,11 +185,13 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
 
       <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
 
-      <ExternalUserGroupEditModal
-        externalUserGroup={selectedExternalUserGroup}
+      <UserGroupModal
+        userGroup={selectedExternalUserGroup}
+        buttonLabel={t('Update')}
         onClickSubmit={updateChildExternalUserGroup}
-        isOpen={isUpdateModalShown}
+        isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
+        isExternalGroup={true}
       />
 
       <UserGroupTable

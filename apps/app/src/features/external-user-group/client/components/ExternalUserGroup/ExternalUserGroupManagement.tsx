@@ -8,6 +8,7 @@ import { TabContent, TabPane } from 'reactstrap';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDeleteModal';
+import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import CustomNav from '~/components/CustomNavigation/CustomNav';
 import {
@@ -18,8 +19,6 @@ import {
 import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
-
-import { ExternalUserGroupEditModal } from './ExternalUserGroupEditModal';
 import { LdapGroupManagement } from './LdapGroupManagement';
 
 export const ExternalGroupManagement: FC = () => {
@@ -143,11 +142,13 @@ export const ExternalGroupManagement: FC = () => {
       isExternalGroup={true}
     />
 
-    <ExternalUserGroupEditModal
-      externalUserGroup={selectedExternalUserGroup}
+    <UserGroupModal
+      userGroup={selectedExternalUserGroup}
+      buttonLabel={t('Update')}
       onClickSubmit={updateExternalUserGroup}
-      isOpen={isUpdateModalShown}
+      isShow={isUpdateModalShown}
       onHide={hideUpdateModal}
+      isExternalGroup={true}
     />
 
     <UserGroupDeleteModal
