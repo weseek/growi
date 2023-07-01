@@ -3,7 +3,6 @@ import { Schema, Model, Document } from 'mongoose';
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
 import { IExternalUserGroupRelation } from '../../interfaces/external-user-group';
 
-
 export interface ExternalUserGroupRelationDocument extends IExternalUserGroupRelation, Document {}
 
 export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupRelationDocument> {
