@@ -1,24 +1,24 @@
 import { ErrorV3 } from '@growi/core';
 import { Router, Request } from 'express';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import Crowi from '~/server/crowi';
-import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 import loggerFactory from '~/utils/logger';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import { ApiV3Response } from '../../../../../server/routes/apiv3/interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { query } = require('express-validator');
 
-const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
+const { serializeUserGroupRelationSecurely } = require('~/server/models/serializers/user-group-relation-serializer');
 
 const router = express.Router();
 
 module.exports = (crowi: Crowi): Router => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validators = {
     list: [

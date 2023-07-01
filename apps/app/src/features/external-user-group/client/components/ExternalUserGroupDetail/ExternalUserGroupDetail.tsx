@@ -11,22 +11,21 @@ import {
   apiv3Put, apiv3Delete,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IExternalUserGroupHasId } from '~/interfaces/external-user-group';
-import { useIsAclEnabled } from '~/stores/context';
+import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDeleteModal';
+import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
+import styles from '~/components/Admin/UserGroupDetail/UserGroupDetailPage.module.scss';
+import { UserGroupUserTable } from '~/components/Admin/UserGroupDetail/UserGroupUserTable';
+import { ExternalUserGroupEditModal } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupEditModal';
 import {
   useSWRxAncestorExternalUserGroups,
   useSWRxChildExternalUserGroupList, useSWRxExternalUserGroup, useSWRxExternalUserGroupRelationList, useSWRxExternalUserGroupRelations,
-} from '~/stores/external-user-group';
+} from '~/features/external-user-group/client/stores/external-user-group';
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import { useIsAclEnabled } from '~/stores/context';
 
-
-import { ExternalUserGroupEditModal } from '../UserGroup/ExternalUserGroup/ExternalUserGroupEditModal';
-import { UserGroupDeleteModal } from '../UserGroup/UserGroupDeleteModal';
-import { UserGroupTable } from '../UserGroup/UserGroupTable';
-import { UserGroupUserTable } from '../UserGroupDetail/UserGroupUserTable';
 
 import { ExternalUserGroupEditForm } from './ExternalUserGroupEditForm';
 
-import styles from '../UserGroupDetail/UserGroupDetailPage.module.scss';
 
 type Props = {
   externalUserGroupId: string,

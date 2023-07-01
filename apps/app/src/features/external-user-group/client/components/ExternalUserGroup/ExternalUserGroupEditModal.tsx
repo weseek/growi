@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { IExternalUserGroupHasId } from '~/interfaces/external-user-group';
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
 type Props = {
   externalUserGroup?: IExternalUserGroupHasId,

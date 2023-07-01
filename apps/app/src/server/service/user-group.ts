@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { IUser } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import ExternalUserGroup from '~/server/models/external-user-group';
-import ExternalUserGroupRelation from '~/server/models/external-user-group-relation';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';

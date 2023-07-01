@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IExternalUserGroupHasId } from '~/interfaces/external-user-group';
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
 type Props = {
   externalUserGroup: IExternalUserGroupHasId,
