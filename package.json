@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.5-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -38,11 +38,7 @@
     "app:server": "cd apps/app && yarn server",
     "slackbot-proxy:build": "turbo run build --filter @growi/slackbot-proxy",
     "slackbot-proxy:server": "cd apps/slackbot-proxy && yarn start:prod",
-    "bump-versions:premajor": "node ./bin/github-actions/bump-versions -i premajor",
-    "bump-versions:preminor": "node ./bin/github-actions/bump-versions -i preminor",
-    "bump-versions:patch": "node ./bin/github-actions/bump-versions -i patch",
-    "bump-versions:rc": "node ./bin/github-actions/bump-versions -i prerelease",
-    "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d apps/slackbot-proxy --preid slackbot-proxy --update-dependencies false"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "cross-env": "^7.0.0",
@@ -89,7 +85,6 @@
     "reg-notify-slack-plugin": "^0.11.0",
     "reg-publish-s3-plugin": "^0.11.0",
     "reg-suit": "^0.12.1",
-    "shipjs": "^0.24.1",
     "stylelint": "^14.2.0",
     "stylelint-config-recess-order": "^3.0.0",
     "ts-node-dev": "^2.0.0",

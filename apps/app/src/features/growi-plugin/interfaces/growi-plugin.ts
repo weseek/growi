@@ -1,12 +1,4 @@
-import { GrowiThemeMetadata, HasObjectId } from '@growi/core';
-
-export const GrowiPluginResourceType = {
-  Template: 'template',
-  Style: 'style',
-  Theme: 'theme',
-  Script: 'script',
-} as const;
-export type GrowiPluginResourceType = typeof GrowiPluginResourceType[keyof typeof GrowiPluginResourceType];
+import { GrowiPluginType, GrowiThemeMetadata, HasObjectId } from '@growi/core';
 
 export type IGrowiPluginOrigin = {
   url: string,
@@ -24,7 +16,7 @@ export type IGrowiPlugin<M extends IGrowiPluginMeta = IGrowiPluginMeta> = {
 
 export type IGrowiPluginMeta = {
   name: string,
-  types: GrowiPluginResourceType[],
+  types: GrowiPluginType[],
   desc?: string,
   author?: string,
 }

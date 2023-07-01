@@ -14,9 +14,9 @@ import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
-
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
@@ -25,6 +25,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
+import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
@@ -61,6 +62,7 @@ export const generateViewOptions = (
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
+    attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -77,6 +79,7 @@ export const generateViewOptions = (
       commonSanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
     )]
@@ -109,6 +112,7 @@ export const generateViewOptions = (
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
+    components.attachment = RichAttachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -167,6 +171,7 @@ export const generateSimpleViewOptions = (
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
+    attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -187,6 +192,7 @@ export const generateSimpleViewOptions = (
       commonSanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
     )]
@@ -211,6 +217,7 @@ export const generateSimpleViewOptions = (
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.attachment = RichAttachment;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -244,6 +251,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
+    attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -260,6 +268,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       commonSanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
@@ -285,6 +294,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.attachment = RichAttachment;
   }
 
   if (config.isEnabledXssPrevention) {
