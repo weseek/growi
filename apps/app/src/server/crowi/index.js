@@ -26,11 +26,13 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
+import { instanciate as instanciateExternalAccountService, externalAccountService } from '../service/external-account';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -86,6 +88,7 @@ function Crowi() {
   this.xss = new Xss();
   this.questionnaireService = null;
   this.questionnaireCronService = null;
+  this.externalAccountService = null;
 
   this.tokens = null;
 
@@ -150,6 +153,7 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
+    this.setupExternalAccountService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -359,7 +363,6 @@ Crowi.prototype.setupPassport = async function() {
   logger.debug('Passport is enabled');
 
   // initialize service
-  const PassportService = require('../service/passport');
   if (this.passportService == null) {
     this.passportService = new PassportService(this);
   }
@@ -706,7 +709,7 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupGrowiPluginService = async function() {
-  const { growiPluginService } = require('~/features/growi-plugin/services');
+  const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
 
   // download plugin repositories, if document exists but there is no repository
   // TODO: Cannot download unless connected to the Internet at setup.
@@ -777,6 +780,14 @@ Crowi.prototype.setupG2GTransferService = async function() {
   }
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
+  }
+};
+
+// execute after setupPassport
+Crowi.prototype.setupExternalAccountService = function() {
+  if (this.externalAccountService == null) {
+    instanciateExternalAccountService(this.passportService);
+    this.externalAccountService = externalAccountService;
   }
 };
 

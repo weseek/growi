@@ -7,8 +7,8 @@ import { body, validationResult } from 'express-validator';
 import { SupportedAction } from '~/interfaces/activity';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
-
 
 const logger = loggerFactory('growi:routes:apiv3:user-activation');
 
@@ -69,7 +69,6 @@ export const completeRegistrationAction = (crowi) => {
   const User = crowi.model('User');
   const activityEvent = crowi.event('activity');
   const {
-    configManager,
     aclService,
     appService,
     mailService,
@@ -142,7 +141,8 @@ export const completeRegistrationAction = (crowi) => {
           if (isMailerSetup) {
             const admins = await User.findAdmins();
             const appTitle = appService.getAppTitle();
-            const template = path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt');
+            const locale = configManager.getConfig('crowi', 'app:globalLang');
+            const template = path.join(crowi.localeDir, `${locale}/admin/userWaitingActivation.ejs`);
             const url = appService.getSiteUrl();
 
             sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url);
@@ -205,7 +205,6 @@ export const validateRegisterForm = (req, res, next) => {
 
 async function makeRegistrationEmailToken(email, crowi) {
   const {
-    configManager,
     mailService,
     localeDir,
     appService,
@@ -216,8 +215,7 @@ async function makeRegistrationEmailToken(email, crowi) {
     throw Error('mailService is not setup');
   }
 
-  const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-  const i18n = grobalLang;
+  const locale = configManager.getConfig('crowi', 'app:globalLang');
   const appUrl = appService.getSiteUrl();
 
   const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
@@ -226,12 +224,11 @@ async function makeRegistrationEmailToken(email, crowi) {
   const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
   const url = new URL(`/user-activation/${userRegistrationOrder.token}`, appUrl);
   const oneTimeUrl = url.href;
-  const txtFileName = 'userActivation';
 
   return mailService.send({
     to: email,
     subject: '[GROWI] User Activation',
-    template: path.join(localeDir, `${i18n}/notifications/${txtFileName}.txt`),
+    template: path.join(localeDir, `${locale}/notifications/userActivation.ejs`),
     vars: {
       appTitle: appService.getAppTitle(),
       email,
@@ -248,7 +245,7 @@ export const registerAction = (crowi) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);
-    const registrationMode = crowi.configManager.getConfig('crowi', 'security:registrationMode') as RegistrationMode;
+    const registrationMode = configManager.getConfig('crowi', 'security:registrationMode') as RegistrationMode;
     const isEmailValid = await User.isEmailValid(email);
 
     if (registrationMode === RegistrationMode.CLOSED) {

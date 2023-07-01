@@ -984,4 +984,4 @@ class PassportService implements S2sMessageHandlable {
 
 }
 
-module.exports = PassportService;
+export default PassportService;

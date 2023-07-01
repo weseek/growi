@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { LdapGroupSyncSettings } from '~/interfaces/external-user-group';
+import { LdapGroupMembershipAttributeType, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
 import { useSWRxLdapGroupSyncSettings } from '~/stores/external-user-group';
 
 export const LdapGroupSyncSettingsForm: FC = () => {
@@ -17,7 +17,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
   const [formValues, setFormValues] = useState<LdapGroupSyncSettings>({
     ldapGroupSearchBase: '',
     ldapGroupMembershipAttribute: '',
-    ldapGroupMembershipAttributeType: 'DN',
+    ldapGroupMembershipAttributeType: LdapGroupMembershipAttributeType.dn,
     ldapGroupChildGroupAttribute: '',
     autoGenerateUserOnLdapGroupSync: false,
     preserveDeletedLdapGroups: false,
@@ -99,7 +99,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             id="ldapGroupMembershipAttributeType"
             value={formValues.ldapGroupMembershipAttributeType}
             onChange={(e) => {
-              if (e.target.value === 'DN' || e.target.value === 'UID') {
+              if (e.target.value === LdapGroupMembershipAttributeType.dn || e.target.value === LdapGroupMembershipAttributeType.uid) {
                 setFormValues({ ...formValues, ldapGroupMembershipAttributeType: e.target.value });
               }
             }}>

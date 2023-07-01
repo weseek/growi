@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { IAttachmentHasId } from '@growi/core';
 
 import { UserPicture } from './User/UserPicture';

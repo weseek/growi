@@ -2,7 +2,7 @@ import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/interfaces/external-user-group';
+import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
 import { ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupRelationListResult } from '~/interfaces/user-group-response';
 
 export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSettings, Error> => {

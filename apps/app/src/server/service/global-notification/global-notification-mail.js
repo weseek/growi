@@ -1,3 +1,4 @@
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:GlobalNotificationMailService'); // eslint-disable-line no-unused-vars
@@ -50,13 +51,13 @@ class GlobalNotificationMailService {
    * @return  {{ subject: string, template: string, vars: object }}
    */
   generateOption(event, page, triggeredBy, { comment, oldPath }) {
-    const defaultLang = this.crowi.configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('crowi', 'app:globalLang');
     // validate for all events
     if (event == null || page == null || triggeredBy == null) {
       throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);
     }
 
-    const template = nodePath.join(this.crowi.localeDir, `${defaultLang}/notifications/${event}.txt`);
+    const template = nodePath.join(this.crowi.localeDir, `${locale}/notifications/${event}.ejs`);
 
     const path = page.path;
     const appTitle = this.crowi.appService.getAppTitle();
