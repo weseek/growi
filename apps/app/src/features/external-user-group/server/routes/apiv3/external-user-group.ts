@@ -10,6 +10,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
@@ -178,7 +179,8 @@ module.exports = (crowi: Crowi): Router => {
       const externalUserGroup = await ExternalUserGroup.findById(id);
       const userGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: externalUserGroup })
         .populate('relatedUser');
-      return res.apiv3({ userGroupRelations });
+      const serialized = userGroupRelations.map(relation => serializeUserGroupRelationSecurely(relation));
+      return res.apiv3({ userGroupRelations: serialized });
     }
     catch (err) {
       const msg = `Error occurred in fetching user group relations for external user group: ${id}`;

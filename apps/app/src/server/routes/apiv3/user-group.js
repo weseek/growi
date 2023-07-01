@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
@@ -763,7 +764,8 @@ module.exports = (crowi) => {
     try {
       const userGroup = await UserGroup.findById(id);
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
-      return res.apiv3({ userGroupRelations });
+      const serialized = userGroupRelations.map(relation => serializeUserGroupRelationSecurely(relation));
+      return res.apiv3({ userGroupRelations: serialized });
     }
     catch (err) {
       const msg = `Error occurred in fetching user group relations for group: ${id}`;

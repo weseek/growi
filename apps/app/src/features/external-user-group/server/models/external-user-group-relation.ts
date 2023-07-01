@@ -1,7 +1,7 @@
 import { Schema, Model, Document } from 'mongoose';
 
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
-import { IExternalUserGroupRelation } from '../../interfaces/external-user-group';
+import { IExternalUserGroupHasId, IExternalUserGroupRelation } from '../../interfaces/external-user-group';
 
 export interface ExternalUserGroupRelationDocument extends IExternalUserGroupRelation, Document {}
 
@@ -41,11 +41,7 @@ schema.statics.createRelations = async function(userGroupIds, user) {
    * @param {ExternalUserGroup} userGroup related group for remove
    * @returns {Promise<any>}
    */
-schema.statics.removeAllByUserGroups = function(groupsToDelete) {
-  if (!Array.isArray(groupsToDelete)) {
-    throw Error('groupsToDelete must be an array.');
-  }
-
+schema.statics.removeAllByUserGroups = function(groupsToDelete: IExternalUserGroupHasId[]) {
   return this.deleteMany({ relatedGroup: { $in: groupsToDelete } });
 };
 

@@ -49,11 +49,7 @@ schema.statics.findWithPagination = function(opts) {
 };
 
 
-schema.statics.findChildrenByParentIds = async function(parentIds, includeGrandChildren = false) {
-  if (!Array.isArray(parentIds)) {
-    throw Error('parentIds must be an array.');
-  }
-
+schema.statics.findChildrenByParentIds = async function(parentIds: string[], includeGrandChildren = false) {
   const childUserGroups = await this.find({ parent: { $in: parentIds } });
 
   let grandChildUserGroups: UserGroupDocument[] | null = null;

@@ -105,15 +105,14 @@ export const ExternalGroupManagement: FC = () => {
       // sync
       await mutateExternalUserGroups();
 
-      setSelectedExternalUserGroup(undefined);
-      setDeleteModalShown(false);
+      hideDeleteModal();
 
       toastSuccess(`Deleted ${selectedExternalUserGroup?.name} group.`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateExternalUserGroups, selectedExternalUserGroup]);
+  }, [mutateExternalUserGroups, selectedExternalUserGroup, hideDeleteModal]);
 
   const switchActiveTab = (selectedTab) => {
     setActiveTab(selectedTab);
@@ -139,7 +138,7 @@ export const ExternalGroupManagement: FC = () => {
       onEdit={showUpdateModal}
       onDelete={showDeleteModal}
       userGroupRelations={externalUserGroupRelations}
-      isExternalGroup={true}
+      isExternalGroup
     />
 
     <UserGroupModal
@@ -148,7 +147,7 @@ export const ExternalGroupManagement: FC = () => {
       onClickSubmit={updateExternalUserGroup}
       isShow={isUpdateModalShown}
       onHide={hideUpdateModal}
-      isExternalGroup={true}
+      isExternalGroup
     />
 
     <UserGroupDeleteModal

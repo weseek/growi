@@ -187,13 +187,13 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
             ? ancestorExternalUserGroups[ancestorExternalUserGroups.length - 2] : undefined}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}
-          isExternalGroup={true}
+          isExternalGroup
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
       <UserGroupUserTable
         userGroupRelations={externalUserGroupRelations}
-        isExternalGroup={true}
+        isExternalGroup
       />
 
       <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
@@ -204,7 +204,7 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
         onClickSubmit={updateChildExternalUserGroup}
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
-        isExternalGroup={true}
+        isExternalGroup
       />
 
       <UserGroupTable
@@ -214,7 +214,7 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
         onEdit={showUpdateModal}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
-        isExternalGroup={true}
+        isExternalGroup
       />
 
       <UserGroupDeleteModal
