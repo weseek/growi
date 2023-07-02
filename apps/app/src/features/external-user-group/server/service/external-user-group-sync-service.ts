@@ -61,7 +61,7 @@ abstract class ExternalUserGroupSyncService {
   */
   async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
-      node.name, node.description, node.id, this.groupProviderType, parentId,
+      node.name, node.id, this.groupProviderType, node.description, parentId,
     );
     await Promise.all(node.userInfos.map((userInfo) => {
       return (async() => {

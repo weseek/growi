@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { expect } from 'vitest';
 
 import ExternalUserGroup from './external-user-group';
 import ExternalUserGroupRelation from './external-user-group-relation';
@@ -15,7 +14,7 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-describe('ExternalUserGroup model', () => {
+describe('ExternalUserGroupRelation model', () => {
   const userId1 = new mongoose.Types.ObjectId();
   const groupId1 = new mongoose.Types.ObjectId();
   const groupId2 = new mongoose.Types.ObjectId();
