@@ -25,29 +25,27 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div
-          className="mx-2"
-          style={{
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            lineHeight: '1.2',
-            flex: 1,
-          }}
-        >
-          {pagePathElement}
-        </div>
-        <div>
-          <span className="ml-2">
-            <PageListMeta page={page} />
-          </span>
-        </div>
+      <div
+        className="mx-2"
+        style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          lineHeight: '1.2',
+          flex: 1,
+        }}
+      >
+        {pagePathElement}
       </div>
-    </>
+      <div>
+        <span className="ml-2">
+          <PageListMeta page={page} />
+        </span>
+      </div>
+    </div>
   );
 
 };
