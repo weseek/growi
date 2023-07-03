@@ -51,7 +51,7 @@ Cypress.Commands.add('login', (username, password) => {
 
     cy.intercept('POST', '/_api/v3/login').as('login');
     cy.getByTestid('btnSubmitForLogin').click();
-    cy.wait('@login')
+    cy.wait('@login').should('be.visible', { timeout: 10000 });
   });
 });
 
