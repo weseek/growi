@@ -82,7 +82,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { data: mutatedCurrenPage, trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
@@ -110,7 +110,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
-  const currentRevisionId = currentPage?.revision?._id;
+  const currentRevisionId = currentPage?.revision?._id || mutatedCurrenPage?.revision?._id;
 
   const initialValue = useMemo(() => {
     if (!isNotFound) {
