@@ -49,7 +49,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   const [hasSlideFlag, setHasSlideFlag] = useState<boolean>();
   const [hasMarpFlag, setHasMarpFlag] = useState<boolean>();
 
-  // useEffect avoid ssr
+  // use useEffect to avoid ssr
   useEffect(() => {
     if (isSlidesOverviewEnabled) {
       const processMarkdown = () => (tree) => {
