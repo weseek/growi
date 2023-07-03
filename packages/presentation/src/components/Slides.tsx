@@ -6,7 +6,6 @@ import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
-import { SLIDE_STYLE, presentationSlideStyle } from '../interfaces';
 import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
@@ -27,7 +26,6 @@ const marp = new Marp({
 
 // TODO: to change better slide style
 // https://redmine.weseek.co.jp/issues/125680
-const marpDefaultTheme = marp.themeSet.default;
 const marpSlideTheme = marp.themeSet.add(`
     /*!
      * @theme slide_preview
@@ -36,19 +34,29 @@ const marpSlideTheme = marp.themeSet.add(`
       max-width: 90%;
     }
 `);
+marp.themeSet.default = marpSlideTheme;
 
 
 type Props = {
   options: PresentationOptions,
   children?: string,
-  slideStyle?: presentationSlideStyle,
+  hasMarpFlag?: boolean,
 }
 
 export const Slides = (props: Props): JSX.Element => {
-  const { options, children, slideStyle } = props;
+  const { options, children, hasMarpFlag } = props;
   const {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
+
+
+  // TODO: can Marp rendering
+  // https://redmine.weseek.co.jp/issues/115673
+  if (hasMarpFlag) {
+    return (
+      <></>
+    );
+  }
 
   rendererOptions.remarkPlugins?.push([
     extractSections.remarkPlugin,
@@ -58,52 +66,19 @@ export const Slides = (props: Props): JSX.Element => {
     },
   ]);
 
-
-  if (slideStyle === SLIDE_STYLE.true) {
-    // TODO: to change better slide style
-    // https://redmine.weseek.co.jp/issues/125680
-    // classname = "marpit" cannot be used in SSR.
-    // And RevisionRenderer.tsx is used in SSR.
-    // so use classname = "marpit" in Slides.tsx is dynamic imported.
-    marp.themeSet.default = marpSlideTheme;
-    const { css } = marp.render('', { htmlAsArray: true });
-    return (
-      <>
-        <Head>
-          <style>{css}</style>
-        </Head>
-        <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
-          <div className="slides">
-            <ReactMarkdown {...rendererOptions}>
-              { children ?? '## No Contents' }
-            </ReactMarkdown>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // TODO: can Marp rendering
-  // https://redmine.weseek.co.jp/issues/115673
-  if (slideStyle === SLIDE_STYLE.marp) {
-    return (
-      <></>
-    );
-  }
-
-
-  marp.themeSet.default = marpDefaultTheme;
   const { css } = marp.render('', { htmlAsArray: true });
   return (
     <>
       <Head>
         <style>{css}</style>
       </Head>
-      <ReactMarkdown {...rendererOptions}>
-        { children ?? '## No Contents' }
-      </ReactMarkdown>
+      <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
+        <div className="slides">
+          <ReactMarkdown {...rendererOptions}>
+            { children ?? '## No Contents' }
+          </ReactMarkdown>
+        </div>
+      </div>
     </>
   );
-
-
 };

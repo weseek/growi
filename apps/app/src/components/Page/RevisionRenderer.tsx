@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { presentationSlideStyle } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
@@ -47,13 +46,15 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName, isSlidesOverviewEnabled,
   } = props;
 
-  const [slideStyle, setSlideStyle] = useState<presentationSlideStyle | null>();
+  const [hasSlideFlag, setHasSlideFlag] = useState<boolean>();
+  const [hasMarpFlag, setHasMarpFlag] = useState<boolean>();
 
   // useEffect avoid ssr
   useEffect(() => {
     if (isSlidesOverviewEnabled) {
       const processMarkdown = () => (tree) => {
-        setSlideStyle(null);
+        setHasSlideFlag(false);
+        setHasMarpFlag(false);
         visit(tree, 'yaml', (node) => {
           if (node.value != null) {
             const lines = node.value.split('\n');
@@ -61,11 +62,11 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
             lines.forEach((line) => {
               const [key, value] = line.split(':').map(part => part.trim());
 
-              if (key === 'presentation') {
-                setSlideStyle(value === 'marp' || value === 'true' ? value : null);
+              if (key === 'slide' && value === 'true') {
+                setHasSlideFlag(true);
               }
               else if (key === 'marp' && value === 'true') {
-                setSlideStyle('marp');
+                setHasMarpFlag(true);
               }
             });
           }
@@ -79,9 +80,9 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
         .use(processMarkdown)
         .process(markdown);
     }
-  }, [markdown, setSlideStyle, isSlidesOverviewEnabled]);
+  }, [markdown, setHasSlideFlag, setHasMarpFlag, isSlidesOverviewEnabled]);
 
-  if (isSlidesOverviewEnabled && slideStyle != null) {
+  if (isSlidesOverviewEnabled && (hasSlideFlag || hasMarpFlag)) {
     const options = {
       rendererOptions: rendererOptions as ReactMarkdownOptions,
       isDarkMode: false,
@@ -90,7 +91,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     return (
       <Slides
         options={options}
-        slideStyle={slideStyle}
+        hasMarpFlag={hasMarpFlag}
       >{markdown}</Slides>
     );
   }
