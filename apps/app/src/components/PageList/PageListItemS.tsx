@@ -6,6 +6,8 @@ import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 
 import { IPageHasId } from '~/interfaces/page';
 
+import styles from './PageList.module.scss';
+
 
 type PageListItemSProps = {
   page: IPageHasId,
@@ -27,17 +29,12 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   return (
     <>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      <div
-        className="mx-2"
-        style={{
-          display: '-webkit-box',
-          WebkitLineClamp: 3,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          lineHeight: '1.2',
-        }}
-      >
-        {pagePathElement}
+      <div className={`${styles['page-list']}`}>
+        <div
+          className="mx-2 path-element"
+        >
+          {pagePathElement}
+        </div>
       </div>
       <span className="ml-2">
         <PageListMeta page={page} />
