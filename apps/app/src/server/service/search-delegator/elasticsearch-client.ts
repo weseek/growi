@@ -1,7 +1,12 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-confusing-arrow */
-import elasticsearch7, { Client as ES7Client, ApiResponse as ES7ApiResponse, RequestParams as ES7RequestParams } from '@elastic/elasticsearch7';
-import elasticsearch8, { Client as ES8Client, estypes } from '@elastic/elasticsearch8';
+import {
+  Client as ES7Client,
+  ClientOptions as ES7ClientOptions,
+  ApiResponse as ES7ApiResponse,
+  RequestParams as ES7RequestParams,
+} from '@elastic/elasticsearch7';
+import { ClientOptions as ES8ClientOptions, Client as ES8Client, estypes } from '@elastic/elasticsearch8';
 
 import {
   BulkResponse,
@@ -17,18 +22,29 @@ import {
   ReindexResponse,
 } from './elasticsearch-client-types';
 
+// Type guard for ES7ClientOptions
+const isES7Options = (options: any): options is ES7ClientOptions => {
+  return options.ssl != null;
+};
+
 export default class ElasticsearchClient {
 
   client: ES7Client | ES8Client;
 
-  constructor(isElasticsearch7: boolean, options, rejectUnauthorized: boolean) {
-    const elasticsearch = isElasticsearch7 ? elasticsearch7 : elasticsearch8;
+  constructor(isElasticsearch7: boolean, options: ES7ClientOptions | ES8ClientOptions, rejectUnauthorized: boolean) {
 
     const encryptionOption = isElasticsearch7
       ? { ssl: { rejectUnauthorized } }
       : { tls: { rejectUnauthorized } };
 
-    this.client = new elasticsearch.Client({ ...options, ...encryptionOption });
+    const esOptions = { ...options, ...encryptionOption };
+
+    if (isElasticsearch7 && isES7Options(esOptions)) {
+      this.client = new ES7Client(esOptions);
+    }
+    else {
+      this.client = new ES8Client(esOptions as ES8ClientOptions);
+    }
   }
 
   async bulk(params: ES7RequestParams.Bulk & estypes.BulkRequest): Promise<BulkResponse | estypes.BulkResponse> {
