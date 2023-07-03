@@ -1,8 +1,6 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
-import elasticsearch7 from '@elastic/elasticsearch7';
-import elasticsearch8 from '@elastic/elasticsearch8';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
