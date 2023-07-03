@@ -31,15 +31,15 @@ export default class ElasticsearchClient {
 
   client: ES7Client | ES8Client;
 
-  constructor(isElasticsearch7: boolean, options: ES7ClientOptions | ES8ClientOptions, rejectUnauthorized: boolean) {
+  constructor(isES7: boolean, options: ES7ClientOptions | ES8ClientOptions, rejectUnauthorized: boolean) {
 
-    const encryptionOption = isElasticsearch7
+    const encryptionOption = isES7
       ? { ssl: { rejectUnauthorized } }
       : { tls: { rejectUnauthorized } };
 
     const esOptions = { ...options, ...encryptionOption };
 
-    if (isElasticsearch7 && isES7Options(esOptions)) {
+    if (isES7 && isES7Options(esOptions)) {
       this.client = new ES7Client(esOptions);
     }
     else {
