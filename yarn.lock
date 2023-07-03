@@ -2323,13 +2323,16 @@
 "@growi/pluginkit@link:packages/pluginkit":
   version "0.1.0"
   dependencies:
-    "@growi/core" "^6.1.5-RC"
+    "@growi/core" "link:packages/core"
     extensible-custom-error "^0.0.7"
 
 "@growi/presentation@link:packages/presentation":
   version "6.1.5-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
+
+"@growi/preset-templates@link:packages/preset-templates":
+  version "6.1.5-RC.0"
 
 "@growi/preset-themes@link:packages/preset-themes":
   version "6.1.5-RC.0"

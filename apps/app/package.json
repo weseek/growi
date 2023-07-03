@@ -66,6 +66,8 @@
     "@google-cloud/storage": "^5.8.5",
     "@growi/core": "link:../../packages/core",
     "@growi/hackmd": "link:../../packages/hackmd",
+    "@growi/pluginkit": "link:../../packages/pluginkit",
+    "@growi/preset-templates": "link:../../packages/preset-templates",
     "@growi/preset-themes": "link:../../packages/preset-themes",
     "@growi/remark-attachment-refs": "link:../../packages/remark-attachment-refs",
     "@growi/remark-drawio": "link:../../packages/remark-drawio",

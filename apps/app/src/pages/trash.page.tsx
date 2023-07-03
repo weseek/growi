@@ -14,7 +14,7 @@ import { useDrawerMode } from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser, useCurrentPathname,
+  useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useIsReadOnlyUser,
 } from '../stores/context';
@@ -41,6 +41,8 @@ type Props = CommonProps & {
 
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
+
+  useGrowiCloudUri(props.growiCloudUri);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
