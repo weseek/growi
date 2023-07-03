@@ -60,5 +60,5 @@ We can display the content list using a table and `$lsx`.
 
 <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
 
-We welcome newcomers joining our slack channel to help improve Growi.
+We welcome newcomers joining our slack channel to help improve GROWI.
 In addition to discussing development, we are also happy to answer your questions when you join.
