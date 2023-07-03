@@ -87,6 +87,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       rendererOptions: rendererOptions as ReactMarkdownOptions,
       isDarkMode: false,
       disableSeparationsByHeader: false,
+      hasMarpFlag,
     };
     return (
       <Slides
