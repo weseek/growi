@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
@@ -7,7 +7,6 @@ import {
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
@@ -19,6 +18,7 @@ import { MarkdownTableDataImportForm } from './MarkdownTableDataImportForm';
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
+import { debounce } from 'throttle-debounce';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -88,13 +88,37 @@ export const HandsontableModal = (): JSX.Element => {
   const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(defaultMarkdownTable);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(defaultMarkdownTable);
   const [handsontableHeight, setHandsontableHeight] = useState<number>(DEFAULT_HOT_HEIGHT);
+  const [handsontableWidth, setHandsontableWidth] = useState<number>(0);
 
-  useEffect(() => {
+  const handleWindowExpandedChange = () => {
+    if (hotTableContainer != null) {
+      // Get the width and height of hotTableContainer
+      const { width, height } = hotTableContainer.getBoundingClientRect();
+      setHandsontableWidth(width);
+      setHandsontableHeight(height);
+    }
+  };
+
+  const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
+
+  const handleModalOpen = () => {
     const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
     setMarkdownTable(table ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpened]);
+    debouncedHandleWindowExpandedChange();
+  };
+
+  const expandWindow = () => {
+    setIsWindowExpanded(true);
+    debouncedHandleWindowExpandedChange();
+  };
+
+  const contractWindow = () => {
+    setIsWindowExpanded(false);
+    // Set the height to the default value
+    setHandsontableHeight(DEFAULT_HOT_HEIGHT);
+    debouncedHandleWindowExpandedChange();
+  };
 
   const markdownTableOption = {
     get latest() {
@@ -363,32 +387,6 @@ export const HandsontableModal = (): JSX.Element => {
     toggleDataImportArea();
   };
 
-  /**
-   * Expand the height of the Handsontable
-   *  by updating 'handsontableHeight' state
-   *  according to the height of this.refs.hotTableContainer
-   */
-  const expandHotTableHeight = () => {
-    if (isWindowExpanded && hotTableContainer != null) {
-      const height = hotTableContainer.getBoundingClientRect().height;
-      setHandsontableHeight(height);
-    }
-  };
-
-  const expandWindow = () => {
-    setIsWindowExpanded(true);
-
-    // create debounced method for expanding HotTable
-    // invoke updateHotTableHeight method with delay
-    // cz. Resizing this.refs.hotTableContainer is completed after a little delay after 'isWindowExpanded' set with 'true'
-    debounce(100, expandHotTableHeight);
-  };
-
-  const contractWindow = () => {
-    setIsWindowExpanded(false);
-    setHandsontableHeight(DEFAULT_HOT_HEIGHT);
-  };
-
   const createCustomizedContextMenu = () => {
     return {
       items: {
@@ -453,6 +451,7 @@ export const HandsontableModal = (): JSX.Element => {
       size="lg"
       wrapClassName={`${styles['grw-handsontable']}`}
       className={`handsontable-modal ${isWindowExpanded && 'grw-modal-expanded'}`}
+      onOpened={handleModalOpen}
     >
       <ModalHeader tag="h4" toggle={cancel} close={closeButton} className="bg-primary text-light">
         {t('handsontable_modal.title')}
@@ -493,6 +492,7 @@ export const HandsontableModal = (): JSX.Element => {
             data={markdownTable.table}
             settings={handsontableSettings as Handsontable.DefaultSettings}
             height={handsontableHeight}
+            width={handsontableWidth}
             afterLoadData={afterLoadDataHandler}
             modifyColWidth={modifyColWidthHandler}
             beforeColumnMove={beforeColumnMoveHandler}

@@ -7,9 +7,10 @@ import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   userGroup: IUserGroupHasId,
+  parentUserGroup?: IUserGroupHasId,
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: string;
-  onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
+  onSubmit: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void>
 };
 
 export const UserGroupForm: FC<Props> = (props: Props) => {
@@ -17,16 +18,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
 
   const {
-    userGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
+    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
   } = props;
-
   /*
    * State
    */
-  const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
-  const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(userGroup?.parent as IUserGroupHasId);
-
+  const [currentName, setName] = useState<string>(userGroup.name);
+  const [currentDescription, setDescription] = useState<string>(userGroup.description);
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(parentUserGroup);
   /*
    * Function
    */
@@ -44,10 +43,12 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     }
   }, [selectedParent, setSelectedParent]);
 
+  const isSelectableParentUserGroups = selectableParentUserGroups != null && selectableParentUserGroups.length > 0;
+
   return (
     <form onSubmit={(e) => {
       e.preventDefault();
-      onSubmit?.(props.userGroup, {
+      onSubmit(props.userGroup, {
         name: currentName,
         description: currentDescription,
         parent: selectedParent,
@@ -103,14 +104,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
               id="dropdownMenuButton"
               data-toggle="dropdown"
               className={`
-                btn btn-outline-secondary dropdown-toggle mb-3 ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
+                btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
               `}
             >
               {selectedParent?.name ?? t('user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
-                (selectableParentUserGroups != null && selectableParentUserGroups.length > 0) && (
+                isSelectableParentUserGroups && (
                   <>
                     {
                       selectableParentUserGroups.map(userGroup => (
