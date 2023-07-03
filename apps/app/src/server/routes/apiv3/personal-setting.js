@@ -1,4 +1,6 @@
+import { ErrorV3 } from '@growi/core';
 import { body } from 'express-validator';
+
 
 import { i18n } from '^/config/next-i18next.config';
 
@@ -237,6 +239,13 @@ module.exports = (crowi) => {
       user.lang = req.body.lang;
       user.isEmailPublished = req.body.isEmailPublished;
       user.slackMemberId = req.body.slackMemberId;
+
+      const isUniqueEmail = await user.isUniqueEmail();
+
+      if (!isUniqueEmail) {
+        logger.error('email-is-not-unique');
+        return res.apiv3Err(new ErrorV3('The email is already in use', 'email-is-already-in-use'));
+      }
 
       const updatedUser = await user.save();
 

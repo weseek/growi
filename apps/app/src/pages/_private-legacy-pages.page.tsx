@@ -12,7 +12,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IUser, IUserHasId } from '~/interfaces/user';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri,
 } from '~/stores/context';
 
 import type { CommonProps } from './utils/commons';
@@ -41,6 +41,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 
   // commons
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
 
