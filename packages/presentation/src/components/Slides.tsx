@@ -37,48 +37,35 @@ const marpSlide = new Marp({
   html: false,
   math: false,
 });
+// TODO: to change better slide style
+// https://redmine.weseek.co.jp/issues/125680
+const marpSlideTheme = marp.themeSet.add(`
+    /*!
+     * @theme slide_preview
+     */
+    section {
+      max-width: 90%;
+    }
+`);
+marp.themeSet.default = marpSlideTheme;
 
 
 type Props = {
   options: PresentationOptions,
   children?: string,
-  slideStyle?: 'true' | 'marp' | null,
+  hasMarpFlag?: boolean,
 }
 
 export const Slides = (props: Props): JSX.Element => {
-  const { options, children, slideStyle } = props;
+  const { options, children, hasMarpFlag } = props;
   const {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  rendererOptions.remarkPlugins?.push([
-    extractSections.remarkPlugin,
-    {
-      isDarkMode,
-      disableSeparationByHeader,
-    },
-  ]);
 
-
-  if (slideStyle === 'true') {
-    const { css } = marp.render('', { htmlAsArray: true });
-    return (
-      <>
-        <Head>
-          <style>{css}</style>
-        </Head>
-        <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
-          <div className="slides">
-            <ReactMarkdown {...rendererOptions}>
-              { children ?? '## No Contents' }
-            </ReactMarkdown>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  if (slideStyle === 'marp') {
+  // TODO: can Marp rendering
+  // https://redmine.weseek.co.jp/issues/115673
+  if (hasMarpFlag) {
     const { html, css } = marpSlide.render(children ?? '');
     return (
       <>
@@ -96,6 +83,13 @@ export const Slides = (props: Props): JSX.Element => {
     );
   }
 
+  rendererOptions.remarkPlugins?.push([
+    extractSections.remarkPlugin,
+    {
+      isDarkMode,
+      disableSeparationByHeader,
+    },
+  ]);
 
   const { css } = marp.render('', { htmlAsArray: true });
   return (
@@ -103,9 +97,13 @@ export const Slides = (props: Props): JSX.Element => {
       <Head>
         <style>{css}</style>
       </Head>
-      <ReactMarkdown {...rendererOptions}>
-        { children ?? '## No Contents' }
-      </ReactMarkdown>
+      <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
+        <div className="slides">
+          <ReactMarkdown {...rendererOptions}>
+            { children ?? '## No Contents' }
+          </ReactMarkdown>
+        </div>
+      </div>
     </>
   );
 };

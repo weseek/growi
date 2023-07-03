@@ -46,51 +46,53 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName, isSlidesOverviewEnabled,
   } = props;
 
-  type presentationSlideStyle = 'marp' | 'true' | null;
-  const [slideStyle, setSlideStyle] = useState<presentationSlideStyle>(null);
+  const [hasSlideFlag, setHasSlideFlag] = useState<boolean>();
+  const [hasMarpFlag, setHasMarpFlag] = useState<boolean>();
 
+  // use useEffect to avoid ssr
   useEffect(() => {
-    unified()
-      .use(remarkParse)
-      .use(remarkStringify)
-      .use(remarkFrontmatter, ['yaml'])
-      .use(() => (tree) => {
-        setSlideStyle(null);
-        visit(tree, (node) => {
-          if (node.type === 'yaml') {
-            for (const line of node.value?.split('\n')) {
-            // node.value is "presentation:true\ntitle: hoge\nclass: fuga" etc..
-              const parts = line.split(':');
-              if (parts.length !== 2) {
-                continue;
-              }
-              const key = parts[0].trim();
-              const value = parts[1].trim();
-              if (key === 'presentation') {
-                setSlideStyle(
-                  value === 'marp' || value === 'true' ? value : null,
-                );
+    if (isSlidesOverviewEnabled) {
+      const processMarkdown = () => (tree) => {
+        setHasSlideFlag(false);
+        setHasMarpFlag(false);
+        visit(tree, 'yaml', (node) => {
+          if (node.value != null) {
+            const lines = node.value.split('\n');
+
+            lines.forEach((line) => {
+              const [key, value] = line.split(':').map(part => part.trim());
+
+              if (key === 'slide' && value === 'true') {
+                setHasSlideFlag(true);
               }
               else if (key === 'marp' && value === 'true') {
-                setSlideStyle('marp');
+                setHasMarpFlag(true);
               }
-            }
+            });
           }
         });
-      })
-      .process(markdown);
-  }, [markdown, setSlideStyle]);
+      };
 
-  if (slideStyle != null) {
+      unified()
+        .use(remarkParse)
+        .use(remarkStringify)
+        .use(remarkFrontmatter, ['yaml'])
+        .use(processMarkdown)
+        .process(markdown);
+    }
+  }, [markdown, setHasSlideFlag, setHasMarpFlag, isSlidesOverviewEnabled]);
+
+  if (isSlidesOverviewEnabled && (hasSlideFlag || hasMarpFlag)) {
     const options = {
       rendererOptions: rendererOptions as ReactMarkdownOptions,
       isDarkMode: false,
       disableSeparationsByHeader: false,
+      hasMarpFlag,
     };
     return (
       <Slides
         options={options}
-        slideStyle={slideStyle}
+        hasMarpFlag={hasMarpFlag}
       >{markdown}</Slides>
     );
   }
