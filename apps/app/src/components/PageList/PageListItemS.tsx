@@ -25,11 +25,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   } = props;
 
   const path = pageTitle != null ? pageTitle : page.path;
-  const additionalClassNames: string[] = [];
-
-  additionalClassNames.push(isBookmarkItem ? 'mx-0' : 'mx-2');
-
-  let pagePathElement = <PagePathLabel path={path} additionalClassNames={additionalClassNames}/>;
+  let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-1']} />;
 
   if (!noLink) {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
