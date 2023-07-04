@@ -1,11 +1,14 @@
 import React from 'react';
 
+// import mediumZoom from 'medium-zoom';
+
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import loggerFactory from '~/utils/logger';
 
+import { ImageZoom } from './ImageZoom';
 import 'katex/dist/katex.min.css';
 
 
@@ -34,11 +37,28 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName,
   } = props;
 
+  const className = `wiki ${additionalClassName ?? ''}`;
+  const classOfImage = `.${className} img`;
+
+  // ここにimgタグに適用するコンポーネントを書く
+  const Image = ({ node, ...props }) => {
+    return (
+      <ImageZoom
+        src={props.src}
+        alt={props.alt}
+        options={{ background: 'black' }}
+      />
+    );
+  };
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
         {...rendererOptions}
-        className={`wiki ${additionalClassName ?? ''}`}
+        className={className}
+        components={{
+          img: Image,
+        }}
       >
         {markdown}
       </ReactMarkdown>

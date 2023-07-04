@@ -125,6 +125,7 @@
     "lucene-query-parser": "^1.2.0",
     "markdown-table": "^1.1.1",
     "md5": "^2.2.1",
+    "medium-zoom": "^1.0.8",
     "mermaid": "^10.1.0",
     "method-override": "^3.0.0",
     "migrate-mongo": "^8.2.3",
