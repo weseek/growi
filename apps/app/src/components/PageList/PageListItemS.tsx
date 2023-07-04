@@ -8,34 +8,47 @@ import { IPageHasId } from '~/interfaces/page';
 
 import styles from './PageList.module.scss';
 
-
 type PageListItemSProps = {
   page: IPageHasId,
   noLink?: boolean,
   pageTitle?: string
+  isBookmarkItem?: boolean,
 }
 
 export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
-  const { page, noLink = false, pageTitle } = props;
+  const {
+    page,
+    noLink = false,
+    pageTitle,
+    isBookmarkItem = false,
+  } = props;
 
   const path = pageTitle != null ? pageTitle : page.path;
+  const additionalClassNames: string[] = [];
 
-  let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-0']} />;
+  additionalClassNames.push(isBookmarkItem ? 'mx-0' : 'mx-2');
+
+  let pagePathElement = <PagePathLabel path={path} additionalClassNames={additionalClassNames}/>;
+
   if (!noLink) {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
+  }
+
+  if (isBookmarkItem) {
+    pagePathElement = (
+      <div className={`${styles['page-list']}`}>
+        <div className="mx-2 path-element">
+          <a className="text-break" href={page.path}>{pagePathElement}</a>
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      <div className={`${styles['page-list']}`}>
-        <div
-          className="mx-2 path-element"
-        >
-          {pagePathElement}
-        </div>
-      </div>
+      {pagePathElement}
       <span className="ml-2">
         <PageListMeta page={page} />
       </span>
