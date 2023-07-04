@@ -224,7 +224,7 @@ module.exports = function(crowi, app) {
       return next(new ErrorV3('message.external_account_not_exist'));
     }
 
-    const user = await externalAccount.getPopulatedUser();
+    const user = (await externalAccount.populate('user')).user;
 
     // login
     await req.logIn(user, (err) => {
@@ -392,7 +392,7 @@ module.exports = function(crowi, app) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
 
-    const user = await externalAccount.getPopulatedUser();
+    const user = (await externalAccount.populate('user')).user;
 
     // login
     req.logIn(user, async(err) => {
@@ -435,7 +435,7 @@ module.exports = function(crowi, app) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
 
-    const user = await externalAccount.getPopulatedUser();
+    const user = (await externalAccount.populate('user')).user;
 
     // login
     req.logIn(user, async(err) => {
@@ -486,7 +486,7 @@ module.exports = function(crowi, app) {
     }
 
     // login
-    const user = await externalAccount.getPopulatedUser();
+    const user = (await externalAccount.populate('user')).user;
     req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
 
@@ -544,7 +544,7 @@ module.exports = function(crowi, app) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
 
-    const user = await externalAccount.getPopulatedUser();
+    const user = (await externalAccount.populate('user')).user;
 
     // login
     req.logIn(user, (err) => {
