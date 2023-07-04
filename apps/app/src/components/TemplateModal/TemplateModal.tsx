@@ -192,7 +192,7 @@ export const TemplateModal = (): JSX.Element => {
                           key={locale}
                           onClick={() => setSelectedTemplateLocale(locale)}
                         >
-                          <span>{selectedTemplateLocale}</span>
+                          <span>{locale}</span>
                         </DropdownItem>
                       );
                     })
