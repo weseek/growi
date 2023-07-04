@@ -68,7 +68,11 @@ context('Editor while uploading to a new page', () => {
     const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
 
+    // Update page
+    cy.getByTestid('save-page-btn').click();
+
     // expect
+    cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
     cy.get('.CodeMirror').should('contain.text', body);
     cy.get('.CodeMirror').should('contain.text', '[example.txt](/attachment/');
     cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
