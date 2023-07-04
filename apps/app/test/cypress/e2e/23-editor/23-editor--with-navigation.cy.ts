@@ -68,8 +68,8 @@ context('Editor while uploading to a new page', () => {
     const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
 
-    // Update page
-    cy.getByTestid('save-page-btn').click();
+    // Update page using shortcut keys
+    cy.get('.CodeMirror').type('{ctrl+s}');
 
     // expect
     cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
