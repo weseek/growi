@@ -13,7 +13,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IUser, IUserHasId } from '~/interfaces/user';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri,
 } from '~/stores/context';
 
 import { SearchPage } from '../components/SearchPage';
@@ -47,6 +47,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   // commons
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
 

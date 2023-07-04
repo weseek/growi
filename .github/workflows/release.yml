@@ -35,7 +35,7 @@ jobs:
 
     - name: Bump versions
       run: |
-        turbo run bump-versions:patch
+        turbo run version --filter=@growi/app -- --patch
         yarn upgrade --scope=@growi
         sh ./apps/app/bin/github-actions/update-readme.sh
 
@@ -98,7 +98,8 @@ jobs:
 
     - name: Bump versions for next RC
       run: |
-        yarn bump-versions:rc
+        turbo run version --filter=@growi/app -- --prepatch
+        turbo run version --filter=@growi/slackbot-proxy -- --prepatch
         yarn upgrade --scope=@growi
 
     - name: Retrieve information from package.json

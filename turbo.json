@@ -171,6 +171,10 @@
     "test": {
       "outputMode": "new-only"
     },
+    "@growi/app#version": {
+      "cache": false,
+      "dependsOn": ["^version", "//#version"]
+    },
     "version": {
       "cache": false
     },
