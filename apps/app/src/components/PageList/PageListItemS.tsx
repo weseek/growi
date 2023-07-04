@@ -43,11 +43,29 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
   return (
     <>
-      <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      {pagePathElement}
-      <span className="ml-2">
-        <PageListMeta page={page} />
-      </span>
+      {isBookmarkItem ? (
+        <div className={`${styles['page-list']}`}>
+          <div className="bookmarks-list-items">
+            <UserPicture user={page.lastUpdateUser} noLink={noLink} />
+            <div className="page-path-element">
+              {pagePathElement}
+            </div>
+            <div>
+              <span className="ml-2">
+                <PageListMeta page={page} />
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <UserPicture user={page.lastUpdateUser} noLink={noLink} />
+          {pagePathElement}
+          <span className="ml-2">
+            <PageListMeta page={page} />
+          </span>
+        </>
+      )}
     </>
   );
 
