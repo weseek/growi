@@ -19,33 +19,19 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
   const path = pageTitle != null ? pageTitle : page.path;
 
-  let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-0']} />;
+  let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-1']} />;
   if (!noLink) {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      <div
-        className="mx-2"
-        style={{
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          lineHeight: '1.2',
-          flex: 1,
-        }}
-      >
-        {pagePathElement}
-      </div>
-      <div>
-        <span className="ml-2">
-          <PageListMeta page={page} />
-        </span>
-      </div>
-    </div>
+      {pagePathElement}
+      <span className="ml-2">
+        <PageListMeta page={page} />
+      </span>
+    </>
   );
 
 };

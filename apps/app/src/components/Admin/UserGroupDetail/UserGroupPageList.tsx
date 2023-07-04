@@ -50,7 +50,7 @@ const UserGroupPageList = (props: Props): JSX.Element => {
   return (
     <>
       <ul className="page-list-ul page-list-ul-flat mb-3">
-        {currentPages.map(page => <li key={page._id} className="mt-4"><PageListItemS page={page} /></li>)}
+        {currentPages.map(page => <li key={page._id}><PageListItemS page={page} /></li>)}
       </ul>
       {relatedPages != null && relatedPages.length === 0 ? <p>{t('user_group_management.no_pages')}</p> : (
         <PaginationWrapper
