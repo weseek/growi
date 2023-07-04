@@ -5,13 +5,17 @@ import React, {
 import assert from 'assert';
 
 import { Lang } from '@growi/core';
-import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
+import type { TemplateSummary, TemplateStatus } from '@growi/pluginkit/dist/v4';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from 'reactstrap';
 
 import { useSWRxTemplate, useSWRxTemplates } from '~/features/templates/stores';
@@ -34,16 +38,16 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
 }
 
 
-type TemplateRadioButtonProps = {
+type TemplateItemProps = {
   templateSummary: TemplateSummary,
   onClick?: () => void,
   usersDefaultLang?: Lang,
   isSelected?: boolean,
 }
 
-const TemplateListGroupItem = ({
+const TemplateItem = ({
   templateSummary, onClick, usersDefaultLang, isSelected,
-}: TemplateRadioButtonProps): JSX.Element => {
+}: TemplateItemProps): JSX.Element => {
   const templateId = constructTemplateId(templateSummary);
   const locales = new Set(Object.values(templateSummary).map(s => s.locale));
 
@@ -103,11 +107,24 @@ export const TemplateModal = (): JSX.Element => {
   useEffect(() => {
     if (!templateModalStatus?.isOpened) {
       setSelectedTemplateSummary(undefined);
+      setSelectedTemplateLocale(undefined);
     }
   }, [templateModalStatus?.isOpened]);
 
-  if (templateSummaries == null || templateModalStatus == null) {
+  const usersDefaultLang = personalSettingsInfo?.lang;
+
+  if (templateSummaries == null || templateModalStatus == null || usersDefaultLang == null) {
     return <></>;
+  }
+
+  let selectedTemplate: TemplateStatus | null = null;
+  let selectedTemplateLocales: Set<string> | null = null;
+  if (selectedTemplateSummary != null) {
+    selectedTemplate = usersDefaultLang in selectedTemplateSummary
+      ? selectedTemplateSummary[usersDefaultLang]
+      : selectedTemplateSummary.default;
+
+    selectedTemplateLocales = new Set(Object.values(selectedTemplateSummary).map(s => s.locale));
   }
 
   return (
@@ -118,16 +135,17 @@ export const TemplateModal = (): JSX.Element => {
 
       <ModalBody className="container">
         <div className="row">
+          {/* List Group */}
           <div className="d-none d-lg-block col-lg-4">
             <div className="list-group">
               { templateSummaries.map((templateSummary) => {
                 const templateId = constructTemplateId(templateSummary);
 
                 return (
-                  <TemplateListGroupItem
+                  <TemplateItem
                     key={templateId}
                     templateSummary={templateSummary}
-                    usersDefaultLang={personalSettingsInfo?.lang}
+                    usersDefaultLang={usersDefaultLang}
                     onClick={() => setSelectedTemplateSummary(templateSummary)}
                     isSelected={selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId}
                   />
@@ -135,9 +153,54 @@ export const TemplateModal = (): JSX.Element => {
               }) }
             </div>
           </div>
-
+          {/* Dropdown */}
+          <div className='d-lg-none col mb-3'>
+            <UncontrolledDropdown>
+              <DropdownToggle caret type="button" outline className='w-100 text-right'>
+                <span className="float-left">{(selectedTemplate != null && selectedTemplate.isValid) ? selectedTemplate.title : 'Select template'}</span>
+              </DropdownToggle>
+              <DropdownMenu role="menu" className='p-0'>
+                { templateSummaries.map((templateSummary) => {
+                  const templateId = constructTemplateId(templateSummary);
+                  return (
+                    <TemplateItem
+                      key={templateId}
+                      templateSummary={templateSummary}
+                      usersDefaultLang={usersDefaultLang}
+                      onClick={() => setSelectedTemplateSummary(templateSummary)}
+                      isSelected={selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId}
+                    />
+                  );
+                }) }
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
           <div className="col-12 col-lg-8">
-            <h3>{t('Preview')}</h3>
+            <div className='row mb-2 mb-lg-0'>
+              <div className="col-6">
+                <h3>{t('Preview')}</h3>
+              </div>
+              <div className="col-6 d-flex justify-content-end">
+                <UncontrolledDropdown>
+                  <DropdownToggle caret type="button" outline className='float-right'>
+                    <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : 'Default'}</span>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu" role="menu">
+                    { selectedTemplateLocales != null && Array.from(selectedTemplateLocales).map((locale) => {
+                      return (
+                        <DropdownItem
+                          key={locale}
+                          onClick={() => setSelectedTemplateLocale(locale)}
+                        >
+                          <span>{selectedTemplateLocale}</span>
+                        </DropdownItem>
+                      );
+                    })
+                    }
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              </div>
+            </div>
             <div className='card'>
               <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
                 { rendererOptions != null && selectedTemplateSummary != null && (
