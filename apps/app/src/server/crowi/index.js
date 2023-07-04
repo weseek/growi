@@ -26,7 +26,7 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
-import { instanciate as instanciateExternalAccountService, externalAccountService } from '../service/external-account';
+import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -88,7 +88,6 @@ function Crowi() {
   this.xss = new Xss();
   this.questionnaireService = null;
   this.questionnaireCronService = null;
-  this.externalAccountService = null;
 
   this.tokens = null;
 
@@ -785,10 +784,7 @@ Crowi.prototype.setupG2GTransferService = async function() {
 
 // execute after setupPassport
 Crowi.prototype.setupExternalAccountService = function() {
-  if (this.externalAccountService == null) {
-    instanciateExternalAccountService(this.passportService);
-    this.externalAccountService = externalAccountService;
-  }
+  instanciateExternalAccountService(this.passportService);
 };
 
 export default Crowi;
