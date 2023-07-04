@@ -34,7 +34,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   if (isBookmarkItem) {
     pagePathElement = (
       <div className={`${styles['page-list']}`}>
-        <div className="mx-2 path-element">
+        <div className="mx-2 bookmarks-path-element">
           <a className="text-break" href={page.path}>{pagePathElement}</a>
         </div>
       </div>
