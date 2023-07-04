@@ -37,19 +37,19 @@ export const LdapGroupManagement: FC = () => {
       else {
         await apiv3Put('/external-user-groups/ldap/sync');
       }
-      toastSuccess(t('external_group.ldap.sync_succeeded'));
+      toastSuccess(t('external_user_group.ldap.sync_succeeded'));
     }
-    catch (e) {
-      toastError(t('external_group.ldap.sync_failed'));
+    catch (errs) {
+      toastError(t(errs[0]?.message));
     }
   }, [t, isUserBind]);
 
   return <>
     <LdapGroupSyncSettingsForm />
-    <h3 className="border-bottom mb-3">{t('external_group.execute_sync')}</h3>
+    <h3 className="border-bottom mb-3">{t('external_user_group.execute_sync')}</h3>
     <form onSubmit={onSyncBtnClick}>
       {isUserBind && <div className="row form-group">
-        <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_group.ldap.password')}</label>
+        <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -58,13 +58,13 @@ export const LdapGroupManagement: FC = () => {
             id="ldapGroupSyncPassword"
           />
           <p className="form-text text-muted">
-            <small>{t('external_group.ldap.password_detail')}</small>
+            <small>{t('external_user_group.ldap.password_detail')}</small>
           </p>
         </div>
       </div>}
       <div className="row">
         <div className="col-md-3"></div>
-        <div className="col-md-6"><button className="btn btn-primary" type="submit">{t('external_group.sync')}</button></div>
+        <div className="col-md-6"><button className="btn btn-primary" type="submit">{t('external_user_group.sync')}</button></div>
       </div>
     </form>
   </>;

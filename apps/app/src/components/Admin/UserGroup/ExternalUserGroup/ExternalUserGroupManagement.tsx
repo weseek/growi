@@ -27,7 +27,7 @@ export const ExternalGroupManagement: FC = () => {
   }, []);
 
   return <>
-    <h2 className="border-bottom">{t('external_group.management')}</h2>
+    <h2 className="border-bottom">{t('external_user_group.management')}</h2>
     <CustomNav
       activeTab={activeTab}
       navTabMapping={navTabMapping}

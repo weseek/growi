@@ -657,13 +657,12 @@ module.exports = (crowi) => {
       const userGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
       const userGroupIds = userGroups.map(g => g._id);
 
-      // check for duplicate users in groups
+      // remove existing relations from list to create
       const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
       const existingGroupIds = existingRelations.map(r => r.relatedGroup);
+      const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
-      const groupIdsOfRelationToCreate = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
-
-      const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
+      const insertedRelations = await UserGroupRelation.createRelations(groupIdsToCreateRelation, user);
       const serializedUser = serializeUserSecurely(user);
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_ADD_USER };

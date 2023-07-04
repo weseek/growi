@@ -3,12 +3,11 @@ import { ErrorV3 } from '@growi/core';
 import next from 'next';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
-import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
+import { externalAccountService } from '../service/external-account';
 
 /* eslint-disable no-use-before-define */
 
@@ -16,7 +15,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login-passport');
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
-  const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
 
   const activityEvent = crowi.event('activity');
@@ -48,49 +46,6 @@ module.exports = function(crowi, app) {
         resolve(response);
       })(req, res);
     });
-  };
-
-  const getOrCreateUser = async(req, res, userInfo, providerId) => {
-    // get option
-    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
-    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
-
-    try {
-      // find or register(create) user
-      const externalAccount = await ExternalAccount.findOrRegister(
-        providerId,
-        userInfo.id,
-        userInfo.username,
-        userInfo.name,
-        userInfo.email,
-        isSameUsernameTreatedAsIdenticalUser,
-        isSameEmailTreatedAsIdenticalUser,
-      );
-      return externalAccount;
-    }
-    catch (err) {
-      /* eslint-disable no-else-return */
-      if (err instanceof NullUsernameToBeRegisteredError) {
-        logger.error(err.message);
-        throw new ErrorV3(err.message);
-      }
-      else if (err.name === 'DuplicatedUsernameException') {
-        if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
-          // associate to existing user
-          debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
-          return ExternalAccount.associate(providerId, userInfo.id, err.user);
-        }
-        logger.error('provider-DuplicatedUsernameException', providerId);
-
-        throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION,
-          undefined, { failedProviderForDuplicatedUsernameException: providerId });
-      }
-      else if (err.name === 'UserUpperLimitException') {
-        logger.error(err.message);
-        throw new ErrorV3(err.message);
-      }
-      /* eslint-enable no-else-return */
-    }
   };
 
   /**
@@ -258,7 +213,7 @@ module.exports = function(crowi, app) {
 
     let externalAccount;
     try {
-      externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+      externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
     }
     catch (error) {
       return next(error);
@@ -432,7 +387,7 @@ module.exports = function(crowi, app) {
       userInfo.username = userInfo.email.slice(0, userInfo.email.indexOf('@'));
     }
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
@@ -475,7 +430,7 @@ module.exports = function(crowi, app) {
       name: response.displayName,
     };
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }
@@ -525,7 +480,7 @@ module.exports = function(crowi, app) {
     };
     debug('mapping response to userInfo', userInfo, response, attrMapId, attrMapUserName, attrMapMail);
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return new ExternalAccountLoginError('message.sign_in_failure');
     }
@@ -584,7 +539,7 @@ module.exports = function(crowi, app) {
       return next(new ExternalAccountLoginError('Sign in failure due to insufficient privileges.'));
     }
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    const externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
     if (!externalAccount) {
       return next(new ExternalAccountLoginError('message.sign_in_failure'));
     }

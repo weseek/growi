@@ -3,14 +3,14 @@ import { body, validationResult } from 'express-validator';
 
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
-import LdapService from '~/server/service/ldap';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
+
+import LdapUserGroupSyncService from '../../service/ldap-user-group-sync-service';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
 const router = Router();
-
-const ldapService = new LdapService();
 
 interface AuthorizedRequest extends Request {
   user?: any
@@ -18,7 +18,7 @@ interface AuthorizedRequest extends Request {
 
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validators = {
     ldapSyncSettings: [
@@ -34,7 +34,6 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, (req: AuthorizedRequest, res: ApiV3Response) => {
-    const { configManager } = crowi;
     const settings = {
       ldapGroupSearchBase: configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase'),
       ldapGroupMembershipAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
@@ -52,7 +51,7 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ error: 'invalid body params' });
+      return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
     }
 
     const params = {
@@ -72,7 +71,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      await crowi.configManager?.updateConfigsInTheSameNamespace('crowi', params, true);
+      await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
       return res.apiv3({}, 204);
     }
     catch (err) {
@@ -83,24 +82,12 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
-      const isUserBind = crowi.configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
-      const groups = async() => {
-        if (isUserBind) {
-          const username = req.user.name;
-          const password = req.body.password;
-          return ldapService.searchGroup(username, password);
-        }
-        return ldapService.searchGroup();
-      };
-
-      // Print searched groups for now
-      // TODO: implement LDAP group sync
-      // see: https://redmine.weseek.co.jp/issues/120030
-      console.log('ldap groups');
-      console.log(await groups());
+      const ldapUserGroupSyncService = new LdapUserGroupSyncService(crowi.passportService, req.user.name, req.body.password);
+      await ldapUserGroupSyncService.syncExternalUserGroups();
     }
-    catch (e) {
-      res.apiv3Err(e, 500);
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err.message, 500);
     }
 
     return res.apiv3({}, 204);

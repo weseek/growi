@@ -1049,10 +1049,11 @@
     "error_generate_growi_archive": "Failed to generate GROWI archive file",
     "error_send_growi_archive": "Failed to send GROWI archive file to the destination GROWI"
   },
-  "external_group": {
+  "external_user_group": {
     "management": "External Group Management",
     "execute_sync": "Execute Sync",
     "sync": "Sync",
+    "invalid_sync_settings": "Invalid sync settings",
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",
@@ -1071,7 +1072,10 @@
       "sync_succeeded": "Group sync succeeded",
       "sync_failed": "Sync failed. Check LDAP security settings and group sync settings",
       "password": "Password",
-      "password_detail": "Login password is necessary because Bind type is set to User Bind"
+      "password_detail": "Login password is necessary because Bind type is set to User Bind",
+      "circular_reference": "Sync failed because there is a possible circular reference in your LDAP group tree structure",
+      "group_search_failed": "LDAP group search failed. Please check your LDAP security settings and group sync settings.",
+      "user_search_failed": "LDAP user search failed. Please check your LDAP security settings and group sync settings."
     }
   },
   "toaster": {

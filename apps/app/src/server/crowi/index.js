@@ -26,11 +26,13 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
+import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -150,6 +152,7 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
+    this.setupExternalAccountService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -359,7 +362,6 @@ Crowi.prototype.setupPassport = async function() {
   logger.debug('Passport is enabled');
 
   // initialize service
-  const PassportService = require('../service/passport');
   if (this.passportService == null) {
     this.passportService = new PassportService(this);
   }
@@ -778,6 +780,11 @@ Crowi.prototype.setupG2GTransferService = async function() {
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
   }
+};
+
+// execute after setupPassport
+Crowi.prototype.setupExternalAccountService = function() {
+  instanciateExternalAccountService(this.passportService);
 };
 
 export default Crowi;

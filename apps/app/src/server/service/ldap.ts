@@ -1,6 +1,4 @@
-import assert from 'assert';
-
-import ldap from 'ldapjs';
+import ldap, { NoSuchObjectError } from 'ldapjs';
 
 import loggerFactory from '~/utils/logger';
 
@@ -9,20 +7,38 @@ import { configManager } from './config-manager';
 
 const logger = loggerFactory('growi:service:ldap-service');
 
+// @types/ldapjs is outdated, and SearchResultEntry does not exist.
+// Declare it manually in the meantime.
+export interface SearchResultEntry {
+  objectName: string // DN
+  attributes: {
+    type: string,
+    values: string | string[]
+  }[]
+}
+
 /**
  * Service to connect to LDAP server.
  * User auth using LDAP is done with PassportService, not here.
 */
 class LdapService {
 
+  username?: string; // Necessary when bind type is user bind
+
+  password?: string; // Necessary when bind type is user bind
+
+  constructor(username?: string, password?: string) {
+    this.username = username;
+    this.password = password;
+  }
+
   /**
    * Execute search on LDAP server and return result
-   * @param {string} username Necessary when bind type is user bind
-   * @param {string} password Necessary when bind type is user bind
    * @param {string} filter Search filter
    * @param {string} base Base DN to execute search on
+   * @returns {SearchEntry[]} Search result. Default scope is set to 'sub'.
    */
-  search(username?: string, password?: string, filter?: string, base?: string): Promise<ldap.SearchEntry[]> {
+  search(filter?: string, base?: string, scope: 'sub' | 'base' | 'one' = 'sub'): Promise<SearchResultEntry[]> {
     const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
 
     if (!isLdapEnabled) {
@@ -50,34 +66,41 @@ class LdapService {
 
     // user bind
     const fixedBindDN = (isUserBind)
-      ? bindDN.replace(/{{username}}/, username)
+      ? bindDN.replace(/{{username}}/, this.username)
       : bindDN;
-    const fixedBindCredentials = (isUserBind) ? password : bindCredentials;
+    const fixedBindCredentials = (isUserBind) ? this.password : bindCredentials;
 
     const client = ldap.createClient({
       url,
     });
 
-    client.bind(fixedBindDN, fixedBindCredentials, (err) => {
-      assert.ifError(err);
-    });
-
-    const searchResults: ldap.SearchEntry[] = [];
+    const searchResults: SearchResultEntry[] = [];
 
     return new Promise((resolve, reject) => {
-      client.search(base || searchBase, { scope: 'sub', filter }, (err, res) => {
+      client.bind(fixedBindDN, fixedBindCredentials, (err) => {
+        if (err != null) {
+          reject(err);
+        }
+      });
+
+      client.search(base || searchBase, { scope, filter }, (err, res) => {
         if (err != null) {
           reject(err);
         }
 
         // @types/ldapjs is outdated, and pojo property (type SearchResultEntry) does not exist.
-        // Typecast and use SearchEntry in the meantime.
+        // Typecast to manually declared SearchResultEntry in the meantime.
         res.on('searchEntry', (entry: any) => {
-          const pojo = entry?.pojo as ldap.SearchEntry;
+          const pojo = entry?.pojo as SearchResultEntry;
           searchResults.push(pojo);
         });
         res.on('error', (err) => {
-          reject(err);
+          if (err instanceof NoSuchObjectError) {
+            resolve([]);
+          }
+          else {
+            reject(err);
+          }
         });
         res.on('end', (result) => {
           if (result?.status === 0) {
@@ -91,11 +114,29 @@ class LdapService {
     });
   }
 
-  searchGroup(username?: string, password?: string): Promise<ldap.SearchEntry[]> {
-    const groupSearchBase = configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
-    || configManager?.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
+  searchGroupDir(): Promise<SearchResultEntry[]> {
+    return this.search(undefined, this.getGroupSearchBase());
+  }
 
-    return this.search(username, password, undefined, groupSearchBase);
+  getArrayValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string): string[] {
+    const values: string | string[] = entry.attributes.find(attribute => attribute.type === attributeType)?.values || [];
+    return typeof values === 'string' ? [values] : values;
+  }
+
+  getStringValFromSearchResultEntry(entry: SearchResultEntry, attributeType: string): string | undefined {
+    const values: string | string[] | undefined = entry.attributes.find(attribute => attribute.type === attributeType)?.values;
+    if (typeof values === 'string' || values == null) {
+      return values;
+    }
+    if (values.length > 0) {
+      return values[0];
+    }
+    return undefined;
+  }
+
+  getGroupSearchBase(): string {
+    return configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
+    || configManager?.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
   }
 
 }
