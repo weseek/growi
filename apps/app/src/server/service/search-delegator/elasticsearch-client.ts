@@ -22,6 +22,9 @@ import {
   ReindexResponse,
 } from './elasticsearch-client-types';
 
+
+type ESClientOptions = ES7ClientOptions | ES8ClientOptions;
+
 // Type guard for ES7ClientOptions
 const isES7Options = (options: any): options is ES7ClientOptions => {
   return options.ssl != null;
@@ -31,19 +34,23 @@ export default class ElasticsearchClient {
 
   client: ES7Client | ES8Client;
 
-  constructor(isES7: boolean, options: ES7ClientOptions | ES8ClientOptions, rejectUnauthorized: boolean) {
+  constructor(isES7: boolean, options: ES7ClientOptions, rejectUnauthorized: boolean)
+
+  constructor(isES7: boolean, options: ES8ClientOptions, rejectUnauthorized: boolean)
+
+  constructor(isES7: boolean, options: ESClientOptions, rejectUnauthorized = false) {
 
     const encryptionOption = isES7
       ? { ssl: { rejectUnauthorized } }
       : { tls: { rejectUnauthorized } };
 
-    const esOptions = { ...options, ...encryptionOption };
+    const esOptions: ESClientOptions = { ...options, ...encryptionOption };
 
-    if (isES7 && isES7Options(esOptions)) {
+    if (isES7Options(esOptions)) {
       this.client = new ES7Client(esOptions);
     }
     else {
-      this.client = new ES8Client(esOptions as ES8ClientOptions);
+      this.client = new ES8Client(esOptions);
     }
   }
 
