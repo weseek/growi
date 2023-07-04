@@ -16,13 +16,6 @@ const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRe
   timestamps: { createdAt: true, updatedAt: false },
 });
 
-schema.statics.findOrCreateRelation = function(userGroup, user) {
-  return this.updateOne({
-    relatedGroup: { $eq: userGroup.id },
-    relatedUser: { $eq: user.id },
-  }, {}, { upsert: true });
-};
-
 schema.statics.createRelations = async function(userGroupIds, user) {
   const documentsToInsert = userGroupIds.map((groupId) => {
     return {
