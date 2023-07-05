@@ -1,7 +1,9 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 
-import { GrowiPluginType, GrowiThemeMetadata, ViteManifest } from '@growi/core';
+import { GrowiPluginType, type GrowiThemeMetadata, type ViteManifest } from '@growi/core';
+import type { GrowiPluginPackageData } from '@growi/pluginkit';
+import { importPackageJson, validatePackageJson } from '@growi/pluginkit/dist/v4/server';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
@@ -212,14 +214,24 @@ export class GrowiPluginService implements IGrowiPluginService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, max-len
-  private static async detectPlugins(origin: IGrowiPluginOrigin, ghOrganizationName: string, ghReposName: string, parentPackageJson?: any): Promise<IGrowiPlugin[]> {
-    const packageJsonPath = path.resolve(pluginStoringPath, ghReposName, 'package.json');
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+  private static async detectPlugins(
+      origin: IGrowiPluginOrigin, ghOrganizationName: string, ghReposName: string,
+      opts?: {
+        packageRootPath: string,
+        parentPackageData: GrowiPluginPackageData,
+      },
+  ): Promise<IGrowiPlugin[]> {
+    const packageRootPath = opts?.packageRootPath ?? path.resolve(pluginStoringPath, ghOrganizationName, ghReposName);
 
-    const { growiPlugin } = packageJson;
+    // validate
+    await validatePackageJson(packageRootPath);
+
+    const packageData = importPackageJson(packageRootPath);
+
+    const { growiPlugin } = packageData;
     const {
       name: packageName, description: packageDesc, author: packageAuthor,
-    } = parentPackageJson ?? packageJson;
+    } = opts?.parentPackageData ?? packageData;
 
 
     if (growiPlugin == null) {
@@ -230,8 +242,10 @@ export class GrowiPluginService implements IGrowiPluginService {
     if (growiPlugin.isMonorepo && growiPlugin.packages != null) {
       const plugins = await Promise.all(
         growiPlugin.packages.map(async(subPackagePath) => {
-          const subPackageInstalledPath = path.join(ghReposName, subPackagePath);
-          return this.detectPlugins(origin, subPackageInstalledPath, packageJson);
+          return this.detectPlugins(origin, ghOrganizationName, ghReposName, {
+            packageRootPath: path.join(packageRootPath, subPackagePath),
+            parentPackageData: packageData,
+          });
         }),
       );
       return plugins.flat();
