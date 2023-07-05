@@ -65,13 +65,13 @@ context('Editor while uploading to a new page', () => {
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-2`);
 
     // drag-drop a file
+    cy.intercept('POST', '/_api/attachments.add').as('attachmentsAdd');
     const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
+    cy.wait('@attachmentsAdd')
 
     // Update page using shortcut keys
-    cy.intercept('POST', '/_api/attachments.add').as('attachmentsAdd');
     cy.get('.CodeMirror').type('{ctrl+s}');
-    cy.wait('@attachmentsAdd')
 
     // expect
     cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
