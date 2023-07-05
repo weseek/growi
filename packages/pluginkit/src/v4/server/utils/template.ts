@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
@@ -59,7 +59,7 @@ async function getStats(tplDir: string): Promise<TemplateDirStatus> {
 
   const result: TemplateDirStatus = {
     isTemplateExists,
-    meta: isMetaDataFileExists ? await import(metaDataPath) : undefined,
+    meta: isMetaDataFileExists ? JSON.parse(readFileSync(metaDataPath, 'utf-8')) : undefined,
   };
 
   return result;
@@ -116,7 +116,7 @@ export const scanTemplateStatus = async(
   }
 
   // eslint-disable-next-line no-console
-  console.debug({ status });
+  console.debug(`Template directory (${projectDirRoot}) has scanned`, { status });
 
   return status;
 };
