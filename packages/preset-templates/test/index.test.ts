@@ -26,10 +26,10 @@ it('Validation for package.json should be return data', () => {
 
 it('Scanning the templates ends up with no errors', async() => {
   // when
-  const caller = async() => { await scanAllTemplateStatus(projectDirRoot) };
+  const results = await scanAllTemplateStatus(projectDirRoot);
 
   // then
-  await expect(caller).rejects.not.toThrow();
+  expect(results).not.toBeNull();
 });
 
 it('Scanning the templates ends up with no errors with opts.data', async() => {
@@ -38,10 +38,10 @@ it('Scanning the templates ends up with no errors with opts.data', async() => {
   const data = validateTemplatePluginPackageJson(projectDirRoot);
 
   // when
-  const caller = async() => { await scanAllTemplateStatus(projectDirRoot, { data }) };
+  const results = await scanAllTemplateStatus(projectDirRoot, { data });
 
   // then
-  await expect(caller).rejects.not.toThrow();
+  expect(results).not.toBeNull();
 });
 
 it('Validation templates returns true', () => {
