@@ -251,9 +251,6 @@ export class GrowiPluginService implements IGrowiPluginService {
       return plugins.flat();
     }
 
-    if (growiPlugin.types == null) {
-      throw new Error('\'growiPlugin\' section must have a \'types\' property.');
-    }
     const plugin = {
       isEnabled: true,
       installedPath: `${ghOrganizationName}/${ghReposName}`,
