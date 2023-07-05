@@ -190,7 +190,7 @@ export class GrowiPluginService implements IGrowiPluginService {
         }).catch((err) => {
           logger.error(err);
           // eslint-disable-next-line prefer-promise-reject-errors
-          rejects('Filed to download file.');
+          rejects('Failed to download file.');
         });
     });
   }
@@ -205,7 +205,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Filed to unzip.');
+      throw new Error('Failed to unzip.');
     }
   }
 
@@ -296,7 +296,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Filed to delete plugin repository.');
+      throw new Error('Failed to delete plugin repository.');
     }
 
     try {
@@ -304,7 +304,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Filed to delete plugin from GrowiPlugin documents.');
+      throw new Error('Failed to delete plugin from GrowiPlugin documents.');
     }
 
     return growiPlugins.meta.name;
