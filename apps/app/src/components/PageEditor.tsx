@@ -333,7 +333,7 @@ const PageEditor = React.memo((): JSX.Element => {
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
-        await mutateIsLatestRevision(true);
+        mutateIsLatestRevision(true);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
         setCreatedPageRevisionIdWithAttachment(res.page.revision);
