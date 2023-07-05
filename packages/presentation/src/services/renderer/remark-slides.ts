@@ -5,9 +5,6 @@ import { visit } from 'unist-util-visit';
 
 function rewriteNode(node: Node) {
 
-  node.type = 'paragraph';
-  node.children = [{ type: 'text', value: node.value }];
-
   let slide = false;
   let marp = false;
 
