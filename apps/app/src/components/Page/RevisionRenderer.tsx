@@ -16,7 +16,6 @@ type Props = {
   rendererOptions: RendererOptions,
   markdown: string,
   additionalClassName?: string,
-  isSlidesOverviewEnabled?: boolean,
 }
 
 const ErrorFallback: React.FC<FallbackProps> = React.memo(({ error, resetErrorBoundary }) => {
@@ -33,7 +32,7 @@ ErrorFallback.displayName = 'ErrorFallback';
 const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
-    rendererOptions, markdown, additionalClassName, isSlidesOverviewEnabled,
+    rendererOptions, markdown, additionalClassName,
   } = props;
 
   return (

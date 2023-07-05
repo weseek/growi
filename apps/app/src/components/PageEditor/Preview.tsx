@@ -32,7 +32,7 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
       }}
     >
       { markdown != null && (
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} isSlidesOverviewEnabled></RevisionRenderer>
+        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
       ) }
     </div>
   );
