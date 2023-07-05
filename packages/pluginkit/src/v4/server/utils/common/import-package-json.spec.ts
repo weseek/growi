@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { importPackageJson } from './import';
+import { importPackageJson } from './import-package-json';
 
 it('importPackageJson() returns an object', async() => {
   // when

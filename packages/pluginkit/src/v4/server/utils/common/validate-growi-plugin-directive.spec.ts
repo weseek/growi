@@ -3,7 +3,7 @@ import { GrowiPluginType } from '@growi/core/dist/consts';
 import examplePkg from '../../../../../test/fixtures/example-package/template1/package.json';
 
 
-import { validatePackageJson } from './validate';
+import { validateGrowiDirective } from './validate-growi-plugin-directive';
 
 const mocks = vi.hoisted(() => {
   return {
@@ -11,18 +11,18 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock('./import', () => {
+vi.mock('./import-package-json', () => {
   return { importPackageJson: mocks.importPackageJsonMock };
 });
 
-describe('validatePackageJson()', () => {
+describe('validateGrowiDirective()', () => {
 
   it('returns a data object', async() => {
     // setup
     mocks.importPackageJsonMock.mockReturnValue(examplePkg);
 
     // when
-    const data = validatePackageJson('package.json');
+    const data = validateGrowiDirective('package.json');
 
     // then
     expect(data).not.toBeNull();
@@ -33,7 +33,7 @@ describe('validatePackageJson()', () => {
     mocks.importPackageJsonMock.mockReturnValue(examplePkg);
 
     // when
-    const data = validatePackageJson('package.json', GrowiPluginType.Template);
+    const data = validateGrowiDirective('package.json', GrowiPluginType.Template);
 
     // then
     expect(data).not.toBeNull();
@@ -46,7 +46,7 @@ describe('validatePackageJson()', () => {
       mocks.importPackageJsonMock.mockReturnValue({});
 
       // when
-      const caller = () => { validatePackageJson('package.json') };
+      const caller = () => { validateGrowiDirective('package.json') };
 
       // then
       expect(caller).toThrow("The package.json does not have 'growiPlugin' directive.");
@@ -61,7 +61,7 @@ describe('validatePackageJson()', () => {
       });
 
       // when
-      const caller = () => { validatePackageJson('package.json') };
+      const caller = () => { validateGrowiDirective('package.json') };
 
       // then
       expect(caller).toThrow("The growiPlugin directive must have a valid 'schemaVersion' directive.");
@@ -76,7 +76,7 @@ describe('validatePackageJson()', () => {
       });
 
       // when
-      const caller = () => { validatePackageJson('package.json') };
+      const caller = () => { validateGrowiDirective('package.json') };
 
       // then
       expect(caller).toThrow("The growiPlugin directive must have a valid 'schemaVersion' directive.");
@@ -91,7 +91,7 @@ describe('validatePackageJson()', () => {
       });
 
       // when
-      const caller = () => { validatePackageJson('package.json') };
+      const caller = () => { validateGrowiDirective('package.json') };
 
       // then
       expect(caller).toThrow("The growiPlugin directive does not have 'types' directive.");
@@ -107,7 +107,7 @@ describe('validatePackageJson()', () => {
       });
 
       // when
-      const caller = () => { validatePackageJson('package.json', GrowiPluginType.Script) };
+      const caller = () => { validateGrowiDirective('package.json', GrowiPluginType.Script) };
 
       // then
       expect(caller).toThrow("The growiPlugin directive does not have expected plugin type in 'types' directive.");

@@ -3,7 +3,7 @@ import path from 'path';
 
 import { GrowiPluginType, type GrowiThemeMetadata, type ViteManifest } from '@growi/core';
 import type { GrowiPluginPackageData } from '@growi/pluginkit';
-import { importPackageJson, validatePackageJson } from '@growi/pluginkit/dist/v4/server';
+import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
@@ -224,19 +224,14 @@ export class GrowiPluginService implements IGrowiPluginService {
     const packageRootPath = opts?.packageRootPath ?? path.resolve(pluginStoringPath, ghOrganizationName, ghReposName);
 
     // validate
-    await validatePackageJson(packageRootPath);
+    const data = await validateGrowiDirective(packageRootPath);
 
-    const packageData = importPackageJson(packageRootPath);
+    const packageData = opts?.parentPackageData ?? importPackageJson(packageRootPath);
 
-    const { growiPlugin } = packageData;
+    const { growiPlugin } = data;
     const {
       name: packageName, description: packageDesc, author: packageAuthor,
-    } = opts?.parentPackageData ?? packageData;
-
-
-    if (growiPlugin == null) {
-      throw new Error('This package does not include \'growiPlugin\' section.');
-    }
+    } = packageData;
 
     // detect sub plugins for monorepo
     if (growiPlugin.isMonorepo && growiPlugin.packages != null) {

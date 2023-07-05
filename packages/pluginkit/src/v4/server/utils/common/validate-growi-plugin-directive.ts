@@ -2,10 +2,10 @@ import { GrowiPluginType } from '@growi/core/dist/consts';
 
 import { type GrowiPluginValidationData, GrowiPluginValidationError } from '../../../../model';
 
-import { importPackageJson } from './import';
+import { importPackageJson } from './import-package-json';
 
 
-export const validatePackageJson = (projectDirRoot: string, expectedPluginType?: GrowiPluginType): GrowiPluginValidationData => {
+export const validateGrowiDirective = (projectDirRoot: string, expectedPluginType?: GrowiPluginType): GrowiPluginValidationData => {
   const pkg = importPackageJson(projectDirRoot);
 
   const { growiPlugin } = pkg;
