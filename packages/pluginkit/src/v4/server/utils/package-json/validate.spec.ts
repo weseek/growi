@@ -1,6 +1,6 @@
 import { GrowiPluginType } from '@growi/core/dist/consts';
 
-import examplePkg from '^/test/fixtures/example-package/template1/package.json';
+import examplePkg from '../../../../../test/fixtures/example-package/template1/package.json';
 
 
 import { validatePackageJson } from './validate';

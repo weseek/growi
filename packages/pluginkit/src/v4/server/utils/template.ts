@@ -4,9 +4,8 @@ import { promisify } from 'util';
 
 import { GrowiPluginType } from '@growi/core/dist/consts';
 
-import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '~/model';
-import { GrowiPluginValidationError } from '~/model';
-
+import type { GrowiPluginValidationData, GrowiTemplatePluginValidationData } from '../../../model';
+import { GrowiPluginValidationError } from '../../../model';
 import { isTemplateStatusValid, type TemplateStatus, type TemplateSummary } from '../../interfaces';
 
 import { validatePackageJson } from './package-json';
