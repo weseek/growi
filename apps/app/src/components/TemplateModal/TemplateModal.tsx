@@ -64,10 +64,8 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
       <h4 className="mb-1">{template.title}</h4>
       <p className="mb-2">{template.desc}</p>
       { Array.from(locales).map(locale => (
-        <span key={locale} className="badge border rounded-pill text-muted mr-1">
-          {locale}
-        </span>
-      ))}
+        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+      )) }
     </a>
   );
 };
@@ -231,13 +229,11 @@ export const TemplateModal = (): JSX.Element => {
                       return (
                         <DropdownItem
                           key={locale}
-                          onClick={() => setSelectedTemplateLocale(locale)}
-                        >
+                          onClick={() => setSelectedTemplateLocale(locale)}>
                           <span>{locale}</span>
                         </DropdownItem>
                       );
-                    })
-                    }
+                    }) }
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </div>
