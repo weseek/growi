@@ -222,7 +222,7 @@ export const TemplateModal = (): JSX.Element => {
               </div>
               <div className="col-6 d-flex justify-content-end">
                 <UncontrolledDropdown>
-                  <DropdownToggle caret type="button" outline className='float-right'>
+                  <DropdownToggle caret type="button" outline className='float-right' disabled={selectedTemplateSummary == null}>
                     <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
