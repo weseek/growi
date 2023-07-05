@@ -69,7 +69,9 @@ context('Editor while uploading to a new page', () => {
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
 
     // Update page using shortcut keys
+    cy.intercept('POST', '/_api/attachments.add').as('attachmentsAdd');
     cy.get('.CodeMirror').type('{ctrl+s}');
+    cy.wait('@attachmentsAdd')
 
     // expect
     cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
