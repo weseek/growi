@@ -19,10 +19,10 @@ describe('validatePackageJson()', () => {
 
   it('returns a data object', async() => {
     // setup
-    mocks.importPackageJsonMock.mockResolvedValue(examplePkg);
+    mocks.importPackageJsonMock.mockReturnValue(examplePkg);
 
     // when
-    const data = await validatePackageJson('package.json');
+    const data = validatePackageJson('package.json');
 
     // then
     expect(data).not.toBeNull();
@@ -30,10 +30,10 @@ describe('validatePackageJson()', () => {
 
   it("with the 'expectedPluginType' argument returns a data object", async() => {
     // setup
-    mocks.importPackageJsonMock.mockResolvedValue(examplePkg);
+    mocks.importPackageJsonMock.mockReturnValue(examplePkg);
 
     // when
-    const data = await validatePackageJson('package.json', GrowiPluginType.Template);
+    const data = validatePackageJson('package.json', GrowiPluginType.Template);
 
     // then
     expect(data).not.toBeNull();
@@ -41,65 +41,65 @@ describe('validatePackageJson()', () => {
 
   describe('should throw an GrowiPluginValidationError', () => {
 
-    it("when the pkg does not have 'growiPlugin' directive", async() => {
+    it("when the pkg does not have 'growiPlugin' directive", () => {
       // setup
-      mocks.importPackageJsonMock.mockResolvedValue({});
+      mocks.importPackageJsonMock.mockReturnValue({});
 
       // when
-      const caller = async() => { await validatePackageJson('package.json') };
+      const caller = () => { validatePackageJson('package.json') };
 
       // then
-      await expect(caller).rejects.toThrow("The package.json does not have 'growiPlugin' directive.");
+      expect(caller).toThrow("The package.json does not have 'growiPlugin' directive.");
     });
 
-    it("when the 'schemaVersion' is NaN", async() => {
+    it("when the 'schemaVersion' is NaN", () => {
       // setup
-      mocks.importPackageJsonMock.mockResolvedValue({
+      mocks.importPackageJsonMock.mockReturnValue({
         growiPlugin: {
           schemaVersion: 'foo',
         },
       });
 
       // when
-      const caller = async() => { await validatePackageJson('package.json') };
+      const caller = () => { validatePackageJson('package.json') };
 
       // then
-      await expect(caller).rejects.toThrow("The growiPlugin directive must have a valid 'schemaVersion' directive.");
+      expect(caller).toThrow("The growiPlugin directive must have a valid 'schemaVersion' directive.");
     });
 
-    it("when the 'schemaVersion' is less than 4", async() => {
+    it("when the 'schemaVersion' is less than 4", () => {
       // setup
-      mocks.importPackageJsonMock.mockResolvedValue({
+      mocks.importPackageJsonMock.mockReturnValue({
         growiPlugin: {
           schemaVersion: 3,
         },
       });
 
       // when
-      const caller = async() => { await validatePackageJson('package.json') };
+      const caller = () => { validatePackageJson('package.json') };
 
       // then
-      await expect(caller).rejects.toThrow("The growiPlugin directive must have a valid 'schemaVersion' directive.");
+      expect(caller).toThrow("The growiPlugin directive must have a valid 'schemaVersion' directive.");
     });
 
-    it("when the 'types' directive does not exist", async() => {
+    it("when the 'types' directive does not exist", () => {
       // setup
-      mocks.importPackageJsonMock.mockResolvedValue({
+      mocks.importPackageJsonMock.mockReturnValue({
         growiPlugin: {
           schemaVersion: 4,
         },
       });
 
       // when
-      const caller = async() => { await validatePackageJson('package.json') };
+      const caller = () => { validatePackageJson('package.json') };
 
       // then
-      await expect(caller).rejects.toThrow("The growiPlugin directive does not have 'types' directive.");
+      expect(caller).toThrow("The growiPlugin directive does not have 'types' directive.");
     });
 
-    it("when the 'types' directive does not have expected plugin type", async() => {
+    it("when the 'types' directive does not have expected plugin type", () => {
       // setup
-      mocks.importPackageJsonMock.mockResolvedValue({
+      mocks.importPackageJsonMock.mockReturnValue({
         growiPlugin: {
           schemaVersion: 4,
           types: [GrowiPluginType.Template],
@@ -107,10 +107,10 @@ describe('validatePackageJson()', () => {
       });
 
       // when
-      const caller = async() => { await validatePackageJson('package.json', GrowiPluginType.Script) };
+      const caller = () => { validatePackageJson('package.json', GrowiPluginType.Script) };
 
       // then
-      await expect(caller).rejects.toThrow("The growiPlugin directive does not have expected plugin type in 'types' directive.");
+      expect(caller).toThrow("The growiPlugin directive does not have expected plugin type in 'types' directive.");
     });
   });
 

@@ -15,21 +15,38 @@ it('Validation for package.json should be passed', () => {
   expect(caller).not.toThrow();
 });
 
-it('Scanning the templates ends up with no errors', async() => {
-
-  // setup
-  const data = await validateTemplatePluginPackageJson(projectDirRoot);
+it('Validation for package.json should be return data', () => {
 
   // when
-  const caller = () => scanAllTemplateStatus(projectDirRoot, data);
+  const data = validateTemplatePluginPackageJson(projectDirRoot);
 
   // then
-  expect(caller).not.toThrow();
+  expect(data).not.toBeNull();
 });
 
-it('Validation templates returns true', async() => {
+it('Scanning the templates ends up with no errors', async() => {
   // when
-  const result = await validateTemplatePlugin(projectDirRoot);
+  const caller = async() => { await scanAllTemplateStatus(projectDirRoot) };
+
+  // then
+  await expect(caller).rejects.not.toThrow();
+});
+
+it('Scanning the templates ends up with no errors with opts.data', async() => {
+
+  // setup
+  const data = validateTemplatePluginPackageJson(projectDirRoot);
+
+  // when
+  const caller = async() => { await scanAllTemplateStatus(projectDirRoot, { data }) };
+
+  // then
+  await expect(caller).rejects.not.toThrow();
+});
+
+it('Validation templates returns true', () => {
+  // when
+  const result = validateTemplatePlugin(projectDirRoot);
 
   // then
   expect(result).toBeTruthy();

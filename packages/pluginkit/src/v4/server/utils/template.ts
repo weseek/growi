@@ -9,7 +9,7 @@ import { GrowiPluginValidationError } from '~/model';
 
 import { isTemplateStatusValid, type TemplateStatus, type TemplateSummary } from '../../interfaces';
 
-import { importPackageJson, validatePackageJson } from './package-json';
+import { validatePackageJson } from './package-json';
 
 
 const statAsync = promisify(fs.stat);
@@ -19,13 +19,13 @@ const statAsync = promisify(fs.stat);
  * An utility for template plugin which wrap 'validatePackageJson' of './package-json.ts' module
  * @param projectDirRoot
  */
-export const validateTemplatePluginPackageJson = async(projectDirRoot: string): Promise<GrowiTemplatePluginValidationData> => {
-  const data = await validatePackageJson(projectDirRoot, GrowiPluginType.Template);
+export const validateTemplatePluginPackageJson = (projectDirRoot: string): GrowiTemplatePluginValidationData => {
+  const data = validatePackageJson(projectDirRoot, GrowiPluginType.Template);
 
-  const pkg = await importPackageJson(projectDirRoot);
+  const { growiPlugin } = data;
 
   // check supporting locales
-  const supportingLocales: string[] | undefined = pkg.growiPlugin.locales;
+  const supportingLocales: string[] | undefined = growiPlugin.locales;
   if (supportingLocales == null || supportingLocales.length === 0) {
     throw new GrowiPluginValidationError<GrowiPluginValidationData & { supportingLocales?: string[] }>(
       "Template plugin must have 'supportingLocales' and that must have one or more locales",
@@ -130,7 +130,7 @@ export const scanAllTemplateStatus = async(
     },
 ): Promise<TemplateSummary[]> => {
 
-  const data = opts?.data ?? await validateTemplatePluginPackageJson(projectDirRoot);
+  const data = opts?.data ?? validateTemplatePluginPackageJson(projectDirRoot);
 
   const summaries: TemplateSummary[] = [];
 
@@ -161,7 +161,7 @@ export const scanAllTemplateStatus = async(
 };
 
 export const validateTemplatePlugin = async(projectDirRoot: string): Promise<boolean> => {
-  const data = await validateTemplatePluginPackageJson(projectDirRoot);
+  const data = validateTemplatePluginPackageJson(projectDirRoot);
 
   const results = await scanAllTemplateStatus(projectDirRoot, { data, returnsInvalidTemplates: true });
 

@@ -1,6 +1,9 @@
+import { readFileSync } from 'fs';
 import path from 'path';
 
-export const importPackageJson = async(projectDirRoot: string): Promise<any> => {
+import type { GrowiPluginPackageData } from '~/model';
+
+export const importPackageJson = (projectDirRoot: string): GrowiPluginPackageData => {
   const packageJsonUrl = path.resolve(projectDirRoot, 'package.json');
-  return import(packageJsonUrl);
+  return JSON.parse(readFileSync(packageJsonUrl, 'utf-8'));
 };

@@ -5,12 +5,12 @@ import { type GrowiPluginValidationData, GrowiPluginValidationError } from '~/mo
 import { importPackageJson } from './import';
 
 
-export const validatePackageJson = async(projectDirRoot: string, expectedPluginType?: GrowiPluginType): Promise<GrowiPluginValidationData> => {
-  const pkg = await importPackageJson(projectDirRoot);
-
-  const data: GrowiPluginValidationData = { projectDirRoot };
+export const validatePackageJson = (projectDirRoot: string, expectedPluginType?: GrowiPluginType): GrowiPluginValidationData => {
+  const pkg = importPackageJson(projectDirRoot);
 
   const { growiPlugin } = pkg;
+
+  const data: GrowiPluginValidationData = { projectDirRoot, schemaVersion: NaN, growiPlugin };
 
   if (growiPlugin == null) {
     throw new GrowiPluginValidationError("The package.json does not have 'growiPlugin' directive.", data);
