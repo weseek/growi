@@ -65,7 +65,7 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
       <p className="mb-2">{template.desc}</p>
       { Array.from(locales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
-      )) }
+      ))}
     </a>
   );
 };
@@ -116,6 +116,7 @@ const TemplateMenu: React.FC<TemplateMenuProps> = ({
 
 export const TemplateModal = (): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
+
 
   const { data: templateModalStatus, close } = useTemplateModal();
 
