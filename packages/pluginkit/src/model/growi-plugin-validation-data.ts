@@ -1,10 +1,10 @@
 import { GrowiPluginType } from '@growi/core/dist/consts';
 
-import { GrowiPluginDerective } from './growi-plugin-package-data';
+import { GrowiPluginDirective } from './growi-plugin-package-data';
 
 export type GrowiPluginValidationData = {
   projectDirRoot: string,
-  growiPlugin: GrowiPluginDerective,
+  growiPlugin: GrowiPluginDirective,
   schemaVersion: number,
   expectedPluginType?: GrowiPluginType,
   actualPluginTypes?: GrowiPluginType[],

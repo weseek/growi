@@ -1,6 +1,6 @@
 import { GrowiPluginType } from '@growi/core';
 
-export type GrowiPluginDerective = {
+export type GrowiPluginDirective = {
   [key: string]: any,
   schemaVersion: number,
   types: GrowiPluginType[],
@@ -8,5 +8,5 @@ export type GrowiPluginDerective = {
 
 export type GrowiPluginPackageData = {
   [key: string]: any,
-  growiPlugin: GrowiPluginDerective,
+  growiPlugin: GrowiPluginDirective,
 }
