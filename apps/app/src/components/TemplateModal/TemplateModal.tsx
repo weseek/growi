@@ -37,24 +37,21 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
   return `${defaultTemplate.pluginId ?? ''}_${defaultTemplate.id}`;
 }
 
-
 type TemplateItemProps = {
-  templateSummary: TemplateSummary,
-  onClick?: () => void,
-  usersDefaultLang?: Lang,
-  isSelected?: boolean,
+  templateId: string,
+  template: TemplateStatus,
+  locales: Set<string>,
+  onClick: () => void,
+  isSelected: boolean,
 }
 
-const TemplateItem = ({
-  templateSummary, onClick, usersDefaultLang, isSelected,
-}: TemplateItemProps): JSX.Element => {
-  const templateId = constructTemplateId(templateSummary);
-  const locales = new Set(Object.values(templateSummary).map(s => s.locale));
-
-  const template = usersDefaultLang != null && usersDefaultLang in templateSummary
-    ? templateSummary[usersDefaultLang]
-    : templateSummary.default;
-
+const TemplateItem: React.FC<TemplateItemProps> = ({
+  templateId,
+  template,
+  locales,
+  onClick,
+  isSelected,
+}) => {
   assert(template.isValid);
 
   return (
@@ -67,15 +64,60 @@ const TemplateItem = ({
       <h4 className="mb-1">{template.title}</h4>
       <p className="mb-2">{template.desc}</p>
       { Array.from(locales).map(locale => (
-        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+        <span key={locale} className="badge border rounded-pill text-muted mr-1">
+          {locale}
+        </span>
       ))}
     </a>
   );
 };
 
+type TemplateMenuProps = {
+  templateSummaries: TemplateSummary[],
+  onClickHandler: (templateSummary: TemplateSummary, template: TemplateStatus, locales: Set<string>) => void,
+  usersDefaultLang: Lang,
+  selectedTemplateSummary?: TemplateSummary,
+}
+
+const TemplateMenu: React.FC<TemplateMenuProps> = ({
+  templateSummaries,
+  onClickHandler,
+  usersDefaultLang,
+  selectedTemplateSummary,
+}) => {
+  return (
+    <>
+      {templateSummaries.map((templateSummary) => {
+        const templateId = constructTemplateId(templateSummary);
+        const locales = new Set(Object.values(templateSummary).map(s => s.locale));
+
+        const template = usersDefaultLang in templateSummary
+          ? templateSummary[usersDefaultLang]
+          : templateSummary.default;
+
+        const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
+
+        const onClick = () => {
+          onClickHandler(templateSummary, template, locales);
+        };
+
+        return (
+          <TemplateItem
+            key={templateId}
+            templateId={templateId}
+            template={template}
+            locales={locales}
+            onClick={onClick}
+            isSelected={isSelected}
+          />
+        );
+      })}
+    </>
+  );
+};
+
 export const TemplateModal = (): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
-
 
   const { data: templateModalStatus, close } = useTemplateModal();
 
@@ -84,11 +126,15 @@ export const TemplateModal = (): JSX.Element => {
   const { data: templateSummaries } = useSWRxTemplates();
 
   const [selectedTemplateSummary, setSelectedTemplateSummary] = useState<TemplateSummary>();
+  const [selectedTemplateLocales, setSelectedTemplateLocales] = useState<Set<string>>();
   const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateStatus>();
 
   const { data: selectedTemplateMarkdown } = useSWRxTemplate(selectedTemplateSummary, selectedTemplateLocale);
 
   const { format } = useFormatter();
+
+  const usersDefaultLang = personalSettingsInfo?.lang;
 
   const submitHandler = useCallback((markdown?: string) => {
     if (templateModalStatus == null || markdown == null) {
@@ -104,6 +150,27 @@ export const TemplateModal = (): JSX.Element => {
     close();
   }, [close, format, selectedTemplateMarkdown, templateModalStatus]);
 
+  const onClickHandler = useCallback((
+      templateSummary: TemplateSummary,
+      template: TemplateStatus,
+      locales: Set<string>,
+  ) => {
+    if (usersDefaultLang == null) {
+      return;
+    }
+
+    if (selectedTemplateLocale != null && selectedTemplateLocale in templateSummary) {
+      setSelectedTemplateLocale(selectedTemplateLocale);
+    }
+    else {
+      setSelectedTemplateLocale(usersDefaultLang in templateSummary ? usersDefaultLang : undefined);
+    }
+
+    setSelectedTemplateSummary(templateSummary);
+    setSelectedTemplate(template);
+    setSelectedTemplateLocales(locales);
+  }, [selectedTemplateLocale, usersDefaultLang]);
+
   useEffect(() => {
     if (!templateModalStatus?.isOpened) {
       setSelectedTemplateSummary(undefined);
@@ -111,20 +178,8 @@ export const TemplateModal = (): JSX.Element => {
     }
   }, [templateModalStatus?.isOpened]);
 
-  const usersDefaultLang = personalSettingsInfo?.lang;
-
   if (templateSummaries == null || templateModalStatus == null || usersDefaultLang == null) {
     return <></>;
-  }
-
-  let selectedTemplate: TemplateStatus | null = null;
-  let selectedTemplateLocales: Set<string> | null = null;
-  if (selectedTemplateSummary != null) {
-    selectedTemplate = usersDefaultLang in selectedTemplateSummary
-      ? selectedTemplateSummary[usersDefaultLang]
-      : selectedTemplateSummary.default;
-
-    selectedTemplateLocales = new Set(Object.values(selectedTemplateSummary).map(s => s.locale));
   }
 
   return (
@@ -132,58 +187,44 @@ export const TemplateModal = (): JSX.Element => {
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         {t('template.modal_label.Select template')}
       </ModalHeader>
-
       <ModalBody className="container">
         <div className="row">
           {/* List Group */}
           <div className="d-none d-lg-block col-lg-4">
             <div className="list-group">
-              { templateSummaries.map((templateSummary) => {
-                const templateId = constructTemplateId(templateSummary);
-
-                return (
-                  <TemplateItem
-                    key={templateId}
-                    templateSummary={templateSummary}
-                    usersDefaultLang={usersDefaultLang}
-                    onClick={() => setSelectedTemplateSummary(templateSummary)}
-                    isSelected={selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId}
-                  />
-                );
-              }) }
+              <TemplateMenu
+                templateSummaries={templateSummaries}
+                onClickHandler={onClickHandler}
+                usersDefaultLang={usersDefaultLang}
+                selectedTemplateSummary={selectedTemplateSummary}
+              />
             </div>
           </div>
           {/* Dropdown */}
           <div className='d-lg-none col mb-3'>
             <UncontrolledDropdown>
               <DropdownToggle caret type="button" outline className='w-100 text-right'>
-                <span className="float-left">{(selectedTemplate != null && selectedTemplate.isValid) ? selectedTemplate.title : 'Select template'}</span>
+                <span className="float-left">{(selectedTemplate != null && selectedTemplate.isValid) ? selectedTemplate.title : t('Select template')}</span>
               </DropdownToggle>
               <DropdownMenu role="menu" className='p-0'>
-                { templateSummaries.map((templateSummary) => {
-                  const templateId = constructTemplateId(templateSummary);
-                  return (
-                    <TemplateItem
-                      key={templateId}
-                      templateSummary={templateSummary}
-                      usersDefaultLang={usersDefaultLang}
-                      onClick={() => setSelectedTemplateSummary(templateSummary)}
-                      isSelected={selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId}
-                    />
-                  );
-                }) }
+                <TemplateMenu
+                  templateSummaries={templateSummaries}
+                  onClickHandler={onClickHandler}
+                  usersDefaultLang={usersDefaultLang}
+                  selectedTemplateSummary={selectedTemplateSummary}
+                />
               </DropdownMenu>
             </UncontrolledDropdown>
           </div>
           <div className="col-12 col-lg-8">
             <div className='row mb-2 mb-lg-0'>
               <div className="col-6">
-                <h3>{t('Preview')}</h3>
+                <h3>{t('preview')}</h3>
               </div>
               <div className="col-6 d-flex justify-content-end">
                 <UncontrolledDropdown>
                   <DropdownToggle caret type="button" outline className='float-right'>
-                    <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : 'Default'}</span>
+                    <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     { selectedTemplateLocales != null && Array.from(selectedTemplateLocales).map((locale) => {
@@ -210,7 +251,6 @@ export const TemplateModal = (): JSX.Element => {
             </div>
           </div>
         </div>
-
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-secondary mx-1" onClick={close}>
