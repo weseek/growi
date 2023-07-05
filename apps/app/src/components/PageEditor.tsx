@@ -82,8 +82,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: mutatedCurrenPage, trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { data: grantData } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -110,7 +110,14 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
-  const currentRevisionId = currentPage?.revision?._id || mutatedCurrenPage?.revision?._id;
+  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState('');
+
+  // Reset on page transition
+  useEffect(() => {
+    setCreatedPageRevisionIdWithAttachment('');
+  }, [router]);
+
+  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
 
   const initialValue = useMemo(() => {
     if (!isNotFound) {
@@ -326,9 +333,11 @@ const PageEditor = React.memo((): JSX.Element => {
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
-        mutateIsLatestRevision(true);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
+        await mutateIsLatestRevision(true);
+        console.log('res.page.revision._id', res.page);
+        setCreatedPageRevisionIdWithAttachment(res.page.revision);
       }
     }
     catch (e) {
