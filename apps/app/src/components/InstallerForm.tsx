@@ -65,12 +65,11 @@ const InstallerForm = memo((): JSX.Element => {
 
     try {
       await apiv3Post('/installer', data);
-      router.push('/');
+      await router.push('/');
     }
     catch (errs) {
       const err = errs[0];
       const code = err.code;
-      setIsLoading(false);
 
       if (code === 'failed_to_login_after_install') {
         toastError(t('installer.failed_to_login_after_install'));
@@ -78,6 +77,9 @@ const InstallerForm = memo((): JSX.Element => {
       }
 
       toastError(t('installer.failed_to_install'));
+    }
+    finally {
+      setIsLoading(false);
     }
   }, [currentLocale, router, t]);
 

@@ -44,10 +44,12 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     try {
       const res = await apiv3Post('/invited', { invitedForm });
       const { redirectTo } = res.data;
-      router.push(redirectTo ?? '/');
+      await router.push(redirectTo ?? '/');
     }
     catch (err) {
       setLoginErrors(err);
+    }
+    finally {
       setIsLoading(false);
     }
   }, [router]);

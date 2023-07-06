@@ -106,14 +106,16 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
-        return router.push(redirectTo);
+        await router.push(redirectTo);
       }
 
-      return router.push('/');
+      await router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
+    }
+    finally {
       setIsLoading(false);
     }
     return;
@@ -228,8 +230,17 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
-      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, isLoading, t]);
+  }, [
+    generateDangerouslySetErrors,
+    generateSafelySetErrors,
+    handleLoginWithLocalSubmit,
+    isLdapSetupFailed,
+    isLoading,
+    loginErrors,
+    props,
+    separateErrorsBasedOnErrorCode,
+    t,
+  ]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
@@ -314,7 +325,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
       const { redirectTo } = res.data;
       if (redirectTo != null) {
-        router.push(redirectTo);
+        await router.push(redirectTo);
       }
 
       if (isEmailAuthenticationEnabled) {
@@ -327,6 +338,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       if (err != null || err.length > 0) {
         setRegisterErrors(err);
       }
+    }
+    finally {
       setIsLoading(false);
     }
     return;
