@@ -68,7 +68,7 @@ export class GrowiPluginService implements IGrowiPluginService {
           }
 
           // TODO: imprv Document version and repository version possibly different.
-          const ghUrl = new GitHubUrl(growiPlugin.origin.url, growiPlugin.origin.branchName);
+          const ghUrl = new GitHubUrl(growiPlugin.origin.url, growiPlugin.origin.ghBranch);
           const { reposName, branchName, archiveUrl } = ghUrl;
 
           const zipFilePath = path.join(pluginStoringPath, `${branchName}.zip`);
