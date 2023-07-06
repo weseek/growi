@@ -5,7 +5,9 @@ import React, {
 import assert from 'assert';
 
 import { Lang } from '@growi/core';
-import type { TemplateSummary, TemplateStatus } from '@growi/pluginkit/dist/v4';
+import {
+  getTemplateLocales, getLocalizedTemplate, type TemplateSummary, type TemplateStatus,
+} from '@growi/pluginkit/dist/v4';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -39,20 +41,21 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
 
 type TemplateItemProps = {
   templateId: string,
-  template: TemplateStatus,
-  locales: Set<string>,
   onClick: () => void,
   isSelected: boolean,
+  localizedTemplate?: TemplateStatus,
+  templateLocales?: Set<string>,
 }
 
 const TemplateItem: React.FC<TemplateItemProps> = ({
   templateId,
-  template,
-  locales,
   onClick,
   isSelected,
+  localizedTemplate,
+  templateLocales,
 }) => {
-  assert(template.isValid);
+
+  assert(localizedTemplate?.isValid);
 
   return (
     <a
@@ -61,9 +64,9 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
-      <h4 className="mb-1">{template.title}</h4>
-      <p className="mb-2">{template.desc}</p>
-      { Array.from(locales).map(locale => (
+      <h4 className="mb-1">{localizedTemplate.title}</h4>
+      <p className="mb-2">{localizedTemplate.desc}</p>
+      { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
       ))}
     </a>
@@ -72,8 +75,8 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
 
 type TemplateMenuProps = {
   templateSummaries: TemplateSummary[],
-  onClickHandler: (templateSummary: TemplateSummary, template: TemplateStatus, locales: Set<string>) => void,
-  usersDefaultLang: Lang,
+  onClickHandler: (templateSummary: TemplateSummary) => void,
+  usersDefaultLang?: Lang,
   selectedTemplateSummary?: TemplateSummary,
 }
 
@@ -87,26 +90,18 @@ const TemplateMenu: React.FC<TemplateMenuProps> = ({
     <>
       {templateSummaries.map((templateSummary) => {
         const templateId = constructTemplateId(templateSummary);
-        const locales = new Set(Object.values(templateSummary).map(s => s.locale));
-
-        const template = usersDefaultLang in templateSummary
-          ? templateSummary[usersDefaultLang]
-          : templateSummary.default;
-
         const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
-
-        const onClick = () => {
-          onClickHandler(templateSummary, template, locales);
-        };
+        const localizedTemplate = getLocalizedTemplate(templateSummary, undefined, usersDefaultLang);
+        const templateLocales = getTemplateLocales(templateSummary);
 
         return (
           <TemplateItem
             key={templateId}
             templateId={templateId}
-            template={template}
-            locales={locales}
-            onClick={onClick}
+            onClick={() => onClickHandler(templateSummary)}
             isSelected={isSelected}
+            localizedTemplate={localizedTemplate}
+            templateLocales={templateLocales}
           />
         );
       })}
@@ -125,15 +120,15 @@ export const TemplateModal = (): JSX.Element => {
   const { data: templateSummaries } = useSWRxTemplates();
 
   const [selectedTemplateSummary, setSelectedTemplateSummary] = useState<TemplateSummary>();
-  const [selectedTemplateLocales, setSelectedTemplateLocales] = useState<Set<string>>();
   const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateStatus>();
 
   const { data: selectedTemplateMarkdown } = useSWRxTemplate(selectedTemplateSummary, selectedTemplateLocale);
 
   const { format } = useFormatter();
 
   const usersDefaultLang = personalSettingsInfo?.lang;
+  const selectedLocalizedTemplate = getLocalizedTemplate(selectedTemplateSummary, undefined, usersDefaultLang);
+  const selectedTemplateLocales = getTemplateLocales(selectedTemplateSummary);
 
   const submitHandler = useCallback((markdown?: string) => {
     if (templateModalStatus == null || markdown == null) {
@@ -151,23 +146,21 @@ export const TemplateModal = (): JSX.Element => {
 
   const onClickHandler = useCallback((
       templateSummary: TemplateSummary,
-      template: TemplateStatus,
-      locales: Set<string>,
   ) => {
-    if (usersDefaultLang == null) {
-      return;
-    }
+    let localeToSet: string | Lang | undefined;
 
     if (selectedTemplateLocale != null && selectedTemplateLocale in templateSummary) {
-      setSelectedTemplateLocale(selectedTemplateLocale);
+      localeToSet = selectedTemplateLocale;
+    }
+    else if (usersDefaultLang != null && usersDefaultLang in templateSummary) {
+      localeToSet = usersDefaultLang;
     }
     else {
-      setSelectedTemplateLocale(usersDefaultLang in templateSummary ? usersDefaultLang : undefined);
+      localeToSet = undefined;
     }
 
+    setSelectedTemplateLocale(localeToSet);
     setSelectedTemplateSummary(templateSummary);
-    setSelectedTemplate(template);
-    setSelectedTemplateLocales(locales);
   }, [selectedTemplateLocale, usersDefaultLang]);
 
   useEffect(() => {
@@ -177,7 +170,7 @@ export const TemplateModal = (): JSX.Element => {
     }
   }, [templateModalStatus?.isOpened]);
 
-  if (templateSummaries == null || templateModalStatus == null || usersDefaultLang == null) {
+  if (templateSummaries == null || templateModalStatus == null) {
     return <></>;
   }
 
@@ -203,7 +196,11 @@ export const TemplateModal = (): JSX.Element => {
           <div className='d-lg-none col mb-3'>
             <UncontrolledDropdown>
               <DropdownToggle caret type="button" outline className='w-100 text-right'>
-                <span className="float-left">{(selectedTemplate != null && selectedTemplate.isValid) ? selectedTemplate.title : t('Select template')}</span>
+                <span className="float-left">
+                  {selectedLocalizedTemplate != null && selectedLocalizedTemplate.isValid
+                    ? selectedLocalizedTemplate.title
+                    : t('Select template')}
+                </span>
               </DropdownToggle>
               <DropdownMenu role="menu" className='p-0'>
                 <TemplateMenu
