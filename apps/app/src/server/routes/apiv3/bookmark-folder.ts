@@ -85,16 +85,16 @@ module.exports = (crowi) => {
               model: 'User',
             },
           },
-        }).exec();
+        }).exec() as never as BookmarkFolderItems[];
 
       const returnValue: BookmarkFolderItems[] = [];
 
-      const promises = folders.map(async(folder) => {
+      const promises = folders.map(async(folder: BookmarkFolderItems) => {
         const children = await getBookmarkFolders(userId, folder._id);
 
         // !! DO NOT THIS SERIALIZING OUTSIDE OF PROMISES !! -- 05.23.2023 ryoji-s
         // Serializing outside of promises will cause not populated.
-        const bookmarks = folder.bookmarks?.map(bookmark => serializeBookmarkSecurely(bookmark));
+        const bookmarks = folder.bookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
         const res = {
           _id: folder._id.toString(),
