@@ -1,5 +1,5 @@
 import { PresetThemes } from '@growi/preset-themes';
-import { Types, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { RehypeSanitizeOption } from '../../interfaces/rehype';
@@ -7,7 +7,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface Config {
-  _id: Types.ObjectId;
+  _id: string;
   ns: string;
   key: string;
   value: string;

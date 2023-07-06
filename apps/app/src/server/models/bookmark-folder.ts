@@ -16,7 +16,6 @@ const logger = loggerFactory('growi:models:bookmark-folder');
 const Bookmark = monggoose.model('Bookmark');
 
 export interface BookmarkFolderDocument extends Document {
-  _id: Types.ObjectId
   name: string
   owner: Types.ObjectId
   parent?: Types.ObjectId | undefined

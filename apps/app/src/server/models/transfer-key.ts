@@ -10,7 +10,9 @@ interface ITransferKeyMethods {
 
 type TransferKeyModel = Model<ITransferKey, any, ITransferKeyMethods>;
 
-const schema = new Schema<ITransferKey, TransferKeyModel, ITransferKeyMethods>({
+export interface TransferKeyDocument extends ITransferKey, TransferKeyModel, ITransferKeyMethods {}
+
+const schema = new Schema<TransferKeyDocument>({
   expireAt: { type: Date, default: () => new Date(), expires: '30m' },
   keyString: { type: String, unique: true }, // original key string
   key: { type: String, unique: true },
@@ -26,4 +28,4 @@ schema.statics.findOneActiveTransferKey = async function(key: string): Promise<H
   return this.findOne({ key });
 };
 
-export default getOrCreateModel('TransferKey', schema);
+export default getOrCreateModel<TransferKeyDocument, TransferKeyModel>('TransferKey', schema);

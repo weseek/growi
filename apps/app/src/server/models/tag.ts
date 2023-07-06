@@ -1,5 +1,5 @@
 import {
-  Types, Model, Schema,
+  Model, Schema,
 } from 'mongoose';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -10,7 +10,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 
 export interface TagDocument {
-  _id: Types.ObjectId;
+  _id: string;
   name: string;
 }
 
@@ -22,7 +22,7 @@ export interface TagModel extends Model<TagDocument>{
 }
 
 
-const tagSchema = new Schema<TagDocument, TagModel>({
+const tagSchema = new Schema<TagDocument>({
   name: {
     type: String,
     require: true,

@@ -14,7 +14,6 @@ import { ActivityDocument } from './activity';
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
 export interface InAppNotificationDocument extends Document {
-  _id: Types.ObjectId
   user: Types.ObjectId
   targetModel: string
   target: Types.ObjectId

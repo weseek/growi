@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import type {
-  Model, Document, ConnectOptions,
+  Model, Document, ConnectOptions, Schema,
 } from 'mongoose';
 
 // suppress DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version
@@ -25,8 +25,7 @@ export const getModelSafely = <T>(modelName: string): Model<T & Document> | null
   return null;
 };
 
-// TODO: Do not use any type
-export const getOrCreateModel = <Interface, Method>(modelName: string, schema: any): any => {
+export const getOrCreateModel = <Interface, Method>(modelName: string, schema: Schema<Interface & Document>): Method & Model<Interface & Document> => {
   if (mongoose.modelNames().includes(modelName)) {
     return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName);
   }
