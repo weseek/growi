@@ -68,7 +68,7 @@ declare global {
 }
 
 
-const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
+const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
@@ -238,15 +238,34 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
-
+  const { mutate: mutateInitialPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+
+  // Store initial data
+  useEffect(() => {
+    mutateInitialPage(pageWithMeta?.data ?? null);
+  }, [mutateInitialPage, pageWithMeta]);
+
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -266,22 +285,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
-
-
-  useEffect(() => {
-    if (!props.skipSSR) {
-      return;
-    }
-
-    if (currentPageId != null && !props.isNotFound) {
-      const mutatePageData = async() => {
-        const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
-      };
-
-      mutatePageData();
-    }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {

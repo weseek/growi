@@ -1,4 +1,4 @@
-import { GrowiPluginType } from '../consts/types';
+import { GrowiPluginType } from '@growi/core/dist/consts';
 
 export type GrowiPluginValidationData = {
   projectDirRoot: string,
