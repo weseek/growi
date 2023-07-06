@@ -1,10 +1,11 @@
 import { getLocalizedTemplate, type TemplateSummary } from '@growi/pluginkit/dist/v4';
-import useSWR, { type SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
 export const useSWRxTemplates = (): SWRResponse<TemplateSummary[], Error> => {
-  return useSWR(
+  return useSWRImmutable(
     '/templates',
     endpoint => apiv3Get<{ summaries: TemplateSummary[] }>(endpoint).then(res => res.data.summaries),
   );
@@ -14,7 +15,7 @@ export const useSWRxTemplate = (summary: TemplateSummary | undefined, locale?: s
   const pluginId = summary?.default.pluginId;
   const targetTemplate = getLocalizedTemplate(summary, locale);
 
-  return useSWR(
+  return useSWRImmutable(
     () => {
       if (targetTemplate == null) {
         return null;

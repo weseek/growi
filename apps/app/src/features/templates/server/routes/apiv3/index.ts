@@ -1,3 +1,4 @@
+import { TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { scanAllTemplateStatus, getMarkdown } from '@growi/pluginkit/dist/v4/server';
 import express from 'express';
 import { param, query } from 'express-validator';
@@ -21,18 +22,30 @@ const validator = {
   ],
 };
 
+
+// cache object
+let presetTemplateSummaries: TemplateSummary[];
+
+
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   router.get('/', loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const { includeInvalidTemplates } = req.query;
 
-    const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
-    const summaries = await scanAllTemplateStatus(presetTemplatesRoot, {
-      returnsInvalidTemplates: includeInvalidTemplates,
-    });
+    // scan preset templates
+    if (presetTemplateSummaries == null) {
+      const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
+      presetTemplateSummaries = await scanAllTemplateStatus(presetTemplatesRoot, {
+        returnsInvalidTemplates: includeInvalidTemplates,
+      });
+    }
 
-    return res.apiv3({ summaries });
+    return res.apiv3({
+      summaries: [
+        ...presetTemplateSummaries,
+      ],
+    });
   });
 
   router.get('/preset-templates/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {

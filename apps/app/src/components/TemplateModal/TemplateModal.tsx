@@ -21,7 +21,7 @@ import {
 } from 'reactstrap';
 
 import { useSWRxTemplate, useSWRxTemplates } from '~/features/templates/stores';
-import { useTemplateModal } from '~/stores/modal';
+import { useTemplateModal, type TemplateModalStatus } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -109,11 +109,15 @@ const TemplateMenu: React.FC<TemplateMenuProps> = ({
   );
 };
 
-export const TemplateModal = (): JSX.Element => {
+type TemplateModalSubstanceProps = {
+  templateModalStatus: TemplateModalStatus,
+  close: () => void,
+}
+
+const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element => {
+  const { templateModalStatus, close } = props;
+
   const { t } = useTranslation(['translation', 'commons']);
-
-
-  const { data: templateModalStatus, close } = useTemplateModal();
 
   const { data: personalSettingsInfo } = usePersonalSettings();
   const { data: rendererOptions } = usePreviewOptions();
@@ -170,12 +174,12 @@ export const TemplateModal = (): JSX.Element => {
     }
   }, [templateModalStatus?.isOpened]);
 
-  if (templateSummaries == null || templateModalStatus == null) {
+  if (templateSummaries == null) {
     return <></>;
   }
 
   return (
-    <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="xl" autoFocus={false}>
+    <>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         {t('template.modal_label.Select template')}
       </ModalHeader>
@@ -258,6 +262,23 @@ export const TemplateModal = (): JSX.Element => {
           {t('commons:Insert')}
         </button>
       </ModalFooter>
+    </>
+  );
+};
+
+
+export const TemplateModal = (): JSX.Element => {
+  const { data: templateModalStatus, close } = useTemplateModal();
+
+  if (templateModalStatus == null) {
+    return <></>;
+  }
+
+  return (
+    <Modal className="link-edit-modal" isOpen={templateModalStatus.isOpened} toggle={close} size="xl" autoFocus={false}>
+      { templateModalStatus.isOpened && (
+        <TemplateModalSubstance templateModalStatus={templateModalStatus} close={close} />
+      ) }
     </Modal>
   );
 };

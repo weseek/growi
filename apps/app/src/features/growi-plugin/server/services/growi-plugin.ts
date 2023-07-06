@@ -1,7 +1,9 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 
-import { GrowiPluginType, GrowiThemeMetadata, ViteManifest } from '@growi/core';
+import { GrowiPluginType, type GrowiThemeMetadata, type ViteManifest } from '@growi/core';
+import type { GrowiPluginPackageData } from '@growi/pluginkit';
+import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
@@ -188,7 +190,7 @@ export class GrowiPluginService implements IGrowiPluginService {
         }).catch((err) => {
           logger.error(err);
           // eslint-disable-next-line prefer-promise-reject-errors
-          rejects('Filed to download file.');
+          rejects('Failed to download file.');
         });
     });
   }
@@ -203,7 +205,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Filed to unzip.');
+      throw new Error('Failed to unzip.');
     }
   }
 
@@ -212,34 +214,38 @@ export class GrowiPluginService implements IGrowiPluginService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, max-len
-  private static async detectPlugins(origin: IGrowiPluginOrigin, ghOrganizationName: string, ghReposName: string, parentPackageJson?: any): Promise<IGrowiPlugin[]> {
-    const packageJsonPath = path.resolve(pluginStoringPath, ghReposName, 'package.json');
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+  private static async detectPlugins(
+      origin: IGrowiPluginOrigin, ghOrganizationName: string, ghReposName: string,
+      opts?: {
+        packageRootPath: string,
+        parentPackageData: GrowiPluginPackageData,
+      },
+  ): Promise<IGrowiPlugin[]> {
+    const packageRootPath = opts?.packageRootPath ?? path.resolve(pluginStoringPath, ghOrganizationName, ghReposName);
 
-    const { growiPlugin } = packageJson;
+    // validate
+    const data = await validateGrowiDirective(packageRootPath);
+
+    const packageData = opts?.parentPackageData ?? importPackageJson(packageRootPath);
+
+    const { growiPlugin } = data;
     const {
       name: packageName, description: packageDesc, author: packageAuthor,
-    } = parentPackageJson ?? packageJson;
-
-
-    if (growiPlugin == null) {
-      throw new Error('This package does not include \'growiPlugin\' section.');
-    }
+    } = packageData;
 
     // detect sub plugins for monorepo
     if (growiPlugin.isMonorepo && growiPlugin.packages != null) {
       const plugins = await Promise.all(
         growiPlugin.packages.map(async(subPackagePath) => {
-          const subPackageInstalledPath = path.join(ghReposName, subPackagePath);
-          return this.detectPlugins(origin, subPackageInstalledPath, packageJson);
+          return this.detectPlugins(origin, ghOrganizationName, ghReposName, {
+            packageRootPath: path.join(packageRootPath, subPackagePath),
+            parentPackageData: packageData,
+          });
         }),
       );
       return plugins.flat();
     }
 
-    if (growiPlugin.types == null) {
-      throw new Error('\'growiPlugin\' section must have a \'types\' property.');
-    }
     const plugin = {
       isEnabled: true,
       installedPath: `${ghOrganizationName}/${ghReposName}`,
@@ -290,7 +296,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Filed to delete plugin repository.');
+      throw new Error('Failed to delete plugin repository.');
     }
 
     try {
@@ -298,7 +304,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Filed to delete plugin from GrowiPlugin documents.');
+      throw new Error('Failed to delete plugin from GrowiPlugin documents.');
     }
 
     return growiPlugins.meta.name;
