@@ -12,7 +12,7 @@ type PageListItemSProps = {
   page: IPageHasId,
   noLink?: boolean,
   pageTitle?: string
-  isBookmarkItem?: boolean,
+  isNarrowView?: boolean,
 }
 
 export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
@@ -21,7 +21,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
     page,
     noLink = false,
     pageTitle,
-    isBookmarkItem = false,
+    isNarrowView = false,
   } = props;
 
   const path = pageTitle != null ? pageTitle : page.path;
@@ -31,7 +31,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
 
-  if (isBookmarkItem) {
+  if (isNarrowView) {
     pagePathElement = (
       <div className={`${styles['page-list']}`}>
         <div className="mx-2 path-element">
@@ -43,7 +43,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
   return (
     <>
-      {isBookmarkItem ? (
+      {isNarrowView ? (
         <div className={`${styles['page-list']}`}>
           <div className="bookmarks-list-items">
             <UserPicture user={page.lastUpdateUser} noLink={noLink} />
@@ -51,7 +51,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
               {pagePathElement}
             </div>
             <div>
-              <span className="ml-2">
+              <span className="ml-2 page-list-ul">
                 <PageListMeta page={page} />
               </span>
             </div>
