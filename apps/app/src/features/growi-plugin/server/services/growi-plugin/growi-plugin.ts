@@ -322,7 +322,7 @@ export class GrowiPluginService implements IGrowiPluginService {
 
     try {
       // retrieve plugin manifests
-      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginType.Theme]) as IGrowiPlugin<IGrowiThemePluginMeta>[];
+      const growiPlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
 
       growiPlugins
         .forEach(async(growiPlugin) => {

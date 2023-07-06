@@ -6,14 +6,14 @@ import {
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import type {
-  IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginOrigin, IGrowiTemplatePluginMeta, IGrowiThemePluginMeta,
+  IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginMetaByType, IGrowiPluginOrigin, IGrowiTemplatePluginMeta, IGrowiThemePluginMeta,
 } from '../../interfaces';
 
 export interface IGrowiPluginDocument extends IGrowiPlugin, Document {
 }
 export interface IGrowiPluginModel extends Model<IGrowiPluginDocument> {
   findEnabledPlugins(): Promise<IGrowiPlugin[]>
-  findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginType[]): Promise<IGrowiPlugin[]>
+  findEnabledPluginsByType<T extends GrowiPluginType>(type: T): Promise<IGrowiPlugin<IGrowiPluginMetaByType<T>>[]>
   activatePlugin(id: Types.ObjectId): Promise<string>
   deactivatePlugin(id: Types.ObjectId): Promise<string>
 }
@@ -45,11 +45,14 @@ const growiPluginSchema = new Schema<IGrowiPluginDocument, IGrowiPluginModel>({
   meta: growiPluginMetaSchema,
 });
 
+
 growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<IGrowiPlugin[]> {
   return this.find({ isEnabled: true });
 };
 
-growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(types: GrowiPluginType[]): Promise<IGrowiPlugin[]> {
+growiPluginSchema.statics.findEnabledPluginsByType = async function<T extends GrowiPluginType>(
+    types: T,
+): Promise<IGrowiPlugin<IGrowiPluginMetaByType<T>>[]> {
   return this.find({
     isEnabled: true,
     'meta.types': { $in: types },

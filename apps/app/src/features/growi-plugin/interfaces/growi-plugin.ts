@@ -30,4 +30,10 @@ export type IGrowiTemplatePluginMeta = IGrowiPluginMeta & {
   templateSummaries: TemplateSummary[],
 }
 
+export type IGrowiPluginMetaByType<T extends GrowiPluginType = any> = T extends 'theme'
+  ? IGrowiThemePluginMeta
+  : T extends 'template'
+    ? IGrowiTemplatePluginMeta
+    : IGrowiPluginMeta;
+
 export type IGrowiPluginHasId = IGrowiPlugin & HasObjectId;
