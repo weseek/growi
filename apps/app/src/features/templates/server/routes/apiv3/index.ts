@@ -1,5 +1,5 @@
 import { TemplateSummary } from '@growi/pluginkit/dist/v4';
-import { scanAllTemplateStatus, getMarkdown } from '@growi/pluginkit/dist/v4/server';
+import { scanAllTemplates, getMarkdown } from '@growi/pluginkit/dist/v4/server';
 import express from 'express';
 import { param, query } from 'express-validator';
 
@@ -36,7 +36,7 @@ module.exports = (crowi) => {
     // scan preset templates
     if (presetTemplateSummaries == null) {
       const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
-      presetTemplateSummaries = await scanAllTemplateStatus(presetTemplatesRoot, {
+      presetTemplateSummaries = await scanAllTemplates(presetTemplatesRoot, {
         returnsInvalidTemplates: includeInvalidTemplates,
       });
     }
