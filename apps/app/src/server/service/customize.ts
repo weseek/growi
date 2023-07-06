@@ -3,7 +3,7 @@ import { ColorScheme, DevidedPagePath, getForcedColorScheme } from '@growi/core'
 import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
 import uglifycss from 'uglifycss';
 
-import { growiPluginService } from '~/features/growi-plugin/services';
+import { growiPluginService } from '~/features/growi-plugin/server/services';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';

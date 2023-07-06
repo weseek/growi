@@ -1,10 +1,15 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.5-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
-  "keywords": ["growi", "growi-plugin"],
-  "files": ["dist"],
+  "keywords": [
+    "growi",
+    "growi-plugin"
+  ],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "run-p build:*",
     "build:client": "vite build -c vite.client.config.ts",
@@ -21,7 +26,7 @@
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"
