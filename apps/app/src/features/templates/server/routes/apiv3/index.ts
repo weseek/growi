@@ -1,8 +1,10 @@
+import { GrowiPluginType } from '@growi/core';
 import { TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { scanAllTemplates, getMarkdown } from '@growi/pluginkit/dist/v4/server';
 import express from 'express';
 import { param, query } from 'express-validator';
 
+import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
@@ -41,9 +43,13 @@ module.exports = (crowi) => {
       });
     }
 
+    // load plugin templates
+    const plugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Template);
+
     return res.apiv3({
       summaries: [
         ...presetTemplateSummaries,
+        ...plugins.flatMap(p => p.meta.templateSummaries),
       ],
     });
   });
