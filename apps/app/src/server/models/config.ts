@@ -7,7 +7,6 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface Config {
-  _id: string;
   ns: string;
   key: string;
   value: string;

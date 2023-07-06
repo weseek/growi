@@ -1,5 +1,5 @@
 import {
-  Model, Schema,
+  Document, Model, Schema,
 } from 'mongoose';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -9,8 +9,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 
-export interface TagDocument {
-  _id: string;
+export interface TagDocument extends Document {
   name: string;
 }
 
@@ -21,8 +20,7 @@ export interface TagModel extends Model<TagDocument>{
   findOrCreateMany(tagNames: string[]): Promise<TagDocument[]>
 }
 
-
-const tagSchema = new Schema<TagDocument>({
+const tagSchema = new Schema<TagDocument, TagModel>({
   name: {
     type: String,
     require: true,
