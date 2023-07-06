@@ -135,7 +135,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
   const selectedTemplateLocales = getTemplateLocales(selectedTemplateSummary);
 
   const submitHandler = useCallback((markdown?: string) => {
-    if (templateModalStatus == null || markdown == null) {
+    if (markdown == null) {
       return;
     }
 
@@ -168,11 +168,11 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
   }, [selectedTemplateLocale, usersDefaultLang]);
 
   useEffect(() => {
-    if (!templateModalStatus?.isOpened) {
+    if (!templateModalStatus.isOpened) {
       setSelectedTemplateSummary(undefined);
       setSelectedTemplateLocale(undefined);
     }
-  }, [templateModalStatus?.isOpened]);
+  }, [templateModalStatus.isOpened]);
 
   if (templateSummaries == null) {
     return <></>;
