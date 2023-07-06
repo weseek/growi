@@ -9,13 +9,13 @@ import {
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IExternalAccount } from '~/interfaces/external-account';
+import { IExternalAccountHasId } from '~/interfaces/external-account';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 type Props = {
   isOpen: boolean,
   onClose: () => void,
-  accountForDisassociate: IExternalAccount,
+  accountForDisassociate: IExternalAccountHasId,
 }
 
 

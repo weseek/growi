@@ -24,13 +24,13 @@ const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
 /**
  * Find group that has specified externalId and update, or create one if it doesn't exist.
  * @param name ExternalUserGroup name
- * @param name ExternalUserGroup description
  * @param name ExternalUserGroup externalId
  * @param name ExternalUserGroup provider
+ * @param name ExternalUserGroup description
  * @param name ExternalUserGroup parentId
  * @returns ExternalUserGroupDocument[]
  */
-schema.statics.findAndUpdateOrCreateGroup = async function(name, description, externalId, provider, parentId) {
+schema.statics.findAndUpdateOrCreateGroup = async function(name: string, externalId: string, provider: string, description?: string, parentId?: string) {
   // create without parent
   if (parentId == null) {
     return this.findOneAndUpdate({ externalId }, { name, description, provider }, { upsert: true, new: true });
