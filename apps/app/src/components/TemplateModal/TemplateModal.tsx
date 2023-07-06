@@ -6,7 +6,7 @@ import assert from 'assert';
 
 import { Lang } from '@growi/core';
 import {
-  getTemplateLocales, getLocalizedTemplate, type TemplateSummary, type TemplateStatus,
+  extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';
 import { useTranslation } from 'next-i18next';
 import {
@@ -41,19 +41,27 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
 
 type TemplateItemProps = {
   templateId: string,
-  onClick: () => void,
-  isSelected: boolean,
-  localizedTemplate?: TemplateStatus,
-  templateLocales?: Set<string>,
+  templateSummary: TemplateSummary,
+  selectedLocale?: string,
+  onClick?: () => void,
+  isSelected?: boolean,
+  usersDefaultLang?: Lang,
 }
 
 const TemplateItem: React.FC<TemplateItemProps> = ({
   templateId,
+  templateSummary,
   onClick,
   isSelected,
-  localizedTemplate,
-  templateLocales,
+  usersDefaultLang,
 }) => {
+  const localizedTemplate = getLocalizedTemplate(
+    templateSummary,
+    usersDefaultLang != null && usersDefaultLang in templateSummary
+      ? usersDefaultLang
+      : undefined,
+  );
+  const templateLocales = extractSupportedLocales(templateSummary);
 
   assert(localizedTemplate?.isValid);
 
@@ -91,17 +99,15 @@ const TemplateMenu: React.FC<TemplateMenuProps> = ({
       {templateSummaries.map((templateSummary) => {
         const templateId = constructTemplateId(templateSummary);
         const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
-        const localizedTemplate = getLocalizedTemplate(templateSummary, undefined, usersDefaultLang);
-        const templateLocales = getTemplateLocales(templateSummary);
 
         return (
           <TemplateItem
             key={templateId}
             templateId={templateId}
+            templateSummary={templateSummary}
             onClick={() => onClickHandler(templateSummary)}
             isSelected={isSelected}
-            localizedTemplate={localizedTemplate}
-            templateLocales={templateLocales}
+            usersDefaultLang={usersDefaultLang}
           />
         );
       })}
@@ -131,8 +137,13 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
   const { format } = useFormatter();
 
   const usersDefaultLang = personalSettingsInfo?.lang;
-  const selectedLocalizedTemplate = getLocalizedTemplate(selectedTemplateSummary, undefined, usersDefaultLang);
-  const selectedTemplateLocales = getTemplateLocales(selectedTemplateSummary);
+  const selectedLocalizedTemplate = getLocalizedTemplate(
+    selectedTemplateSummary,
+    usersDefaultLang != null && selectedTemplateSummary != null && usersDefaultLang in selectedTemplateSummary
+      ? usersDefaultLang
+      : undefined,
+  );
+  const selectedTemplateLocales = extractSupportedLocales(selectedTemplateSummary);
 
   const submitHandler = useCallback((markdown?: string) => {
     if (markdown == null) {

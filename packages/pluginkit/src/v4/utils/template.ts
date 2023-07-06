@@ -1,20 +1,16 @@
-import { Lang } from '@growi/core';
-
 import type { TemplateSummary, TemplateStatus } from '../interfaces';
 
-export const getLocalizedTemplate = (templateSummary: TemplateSummary | undefined, locale?: string, usersDefaultLang?: Lang): TemplateStatus | undefined => {
+export const getLocalizedTemplate = (templateSummary: TemplateSummary | undefined, locale?: string): TemplateStatus | undefined => {
   if (templateSummary == null) {
     return undefined;
   }
 
-  const selectedLocale = usersDefaultLang ?? locale;
-
-  return selectedLocale != null && selectedLocale in templateSummary
-    ? templateSummary[selectedLocale]
+  return locale != null && locale in templateSummary
+    ? templateSummary[locale]
     : templateSummary.default;
 };
 
-export const getTemplateLocales = (templateSummary: TemplateSummary | undefined): Set<string> | undefined => {
+export const extractSupportedLocales = (templateSummary: TemplateSummary | undefined): Set<string> | undefined => {
   if (templateSummary == null) {
     return undefined;
   }
