@@ -347,9 +347,10 @@ export class GrowiPluginService implements IGrowiPluginService {
     let themeHref;
     try {
       const manifest = retrievePluginManifest(matchedPlugin);
-      if (manifest != null) {
-        themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+      if (manifest == null) {
+        throw new Error('The manifest file does not exists');
       }
+      themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
     }
     catch (e) {
       logger.error(`Could not read manifest file for the theme '${theme}'`, e);
