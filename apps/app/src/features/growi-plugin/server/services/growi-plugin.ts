@@ -109,40 +109,37 @@ export class GrowiPluginService implements IGrowiPluginService {
     } = ghUrl;
     const installedPath = `${organizationName}/${reposName}`;
 
-    const zipFilePath = path.join(pluginStoringPath, `${branchName}.zip`);
-    const unzippedPath = pluginStoringPath;
-    const unzippedReposPath = path.join(pluginStoringPath, `${reposName}-${branchName}`);
-    const temporaryReposPath = path.join(pluginStoringPath, reposName);
-    const reposStoringPath = path.join(pluginStoringPath, `${installedPath}`);
     const organizationPath = path.join(pluginStoringPath, organizationName);
+    const zipFilePath = path.join(organizationPath, `${reposName}-${branchName}.zip`);
+    const temporaryReposPath = path.join(organizationPath, `${reposName}-${branchName}`);
+    const reposPath = path.join(organizationPath, reposName);
 
+    if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
 
     let plugins: IGrowiPlugin<IGrowiPluginMeta>[];
 
     try {
       // download github repository to file system's temporary path
       await this.download(archiveUrl, zipFilePath);
-      await this.unzip(zipFilePath, unzippedPath);
-      fs.renameSync(unzippedReposPath, temporaryReposPath);
+      await this.unzip(zipFilePath, organizationPath);
 
       // detect plugins
-      plugins = await GrowiPluginService.detectPlugins(origin, organizationName, reposName);
-
-      if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
+      plugins = await GrowiPluginService.detectPlugins(origin, organizationName, reposName, { packageRootPath: temporaryReposPath });
 
       // remove the old repository from the storing path
-      if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
+      if (fs.existsSync(reposPath)) await fs.promises.rm(reposPath, { recursive: true });
 
       // move new repository from temporary path to storing path.
-      fs.renameSync(temporaryReposPath, reposStoringPath);
+      fs.renameSync(temporaryReposPath, reposPath);
     }
     catch (err) {
-      // clean up
-      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
-      if (fs.existsSync(unzippedReposPath)) await fs.promises.rm(unzippedReposPath, { recursive: true });
-      if (fs.existsSync(temporaryReposPath)) await fs.promises.rm(temporaryReposPath, { recursive: true });
       logger.error(err);
       throw err;
+    }
+    finally {
+      // clean up
+      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
+      if (fs.existsSync(temporaryReposPath)) await fs.promises.rm(temporaryReposPath, { recursive: true });
     }
 
     try {
@@ -155,9 +152,10 @@ export class GrowiPluginService implements IGrowiPluginService {
       return plugins[0].meta.name;
     }
     catch (err) {
-      // clean up
-      if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
+      // uninstall
+      if (fs.existsSync(reposPath)) await fs.promises.rm(reposPath, { recursive: true });
       await this.deleteOldPluginDocument(installedPath);
+
       logger.error(err);
       throw err;
     }
@@ -195,13 +193,12 @@ export class GrowiPluginService implements IGrowiPluginService {
     });
   }
 
-  private async unzip(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike): Promise<void> {
+  private async unzip(zipFilePath: fs.PathLike, destPath: fs.PathLike): Promise<void> {
     try {
       const stream = fs.createReadStream(zipFilePath);
-      const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
+      const unzipStream = stream.pipe(unzipper.Extract({ path: destPath }));
 
       await streamToPromise(unzipStream);
-      await fs.promises.rm(zipFilePath);
     }
     catch (err) {
       logger.error(err);
@@ -217,8 +214,8 @@ export class GrowiPluginService implements IGrowiPluginService {
   private static async detectPlugins(
       origin: IGrowiPluginOrigin, ghOrganizationName: string, ghReposName: string,
       opts?: {
-        packageRootPath: string,
-        parentPackageData: GrowiPluginPackageData,
+        packageRootPath?: string,
+        parentPackageData?: GrowiPluginPackageData,
       },
   ): Promise<IGrowiPlugin[]> {
     const packageRootPath = opts?.packageRootPath ?? path.resolve(pluginStoringPath, ghOrganizationName, ghReposName);
