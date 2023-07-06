@@ -11,11 +11,11 @@ import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
 import loggerFactory from '~/utils/logger';
-import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 import type {
-  IGrowiPlugin, IGrowiPluginOrigin, IGrowiThemePluginMeta, IGrowiPluginMeta,
+  IGrowiPlugin, IGrowiPluginOrigin, IGrowiPluginMeta,
 } from '../../../interfaces';
+import { PLUGIN_EXPRESS_STATIC_DIR, PLUGIN_STORING_PATH } from '../../consts';
 import { GrowiPlugin } from '../../models';
 import { GitHubUrl } from '../../models/vo/github-url';
 
@@ -24,14 +24,10 @@ import { generateThemePluginMeta } from './generate-theme-plugin-meta';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
-const pluginStoringPath = resolveFromRoot('tmp/plugins');
-
-const PLUGINS_STATIC_DIR = '/static/plugins'; // configured by express.static
-
 export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
 function retrievePluginManifest(growiPlugin: IGrowiPlugin): ViteManifest | undefined {
-  const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
+  const manifestPath = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath, 'dist/manifest.json');
 
   if (!fs.existsSync(manifestPath)) {
     return;
@@ -67,8 +63,8 @@ export class GrowiPluginService implements IGrowiPluginService {
 
       // if not exists repository in file system, download latest plugin repository
       for await (const growiPlugin of growiPlugins) {
-        const pluginPath = path.join(pluginStoringPath, growiPlugin.installedPath);
-        const organizationName = path.join(pluginStoringPath, growiPlugin.organizationName);
+        const pluginPath = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath);
+        const organizationName = path.join(PLUGIN_STORING_PATH, growiPlugin.organizationName);
         if (fs.existsSync(pluginPath)) {
           continue;
         }
@@ -81,9 +77,9 @@ export class GrowiPluginService implements IGrowiPluginService {
           const ghUrl = new GitHubUrl(growiPlugin.origin.url, growiPlugin.origin.ghBranch);
           const { reposName, branchName, archiveUrl } = ghUrl;
 
-          const zipFilePath = path.join(pluginStoringPath, `${branchName}.zip`);
-          const unzippedPath = pluginStoringPath;
-          const unzippedReposPath = path.join(pluginStoringPath, `${reposName}-${branchName}`);
+          const zipFilePath = path.join(PLUGIN_STORING_PATH, `${branchName}.zip`);
+          const unzippedPath = PLUGIN_STORING_PATH;
+          const unzippedReposPath = path.join(PLUGIN_STORING_PATH, `${reposName}-${branchName}`);
 
           try {
             // download github repository to local file system
@@ -117,7 +113,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     } = ghUrl;
     const installedPath = `${organizationName}/${reposName}`;
 
-    const organizationPath = path.join(pluginStoringPath, organizationName);
+    const organizationPath = path.join(PLUGIN_STORING_PATH, organizationName);
     const zipFilePath = path.join(organizationPath, `${reposName}-${branchName}.zip`);
     const temporaryReposPath = path.join(organizationPath, `${reposName}-${branchName}`);
     const reposPath = path.join(organizationPath, reposName);
@@ -226,7 +222,7 @@ export class GrowiPluginService implements IGrowiPluginService {
         parentPackageData?: GrowiPluginPackageData,
       },
   ): Promise<IGrowiPlugin[]> {
-    const packageRootPath = opts?.packageRootPath ?? path.resolve(pluginStoringPath, ghOrganizationName, ghReposName);
+    const packageRootPath = opts?.packageRootPath ?? path.resolve(PLUGIN_STORING_PATH, ghOrganizationName, ghReposName);
 
     // validate
     const validationData = await validateGrowiDirective(packageRootPath);
@@ -297,7 +293,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
 
     try {
-      const growiPluginsPath = path.join(pluginStoringPath, growiPlugins.installedPath);
+      const growiPluginsPath = path.join(PLUGIN_STORING_PATH, growiPlugins.installedPath);
       await deleteFolder(growiPluginsPath);
     }
     catch (err) {
@@ -350,7 +346,7 @@ export class GrowiPluginService implements IGrowiPluginService {
       if (manifest == null) {
         throw new Error('The manifest file does not exists');
       }
-      themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+      themeHref = `${PLUGIN_EXPRESS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
     }
     catch (e) {
       logger.error(`Could not read manifest file for the theme '${theme}'`, e);
@@ -377,12 +373,12 @@ export class GrowiPluginService implements IGrowiPluginService {
 
           // add script
           if (types.includes(GrowiPluginType.Script)) {
-            const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`;
+            const href = `${PLUGIN_EXPRESS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`;
             entries.push([growiPlugin.installedPath, href]);
           }
           // add link
           if (types.includes(GrowiPluginType.Script) || types.includes(GrowiPluginType.Style)) {
-            const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`;
+            const href = `${PLUGIN_EXPRESS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`;
             entries.push([growiPlugin.installedPath, href]);
           }
         }
