@@ -55,12 +55,7 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
   isSelected,
   usersDefaultLang,
 }) => {
-  const localizedTemplate = getLocalizedTemplate(
-    templateSummary,
-    usersDefaultLang != null && usersDefaultLang in templateSummary
-      ? usersDefaultLang
-      : undefined,
-  );
+  const localizedTemplate = getLocalizedTemplate(templateSummary, usersDefaultLang);
   const templateLocales = extractSupportedLocales(templateSummary);
 
   assert(localizedTemplate?.isValid);
@@ -137,12 +132,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
   const { format } = useFormatter();
 
   const usersDefaultLang = personalSettingsInfo?.lang;
-  const selectedLocalizedTemplate = getLocalizedTemplate(
-    selectedTemplateSummary,
-    usersDefaultLang != null && selectedTemplateSummary != null && usersDefaultLang in selectedTemplateSummary
-      ? usersDefaultLang
-      : undefined,
-  );
+  const selectedLocalizedTemplate = getLocalizedTemplate(selectedTemplateSummary, usersDefaultLang);
   const selectedTemplateLocales = extractSupportedLocales(selectedTemplateSummary);
 
   const submitHandler = useCallback((markdown?: string) => {
