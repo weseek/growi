@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { scanAllTemplateStatus, validateTemplatePluginPackageJson, validateTemplatePlugin } from '@growi/pluginkit/dist/v4/server';
+import { scanAllTemplates, validateTemplatePluginGrowiDirective, validateAllTemplateLocales } from '@growi/pluginkit/dist/v4/server';
 
 
 const projectDirRoot = path.resolve(__dirname, '../');
@@ -9,7 +9,7 @@ const projectDirRoot = path.resolve(__dirname, '../');
 it('Validation for package.json should be passed', () => {
 
   // when
-  const caller = () => validateTemplatePluginPackageJson(projectDirRoot);
+  const caller = () => validateTemplatePluginGrowiDirective(projectDirRoot);
 
   // then
   expect(caller).not.toThrow();
@@ -18,7 +18,7 @@ it('Validation for package.json should be passed', () => {
 it('Validation for package.json should be return data', () => {
 
   // when
-  const data = validateTemplatePluginPackageJson(projectDirRoot);
+  const data = validateTemplatePluginGrowiDirective(projectDirRoot);
 
   // then
   expect(data).not.toBeNull();
@@ -26,7 +26,7 @@ it('Validation for package.json should be return data', () => {
 
 it('Scanning the templates ends up with no errors', async() => {
   // when
-  const results = await scanAllTemplateStatus(projectDirRoot);
+  const results = await scanAllTemplates(projectDirRoot);
 
   // then
   expect(results).not.toBeNull();
@@ -35,10 +35,10 @@ it('Scanning the templates ends up with no errors', async() => {
 it('Scanning the templates ends up with no errors with opts.data', async() => {
 
   // setup
-  const data = validateTemplatePluginPackageJson(projectDirRoot);
+  const data = validateTemplatePluginGrowiDirective(projectDirRoot);
 
   // when
-  const results = await scanAllTemplateStatus(projectDirRoot, { data });
+  const results = await scanAllTemplates(projectDirRoot, { data });
 
   // then
   expect(results).not.toBeNull();
@@ -46,7 +46,7 @@ it('Scanning the templates ends up with no errors with opts.data', async() => {
 
 it('Validation templates returns true', () => {
   // when
-  const result = validateTemplatePlugin(projectDirRoot);
+  const result = validateAllTemplateLocales(projectDirRoot);
 
   // then
   expect(result).toBeTruthy();

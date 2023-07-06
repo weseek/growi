@@ -5,7 +5,15 @@ export const getLocalizedTemplate = (templateSummary: TemplateSummary | undefine
     return undefined;
   }
 
-  return locale != null
+  return locale != null && locale in templateSummary
     ? templateSummary[locale]
     : templateSummary.default;
+};
+
+export const extractSupportedLocales = (templateSummary: TemplateSummary | undefined): Set<string> | undefined => {
+  if (templateSummary == null) {
+    return undefined;
+  }
+
+  return new Set(Object.values(templateSummary).map(s => s.locale));
 };
