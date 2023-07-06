@@ -52,8 +52,6 @@ Cypress.Commands.add('login', (username, password) => {
     cy.intercept('POST', '/_api/v3/login').as('login');
     cy.getByTestid('btnSubmitForLogin').click();
     cy.wait('@login');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000);
   });
 });
 
