@@ -1,4 +1,5 @@
-import { GrowiPluginType, GrowiThemeMetadata, HasObjectId } from '@growi/core';
+import type { GrowiPluginType, GrowiThemeMetadata, HasObjectId } from '@growi/core';
+import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
 
 export type IGrowiPluginOrigin = {
   url: string,
@@ -22,7 +23,11 @@ export type IGrowiPluginMeta = {
 }
 
 export type IGrowiThemePluginMeta = IGrowiPluginMeta & {
-  themes: GrowiThemeMetadata[]
+  themes: GrowiThemeMetadata[],
+}
+
+export type IGrowiTemplatePluginMeta = IGrowiPluginMeta & {
+  templateSummaries: TemplateSummary[],
 }
 
 export type IGrowiPluginHasId = IGrowiPlugin & HasObjectId;

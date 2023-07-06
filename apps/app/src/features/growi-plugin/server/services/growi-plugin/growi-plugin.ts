@@ -15,9 +15,12 @@ import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 import type {
   IGrowiPlugin, IGrowiPluginOrigin, IGrowiThemePluginMeta, IGrowiPluginMeta,
-} from '../../interfaces';
-import { GrowiPlugin } from '../models';
-import { GitHubUrl } from '../models/vo/github-url';
+} from '../../../interfaces';
+import { GrowiPlugin } from '../../models';
+import { GitHubUrl } from '../../models/vo/github-url';
+
+import { generateTemplatePluginMeta } from './generate-template-plugin-meta';
+import { generateThemePluginMeta } from './generate-theme-plugin-meta';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -27,8 +30,13 @@ const PLUGINS_STATIC_DIR = '/static/plugins'; // configured by express.static
 
 export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
-function retrievePluginManifest(growiPlugin: IGrowiPlugin): ViteManifest {
+function retrievePluginManifest(growiPlugin: IGrowiPlugin): ViteManifest | undefined {
   const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
+
+  if (!fs.existsSync(manifestPath)) {
+    return;
+  }
+
   const manifestStr: string = readFileSync(manifestPath, 'utf-8');
   return JSON.parse(manifestStr);
 }
@@ -221,11 +229,11 @@ export class GrowiPluginService implements IGrowiPluginService {
     const packageRootPath = opts?.packageRootPath ?? path.resolve(pluginStoringPath, ghOrganizationName, ghReposName);
 
     // validate
-    const data = await validateGrowiDirective(packageRootPath);
+    const validationData = await validateGrowiDirective(packageRootPath);
 
     const packageData = opts?.parentPackageData ?? importPackageJson(packageRootPath);
 
-    const { growiPlugin } = data;
+    const { growiPlugin } = validationData;
     const {
       name: packageName, description: packageDesc, author: packageAuthor,
     } = packageData;
@@ -243,7 +251,7 @@ export class GrowiPluginService implements IGrowiPluginService {
       return plugins.flat();
     }
 
-    const plugin = {
+    const plugin: IGrowiPlugin = {
       isEnabled: true,
       installedPath: `${ghOrganizationName}/${ghReposName}`,
       organizationName: ghOrganizationName,
@@ -258,10 +266,11 @@ export class GrowiPluginService implements IGrowiPluginService {
 
     // add theme metadata
     if (growiPlugin.types.includes(GrowiPluginType.Theme)) {
-      (plugin as IGrowiPlugin<IGrowiThemePluginMeta>).meta = {
-        ...plugin.meta,
-        themes: growiPlugin.themes,
-      };
+      plugin.meta = await generateThemePluginMeta(plugin, validationData);
+    }
+    // add template metadata
+    if (growiPlugin.types.includes(GrowiPluginType.Template)) {
+      plugin.meta = await generateTemplatePluginMeta(plugin, validationData);
     }
 
     logger.info('Plugin detected => ', plugin);
@@ -338,7 +347,9 @@ export class GrowiPluginService implements IGrowiPluginService {
     let themeHref;
     try {
       const manifest = retrievePluginManifest(matchedPlugin);
-      themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+      if (manifest != null) {
+        themeHref = `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+      }
     }
     catch (e) {
       logger.error(`Could not read manifest file for the theme '${theme}'`, e);
@@ -358,6 +369,10 @@ export class GrowiPluginService implements IGrowiPluginService {
         try {
           const { types } = growiPlugin.meta;
           const manifest = await retrievePluginManifest(growiPlugin);
+
+          if (manifest == null) {
+            return;
+          }
 
           // add script
           if (types.includes(GrowiPluginType.Script)) {
