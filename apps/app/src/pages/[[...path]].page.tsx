@@ -238,13 +238,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-
   const { mutate: mutateInitialPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  // useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   // Store initial data
   useEffect(() => {
