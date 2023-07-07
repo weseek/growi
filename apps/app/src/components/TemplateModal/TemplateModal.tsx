@@ -40,7 +40,6 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
 }
 
 type TemplateItemProps = {
-  templateId: string,
   templateSummary: TemplateSummary,
   selectedLocale?: string,
   onClick?: () => void,
@@ -49,7 +48,6 @@ type TemplateItemProps = {
 }
 
 const TemplateItem: React.FC<TemplateItemProps> = ({
-  templateId,
   templateSummary,
   onClick,
   isSelected,
@@ -62,7 +60,6 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
 
   return (
     <a
-      key={templateId}
       className={`list-group-item list-group-item-action ${isSelected ? 'active' : ''}`}
       onClick={onClick}
       aria-current="true"
@@ -162,7 +159,6 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                 return (
                   <TemplateItem
                     key={templateId}
-                    templateId={templateId}
                     templateSummary={templateSummary}
                     onClick={() => onClickHandler(templateSummary)}
                     isSelected={isSelected}
