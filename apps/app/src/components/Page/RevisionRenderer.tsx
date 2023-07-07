@@ -1,7 +1,6 @@
 import React from 'react';
 
 // import mediumZoom from 'medium-zoom';
-
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
@@ -10,7 +9,6 @@ import loggerFactory from '~/utils/logger';
 
 import { ImageZoom } from './ImageZoom';
 import 'katex/dist/katex.min.css';
-
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -38,7 +36,6 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   } = props;
 
   const className = `wiki ${additionalClassName ?? ''}`;
-  const classOfImage = `.${className} img`;
 
   // ここにimgタグに適用するコンポーネントを書く
   const Image = ({ node, ...props }) => {
@@ -46,7 +43,10 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       <ImageZoom
         src={props.src}
         alt={props.alt}
-        options={{ background: 'black' }}
+        options={{
+          background: 'black',
+          container: '#main',
+        }}
       />
     );
   };

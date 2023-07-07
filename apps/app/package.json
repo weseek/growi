@@ -168,6 +168,7 @@
     "react-i18next": "^12.2.0",
     "react-image-crop": "^8.3.0",
     "react-markdown": "^8.0.7",
+    "react-medium-image-zoom": "^5.1.6",
     "react-multiline-clamp": "^2.0.0",
     "react-scroll": "^1.8.7",
     "react-syntax-highlighter": "^15.5.0",

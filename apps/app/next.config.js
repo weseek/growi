@@ -46,6 +46,7 @@ const getTranspilePackages = () => {
     'emoticon',
     'direction', // for hast-util-select
     'bcp-47-match', // for hast-util-select
+    'react-medium-image-zoom',
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
