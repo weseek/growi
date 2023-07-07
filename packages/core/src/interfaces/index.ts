@@ -9,6 +9,5 @@ export * from './page';
 export * from './revision';
 export * from './subscription';
 export * from './tag';
-export * from './template';
 export * from './user';
 export * from './vite';
