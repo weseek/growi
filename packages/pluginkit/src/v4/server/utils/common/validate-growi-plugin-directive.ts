@@ -1,16 +1,16 @@
 import { GrowiPluginType } from '@growi/core/dist/consts';
 
-import { type GrowiPluginValidationData, GrowiPluginValidationError } from '~/model';
+import { type GrowiPluginValidationData, GrowiPluginValidationError } from '../../../../model';
 
-import { importPackageJson } from './import';
+import { importPackageJson } from './import-package-json';
 
 
-export const validatePackageJson = async(projectDirRoot: string, expectedPluginType?: GrowiPluginType): Promise<GrowiPluginValidationData> => {
-  const pkg = await importPackageJson(projectDirRoot);
-
-  const data: GrowiPluginValidationData = { projectDirRoot };
+export const validateGrowiDirective = (projectDirRoot: string, expectedPluginType?: GrowiPluginType): GrowiPluginValidationData => {
+  const pkg = importPackageJson(projectDirRoot);
 
   const { growiPlugin } = pkg;
+
+  const data: GrowiPluginValidationData = { projectDirRoot, schemaVersion: NaN, growiPlugin };
 
   if (growiPlugin == null) {
     throw new GrowiPluginValidationError("The package.json does not have 'growiPlugin' directive.", data);
