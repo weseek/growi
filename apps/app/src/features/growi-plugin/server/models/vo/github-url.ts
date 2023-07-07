@@ -1,3 +1,5 @@
+import sanitize from 'sanitize-filename';
+
 // https://regex101.com/r/fK2rV3/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 
@@ -42,10 +44,10 @@ export class GitHubUrl {
       throw new Error(`The specified URL is invalid. : url='${url}'`);
     }
 
-    this._branchName = branchName;
+    this._branchName = sanitize(branchName);
 
-    this._organizationName = matched[1];
-    this._reposName = matched[2];
+    this._organizationName = sanitize(matched[1]);
+    this._reposName = sanitize(matched[2]);
   }
 
 }
