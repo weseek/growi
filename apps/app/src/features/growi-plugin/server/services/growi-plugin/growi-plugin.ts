@@ -7,6 +7,7 @@ import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
+import sanitize from 'sanitize-filename';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
@@ -111,11 +112,14 @@ export class GrowiPluginService implements IGrowiPluginService {
     const {
       organizationName, reposName, branchName, archiveUrl,
     } = ghUrl;
+
+    const sanitizedBranchName = sanitize(branchName);
+
     const installedPath = `${organizationName}/${reposName}`;
 
     const organizationPath = path.join(PLUGIN_STORING_PATH, organizationName);
-    const zipFilePath = path.join(organizationPath, `${reposName}-${branchName}.zip`);
-    const temporaryReposPath = path.join(organizationPath, `${reposName}-${branchName}`);
+    const zipFilePath = path.join(organizationPath, `${reposName}-${sanitizedBranchName}.zip`);
+    const temporaryReposPath = path.join(organizationPath, `${reposName}-${sanitizedBranchName}`);
     const reposPath = path.join(organizationPath, reposName);
 
     if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
