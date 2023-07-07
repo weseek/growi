@@ -72,7 +72,6 @@ schema.statics.findOrRegister = function(
     nameToBeRegistered?: string,
     mailToBeRegistered?: string,
 ): Promise<IExternalAccountHasId> {
-//
   return this.findOne({ providerType, accountId })
     .then((account) => {
     // ExternalAccount is found

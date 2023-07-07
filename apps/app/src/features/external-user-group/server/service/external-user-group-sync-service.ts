@@ -35,9 +35,9 @@ abstract class ExternalUserGroupSyncService {
     const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
       const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
       existingExternalUserGroupIds.push(externalUserGroup._id);
-      node.childGroupNodes.forEach((childNode) => {
-        syncNode(childNode, externalUserGroup._id);
-      });
+      await Promise.all(node.childGroupNodes.map((childNode) => {
+        return syncNode(childNode, externalUserGroup._id);
+      }));
     };
 
     await Promise.all(trees.map((root) => {
