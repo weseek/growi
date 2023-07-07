@@ -44,7 +44,7 @@ export class GitHubUrl {
       throw new Error(`The specified URL is invalid. : url='${url}'`);
     }
 
-    this._branchName = sanitize(branchName);
+    this._branchName = branchName;
 
     this._organizationName = sanitize(matched[1]);
     this._reposName = sanitize(matched[2]);
