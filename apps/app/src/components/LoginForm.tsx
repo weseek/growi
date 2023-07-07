@@ -18,7 +18,6 @@ import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 import styles from './LoginForm.module.scss';
 
-
 type LoginFormProps = {
   username?: string,
   name?: string,
@@ -94,7 +93,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
-    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -103,6 +101,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
+      setIsLoading(true);
+
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
