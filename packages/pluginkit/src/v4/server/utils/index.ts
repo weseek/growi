@@ -1,2 +1,2 @@
-export * from './package-json';
+export * from './common';
 export * from './template';
