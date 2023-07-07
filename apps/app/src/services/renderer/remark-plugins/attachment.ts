@@ -10,7 +10,7 @@ const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 const isAttachmentLink = (url: string) => {
   // https://regex101.com/r/9qZhiK/1
   const attachmentUrlFormat = new RegExp(/^\/(attachment)\/([^/^\n]+)$/);
-  return url.match(attachmentUrlFormat);
+  return attachmentUrlFormat.test(url);
 };
 
 const rewriteNode = (node: Node) => {
