@@ -46,9 +46,8 @@ const growiPluginSchema = new Schema<IGrowiPluginDocument, IGrowiPluginModel>({
   meta: growiPluginMetaSchema,
 });
 
-
 growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<IGrowiPlugin[]> {
-  return this.find({ isEnabled: true });
+  return this.find({ isEnabled: true }).lean();
 };
 
 growiPluginSchema.statics.findEnabledPluginsByType = async function<T extends GrowiPluginType>(
@@ -57,7 +56,7 @@ growiPluginSchema.statics.findEnabledPluginsByType = async function<T extends Gr
   return this.find({
     isEnabled: true,
     'meta.types': { $in: type },
-  });
+  }).lean();
 };
 
 growiPluginSchema.statics.activatePlugin = async function(id: Types.ObjectId): Promise<string> {

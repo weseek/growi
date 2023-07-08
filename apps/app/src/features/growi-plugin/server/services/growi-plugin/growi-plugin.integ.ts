@@ -82,11 +82,13 @@ describe('Installing a GROWI theme plugin', () => {
     const results = await growiPluginService.findThemePlugin('welcome-to-fumiya-room');
 
     // expect
-    // expect(results).not.toBeNull();
-    // assert(results != null);
-    // expect(results.growiPlugin).not.toBeNull();
-    // expect(results.themeMetadata).not.toBeNull();
-    // expect(results.themeHref).not.toBeNull();
+    expect(results).not.toBeNull();
+    assert(results != null);
+    expect(results.growiPlugin).not.toBeNull();
+    expect(results.themeMetadata).not.toBeNull();
+    expect(results.themeHref).not.toBeNull();
+    expect(results.themeHref
+      .startsWith('/static/plugins/weseek/growi-plugin-theme-welcome-to-fumiya-room/dist/assets/style.')).toBeTruthy();
   });
 
 });
