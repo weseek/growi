@@ -6,7 +6,6 @@
 
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
 
-    "typeRoots": ["./src/@types"],
     "types": [
       "vitest/globals"
     ]
