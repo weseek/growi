@@ -8,14 +8,26 @@ describe('GrowiPlugin find methods', () => {
     await GrowiPlugin.insertMany([
       {
         isEnabled: false,
-        installedPath: 'weseek/growi-plugin-unenabled',
+        installedPath: 'weseek/growi-plugin-unenabled1',
         organizationName: 'weseek',
         origin: {
-          url: 'https://github.com/weseek/growi-plugin-unenabled',
+          url: 'https://github.com/weseek/growi-plugin-unenabled1',
         },
         meta: {
-          name: '@growi/growi-plugin-unenabled',
+          name: '@growi/growi-plugin-unenabled1',
           types: [GrowiPluginType.Script],
+        },
+      },
+      {
+        isEnabled: false,
+        installedPath: 'weseek/growi-plugin-unenabled2',
+        organizationName: 'weseek',
+        origin: {
+          url: 'https://github.com/weseek/growi-plugin-unenabled2',
+        },
+        meta: {
+          name: '@growi/growi-plugin-unenabled2',
+          types: [GrowiPluginType.Template],
         },
       },
       {
@@ -55,6 +67,19 @@ describe('GrowiPlugin find methods', () => {
       // then
       expect(results.length === 2).toBeTruthy();
       expect(pluginNames.includes('@growi/growi-plugin-example1')).toBeTruthy();
+      expect(pluginNames.includes('@growi/growi-plugin-example2')).toBeTruthy();
+    });
+  });
+
+  describe('.findEnabledPluginsByType', () => {
+    it("shoud returns documents which type is 'template'", async() => {
+      // when
+      const results = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Template);
+
+      const pluginNames = results.map(p => p.meta.name);
+
+      // then
+      expect(results.length === 1).toBeTruthy();
       expect(pluginNames.includes('@growi/growi-plugin-example2')).toBeTruthy();
     });
   });

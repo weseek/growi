@@ -51,11 +51,11 @@ growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<IGrowiP
 };
 
 growiPluginSchema.statics.findEnabledPluginsByType = async function<T extends GrowiPluginType>(
-    types: T,
+    type: T,
 ): Promise<IGrowiPlugin<IGrowiPluginMetaByType<T>>[]> {
   return this.find({
     isEnabled: true,
-    'meta.types': { $in: types },
+    'meta.types': { $in: type },
   });
 };
 
