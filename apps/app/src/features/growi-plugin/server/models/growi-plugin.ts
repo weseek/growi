@@ -9,11 +9,12 @@ import type {
   IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginMetaByType, IGrowiPluginOrigin, IGrowiTemplatePluginMeta, IGrowiThemePluginMeta,
 } from '../../interfaces';
 
-export interface IGrowiPluginDocument extends IGrowiPlugin, Document {
+export interface IGrowiPluginDocument<M extends IGrowiPluginMeta = IGrowiPluginMeta> extends IGrowiPlugin<M>, Document {
+  metaJson: IGrowiPluginMeta & IGrowiThemePluginMeta & IGrowiTemplatePluginMeta,
 }
 export interface IGrowiPluginModel extends Model<IGrowiPluginDocument> {
-  findEnabledPlugins(): Promise<IGrowiPlugin[]>
-  findEnabledPluginsByType<T extends GrowiPluginType>(type: T): Promise<IGrowiPlugin<IGrowiPluginMetaByType<T>>[]>
+  findEnabledPlugins(): Promise<IGrowiPluginDocument[]>
+  findEnabledPluginsByType<T extends GrowiPluginType>(type: T): Promise<IGrowiPluginDocument<IGrowiPluginMetaByType<T>>[]>
   activatePlugin(id: Types.ObjectId): Promise<string>
   deactivatePlugin(id: Types.ObjectId): Promise<string>
 }
