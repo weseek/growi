@@ -273,7 +273,7 @@ module.exports = (crowi) => {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
 
       // retrieve plugin manifests
-      const themePlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginType.Theme]);
+      const themePlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
 
       const pluginThemesMetadatas = themePlugins
         .map(themePlugin => themePlugin.meta.themes)
