@@ -12,7 +12,6 @@ module.exports = {
   Tag: require('./tag'),
   Bookmark: require('./bookmark'),
   Comment: require('./comment'),
-  Attachment: require('./attachment'),
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),

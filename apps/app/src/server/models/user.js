@@ -7,6 +7,8 @@ import loggerFactory from '~/utils/logger';
 import { aclService } from '../service/acl';
 import { configManager } from '../service/config-manager';
 
+import Attachment from './attachment';
+
 
 const crypto = require('crypto');
 
@@ -558,6 +560,67 @@ userSchema.methods.updateIsQuestionnaireEnabled = async function(value) {
   return this.save();
 };
 
+// TODO: create UserService and transplant this method because image uploading depends on AttachmentService
+userSchema.methods.updateImage = async function(attachment) {
+  this.imageAttachment = attachment;
+  await this.updateImageUrlCached();
+  return this.save();
+};
+
+userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
+  this.isGravatarEnabled = isGravatarEnabled;
+  await this.updateImageUrlCached();
+  const userData = await this.save();
+  return userData;
+};
+
+userSchema.methods.updateImageUrlCached = async function() {
+  this.imageUrlCached = await this.generateImageUrlCached();
+};
+
+userSchema.methods.generateImageUrlCached = async function() {
+  if (this.isGravatarEnabled) {
+    return generateGravatarSrc(this.email);
+  }
+  if (this.image != null) {
+    return this.image;
+  }
+  if (this.imageAttachment != null && this.imageAttachment._id != null) {
+    const imageAttachment = await Attachment.findById(this.imageAttachment);
+    return imageAttachment.filePathProxied;
+  }
+  return '/images/icons/user.svg';
+};
+
+function generatePassword(password) {
+  const hasher = crypto.createHash('sha256');
+  hasher.update(process.env.PASSWORD_SEED + password);
+
+  return hasher.digest('hex');
+}
+
+userSchema.methods.isPasswordValid = function(password) {
+  return this.password === generatePassword(password);
+};
+
+userSchema.methods.setPassword = function(password) {
+  this.password = generatePassword(password);
+  return this;
+};
+
+userSchema.methods.updatePassword = async function(password) {
+  this.setPassword(password);
+  const userData = await this.save();
+  return userData;
+};
+
+userSchema.statics.findUserByEmailAndPassword = function(email, password, callback) {
+  const hashedPassword = generatePassword(password);
+  this.findOne({ email, password: hashedPassword }, (err, userData) => {
+    callback(err, userData);
+  });
+};
+
 userSchema.statics.STATUS_REGISTERED = STATUS_REGISTERED;
 userSchema.statics.STATUS_ACTIVE = STATUS_ACTIVE;
 userSchema.statics.STATUS_SUSPENDED = STATUS_SUSPENDED;
@@ -589,44 +652,6 @@ module.exports = function(crowi) {
     }
   }
 
-  function generatePassword(password) {
-    validateCrowi();
-
-    const hasher = crypto.createHash('sha256');
-    hasher.update(crowi.env.PASSWORD_SEED + password);
-
-    return hasher.digest('hex');
-  }
-
-  userSchema.methods.isPasswordValid = function(password) {
-    return this.password === generatePassword(password);
-  };
-
-  userSchema.methods.setPassword = function(password) {
-    this.password = generatePassword(password);
-    return this;
-  };
-
-  userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
-    this.isGravatarEnabled = isGravatarEnabled;
-    await this.updateImageUrlCached();
-    const userData = await this.save();
-    return userData;
-  };
-
-  userSchema.methods.updatePassword = async function(password) {
-    this.setPassword(password);
-    const userData = await this.save();
-    return userData;
-  };
-
-  // TODO: create UserService and transplant this method because image uploading depends on AttachmentService
-  userSchema.methods.updateImage = async function(attachment) {
-    this.imageAttachment = attachment;
-    await this.updateImageUrlCached();
-    return this.save();
-  };
-
   // TODO: create UserService and transplant this method because image deletion depends on AttachmentService
   userSchema.methods.deleteImage = async function() {
     validateCrowi();
@@ -642,25 +667,6 @@ module.exports = function(crowi) {
     this.imageAttachment = undefined;
     this.updateImageUrlCached();
     return this.save();
-  };
-
-  userSchema.methods.updateImageUrlCached = async function() {
-    this.imageUrlCached = await this.generateImageUrlCached();
-  };
-
-  userSchema.methods.generateImageUrlCached = async function() {
-    if (this.isGravatarEnabled) {
-      return generateGravatarSrc(this.email);
-    }
-    if (this.image != null) {
-      return this.image;
-    }
-    if (this.imageAttachment != null && this.imageAttachment._id != null) {
-      const Attachment = crowi.model('Attachment');
-      const imageAttachment = await Attachment.findById(this.imageAttachment);
-      return imageAttachment.filePathProxied;
-    }
-    return '/images/icons/user.svg';
   };
 
   userSchema.methods.activateInvitedUser = async function(username, name, password) {
@@ -684,13 +690,6 @@ module.exports = function(crowi) {
     this.status = STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
-  };
-
-  userSchema.statics.findUserByEmailAndPassword = function(email, password, callback) {
-    const hashedPassword = generatePassword(password);
-    this.findOne({ email, password: hashedPassword }, (err, userData) => {
-      callback(err, userData);
-    });
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
