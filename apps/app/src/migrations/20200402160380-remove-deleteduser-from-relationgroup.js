@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import userGroupRelation from '~/server/models/user-group-relation';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -12,7 +12,6 @@ module.exports = {
     mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = getModelSafely('User') || require('~/server/models/user')();
-    const UserGroupRelation = getModelSafely('UserGroupRelation') || userGroupRelation;
 
     const deletedUsers = await User.find({ status: 4 }); // deleted user
     const requests = await UserGroupRelation.remove({ relatedUser: deletedUsers });
