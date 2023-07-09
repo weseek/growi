@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import ExternalUserGroupDetailPage from '~/features/external-user-group/client/components/ExternalUserGroupDetail';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
@@ -44,9 +43,7 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
       </Head>
       {
         currentUserGroupId != null && router.isReady
-      && (isExternalGroupBool
-        ? <ExternalUserGroupDetailPage externalUserGroupId={currentUserGroupId}/>
-        : <UserGroupDetailPage userGroupId={currentUserGroupId} />)
+      && <UserGroupDetailPage userGroupId={currentUserGroupId} isExternalGroup={isExternalGroupBool} />
       }
     </AdminLayout>
   );
