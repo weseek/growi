@@ -72,7 +72,7 @@ abstract class ExternalUserGroupSyncService {
 
           // remove existing relations from list to create
           const existingRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
-          const existingGroupIds = existingRelations.map(r => r.relatedGroup);
+          const existingGroupIds = existingRelations.map(r => r.relatedGroup.toString());
           const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
           await ExternalUserGroupRelation.createRelations(groupIdsToCreateRelation, user);
@@ -104,8 +104,7 @@ abstract class ExternalUserGroupSyncService {
     const externalAccount = await getExternalAccount();
 
     if (externalAccount != null) {
-      await externalAccount.populate('user');
-      return externalAccount.user;
+      return (await externalAccount.populate<{user: IUserHasId}>('user')).user;
     }
     return null;
   }

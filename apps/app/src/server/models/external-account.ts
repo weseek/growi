@@ -15,7 +15,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-interface ExternalAccountDocument extends IExternalAccount, Document {}
+export interface ExternalAccountDocument extends IExternalAccount, Document {}
 
 export interface ExternalAccountModel extends Model<ExternalAccountDocument> {
   [x:string]: any, // for old methods

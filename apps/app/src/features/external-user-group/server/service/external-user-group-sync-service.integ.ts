@@ -8,7 +8,7 @@ import PassportService from '~/server/service/passport';
 
 import { ExternalGroupProviderType, ExternalUserGroupTreeNode } from '../../interfaces/external-user-group';
 
-import ExternalUserGroupSyncService from './external-user-group-sync-service';
+import ExternalUserGroupSyncService from './external-user-group-sync';
 
 
 // dummy class to implement generateExternalUserGroupTrees which returns test data
