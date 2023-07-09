@@ -13,17 +13,17 @@ export type UserGroupListResult = {
   userGroups: IUserGroupHasId[],
 };
 
-export type ChildUserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {
-  childUserGroups: TUSERGROUP[],
-  grandChildUserGroups: TUSERGROUP[],
+export type ChildUserGroupListResult = {
+  childUserGroups: IUserGroupHasId[],
+  grandChildUserGroups: IUserGroupHasId[],
 };
 
-export type UserGroupRelationListResult<TUSERGROUPRELATION extends IUserGroupRelationHasId = IUserGroupRelationHasId> = {
-  userGroupRelations: TUSERGROUPRELATION[],
+export type UserGroupRelationListResult = {
+  userGroupRelations: IUserGroupRelationHasId[],
 };
 
-export type IUserGroupRelationHasIdPopulatedUser<TUSERGROUP extends IUserGroup = IUserGroup> = {
-  relatedGroup: Ref<TUSERGROUP>,
+export type IUserGroupRelationHasIdPopulatedUser = {
+  relatedGroup: Ref<IUserGroup>,
   relatedUser: IUserHasId,
   createdAt: Date,
 } & HasObjectId;

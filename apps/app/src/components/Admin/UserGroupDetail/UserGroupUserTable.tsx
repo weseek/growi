@@ -10,10 +10,7 @@ type Props = {
   userGroupRelations: IUserGroupRelationHasIdPopulatedUser[] | undefined,
   onClickRemoveUserBtn: (username: string) => Promise<void>,
   onClickPlusBtn: () => void,
-  isExternalGroup?: false
-} | {
-  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[] | undefined,
-  isExternalGroup: true
+  isExternalGroup?: boolean
 }
 
 export const UserGroupUserTable = (props: Props): JSX.Element => {
