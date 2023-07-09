@@ -633,7 +633,7 @@ type TemplateSelectedCallback = (templateText: string) => void;
 type TemplateModalOptions = {
   onSubmit?: TemplateSelectedCallback,
 }
-type TemplateModalStatus = TemplateModalOptions & {
+export type TemplateModalStatus = TemplateModalOptions & {
   isOpened: boolean,
 }
 
