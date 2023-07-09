@@ -1,5 +1,3 @@
-import type { ITemplate } from './template';
-
 export type GrowiFacade = {
   markdownRenderer?: {
     optionsGenerators?: {
@@ -10,7 +8,4 @@ export type GrowiFacade = {
     },
     optionsMutators?: any,
   },
-  customTemplates?: {
-    [pluginName: string]: ITemplate,
-  }
 };

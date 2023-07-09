@@ -65,10 +65,16 @@ context('Editor while uploading to a new page', () => {
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-2`);
 
     // drag-drop a file
+    cy.intercept('POST', '/_api/attachments.add').as('attachmentsAdd');
     const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
+    cy.wait('@attachmentsAdd')
+
+    // Update page using shortcut keys
+    cy.get('.CodeMirror').type('{ctrl+s}');
 
     // expect
+    cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
     cy.get('.CodeMirror').should('contain.text', body);
     cy.get('.CodeMirror').should('contain.text', '[example.txt](/attachment/');
     cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
