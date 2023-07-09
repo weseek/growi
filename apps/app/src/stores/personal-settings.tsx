@@ -2,7 +2,7 @@ import { ErrorV3 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
-import { IExternalAccount } from '~/interfaces/external-account';
+import { IExternalAccountHasId } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
 import { useIsGuestUser } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -104,7 +104,7 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
   };
 };
 
-export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccount[], Error> => {
+export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccountHasId[], Error> => {
   return useSWR(
     '/personal-setting/external-accounts',
     endpoint => apiv3Get(endpoint).then(response => response.data.externalAccounts),

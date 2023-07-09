@@ -1,11 +1,11 @@
 import { ErrorV3 } from '^/../../packages/core/dist';
-import mongoose from 'mongoose';
 
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
-import { IExternalAccount } from '~/interfaces/external-account';
+import { IExternalAccountHasId } from '~/interfaces/external-account';
 import loggerFactory from '~/utils/logger';
 
 import { NullUsernameToBeRegisteredError } from '../models/errors';
+import ExternalAccount from '../models/external-account';
 
 import PassportService from './passport';
 
@@ -20,23 +20,24 @@ class ExternalAccountService {
     this.passportService = passportService;
   }
 
-  async getOrCreateUser(userInfo: {id: string, username: string, name?: string, email?: string}, providerId: string): Promise<IExternalAccount | undefined> {
+  async getOrCreateUser(
+      userInfo: {id: string, username: string, name?: string, email?: string},
+      providerId: string,
+  ): Promise<IExternalAccountHasId | undefined> {
     // get option
     const isSameUsernameTreatedAsIdenticalUser = this.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
     const isSameEmailTreatedAsIdenticalUser = this.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
 
-    const ExternalAccount = mongoose.model('ExternalAccount') as any;
-
     try {
       // find or register(create) user
       const externalAccount = await ExternalAccount.findOrRegister(
+        isSameUsernameTreatedAsIdenticalUser,
+        isSameEmailTreatedAsIdenticalUser,
         providerId,
         userInfo.id,
         userInfo.username,
         userInfo.name,
         userInfo.email,
-        isSameUsernameTreatedAsIdenticalUser,
-        isSameEmailTreatedAsIdenticalUser,
       );
       return externalAccount;
     }

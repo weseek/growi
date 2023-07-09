@@ -1,6 +1,5 @@
-import mongoose from 'mongoose';
-
 import { IUserHasId } from '~/interfaces/user';
+import ExternalAccount from '~/server/models/external-account';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { configManager } from '../../../../server/service/config-manager';
@@ -61,7 +60,7 @@ abstract class ExternalUserGroupSyncService {
   */
   async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
-      node.name, node.description, node.id, this.groupProviderType, parentId,
+      node.name, node.id, this.groupProviderType, node.description, parentId,
     );
     await Promise.all(node.userInfos.map((userInfo) => {
       return (async() => {
@@ -92,7 +91,6 @@ abstract class ExternalUserGroupSyncService {
    */
   async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
     const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
-    const ExternalAccount = mongoose.model('ExternalAccount');
 
     const getExternalAccount = async() => {
       if (autoGenerateUserOnGroupSync && externalAccountService != null) {
@@ -106,7 +104,8 @@ abstract class ExternalUserGroupSyncService {
     const externalAccount = await getExternalAccount();
 
     if (externalAccount != null) {
-      return externalAccount.getPopulatedUser();
+      await externalAccount.populate('user');
+      return externalAccount.user;
     }
     return null;
   }

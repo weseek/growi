@@ -2,6 +2,7 @@ import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
+import ExternalAccount from '~/server/models/external-account';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -87,7 +88,6 @@ module.exports = (crowi) => {
   const {
     User,
     Page,
-    ExternalAccount,
     UserGroupRelation,
   } = crowi.models;
 
