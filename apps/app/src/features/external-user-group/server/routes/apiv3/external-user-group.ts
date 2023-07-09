@@ -4,8 +4,10 @@ import {
   body, param, query, validationResult,
 } from 'express-validator';
 
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
-import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import ExternalUserGroup, { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation, {
+  ExternalUserGroupRelationDocument,
+} from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -13,6 +15,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
+import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
 import LdapUserGroupSyncService from '../../service/ldap-user-group-sync-service';
@@ -137,7 +140,11 @@ module.exports = (crowi: Crowi): Router => {
       const { actionName, transferToUserGroupId } = req.query;
 
       try {
-        const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user, true);
+        const userGroups = await (crowi.userGroupService as UserGroupService)
+          .removeCompletelyByRootGroupId<
+            ExternalUserGroupDocument,
+            ExternalUserGroupRelationDocument
+          >(deleteGroupId, actionName, transferToUserGroupId, req.user, ExternalUserGroup, ExternalUserGroupRelation);
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

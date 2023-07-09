@@ -1,19 +1,15 @@
-import mongoose from 'mongoose';
+import { Model } from 'mongoose';
 
-
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
-import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { IUser } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import UserGroup from '~/server/models/user-group';
+import UserGroup, { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
+import UserGroupRelation, { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
+
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
-
-
-const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
 /**
  * the service class of UserGroupService
@@ -117,10 +113,14 @@ class UserGroupService {
     return userGroup.save();
   }
 
-  async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user, isExternalGroup = false) {
-    const userGroupModel = isExternalGroup ? ExternalUserGroup : UserGroup;
-    const userGroupRelationModel = isExternalGroup ? ExternalUserGroupRelation : UserGroupRelation;
-
+  async removeCompletelyByRootGroupId<
+    D extends UserGroupDocument,
+    RD extends UserGroupRelationDocument,
+  >(
+      deleteRootGroupId, action, transferToUserGroupId, user,
+      userGroupModel: Model<D> & UserGroupModel = UserGroup,
+      userGroupRelationModel: Model<RD> & UserGroupRelationModel = UserGroupRelation,
+  ) {
     const rootGroup = await userGroupModel.findById(deleteRootGroupId);
     if (rootGroup == null) {
       throw new Error(`UserGroup data does not exist. id: ${deleteRootGroupId}`);
@@ -157,4 +157,4 @@ class UserGroupService {
 
 }
 
-module.exports = UserGroupService;
+export default UserGroupService;

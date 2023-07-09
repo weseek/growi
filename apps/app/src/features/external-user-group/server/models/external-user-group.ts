@@ -9,6 +9,10 @@ export interface ExternalUserGroupDocument extends IExternalUserGroup, Document 
 
 export interface ExternalUserGroupModel extends Model<ExternalUserGroupDocument> {
   [x:string]: any, // for old methods
+
+  PAGE_ITEMS: 10,
+
+  findGroupsWithDescendantsRecursively: (groups, descendants?) => any,
 }
 
 const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({

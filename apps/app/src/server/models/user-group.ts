@@ -1,4 +1,4 @@
-import mongoose, {
+import {
   Schema, Model, Document,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -14,12 +14,14 @@ export interface UserGroupModel extends Model<UserGroupDocument> {
   [x:string]: any, // for old methods
 
   PAGE_ITEMS: 10,
+
+  findGroupsWithDescendantsRecursively: (groups, descendants?) => any,
 }
 
 /*
  * define schema
  */
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = Schema.Types.ObjectId;
 
 const schema = new Schema<UserGroupDocument, UserGroupModel>({
   name: { type: String, required: true, unique: true },
