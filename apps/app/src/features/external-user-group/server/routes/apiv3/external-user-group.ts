@@ -78,8 +78,8 @@ module.exports = (crowi: Crowi): Router => {
       const result = await ExternalUserGroup.findWithPagination({
         page, limit, offset, pagination,
       });
-      const { docs: externalUserGroups, totalDocs: totalExternalUserGroups, limit: pagingLimit } = result;
-      return res.apiv3({ externalUserGroups, totalExternalUserGroups, pagingLimit });
+      const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
+      return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
     }
     catch (err) {
       const msg = 'Error occurred in fetching external user group list';
@@ -93,8 +93,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const userGroup = await ExternalUserGroup.findById(groupId);
-      const ancestorExternalUserGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(userGroup);
-      return res.apiv3({ ancestorExternalUserGroups });
+      const ancestorUserGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      return res.apiv3({ ancestorUserGroups });
     }
     catch (err) {
       const msg = 'Error occurred while searching user groups';
@@ -124,8 +124,8 @@ module.exports = (crowi: Crowi): Router => {
     const { id } = req.params;
 
     try {
-      const externalUserGroup = await ExternalUserGroup.findById(id);
-      return res.apiv3({ externalUserGroup });
+      const userGroup = await ExternalUserGroup.findById(id);
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred while getting external user group';
@@ -165,12 +165,12 @@ module.exports = (crowi: Crowi): Router => {
     } = req.body;
 
     try {
-      const externalUserGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { description });
+      const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { description });
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3({ externalUserGroup });
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred in updating an external user group';

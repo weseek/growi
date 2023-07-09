@@ -11,25 +11,21 @@ import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDele
 import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import CustomNav from '~/components/CustomNavigation/CustomNav';
-import {
-  useSWRxChildExternalUserGroupList,
-  useSWRxExternalUserGroupList,
-  useSWRxExternalUserGroupRelationList,
-} from '~/features/external-user-group/client/stores/external-user-group';
 import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
+import { useSWRxChildUserGroupList, useSWRxUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
 import { LdapGroupManagement } from './LdapGroupManagement';
 
 export const ExternalGroupManagement: FC = () => {
-  const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
+  const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxUserGroupList(undefined, true);
   const externalUserGroups = externalUserGroupList != null ? externalUserGroupList : [];
   const externalUserGroupIds = externalUserGroups.map(group => group._id);
 
-  const { data: externalUserGroupRelationList } = useSWRxExternalUserGroupRelationList(externalUserGroupIds);
+  const { data: externalUserGroupRelationList } = useSWRxUserGroupRelationList(externalUserGroupIds, undefined, undefined, true);
   const externalUserGroupRelations = externalUserGroupRelationList != null ? externalUserGroupRelationList : [];
 
-  const { data: childExternalUserGroupsList } = useSWRxChildExternalUserGroupList(externalUserGroupIds);
+  const { data: childExternalUserGroupsList } = useSWRxChildUserGroupList(externalUserGroupIds, false, true);
   const childExternalUserGroups = childExternalUserGroupsList?.childUserGroups != null ? childExternalUserGroupsList.childUserGroups : [];
 
   const { data: isAclEnabled } = useIsAclEnabled();

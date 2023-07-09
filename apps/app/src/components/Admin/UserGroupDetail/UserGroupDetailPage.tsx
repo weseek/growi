@@ -42,15 +42,16 @@ const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModa
 
 type Props = {
   userGroupId: string,
+  isExternalGroup: boolean,
 }
 
 const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const xss = useMemo(() => new Xss(), []);
-  const { userGroupId: currentUserGroupId } = props;
+  const { userGroupId: currentUserGroupId, isExternalGroup } = props;
 
-  const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
+  const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId, isExternalGroup);
 
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -76,26 +77,36 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(currentUserGroupId);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(currentUserGroupId, isExternalGroup);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(currentUserGroupId ? [currentUserGroupId] : [], true);
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(
+    currentUserGroupId ? [currentUserGroupId] : [], true, isExternalGroup,
+  );
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
 
-  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useSWRxUserGroupRelationList(childUserGroupIds);
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useSWRxUserGroupRelationList(
+    childUserGroupIds, undefined, undefined, isExternalGroup,
+  );
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroupId);
   const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroupId);
 
-  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroupId);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroupId, isExternalGroup);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
-  const parentUserGroup = selectableParentUserGroups?.find(selectableParentUserGroup => selectableParentUserGroup._id === currentUserGroup?.parent);
+  const parentUserGroup = (() => {
+    if (isExternalGroup) {
+      return ancestorUserGroups != null && ancestorUserGroups.length > 1
+        ? ancestorUserGroups[ancestorUserGroups.length - 2] : undefined;
+    }
+    return selectableParentUserGroups?.find(selectableParentUserGroup => selectableParentUserGroup._id === currentUserGroup?.parent);
+  })();
   /*
    * Function
    */
@@ -213,11 +224,18 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
-      await apiv3Put(`/user-groups/${userGroupData._id}`, {
-        name: userGroupData.name,
-        description: userGroupData.description,
-        parentId: userGroupData.parent,
-      });
+      if (isExternalGroup) {
+        await apiv3Put(`/external-user-groups/${userGroupData._id}`, {
+          description: userGroupData.description,
+        });
+      }
+      else {
+        await apiv3Put(`/user-groups/${userGroupData._id}`, {
+          name: userGroupData.name,
+          description: userGroupData.description,
+          parentId: userGroupData.parent,
+        });
+      }
 
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
@@ -229,7 +247,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [t, mutateChildUserGroups, hideUpdateModal]);
+  }, [t, mutateChildUserGroups, hideUpdateModal, isExternalGroup]);
 
   const onClickAddExistingUserGroupButtonHandler = useCallback(async(selectedChild: IUserGroupHasId): Promise<void> => {
     // show confirm modal before submiting
@@ -283,8 +301,9 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, [setSelectedUserGroup, setDeleteModalShown]);
 
   const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+    const url = isExternalGroup ? `/external-user-groups/${deleteGroupId}` : `/user-groups/${deleteGroupId}`;
     try {
-      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+      const res = await apiv3Delete(url, {
         actionName,
         transferToUserGroupId,
       });
@@ -300,7 +319,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
+  }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown, isExternalGroup]);
 
   const removeChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
@@ -348,7 +367,10 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                 { ancestorUserGroup._id === currentUserGroupId ? (
                   <span>{ancestorUserGroup.name}</span>
                 ) : (
-                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
+                  <Link href={{
+                    pathname: `/admin/user-group-detail/${ancestorUserGroup._id}`,
+                    query: { isExternalGroup: 'true' },
+                  }} prefetch={false}>
                     {ancestorUserGroup.name}
                   </Link>
                 ) }
@@ -366,6 +388,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
           selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}
+          isExternalGroup
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
@@ -373,6 +396,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         userGroupRelations={userGroupRelations}
         onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
         onClickRemoveUserBtn={removeUserByUsername}
+        isExternalGroup
       />
       <UserGroupUserModal
         isOpen={isUserGroupUserModalShown}
@@ -389,11 +413,11 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       />
 
       <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
-      <UserGroupDropdown
+      {!isExternalGroup && <UserGroupDropdown
         selectableUserGroups={selectableChildUserGroups}
         onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
         onClickCreateUserGroupButton={showCreateModal}
-      />
+      />}
 
       <UserGroupModal
         userGroup={selectedUserGroup}
@@ -401,6 +425,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onClickSubmit={updateChildUserGroup}
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
+        isExternalGroup
       />
 
       <UserGroupModal
@@ -420,6 +445,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onRemove={removeChildUserGroup}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
+        isExternalGroup
       />
 
       <UserGroupDeleteModal
