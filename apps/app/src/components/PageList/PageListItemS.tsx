@@ -3,6 +3,7 @@ import React from 'react';
 import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
 import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import Clamp from 'react-multiline-clamp';
 
 import { IPageHasId } from '~/interfaces/page';
 
@@ -34,8 +35,10 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   if (isNarrowView) {
     pagePathElement = (
       <div className={`${styles['page-list']}`}>
-        <div className="mx-2 bookmarks-path-element">
-          <a className="text-break" href={page.path}>{pagePathElement}</a>
+        <div className="mx-2 page-title">
+          <Clamp lines={2}>
+            <a className="text-break" href={page.path}>{pagePathElement}</a>
+          </Clamp>
         </div>
       </div>
     );
