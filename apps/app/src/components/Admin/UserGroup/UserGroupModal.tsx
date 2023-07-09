@@ -77,7 +77,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
         </ModalHeader>
 
         <ModalBody>
-          {!isExternalGroup && <div className="form-group">
+          <div className="form-group">
             <label htmlFor="name">
               {t('user_group_management.group_name')}
             </label>
@@ -89,8 +89,9 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
               value={currentName}
               onChange={onChangeNameHandler}
               required
+              disabled={isExternalGroup}
             />
-          </div>}
+          </div>
 
           <div className="form-group">
             <label htmlFor="description">

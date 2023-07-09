@@ -1,4 +1,6 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useEffect, useState,
+} from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
@@ -26,7 +28,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState<string>(userGroup.name);
   const [currentDescription, setDescription] = useState<string>(userGroup.description);
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(parentUserGroup);
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>();
   /*
    * Function
    */
@@ -38,11 +40,15 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onChangeParerentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
+  const onChangeParentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
     if (userGroup._id !== selectedParent?._id) {
       setSelectedParent(userGroup);
     }
   }, [selectedParent, setSelectedParent]);
+
+  useEffect(() => {
+    setSelectedParent(parentUserGroup);
+  }, [parentUserGroup]);
 
   const isSelectableParentUserGroups = selectableParentUserGroups != null && selectableParentUserGroups.length > 0;
 
@@ -59,7 +65,10 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
       <fieldset>
         <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
-
+        {isExternalGroup
+        && <div className='mb-3'>
+          <small className="text-muted">{t('external_user_group.only_description_edit_allowed')}</small>
+        </div>}
         {
           userGroup?.createdAt != null && (
             <div className="form-group row">
@@ -74,16 +83,16 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
             {t('user_group_management.group_name')}
           </label>
           <div className="col-md-4 my-auto">
-            {isExternalGroup ? currentName
-              : <input
-                className="form-control"
-                type="text"
-                name="name"
-                placeholder={t('user_group_management.group_example')}
-                value={currentName}
-                onChange={onChangeNameHandler}
-                required
-              />}
+            <input
+              className="form-control"
+              type="text"
+              name="name"
+              placeholder={t('user_group_management.group_example')}
+              value={currentName}
+              onChange={onChangeNameHandler}
+              required
+              disabled={isExternalGroup}
+            />
           </div>
         </div>
 
@@ -100,48 +109,46 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           <label htmlFor="parent" className="col-md-2 col-form-label">
             {t('user_group_management.parent_group')}
           </label>
-          {isExternalGroup ? <div className="col-md-4 my-auto">{parentUserGroup?.name}</div>
-            : <div className="dropdown col-md-4">
+          <div className="dropdown col-md-4">
+            <button
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              className="btn btn-outline-secondary dropdown-toggle mb-3"
+              disabled={isExternalGroup || !isSelectableParentUserGroups}
+            >
+              {selectedParent?.name ?? t('user_group_management.select_parent_group')}
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {
+                isSelectableParentUserGroups && (
+                  <>
+                    {
+                      selectableParentUserGroups.map(userGroup => (
+                        <button
+                          key={userGroup._id}
+                          type="button"
+                          className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
+                          onClick={() => onChangeParentButtonHandler(userGroup)}
+                        >
+                          {userGroup.name}
+                        </button>
+                      ))
+                    }
+                  </>
+                )
+              }
+
+              <div className="dropdown-divider" />
+
               <button
+                className="dropdown-item"
                 type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                className={`
-                btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
-              `}
-              >
-                {selectedParent?.name ?? t('user_group_management.select_parent_group')}
+                onClick={() => { setSelectedParent(undefined) }}
+              >{t('user_group_management.release_parent_group')}
               </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {
-                  isSelectableParentUserGroups && (
-                    <>
-                      {
-                        selectableParentUserGroups.map(userGroup => (
-                          <button
-                            key={userGroup._id}
-                            type="button"
-                            className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
-                            onClick={() => onChangeParerentButtonHandler(userGroup)}
-                          >
-                            {userGroup.name}
-                          </button>
-                        ))
-                      }
-                    </>
-                  )
-                }
-
-                <div className="dropdown-divider" />
-
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => { setSelectedParent(undefined) }}
-                >{t('user_group_management.release_parent_group')}
-                </button>
-              </div>
-            </div>}
+            </div>
+          </div>
         </div>
 
         <div className="form-group row">

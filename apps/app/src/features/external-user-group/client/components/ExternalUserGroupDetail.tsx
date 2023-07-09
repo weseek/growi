@@ -67,6 +67,11 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
+  const parentUserGroup = ancestorExternalUserGroups != null && ancestorExternalUserGroups.length > 1
+    ? ancestorExternalUserGroups[ancestorExternalUserGroups.length - 2] : undefined;
+
+  const selectableParentUserGroups = parentUserGroup != null ? [parentUserGroup] : [];
+
   const showUpdateModal = useCallback((group: IExternalUserGroupHasId) => {
     setUpdateModalShown(true);
     setSelectedExternalUserGroup(group);
@@ -183,8 +188,8 @@ const ExternalUserGroupDetailPage = (props: Props): JSX.Element => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={currentExternalUserGroup}
-          parentUserGroup={ancestorExternalUserGroups != null && ancestorExternalUserGroups.length > 1
-            ? ancestorExternalUserGroups[ancestorExternalUserGroups.length - 2] : undefined}
+          parentUserGroup={parentUserGroup}
+          selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}
           isExternalGroup

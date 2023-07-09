@@ -1047,6 +1047,7 @@
     "sync": "Sync",
     "invalid_sync_settings": "Invalid sync settings",
     "description_form_detail": "Please note that edited value will be overwritten on next sync if description mapper is set in sync settings",
+    "only_description_edit_allowed": "Only description can be edited for external user groups",
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",

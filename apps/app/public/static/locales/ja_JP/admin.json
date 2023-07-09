@@ -1055,6 +1055,7 @@
     "sync": "同期",
     "invalid_sync_settings": "同期設定に誤りがあります",
     "description_form_detail": "同期設定で「説明」の mapper が設定されている場合、編集内容は再同期によって上書きされることに注意してください",
+    "only_description_edit_allowed": "外部グループは説明の編集のみが可能です",
     "ldap": {
       "group_sync_settings": "LDAP グループ同期設定",
       "group_search_base_DN": "グループ検索ベース DN",
