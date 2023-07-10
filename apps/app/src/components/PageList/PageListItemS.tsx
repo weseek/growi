@@ -47,12 +47,12 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   return (
     <>
       {isNarrowView ? (
-        <div className={`d-flex align-items-center ${styles['page-list']}`}>
+        <div className={`d-flex ${styles['page-list']}`}>
           <UserPicture user={page.lastUpdateUser} noLink={noLink} />
           <div className="page-path-element">
             {pagePathElement}
           </div>
-          <span className="ml-auto page-list-ul">
+          <span className="ml-2 page-list-ul">
             <PageListMeta page={page} />
           </span>
         </div>
