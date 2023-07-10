@@ -2,6 +2,7 @@ import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import qs from 'qs';
 
+import { PLUGIN_EXPRESS_STATIC_DIR, PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -88,7 +89,7 @@ module.exports = function(crowi, app) {
   app.use('/static/preset-themes', express.static(
     resolveFromRoot(`../../node_modules/@growi/preset-themes/${path.dirname(presetThemesManifestPath)}`),
   ));
-  app.use('/static/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
+  app.use(PLUGIN_EXPRESS_STATIC_DIR, express.static(PLUGIN_STORING_PATH));
 
   app.use(methodOverride());
 
