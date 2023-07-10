@@ -190,7 +190,6 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                     <DropdownItem
                       key={templateId}
                       onClick={() => onClickHandler(templateSummary)}
-                      aria-current="true"
                       className={`px-4 py-3 ${index === 0 ? '' : 'border-top'}`}
                     >
                       <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
