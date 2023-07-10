@@ -30,10 +30,6 @@ schema.statics.createRelations = async function(userGroupIds, user) {
 
 /**
  * find all user and group relation
- *
- * @static
- * @returns {Promise<UserGroupRelation[]>}
- * @memberof UserGroupRelation
  */
 schema.statics.findAllRelation = async function() {
   return this
