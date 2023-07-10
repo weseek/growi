@@ -7,7 +7,7 @@ import { visit } from 'unist-util-visit';
 
 const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 
-const isAttachmentLink = (url: string) => {
+const isAttachmentLink = (url: string): boolean => {
   // https://regex101.com/r/9qZhiK/1
   const attachmentUrlFormat = new RegExp(/^\/(attachment)\/([^/^\n]+)$/);
   return attachmentUrlFormat.test(url);
