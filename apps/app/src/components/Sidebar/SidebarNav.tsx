@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useGrowiCloudUri } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
 import styles from './SidebarNav.module.scss';
@@ -84,6 +84,7 @@ type Props = {
 export const SidebarNav: FC<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser();
+  const { data: growiCloudUri } = useGrowiCloudUri();
 
   const [isAdmin, setAdmin] = useState(false);
 
@@ -110,7 +111,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
       <div className="grw-sidebar-nav-secondary-container">
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
         {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
-        <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
+        <SecondaryItem label="Help" iconName="help" href={ growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org' } isBlank />
         <SecondaryItem label="Trash" iconName="delete" href="/trash" />
       </div>
     </div>

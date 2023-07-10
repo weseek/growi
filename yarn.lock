@@ -2323,13 +2323,16 @@
 "@growi/pluginkit@link:packages/pluginkit":
   version "0.1.0"
   dependencies:
-    "@growi/core" "^6.1.5-RC"
+    "@growi/core" "link:packages/core"
     extensible-custom-error "^0.0.7"
 
 "@growi/presentation@link:packages/presentation":
   version "6.1.5-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
+
+"@growi/preset-templates@link:packages/preset-templates":
+  version "6.1.5-RC.0"
 
 "@growi/preset-themes@link:packages/preset-themes":
   version "6.1.5-RC.0"
@@ -4002,11 +4005,6 @@
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/@types/reveal.js/-/reveal.js-4.4.1.tgz#970e29b6ed6c07ad693797d5157ba2fb3e94840c"
   integrity sha512-oMcIAaP9rFCODHdGC2RM71cbBGOPc4prolkPEN98LUQm9b64ePjNpD/Fb2b/oep2w0XDN4aYCdUmip6kuLEJBg==
-
-"@types/rewire@^2.5.28":
-  version "2.5.28"
-  resolved "https://registry.yarnpkg.com/@types/rewire/-/rewire-2.5.28.tgz#ff34de38c4269fe74e2597195d4918c25d42ebad"
-  integrity sha512-uD0j/AQOa5le7afuK+u+woi8jNKF1vf3DN0H7LCJhft/lNNibUr7VcAesdgtWfEKveZol3ZG1CJqwx2Bhrnl8w==
 
 "@types/scheduler@*":
   version "0.16.2"
@@ -5712,7 +5710,7 @@ check-node-version@^4.1.0:
     run-parallel "^1.1.4"
     semver "^6.3.0"
 
-"chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.0, chokidar@^3.5.1, chokidar@^3.5.3:
+"chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.0, chokidar@^3.5.1:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
   integrity sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==
@@ -15127,6 +15125,13 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+sanitize-filename@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/sanitize-filename/-/sanitize-filename-1.6.3.tgz#755ebd752045931977e30b2025d340d7c9090378"
+  integrity sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg==
+  dependencies:
+    truncate-utf8-bytes "^1.0.0"
+
 saslprep@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/saslprep/-/saslprep-1.0.3.tgz#4c02f946b56cf54297e347ba1093e7acac4cf226"
@@ -16543,6 +16548,13 @@ trough@^2.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-2.1.0.tgz#0f7b511a4fde65a46f18477ab38849b22c554876"
   integrity sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==
 
+truncate-utf8-bytes@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/truncate-utf8-bytes/-/truncate-utf8-bytes-1.0.2.tgz#405923909592d56f78a5818434b0b78489ca5f2b"
+  integrity sha512-95Pu1QXQvruGEhv62XCMO3Mm90GscOCClvrIUwCM0PYOXK3kaF3l3sIHxx71ThJfcbM2O5Au6SO3AWCSEfW4mQ==
+  dependencies:
+    utf8-byte-length "^1.0.1"
+
 ts-dedent@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/ts-dedent/-/ts-dedent-2.2.0.tgz#39e4bd297cd036292ae2394eb3412be63f563bb5"
@@ -17013,22 +17025,6 @@ unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
 
-unplugin-swc@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/unplugin-swc/-/unplugin-swc-1.3.2.tgz#4c859896ce33a46f66033ba66290b33fb886a248"
-  integrity sha512-x0+NTM4NR1jWpailVhK5sXO9svyL4iWZ+yah0WZ1G+SaI1hPysa95nVSzXqLP7y4+MKTO17wP+EVqjrREqgBsw==
-  dependencies:
-    unplugin "^0.6.0"
-
-unplugin@^0.6.0:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/unplugin/-/unplugin-0.6.3.tgz#b8721e2b163a410a7efed726e6a0fc6fbadf975a"
-  integrity sha512-CoW88FQfCW/yabVc4bLrjikN9HC8dEvMU4O7B6K2jsYMPK0l6iAnd9dpJwqGcmXJKRCU9vwSsy653qg+RK0G6A==
-  dependencies:
-    chokidar "^3.5.3"
-    webpack-sources "^3.2.3"
-    webpack-virtual-modules "^0.4.3"
-
 unset-value@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unset-value/-/unset-value-1.0.0.tgz#8376873f7d2335179ffb1e6fc3a8ed0dfc8ab559"
@@ -17135,6 +17131,11 @@ useragent@^2.2.1:
   dependencies:
     lru-cache "4.1.x"
     tmp "0.0.x"
+
+utf8-byte-length@^1.0.1:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/utf8-byte-length/-/utf8-byte-length-1.0.4.tgz#f45f150c4c66eee968186505ab93fcbb8ad6bf61"
+  integrity sha512-4+wkEYLBbWxqTahEsWrhxepcoVOJ+1z5PGIjPZxRkytcdSUaNjIjBM7Xn8E+pdSuV7SzvWovBFA54FO0JSoqhA==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
@@ -17408,16 +17409,6 @@ webpack-bundle-analyzer@4.7.0:
     opener "^1.5.2"
     sirv "^1.0.7"
     ws "^7.3.1"
-
-webpack-sources@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
-  integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
-
-webpack-virtual-modules@^0.4.3:
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/webpack-virtual-modules/-/webpack-virtual-modules-0.4.6.tgz#3e4008230731f1db078d9cb6f68baf8571182b45"
-  integrity sha512-5tyDlKLqPfMqjT3Q9TAqf2YqjwmnUleZwzJi1A5qXnlBCdj2AtOJ6wAWdglTIDOPgOiOrXeBeFcsQ8+aGQ6QbA==
 
 well-known-symbols@^2.0.0:
   version "2.0.0"

@@ -26,7 +26,7 @@
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"

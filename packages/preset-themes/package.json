@@ -24,7 +24,7 @@
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "preview": "vite preview",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {},
   "devDependencies": {

@@ -47,7 +47,7 @@
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "ts-node": "node -r ts-node/register -r tsconfig-paths/register -r dotenv-flow/config",
     "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM",
@@ -66,6 +66,8 @@
     "@google-cloud/storage": "^5.8.5",
     "@growi/core": "link:../../packages/core",
     "@growi/hackmd": "link:../../packages/hackmd",
+    "@growi/pluginkit": "link:../../packages/pluginkit",
+    "@growi/preset-templates": "link:../../packages/preset-templates",
     "@growi/preset-themes": "link:../../packages/preset-themes",
     "@growi/remark-attachment-refs": "link:../../packages/remark-attachment-refs",
     "@growi/remark-drawio": "link:../../packages/remark-drawio",
@@ -186,6 +188,7 @@
     "remark-math": "^5.1.1",
     "remark-toc": "^8.0.1",
     "remark-wiki-link": "^1.0.4",
+    "sanitize-filename": "^1.6.3",
     "socket.io": "^4.2.0",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",

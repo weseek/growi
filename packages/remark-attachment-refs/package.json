@@ -27,7 +27,7 @@
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "test": "",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "@growi/core": "link:../core",
