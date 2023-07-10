@@ -325,7 +325,7 @@ export class GrowiPluginService implements IGrowiPluginService {
       const growiPlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
 
       growiPlugins
-        .forEach(async(growiPlugin) => {
+        .forEach((growiPlugin) => {
           const themeMetadatas = growiPlugin.meta.themes;
           const themeMetadata = themeMetadatas.find(t => t.name === theme);
 
