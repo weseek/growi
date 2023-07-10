@@ -25,9 +25,6 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",
-    "typeRoots": [
-      "./node_modules/@types", "./node_modules"
-    ],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
 

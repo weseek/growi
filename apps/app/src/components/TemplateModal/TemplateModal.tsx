@@ -40,7 +40,6 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
 }
 
 type TemplateItemProps = {
-  templateId: string,
   templateSummary: TemplateSummary,
   selectedLocale?: string,
   onClick?: () => void,
@@ -49,7 +48,6 @@ type TemplateItemProps = {
 }
 
 const TemplateItem: React.FC<TemplateItemProps> = ({
-  templateId,
   templateSummary,
   onClick,
   isSelected,
@@ -62,7 +60,6 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
 
   return (
     <a
-      key={templateId}
       className={`list-group-item list-group-item-action ${isSelected ? 'active' : ''}`}
       onClick={onClick}
       aria-current="true"
@@ -73,40 +70,6 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
       ))}
     </a>
-  );
-};
-
-type TemplateMenuProps = {
-  templateSummaries: TemplateSummary[],
-  onClickHandler: (templateSummary: TemplateSummary) => void,
-  usersDefaultLang?: Lang,
-  selectedTemplateSummary?: TemplateSummary,
-}
-
-const TemplateMenu: React.FC<TemplateMenuProps> = ({
-  templateSummaries,
-  onClickHandler,
-  usersDefaultLang,
-  selectedTemplateSummary,
-}) => {
-  return (
-    <>
-      {templateSummaries.map((templateSummary) => {
-        const templateId = constructTemplateId(templateSummary);
-        const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
-
-        return (
-          <TemplateItem
-            key={templateId}
-            templateId={templateId}
-            templateSummary={templateSummary}
-            onClick={() => onClickHandler(templateSummary)}
-            isSelected={isSelected}
-            usersDefaultLang={usersDefaultLang}
-          />
-        );
-      })}
-    </>
   );
 };
 
@@ -189,12 +152,20 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           {/* List Group */}
           <div className="d-none d-lg-block col-lg-4">
             <div className="list-group">
-              <TemplateMenu
-                templateSummaries={templateSummaries}
-                onClickHandler={onClickHandler}
-                usersDefaultLang={usersDefaultLang}
-                selectedTemplateSummary={selectedTemplateSummary}
-              />
+              {templateSummaries.map((templateSummary) => {
+                const templateId = constructTemplateId(templateSummary);
+                const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
+
+                return (
+                  <TemplateItem
+                    key={templateId}
+                    templateSummary={templateSummary}
+                    onClick={() => onClickHandler(templateSummary)}
+                    isSelected={isSelected}
+                    usersDefaultLang={usersDefaultLang}
+                  />
+                );
+              })}
             </div>
           </div>
           {/* Dropdown */}
@@ -208,12 +179,27 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                 </span>
               </DropdownToggle>
               <DropdownMenu role="menu" className='p-0'>
-                <TemplateMenu
-                  templateSummaries={templateSummaries}
-                  onClickHandler={onClickHandler}
-                  usersDefaultLang={usersDefaultLang}
-                  selectedTemplateSummary={selectedTemplateSummary}
-                />
+                {templateSummaries.map((templateSummary, index) => {
+                  const templateId = constructTemplateId(templateSummary);
+                  const localizedTemplate = getLocalizedTemplate(templateSummary, usersDefaultLang);
+                  const templateLocales = extractSupportedLocales(templateSummary);
+
+                  assert(localizedTemplate?.isValid);
+
+                  return (
+                    <DropdownItem
+                      key={templateId}
+                      onClick={() => onClickHandler(templateSummary)}
+                      className={`px-4 py-3 ${index === 0 ? '' : 'border-top'}`}
+                    >
+                      <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
+                      <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
+                      { templateLocales != null && Array.from(templateLocales).map(locale => (
+                        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+                      ))}
+                    </DropdownItem>
+                  );
+                })}
               </DropdownMenu>
             </UncontrolledDropdown>
           </div>

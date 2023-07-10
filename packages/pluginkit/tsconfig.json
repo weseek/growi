@@ -4,7 +4,6 @@
   "compilerOptions": {
     "module": "CommonJS",
     "types": [
-      "node",
       "vitest/globals"
     ]
   },
