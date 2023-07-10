@@ -47,6 +47,7 @@ abstract class ExternalUserGroupSyncService {
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     if (!preserveDeletedLdapGroups) {
       await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
+      await ExternalUserGroupRelation.removeAllInvalidRelations();
     }
   }
 

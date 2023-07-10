@@ -28,4 +28,36 @@ schema.statics.createRelations = async function(userGroupIds, user) {
   return this.insertMany(documentsToInsert);
 };
 
+/**
+ * find all user and group relation
+ *
+ * @static
+ * @returns {Promise<UserGroupRelation[]>}
+ * @memberof UserGroupRelation
+ */
+schema.statics.findAllRelation = async function() {
+  return this
+    .find()
+    .populate('relatedUser')
+    .populate('relatedGroup')
+    .exec();
+};
+
+/**
+ * remove all invalid relations that has reference to unlinked document
+ */
+schema.statics.removeAllInvalidRelations = async function() {
+  return this.findAllRelation()
+    .then((relations) => {
+      // filter invalid documents
+      return relations.filter((relation) => {
+        return relation.relatedUser == null || relation.relatedGroup == null;
+      });
+    })
+    .then((invalidRelations) => {
+      const ids = invalidRelations.map((relation) => { return relation._id });
+      return this.deleteMany({ _id: { $in: ids } });
+    });
+};
+
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

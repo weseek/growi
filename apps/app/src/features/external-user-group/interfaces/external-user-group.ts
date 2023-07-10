@@ -6,7 +6,7 @@ export const ExternalGroupProviderType = { ldap: 'ldap' } as const;
 export type ExternalGroupProviderType = typeof ExternalGroupProviderType[keyof typeof ExternalGroupProviderType];
 
 export interface IExternalUserGroup extends Omit<IUserGroup, 'parent'> {
-  parent: Ref<IExternalUserGroup> | null
+  parent?: Ref<IExternalUserGroup>
   externalId: string // identifier used in external app/server
   provider: ExternalGroupProviderType
 }
