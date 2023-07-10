@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-import ExternalUserGroup from './external-user-group';
 import ExternalUserGroupRelation from './external-user-group-relation';
 
 // TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
@@ -26,14 +25,6 @@ describe('ExternalUserGroupRelation model', () => {
       user1 = await User.create({
         _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
       });
-      await ExternalUserGroup.insertMany([
-        {
-          _id: groupId1, name: 'test group 1', externalId: 'testExternalId', provider: 'testProvider',
-        },
-        {
-          _id: groupId2, name: 'test group 2', externalId: 'testExternalId2', provider: 'testProvider',
-        },
-      ]);
     });
 
     it('creates relation for user', async() => {
