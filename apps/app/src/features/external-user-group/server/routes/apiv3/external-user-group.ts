@@ -6,7 +6,7 @@ import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import LdapUserGroupSyncService from '../../service/ldap-user-group-sync-service';
+import LdapUserGroupSyncService from '../../service/ldap-user-group-sync';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
