@@ -1,6 +1,3 @@
-import type { ITemplate } from '@growi/core/dist/interfaces/template';
-import { mock } from 'vitest-mock-extended';
-
 import { useFormatter } from './use-formatter';
 
 
@@ -47,26 +44,24 @@ describe('useFormatter', () => {
 
     // when
     const { format } = useFormatter();
-    const template = mock<ITemplate>();
-    template.markdown = 'markdown body';
-    const markdown = format(template);
+    const markdown = 'markdown body';
+    const formatted = format(markdown);
 
     // then
-    expect(markdown).toBe('markdown body');
+    expect(formatted).toBe('markdown body');
   });
 
   it('returns markdown formatted when currentPagePath is undefined', () => {
     // when
     const { format } = useFormatter();
-    const template = mock<ITemplate>();
-    template.markdown = `
+    const markdown = `
 title: {{{title}}}{{^title}}(empty){{/title}}
 path: {{{path}}}
 `;
-    const markdown = format(template);
+    const formatted = format(markdown);
 
     // then
-    expect(markdown).toBe(`
+    expect(formatted).toBe(`
 title: (empty)
 path: /
 `);
@@ -82,16 +77,15 @@ path: /
 
     // when
     const { format } = useFormatter();
-    const template = mock<ITemplate>();
-    template.markdown = `
+    const markdown = `
 title: {{{title}}}
 path: {{{path}}}
 date: {{yyyy}}/{{MM}}/{{dd}} {{HH}}:{{mm}}
 `;
-    const markdown = format(template);
+    const formatted = format(markdown);
 
     // then
-    expect(markdown).toBe(`
+    expect(formatted).toBe(`
 title: Sandbox
 path: /Sandbox
 date: 2023/05/31 15:01

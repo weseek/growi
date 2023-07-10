@@ -35,13 +35,14 @@ import {
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig,
+  useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -57,7 +58,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
 } from './utils/commons';
 
 
@@ -67,7 +68,7 @@ declare global {
 }
 
 
-const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
+const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
@@ -172,6 +173,7 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
+  skipSSR: boolean,
 
   grantData?: IPageGrantData,
 
@@ -191,6 +193,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   // page
   useIsContainerFluid(props.isContainerFluid);
@@ -235,13 +238,39 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+  const { mutate: mutateInitialPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+
+  // Store initial data
+  useEffect(() => {
+    if (!props.skipSSR) {
+      mutateInitialPage(pageWithMeta?.data ?? null);
+    }
+  }, [mutateInitialPage, pageWithMeta, props.skipSSR]);
+
+  // Store initial data (When revisionBody is not SSR)
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -464,8 +493,9 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
-    await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+    props.skipSSR = await skipSSR(page);
+    await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
   if (page == null && user != null) {

@@ -1,12 +1,17 @@
 {
   "name": "@growi/presentation",
-  "version": "6.1.4",
+  "version": "6.1.5-RC.0",
   "description": "GROWI plugin for presentation",
   "license": "MIT",
-  "keywords": ["growi", "growi-plugin"],
+  "keywords": [
+    "growi",
+    "growi-plugin"
+  ],
   "module": "dist/presentation.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
     "clean": "npx -y shx rm -rf dist",
@@ -15,10 +20,11 @@
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
-    "lint": "run-p lint:*"
+    "lint": "run-p lint:*",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4"
+    "@growi/core": "link:../core"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^3.6.0",
