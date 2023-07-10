@@ -53,9 +53,9 @@ export default class ElasticsearchClient {
   };
 
   cluster = {
-    health: (params: ES7RequestParams.ClusterHealth & estypes.ClusterHealthRequest)
+    health: ()
     : Promise<ES7ApiResponse<ClusterHealthResponse> | estypes.ClusterHealthResponse> =>
-      this.client instanceof ES7Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
+      this.client instanceof ES7Client ? this.client.cluster.health() : this.client.cluster.health(),
   };
 
   indices = {
@@ -107,8 +107,14 @@ export default class ElasticsearchClient {
     return this.client instanceof ES7Client ? this.client.ping() : this.client.ping();
   }
 
-  reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
-    return this.client instanceof ES7Client ? this.client.reindex(params) : this.client.reindex(params);
+  // reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
+  //   return this.client instanceof ES7Client ? this.client.reindex(params) : this.client.reindex(params);
+  // }
+
+  reindex(indexName: string, tmpIndexName: string): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
+    return this.client instanceof ES7Client
+      ? this.client.reindex({ wait_for_completion: false, body: { source: { index: indexName }, dest: { index: tmpIndexName } } })
+      : this.client.reindex({ wait_for_completion: false, source: { index: indexName }, dest: { index: tmpIndexName } });
   }
 
   async search(params: ES7RequestParams.Search & estypes.SearchRequest): Promise<SearchResponse | estypes.SearchResponse> {
