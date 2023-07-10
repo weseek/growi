@@ -26,14 +26,14 @@ describe('ExternalUserGroupRelation model', () => {
       user1 = await User.create({
         _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
       });
-      await ExternalUserGroup.insertMany(
+      await ExternalUserGroup.insertMany([
         {
           _id: groupId1, name: 'test group 1', externalId: 'testExternalId', provider: 'testProvider',
         },
         {
-          _id: groupId2, name: 'test group 2', externalId: 'testExternalId', provider: 'testProvider',
+          _id: groupId2, name: 'test group 2', externalId: 'testExternalId2', provider: 'testProvider',
         },
-      );
+      ]);
     });
 
     it('creates relation for user', async() => {
