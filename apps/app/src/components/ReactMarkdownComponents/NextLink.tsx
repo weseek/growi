@@ -1,3 +1,4 @@
+import { pagePathUtils } from '@growi/core';
 import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';
@@ -20,6 +21,13 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
     logger.debug(err);
     return false;
   }
+};
+
+const isCreatablePage = (href: string) => {
+  const url = new URL(href);
+  const pathName = url.pathname;
+
+  return pagePathUtils.isCreatablePage(pathName);
 };
 
 type Props = Omit<LinkProps, 'href'> & {
@@ -57,6 +65,14 @@ export const NextLink = (props: Props): JSX.Element => {
       <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
         {children}&nbsp;<i className='icon-share-alt small'></i>
       </a>
+    );
+  }
+
+  console.log(!isCreatablePage(href), href);
+
+  if (!isCreatablePage(href)) {
+    return (
+      <a href={href} className={className}>{children}</a>
     );
   }
 
