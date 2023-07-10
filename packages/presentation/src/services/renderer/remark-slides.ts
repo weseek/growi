@@ -1,7 +1,7 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Root } from 'mdast';
+import { frontmatterToMarkdown } from 'mdast-util-frontmatter';
 import { toMarkdown } from 'mdast-util-to-markdown';
-import { handleClientScriptLoad } from 'next/script';
 import type { Plugin } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
@@ -32,11 +32,9 @@ const rewriteNode = (tree: Node, node: Node) => {
     data.hProperties = {
       hasMarpFlag: true,
       children: toMarkdown(tree as Root, {
-        handlers: {
-          yaml: (node: string, parent: Node, state: State: info: Info ) => {
-
-          }
-        },
+        extensions: [
+          frontmatterToMarkdown(['yaml']),
+        ],
       }),
     };
   }
@@ -44,7 +42,11 @@ const rewriteNode = (tree: Node, node: Node) => {
     data.dName = 'slide';
     data.hProperties = {
       hasMarpFlag: false,
-      children: toMarkdown(tree as Root),
+      children: toMarkdown(tree as Root, {
+        extensions: [
+          frontmatterToMarkdown(['yaml']),
+        ],
+      }),
     };
   }
 };
