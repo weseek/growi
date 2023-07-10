@@ -300,6 +300,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.slide = slides.SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {

@@ -1,10 +1,14 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { Root } from 'mdast';
+import { toMarkdown } from 'mdast-util-to-markdown';
+import { handleClientScriptLoad } from 'next/script';
 import type { Plugin } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
-function rewriteNode(node: Node) {
+const SUPPORTED_ATTRIBUTES = ['hasMarpFlag', 'chidren'];
 
+const rewriteNode = (tree: Node, node: Node) => {
   let slide = false;
   let marp = false;
 
@@ -20,24 +24,45 @@ function rewriteNode(node: Node) {
       marp = true;
     }
   });
+
+  const data = tree.data ?? (tree.data = {});
+
   if (marp) {
-    node.type = 'marp';
+    data.dName = 'slide';
+    data.hProperties = {
+      hasMarpFlag: true,
+      children: toMarkdown(tree as Root, {
+        handlers: {
+          yaml: (node: string, parent: Node, state: State: info: Info ) => {
+
+          }
+        },
+      }),
+    };
   }
   else if (slide) {
-    node.type = 'slide';
+    data.dName = 'slide';
+    data.hProperties = {
+      hasMarpFlag: false,
+      children: toMarkdown(tree as Root),
+    };
   }
-}
+};
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
     visit(tree, (node) => {
+      console.log(tree);
       if (node.type === 'yaml' && node.value != null) {
-        rewriteNode(node);
+        rewriteNode(tree, node);
       }
     });
   };
 };
 
 export const sanitizeOption: SanitizeOption = {
-  tagNames: ['slides'],
+  tagNames: ['slide'],
+  attributes: {
+    slide: SUPPORTED_ATTRIBUTES,
+  },
 };
