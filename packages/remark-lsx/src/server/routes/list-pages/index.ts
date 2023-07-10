@@ -52,7 +52,7 @@ function addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = fal
 }
 
 function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
-  return this.addFilterCondition(query, pagePath, optionsFilter, true);
+  return addFilterCondition(query, pagePath, optionsFilter, true);
 }
 
 

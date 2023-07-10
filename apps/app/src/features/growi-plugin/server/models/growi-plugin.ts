@@ -9,11 +9,12 @@ import type {
   IGrowiPlugin, IGrowiPluginMeta, IGrowiPluginMetaByType, IGrowiPluginOrigin, IGrowiTemplatePluginMeta, IGrowiThemePluginMeta,
 } from '../../interfaces';
 
-export interface IGrowiPluginDocument extends IGrowiPlugin, Document {
+export interface IGrowiPluginDocument<M extends IGrowiPluginMeta = IGrowiPluginMeta> extends IGrowiPlugin<M>, Document {
+  metaJson: IGrowiPluginMeta & IGrowiThemePluginMeta & IGrowiTemplatePluginMeta,
 }
 export interface IGrowiPluginModel extends Model<IGrowiPluginDocument> {
-  findEnabledPlugins(): Promise<IGrowiPlugin[]>
-  findEnabledPluginsByType<T extends GrowiPluginType>(type: T): Promise<IGrowiPlugin<IGrowiPluginMetaByType<T>>[]>
+  findEnabledPlugins(): Promise<IGrowiPluginDocument[]>
+  findEnabledPluginsByType<T extends GrowiPluginType>(type: T): Promise<IGrowiPluginDocument<IGrowiPluginMetaByType<T>>[]>
   activatePlugin(id: Types.ObjectId): Promise<string>
   deactivatePlugin(id: Types.ObjectId): Promise<string>
 }
@@ -45,18 +46,17 @@ const growiPluginSchema = new Schema<IGrowiPluginDocument, IGrowiPluginModel>({
   meta: growiPluginMetaSchema,
 });
 
-
 growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<IGrowiPlugin[]> {
-  return this.find({ isEnabled: true });
+  return this.find({ isEnabled: true }).lean();
 };
 
 growiPluginSchema.statics.findEnabledPluginsByType = async function<T extends GrowiPluginType>(
-    types: T,
+    type: T,
 ): Promise<IGrowiPlugin<IGrowiPluginMetaByType<T>>[]> {
   return this.find({
     isEnabled: true,
-    'meta.types': { $in: types },
-  });
+    'meta.types': { $in: type },
+  }).lean();
 };
 
 growiPluginSchema.statics.activatePlugin = async function(id: Types.ObjectId): Promise<string> {
