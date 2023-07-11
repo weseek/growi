@@ -107,10 +107,6 @@ export default class ElasticsearchClient {
     return this.client instanceof ES7Client ? this.client.ping() : this.client.ping();
   }
 
-  // reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
-  //   return this.client instanceof ES7Client ? this.client.reindex(params) : this.client.reindex(params);
-  // }
-
   reindex(indexName: string, tmpIndexName: string): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
     return this.client instanceof ES7Client
       ? this.client.reindex({ wait_for_completion: false, body: { source: { index: indexName }, dest: { index: tmpIndexName } } })
