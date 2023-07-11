@@ -68,8 +68,6 @@ export const NextLink = (props: Props): JSX.Element => {
     );
   }
 
-  console.log(!isCreatablePage(href), href);
-
   if (!isCreatablePage(href)) {
     return (
       <a href={href} className={className}>{children}</a>
