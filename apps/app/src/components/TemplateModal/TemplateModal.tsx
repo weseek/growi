@@ -143,7 +143,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
   }
 
   return (
-    <>
+    <div data-testid='template-modal'>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         {t('template.modal_label.Select template')}
       </ModalHeader>
@@ -249,7 +249,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           {t('commons:Insert')}
         </button>
       </ModalFooter>
-    </>
+    </div>
   );
 };
 
