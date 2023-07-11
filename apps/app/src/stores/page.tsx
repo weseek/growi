@@ -48,11 +48,11 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
 };
 
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
-export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
+export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision> => {
   const key = 'currentPage';
 
   const { cache } = useSWRConfig();
-  const shouldMutate = initialData?._id !== cache.get(key)?.data?._id && initialData !== undefined;
+  const shouldMutate = initialData?._id !== cache.get(key)?.data?._id && initialData != null;
 
   useEffect(() => {
     if (shouldMutate) {
