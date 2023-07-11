@@ -7,7 +7,7 @@ import streamToPromise from 'stream-to-promise';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
-  IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
+  ISearchResult, ISearchResultData, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
@@ -653,7 +653,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
    *   data: [ pages ...],
    * }
    */
-  async searchKeyword(query): Promise<IFormattedSearchResult> {
+  async searchKeyword(query): Promise<ISearchResult<ISearchResultData>> {
 
     // for debug
     if (process.env.NODE_ENV === 'development') {
@@ -950,7 +950,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option?): Promise<ISearchResult<unknown>> {
+  async search(data: SearchableData<ESQueryTerms>, user, userGroups, option?): Promise<ISearchResult<ISearchResultData>> {
     const { queryString, terms } = data;
 
     if (terms == null) {
