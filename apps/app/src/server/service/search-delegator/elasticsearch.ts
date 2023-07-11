@@ -659,16 +659,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const searchResponse = await this.client.search(query);
 
-    const total = searchResponse?.hits?.total;
-    let totalCount = 0;
-    if (typeof total === 'object') {
-      totalCount = total.value;
+    const _total = searchResponse?.hits?.total;
+    let total = 0;
+    if (typeof _total === 'object') {
+      total = _total.value;
     }
 
     return {
       meta: {
+        total,
         took: searchResponse.took,
-        total: totalCount,
         hitsCount: searchResponse.hits.hits.length,
       },
       data: searchResponse.hits.hits.map((elm) => {
