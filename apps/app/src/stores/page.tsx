@@ -49,13 +49,16 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
 
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision> => {
-  const key = 'currentPage';
+  const { data: currentPageId } = useCurrentPageId();
+
+  const key = `currentPage_${initialData?._id ?? currentPageId}`;
 
   const { cache } = useSWRConfig();
-  const shouldMutate = initialData?._id !== cache.get(key)?.data?._id && initialData != null;
+  const shouldMutate = initialData != null && (initialData._id !== cache.get(key)?.data?._id);
 
   useEffect(() => {
     if (shouldMutate) {
+
       mutate(key, initialData, {
         optimisticData: initialData,
         populateCache: true,
@@ -64,16 +67,17 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision): 
     }
   }, [initialData, key, shouldMutate]);
 
-  return useSWR(key, null, {
+  const result = useSWR<IPagePopulatedToShowRevision>(key, null, {
     keepPreviousData: true,
   });
+  return result;
 };
 
 export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision|null> => {
-  const key = 'currentPage';
-
   const { data: currentPageId } = useCurrentPageId();
   const { data: shareLinkId } = useShareLinkId();
+
+  const key = `currentPage_${currentPageId}`;
 
   // Get URL parameter for specific revisionId
   let revisionId: string|undefined;
