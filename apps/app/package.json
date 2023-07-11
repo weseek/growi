@@ -24,7 +24,7 @@
     "dev:migrate:status": "yarn dev:migrate-mongo status -f config/migrate-mongo-config.js",
     "dev:migrate:up": "yarn dev:migrate-mongo up -f config/migrate-mongo-config.js",
     "dev:migrate:down": "yarn dev:migrate-mongo down -f config/migrate-mongo-config.js",
-    "cy:run": "cypress run --browser chrome",
+    "cy:run": "cypress run --browser chromium",
     "//// for CI": "",
     "dev:ci": "yarn cross-env NODE_ENV=development yarn ts-node src/server/app.ts --ci",
     "lint:typecheck": "npx -y tsc",
