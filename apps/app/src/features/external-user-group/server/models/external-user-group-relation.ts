@@ -28,32 +28,8 @@ schema.statics.createRelations = UserGroupRelation.createRelations;
 
 schema.statics.removeAllByUserGroups = UserGroupRelation.removeAllByUserGroups;
 
-/**
- * find all user and group relation
- */
-schema.statics.findAllRelation = async function() {
-  return this
-    .find()
-    .populate('relatedUser')
-    .populate('relatedGroup')
-    .exec();
-};
+schema.statics.findAllRelation = UserGroupRelation.findAllRelation;
 
-/**
- * remove all invalid relations that has reference to unlinked document
- */
-schema.statics.removeAllInvalidRelations = async function() {
-  return this.findAllRelation()
-    .then((relations) => {
-      // filter invalid documents
-      return relations.filter((relation) => {
-        return relation.relatedUser == null || relation.relatedGroup == null;
-      });
-    })
-    .then((invalidRelations) => {
-      const ids = invalidRelations.map((relation) => { return relation._id });
-      return this.deleteMany({ _id: { $in: ids } });
-    });
-};
+schema.statics.removeAllInvalidRelations = UserGroupRelation.removeAllInvalidRelations;
 
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);
