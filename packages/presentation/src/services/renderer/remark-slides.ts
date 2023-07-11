@@ -1,6 +1,7 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Root } from 'mdast';
 import { frontmatterToMarkdown } from 'mdast-util-frontmatter';
+import { gfmToMarkdown } from 'mdast-util-gfm';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import type { Plugin } from 'unified';
 import type { Node } from 'unist';
@@ -28,23 +29,26 @@ const rewriteNode = (tree: Node, node: Node) => {
   const data = tree.data ?? (tree.data = {});
 
   if (marp) {
-    data.dName = 'slide';
+    // data.hName = 'slide';
     data.hProperties = {
       hasMarpFlag: true,
       children: toMarkdown(tree as Root, {
         extensions: [
           frontmatterToMarkdown(['yaml']),
+          gfmToMarkdown(),
+          // TODO: add new extension remark-growi-directive to markdown
         ],
       }),
     };
   }
   else if (slide) {
-    data.dName = 'slide';
+    // data.hName = 'slide';
     data.hProperties = {
       hasMarpFlag: false,
       children: toMarkdown(tree as Root, {
         extensions: [
           frontmatterToMarkdown(['yaml']),
+          gfmToMarkdown(),
         ],
       }),
     };
@@ -53,8 +57,8 @@ const rewriteNode = (tree: Node, node: Node) => {
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
+    console.log(tree);
     visit(tree, (node) => {
-      console.log(tree);
       if (node.type === 'yaml' && node.value != null) {
         rewriteNode(tree, node);
       }

@@ -11,10 +11,12 @@ type SlideViewerProps = {
   children: string,
 }
 
-export const SldieViewer = React.memo((props: SlideViewerProps): JSX.Element => {
+export const SldieViewer: React.FC<SlideViewerProps> = React.memo((props: SlideViewerProps): JSX.Element => {
   const {
     hasMarpFlag, children,
   } = props;
+
+  console.log(children);
 
   const options: PresentationOptions = {
     rendererOptions: {
