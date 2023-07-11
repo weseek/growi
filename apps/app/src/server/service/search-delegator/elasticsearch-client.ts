@@ -53,9 +53,9 @@ export default class ElasticsearchClient {
   };
 
   cluster = {
-    health: ()
+    health: (params?: ES7RequestParams.ClusterHealth & estypes.ClusterHealthRequest)
     : Promise<ES7ApiResponse<ClusterHealthResponse> | estypes.ClusterHealthResponse> =>
-      this.client instanceof ES7Client ? this.client.cluster.health() : this.client.cluster.health(),
+      this.client instanceof ES7Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
   };
 
   indices = {
