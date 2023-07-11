@@ -1,8 +1,9 @@
+import { SWRResponseWithUtils, withUtils } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
@@ -41,16 +42,31 @@ export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[], isExternal
   );
 };
 
+type ChildUserGroupListUtils = {
+  updateChild(childGroupData: IUserGroupHasId): Promise<void>, // update one child and refresh list
+}
 export const useSWRxChildUserGroupList = (
     parentIds?: string[], includeGrandChildren?: boolean,
-): SWRResponse<ChildUserGroupListResult, Error> => {
+): SWRResponseWithUtils<ChildUserGroupListUtils, ChildUserGroupListResult, Error> => {
   const shouldFetch = parentIds != null && parentIds.length > 0;
-  return useSWRImmutable(
+
+  const swrResponse = useSWRImmutable(
     shouldFetch ? ['/user-groups/children', parentIds, includeGrandChildren] : null,
     ([endpoint, parentIds, includeGrandChildren]) => apiv3Get<ChildUserGroupListResult>(
       endpoint, { parentIds, includeGrandChildren },
     ).then((result => result.data)),
   );
+
+  const updateChild = async(childGroupData: IUserGroupHasId) => {
+    await apiv3Put(`/user-groups/${childGroupData._id}`, {
+      name: childGroupData.name,
+      description: childGroupData.description,
+      parentId: childGroupData.parent,
+    });
+    swrResponse.mutate();
+  };
+
+  return withUtils(swrResponse, { updateChild });
 };
 
 export const useSWRxUserGroupRelations = (groupId: string | null): SWRResponse<IUserGroupRelationHasIdPopulatedUser[], Error> => {

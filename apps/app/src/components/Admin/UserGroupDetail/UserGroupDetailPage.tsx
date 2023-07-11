@@ -16,6 +16,7 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
@@ -80,7 +81,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useUserGroupRelations(currentUserGroupId, isExternalGroup);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useChildUserGroupList(currentUserGroupId, isExternalGroup);
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups, updateChild } = useChildUserGroupList(currentUserGroupId, isExternalGroup);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
@@ -125,19 +126,26 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
-    await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
-      name: update.name,
-      description: update.description,
-      parentId: parentId ?? null,
-      forceUpdateParents,
-    });
+    if (isExternalGroup) {
+      await apiv3Put<{ userGroup: IExternalUserGroupHasId }>(`/external-user-groups/${userGroup._id}`, {
+        description: update.description,
+      });
+    }
+    else {
+      await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+        name: update.name,
+        description: update.description,
+        parentId: parentId ?? null,
+        forceUpdateParents,
+      });
+    }
 
     // mutate
     mutateChildUserGroups();
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+  }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, isExternalGroup]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
@@ -225,30 +233,16 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
-      if (isExternalGroup) {
-        await apiv3Put(`/external-user-groups/${userGroupData._id}`, {
-          description: userGroupData.description,
-        });
-      }
-      else {
-        await apiv3Put(`/user-groups/${userGroupData._id}`, {
-          name: userGroupData.name,
-          description: userGroupData.description,
-          parentId: userGroupData.parent,
-        });
-      }
+      updateChild(userGroupData);
 
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
-
-      // mutate
-      mutateChildUserGroups();
 
       hideUpdateModal();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, mutateChildUserGroups, hideUpdateModal, isExternalGroup]);
+  }, [t, updateChild, hideUpdateModal]);
 
   const onClickAddExistingUserGroupButtonHandler = useCallback(async(selectedChild: IUserGroupHasId): Promise<void> => {
     // show confirm modal before submiting

@@ -1,7 +1,8 @@
+import { SWRResponseWithUtils, withUtils } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
 import { ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupRelationListResult } from '~/interfaces/user-group-response';
 
@@ -31,16 +32,29 @@ export const useSWRxExternalUserGroupList = (initialData?: IExternalUserGroupHas
   );
 };
 
+type ChildExternalUserGroupListUtils = {
+  updateChild(childGroupData: IExternalUserGroupHasId): Promise<void>, // update one child and refresh list
+}
 export const useSWRxChildExternalUserGroupList = (
     parentIds?: string[], includeGrandChildren?: boolean,
-): SWRResponse<ChildUserGroupListResult<IExternalUserGroupHasId>, Error> => {
+): SWRResponseWithUtils<ChildExternalUserGroupListUtils, ChildUserGroupListResult<IExternalUserGroupHasId>, Error> => {
   const shouldFetch = parentIds != null && parentIds.length > 0;
-  return useSWRImmutable(
+
+  const swrResponse = useSWRImmutable(
     shouldFetch ? ['/external-user-groups/children', parentIds, includeGrandChildren] : null,
     ([endpoint, parentIds, includeGrandChildren]) => apiv3Get<ChildUserGroupListResult<IExternalUserGroupHasId>>(
       endpoint, { parentIds, includeGrandChildren },
     ).then((result => result.data)),
   );
+
+  const updateChild = async(childGroupData: IExternalUserGroupHasId) => {
+    await apiv3Put(`/external-user-groups/${childGroupData._id}`, {
+      description: childGroupData.description,
+    });
+    swrResponse.mutate();
+  };
+
+  return withUtils(swrResponse, { updateChild });
 };
 
 export const useSWRxExternalUserGroupRelations = (groupId: string | null): SWRResponse<IUserGroupRelationHasIdPopulatedUser[], Error> => {
