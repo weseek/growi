@@ -9,18 +9,20 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import {
+  useAncestorUserGroups,
+  useChildUserGroupList, useUserGroup, useUserGroupRelationList, useUserGroupRelations,
+} from '~/client/services/user-group';
+import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
-import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
-  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups, useSWRxUserGroupRelations,
-} from '~/stores/user-group';
+import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
 import loggerFactory from '~/utils/logger';
 
 import styles from './UserGroupDetailPage.module.scss';
@@ -28,7 +30,7 @@ import styles from './UserGroupDetailPage.module.scss';
 const logger = loggerFactory('growi:services:AdminCustomizeContainer');
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
-const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
+const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable').then(mod => mod.UserGroupUserTable), { ssr: false });
 
 const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 
@@ -42,15 +44,16 @@ const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModa
 
 type Props = {
   userGroupId: string,
+  isExternalGroup: boolean,
 }
 
 const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const xss = useMemo(() => new Xss(), []);
-  const { userGroupId: currentUserGroupId } = props;
+  const { userGroupId: currentUserGroupId, isExternalGroup } = props;
 
-  const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
+  const { data: currentUserGroup } = useUserGroup(currentUserGroupId, isExternalGroup);
 
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -76,26 +79,36 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(currentUserGroupId);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useUserGroupRelations(currentUserGroupId, isExternalGroup);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(currentUserGroupId ? [currentUserGroupId] : [], true);
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups, updateChild } = useChildUserGroupList(currentUserGroupId, isExternalGroup);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
 
-  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useSWRxUserGroupRelationList(childUserGroupIds);
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useUserGroupRelationList(childUserGroupIds, isExternalGroup);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroupId);
-  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroupId);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(
+    isExternalGroup ? null : currentUserGroupId,
+  );
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(
+    isExternalGroup ? null : currentUserGroupId,
+  );
 
-  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroupId);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useAncestorUserGroups(currentUserGroupId, isExternalGroup);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
-  const parentUserGroup = selectableParentUserGroups?.find(selectableParentUserGroup => selectableParentUserGroup._id === currentUserGroup?.parent);
+  const parentUserGroup = (() => {
+    if (isExternalGroup) {
+      return ancestorUserGroups != null && ancestorUserGroups.length > 1
+        ? ancestorUserGroups[ancestorUserGroups.length - 2] : undefined;
+    }
+    return selectableParentUserGroups?.find(selectableParentUserGroup => selectableParentUserGroup._id === currentUserGroup?.parent);
+  })();
   /*
    * Function
    */
@@ -113,19 +126,26 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
-    await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
-      name: update.name,
-      description: update.description,
-      parentId: parentId ?? null,
-      forceUpdateParents,
-    });
+    if (isExternalGroup) {
+      await apiv3Put<{ userGroup: IExternalUserGroupHasId }>(`/external-user-groups/${userGroup._id}`, {
+        description: update.description,
+      });
+    }
+    else {
+      await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+        name: update.name,
+        description: update.description,
+        parentId: parentId ?? null,
+        forceUpdateParents,
+      });
+    }
 
     // mutate
     mutateChildUserGroups();
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+  }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, isExternalGroup]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
@@ -213,23 +233,16 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
-      await apiv3Put(`/user-groups/${userGroupData._id}`, {
-        name: userGroupData.name,
-        description: userGroupData.description,
-        parentId: userGroupData.parent,
-      });
+      updateChild(userGroupData);
 
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
-
-      // mutate
-      mutateChildUserGroups();
 
       hideUpdateModal();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, mutateChildUserGroups, hideUpdateModal]);
+  }, [t, updateChild, hideUpdateModal]);
 
   const onClickAddExistingUserGroupButtonHandler = useCallback(async(selectedChild: IUserGroupHasId): Promise<void> => {
     // show confirm modal before submiting
@@ -283,8 +296,9 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, [setSelectedUserGroup, setDeleteModalShown]);
 
   const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+    const url = isExternalGroup ? `/external-user-groups/${deleteGroupId}` : `/user-groups/${deleteGroupId}`;
     try {
-      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+      const res = await apiv3Delete(url, {
         actionName,
         transferToUserGroupId,
       });
@@ -300,7 +314,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
+  }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown, isExternalGroup]);
 
   const removeChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
@@ -348,7 +362,10 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                 { ancestorUserGroup._id === currentUserGroupId ? (
                   <span>{ancestorUserGroup.name}</span>
                 ) : (
-                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
+                  <Link href={{
+                    pathname: `/admin/user-group-detail/${ancestorUserGroup._id}`,
+                    query: { isExternalGroup: 'true' },
+                  }} prefetch={false}>
                     {ancestorUserGroup.name}
                   </Link>
                 ) }
@@ -366,6 +383,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
           selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}
+          isExternalGroup={isExternalGroup}
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
@@ -373,6 +391,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         userGroupRelations={userGroupRelations}
         onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
         onClickRemoveUserBtn={removeUserByUsername}
+        isExternalGroup={isExternalGroup}
       />
       <UserGroupUserModal
         isOpen={isUserGroupUserModalShown}
@@ -389,11 +408,11 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       />
 
       <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
-      <UserGroupDropdown
+      {!isExternalGroup && <UserGroupDropdown
         selectableUserGroups={selectableChildUserGroups}
         onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
         onClickCreateUserGroupButton={showCreateModal}
-      />
+      />}
 
       <UserGroupModal
         userGroup={selectedUserGroup}
@@ -401,6 +420,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onClickSubmit={updateChildUserGroup}
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
+        isExternalGroup={isExternalGroup}
       />
 
       <UserGroupModal
@@ -420,6 +440,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onRemove={removeChildUserGroup}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
+        isExternalGroup={isExternalGroup}
       />
 
       <UserGroupDeleteModal

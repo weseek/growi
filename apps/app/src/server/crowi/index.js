@@ -22,6 +22,7 @@ import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
+import UserGroupRelation from '../models/user-group-relation';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -35,6 +36,7 @@ import PageOperationService from '../service/page-operation';
 import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
+import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
@@ -297,21 +299,21 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  let allModels = {};
-
-  // include models that dependent on crowi
-  allModels = models;
-
-  // include models that independent from crowi
-  allModels.Activity = Activity;
-  allModels.Tag = Tag;
-  allModels.UserGroup = UserGroup;
-  allModels.PageRedirect = PageRedirect;
-
-  Object.keys(allModels).forEach((key) => {
+  Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
   });
 
+  // include models that are independent from crowi
+  const crowiIndependent = {};
+  crowiIndependent.Activity = Activity;
+  crowiIndependent.Tag = Tag;
+  crowiIndependent.UserGroup = UserGroup;
+  crowiIndependent.UserGroupRelation = UserGroupRelation;
+  crowiIndependent.PageRedirect = PageRedirect;
+
+  Object.keys(crowiIndependent).forEach((key) => {
+    return this.model(key, crowiIndependent[key]);
+  });
 };
 
 Crowi.prototype.setupCron = function() {
@@ -679,7 +681,6 @@ Crowi.prototype.setUpRestQiitaAPI = async function() {
 };
 
 Crowi.prototype.setupUserGroupService = async function() {
-  const UserGroupService = require('../service/user-group');
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
     return this.userGroupService.init();

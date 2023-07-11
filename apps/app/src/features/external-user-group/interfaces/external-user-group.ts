@@ -17,6 +17,8 @@ export interface IExternalUserGroupRelation extends Omit<IUserGroupRelation, 're
   relatedGroup: Ref<IExternalUserGroup>
 }
 
+export type IExternalUserGroupRelationHasId = IExternalUserGroupRelation & HasObjectId;
+
 export const LdapGroupMembershipAttributeType = { dn: 'DN', uid: 'UID' } as const;
 type LdapGroupMembershipAttributeType = typeof LdapGroupMembershipAttributeType[keyof typeof LdapGroupMembershipAttributeType];
 

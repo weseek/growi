@@ -1,4 +1,4 @@
-import mongoose, {
+import {
   Schema, Model, Document,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -14,12 +14,14 @@ export interface UserGroupModel extends Model<UserGroupDocument> {
   [x:string]: any, // for old methods
 
   PAGE_ITEMS: 10,
+
+  findGroupsWithDescendantsRecursively: (groups, descendants?) => any,
 }
 
 /*
  * define schema
  */
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = Schema.Types.ObjectId;
 
 const schema = new Schema<UserGroupDocument, UserGroupModel>({
   name: { type: String, required: true, unique: true },
@@ -32,7 +34,7 @@ schema.plugin(mongoosePaginate);
 
 const PAGE_ITEMS = 10;
 
-schema.statics.findUserGroupsWithPagination = function(opts) {
+schema.statics.findWithPagination = function(opts) {
   const query = { parent: null };
   const options = Object.assign({}, opts);
   if (options.page == null) {
@@ -49,11 +51,7 @@ schema.statics.findUserGroupsWithPagination = function(opts) {
 };
 
 
-schema.statics.findChildUserGroupsByParentIds = async function(parentIds, includeGrandChildren = false) {
-  if (!Array.isArray(parentIds)) {
-    throw Error('parentIds must be an array.');
-  }
-
+schema.statics.findChildrenByParentIds = async function(parentIds: string[], includeGrandChildren = false) {
   const childUserGroups = await this.find({ parent: { $in: parentIds } });
 
   let grandChildUserGroups: UserGroupDocument[] | null = null;
