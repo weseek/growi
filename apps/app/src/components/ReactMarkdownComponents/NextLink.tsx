@@ -24,10 +24,15 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
 };
 
 const isCreatablePage = (href: string) => {
-  const url = new URL(href);
-  const pathName = url.pathname;
-
-  return pagePathUtils.isCreatablePage(pathName);
+  try {
+    const url = new URL(href);
+    const pathName = url.pathname;
+    return pagePathUtils.isCreatablePage(pathName);
+  }
+  catch (err) {
+    logger.debug(err);
+    return false;
+  }
 };
 
 type Props = Omit<LinkProps, 'href'> & {
@@ -53,13 +58,6 @@ export const NextLink = (props: Props): JSX.Element => {
     Object.entries(rest).filter(([key]) => key.startsWith('data-')),
   );
 
-  // when href is an anchor link
-  if (isAnchorLink(href)) {
-    return (
-      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
-    );
-  }
-
   if (isExternalLink(href, siteUrl)) {
     return (
       <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
@@ -68,9 +66,10 @@ export const NextLink = (props: Props): JSX.Element => {
     );
   }
 
-  if (!isCreatablePage(href)) {
+  // when href is an anchor link or not-creatable path
+  if (isAnchorLink(href) || !isCreatablePage(href)) {
     return (
-      <a href={href} className={className}>{children}</a>
+      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
     );
   }
 
