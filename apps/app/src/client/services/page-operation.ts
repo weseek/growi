@@ -1,11 +1,16 @@
 import { useCallback } from 'react';
 
-import { SubscriptionStatusType, Nullable } from '@growi/core';
+import { SubscriptionStatusType } from '@growi/core';
+import type {
+  Nullable, ITag, IPageHasId, IRevisionHasId,
+} from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
-import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo,
+} from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
@@ -87,8 +92,14 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
+type SaveOrUpdateResult = {
+  page: IPageHasId,
+  revision: IRevisionHasId,
+  tags: ITag[],
+}
+
 // TODO: define return type
-const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
+const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave): Promise<SaveOrUpdateResult> => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -102,7 +113,7 @@ const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsT
 };
 
 // TODO: define return type
-const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
+const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave): Promise<SaveOrUpdateResult> => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
@@ -123,7 +134,7 @@ type PageInfo= {
   revisionId: Nullable<string>,
 }
 
-type SaveOrUpdateFunction = (markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => any;
+type SaveOrUpdateFunction = (markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => Promise<SaveOrUpdateResult>;
 
 // TODO: define return type
 export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
@@ -131,7 +142,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   /* eslint-enable react-hooks/rules-of-hooks */
 
-  return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => {
+  return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave): Promise<SaveOrUpdateResult> => {
     const { path, pageId, revisionId } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
@@ -155,7 +166,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
 
     const isNoRevisionPage = pageId != null && revisionId == null;
 
-    let res;
+    let res: SaveOrUpdateResult;
     if (pageId == null || isNoRevisionPage) {
       res = await createPage(path, markdown, options);
     }
