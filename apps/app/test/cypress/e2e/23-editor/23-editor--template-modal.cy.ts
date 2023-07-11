@@ -78,10 +78,6 @@ context('TemplateModal', () => {
       cy.get('.modal-body > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > .dropdown > div > button:nth-child(2)').click();
       cy.screenshot(`${ssPrefix}select-template-locale`);
 
-      cy.get('.modal-body > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > .dropdown > button').click();
-      cy.get('.modal-body > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > .dropdown > div > button:nth-child(1)').click();
-      cy.screenshot(`${ssPrefix}select-template-locale-back-to-default`);
-
       // click insert button
       cy.get('.modal-footer > button:nth-child(2)').click();
     });
