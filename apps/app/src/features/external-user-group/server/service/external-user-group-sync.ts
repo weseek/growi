@@ -105,7 +105,7 @@ abstract class ExternalUserGroupSyncService {
     const externalAccount = await getExternalAccount();
 
     if (externalAccount != null) {
-      return (await externalAccount.populate<{user: IUserHasId}>('user')).user;
+      return (await externalAccount.populate<{user: IUserHasId | null}>('user')).user;
     }
     return null;
   }
