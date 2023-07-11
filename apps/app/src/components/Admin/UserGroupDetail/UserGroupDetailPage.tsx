@@ -9,6 +9,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import {
+  useAncestorUserGroups,
+  useChildUserGroupList, useUserGroup, useUserGroupRelationList, useUserGroupRelations,
+} from '~/client/services/user-group';
+import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -17,10 +21,7 @@ import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
-import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
-  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups, useSWRxUserGroupRelations,
-} from '~/stores/user-group';
+import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
 import loggerFactory from '~/utils/logger';
 
 import styles from './UserGroupDetailPage.module.scss';
@@ -51,7 +52,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const xss = useMemo(() => new Xss(), []);
   const { userGroupId: currentUserGroupId, isExternalGroup } = props;
 
-  const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId, isExternalGroup);
+  const { data: currentUserGroup } = useUserGroup(currentUserGroupId, isExternalGroup);
 
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -77,24 +78,24 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(currentUserGroupId, isExternalGroup);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useUserGroupRelations(currentUserGroupId, isExternalGroup);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(
-    currentUserGroupId ? [currentUserGroupId] : [], true, isExternalGroup,
-  );
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useChildUserGroupList(currentUserGroupId, isExternalGroup);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
 
-  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useSWRxUserGroupRelationList(
-    childUserGroupIds, undefined, undefined, isExternalGroup,
-  );
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useUserGroupRelationList(childUserGroupIds, isExternalGroup);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroupId);
-  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroupId);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(
+    isExternalGroup ? null : currentUserGroupId,
+  );
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(
+    isExternalGroup ? null : currentUserGroupId,
+  );
 
-  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroupId, isExternalGroup);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useAncestorUserGroups(currentUserGroupId, isExternalGroup);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -388,7 +389,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
           selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}
-          isExternalGroup
+          isExternalGroup={isExternalGroup}
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
@@ -396,7 +397,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         userGroupRelations={userGroupRelations}
         onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
         onClickRemoveUserBtn={removeUserByUsername}
-        isExternalGroup
+        isExternalGroup={isExternalGroup}
       />
       <UserGroupUserModal
         isOpen={isUserGroupUserModalShown}
@@ -425,7 +426,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onClickSubmit={updateChildUserGroup}
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
-        isExternalGroup
+        isExternalGroup={isExternalGroup}
       />
 
       <UserGroupModal
@@ -445,7 +446,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onRemove={removeChildUserGroup}
         onDelete={showDeleteModal}
         userGroupRelations={childUserGroupRelations}
-        isExternalGroup
+        isExternalGroup={isExternalGroup}
       />
 
       <UserGroupDeleteModal

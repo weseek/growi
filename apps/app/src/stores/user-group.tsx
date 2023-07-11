@@ -23,10 +23,9 @@ export const useSWRxMyUserGroupRelations = (shouldFetch: boolean): SWRResponse<I
   );
 };
 
-export const useSWRxUserGroup = (groupId: string | undefined, isExternalGroup = false): SWRResponse<IUserGroupHasId, Error> => {
-  const url = isExternalGroup ? `/external-user-groups/${groupId}` : `/user-groups/${groupId}`;
+export const useSWRxUserGroup = (groupId: string | null): SWRResponse<IUserGroupHasId, Error> => {
   return useSWRImmutable(
-    groupId != null ? url : null,
+    groupId != null ? `/user-groups/${groupId}` : null,
     endpoint => apiv3Get<UserGroupResult>(endpoint).then(result => result.data.userGroup),
   );
 };
@@ -43,32 +42,29 @@ export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[], isExternal
 };
 
 export const useSWRxChildUserGroupList = (
-    parentIds?: string[], includeGrandChildren?: boolean, isExternalGroup = false,
+    parentIds?: string[], includeGrandChildren?: boolean,
 ): SWRResponse<ChildUserGroupListResult, Error> => {
   const shouldFetch = parentIds != null && parentIds.length > 0;
-  const url = isExternalGroup ? '/external-user-groups/children' : '/user-groups/children';
   return useSWRImmutable(
-    shouldFetch ? [url, parentIds, includeGrandChildren] : null,
+    shouldFetch ? ['/user-groups/children', parentIds, includeGrandChildren] : null,
     ([endpoint, parentIds, includeGrandChildren]) => apiv3Get<ChildUserGroupListResult>(
       endpoint, { parentIds, includeGrandChildren },
     ).then((result => result.data)),
   );
 };
 
-export const useSWRxUserGroupRelations = (groupId: string, isExternalGroup = false): SWRResponse<IUserGroupRelationHasIdPopulatedUser[], Error> => {
-  const url = isExternalGroup ? `/external-user-groups/${groupId}/external-user-group-relations` : `/user-groups/${groupId}/user-group-relations`;
+export const useSWRxUserGroupRelations = (groupId: string | null): SWRResponse<IUserGroupRelationHasIdPopulatedUser[], Error> => {
   return useSWRImmutable(
-    groupId != null ? url : null,
+    groupId != null ? `/user-groups/${groupId}/user-group-relations` : null,
     endpoint => apiv3Get<UserGroupRelationsResult>(endpoint).then(result => result.data.userGroupRelations),
   );
 };
 
 export const useSWRxUserGroupRelationList = (
-    groupIds: string[] | undefined, childGroupIds?: string[], initialData?: IUserGroupRelationHasId[], isExternalGroup = false,
+    groupIds: string[] | null, childGroupIds?: string[], initialData?: IUserGroupRelationHasId[],
 ): SWRResponse<IUserGroupRelationHasId[], Error> => {
-  const url = isExternalGroup ? '/external-user-group-relations' : '/user-group-relations';
   return useSWRImmutable(
-    groupIds != null ? [url, groupIds, childGroupIds] : null,
+    groupIds != null ? ['/user-group-relations', groupIds, childGroupIds] : null,
     ([endpoint, groupIds, childGroupIds]) => apiv3Get<UserGroupRelationListResult>(
       endpoint, { groupIds, childGroupIds },
     ).then(result => result.data.userGroupRelations),
@@ -85,24 +81,23 @@ export const useSWRxUserGroupPages = (groupId: string | undefined, limit: number
   );
 };
 
-export const useSWRxSelectableParentUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
+export const useSWRxSelectableParentUserGroups = (groupId: string | null): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
     groupId != null ? ['/user-groups/selectable-parent-groups', groupId] : null,
     ([endpoint, groupId]) => apiv3Get<SelectableParentUserGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableParentGroups),
   );
 };
 
-export const useSWRxSelectableChildUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
+export const useSWRxSelectableChildUserGroups = (groupId: string | null): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
     groupId != null ? ['/user-groups/selectable-child-groups', groupId] : null,
     ([endpoint, groupId]) => apiv3Get<SelectableUserChildGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableChildGroups),
   );
 };
 
-export const useSWRxAncestorUserGroups = (groupId: string | undefined, isExternalGroup = false): SWRResponse<IUserGroupHasId[], Error> => {
-  const url = isExternalGroup ? '/external-user-groups/ancestors' : '/user-groups/ancestors';
+export const useSWRxAncestorUserGroups = (groupId: string | null): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
-    groupId != null ? [url, groupId] : null,
+    groupId != null ? ['/user-groups/ancestors', groupId] : null,
     ([endpoint, groupId]) => apiv3Get<AncestorUserGroupsResult>(endpoint, { groupId }).then(result => result.data.ancestorUserGroups),
   );
 };

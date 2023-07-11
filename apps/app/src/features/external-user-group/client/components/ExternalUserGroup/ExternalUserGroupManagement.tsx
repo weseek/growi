@@ -13,19 +13,20 @@ import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import CustomNav from '~/components/CustomNavigation/CustomNav';
 import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
-import { useSWRxChildUserGroupList, useSWRxUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+
+import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWRxExternalUserGroupRelationList } from '../../stores/external-user-group';
 
 import { LdapGroupManagement } from './LdapGroupManagement';
 
 export const ExternalGroupManagement: FC = () => {
-  const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxUserGroupList(undefined, true);
+  const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
   const externalUserGroups = externalUserGroupList != null ? externalUserGroupList : [];
   const externalUserGroupIds = externalUserGroups.map(group => group._id);
 
-  const { data: externalUserGroupRelationList } = useSWRxUserGroupRelationList(externalUserGroupIds, undefined, undefined, true);
+  const { data: externalUserGroupRelationList } = useSWRxExternalUserGroupRelationList(externalUserGroupIds);
   const externalUserGroupRelations = externalUserGroupRelationList != null ? externalUserGroupRelationList : [];
 
-  const { data: childExternalUserGroupsList } = useSWRxChildUserGroupList(externalUserGroupIds, false, true);
+  const { data: childExternalUserGroupsList } = useSWRxChildExternalUserGroupList(externalUserGroupIds);
   const childExternalUserGroups = childExternalUserGroupsList?.childUserGroups != null ? childExternalUserGroupsList.childUserGroups : [];
 
   const { data: isAclEnabled } = useIsAclEnabled();
