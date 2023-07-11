@@ -41,8 +41,9 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
-  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage,
+  useSWRxIsGrantNormalized,
+  useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -239,6 +240,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
 
   useSWRxCurrentPage(pageWithMeta?.data);
+
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
