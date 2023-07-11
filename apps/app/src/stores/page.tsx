@@ -36,7 +36,24 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
 };
 
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+  // set null to currentPage
+  const resetCurrentPageIfTrue = (value?: boolean) => {
+    if (value === true) {
+      mutate('currentPage', null, { optimisticData: null });
+    }
+  };
+
+  resetCurrentPageIfTrue(initialData);
+
+  const swrResult = useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+
+  return {
+    ...swrResult,
+    mutate: (data: boolean, opts) => {
+      resetCurrentPageIfTrue(data);
+      return swrResult.mutate(data, opts);
+    },
+  };
 };
 
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
