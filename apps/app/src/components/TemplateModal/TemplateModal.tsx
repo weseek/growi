@@ -30,6 +30,10 @@ import Preview from '../PageEditor/Preview';
 
 import { useFormatter } from './use-formatter';
 
+
+import styles from './TemplateModal.module.scss';
+
+
 const logger = loggerFactory('growi:components:TemplateModal');
 
 
@@ -39,7 +43,7 @@ function constructTemplateId(templateSummary: TemplateSummary): string {
   return `${defaultTemplate.pluginId ?? ''}_${defaultTemplate.id}`;
 }
 
-type TemplateItemProps = {
+type TemplateSummaryItemProps = {
   templateSummary: TemplateSummary,
   selectedLocale?: string,
   onClick?: () => void,
@@ -47,7 +51,7 @@ type TemplateItemProps = {
   usersDefaultLang?: Lang,
 }
 
-const TemplateItem: React.FC<TemplateItemProps> = ({
+const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
   templateSummary,
   onClick,
   isSelected,
@@ -73,6 +77,32 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
   );
 };
 
+
+const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
+  templateSummary,
+  onClick,
+  usersDefaultLang,
+}) => {
+
+  const localizedTemplate = getLocalizedTemplate(templateSummary, usersDefaultLang);
+  const templateLocales = extractSupportedLocales(templateSummary);
+
+  assert(localizedTemplate?.isValid);
+
+  return (
+    <DropdownItem
+      onClick={onClick}
+      className="px-4 py-3"
+    >
+      <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
+      <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
+      { templateLocales != null && Array.from(templateLocales).map(locale => (
+        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+      ))}
+    </DropdownItem>
+  );
+};
+
 type TemplateModalSubstanceProps = {
   templateModalStatus: TemplateModalStatus,
   close: () => void,
@@ -85,7 +115,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
   const { data: personalSettingsInfo } = usePersonalSettings();
   const { data: rendererOptions } = usePreviewOptions();
-  const { data: templateSummaries } = useSWRxTemplates();
+  const { data: templateSummaries, isLoading } = useSWRxTemplates();
 
   const [selectedTemplateSummary, setSelectedTemplateSummary] = useState<TemplateSummary>();
   const [selectedTemplateLocale, setSelectedTemplateLocale] = useState<string>();
@@ -138,10 +168,6 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
     }
   }, [templateModalStatus.isOpened]);
 
-  if (templateSummaries == null) {
-    return <></>;
-  }
-
   return (
     <>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
@@ -151,13 +177,20 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
         <div className="row">
           {/* List Group */}
           <div className="d-none d-lg-block col-lg-4">
+
+            { isLoading && (
+              <div className='h-100 d-flex justify-content-center align-items-center'>
+                <i className="fa fa-2x fa-spinner fa-pulse text-muted mx-auto"></i>
+              </div>
+            ) }
+
             <div className="list-group">
-              {templateSummaries.map((templateSummary) => {
+              { templateSummaries != null && templateSummaries.map((templateSummary) => {
                 const templateId = constructTemplateId(templateSummary);
                 const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
 
                 return (
-                  <TemplateItem
+                  <TemplateListGroupItem
                     key={templateId}
                     templateSummary={templateSummary}
                     onClick={() => onClickHandler(templateSummary)}
@@ -165,41 +198,38 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                     usersDefaultLang={usersDefaultLang}
                   />
                 );
-              })}
+              }) }
             </div>
           </div>
           {/* Dropdown */}
           <div className='d-lg-none col mb-3'>
             <UncontrolledDropdown>
-              <DropdownToggle caret type="button" outline className='w-100 text-right'>
+              <DropdownToggle caret type="button" outline className='w-100 text-right' disabled={isLoading}>
                 <span className="float-left">
-                  {selectedLocalizedTemplate != null && selectedLocalizedTemplate.isValid
-                    ? selectedLocalizedTemplate.title
-                    : t('Select template')}
+                  { (() => {
+                    if (isLoading) {
+                      return 'Loading..';
+                    }
+
+                    return selectedLocalizedTemplate != null && selectedLocalizedTemplate.isValid
+                      ? selectedLocalizedTemplate.title
+                      : t('Select template');
+                  })() }
                 </span>
               </DropdownToggle>
-              <DropdownMenu role="menu" className='p-0'>
-                {templateSummaries.map((templateSummary, index) => {
+              <DropdownMenu role="menu" className={`p-0 ${styles['dm-templates']}`}>
+                { templateSummaries != null && templateSummaries.map((templateSummary) => {
                   const templateId = constructTemplateId(templateSummary);
-                  const localizedTemplate = getLocalizedTemplate(templateSummary, usersDefaultLang);
-                  const templateLocales = extractSupportedLocales(templateSummary);
-
-                  assert(localizedTemplate?.isValid);
 
                   return (
-                    <DropdownItem
+                    <TemplateDropdownItem
                       key={templateId}
+                      templateSummary={templateSummary}
                       onClick={() => onClickHandler(templateSummary)}
-                      className={`px-4 py-3 ${index === 0 ? '' : 'border-top'}`}
-                    >
-                      <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
-                      <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
-                      { templateLocales != null && Array.from(templateLocales).map(locale => (
-                        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
-                      ))}
-                    </DropdownItem>
+                      usersDefaultLang={usersDefaultLang}
+                    />
                   );
-                })}
+                }) }
               </DropdownMenu>
             </UncontrolledDropdown>
           </div>
