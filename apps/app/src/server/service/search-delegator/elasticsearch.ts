@@ -80,7 +80,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
-    // this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
     // Ref: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#_standard_operators
@@ -274,20 +273,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
-
-    // const reindexRequest = this.isElasticsearchV7
-    //   ? {
-    //     waitForCompletion: false,
-    //     body: {
-    //       source: { index: indexName },
-    //       dest: { index: tmpIndexName },
-    //     },
-    //   }
-    //   : {
-    //     wait_for_completion: false,
-    //     source: { index: indexName },
-    //     dest: { index: tmpIndexName },
-    //   };
 
     try {
       // reindex to tmp index
