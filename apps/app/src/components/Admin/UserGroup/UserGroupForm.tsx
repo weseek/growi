@@ -1,4 +1,6 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useEffect, useState,
+} from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
@@ -11,6 +13,7 @@ type Props = {
   selectableParentUserGroups?: IUserGroupHasId[],
   submitButtonLabel: string;
   onSubmit: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void>
+  isExternalGroup?: boolean
 };
 
 export const UserGroupForm: FC<Props> = (props: Props) => {
@@ -18,14 +21,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
 
   const {
-    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
+    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit, isExternalGroup = false,
   } = props;
   /*
    * State
    */
   const [currentName, setName] = useState<string>(userGroup.name);
   const [currentDescription, setDescription] = useState<string>(userGroup.description);
-  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>(parentUserGroup);
+  const [selectedParent, setSelectedParent] = useState<IUserGroupHasId | undefined>();
   /*
    * Function
    */
@@ -37,11 +40,15 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onChangeParerentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
+  const onChangeParentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
     if (userGroup._id !== selectedParent?._id) {
       setSelectedParent(userGroup);
     }
   }, [selectedParent, setSelectedParent]);
+
+  useEffect(() => {
+    setSelectedParent(parentUserGroup);
+  }, [parentUserGroup]);
 
   const isSelectableParentUserGroups = selectableParentUserGroups != null && selectableParentUserGroups.length > 0;
 
@@ -61,7 +68,10 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
       <fieldset>
         <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
-
+        {isExternalGroup
+        && <div className='mb-3'>
+          <small className="text-muted">{t('external_user_group.only_description_edit_allowed')}</small>
+        </div>}
         {
           userGroup?.createdAt != null && (
             <div className="form-group row">
@@ -75,7 +85,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('user_group_management.group_name')}
           </label>
-          <div className="col-md-4">
+          <div className="col-md-4 my-auto">
             <input
               className="form-control"
               type="text"
@@ -84,6 +94,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
               value={currentName}
               onChange={onChangeNameHandler}
               required
+              disabled={isExternalGroup}
             />
           </div>
         </div>
@@ -106,9 +117,8 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
-              className={`
-                btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
-              `}
+              className="btn btn-outline-secondary dropdown-toggle mb-3"
+              disabled={isExternalGroup || !isSelectableParentUserGroups}
             >
               {selectedParent?.name ?? messageAtReleaseParentGroup}
             </button>
@@ -122,7 +132,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
                           key={userGroup._id}
                           type="button"
                           className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
-                          onClick={() => onChangeParerentButtonHandler(userGroup)}
+                          onClick={() => onChangeParentButtonHandler(userGroup)}
                         >
                           {userGroup.name}
                         </button>

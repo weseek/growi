@@ -1,13 +1,20 @@
 import { Schema, Model, Document } from 'mongoose';
 
+import UserGroupRelation from '~/server/models/user-group-relation';
+
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
 import { IExternalUserGroupRelation } from '../../interfaces/external-user-group';
 
+import { ExternalUserGroupDocument } from './external-user-group';
 
 export interface ExternalUserGroupRelationDocument extends IExternalUserGroupRelation, Document {}
 
 export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupRelationDocument> {
   [x:string]: any, // for old methods
+
+  PAGE_ITEMS: 50,
+
+  removeAllByUserGroups: (groupsToDelete: ExternalUserGroupDocument[]) => Promise<any>,
 }
 
 const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>({
@@ -17,15 +24,8 @@ const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRe
   timestamps: { createdAt: true, updatedAt: false },
 });
 
-schema.statics.createRelations = async function(userGroupIds, user) {
-  const documentsToInsert = userGroupIds.map((groupId) => {
-    return {
-      relatedGroup: groupId,
-      relatedUser: user._id,
-    };
-  });
+schema.statics.createRelations = UserGroupRelation.createRelations;
 
-  return this.insertMany(documentsToInsert);
-};
+schema.statics.removeAllByUserGroups = UserGroupRelation.removeAllByUserGroups;
 
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

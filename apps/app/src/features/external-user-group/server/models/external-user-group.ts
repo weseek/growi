@@ -1,14 +1,18 @@
 import { Schema, Model, Document } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
+import { IExternalUserGroup } from '~/features/external-user-group/interfaces/external-user-group';
+import UserGroup from '~/server/models/user-group';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
-
-import { IExternalUserGroup } from '../../interfaces/external-user-group';
-
 
 export interface ExternalUserGroupDocument extends IExternalUserGroup, Document {}
 
 export interface ExternalUserGroupModel extends Model<ExternalUserGroupDocument> {
   [x:string]: any, // for old methods
+
+  PAGE_ITEMS: 10,
+
+  findGroupsWithDescendantsRecursively: (groups, descendants?) => any,
 }
 
 const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
@@ -20,6 +24,7 @@ const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
 }, {
   timestamps: true,
 });
+schema.plugin(mongoosePaginate);
 
 /**
  * Find group that has specified externalId and update, or create one if it doesn't exist.
@@ -46,26 +51,12 @@ schema.statics.findAndUpdateOrCreateGroup = async function(name: string, externa
   }, { upsert: true, new: true });
 };
 
-/**
- * Find all ancestor groups starting from the UserGroup of the initial "group".
- * Set "ancestors" as "[]" if the initial group is unnecessary as result.
- * @param groups ExternalUserGroupDocument
- * @param ancestors ExternalUserGroupDocument[]
- * @returns ExternalUserGroupDocument[]
- */
-schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancestors = [group]) {
-  if (group == null) {
-    return ancestors;
-  }
+schema.statics.findWithPagination = UserGroup.findWithPagination;
 
-  const parent = await this.findOne({ _id: group.parent });
-  if (parent == null) {
-    return ancestors;
-  }
+schema.statics.findChildrenByParentIds = UserGroup.findChildrenByParentIds;
 
-  ancestors.unshift(parent);
+schema.statics.findGroupsWithAncestorsRecursively = UserGroup.findGroupsWithAncestorsRecursively;
 
-  return this.findGroupsWithAncestorsRecursively(parent, ancestors);
-};
+schema.statics.findGroupsWithDescendantsRecursively = UserGroup.findGroupsWithDescendantsRecursively;
 
 export default getOrCreateModel<ExternalUserGroupDocument, ExternalUserGroupModel>('ExternalUserGroup', schema);

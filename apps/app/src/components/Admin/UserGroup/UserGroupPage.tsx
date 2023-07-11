@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
-import { ExternalGroupManagement } from './ExternalUserGroup/ExternalUserGroupManagement';
 
 const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupModal = dynamic(() => import('./UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });

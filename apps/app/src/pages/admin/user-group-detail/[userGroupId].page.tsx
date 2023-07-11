@@ -25,12 +25,14 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
   const router = useRouter();
-  const { userGroupId } = router.query;
+  const { userGroupId, isExternalGroup } = router.query;
 
   const title = t('user_group_management.user_group_management');
   const customTitle = generateCustomTitle(props, title);
 
   const currentUserGroupId = Array.isArray(userGroupId) ? userGroupId[0] : userGroupId;
+
+  const isExternalGroupBool = isExternalGroup === 'true';
 
   useIsAclEnabled(props.isAclEnabled);
 
@@ -41,7 +43,7 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
       </Head>
       {
         currentUserGroupId != null && router.isReady
-      && <UserGroupDetailPage userGroupId={currentUserGroupId} />
+      && <UserGroupDetailPage userGroupId={currentUserGroupId} isExternalGroup={isExternalGroupBool} />
       }
     </AdminLayout>
   );
