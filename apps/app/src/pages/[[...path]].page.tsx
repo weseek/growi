@@ -238,36 +238,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  const { mutate: mutateInitialPage } = useSWRxCurrentPage();
+  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  // Store initial data
-  useEffect(() => {
-    if (!props.skipSSR) {
-      mutateInitialPage(pageWithMeta?.data ?? null);
-    }
-  }, [mutateInitialPage, pageWithMeta, props.skipSSR]);
-
-  // Store initial data (When revisionBody is not SSR)
-  useEffect(() => {
-    if (!props.skipSSR) {
-      return;
-    }
-
-    if (currentPageId != null && !props.isNotFound) {
-      const mutatePageData = async() => {
-        const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
-      };
-
-      // If skipSSR is true, use the API to retrieve page data.
-      // Because pageWIthMeta does not contain revision.body
-      mutatePageData();
-    }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
@@ -290,6 +265,25 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
+
+
+  // Store initial data (When revisionBody is not SSR)
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {
