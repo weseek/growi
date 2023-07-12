@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
+import { DeletePluginModal } from './DeletePluginModal';
+
 import styles from './PluginCard.module.scss';
 
 type Props = {
