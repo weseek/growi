@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.1.5-RC.0",
+  "version": "6.1.7-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": [
@@ -14,7 +14,7 @@
     "build": "run-p build:*",
     "build:client": "vite build -c vite.client.config.ts",
     "build:server": "vite build -c vite.server.config.ts",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "run-p dev:*",
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",

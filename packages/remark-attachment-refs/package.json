@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-attachment-refs",
-  "version": "6.1.5-RC.0",
+  "version": "6.1.7-RC.0",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
   "keywords": [
@@ -17,7 +17,7 @@
     "build": "run-p build:*",
     "build:server": "vite build -c vite.server.config.ts",
     "build:client": "vite build -c vite.client.config.ts",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "run-p dev:*",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
