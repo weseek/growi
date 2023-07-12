@@ -116,7 +116,7 @@ export const generateViewOptions = (
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.root = slides.SlideViewer;
+    components.slide = slides.SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -301,7 +301,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.root = slides.SlideViewer;
+    components.slide = slides.SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {

@@ -49,8 +49,6 @@ export const Slides = (props: Props): JSX.Element => {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  console.log('Slides');
-
 
   // TODO: can Marp rendering
   // https://redmine.weseek.co.jp/issues/115673

@@ -7,7 +7,7 @@ import type { Plugin } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
-const SUPPORTED_ATTRIBUTES = ['hasMarpFlag', 'chidren'];
+const SUPPORTED_ATTRIBUTES = ['children', 'marp'];
 
 const rewriteNode = (tree: Node, node: Node) => {
   let slide = false;
@@ -26,12 +26,20 @@ const rewriteNode = (tree: Node, node: Node) => {
     }
   });
 
-  const data = tree.data ?? (tree.data = {});
+  if (marp || slide) {
 
-  if (marp) {
-    // data.hName = 'slide';
+    const newNode: Node = {
+      type: 'root',
+      data: {},
+      position: tree.position,
+      children: tree.children,
+    };
+
+    const data = newNode.data ?? (newNode.data = {});
+    tree.children = [newNode];
+    data.hName = 'slide';
     data.hProperties = {
-      hasMarpFlag: true,
+      marp: marp ? 'marp' : '',
       children: toMarkdown(tree as Root, {
         extensions: [
           frontmatterToMarkdown(['yaml']),
@@ -41,23 +49,10 @@ const rewriteNode = (tree: Node, node: Node) => {
       }),
     };
   }
-  else if (slide) {
-    // data.hName = 'slide';
-    data.hProperties = {
-      hasMarpFlag: false,
-      children: toMarkdown(tree as Root, {
-        extensions: [
-          frontmatterToMarkdown(['yaml']),
-          gfmToMarkdown(),
-        ],
-      }),
-    };
-  }
 };
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    console.log(tree);
     visit(tree, (node) => {
       if (node.type === 'yaml' && node.value != null) {
         rewriteNode(tree, node);

@@ -2,29 +2,27 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { PresentationOptions } from 'src/consts';
-
-const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });
+const Slides = dynamic(() => import('./Slides').then(mod => mod.Slides), { ssr: false });
 
 type SlideViewerProps = {
-  hasMarpFlag: boolean,
+  marp: string,
   children: string,
 }
 
-export const SldieViewer: React.FC<SlideViewerProps> = React.memo((props: SlideViewerProps): JSX.Element => {
+export const SlideViewer: React.FC<SlideViewerProps> = React.memo((props: SlideViewerProps) => {
   const {
-    hasMarpFlag, children,
+    marp, children,
   } = props;
 
-  console.log(children);
-
-  const options: PresentationOptions = {
+  const options = {
     rendererOptions: {
       children: '',
     },
   };
 
   return (
-    <Slides options={options} hasMarpFlag={hasMarpFlag}>{children}</Slides>
+    <Slides options={options} hasMarpFlag={marp === 'marp'}>{children}</Slides>
   );
 });
+
+SlideViewer.displayName = 'SlideViewer';
