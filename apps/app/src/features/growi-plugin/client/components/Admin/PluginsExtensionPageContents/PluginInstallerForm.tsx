@@ -25,7 +25,7 @@ export const PluginInstallerForm = (): JSX.Element => {
 
     const pluginInstallerForm: IGrowiPluginOrigin = {
       url,
-      ghBranch,
+      ghBranch: ghBranch || 'main',
       // ghTag,
     };
 

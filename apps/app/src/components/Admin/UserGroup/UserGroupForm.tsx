@@ -45,6 +45,9 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
   const isSelectableParentUserGroups = selectableParentUserGroups != null && selectableParentUserGroups.length > 0;
 
+  const isChildUserGroup = parentUserGroup !== undefined;
+  const messageAtReleaseParentGroup = isChildUserGroup ? t('user_group_management.release_parent_group') : t('user_group_management.select_parent_group');
+
   return (
     <form onSubmit={(e) => {
       e.preventDefault();
@@ -107,7 +110,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
                 btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
               `}
             >
-              {selectedParent?.name ?? t('user_group_management.select_parent_group')}
+              {selectedParent?.name ?? messageAtReleaseParentGroup}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
