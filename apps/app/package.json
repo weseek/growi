@@ -194,11 +194,7 @@
     "remark-math": "^5.1.1",
     "remark-toc": "^8.0.1",
     "remark-wiki-link": "^1.0.4",
-<<<<<<< HEAD
-=======
     "sanitize-filename": "^1.6.3",
-    "remark-frontmatter": "^4.0.1",
->>>>>>> imprv/115672-presentation-preview
     "socket.io": "^4.2.0",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
