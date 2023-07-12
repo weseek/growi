@@ -32,7 +32,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
 
-  if (isNarrowView) {
+  if (isNarrowView && !noLink) {
     pagePathElement = (
       <div className={`${styles['page-list']}`}>
         <div className="mx-2 page-title">
