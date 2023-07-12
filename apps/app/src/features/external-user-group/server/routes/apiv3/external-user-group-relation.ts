@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core';
 import { Router, Request } from 'express';
 
+import { IExternalUserGroupRelationHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
@@ -33,7 +34,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       const relations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: query.groupIds } }).populate('relatedUser');
 
-      let relationsOfChildGroups = null;
+      let relationsOfChildGroups: IExternalUserGroupRelationHasId[] | null = null;
       if (Array.isArray(query.childGroupIds)) {
         const _relationsOfChildGroups = await ExternalUserGroupRelation.find({ relatedGroup: { $in: query.childGroupIds } }).populate('relatedUser');
         relationsOfChildGroups = _relationsOfChildGroups.map(relation => serializeUserGroupRelationSecurely(relation)); // serialize
