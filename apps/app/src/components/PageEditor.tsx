@@ -110,7 +110,14 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
-  const currentRevisionId = currentPage?.revision?._id;
+  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState('');
+
+  // Reset on page transition
+  useEffect(() => {
+    setCreatedPageRevisionIdWithAttachment('');
+  }, [router]);
+
+  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
 
   const initialValue = useMemo(() => {
     if (!isNotFound) {
@@ -329,6 +336,7 @@ const PageEditor = React.memo((): JSX.Element => {
         mutateIsLatestRevision(true);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
+        setCreatedPageRevisionIdWithAttachment(res.page.revision);
       }
     }
     catch (e) {
