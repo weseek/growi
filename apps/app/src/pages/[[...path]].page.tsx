@@ -242,27 +242,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
-  // Store initial data
-  useEffect(() => {
-    mutateInitialPage(pageWithMeta?.data ?? null);
-  }, [mutateInitialPage, pageWithMeta]);
-
-  useEffect(() => {
-    if (!props.skipSSR) {
-      return;
-    }
-
-    if (currentPageId != null && !props.isNotFound) {
-      const mutatePageData = async() => {
-        const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
-      };
-
-      mutatePageData();
-    }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
-
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
