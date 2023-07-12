@@ -1,8 +1,43 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.5](https://github.com/weseek/growi/compare/v6.1.4...v6.1.5) - 2023-07-10
+
+### 💎 Features
+
+- feat: Rich Attachment (#7534) @jam411
+- feat: Plugin kit (#7830) @yuki-takei
+- feat: Deciding whether to use SSR based on the volume of latestRevisionBodyLength (#7772) @miya
+
+### 🚀 Improvement
+
+- imprv: Load templates from the server 2 (#7850) @yuki-takei
+- imprv: Improve release parent group button (#7838) @WNomunomu
+- imprv: Load templates from the server (#7842) @yuki-takei
+- imprv: Able to send new passsword by email (#7758) @soumaeda
+- imprv: Convert jsx into tsx (#7832) @WNomunomu
+- imprv: After reset password footer modal design (#7790) @soumaeda
+- imprv: Update email alert (#7771) @WNomunomu
+- imprv: Can use normal browser transition in searching page (#7826) @yuki-takei
+- imprv: Show tooltip when copying password (#7800) @soumaeda
+
+### 🐛 Bug Fixes
+
+- fix(lsx): Except option (#7855) @yuki-takei
+- fix: Page body is not displayed when skipSSR (#7849) @miya
+- fix: When uploading an attachment file to a new page and pressing the update button, an error occurs (#7844) @miya
+- fix: Editing user group settings (#7827) @WNomunomu
+- fix: Handsontable not display full screen (#7784) @mudana-grune
+- fix: Brand logo fill color transition (#7828) @yuki-takei
+- fix: Email body of global notification is not displayed (#7824) @jam411
+- fix(lsx): Prefix is not uniquely determined by usage (#7815) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Dependencies specification for local packages (#7809) @yuki-takei
 
 ## [v6.1.4](https://github.com/weseek/growi/compare/v6.1.3...v6.1.4) - 2023-06-12
 

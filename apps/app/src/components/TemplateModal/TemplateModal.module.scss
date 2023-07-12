@@ -1,0 +1,7 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.dm-templates :global {
+  .dropdown-item:not(:first-child) {
+    border-top: 1px solid bs.$border-color;
+  }
+}
