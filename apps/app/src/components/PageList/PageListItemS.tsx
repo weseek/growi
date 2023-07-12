@@ -32,22 +32,20 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
 
-  if (isNarrowView) {
-    pagePathElement = (
-      <div className={`${styles['page-list']}`}>
-        <div className="mx-2 page-title">
-          <Clamp lines={2}>
-            {pagePathElement}
-          </Clamp>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-      {pagePathElement}
+      {isNarrowView ? (
+        <div className={`${styles['page-list']}`}>
+          <div className="mx-2 page-title">
+            <Clamp lines={2}>
+              {pagePathElement}
+            </Clamp>
+          </div>
+        </div>
+      ) : (
+        { pagePathElement }
+      )}
       <span className="ml-2">
         <PageListMeta page={page} />
       </span>
