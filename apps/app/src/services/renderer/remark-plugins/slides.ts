@@ -45,6 +45,7 @@ const rewriteNode = (tree: Node, node: Node) => {
           frontmatterToMarkdown(['yaml']),
           gfmToMarkdown(),
           // TODO: add new extension remark-growi-directive to markdown
+          // https://redmine.weseek.co.jp/issues/126660
         ],
       }),
     };

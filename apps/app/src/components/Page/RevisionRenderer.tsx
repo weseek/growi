@@ -11,7 +11,6 @@ import 'katex/dist/katex.min.css';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
-
 type Props = {
   rendererOptions: RendererOptions,
   markdown: string,
@@ -45,8 +44,8 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
       </ReactMarkdown>
     </ErrorBoundary>
   );
-});
 
+});
 RevisionRenderer.displayName = 'RevisionRenderer';
 
 export default RevisionRenderer;
