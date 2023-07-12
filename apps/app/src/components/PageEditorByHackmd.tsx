@@ -269,10 +269,10 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       const options = Object.assign(optionsToSave, { isSyncRevisionToHackmd: true });
 
-      await saveOrUpdate(markdown, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, options);
+      const res = await saveOrUpdate(markdown, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, options);
 
       // update pageData
-      mutatePageData();
+      mutatePageData(res);
 
       // set updated data
       updateStateAfterSave?.();
