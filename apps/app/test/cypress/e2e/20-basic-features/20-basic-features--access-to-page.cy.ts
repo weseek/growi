@@ -81,8 +81,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
+  const body1 = 'hello';
+  const body2 = ' world!';
   it('View and Edit contents are successfully loaded', () => {
-    const body1 = 'hello';
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
@@ -98,22 +99,21 @@ context('Access to page', () => {
   })
 
   it('Editing contents are successfully loaded with shortcut key', () => {
-    const body2 = ' world!';
     const savePageShortcutKey = '{ctrl+s}';
 
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
 
+    cy.get('.CodeMirror').contains(body1);
+
     // check editing contents with shortcut key
-    cy.get('.CodeMirror-line').children().first().invoke('text').then((text) => {
-      cy.get('.CodeMirror').type(body2);
-      cy.get('.CodeMirror').contains(text+body2);
-      cy.get('.page-editor-preview-body').contains(text+body2);
-      cy.get('.CodeMirror').type(savePageShortcutKey);
-      cy.get('.CodeMirror').contains(text+body2);
-      cy.get('.page-editor-preview-body').contains(text+body2);
-    })
+    cy.get('.CodeMirror').type(body2);
+    cy.get('.CodeMirror').contains(body1+body2);
+    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.get('.CodeMirror').type(savePageShortcutKey);
+    cy.get('.CodeMirror').contains(body1+body2);
+    cy.get('.page-editor-preview-body').contains(body1+body2);
   })
 
   it('/user/admin is successfully loaded', () => {
