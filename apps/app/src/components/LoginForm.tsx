@@ -49,6 +49,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // states
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -95,6 +96,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
     resetLoginErrors();
 
+    // !! - DO NOT USE setIsLoading() INSTEAD - !! -- 7.12 ryoji-s
+    // Because occurs MongoStore.js "Unable to find the session to touch" error
+    setIsPosting(true);
+
     const loginForm = {
       username: usernameForLogin,
       password: passwordForLogin,
@@ -118,6 +123,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
+      setIsPosting(false);
       setIsLoading(false);
     }
     return;
@@ -221,7 +227,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isLoading}>
+            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isPosting || isLoading}>
               <div className="eff"></div>
               <span className="btn-label">
                 <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
@@ -232,8 +238,19 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
-      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, isLoading, t]);
+  }, [
+    props,
+    separateErrorsBasedOnErrorCode,
+    loginErrors,
+    generateDangerouslySetErrors,
+    generateSafelySetErrors,
+    isLdapSetupFailed,
+    t,
+    handleLoginWithLocalSubmit,
+    isPosting,
+    isLoading,
+  ]);
+
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
