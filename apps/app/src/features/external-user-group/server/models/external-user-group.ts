@@ -36,16 +36,14 @@ schema.plugin(mongoosePaginate);
  * @returns ExternalUserGroupDocument[]
  */
 schema.statics.findAndUpdateOrCreateGroup = async function(name: string, externalId: string, provider: string, description?: string, parentId?: string) {
-  // create without parent
-  if (parentId == null) {
-    return this.findOneAndUpdate({ externalId }, { name, description, provider }, { upsert: true, new: true });
+  let parent: ExternalUserGroupDocument | null = null;
+  if (parentId != null) {
+    parent = await this.findOne({ _id: parentId });
+    if (parent == null) {
+      throw Error('Parent does not exist.');
+    }
   }
 
-  // create with parent
-  const parent = await this.findOne({ _id: parentId });
-  if (parent == null) {
-    throw Error('Parent does not exist.');
-  }
   return this.findOneAndUpdate({ externalId }, {
     name, description, provider, parent,
   }, { upsert: true, new: true });

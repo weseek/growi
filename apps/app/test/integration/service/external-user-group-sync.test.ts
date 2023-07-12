@@ -97,7 +97,7 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
     name: 'grandParentGroup',
     description: 'this is a grand parent group',
     provider: 'ldap',
-    parent: undefined,
+    parent: null,
   });
   const grandParentGroupRelations = await ExternalUserGroupRelation
     .find({ relatedGroup: grandParentGroup._id });
@@ -160,7 +160,7 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
     name: 'previouslySyncedGroup',
     description: 'this is a previouslySynced group',
     provider: 'ldap',
-    parent: undefined,
+    parent: null,
   });
   const previouslySyncedGroupRelations = await ExternalUserGroupRelation
     .find({ relatedGroup: previouslySyncedGroup._id });

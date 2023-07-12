@@ -177,7 +177,7 @@ describe('UserGroupService', () => {
     const userGroup = await UserGroup.findOne({ _id: groupId3 });
     const updatedUserGroup = await crowi.userGroupService.updateGroup(userGroup._id, userGroup.name, userGroup.description, null);
 
-    expect(updatedUserGroup.parent).toBeUndefined();
+    expect(updatedUserGroup.parent).toBeNull();
   });
 
   /*

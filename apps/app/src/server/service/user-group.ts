@@ -61,7 +61,7 @@ class UserGroupService {
 
     // set parent to null and return when parentId is null
     if (parentId == null) {
-      userGroup.parent = undefined;
+      userGroup.parent = null;
       return userGroup.save();
     }
 
@@ -113,10 +113,13 @@ class UserGroupService {
     return userGroup.save();
   }
 
-  async removeCompletelyByRootGroupId(
+  async removeCompletelyByRootGroupId<
+    D extends UserGroupDocument,
+    RD extends UserGroupRelationDocument,
+  >(
       deleteRootGroupId, action, transferToUserGroupId, user,
-      userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
-      userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
+      userGroupModel: Model<D> & UserGroupModel = UserGroup,
+      userGroupRelationModel: Model<RD> & UserGroupRelationModel = UserGroupRelation,
   ) {
     const rootGroup = await userGroupModel.findById(deleteRootGroupId);
     if (rootGroup == null) {
