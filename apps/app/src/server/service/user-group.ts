@@ -61,7 +61,7 @@ class UserGroupService {
 
     // set parent to null and return when parentId is null
     if (parentId == null) {
-      userGroup.parent = null;
+      userGroup.parent = undefined;
       return userGroup.save();
     }
 

@@ -2,9 +2,9 @@ import { IUserHasId } from '@growi/core';
 import mongoose, { Types } from 'mongoose';
 
 import {
-  ExternalGroupProviderType, ExternalUserGroupTreeNode, IExternalUserGroup,
+  ExternalGroupProviderType, ExternalUserGroupTreeNode, IExternalUserGroup, IExternalUserGroupHasId,
 } from '../../../src/features/external-user-group/interfaces/external-user-group';
-import ExternalUserGroup, { ExternalUserGroupDocument } from '../../../src/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
 import ExternalUserGroupSyncService from '../../../src/features/external-user-group/server/service/external-user-group-sync';
 import ExternalAccount from '../../../src/server/models/external-account';
@@ -79,7 +79,7 @@ class TestExternalUserGroupSyncService extends ExternalUserGroupSyncService {
 
 const testService = new TestExternalUserGroupSyncService();
 
-const checkGroup = (group: ExternalUserGroupDocument, expected: Omit<IExternalUserGroup, 'createdAt'>) => {
+const checkGroup = (group: IExternalUserGroupHasId, expected: Omit<IExternalUserGroup, 'createdAt'>) => {
   const actual = {
     name: group.name,
     parent: group.parent,

@@ -107,7 +107,7 @@ export const UserGroupTable: FC<Props> = ({
 
     try {
       await onRemove(userGroup);
-      userGroup.parent = null;
+      userGroup.parent = undefined;
     }
     catch {
       //

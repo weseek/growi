@@ -32,7 +32,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
    */
   const [currentName, setName] = useState('');
   const [currentDescription, setDescription] = useState('');
-  const [currentParent, setParent] = useState<Ref<IUserGroup> | null>(null);
+  const [currentParent, setParent] = useState<Ref<IUserGroup> | undefined>();
 
   /*
    * Function
