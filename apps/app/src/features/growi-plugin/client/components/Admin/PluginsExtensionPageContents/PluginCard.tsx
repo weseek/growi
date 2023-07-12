@@ -71,8 +71,13 @@ export const PluginCard = (props: Props): JSX.Element => {
   };
 
   const PluginDeleteButton = (): JSX.Element => {
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    const onClickPluginDeleteBtnHandler = async() => {
+    const onClickPluginDeleteBtnHandler = () => {
+      setShowDeleteModal(true);
+    };
+
+    const confirmToDelete = async() => {
       const reqUrl = `/plugins/${id}/remove`;
 
       try {
@@ -85,6 +90,7 @@ export const PluginCard = (props: Props): JSX.Element => {
       }
       finally {
         mutate();
+        setShowDeleteModal(false);
       }
     };
 
@@ -97,6 +103,14 @@ export const PluginCard = (props: Props): JSX.Element => {
         >
           {t('plugins.delete')}
         </button>
+        {showDeleteModal && (
+          <DeletePluginModal
+            isShown={showDeleteModal}
+            errorMessage=""
+            cancelToDelete={() => setShowDeleteModal(false)}
+            confirmToDelete={confirmToDelete}
+          />
+        )}
       </div>
     );
   };
