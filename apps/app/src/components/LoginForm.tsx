@@ -94,7 +94,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
-    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -103,6 +102,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
+
+      // !! - EXECUTE setIsLoading() AFTER POST - !! -- 7.12 ryoji-s
+      // Because occurs MongoStore.js "Unable to find the session to touch" error
+      setIsLoading(true);
+
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
