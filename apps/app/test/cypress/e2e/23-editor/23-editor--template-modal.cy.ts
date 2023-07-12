@@ -10,7 +10,8 @@ context('TemplateModal', () => {
   });
 
   it("TemplateModal is shown and closed successfully", () => {
-    cy.visit('/Sandbox/child');
+    cy.visit('/Sandbox/TemplateModal');
+    cy.collapseSidebar(true, true);
 
     // move to edit mode
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
@@ -38,12 +39,12 @@ context('TemplateModal', () => {
       cy.get('button.close').click();
     });
 
-    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}close`);
   });
 
   it("Successfully select template and template locale", () => {
-    cy.visit('/Sandbox/child');
+    cy.visit('/Sandbox/TemplateModal');
+    cy.collapseSidebar(true, true);
 
     // move to edit mode
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
@@ -83,7 +84,6 @@ context('TemplateModal', () => {
     });
 
     // check show template on markdown
-    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}insert-template`);
   });
 
