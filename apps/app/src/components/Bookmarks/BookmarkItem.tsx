@@ -151,15 +151,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         id={bookmarkItemId}
         style={{ paddingLeft }}
       >
-        {isRenameInputShown ? (
-          <ClosableTextInput
-            value={nodePath.basename(bookmarkedPage.path ?? '')}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={pressEnterForRenameHandler}
-            validationTarget={ValidationTarget.PAGE}
-          />
-        ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} />}
+        { isRenameInputShown
+          ? (
+            <ClosableTextInput
+              value={nodePath.basename(bookmarkedPage.path ?? '')}
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setRenameInputShown(false) }}
+              onPressEnter={pressEnterForRenameHandler}
+              validationTarget={ValidationTarget.PAGE}
+            />
+          )
+          : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} />}
 
         <div className='grw-foldertree-control'>
           <PageItemControl
