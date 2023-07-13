@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 
-export type DeletePluginModalProps = {
+export type PluginDeleteModalProps = {
   isShown: boolean,
   name: string,
   url: string,
@@ -15,7 +15,7 @@ export type DeletePluginModalProps = {
   confirmToDelete: () => void,
 }
 
-export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element => {
+export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element => {
   const {
     isShown, name, url, cancelToDelete, confirmToDelete,
   } = props;

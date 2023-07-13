@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
-import { DeletePluginModal } from './DeletePluginModal';
+import { PluginDeleteModal } from './PluginDeleteModal';
 
 import styles from './PluginCard.module.scss';
 
@@ -108,7 +108,7 @@ export const PluginCard = (props: Props): JSX.Element => {
           {t('plugins.delete')}
         </button>
         {isDeleteConfirmModalShown && (
-          <DeletePluginModal
+          <PluginDeleteModal
             isShown={isDeleteConfirmModalShown}
             name={name}
             url={url}
