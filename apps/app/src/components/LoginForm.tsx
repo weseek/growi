@@ -49,7 +49,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // states
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isPosting, setIsPosting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -98,7 +98,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     // !! - DO NOT USE setIsLoading() INSTEAD - !! -- 7.12 ryoji-s
     // Because occurs MongoStore.js "Unable to find the session to touch" error
-    setIsPosting(true);
+    setIsSubmitting(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -123,7 +123,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
-      setIsPosting(false);
+      setIsSubmitting(false);
       setIsLoading(false);
     }
     return;
@@ -227,7 +227,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isPosting || isLoading}>
+            <button
+              type="submit"
+              id="login"
+              className="btn btn-fill rounded-0 login mx-auto"
+              data-testid="btnSubmitForLogin"
+              disabled={isSubmitting || isLoading}
+            >
               <div className="eff"></div>
               <span className="btn-label">
                 <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
@@ -247,7 +253,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     isLdapSetupFailed,
     t,
     handleLoginWithLocalSubmit,
-    isPosting,
+    isSubmitting,
     isLoading,
   ]);
 
