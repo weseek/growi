@@ -127,6 +127,8 @@
     "lucene-query-parser": "^1.2.0",
     "markdown-table": "^1.1.1",
     "md5": "^2.2.1",
+    "mdast-util-frontmatter": "1.0.1",
+    "mdast-util-gfm": "^3.0.0",
     "mermaid": "^10.1.0",
     "method-override": "^3.0.0",
     "migrate-mongo": "^8.2.3",
