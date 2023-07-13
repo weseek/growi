@@ -136,7 +136,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onPressEnter={pressEnterForRenameHandler}
             validationTarget={ValidationTarget.PAGE}
           />
-        ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView noLink/>}
+        ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView/>}
 
         <div className='grw-foldertree-control'>
           <PageItemControl
