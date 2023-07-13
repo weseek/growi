@@ -27,7 +27,6 @@ import {
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
-const PutbackPageModal = dynamic(() => import('~/components/PutbackPageModal'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -107,7 +106,6 @@ TrashPage.getLayout = function getLayout(page) {
         {page}
       </Layout>
       <EmptyTrashModal />
-      <PutbackPageModal />
     </>
   );
 };

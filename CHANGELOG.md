@@ -1,8 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.6](https://github.com/weseek/growi/compare/v6.1.5...v6.1.6) - 2023-07-12
+
+### 🐛 Bug Fixes
+
+- fix: Revert current page mutation and add workaround for saving page (#7877) @yuki-takei
+- fix: The official docker image missed preset-templates (#7865) @yuki-takei
+- fix: SSL connection error to Elasticsearch8 using self certificate (#7818) @miya
 
 ## [v6.1.5](https://github.com/weseek/growi/compare/v6.1.4...v6.1.5) - 2023-07-10
 

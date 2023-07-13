@@ -16,6 +16,7 @@ const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr:
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
 const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+const PutbackPageModal = dynamic(() => import('../PutbackPageModal'), { ssr: false });
 // Page modals
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
@@ -59,6 +60,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <PageAccessoriesModal />
         <DeleteAttachmentModal />
         <DeleteBookmarkFolderModal />
+        <PutbackPageModal />
       </DndProvider>
 
       <PagePresentationModal />
