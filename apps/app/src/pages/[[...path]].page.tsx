@@ -241,12 +241,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -268,6 +267,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     : false;
 
 
+  // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
     if (!props.skipSSR) {
       return;
@@ -279,6 +279,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         mutateEditingMarkdown(pageData?.revision.body);
       };
 
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
   }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);

@@ -312,7 +312,7 @@ jobs:
     - name: Cypress Run
       uses: cypress-io/github-action@v5
       with:
-        browser: chrome
+        browser: chromium
         working-directory: ./apps/app
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         install: false

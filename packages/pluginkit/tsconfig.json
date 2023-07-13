@@ -4,14 +4,8 @@
   "compilerOptions": {
     "module": "CommonJS",
     "types": [
-      "node",
       "vitest/globals"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "^/*": ["./*"],
-      "~/*": ["./src/*"]
-    }
+    ]
   },
   "include": [
     "src"

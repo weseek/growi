@@ -17,6 +17,7 @@ import type { Pluggable } from 'unified';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
+import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
@@ -27,6 +28,7 @@ import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
+import * as slides from '~/services/renderer/remark-plugins/slides';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
@@ -63,6 +65,7 @@ export const generateViewOptions = (
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    slides.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -80,6 +83,7 @@ export const generateViewOptions = (
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
+      slides.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
     )]
@@ -113,6 +117,7 @@ export const generateViewOptions = (
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.slide = SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -254,6 +259,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
+    slides.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -272,6 +278,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      slides.sanitizeOption,
     )]
     : () => {};
 
@@ -295,6 +302,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.slide = SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
