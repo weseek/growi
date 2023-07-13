@@ -483,7 +483,9 @@
       "show_all_reply_comments": "显示所有回复评论",
       "show_all_reply_comments_desc": "当设置值为“关”时，将忽略最近两个之外的注释。",
       "select_search_scope_children_as_default": "选择“当前分支以下内容”, 作为搜索范围的默认值",
-      "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。"
+      "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。",
+      "enable_marp": "Marp を使用するtodomarp",
+      "enable_marp_desc": "OFFの場合、Marp の使用はできません。\nMarp 公式サイト: https://marp.app\nGROWI における Marp の使い方: todomarp"
     },
     "custom_title": "自定义标题",
     "custom_title_detail": "您可以自定义<code>&lt；title&gt；</code>标记。<br><code>&123；&123；sitename&&125；&125；</code>将自动替换为应用程序名称，并且<code>&123；&123；page&&125；&125；</code>将替换为页面名称/路径。",

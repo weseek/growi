@@ -483,7 +483,9 @@
       "show_all_reply_comments": "返信コメントを全て表示する",
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
-      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
+      "enable_marp": "Marp を使用する",
+      "enable_marp_desc": "OFFの場合、Marp の使用はできません。\nMarp 公式サイト: https://marp.app\nGROWI における Marp の使い方: todomarp"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
