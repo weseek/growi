@@ -104,6 +104,10 @@ export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRRe
   return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
+export const useIsEnabledMarp = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useContextSWR<boolean, Error>('isEnabledMarp', initialData, { fallbackData: false });
+};
+
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSlackConfigured', initialData);
 };

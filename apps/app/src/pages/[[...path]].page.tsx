@@ -34,7 +34,7 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
@@ -154,6 +154,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
 
   isSlackConfigured: boolean,
   // isMailerSetup: boolean,
@@ -210,6 +211,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  useIsEnabledMarp(props.isEnabledMarp);
 
   useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
@@ -573,6 +575,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
@@ -600,6 +603,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
