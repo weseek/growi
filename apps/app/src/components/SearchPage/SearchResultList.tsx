@@ -18,7 +18,6 @@ import { mutateSearching } from '~/stores/search';
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { PageListItemL } from '../PageList/PageListItemL';
 
-
 type Props = {
   pages: IPageWithSearchMeta[],
   selectedPageId?: string,
