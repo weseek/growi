@@ -29,7 +29,7 @@ context('Editor while uploading to a new page', () => {
    * @see https://redmine.weseek.co.jp/issues/122040
    * @see https://redmine.weseek.co.jp/issues/124281
    */
-  it.only('should not be cleared and should prevent GrantSelector from modified', { scrollBehavior: false }, () => {
+  it('should not be cleared and should prevent GrantSelector from modified', { scrollBehavior: false }, () => {
     cy.visit('/Sandbox/for-122040');
 
     openEditor();
