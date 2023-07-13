@@ -31,6 +31,9 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   if (!noLink) {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
+  else {
+    pagePathElement = <p className="text-break mt-3">{pagePathElement}</p>;
+  }
 
   return (
     <>
