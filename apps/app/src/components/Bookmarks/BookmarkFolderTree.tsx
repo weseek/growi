@@ -2,6 +2,7 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { toastSuccess } from '~/client/util/toastr';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
@@ -18,7 +19,6 @@ import { BookmarkFolderItem } from './BookmarkFolderItem';
 import { BookmarkItem } from './BookmarkItem';
 
 import styles from './BookmarkFolderTree.module.scss';
-import { useRouter } from 'next/router';
 
 // type DragItemDataType = {
 //   bookmarkFolder: BookmarkFolderItems
@@ -65,7 +65,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
       }
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  }, [openDeleteModal, t, bookmarkFolderTreeMutation, router, mutateAllPageInfo]);
+  }, [openDeleteModal, t, bookmarkFolderTreeMutation, currentPage?._id, currentPage?.path, router]);
 
   /* TODO: update in bookmarks folder v2. */
   // const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {

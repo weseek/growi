@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
@@ -13,6 +14,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
@@ -21,9 +23,6 @@ import { PageListItemS } from '../PageList/PageListItemS';
 
 import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
-import { OnPutBackedFunction } from '~/interfaces/ui';
-import { usePutBackPageModal } from '~/stores/modal';
-import { useRouter } from 'next/router';
 
 type Props = {
   isReadOnlyUser: boolean
@@ -34,7 +33,6 @@ type Props = {
   canMoveToRoot: boolean,
   onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
   bookmarkFolderTreeMutation: () => void,
-  onPagePutBacked?: OnPutBackedFunction,
 }
 
 export const BookmarkItem = (props: Props): JSX.Element => {
@@ -46,7 +44,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
 
   const {
     isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteMenuItemHandler,
-    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation, onPagePutBacked,
+    parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
@@ -123,7 +121,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteMenuItemHandler(pageToDelete);
   }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteMenuItemHandler]);
 
-  const putBackClickHandler = useCallback(async() => {
+  const putBackClickHandler = useCallback(() => {
     const { _id: pageId, path } = bookmarkedPage;
     const putBackedHandler = async() => {
       try {
@@ -137,13 +135,9 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       catch (err) {
         toastError(err);
       }
-      if (onPagePutBacked != null) {
-        onPagePutBacked(path);
-      }
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
-
-  }, [bookmarkedPage, openPutBackPageModal, mutateAllPageInfo, bookmarkFolderTreeMutation, router, mutateCurrentPage]);
+  }, [bookmarkedPage, openPutBackPageModal, bookmarkFolderTreeMutation, router, mutateCurrentPage, t]);
 
   return (
     <DragAndDropWrapper

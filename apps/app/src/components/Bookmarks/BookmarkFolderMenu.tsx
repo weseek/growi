@@ -144,20 +144,18 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
             </div>
             {bookmarkFolders?.map(folder => (
               <React.Fragment key={`bookmark-folders-${folder._id}`}>
-                <div key={folder._id}>
-                  <div
-                    className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
-                    style={{ paddingLeft: '40px' }}
-                    tabIndex={0}
-                    role="menuitem"
-                    onClick={e => onMenuItemClickHandler(e, folder._id)}
-                  >
-                    <BookmarkFolderMenuItem
-                      itemId={folder._id}
-                      itemName={folder.name}
-                      isSelected={selectedItem === folder._id}
-                    />
-                  </div>
+                <div
+                  className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
+                  style={{ paddingLeft: '40px' }}
+                  tabIndex={0}
+                  role="menuitem"
+                  onClick={e => onMenuItemClickHandler(e, folder._id)}
+                >
+                  <BookmarkFolderMenuItem
+                    itemId={folder._id}
+                    itemName={folder.name}
+                    isSelected={selectedItem === folder._id}
+                  />
                 </div>
                 {folder.children?.map(child => (
                   <div key={child._id}>

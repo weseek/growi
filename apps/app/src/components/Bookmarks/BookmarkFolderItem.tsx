@@ -14,7 +14,7 @@ import {
   BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
 } from '~/interfaces/bookmark-info';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
-import { OnPutBackedFunction, onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
+import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 
 import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
@@ -32,7 +32,6 @@ type BookmarkFolderItemProps = {
   isUserHomePage?: boolean
   onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void
   bookmarkFolderTreeMutation: () => void
-  onPagePutBacked?: OnPutBackedFunction
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
@@ -40,7 +39,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
     isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomePage,
-    onClickDeleteMenuItemHandler, bookmarkFolderTreeMutation, onPagePutBacked,
+    onClickDeleteMenuItemHandler, bookmarkFolderTreeMutation,
   } = props;
 
   const {
@@ -159,7 +158,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             isUserHomePage={isUserHomePage}
             onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
             bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
-            onPagePutBacked={onPagePutBacked}
           />
         </div>
       );
@@ -179,7 +177,6 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           canMoveToRoot={true}
           onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
           bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
-          onPagePutBacked={onPagePutBacked}
         />
       );
     });
