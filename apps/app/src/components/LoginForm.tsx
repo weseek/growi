@@ -49,7 +49,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // states
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -98,7 +98,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     // !! - DO NOT USE setIsLoading() INSTEAD - !! -- 7.12 ryoji-s
     // Because occurs MongoStore.js "Unable to find the session to touch" error
-    setIsSubmitting(true);
+    setIsSubmitted(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -123,7 +123,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
-      setIsSubmitting(false);
+      setIsSubmitted(false);
       setIsLoading(false);
     }
     return;
@@ -232,7 +232,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               id="login"
               className="btn btn-fill rounded-0 login mx-auto"
               data-testid="btnSubmitForLogin"
-              disabled={isSubmitting || isLoading}
+              disabled={isSubmitted || isLoading}
             >
               <div className="eff"></div>
               <span className="btn-label">
@@ -253,7 +253,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     isLdapSetupFailed,
     t,
     handleLoginWithLocalSubmit,
-    isSubmitting,
+    isSubmitted,
     isLoading,
   ]);
 
