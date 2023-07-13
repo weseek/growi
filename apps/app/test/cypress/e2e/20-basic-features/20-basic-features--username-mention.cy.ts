@@ -15,6 +15,10 @@ context('Mention username in comment', () => {
 
     // Go to comment page
     cy.getByTestid('page-comment-button').click();
+  });
+
+  it('Successfully mention username in comment', () => {
+    const username = '@adm';
 
     // Open comment editor
     cy.waitUntil(() => {
@@ -23,11 +27,6 @@ context('Mention username in comment', () => {
       // wait until
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
-
-  });
-
-  it('Successfully mention username in comment', () => {
-    const username = '@adm';
 
     cy.waitUntil(() => {
       // do
@@ -44,6 +43,14 @@ context('Mention username in comment', () => {
 
   it('Username not found when mention username in comment', () => {
     const username = '@user';
+
+    // Open comment editor
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('open-comment-editor-button').click();
+      // wait until
+      return cy.get('.comment-write').then($elem => $elem.is(':visible'));
+    });
 
     cy.waitUntil(() => {
       // do
