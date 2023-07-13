@@ -27,6 +27,8 @@ const marpSlide = new Marp({
   math: false,
 });
 
+// TODO: to change better slide style
+// https://redmine.weseek.co.jp/issues/125680
 const marp = new Marp({
   container: [
     new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
@@ -37,8 +39,6 @@ const marp = new Marp({
   html: false,
   math: false,
 });
-// TODO: to change better slide style
-// https://redmine.weseek.co.jp/issues/125680
 const marpSlideTheme = marp.themeSet.add(`
     /*!
      * @theme slide_preview
