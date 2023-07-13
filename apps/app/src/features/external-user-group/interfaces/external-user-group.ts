@@ -42,7 +42,7 @@ export type ExternalUserInfo = {
 
 // Data structure to express the tree structure of external groups, before converting to ExternalUserGroup model
 export interface ExternalUserGroupTreeNode {
-  id: string
+  id: string // external group id
   userInfos: ExternalUserInfo[]
   childGroupNodes: ExternalUserGroupTreeNode[]
   name: string

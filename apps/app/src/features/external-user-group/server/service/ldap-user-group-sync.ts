@@ -6,7 +6,7 @@ import {
   ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, LdapGroupMembershipAttributeType,
 } from '../../interfaces/external-user-group';
 
-import ExternalUserGroupSyncService from './external-user-group-sync-service';
+import ExternalUserGroupSyncService from './external-user-group-sync';
 
 class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 

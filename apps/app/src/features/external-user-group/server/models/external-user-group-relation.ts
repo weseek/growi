@@ -28,4 +28,8 @@ schema.statics.createRelations = UserGroupRelation.createRelations;
 
 schema.statics.removeAllByUserGroups = UserGroupRelation.removeAllByUserGroups;
 
+schema.statics.findAllRelation = UserGroupRelation.findAllRelation;
+
+schema.statics.removeAllInvalidRelations = UserGroupRelation.removeAllInvalidRelations;
+
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

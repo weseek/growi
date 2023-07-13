@@ -1,11 +1,10 @@
 import { ErrorV3 } from '^/../../packages/core/dist';
 
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
-import { IExternalAccountHasId } from '~/interfaces/external-account';
 import loggerFactory from '~/utils/logger';
 
 import { NullUsernameToBeRegisteredError } from '../models/errors';
-import ExternalAccount from '../models/external-account';
+import ExternalAccount, { ExternalAccountDocument } from '../models/external-account';
 
 import PassportService from './passport';
 
@@ -23,7 +22,7 @@ class ExternalAccountService {
   async getOrCreateUser(
       userInfo: {id: string, username: string, name?: string, email?: string},
       providerId: string,
-  ): Promise<IExternalAccountHasId | undefined> {
+  ): Promise<ExternalAccountDocument | undefined> {
     // get option
     const isSameUsernameTreatedAsIdenticalUser = this.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
     const isSameEmailTreatedAsIdenticalUser = this.passportService.isSameEmailTreatedAsIdenticalUser(providerId);

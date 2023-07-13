@@ -71,16 +71,14 @@ schema.statics.countUserGroups = function() {
 };
 
 schema.statics.createGroup = async function(name, description, parentId) {
-  // create without parent
-  if (parentId == null) {
-    return this.create({ name, description });
+  let parent: UserGroupDocument | null = null;
+  if (parentId != null) {
+    parent = await this.findOne({ _id: parentId });
+    if (parent == null) {
+      throw Error('Parent does not exist.');
+    }
   }
 
-  // create with parent
-  const parent = await this.findOne({ _id: parentId });
-  if (parent == null) {
-    throw Error('Parent does not exist.');
-  }
   return this.create({ name, description, parent });
 };
 

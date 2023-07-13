@@ -4,10 +4,8 @@ import {
   body, param, query, validationResult,
 } from 'express-validator';
 
-import ExternalUserGroup, { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
-import ExternalUserGroupRelation, {
-  ExternalUserGroupRelationDocument,
-} from '~/features/external-user-group/server/models/external-user-group-relation';
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -18,7 +16,7 @@ import { configManager } from '~/server/service/config-manager';
 import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
-import LdapUserGroupSyncService from '../../service/ldap-user-group-sync-service';
+import LdapUserGroupSyncService from '../../service/ldap-user-group-sync';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
@@ -141,10 +139,7 @@ module.exports = (crowi: Crowi): Router => {
 
       try {
         const userGroups = await (crowi.userGroupService as UserGroupService)
-          .removeCompletelyByRootGroupId<
-            ExternalUserGroupDocument,
-            ExternalUserGroupRelationDocument
-          >(deleteGroupId, actionName, transferToUserGroupId, req.user, ExternalUserGroup, ExternalUserGroupRelation);
+          .removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user, ExternalUserGroup, ExternalUserGroupRelation);
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

@@ -35,9 +35,9 @@ abstract class ExternalUserGroupSyncService {
     const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
       const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
       existingExternalUserGroupIds.push(externalUserGroup._id);
-      node.childGroupNodes.forEach((childNode) => {
-        syncNode(childNode, externalUserGroup._id);
-      });
+      await Promise.all(node.childGroupNodes.map((childNode) => {
+        return syncNode(childNode, externalUserGroup._id);
+      }));
     };
 
     await Promise.all(trees.map((root) => {
@@ -47,6 +47,7 @@ abstract class ExternalUserGroupSyncService {
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     if (!preserveDeletedLdapGroups) {
       await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
+      await ExternalUserGroupRelation.removeAllInvalidRelations();
     }
   }
 
@@ -72,7 +73,7 @@ abstract class ExternalUserGroupSyncService {
 
           // remove existing relations from list to create
           const existingRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
-          const existingGroupIds = existingRelations.map(r => r.relatedGroup);
+          const existingGroupIds = existingRelations.map(r => r.relatedGroup.toString());
           const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
           await ExternalUserGroupRelation.createRelations(groupIdsToCreateRelation, user);
@@ -104,8 +105,7 @@ abstract class ExternalUserGroupSyncService {
     const externalAccount = await getExternalAccount();
 
     if (externalAccount != null) {
-      await externalAccount.populate('user');
-      return externalAccount.user;
+      return (await externalAccount.populate<{user: IUserHasId | null}>('user')).user;
     }
     return null;
   }

@@ -113,13 +113,10 @@ class UserGroupService {
     return userGroup.save();
   }
 
-  async removeCompletelyByRootGroupId<
-    D extends UserGroupDocument,
-    RD extends UserGroupRelationDocument,
-  >(
+  async removeCompletelyByRootGroupId(
       deleteRootGroupId, action, transferToUserGroupId, user,
-      userGroupModel: Model<D> & UserGroupModel = UserGroup,
-      userGroupRelationModel: Model<RD> & UserGroupRelationModel = UserGroupRelation,
+      userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
+      userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
   ) {
     const rootGroup = await userGroupModel.findById(deleteRootGroupId);
     if (rootGroup == null) {
