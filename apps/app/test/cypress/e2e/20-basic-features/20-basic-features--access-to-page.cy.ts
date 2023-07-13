@@ -89,8 +89,8 @@ context('Access to page', () => {
     openEditor();
 
     // check edited contents after save
-    cy.get('.CodeMirror').click().type(body1);
-    cy.get('.CodeMirror').contains(body1);
+    cy.get('.CodeMirror textarea').type(body1, { force: true });
+    cy.get('.CodeMirror-code').contains(body1);
     cy.get('.page-editor-preview-body').contains(body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -105,14 +105,14 @@ context('Access to page', () => {
 
     openEditor();
 
-    cy.get('.CodeMirror').contains(body1);
+    cy.get('.CodeMirror-code').contains(body1);
 
     // check editing contents with shortcut key
-    cy.get('.CodeMirror').click().type(body2);
-    cy.get('.CodeMirror').contains(body1+body2);
+    cy.get('.CodeMirror textarea').type(body2, { force: true });
+    cy.get('.CodeMirror-code').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
     cy.get('.CodeMirror').click().type(savePageShortcutKey);
-    cy.get('.CodeMirror').contains(body1+body2);
+    cy.get('.CodeMirror-code').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
   })
 
@@ -229,7 +229,7 @@ context('Access to Template Editing Mode', () => {
       });
     });
     cy.get('@pagetreeItem').within(() => {
-      cy.getByTestid('closable-text-input').click().type(newPagePath).type('{enter}');
+      cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
     })
 
     cy.visit(`/${parentPagePath}/${newPagePath}`);
@@ -280,8 +280,8 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
     });
 
-    cy.get('.CodeMirror').click().type(templateBody1);
-    cy.get('.CodeMirror').contains(templateBody1);
+    cy.get('.CodeMirror textarea').type(templateBody1, { force: true });
+    cy.get('.CodeMirror-code').contains(templateBody1);
     cy.get('.page-editor-preview-body').contains(templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -315,8 +315,8 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
-    cy.get('.CodeMirror').click().type(templateBody2);
-    cy.get('.CodeMirror').contains(templateBody2);
+    cy.get('.CodeMirror textarea').type(templateBody2, { force: true });
+    cy.get('.CodeMirror-code').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
