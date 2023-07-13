@@ -3,7 +3,8 @@ import { useCallback } from 'react';
 import {
   IAttachmentHasId, Nullable, type SWRResponseWithUtils, withUtils,
 } from '@growi/core';
-import useSWR from 'swr';
+import { Util } from 'reactstrap';
+import useSWR, { useSWRConfig } from 'swr';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -14,12 +15,37 @@ type Util = {
 };
 
 type IDataAttachmentList = {
-  attachments: (IAttachmentHasId)[]
+  attachments: IAttachmentHasId[]
   totalAttachments: number
   limit: number
 };
 
+export const useSWRxAttachment = (attachmentId: string): SWRResponseWithUtils<Util, IAttachmentHasId, Error> => {
+  const swrResponse = useSWR(
+    ['/attachment', attachmentId],
+    useCallback(async([endpoint, attachmentId]) => {
+      const params = { attachmentId };
+      const res = await apiv3Get(endpoint, params);
+      return res.data.attachment;
+    }, []),
+  );
+
+  // Utils
+  const remove = useCallback(async(body: { attachment_id: string }) => {
+    try {
+      await apiPost('/attachments.remove', body);
+      swrResponse.mutate(body.attachment_id);
+    }
+    catch (err) {
+      throw err;
+    }
+  }, [swrResponse]);
+
+  return withUtils<Util, IAttachmentHasId, Error>(swrResponse, { remove });
+};
+
 export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: number): SWRResponseWithUtils<Util, IDataAttachmentList, Error> => {
+  const { mutate: mutateUseSWRxAttachment } = useSWRConfig();
   const shouldFetch = pageId != null && pageNumber != null;
 
   const fetcher = useCallback(async([endpoint, pageId, pageNumber]) => {
@@ -45,11 +71,13 @@ export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: numbe
     try {
       await apiPost('/attachments.remove', body);
       mutate();
+      // Mutation for rich attachment rendering
+      mutateUseSWRxAttachment(['/attachment', body.attachment_id], body.attachment_id);
     }
     catch (err) {
       throw err;
     }
-  }, [swrResponse]);
+  }, [mutateUseSWRxAttachment, swrResponse]);
 
   return withUtils<Util, IDataAttachmentList, Error>(swrResponse, { remove });
 };

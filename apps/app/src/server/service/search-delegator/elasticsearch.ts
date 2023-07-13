@@ -1,8 +1,6 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
-import elasticsearch7 from '@elastic/elasticsearch7';
-import elasticsearch8 from '@elastic/elasticsearch8';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -81,7 +79,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.elasticsearch = this.isElasticsearchV7 ? elasticsearch7 : elasticsearch8;
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
@@ -119,12 +116,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
-    this.client = new ElasticsearchClient(new this.elasticsearch.Client({
+    const rejectUnauthorized = this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
+
+    const options = {
       node: host,
-      ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
       auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
-    }));
+    };
+
+    this.client = new ElasticsearchClient(this.isElasticsearchV7, options, rejectUnauthorized);
     this.indexName = indexName;
   }
 

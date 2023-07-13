@@ -1,22 +1,27 @@
 {
   "name": "@growi/presentation",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.7-RC.0",
   "description": "GROWI plugin for presentation",
   "license": "MIT",
-  "keywords": ["growi", "growi-plugin"],
+  "keywords": [
+    "growi",
+    "growi-plugin"
+  ],
   "module": "dist/presentation.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "@growi/core": "link:../core"

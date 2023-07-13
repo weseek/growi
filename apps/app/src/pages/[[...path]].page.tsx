@@ -35,7 +35,7 @@ import {
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig,
+  useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
@@ -68,7 +68,7 @@ declare global {
 }
 
 
-const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
+const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
@@ -193,6 +193,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   // page
   useIsContainerFluid(props.isContainerFluid);
@@ -240,12 +241,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -267,6 +267,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     : false;
 
 
+  // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
     if (!props.skipSSR) {
       return;
@@ -278,6 +279,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         mutateEditingMarkdown(pageData?.revision.body);
       };
 
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
   }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);

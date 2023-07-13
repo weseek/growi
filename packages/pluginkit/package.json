@@ -1,0 +1,24 @@
+{
+  "name": "@growi/pluginkit",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "clean": "shx rm -rf dist",
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w --emptyOutDir=false",
+    "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:typecheck": "tsc",
+    "lint": "npm-run-all -p lint:*",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@growi/core": "link:../core",
+    "extensible-custom-error": "^0.0.7"
+  },
+  "devDependencies": {
+  }
+}

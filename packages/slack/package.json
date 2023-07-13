@@ -1,20 +1,20 @@
 {
   "name": "@growi/slack",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.7-RC.0",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
     "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "@slack/oauth": "^2.0.1",

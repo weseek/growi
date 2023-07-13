@@ -6,7 +6,7 @@ import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
 
-import { growiPluginService, type GrowiPluginResourceEntries } from '~/features/growi-plugin/services';
+import type { GrowiPluginResourceEntries } from '~/features/growi-plugin/server/services';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import loggerFactory from '~/utils/logger';
 
@@ -57,6 +57,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const customNoscript: string | null = customizeService.getCustomNoscript();
 
     // retrieve plugin manifests
+    const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
     const pluginResourceEntries = await growiPluginService.retrieveAllPluginResourceEntries();
 
     return {
