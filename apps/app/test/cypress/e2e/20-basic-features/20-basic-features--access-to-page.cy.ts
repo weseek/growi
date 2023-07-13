@@ -207,12 +207,12 @@ context('Access to Template Editing Mode', () => {
 
   const createPageFromPageTreeTest = (newPagePath: string, parentPagePath: string, expectedBody: string) => {
     cy.visit('/');
-
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
     cy.waitUntilSkeletonDisappear();
 
     // Open sidebar
     cy.collapseSidebar(false);
+    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
 
     // If PageTree is not active when the sidebar is opened, make it active
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
@@ -233,11 +233,10 @@ context('Access to Template Editing Mode', () => {
     })
 
     cy.visit(`/${parentPagePath}/${newPagePath}`);
-
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
-    cy.waitUntilSkeletonDisappear();
-
     cy.collapseSidebar(true);
+
+    cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
 
     // Check if the template is applied
     cy.get('.content-main').within(() => {
