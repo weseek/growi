@@ -26,6 +26,7 @@ const getTranspilePackages = () => {
     'character-entities-legacy',
     'comma-separated-tokens',
     'decode-named-character-reference',
+    'devlop',
     'escape-string-regexp',
     'hastscript',
     'html-void-elements',

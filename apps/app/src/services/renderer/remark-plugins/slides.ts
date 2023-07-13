@@ -1,5 +1,7 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Root } from 'mdast';
+import { frontmatterToMarkdown } from 'mdast-util-frontmatter';
+import { gfmToMarkdown } from 'mdast-util-gfm';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import type { Plugin } from 'unified';
 import type { Node } from 'unist';
@@ -40,10 +42,10 @@ const rewriteNode = (tree: Node, node: Node) => {
       marp: marp ? 'marp' : '',
       children: toMarkdown(tree as Root, {
         extensions: [
-          // frontmatterToMarkdown(['yaml']),
-          // gfmToMarkdown(),
+          frontmatterToMarkdown(['yaml']),
+          gfmToMarkdown(),
           // TODO: add new extension remark-growi-directive to markdown
-          // https://redmine.weseek.co.jp/issues/126660
+          // https://redmine.weseek.co.jp/issues/126744
         ],
       }),
     };
