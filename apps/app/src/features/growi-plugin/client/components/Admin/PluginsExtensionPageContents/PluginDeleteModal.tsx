@@ -51,7 +51,6 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
     }
     return (
       <>
-        <Button onClick={cancelToDelete}>{t('plugins.cancel')}</Button>
         <Button color="danger" onClick={confirmToDelete}>
           {t('plugins.delete')}
         </Button>

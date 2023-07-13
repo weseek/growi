@@ -867,7 +867,6 @@
     "plugin_is_not_installed": "Plugin is not installed",
     "install": "Install",
     "delete": "Delete",
-    "cancel": "Cancel",
     "confirm": "Delete plugin?"
   },
   "cloud_setting_management": {
