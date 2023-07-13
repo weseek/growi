@@ -491,9 +491,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
     }
 
-    // Check auth strategy has admin user
     async function checkAuthStrategyHasAdmin(strategy) {
-      // Check if local accounts have admins
       if (strategy === 'local') {
         // Get all local admin accounts and filter local admins that are not in external accounts
         const localAdmins = await User.aggregate([
@@ -511,7 +509,6 @@ module.exports = (crowi) => {
         return localAdmins.length > 0;
       }
 
-      // Check if external accounts have admins
       const externalAccounts = await ExternalAccount.find({ providerType: strategy })
         .populate('user', null, { admin: true, status: User.STATUS_ACTIVE })
         .exec();
@@ -521,7 +518,6 @@ module.exports = (crowi) => {
       return hasAdmin;
     }
 
-    // Check all setup strategies that have admin users
     async function checkAllSetupStrategiesHasAdmin() {
       const results = await Promise.all(setupStrategies.map(async(strategy) => {
         const hasAdmin = await checkAuthStrategyHasAdmin(strategy);
