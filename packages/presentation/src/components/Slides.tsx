@@ -13,17 +13,6 @@ import './Slides.global.scss';
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
 
-const marp = new Marp({
-  container: [
-    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
-    new Element('div', { class: 'slides' }),
-  ],
-  inlineSVG: false,
-  emoji: undefined,
-  html: false,
-  math: false,
-});
-
 const marpSlide = new Marp({
   container: [
     new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
@@ -33,6 +22,17 @@ const marpSlide = new Marp({
     new Element('div', { class: 'shadow rounded', style: 'margin: 20px' }),
   ],
   inlineSVG: true,
+  emoji: undefined,
+  html: false,
+  math: false,
+});
+
+const marp = new Marp({
+  container: [
+    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
+    new Element('div', { class: 'slides' }),
+  ],
+  inlineSVG: false,
   emoji: undefined,
   html: false,
   math: false,
@@ -62,9 +62,6 @@ export const Slides = (props: Props): JSX.Element => {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-
-  // TODO: can Marp rendering
-  // https://redmine.weseek.co.jp/issues/115673
   if (hasMarpFlag) {
     const { html, css } = marpSlide.render(children ?? '');
     return (
