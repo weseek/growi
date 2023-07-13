@@ -85,7 +85,7 @@ module.exports = (crowi) => {
               model: 'User',
             },
           },
-        }).exec();
+        }).exec() as never as BookmarkFolderItems[];
 
       const returnValue: BookmarkFolderItems[] = [];
 
