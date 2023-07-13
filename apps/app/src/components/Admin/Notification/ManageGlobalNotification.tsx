@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { NotifyType, TriggerEventType } from '~/client/interfaces/global-notification';
@@ -111,10 +112,10 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
   return (
     <>
       <div className="my-3">
-        <a href="/admin/notification#global-notification" className="btn btn-outline-secondary">
+        <Link href="/admin/notification" className="btn btn-outline-secondary">
           <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
           {t('notification_settings.back_to_list')}
-        </a>
+        </Link>
       </div>
 
 
