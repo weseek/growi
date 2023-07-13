@@ -110,6 +110,8 @@ export const PluginCard = (props: Props): JSX.Element => {
         {isDeleteConfirmModalShown && (
           <DeletePluginModal
             isShown={isDeleteConfirmModalShown}
+            name={name}
+            url={url}
             cancelToDelete={onCancelDeletePlugin}
             confirmToDelete={onDeletePlugin}
           />

@@ -874,7 +874,9 @@
     "plugin_card": "プラグインカード",
     "plugin_is_not_installed": "プラグインがインストールされていません",
     "install": "インストール",
-    "delete": "削除"
+    "delete": "削除",
+    "cancel": "中止",
+    "confirm": "プラグインを削除しますか？"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "GROWI.cloud の管理画面へ"

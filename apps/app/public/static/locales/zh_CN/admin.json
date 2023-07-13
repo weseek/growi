@@ -874,7 +874,9 @@
     "plugin_card": "Plugin Card",
     "plugin_is_not_installed": "Plugin is not installed",
     "install": "Install",
-    "delete": "Delete"
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Delete plugin?"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "進入 GROWI.cloud 的管理界面"

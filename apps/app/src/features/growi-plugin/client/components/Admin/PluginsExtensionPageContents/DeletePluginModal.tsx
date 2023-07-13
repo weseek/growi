@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -7,14 +9,18 @@ import {
 
 export type DeletePluginModalProps = {
   isShown: boolean,
+  name: string,
+  url: string,
   cancelToDelete: () => void,
   confirmToDelete: () => void,
 }
 
 export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element => {
   const {
-    isShown, cancelToDelete, confirmToDelete,
+    isShown, name, url, cancelToDelete, confirmToDelete,
   } = props;
+
+  const { t } = useTranslation('admin');
 
   const headerContent = () => {
     if (isShown === false) {
@@ -22,7 +28,7 @@ export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element =>
     }
     return (
       <span>
-        Delete plugin?
+        {t('plugins.confirm')}
       </span>
     );
   };
@@ -33,9 +39,9 @@ export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element =>
     }
 
     return (
-      <>
-        <p className="card well mt-2 p-2">本当に削除しますか？</p>
-      </>
+      <div className="card well comment-body mt-2 p-2">
+        <Link href={`${url}`} legacyBehavior>{name}</Link>
+      </div>
     );
   };
 
@@ -45,9 +51,9 @@ export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element =>
     }
     return (
       <>
-        <Button onClick={cancelToDelete}>Cancel</Button>
+        <Button onClick={cancelToDelete}>{t('plugins.cancel')}</Button>
         <Button color="danger" onClick={confirmToDelete}>
-          Delete
+          {t('plugins.delete')}
         </Button>
       </>
     );
