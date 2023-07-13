@@ -34,6 +34,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       isSearchScopeChildrenAsDefault: false,
+      isEnabledMarp: false,
       currentCustomizeTitle: '',
       currentCustomizeNoscript: '',
       currentCustomizeCss: '',
@@ -71,6 +72,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizeParams.isSearchScopeChildrenAsDefault,
+        isEnabledMarp: customizeParams.isEnabledMarp,
         currentCustomizeTitle: customizeParams.customizeTitle,
         currentCustomizeNoscript: customizeParams.customizeNoscript,
         currentCustomizeCss: customizeParams.customizeCss,
@@ -150,6 +152,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Switch isEnabledMarp
+   */
+  switchIsEnabledMarp() {
+    this.setState({ isEnabledMarp: !this.state.isEnabledMarp });
+  }
+
+  /**
    * Change customize Title
    */
   changeCustomizeTitle(inputValue) {
@@ -194,6 +203,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
         isSearchScopeChildrenAsDefault: this.state.isSearchScopeChildrenAsDefault,
+        isEnabledMarp: this.state.isEnabledMarp,
       });
       const { customizedParams } = response.data;
       this.setState({
@@ -206,6 +216,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
+        isEnabledMarp: this.state.isEnabledMarp,
       });
     }
     catch (err) {

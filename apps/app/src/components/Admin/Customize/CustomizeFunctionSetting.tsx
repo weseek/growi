@@ -133,6 +133,21 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
             </div>
           </div>
 
+          <div className="form-group row">
+            <div className="offset-md-3 col-md-6 text-left">
+              <CustomizeFunctionOption
+                optionId="isEnabledMarp"
+                label={t('admin:customize_settings.function_options.enable_marp')}
+                isChecked={adminCustomizeContainer.state.isEnabledMarp || false}
+                onChecked={() => { adminCustomizeContainer.switchIsEnabledMarp() }}
+              >
+                <p className="form-text text-muted">
+                  {t('admin:customize_settings.function_options.enable_marp_desc')}
+                </p>
+              </CustomizeFunctionOption>
+            </div>
+          </div>
+
           <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
         </div>
       </div>
