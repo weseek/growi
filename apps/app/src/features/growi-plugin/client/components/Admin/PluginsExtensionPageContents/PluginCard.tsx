@@ -71,13 +71,17 @@ export const PluginCard = (props: Props): JSX.Element => {
   };
 
   const PluginDeleteButton = (): JSX.Element => {
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
 
-    const onClickPluginDeleteBtnHandler = () => {
-      setShowDeleteModal(true);
+    const onClickPluginDeleteButton = () => {
+      setIsDeleteConfirmModalShown(true);
     };
 
-    const confirmToDelete = async() => {
+    const onCancelDeletePlugin = () => {
+      setIsDeleteConfirmModalShown(false);
+    };
+
+    const onDeletePlugin = async() => {
       const reqUrl = `/plugins/${id}/remove`;
 
       try {
@@ -90,7 +94,7 @@ export const PluginCard = (props: Props): JSX.Element => {
       }
       finally {
         mutate();
-        setShowDeleteModal(false);
+        setIsDeleteConfirmModalShown(false);
       }
     };
 
@@ -99,16 +103,15 @@ export const PluginCard = (props: Props): JSX.Element => {
         <button
           type="submit"
           className="btn btn-primary"
-          onClick={() => onClickPluginDeleteBtnHandler()}
+          onClick={() => onClickPluginDeleteButton()}
         >
           {t('plugins.delete')}
         </button>
-        {showDeleteModal && (
+        {isDeleteConfirmModalShown && (
           <DeletePluginModal
-            isShown={showDeleteModal}
-            errorMessage=""
-            cancelToDelete={() => setShowDeleteModal(false)}
-            confirmToDelete={confirmToDelete}
+            isShown={isDeleteConfirmModalShown}
+            cancelToDelete={onCancelDeletePlugin}
+            confirmToDelete={onDeletePlugin}
           />
         )}
       </div>

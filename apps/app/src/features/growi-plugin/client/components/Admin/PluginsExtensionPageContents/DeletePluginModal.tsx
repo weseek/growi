@@ -7,14 +7,13 @@ import {
 
 export type DeletePluginModalProps = {
   isShown: boolean,
-  errorMessage: string,
   cancelToDelete: () => void,
   confirmToDelete: () => void,
 }
 
 export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element => {
   const {
-    isShown, errorMessage, cancelToDelete, confirmToDelete,
+    isShown, cancelToDelete, confirmToDelete,
   } = props;
 
   const headerContent = () => {
@@ -23,7 +22,6 @@ export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element =>
     }
     return (
       <span>
-        <i className="icon-fw icon-fire"></i>
         Delete plugin?
       </span>
     );
@@ -36,7 +34,7 @@ export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element =>
 
     return (
       <>
-        <p className="card well comment-body mt-2 p-2">本当に削除しますか？</p>
+        <p className="card well mt-2 p-2">本当に削除しますか？</p>
       </>
     );
   };
@@ -47,10 +45,8 @@ export const DeletePluginModal = (props: DeletePluginModalProps): JSX.Element =>
     }
     return (
       <>
-        <span className="text-danger">{errorMessage}</span>&nbsp;
         <Button onClick={cancelToDelete}>Cancel</Button>
         <Button color="danger" onClick={confirmToDelete}>
-          <i className="icon icon-fire"></i>
           Delete
         </Button>
       </>
