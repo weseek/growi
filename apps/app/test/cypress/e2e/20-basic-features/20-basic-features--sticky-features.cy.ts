@@ -116,6 +116,7 @@ context('Access to any page', () => {
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     });
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    cy.get('.CodeMirror').should('be.visible');
     cy.screenshot(`${ssPrefix}open-editor-when-sticky`);
   });
 
