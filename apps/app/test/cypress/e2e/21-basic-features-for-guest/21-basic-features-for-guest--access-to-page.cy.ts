@@ -11,26 +11,27 @@ context('Access to page by guest', () => {
 
   // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
-    cy.visit('/Sandbox#Headers');
-    cy.waitUntilSkeletonDisappear();
+    cy.visit('/Sandbox#headers');
+    cy.collapseSidebar(true);
 
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // assert the element is in viewport
-    cy.isInViewport('#headers');
+    cy.get('#headers').should('be.inViewport');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#headers').invoke('removeClass', 'blink');
 
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
@@ -38,15 +39,15 @@ context('Access to page by guest', () => {
 
     cy.get('.math').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-    cy.waitUntilSkeletonDisappear();
-
     cy.collapseSidebar(true);
+
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-with-edit-hash`);
   })
 
