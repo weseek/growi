@@ -7,7 +7,7 @@ import Clamp from 'react-multiline-clamp';
 
 import { IPageHasId } from '~/interfaces/page';
 
-import styles from './PageList.module.scss';
+import styles from './PageListItemS.module.scss';
 
 type PageListItemSProps = {
   page: IPageHasId,
@@ -31,21 +31,16 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   if (!noLink) {
     pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
   }
-  else {
-    pagePathElement = <p className="text-break mt-3">{pagePathElement}</p>;
-  }
 
   return (
     <>
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
       {isNarrowView ? (
-        <div className={`${styles['page-list']}`}>
-          <div className="mx-2 page-title">
-            <Clamp lines={2}>
-              {pagePathElement}
-            </Clamp>
+        <Clamp lines={2}>
+          <div className={`mx-2 page-title ${noLink ? 'text-break' : ''}`}>
+            { pagePathElement }
           </div>
-        </div>
+        </Clamp>
       ) : (
         { pagePathElement }
       )}
