@@ -179,6 +179,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
+        {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
+        {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
+        <div className='sr-only'>
+          <i className="fa fa-spinner fa-pulse" />
+        </div>
+        {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
             <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br/>
@@ -217,7 +223,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin" disabled={isLoading}>
+            <button
+              type="submit"
+              id="login"
+              className="btn btn-fill rounded-0 login mx-auto"
+              data-testid="btnSubmitForLogin"
+              disabled={isLoading}
+            >
               <div className="eff"></div>
               <span className="btn-label">
                 <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
@@ -228,8 +240,18 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
-      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, isLoading, t]);
+  }, [
+    props,
+    separateErrorsBasedOnErrorCode,
+    loginErrors,
+    generateDangerouslySetErrors,
+    generateSafelySetErrors,
+    isLdapSetupFailed,
+    t,
+    handleLoginWithLocalSubmit,
+    isLoading,
+  ]);
+
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
