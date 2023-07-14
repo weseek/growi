@@ -19,7 +19,7 @@ context('Mention username in comment', () => {
     // Open comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('open-comment-editor-button').click();
+      cy.getByTestid('open-comment-editor-button').click({force: true});
       // wait until
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
