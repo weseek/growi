@@ -1,8 +1,7 @@
-import { ErrorV3 } from '@growi/core';
+import type { IExternalAccount, IExternalAuthProviderType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
-import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
 import { useIsGuestUser } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -31,7 +30,7 @@ export type IPersonalSettingsInfoOption = {
   sync: () => void,
   updateBasicInfo: () => Promise<void>,
   associateLdapAccount: (account: { username: string, password: string }) => Promise<void>,
-  disassociateLdapAccount: (account: { providerType: string, accountId: string }) => Promise<void>,
+  disassociateLdapAccount: (account: { providerType: IExternalAuthProviderType, accountId: string }) => Promise<void>,
 }
 
 export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {

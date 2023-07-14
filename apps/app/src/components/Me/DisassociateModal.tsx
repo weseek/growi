@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import type { IExternalAccount } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -9,7 +10,6 @@ import {
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IExternalAccount } from '~/interfaces/external-account';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 type Props = {
