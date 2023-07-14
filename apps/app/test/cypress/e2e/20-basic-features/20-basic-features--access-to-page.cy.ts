@@ -105,8 +105,6 @@ context('Access to page', () => {
 
     openEditor();
 
-    cy.get('.CodeMirror-code').should('contain.text', body1);
-
     // check editing contents with shortcut key
     cy.get('.CodeMirror textarea').type(body2, { force: true });
     cy.get('.CodeMirror-code').should('contain.text', body1+body2);
