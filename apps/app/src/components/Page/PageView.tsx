@@ -83,7 +83,7 @@ export const PageView = (props: Props): JSX.Element => {
 
     const targetId = hash.slice(1);
 
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(decodeURIComponent(targetId));
     target?.scrollIntoView();
 
   }, [isCommentsLoaded]);
