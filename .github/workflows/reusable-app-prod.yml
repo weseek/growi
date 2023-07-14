@@ -62,13 +62,14 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
+          node_modules/.cache/turbo
           **/.turbo
           **/dist
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
-          dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
+          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
       working-directory: ./apps/app
