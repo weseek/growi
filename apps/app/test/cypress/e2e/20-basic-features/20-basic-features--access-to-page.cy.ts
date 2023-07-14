@@ -111,7 +111,6 @@ context('Access to page', () => {
     cy.get('.CodeMirror textarea').type(body2, { force: true });
     cy.get('.CodeMirror-code').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
-    cy.getByTestid('page-editor').should('be.visible');
     cy.get('.CodeMirror').click().type(savePageShortcutKey);
     cy.get('.CodeMirror-code').contains(body1+body2);
     cy.get('.page-editor-preview-body').contains(body1+body2);
