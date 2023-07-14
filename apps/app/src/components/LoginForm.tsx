@@ -49,7 +49,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // states
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -95,10 +94,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
-
-    // !! - DO NOT USE setIsLoading() INSTEAD - !! -- 7.12 ryoji-s
-    // Because occurs MongoStore.js "Unable to find the session to touch" error
-    setIsSubmitted(true);
+    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -107,11 +103,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
-
-      // !! - EXECUTE setIsLoading() AFTER POST - !! -- 7.12 ryoji-s
-      // Because occurs MongoStore.js "Unable to find the session to touch" error
-      setIsLoading(true);
-
       const { redirectTo } = res.data;
 
       if (redirectTo != null) {
@@ -123,7 +114,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
-      setIsSubmitted(false);
       setIsLoading(false);
     }
     return;
@@ -189,6 +179,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
+        {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
+        {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
+        <div className='sr-only'>
+          <i className="fa fa-spinner fa-pulse" />
+        </div>
+        {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
             <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br/>
@@ -232,7 +228,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               id="login"
               className="btn btn-fill rounded-0 login mx-auto"
               data-testid="btnSubmitForLogin"
-              disabled={isSubmitted || isLoading}
+              disabled={isLoading}
             >
               <div className="eff"></div>
               <span className="btn-label">
@@ -253,7 +249,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     isLdapSetupFailed,
     t,
     handleLoginWithLocalSubmit,
-    isSubmitted,
     isLoading,
   ]);
 
