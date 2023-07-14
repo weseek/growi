@@ -15,6 +15,7 @@ context('Access to sharelink by guest', () => {
     cy.waitUntil(() => {
       // do
       cy.getByTestid('grw-contextual-sub-nav').should('be.visible').within(() => {
+        cy.waitUntilSkeletonDisappear();
         cy.getByTestid('open-page-item-control-btn').find('button').first().as('btn').click();
       });
       // wait until

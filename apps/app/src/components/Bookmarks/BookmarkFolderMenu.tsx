@@ -120,7 +120,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
           className={'grw-bookmark-folder-menu-item text-danger'}
         >
           <i className="fa fa-bookmark"></i>{' '}
-          <span className="mx-2 ">
+          <span className="mx-2">
             {t('bookmark_folder.cancel_bookmark')}
           </span>
         </DropdownItem>
@@ -143,7 +143,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
               </div>
             </div>
             {bookmarkFolders?.map(folder => (
-              <div key={folder._id}>
+              <React.Fragment key={`bookmark-folders-${folder._id}`}>
                 <div
                   className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
                   style={{ paddingLeft: '40px' }}
@@ -174,7 +174,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
                     </div>
                   </div>
                 ))}
-              </div>
+              </React.Fragment>
             ))}
           </>
         )}

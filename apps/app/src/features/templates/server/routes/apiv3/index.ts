@@ -41,18 +41,32 @@ module.exports = (crowi) => {
     // scan preset templates
     if (presetTemplateSummaries == null) {
       const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
-      presetTemplateSummaries = await scanAllTemplates(presetTemplatesRoot, {
-        returnsInvalidTemplates: includeInvalidTemplates,
-      });
+
+      try {
+        presetTemplateSummaries = await scanAllTemplates(presetTemplatesRoot, {
+          returnsInvalidTemplates: includeInvalidTemplates,
+        });
+      }
+      catch (err) {
+        logger.error(err);
+        presetTemplateSummaries = [];
+      }
     }
 
     // load plugin templates
-    const plugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Template);
+    let pluginsTemplateSummaries: TemplateSummary[] = [];
+    try {
+      const plugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Template);
+      pluginsTemplateSummaries = plugins.flatMap(p => p.meta.templateSummaries);
+    }
+    catch (err) {
+      logger.error(err);
+    }
 
     return res.apiv3({
       summaries: [
         ...presetTemplateSummaries,
-        ...plugins.flatMap(p => p.meta.templateSummaries),
+        ...pluginsTemplateSummaries,
       ],
     });
   });
