@@ -8,7 +8,7 @@ import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import { checkAllSetupStrategiesHasAdmin } from './checkAllSetupStrategiesHasAdmin';
+import { checkSetupStrategiesHasAdmin } from './checkSetupStrategiesHasAdmin';
 
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
@@ -491,7 +491,7 @@ module.exports = (crowi) => {
     }
 
     if (!isEnabled) {
-      const isSetupStrategiesHasAdmin = await checkAllSetupStrategiesHasAdmin(crowi, setupStrategies);
+      const isSetupStrategiesHasAdmin = await checkSetupStrategiesHasAdmin(crowi, setupStrategies);
 
       // Return an error when disabling an strategy when there are no setup strategies with admin-enabled login
       if (!isSetupStrategiesHasAdmin) {
