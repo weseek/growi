@@ -70,7 +70,11 @@ Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
 });
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving = false) => {
-  cy.getByTestid('grw-sidebar-wrapper', { timeout: 5000 }).within(() => {
+  cy.get('.grw-navigation-wrap').should('be.visible');
+  cy.get('.grw-sidebar-dock').should('be.visible');
+
+  cy.getByTestid('grw-sidebar-wrapper').within(() => {
+
     // skip if .grw-sidebar-dock does not exist
     if (isHidden(Cypress.$('.grw-sidebar-dock'))) {
       return;
@@ -96,17 +100,5 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
         return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
       });
     });
-  });
-});
-
-Cypress.Commands.add('isInViewport', (selector: string) => {
-  cy.get(selector).then($el => {
-    const bottom = Cypress.config("viewportWidth");
-    const rect = $el[0].getBoundingClientRect();
-
-    expect(rect.top).not.to.be.greaterThan(bottom);
-    expect(rect.bottom).not.to.be.greaterThan(bottom);
-    expect(rect.top).not.to.be.greaterThan(bottom);
-    expect(rect.bottom).not.to.be.greaterThan(bottom);
   });
 });
