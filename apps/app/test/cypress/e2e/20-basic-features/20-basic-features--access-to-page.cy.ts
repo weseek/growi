@@ -46,7 +46,7 @@ context('Access to page', () => {
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // assert the element is in viewport
-    cy.isInViewport('#headers');
+    cy.get('#headers').should('be.inViewport');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
