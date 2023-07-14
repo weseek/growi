@@ -59,14 +59,15 @@ jobs:
         yarn --frozen-lockfile
 
     - name: Restore dist
-      uses: actions/cache/restore@v3
+      uses: actions/cache@v3
       with:
         path: |
           **/.turbo
           **/dist
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
+          dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
           dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Build
@@ -116,15 +117,6 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-    - name: Cache dist
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          **/.turbo
-          **/dist
-          ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   launch-prod:
