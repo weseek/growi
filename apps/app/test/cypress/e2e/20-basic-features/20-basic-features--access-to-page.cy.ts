@@ -90,8 +90,8 @@ context('Access to page', () => {
 
     // check edited contents after save
     cy.get('.CodeMirror textarea').type(body1, { force: true });
-    cy.get('.CodeMirror-code').contains(body1);
-    cy.get('.page-editor-preview-body').contains(body1);
+    cy.get('.CodeMirror-code').should('contain.text', body1);
+    cy.get('.page-editor-preview-body').should('contain.text', body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
     cy.get('.wiki').should('be.visible');
@@ -105,15 +105,15 @@ context('Access to page', () => {
 
     openEditor();
 
-    cy.get('.CodeMirror-code').contains(body1);
+    cy.get('.CodeMirror-code').should('contain.text', body1);
 
     // check editing contents with shortcut key
     cy.get('.CodeMirror textarea').type(body2, { force: true });
-    cy.get('.CodeMirror-code').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.get('.CodeMirror-code').should('contain.text', body1+body2);
+    cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
     cy.get('.CodeMirror').click().type(savePageShortcutKey);
-    cy.get('.CodeMirror-code').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.get('.CodeMirror-code').should('contain.text', body1+body2);
+    cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
   })
 
   it('/user/admin is successfully loaded', () => {
@@ -172,7 +172,7 @@ context('Access to special pages', () => {
   it('/trash is successfully loaded', () => {
     cy.visit('/trash');
 
-    cy.getByTestid('trash-page-list').contains('There are no pages under this page.');
+    cy.getByTestid('trash-page-list').should('contain.text', 'There are no pages under this page.');
 
     cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-trash`);
@@ -191,7 +191,7 @@ context('Access to special pages', () => {
 
     cy.getByTestid('tags-page').within(() => {
       cy.getByTestid('grw-tags-list').should('be.visible');
-      cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
+      cy.getByTestid('grw-tags-list').should('contain.text', 'You have no tag, You can set tags on pages');
     });
 
     cy.collapseSidebar(true);
@@ -280,8 +280,8 @@ context('Access to Template Editing Mode', () => {
     });
 
     cy.get('.CodeMirror textarea').type(templateBody1, { force: true });
-    cy.get('.CodeMirror-code').contains(templateBody1);
-    cy.get('.page-editor-preview-body').contains(templateBody1);
+    cy.get('.CodeMirror-code').should('contain.text', templateBody1);
+    cy.get('.page-editor-preview-body').should('contain.text', templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
@@ -315,8 +315,8 @@ context('Access to Template Editing Mode', () => {
     })
 
     cy.get('.CodeMirror textarea').type(templateBody2, { force: true });
-    cy.get('.CodeMirror-code').contains(templateBody2);
-    cy.get('.page-editor-preview-body').contains(templateBody2);
+    cy.get('.CodeMirror-code').should('contain.text', templateBody2);
+    cy.get('.page-editor-preview-body').should('contain.text', templateBody2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
