@@ -1,12 +1,32 @@
-import type { GrowiExternalAuthProviderType } from '~/features/questionnaire/interfaces/growi-info';
+import type { IExternalAuthProviderType } from '@growi/core';
+
 import Crowi from '~/server/crowi';
 
+interface AggregateResult {
+  count: number;
+}
 
-const checkLocalStrategyHasAdmin = (async(crowi: Crowi): Promise<boolean> => {
-  // TODO: update check local strategy has admin methods
+const checkLocalStrategyHasAdmin = async(crowi: Crowi): Promise<boolean> => {
   const User = crowi.model('User');
 
-  const localAdmins = await User.aggregate([
+  const localAdmins: AggregateResult[] = await User.aggregate([
+    {
+      $match: {
+        admin: true,
+        status: User.STATUS_ACTIVE,
+        password: { $exists: true },
+      },
+    },
+    { $count: 'count' },
+  ]).exec();
+
+  return localAdmins.length > 0 && localAdmins[0].count > 0;
+};
+
+const checkExternalStrategiesHasAdmin = async(crowi: Crowi, setupExternalStrategies: IExternalAuthProviderType[]): Promise<boolean> => {
+  const User = crowi.model('User');
+
+  const externalAdmins: AggregateResult[] = await User.aggregate([
     { $match: { admin: true, status: User.STATUS_ACTIVE } },
     {
       $lookup: {
@@ -16,29 +36,18 @@ const checkLocalStrategyHasAdmin = (async(crowi: Crowi): Promise<boolean> => {
         as: 'externalAccounts',
       },
     },
-    { $match: { externalAccounts: [] } },
+    {
+      $match: {
+        'externalAccounts.providerType': { $in: setupExternalStrategies },
+      },
+    },
+    { $count: 'count' },
   ]).exec();
-  return localAdmins.length > 0;
-});
 
-const checkExternalStrategiesHasAdmin = (async(crowi: Crowi, setupStrategies: GrowiExternalAuthProviderType[]): Promise<boolean> => {
-  // TODO: update check external strategy has admin methods
-  const ExternalAccount = crowi.model('ExternalAccount');
-  const User = crowi.model('User');
+  return externalAdmins.length > 0 && externalAdmins[0].count > 0;
+};
 
-  const results = await Promise.all(setupStrategies.map(async(strategy) => {
-    const externalAccounts = await ExternalAccount.find({ providerType: strategy })
-      .populate('user', null, { admin: true, status: User.STATUS_ACTIVE })
-      .exec();
-
-    const hasAdmin = externalAccounts.some(account => account.user !== null);
-    return hasAdmin;
-  }));
-
-  return results.some(hasAdmin => hasAdmin);
-});
-
-export const checkSetupStrategiesHasAdmin = (async(crowi: Crowi, setupStrategies: (GrowiExternalAuthProviderType | 'local')[]): Promise<boolean> => {
+export const checkSetupStrategiesHasAdmin = async(crowi: Crowi, setupStrategies: (IExternalAuthProviderType | 'local')[]): Promise<boolean> => {
   if (setupStrategies.includes('local')) {
     const isLocalStrategyHasAdmin = await checkLocalStrategyHasAdmin(crowi);
     if (isLocalStrategyHasAdmin) {
@@ -46,8 +55,12 @@ export const checkSetupStrategiesHasAdmin = (async(crowi: Crowi, setupStrategies
     }
   }
 
-  const setupStrategiesWithoutLocal = setupStrategies.filter(strategy => strategy !== 'local') as GrowiExternalAuthProviderType[];
-  const isExternalStrategiesHasAdmin = await checkExternalStrategiesHasAdmin(crowi, setupStrategiesWithoutLocal);
+  const setupExternalStrategies = setupStrategies.filter(strategy => strategy !== 'local') as IExternalAuthProviderType[];
+  if (setupExternalStrategies.length === 0) {
+    return false;
+  }
+
+  const isExternalStrategiesHasAdmin = await checkExternalStrategiesHasAdmin(crowi, setupExternalStrategies);
 
   return isExternalStrategiesHasAdmin;
-});
+};
