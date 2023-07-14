@@ -7,7 +7,7 @@ import Clamp from 'react-multiline-clamp';
 
 import { IPageHasId } from '~/interfaces/page';
 
-import styles from './PageList.module.scss';
+import styles from './PageListItemS.module.scss';
 
 type PageListItemSProps = {
   page: IPageHasId,
