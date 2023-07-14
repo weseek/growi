@@ -37,9 +37,11 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       {isNarrowView ? (
         <div className="d-flex">
           <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-          <div className="mx-2 page-title">
-            <Clamp lines={2}>{pagePathElement}</Clamp>
-          </div>
+          <Clamp lines={2}>
+            <div className={`mx-2 text-break ${noLink ? 'page-title' : ''}`}>
+              {pagePathElement}
+            </div>
+          </Clamp>
           <span className="ml-2 page-list-ul">
             <PageListMeta page={page} />
           </span>
