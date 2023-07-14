@@ -81,15 +81,16 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
+  const body1 = 'hello';
+  const body2 = ' world!';
   it('View and Edit contents are successfully loaded', () => {
-    const body1 = 'hello';
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
 
     // check edited contents after save
-    cy.get('.CodeMirror').type(body1);
-    cy.get('.CodeMirror').contains(body1);
+    cy.get('.CodeMirror textarea').type(body1, { force: true });
+    cy.get('.CodeMirror-code').contains(body1);
     cy.get('.page-editor-preview-body').contains(body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -98,23 +99,21 @@ context('Access to page', () => {
   })
 
   it('Editing contents are successfully loaded with shortcut key', () => {
-    const body2 = ' world!';
     const savePageShortcutKey = '{ctrl+s}';
 
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
 
+    cy.get('.CodeMirror-code').contains(body1);
+
     // check editing contents with shortcut key
-    cy.get('.CodeMirror-line').children().first().invoke('text').then((text) => {
-      cy.get('.CodeMirror').type(body2);
-      cy.get('.CodeMirror').contains(text+body2);
-      cy.get('.page-editor-preview-body').contains(text+body2);
-      cy.getByTestid('page-editor').should('be.visible');
-      cy.get('.CodeMirror').type(savePageShortcutKey);
-      cy.get('.CodeMirror').contains(text+body2);
-      cy.get('.page-editor-preview-body').contains(text+body2);
-    })
+    cy.get('.CodeMirror textarea').type(body2, { force: true });
+    cy.get('.CodeMirror-code').contains(body1+body2);
+    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.get('.CodeMirror').click().type(savePageShortcutKey);
+    cy.get('.CodeMirror-code').contains(body1+body2);
+    cy.get('.page-editor-preview-body').contains(body1+body2);
   })
 
   it('/user/admin is successfully loaded', () => {
@@ -234,8 +233,10 @@ context('Access to Template Editing Mode', () => {
     })
 
     cy.visit(`/${parentPagePath}/${newPagePath}`);
-    cy.waitUntilSkeletonDisappear();
     cy.collapseSidebar(true);
+
+    cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
 
     // Check if the template is applied
     cy.get('.content-main').within(() => {
@@ -278,8 +279,8 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
     });
 
-    cy.get('.CodeMirror').type(templateBody1);
-    cy.get('.CodeMirror').contains(templateBody1);
+    cy.get('.CodeMirror textarea').type(templateBody1, { force: true });
+    cy.get('.CodeMirror-code').contains(templateBody1);
     cy.get('.page-editor-preview-body').contains(templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -313,8 +314,8 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
-    cy.get('.CodeMirror').type(templateBody2);
-    cy.get('.CodeMirror').contains(templateBody2);
+    cy.get('.CodeMirror textarea').type(templateBody2, { force: true });
+    cy.get('.CodeMirror-code').contains(templateBody2);
     cy.get('.page-editor-preview-body').contains(templateBody2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();

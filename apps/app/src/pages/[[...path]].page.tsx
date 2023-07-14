@@ -83,7 +83,7 @@ const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
+  isPermalink: _isPermalink, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -127,11 +127,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
     </div>
   );
-};
-
-const PutbackPageModal = (): JSX.Element => {
-  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-  return <PutbackPageModal />;
 };
 
 type Props = CommonProps & {
@@ -238,36 +233,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  const { mutate: mutateInitialPage } = useSWRxCurrentPage();
+  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  // Store initial data
-  useEffect(() => {
-    if (!props.skipSSR) {
-      mutateInitialPage(pageWithMeta?.data ?? null);
-    }
-  }, [mutateInitialPage, pageWithMeta, props.skipSSR]);
-
-  // Store initial data (When revisionBody is not SSR)
-  useEffect(() => {
-    if (!props.skipSSR) {
-      return;
-    }
-
-    if (currentPageId != null && !props.isNotFound) {
-      const mutatePageData = async() => {
-        const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
-      };
-
-      // If skipSSR is true, use the API to retrieve page data.
-      // Because pageWIthMeta does not contain revision.body
-      mutatePageData();
-    }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
@@ -287,9 +257,23 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data);
 
-  const shouldRenderPutbackPageModal = pageWithMeta != null
-    ? _isTrashPage(pageWithMeta.data.path)
-    : false;
+  // Store initial data (When revisionBody is not SSR)
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {
@@ -371,8 +355,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         />
 
         <PageStatusAlert />
-
-        {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>
     </>
   );

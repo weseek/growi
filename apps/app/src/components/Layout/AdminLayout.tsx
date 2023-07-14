@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { AdminNavigation } from '../Admin/Common/AdminNavigation';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -9,7 +10,6 @@ import { RawLayout } from './RawLayout';
 import styles from './Admin.module.scss';
 
 
-const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
