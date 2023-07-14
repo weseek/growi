@@ -2,12 +2,13 @@ import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { checkAllSetupStrategiesHasAdmin } from './checkAllSetupStrategiesHasAdmin';
 
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
@@ -309,8 +310,8 @@ const validator = {
  *            description: local account automatically linked the email matched
  */
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -477,8 +478,6 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, addActivity, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
     const { isEnabled, authId } = req.body;
-    const ExternalAccount = crowi.model('ExternalAccount');
-    const User = crowi.model('User');
 
     let setupStrategies = await crowi.passportService.getSetupStrategies();
 
@@ -491,44 +490,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
     }
 
-    async function checkAuthStrategyHasAdmin(strategy) {
-      if (strategy === 'local') {
-        // Get all local admin accounts and filter local admins that are not in external accounts
-        const localAdmins = await User.aggregate([
-          { $match: { admin: true, status: User.STATUS_ACTIVE } },
-          {
-            $lookup: {
-              from: 'externalaccounts',
-              localField: '_id',
-              foreignField: 'user',
-              as: 'externalAccounts',
-            },
-          },
-          { $match: { externalAccounts: [] } },
-        ]).exec();
-        return localAdmins.length > 0;
-      }
-
-      const externalAccounts = await ExternalAccount.find({ providerType: strategy })
-        .populate('user', null, { admin: true, status: User.STATUS_ACTIVE })
-        .exec();
-
-      const hasAdmin = externalAccounts.some(account => account.user !== null);
-
-      return hasAdmin;
-    }
-
-    async function checkAllSetupStrategiesHasAdmin() {
-      const results = await Promise.all(setupStrategies.map(async(strategy) => {
-        const hasAdmin = await checkAuthStrategyHasAdmin(strategy);
-        return hasAdmin;
-      }));
-
-      return results.some(hasAdmin => hasAdmin);
-    }
-
     if (!isEnabled) {
-      const isSetupStrategiesHasAdmin = await checkAllSetupStrategiesHasAdmin();
+      const isSetupStrategiesHasAdmin = await checkAllSetupStrategiesHasAdmin(crowi, setupStrategies);
 
       // Return an error when disabling an strategy when there are no setup strategies with admin-enabled login
       if (!isSetupStrategiesHasAdmin) {
