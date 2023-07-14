@@ -98,3 +98,15 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
     });
   });
 });
+
+Cypress.Commands.add('isInViewport', (selector: string) => {
+  cy.get(selector).then($el => {
+    const bottom = Cypress.config("viewportWidth");
+    const rect = $el[0].getBoundingClientRect();
+
+    expect(rect.top).not.to.be.greaterThan(bottom);
+    expect(rect.bottom).not.to.be.greaterThan(bottom);
+    expect(rect.top).not.to.be.greaterThan(bottom);
+    expect(rect.bottom).not.to.be.greaterThan(bottom);
+  });
+});
