@@ -23,20 +23,20 @@ context('Access to page', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true, true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
   // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#headers');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
@@ -53,13 +53,13 @@ context('Access to page', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#headers').invoke('removeClass', 'blink');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
@@ -67,20 +67,20 @@ context('Access to page', () => {
 
     cy.get('.math').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     cy.getByTestid('navbar-editor').should('be.visible');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.getByTestid('save-page-btn').should('be.visible');
     cy.get('.grw-grant-selector').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
@@ -119,15 +119,15 @@ context('Access to page', () => {
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin');
+    cy.collapseSidebar(true);
 
-    cy.waitUntilSkeletonDisappear();
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
