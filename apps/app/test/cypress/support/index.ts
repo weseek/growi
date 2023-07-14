@@ -38,7 +38,6 @@ declare global {
        getByTestid(selector: string, options?: Partial<Loggable & Timeoutable & Withinable & Shadow>): Chainable<JQuery<Element>>,
        login(username: string, password: string): Chainable<void>,
        collapseSidebar(isCollapsed: boolean, waitUntilSaving?: boolean): Chainable<void>,
-       isInViewport(selector: string): Chainable<void>,
        waitUntilSkeletonDisappear(): Chainable<void>,
        waitUntilSpinnerDisappear(): Chainable<void>,
     }
