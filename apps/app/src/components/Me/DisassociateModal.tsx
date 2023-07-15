@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import type { IExternalAccount } from '@growi/core';
+import type { IExternalAccountHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -15,7 +15,7 @@ import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/p
 type Props = {
   isOpen: boolean,
   onClose: () => void,
-  accountForDisassociate: IExternalAccount,
+  accountForDisassociate: IExternalAccountHasId,
 }
 
 

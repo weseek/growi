@@ -1,4 +1,4 @@
-import type { IExternalAccount, IExternalAuthProviderType } from '@growi/core';
+import type { IExternalAccountHasId, IExternalAuthProviderType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
@@ -103,7 +103,7 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
   };
 };
 
-export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccount[], Error> => {
+export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccountHasId[], Error> => {
   return useSWR(
     '/personal-setting/external-accounts',
     endpoint => apiv3Get(endpoint).then(response => response.data.externalAccounts),

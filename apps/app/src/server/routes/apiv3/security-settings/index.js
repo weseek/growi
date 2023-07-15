@@ -491,7 +491,7 @@ module.exports = (crowi) => {
     }
 
     if (!isEnabled) {
-      const isSetupStrategiesHasAdmin = await checkSetupStrategiesHasAdmin(crowi, setupStrategies);
+      const isSetupStrategiesHasAdmin = await checkSetupStrategiesHasAdmin(setupStrategies);
 
       // Return an error when disabling an strategy when there are no setup strategies with admin-enabled login
       if (!isSetupStrategiesHasAdmin) {
