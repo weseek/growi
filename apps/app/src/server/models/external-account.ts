@@ -1,9 +1,8 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
-import { IUserHasId } from '@growi/core';
+import { IExternalAccount, IExternalAccountHasId, IUserHasId } from '@growi/core';
 import { Schema, Model, Document } from 'mongoose';
 
-import { IExternalAccount, IExternalAccountHasId } from '~/interfaces/external-account';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
