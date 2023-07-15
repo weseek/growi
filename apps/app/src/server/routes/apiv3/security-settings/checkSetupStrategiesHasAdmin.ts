@@ -1,13 +1,12 @@
 import type { IExternalAuthProviderType } from '@growi/core';
-
-import Crowi from '~/server/crowi';
+import mongoose from 'mongoose';
 
 interface AggregateResult {
   count: number;
 }
 
-const checkLocalStrategyHasAdmin = async(crowi: Crowi): Promise<boolean> => {
-  const User = crowi.model('User');
+const checkLocalStrategyHasAdmin = async(): Promise<boolean> => {
+  const User = mongoose.model('User') as any;
 
   const localAdmins: AggregateResult[] = await User.aggregate([
     {
@@ -23,8 +22,8 @@ const checkLocalStrategyHasAdmin = async(crowi: Crowi): Promise<boolean> => {
   return localAdmins.length > 0 && localAdmins[0].count > 0;
 };
 
-const checkExternalStrategiesHasAdmin = async(crowi: Crowi, setupExternalStrategies: IExternalAuthProviderType[]): Promise<boolean> => {
-  const User = crowi.model('User');
+const checkExternalStrategiesHasAdmin = async(setupExternalStrategies: IExternalAuthProviderType[]): Promise<boolean> => {
+  const User = mongoose.model('User') as any;
 
   const externalAdmins: AggregateResult[] = await User.aggregate([
     { $match: { admin: true, status: User.STATUS_ACTIVE } },
@@ -47,9 +46,9 @@ const checkExternalStrategiesHasAdmin = async(crowi: Crowi, setupExternalStrateg
   return externalAdmins.length > 0 && externalAdmins[0].count > 0;
 };
 
-export const checkSetupStrategiesHasAdmin = async(crowi: Crowi, setupStrategies: (IExternalAuthProviderType | 'local')[]): Promise<boolean> => {
+export const checkSetupStrategiesHasAdmin = async(setupStrategies: (IExternalAuthProviderType | 'local')[]): Promise<boolean> => {
   if (setupStrategies.includes('local')) {
-    const isLocalStrategyHasAdmin = await checkLocalStrategyHasAdmin(crowi);
+    const isLocalStrategyHasAdmin = await checkLocalStrategyHasAdmin();
     if (isLocalStrategyHasAdmin) {
       return true;
     }
@@ -60,7 +59,7 @@ export const checkSetupStrategiesHasAdmin = async(crowi: Crowi, setupStrategies:
     return false;
   }
 
-  const isExternalStrategiesHasAdmin = await checkExternalStrategiesHasAdmin(crowi, setupExternalStrategies);
+  const isExternalStrategiesHasAdmin = await checkExternalStrategiesHasAdmin(setupExternalStrategies);
 
   return isExternalStrategiesHasAdmin;
 };
