@@ -38,8 +38,8 @@ context('Editor while uploading to a new page', () => {
 
     // input the body
     const body = 'Hello World!';
-    cy.get('.CodeMirror').type(body + '\n\n');
-    cy.get('.CodeMirror').should('contain.text', body);
+    cy.get('.CodeMirror textarea').type(body + '\n\n', { force: true });
+    cy.get('.CodeMirror-code').should('contain.text', body);
 
     // open GrantSelector
     cy.waitUntil(() => {
@@ -64,21 +64,44 @@ context('Editor while uploading to a new page', () => {
     cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-2`);
 
+    // intercept API req/res for fixing labels
+    const dummyAttachmentId = '64b000000000000000000000';
+    let uploadedAttachmentId = '';
+    cy.intercept('POST', '/_api/attachments.add', (req) => {
+      req.continue((res) => {
+        // store the attachment id
+        uploadedAttachmentId = res.body.attachment._id;
+        // overwrite filePathProxied
+        res.body.attachment.filePathProxied = `/attachment/${dummyAttachmentId}`;
+      });
+    }).as('attachmentsAdd');
+    cy.intercept('GET', `/_api/v3/attachment?attachmentId=${dummyAttachmentId}`, (req) => {
+      // replace attachmentId query
+      req.url = req.url.replace(dummyAttachmentId, uploadedAttachmentId);
+      req.continue((res) => {
+        // overwrite the attachment createdAt
+        res.body.attachment.createdAt = new Date('2023-07-01T00:00:00');
+      });
+    });
+
     // drag-drop a file
-    cy.intercept('POST', '/_api/attachments.add').as('attachmentsAdd');
     const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
     cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
-    cy.wait('@attachmentsAdd')
+    cy.wait('@attachmentsAdd');
+
+    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-3`);
 
     // Update page using shortcut keys
-    cy.get('.CodeMirror').type('{ctrl+s}');
+    cy.get('.CodeMirror').click().type('{ctrl+s}');
+
+    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-4`);
 
     // expect
     cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
-    cy.get('.CodeMirror').should('contain.text', body);
-    cy.get('.CodeMirror').should('contain.text', '[example.txt](/attachment/');
+    cy.get('.CodeMirror-code').should('contain.text', body);
+    cy.get('.CodeMirror-code').should('contain.text', '[example.txt](/attachment/64b000000000000000000000');
     cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
-    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-3`);
+    cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-5`);
   });
 
 });

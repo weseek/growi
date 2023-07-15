@@ -348,7 +348,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link href="/admin/user-groups" prefetch={false}>
+            <Link href="/admin/user-groups">
               {t('user_group_management.group_list')}
             </Link>
           </li>
@@ -365,7 +365,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                   <Link href={{
                     pathname: `/admin/user-group-detail/${ancestorUserGroup._id}`,
                     query: { isExternalGroup: 'true' },
-                  }} prefetch={false}>
+                  }}>
                     {ancestorUserGroup.name}
                   </Link>
                 ) }

@@ -5,6 +5,7 @@ import React, {
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 
 type Props = {
@@ -158,7 +159,7 @@ export const UserGroupTable: FC<Props> = ({
               <tr key={group._id}>
                 {isAclEnabled
                   ? (
-                    <td><a href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</a></td>
+                    <td><Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link></td>
                   )
                   : (
                     <td>{group.name}</td>
@@ -179,7 +180,7 @@ export const UserGroupTable: FC<Props> = ({
                         <li key={group._id} className="list-inline-item badge badge-success">
                           {isAclEnabled
                             ? (
-                              <a href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</a>
+                              <Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link>
                             )
                             : (
                               <p>{group.name}</p>
