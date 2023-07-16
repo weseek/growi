@@ -159,7 +159,6 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
       };
       const expectedParentNode = {
         id: 'cn=parentGroup,ou=groups,dc=example,dc=org',
-        // name is undefined
         userInfos: [{
           id: 'parentGroupUser',
           username: 'parentGroupUser',
@@ -172,7 +171,6 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
       };
       const expectedGrandParentNode = {
         id: 'cn=grandParentGroup,ou=groups,dc=example,dc=org',
-        // email is undefined
         userInfos: [{
           id: 'grandParentGroupUser',
           username: 'grandParentGroupUser',
@@ -189,7 +187,6 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
       const rootNode = rootNodes.find(node => node.id === 'cn=rootGroup,ou=groups,dc=example,dc=org');
       const expectedRootNode = {
         id: 'cn=rootGroup,ou=groups,dc=example,dc=org',
-        // email is undefined
         userInfos: [{
           id: 'rootGroupUser',
           username: 'rootGroupUser',
