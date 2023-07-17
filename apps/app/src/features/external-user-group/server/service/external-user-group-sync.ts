@@ -13,9 +13,9 @@ import ExternalUserGroupRelation from '../models/external-user-group-relation';
 
 // When d = max depth of group trees
 // Max space complexity of syncExternalUserGroups will be:
-// O(MAX_TREES_TO_PROCESS * d * MAX_USERS_TO_PROCESS)
-const MAX_TREES_TO_PROCESS = 10;
-const MAX_USERS_TO_PROCESS = 100;
+// O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
+const TREES_BATCH_SIZE = 10;
+const USERS_BATCH_SIZE = 100;
 
 abstract class ExternalUserGroupSyncService {
 
@@ -48,7 +48,7 @@ abstract class ExternalUserGroupSyncService {
       }
     };
 
-    await batchProcessPromiseAll(trees, MAX_TREES_TO_PROCESS, (root) => {
+    await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
       return syncNode(root);
     });
 
@@ -71,7 +71,7 @@ abstract class ExternalUserGroupSyncService {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
       node.name, node.id, this.groupProviderType, node.description, parentId,
     );
-    await batchProcessPromiseAll(node.userInfos, MAX_USERS_TO_PROCESS, async(userInfo) => {
+    await batchProcessPromiseAll(node.userInfos, USERS_BATCH_SIZE, async(userInfo) => {
       const user = await this.getMemberUser(userInfo);
 
       if (user != null) {

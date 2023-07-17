@@ -11,9 +11,9 @@ import ExternalUserGroupSyncService from './external-user-group-sync';
 
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:
-// O(MAX_TREES_TO_PROCESS * d * MAX_USERS_TO_PROCESS)
-const MAX_TREES_TO_PROCESS = 10;
-const MAX_USERS_TO_PROCESS = 100;
+// O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
+const TREES_BATCH_SIZE = 10;
+const USERS_BATCH_SIZE = 100;
 
 class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
@@ -62,7 +62,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
       const userIds = getUserIdsFromGroupEntry(entry);
 
-      const userInfos = (await batchProcessPromiseAll(userIds, MAX_USERS_TO_PROCESS, (id) => {
+      const userInfos = (await batchProcessPromiseAll(userIds, USERS_BATCH_SIZE, (id) => {
         return this.getUserInfo(id);
       })).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
       const name = this.ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
@@ -98,7 +98,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
       return !allChildGroupDNs.has(entry.objectName);
     });
 
-    return (await batchProcessPromiseAll(rootEntries, MAX_TREES_TO_PROCESS, entry => convert(entry, [])))
+    return (await batchProcessPromiseAll(rootEntries, TREES_BATCH_SIZE, entry => convert(entry, [])))
       .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
   }
 
