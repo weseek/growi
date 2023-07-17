@@ -10,6 +10,7 @@ export type IPageForResuming = {
   grant?: number,
   grantedUsers?: ObjectIdLike[],
   grantedGroup?: ObjectIdLike,
+  grantedGroupModel?: string,
   descendantCount: number,
   status?: number,
   revision?: ObjectIdLike,

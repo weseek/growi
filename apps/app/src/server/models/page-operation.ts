@@ -59,7 +59,13 @@ const pageSchemaForResuming = new Schema<IPageForResuming>({
   status: { type: String },
   grant: { type: Number },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup' },
+  grantedGroup: { type: ObjectId, refPath: 'grantedGroupModel', index: true },
+  grantedGroupModel: {
+    type: String,
+    enum: ['UserGroup', 'ExternalUserGroup'],
+    required: true,
+    default: 'UserGroup',
+  },
   creator: { type: ObjectId, ref: 'User' },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
 });
@@ -73,7 +79,7 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   updateMetadata: { type: Boolean },
   prevDescendantCount: { type: Number },
   grant: { type: Number },
-  grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
+  grantUserGroupId: { type: ObjectId },
   format: { type: String },
   isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },

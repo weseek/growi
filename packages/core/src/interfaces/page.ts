@@ -21,6 +21,7 @@ export type IPage = {
   grant: PageGrant,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,
+  grantedGroupModel?: string,
   lastUpdateUser: Ref<IUser>,
   liker: Ref<IUser>[],
   commentCount: number
