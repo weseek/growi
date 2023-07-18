@@ -38,11 +38,11 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       {isNarrowView ? (
         <Clamp lines={2}>
           <div className={`mx-2 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
-            { pagePathElement }
+            {pagePathElement}
           </div>
         </Clamp>
       ) : (
-        { pagePathElement }
+        pagePathElement
       )}
       <span className="ml-2">
         <PageListMeta page={page} />

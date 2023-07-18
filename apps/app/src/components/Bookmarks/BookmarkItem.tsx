@@ -123,7 +123,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       useDragMode={isOperable}
     >
       <li
-        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 my-2 mr-auto d-flex align-items-center"
+        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
         style={{ paddingLeft }}
