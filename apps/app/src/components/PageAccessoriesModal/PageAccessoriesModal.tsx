@@ -10,23 +10,24 @@ import {
 } from '~/stores/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
-import { CustomNavTab } from './CustomNavigation/CustomNav';
-import CustomTabContent from './CustomNavigation/CustomTabContent';
-import ExpandOrContractButton from './ExpandOrContractButton';
-import AttachmentIcon from './Icons/AttachmentIcon';
-import HistoryIcon from './Icons/HistoryIcon';
-import ShareLinkIcon from './Icons/ShareLinkIcon';
-import PageAttachment from './PageAttachment';
-import { PageHistory, getQueryParam } from './PageHistory';
-import ShareLink from './ShareLink/ShareLink';
+import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import CustomTabContent from '../CustomNavigation/CustomTabContent';
+import ExpandOrContractButton from '../ExpandOrContractButton';
+import AttachmentIcon from '../Icons/AttachmentIcon';
+import HistoryIcon from '../Icons/HistoryIcon';
+import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import PageAttachment from '../PageAttachment';
+import { PageHistory, getQueryParam } from '../PageHistory';
+import ShareLink from '../ShareLink/ShareLink';
+
+import { useOpenModalByQueryParam } from './open-modal-by-query-param';
 
 import styles from './PageAccessoriesModal.module.scss';
 
-const PageAccessoriesModal = (): JSX.Element => {
+export const PageAccessoriesModal = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>();
   const [sourceRevisionId, setSourceRevisionId] = useState<string>();
   const [targetRevisionId, setTargetRevisionId] = useState<string>();
 
@@ -37,17 +38,9 @@ const PageAccessoriesModal = (): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isLinkSharingDisabled } = useDisableLinkSharing();
 
-  const { data: status, mutate, close } = usePageAccessoriesModal();
+  const { data: status, close, selectContents } = usePageAccessoriesModal();
 
-  // activate tab when open
-  useEffect(() => {
-    if (status == null) return;
-
-    const { isOpened, activatedContents } = status;
-    if (isOpened && activatedContents != null) {
-      setActiveTab(activatedContents);
-    }
-  }, [status]);
+  useOpenModalByQueryParam();
 
   // Set sourceRevisionId and targetRevisionId as state with valid object id string
   useEffect(() => {
@@ -68,8 +61,7 @@ const PageAccessoriesModal = (): JSX.Element => {
     const [, sourceRevisionId, targetRevisionId] = matches;
     setSourceRevisionId(sourceRevisionId);
     setTargetRevisionId(targetRevisionId);
-    mutate({ isOpened: true });
-  }, [mutate]);
+  }, []);
 
   const navTabMapping = useMemo(() => {
     return {
@@ -112,7 +104,7 @@ const PageAccessoriesModal = (): JSX.Element => {
     </div>
   ), [close, isWindowExpanded]);
 
-  if (status == null || activeTab == null) {
+  if (status == null || status.activatedContents == null) {
     return <></>;
   }
 
@@ -128,20 +120,16 @@ const PageAccessoriesModal = (): JSX.Element => {
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab
-          activeTab={activeTab}
+          activeTab={status.activatedContents}
           navTabMapping={navTabMapping}
           breakpointToHideInactiveTabsDown="md"
-          onNavSelected={(v: PageAccessoriesModalContents) => {
-            setActiveTab(v);
-          }}
+          onNavSelected={selectContents}
           hideBorderBottom
         />
       </ModalHeader>
       <ModalBody className="overflow-auto grw-modal-body-style">
-        <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
+        <CustomTabContent activeTab={status.activatedContents} navTabMapping={navTabMapping} />
       </ModalBody>
     </Modal>
   );
 };
-
-export default PageAccessoriesModal;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
@@ -10,9 +10,10 @@ function getURLQueryParamValue(key: string) {
 
 const queryCompareFormat = new RegExp(/([a-z0-9]){24}...([a-z0-9]){24}/);
 
-const ShowPageAccessoriesModal = (): JSX.Element => {
+export const useOpenModalByQueryParam = (): void => {
   const { data: status, open: openPageAccessories } = usePageAccessoriesModal();
   const [isArleadyMounted, setIsArleadyMounted] = useState(false);
+
   useEffect(() => {
     const pageIdParams = getURLQueryParamValue('compare');
     if (status == null || status.isOpened === true) {
@@ -28,7 +29,5 @@ const ShowPageAccessoriesModal = (): JSX.Element => {
     }
     setIsArleadyMounted(true);
   }, [openPageAccessories, status, isArleadyMounted]);
-  return <></>;
-};
 
-export default ShowPageAccessoriesModal;
+};
