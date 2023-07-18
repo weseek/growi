@@ -35,7 +35,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
   return (
     <>
       {isNarrowView ? (
-        <div className={`d-flex ${styles['page-list-items']}`}>
+        <div className={`d-flex align-items-center ${styles['page-list-items']}`}>
           <UserPicture user={page.lastUpdateUser} noLink={noLink} />
           <Clamp lines={2}>
             <div className={`mx-2 page-title ${noLink ? 'text-break' : ''}`}>
