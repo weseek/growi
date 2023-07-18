@@ -33,7 +33,7 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   const bodyContent = () => {
 
     return (
-      <div className="card well comment-body mt-2 p-2">
+      <div className="card well mt-2 p-2">
         <Link href={`${url}`} legacyBehavior>{name}</Link>
       </div>
     );

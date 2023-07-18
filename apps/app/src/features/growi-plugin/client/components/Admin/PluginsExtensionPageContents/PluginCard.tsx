@@ -81,7 +81,7 @@ export const PluginCard = (props: Props): JSX.Element => {
       setIsDeleteConfirmModalShown(false);
     };
 
-    const onDeletePlugin = async() => {
+    const onClickPluginDeleteBtnHandler = async() => {
       const reqUrl = `/plugins/${id}/remove`;
 
       try {
@@ -113,7 +113,7 @@ export const PluginCard = (props: Props): JSX.Element => {
             name={name}
             url={url}
             cancelToDelete={onCancelDeletePlugin}
-            confirmToDelete={onDeletePlugin}
+            confirmToDelete={onClickPluginDeleteBtnHandler}
           />
         )}
       </div>
