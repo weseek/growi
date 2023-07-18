@@ -10,13 +10,12 @@ context('Access to sharelink by guest', () => {
     });
 
     cy.visit('/Sandbox/Bootstrap4');
-    cy.waitUntilSkeletonDisappear();
 
     // open dropdown
     cy.waitUntil(() => {
       // do
       cy.get('#grw-subnav-container').within(() => {
-        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
+        cy.getByTestid('open-page-item-control-btn', { timeout: 14000 }).find('button').click({force: true});
       });
       // wait until
       return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
