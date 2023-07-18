@@ -202,8 +202,11 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     sumOfLikers, sumOfSeenUsers, isLiked,
   } = pageInfo;
 
-  const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
-  forceHideMenuItemsWithBookmark.push(MenuItemType.BOOKMARK);
+  const forceHideMenuItemsWithAdditions = [
+    ...(forceHideMenuItems ?? []),
+    MenuItemType.BOOKMARK,
+    MenuItemType.REVERT,
+  ];
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
@@ -244,7 +247,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           isReadOnlyUser={!!isReadOnlyUser}
-          forceHideMenuItems={forceHideMenuItemsWithBookmark}
+          forceHideMenuItems={forceHideMenuItemsWithAdditions}
           additionalMenuItemOnTopRenderer={!isReadOnlyUser ? additionalMenuItemOnTopRenderer : undefined}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
