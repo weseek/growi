@@ -60,6 +60,8 @@ const router = express.Router();
  *            type: boolean
  *          isSearchScopeChildrenAsDefault:
  *            type: boolean
+ *          isEnabledMarp:
+ *            type: boolean
  *      CustomizeHighlight:
  *        description: CustomizeHighlight
  *        type: object
@@ -124,6 +126,7 @@ module.exports = (crowi) => {
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
       body('isSearchScopeChildrenAsDefault').isBoolean(),
+      body('isEnabledMarp').isBoolean(),
     ],
     customizeTitle: [
       body('customizeTitle').isString(),
@@ -180,6 +183,7 @@ module.exports = (crowi) => {
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
+      isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
@@ -406,6 +410,7 @@ module.exports = (crowi) => {
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
       'customize:isSearchScopeChildrenAsDefault': req.body.isSearchScopeChildrenAsDefault,
+      'customize:isEnabledMarp': req.body.isEnabledMarp,
     };
 
     try {
@@ -420,6 +425,7 @@ module.exports = (crowi) => {
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
         isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
+        isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
