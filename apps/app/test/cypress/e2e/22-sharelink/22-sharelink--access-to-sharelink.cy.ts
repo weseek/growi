@@ -10,18 +10,16 @@ context('Access to sharelink by guest', () => {
     });
 
     cy.visit('/Sandbox/Bootstrap4');
+    cy.waitUntilSkeletonDisappear();
 
     // open dropdown
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('grw-contextual-sub-nav').should('be.visible').within(() => {
-        cy.waitUntilSkeletonDisappear();
-        cy.getByTestid('open-page-item-control-btn').find('button').first().as('btn').click();
+      cy.get('#grw-subnav-container').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until
-      return cy.get('body').within(() => {
-        return Cypress.$('.dropdown-menu.show').is(':visible');
-      });
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
 
     // open modal
