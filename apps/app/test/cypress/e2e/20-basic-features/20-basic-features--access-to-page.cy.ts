@@ -7,8 +7,23 @@ function openEditor() {
     });
     // until
     return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-  })
+  });
   cy.get('.CodeMirror').should('be.visible');
+}
+
+function appendTextToEditorUntilContains(inputText: string) {
+  const lines: string[] = [];
+  cy.waitUntil(() => {
+    // do
+    cy.get('.CodeMirror textarea').type(inputText, { force: true });
+    // until
+    return cy.get('.CodeMirror-line')
+      .each(($item) => {
+        lines.push($item.text());
+      }).then(() => {
+        return lines.join('\n').endsWith(inputText);
+      });
+  });
 }
 
 context('Access to page', () => {
@@ -86,22 +101,22 @@ context('Access to page', () => {
 
   const body1 = 'hello';
   const body2 = ' world!';
-  it('View and Edit contents are successfully loaded', () => {
+  it('Edit and save with save-page-btn', () => {
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
 
     // check edited contents after save
-    cy.get('.CodeMirror textarea').type(body1, { force: true });
-    cy.get('.CodeMirror-code').should('contain.text', body1);
+    appendTextToEditorUntilContains(body1);
     cy.get('.page-editor-preview-body').should('contain.text', body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
     cy.get('.wiki').should('be.visible');
     cy.get('.wiki').children().first().should('have.text', body1);
+    cy.screenshot(`${ssPrefix}-edit-and-save-with-save-page-btn`);
   })
 
-  it('Editing contents are successfully loaded with shortcut key', () => {
+  it('Edit and save with shortcut key', () => {
     const savePageShortcutKey = '{ctrl+s}';
 
     cy.visit('/Sandbox/testForUseEditingMarkdown');
@@ -109,12 +124,12 @@ context('Access to page', () => {
     openEditor();
 
     // check editing contents with shortcut key
-    cy.get('.CodeMirror textarea').type(body2, { force: true });
-    cy.get('.CodeMirror-code').should('contain.text', body1+body2);
+    appendTextToEditorUntilContains(body2);
     cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
     cy.get('.CodeMirror').click().type(savePageShortcutKey);
     cy.get('.CodeMirror-code').should('contain.text', body1+body2);
     cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
+    cy.screenshot(`${ssPrefix}-edit-and-save-with-shortcut-key`);
   })
 
   it('/user/admin is successfully loaded', () => {
