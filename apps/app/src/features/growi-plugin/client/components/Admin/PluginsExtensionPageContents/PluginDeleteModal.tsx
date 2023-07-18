@@ -23,9 +23,6 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   const { t } = useTranslation('admin');
 
   const headerContent = () => {
-    if (isShown === false) {
-      return <></>;
-    }
     return (
       <span>
         {t('plugins.confirm')}
@@ -34,9 +31,6 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   };
 
   const bodyContent = () => {
-    if (isShown === false) {
-      return <></>;
-    }
 
     return (
       <div className="card well comment-body mt-2 p-2">
@@ -46,9 +40,6 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   };
 
   const footerContent = () => {
-    if (isShown === false) {
-      return <></>;
-    }
     return (
       <>
         <Button color="danger" onClick={confirmToDelete}>
