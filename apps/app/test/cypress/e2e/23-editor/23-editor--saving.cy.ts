@@ -117,8 +117,9 @@ context('PageCreateModal', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.Toastify__toast').should('be.visible');
-    cy.collapseSidebar(true);
+
     cy.screenshot(`${ssPrefix}create-template-for-children-error`);
+
     cy.get('.Toastify__toast').should('be.visible').within(() => {
       cy.get('.Toastify__close-button').should('be.visible').click();
       cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
