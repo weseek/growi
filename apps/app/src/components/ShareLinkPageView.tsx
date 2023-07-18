@@ -10,17 +10,17 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { MainPane } from '../Layout/MainPane';
-import RevisionRenderer from '../Page/RevisionRenderer';
-import ShareLinkAlert from '../Page/ShareLinkAlert';
-import type { PageSideContentsProps } from '../PageSideContents';
+import { MainPane } from './Layout/MainPane';
+import RevisionRenderer from './Page/RevisionRenderer';
+import ShareLinkAlert from './Page/ShareLinkAlert';
+import type { PageSideContentsProps } from './PageSideContents';
 
 
 const logger = loggerFactory('growi:Page');
 
 
-const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
+const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
 
 
 type Props = {
