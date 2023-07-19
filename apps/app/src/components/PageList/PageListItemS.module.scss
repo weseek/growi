@@ -1,13 +1,4 @@
-.page-list-items :global {
-  .page-title {
-    flex: 1;
-    line-height: 1.2;
-  }
-
-  .page-list-meta {
-    > span {
-      margin-right: 0.3rem;
-    }
-  }
-
+.page-title {
+  flex: 1;
+  line-height: 1.2;
 }
