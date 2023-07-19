@@ -75,7 +75,7 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   prevDescendantCount: { type: Number },
   grant: { type: Number },
   grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
-  grantExternalUserGroupId: { type: ObjectId, refPath: 'ExternalUserGroup' },
+  grantExternalUserGroupId: { type: ObjectId, ref: 'ExternalUserGroup' },
   format: { type: String },
   isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },
