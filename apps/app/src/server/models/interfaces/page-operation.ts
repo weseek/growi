@@ -10,7 +10,7 @@ export type IPageForResuming = {
   grant?: number,
   grantedUsers?: ObjectIdLike[],
   grantedGroup?: ObjectIdLike,
-  grantedGroupModel?: string,
+  grantedExternalGroup?: ObjectIdLike,
   descendantCount: number,
   status?: number,
   revision?: ObjectIdLike,
@@ -25,7 +25,7 @@ export type IUserForResuming = {
 export type IOptionsForUpdate = {
   grant?: PageGrant,
   grantUserGroupId?: ObjectIdLike,
-  grantUserGroupIdModel?: string,
+  grantExternalUserGroupId?: ObjectIdLike,
   isSyncRevisionToHackmd?: boolean,
   overwriteScopesOfDescendants?: boolean,
 };
@@ -33,7 +33,7 @@ export type IOptionsForUpdate = {
 export type IOptionsForCreate = {
   format?: string,
   grantUserGroupId?: ObjectIdLike,
-  grantUserGroupIdModel?: string,
+  grantExternalUserGroupId?: ObjectIdLike,
   grant?: PageGrant,
   overwriteScopesOfDescendants?: boolean,
   isSynchronously?: boolean,

@@ -69,12 +69,13 @@ export const extractToAncestorsPaths = (pagePath) => {
 export const populateDataToShowRevision = (page, userPublicFields, shouldExcludeBody = false) => {
   return page
     .populate([
-      { path: 'lastUpdateUser', select: userPublicFields },
-      { path: 'creator', select: userPublicFields },
-      { path: 'deleteUser', select: userPublicFields },
-      { path: 'grantedGroup' },
-      { path: 'revision', select: shouldExcludeBody ? '-body' : undefined, populate: {
-        path: 'author', select: userPublicFields,
+      { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
+      { path: 'creator', model: 'User', select: userPublicFields },
+      { path: 'deleteUser', model: 'User', select: userPublicFields },
+      { path: 'grantedGroup', model: 'UserGroup' },
+      { path: 'grantedExternalGroup', model: 'ExternalUserGroup' },
+      { path: 'revision', model: 'Revision', select: shouldExcludeBody ? '-body' : undefined, populate: {
+        path: 'author', model: 'User', select: userPublicFields,
       } },
     ]);
 };
