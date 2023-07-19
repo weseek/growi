@@ -68,6 +68,7 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
+      {/* TODO: #123475 [Plugin] プラグイン由来のテンプレートであることがわかるように badge を付ける */}
       <h4 className="mb-1">{localizedTemplate.title}</h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
@@ -94,6 +95,7 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       className="px-4 py-3"
     >
+      {/* TODO: #123475 [Plugin] プラグイン由来のテンプレートであることがわかるように badge を付ける */}
       <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
