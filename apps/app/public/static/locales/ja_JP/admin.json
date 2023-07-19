@@ -484,8 +484,12 @@
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
-      "enable_marp": "Marp を使用する",
-      "enable_marp_desc": "OFFの場合、Marp の使用はできません。\r\nMarp 公式サイト: https://marp.app\r\nGROWI における Marp の使い方: todomarp"
+      "enable_marp": "Marp を有効化する",
+      "enable_marp_desc": "OFFの場合、Marp は使用できません。",
+      "marp_official_site": "Marp 公式サイト: ",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "GROWI での Marp の使い方: ",
+      "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
