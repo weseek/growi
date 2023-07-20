@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-// import mediumZoom from 'medium-zoom';
+import FsLightbox from 'fslightbox-react';
+import Image from 'next/image';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import loggerFactory from '~/utils/logger';
-
-import { ImageZoom } from './ImageZoom';
-import 'katex/dist/katex.min.css';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -39,15 +37,16 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   // ここにimgタグに適用するコンポーネントを書く
   const Image = ({ node, ...props }) => {
+    const [toggler, setToggler] = useState(false);
+    logger.error(props.src);
     return (
-      <ImageZoom
-        src={props.src}
-        alt={props.alt}
-        options={{
-          background: 'black',
-          container: '#main',
-        }}
-      />
+      <>
+        <img src={props.src} alt={props.alt} onClick={() => setToggler(!toggler)}/>
+        <FsLightbox
+          toggler={toggler}
+          sources={[props.src]}
+        />
+      </>
     );
   };
 
