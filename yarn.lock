@@ -2376,7 +2376,7 @@
     "@growi/ui" "link:packages/ui"
     escape-string-regexp "^4.0.0"
     express "^4.16.1"
-    mongoose "^6.5.0"
+    mongoose "^6.11.3"
     swr "^2.0.3"
 
 "@growi/slack@link:packages/slack":
@@ -5297,13 +5297,6 @@ bson-objectid@^2.0.4:
   resolved "https://registry.yarnpkg.com/bson-objectid/-/bson-objectid-2.0.4.tgz#339211572ef97dc98f2d68eaee7b99b7be59a089"
   integrity sha512-vgnKAUzcDoa+AeyYwXCoHyF2q6u/8H46dxu5JN+4/TZeq/Dlinn0K6GvxsCLb3LHUJl0m/TLiEK31kUwtgocMQ==
 
-bson@^4.5.4:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/bson/-/bson-4.6.0.tgz#15c3b39ba3940c3d915a0c44d51459f4b4fbf1b2"
-  integrity sha512-8jw1NU1hglS+Da1jDOUYuNcBJ4cNHCFIqzlwoFNnsTOg2R/ox0aTYcTiBN4dzRa9q7Cvy6XErh3L8ReTEb9AQQ==
-  dependencies:
-    buffer "^5.6.0"
-
 bson@^4.7.2:
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/bson/-/bson-4.7.2.tgz#320f4ad0eaf5312dd9b45dc369cc48945e2a5f2e"
@@ -7019,11 +7012,6 @@ denque@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/denque/-/denque-1.4.1.tgz#6744ff7641c148c3f8a69c307e51235c1f4a37cf"
   integrity sha512-OfzPuSZKGcgr96rf1oODnfjqBFmr1DVoc/TrItj3Ohe0Ah1C5WX5Baquw/9U9KovnQ88EqmJbD66rKYUQYN1tQ==
-
-denque@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/denque/-/denque-2.0.1.tgz#bcef4c1b80dc32efe97515744f21a4229ab8934a"
-  integrity sha512-tfiWc6BQLXNLpNiR5iGd0Ocu3P3VpxfzFiqubLgMfhfOw9WyvgJBd46CClNn9k3qfbjvT//0cf7AlYRX/OslMQ==
 
 depd@2.0.0, depd@~2.0.0:
   version "2.0.0"
@@ -12393,14 +12381,6 @@ moment@2.x, moment@>=2.26.0, moment@^2.19.3:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-mongodb-connection-string-url@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/mongodb-connection-string-url/-/mongodb-connection-string-url-2.2.0.tgz#e2422bae91a953dc4ae5882e401301f5be39a227"
-  integrity sha512-U0cDxLUrQrl7DZA828CA+o69EuWPWEJTwdMPozyd7cy/dbtncUZczMw7wRHcwMD7oKOn0NM2tF9jdf5FFVW9CA==
-  dependencies:
-    "@types/whatwg-url" "^8.2.1"
-    whatwg-url "^11.0.0"
-
 mongodb-connection-string-url@^2.5.4:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/mongodb-connection-string-url/-/mongodb-connection-string-url-2.6.0.tgz#57901bf352372abdde812c81be47b75c6b2ec5cf"
@@ -12437,7 +12417,7 @@ mongodb-memory-server@^8.12.2:
     mongodb-memory-server-core "8.12.2"
     tslib "^2.5.0"
 
-mongodb@4.16.0, mongodb@^4.13.0:
+mongodb@4.16.0, mongodb@^4.0.1, mongodb@^4.13.0:
   version "4.16.0"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-4.16.0.tgz#8b0043de7b577c6a7e0ce44a2ca7315b9c0a7927"
   integrity sha512-0EB113Fsucaq1wsY0dOhi1fmZOwFtLOtteQkiqOXGklvWMnSH3g2QS53f0KTP+/6qOkuoXE2JksubSZNmxeI+g==
@@ -12447,17 +12427,6 @@ mongodb@4.16.0, mongodb@^4.13.0:
     socks "^2.7.1"
   optionalDependencies:
     "@aws-sdk/credential-providers" "^3.186.0"
-    saslprep "^1.0.3"
-
-mongodb@^4.0.1:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-4.2.0.tgz#7ef94ab0613a2fd890763260fdac20cd099d0d7f"
-  integrity sha512-lg3MJ9dAKxhogRnIB6/j63gfD7JryZwRC0nNzZ82RhENw4nCmscZVqRfOmNzTvSNndJx9ZhxZpm9JvnKuH/GTA==
-  dependencies:
-    bson "^4.5.4"
-    denque "^2.0.1"
-    mongodb-connection-string-url "^2.2.0"
-  optionalDependencies:
     saslprep "^1.0.3"
 
 mongoose-gridfs@^1.2.42:
@@ -12499,10 +12468,10 @@ mongoose-valid8@>=1.6.18:
     lodash ">=4.17.15"
     validator ">=13.0.0"
 
-mongoose@^6.5.0:
-  version "6.11.1"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.11.1.tgz#4abcfc747ad38b364a90488af781d054a8cbc242"
-  integrity sha512-AvQ8C5ZGF6GcsQhoRg/i7pbNZpb96qLGU5ICBllckp7qMOxcfUF1nA6JstZw841BqRcE6myZ/mx9CluEESaw5Q==
+mongoose@^6.11.3:
+  version "6.11.3"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.11.3.tgz#26e5de0437c470f09c5a71a188a75718efc6c84a"
+  integrity sha512-M1Y5PjttgV51YDa30u7GVMVypQSlNZF/jUhlzTBAmaz5C9FvOr8eih/VLhhO7xtTSlcVTFQS1dqlQNMbtfUowQ==
   dependencies:
     bson "^4.7.2"
     kareem "2.5.1"
