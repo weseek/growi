@@ -68,7 +68,10 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
-      <h4 className="mb-1">{localizedTemplate.title}</h4>
+      {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
+      <h4 className="mb-1">{localizedTemplate.title}
+        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
+      </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
@@ -94,7 +97,10 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       className="px-4 py-3"
     >
-      <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
+      {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
+      <h4 className="mb-1 text-wrap">{localizedTemplate.title}
+        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
+      </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
