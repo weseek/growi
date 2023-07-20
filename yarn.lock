@@ -9431,29 +9431,7 @@ hast-util-sanitize@^4.1.0:
   dependencies:
     "@types/hast" "^2.0.0"
 
-hast-util-select@^5.0.2, hast-util-select@~5.0.1:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.2.tgz#8c603ebacf0f47e154c5fa2e5b7efc520813866b"
-  integrity sha512-QGN5o7N8gq1BhUX96ApLE8izOXlf+IPkOVGXcp9Dskdd3w0OqZrn6faPAmS0/oVogwJOd0lWFSYmBK75e+030g==
-  dependencies:
-    "@types/hast" "^2.0.0"
-    "@types/unist" "^2.0.0"
-    bcp-47-match "^2.0.0"
-    comma-separated-tokens "^2.0.0"
-    css-selector-parser "^1.0.0"
-    direction "^2.0.0"
-    hast-util-has-property "^2.0.0"
-    hast-util-is-element "^2.0.0"
-    hast-util-to-string "^2.0.0"
-    hast-util-whitespace "^2.0.0"
-    not "^0.1.0"
-    nth-check "^2.0.0"
-    property-information "^6.0.0"
-    space-separated-tokens "^2.0.0"
-    unist-util-visit "^4.0.0"
-    zwitch "^2.0.0"
-
-hast-util-select@^5.0.5:
+hast-util-select@^5.0.2, hast-util-select@^5.0.5, hast-util-select@~5.0.1:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.5.tgz#be9ccb71d2278681ca024727f12abd4f93b3e9bc"
   integrity sha512-QQhWMhgTFRhCaQdgTKzZ5g31GLQ9qRb1hZtDPMqQaOhpLBziWcshUS0uCR5IJ0U1jrK/mxg35fmcq+Dp/Cy2Aw==
