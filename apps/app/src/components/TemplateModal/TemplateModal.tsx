@@ -69,7 +69,7 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       aria-current="true"
     >
       <h4 className="mb-1">{localizedTemplate.title}
-        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted" data-bs-toggle="tooltip" title="Plugin"></i> : ''}
+        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted"></i> : ''}
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
@@ -97,7 +97,7 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       className="px-4 py-3"
     >
       <h4 className="mb-1 text-wrap">{localizedTemplate.title}
-        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted" data-bs-toggle="tooltip" title="Plugin"></i> : ''}
+        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted"></i> : ''}
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
