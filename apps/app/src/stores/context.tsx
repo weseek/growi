@@ -237,7 +237,10 @@ export const useIsAdmin = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     isLoading ? null : ['isAdminUser', currentUser?._id],
     () => isAdminUser,
-    { fallbackData: isAdminUser },
+    {
+      fallbackData: isAdminUser,
+      keepPreviousData: true,
+    },
   );
 };
 
