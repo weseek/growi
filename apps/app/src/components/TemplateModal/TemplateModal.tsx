@@ -69,7 +69,9 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       aria-current="true"
     >
       {/* TODO: #123475 [Plugin] プラグイン由来のテンプレートであることがわかるように badge を付ける */}
-      <h4 className="mb-1">{localizedTemplate.title}</h4>
+      <h4 className="mb-1">{localizedTemplate.title}
+        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted" data-bs-toggle="tooltip" title="Plugin"></i> : ''}
+      </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
@@ -96,7 +98,9 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       className="px-4 py-3"
     >
       {/* TODO: #123475 [Plugin] プラグイン由来のテンプレートであることがわかるように badge を付ける */}
-      <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
+      <h4 className="mb-1 text-wrap">{localizedTemplate.title}
+        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted" data-bs-toggle="tooltip" title="Plugin"></i> : ''}
+      </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
@@ -190,6 +194,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
               { templateSummaries != null && templateSummaries.map((templateSummary) => {
                 const templateId = constructTemplateId(templateSummary);
                 const isSelected = selectedTemplateSummary != null && constructTemplateId(selectedTemplateSummary) === templateId;
+                console.log(templateSummary);
 
                 return (
                   <TemplateListGroupItem
