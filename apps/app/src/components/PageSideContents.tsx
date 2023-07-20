@@ -4,6 +4,7 @@ import { IPageHasId, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
+import { IPageInfoForOperation } from '~/interfaces/page';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -30,7 +31,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const { page, isSharedUser } = props;
 
-  const { data: pageInfo } = useSWRxPageInfo(page.id);
+  const { data: pageInfo } = useSWRxPageInfo(page._id);
 
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
@@ -54,7 +55,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             {t('page_list')}
 
             {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
-            { !isTrash ? <CountBadge count={pageInfo.descendantCount} offset={1} /> : <div className='px-2'></div>}
+            { !isTrash && pageInfo != null
+              ? <CountBadge count={(pageInfo as IPageInfoForOperation).descendantCount} offset={1} />
+              : <div className='px-2'></div>}
           </button>
         )}
       </div>
@@ -70,7 +73,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
               <span>Comments</span>
-              <CountBadge count={pageInfo.commentCount} />
+              { pageInfo != null
+                ? <CountBadge count={(pageInfo as IPageInfoForOperation).commentCount} />
+                : <div className='px-2'></div>}
             </button>
           </Link>
         </div>
