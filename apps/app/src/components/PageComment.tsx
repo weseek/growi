@@ -9,7 +9,7 @@ import { Button } from 'reactstrap';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import { RendererOptions } from '~/interfaces/renderer-options';
-import { useSWRxPageInfo } from '~/stores/page';
+import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -57,7 +57,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(

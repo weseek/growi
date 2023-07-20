@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 
 import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
-import { useIsTrashPage, useSWRxPageInfo } from '~/stores/page';
+import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
@@ -32,7 +32,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
 
