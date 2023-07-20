@@ -68,6 +68,7 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
+      {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
       <h4 className="mb-1">{localizedTemplate.title}
         {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted"></i> : ''}
       </h4>
@@ -96,6 +97,7 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       className="px-4 py-3"
     >
+      {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
       <h4 className="mb-1 text-wrap">{localizedTemplate.title}
         {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted"></i> : ''}
       </h4>
