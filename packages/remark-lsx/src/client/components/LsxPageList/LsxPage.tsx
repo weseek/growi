@@ -5,7 +5,7 @@ import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
 import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
 import Link from 'next/link';
 
-import type { PageNode } from '../../interfaces/page-node';
+import type { PageNode } from '../../../interfaces/page-node';
 import { LsxContext } from '../lsx-context';
 
 
