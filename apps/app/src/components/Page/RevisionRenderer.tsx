@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import FsLightbox from 'fslightbox-react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import loggerFactory from '~/utils/logger';
 
+import { LightBox } from '../ReactMarkdownComponents/LightBox';
 import 'katex/dist/katex.min.css';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
@@ -36,26 +36,13 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const className = `wiki ${additionalClassName ?? ''}`;
 
-  const LightBoxImage = ({ node, ...props }) => {
-    const [toggler, setToggler] = useState(false);
-    return (
-      <>
-        <img src={props.src} alt={props.alt} onClick={() => setToggler(!toggler)}/>
-        <FsLightbox
-          toggler={toggler}
-          sources={[props.src]}
-        />
-      </>
-    );
-  };
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
         {...rendererOptions}
         className={className}
         components={{
-          img: LightBoxImage,
+          img: LightBox,
         }}
       >
         {markdown}
