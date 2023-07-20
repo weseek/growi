@@ -1,8 +1,30 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.7](https://github.com/weseek/growi/compare/v6.1.6...v6.1.7) - 2023-07-19
+
+### 💎 Features
+
+- feat: Authentication settings cannot be disabled if there will be no administrator user available to log in (#7761) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Show spinner while installing and logging-in (#7823) @soumaeda
+- imprv: Routing with next link (#7880) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Auto popup PageAccessoriesModal and show page history (#7888) @yuki-takei
+- fix: Auto-scroll does not work when accessing the page when the header string is CJK (#7882) @yuki-takei
+- fix: Avoid unnecessary next routing (#7863) @miya
+- fix: Work put back page on bookmark sidebar (#7698) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Render SearchPageBase in CSR (#7889) @yuki-takei
 
 ## [v6.1.6](https://github.com/weseek/growi/compare/v6.1.5...v6.1.6) - 2023-07-12
 
