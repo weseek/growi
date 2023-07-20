@@ -115,7 +115,7 @@
     "extensible-custom-error": "^0.0.7",
     "form-data": "^4.0.0",
     "graceful-fs": "^4.1.11",
-    "hast-util-select": "^5.0.2",
+    "hast-util-select": "^5.0.5",
     "helmet": "^4.6.0",
     "http-errors": "^2.0.0",
     "i18next": "^22.4.10",

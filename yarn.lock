@@ -9426,7 +9426,7 @@ hast-util-sanitize@^4.1.0:
   dependencies:
     "@types/hast" "^2.0.0"
 
-hast-util-select@^5.0.2, hast-util-select@^5.0.5, hast-util-select@~5.0.1:
+hast-util-select@^5.0.5, hast-util-select@~5.0.1:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.5.tgz#be9ccb71d2278681ca024727f12abd4f93b3e9bc"
   integrity sha512-QQhWMhgTFRhCaQdgTKzZ5g31GLQ9qRb1hZtDPMqQaOhpLBziWcshUS0uCR5IJ0U1jrK/mxg35fmcq+Dp/Cy2Aw==
