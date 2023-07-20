@@ -97,6 +97,7 @@ export const ExtractedAttachments = React.memo(({
       : getClassesAndStylesForNonGrid();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const renderExtractedImage = useCallback((attachment: IAttachmentHasId, index: number) => {
     const { options } = refsContext;
 
