@@ -13,15 +13,12 @@ export const batchProcessPromiseAll = async<I, O>(
 ): Promise<O[]> => {
   let results: O[] = [];
   for (let start = 0; start < items.length; start += limit) {
-    const end = start + limit > items.length ? items.length : start + limit;
+    const end = Math.min(start + limit, items.length);
 
     // eslint-disable-next-line no-await-in-loop
     const slicedResults = await Promise.all(items.slice(start, end).map(fn));
 
-    results = [
-      ...results,
-      ...slicedResults,
-    ];
+    results = results.concat(slicedResults);
   }
 
   return results;
