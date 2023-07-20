@@ -223,7 +223,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                   })() }
                 </span>
               </DropdownToggle>
-              <DropdownMenu role="menu" className={`p-0 ${styles['dm-templates']}`}>
+              <DropdownMenu role="menu" className={`p-0 mw-100 ${styles['dm-templates']}`}>
                 { templateSummaries != null && templateSummaries.map((templateSummary) => {
                   const templateId = constructTemplateId(templateSummary);
 
