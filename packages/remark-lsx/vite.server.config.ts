@@ -10,7 +10,10 @@ export default defineConfig({
       copyDtsFiles: true,
     }),
     {
-      ...nodeExternals({ devDeps: true }),
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
       enforce: 'pre',
     },
   ],
