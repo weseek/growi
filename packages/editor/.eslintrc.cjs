@@ -15,6 +15,7 @@ module.exports = {
   },
   plugins: ['react-refresh'],
   rules: {
+    'import/no-absolute-path': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
