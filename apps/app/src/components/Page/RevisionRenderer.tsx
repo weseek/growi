@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import FsLightbox from 'fslightbox-react';
-import Image from 'next/image';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
@@ -35,8 +34,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const className = `wiki ${additionalClassName ?? ''}`;
 
-  // ここにimgタグに適用するコンポーネントを書く
-  const Image = ({ node, ...props }) => {
+  const LightBoxImage = ({ node, ...props }) => {
     const [toggler, setToggler] = useState(false);
     logger.error(props.src);
     return (
@@ -56,7 +54,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
         {...rendererOptions}
         className={className}
         components={{
-          img: Image,
+          img: LightBoxImage,
         }}
       >
         {markdown}
