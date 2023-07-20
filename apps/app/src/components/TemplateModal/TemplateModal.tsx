@@ -68,8 +68,8 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
-      <h4 className="mb-1">
-        <span className="w-75 d-inline-block text-truncate">{localizedTemplate.title}</span>
+      <h4 className="mb-1 d-flex">
+        <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
         {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted"></i> : ''}
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
@@ -97,8 +97,8 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       className="px-4 py-3"
     >
-      <h4 className="mb-1 text-wrap">
-        <span className="w-75 d-inline-block text-truncate">{localizedTemplate.title}</span>
+      <h4 className="mb-1 d-flex">
+        <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
         {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted"></i> : ''}
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
