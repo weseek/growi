@@ -4,8 +4,6 @@
   "compilerOptions": {
     "jsx": "react-jsxdev",
 
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
-
     "types": [
       "vitest/globals"
     ]
