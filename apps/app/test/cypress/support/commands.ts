@@ -70,14 +70,16 @@ Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
 });
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving = false) => {
-  cy.getByTestid('grw-sidebar').should('be.visible');
-
-  cy.getByTestid('grw-sidebar').within(($elem) => {
+  cy.getByTestid('grw-sidebar').within(($sidebar) => {
 
     // skip if .grw-sidebar-dock does not exist
-    if ($elem.hasClass('grw-sidebar-dock')) {
+    if (!$sidebar.hasClass('grw-sidebar-dock')) {
       return;
     }
+
+  });
+
+  cy.getByTestid('grw-sidebar').should('be.visible').within(() => {
 
     const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-sub');
     if (isSidebarContextualNavigationHidden === isCollapsed) {
@@ -97,4 +99,5 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
       return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
     });
   });
+
 });

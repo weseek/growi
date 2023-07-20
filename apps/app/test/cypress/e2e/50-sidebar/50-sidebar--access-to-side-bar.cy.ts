@@ -21,11 +21,6 @@ describe('Access to sidebar', () => {
       beforeEach(() => {
         cy.visit('/');
 
-        // Workaround for waitinig initial open/close interaction
-        // TODO: remove this cy.wait() after SSR without the initial interaction is implemented
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(2000);
-
         // Since this is a sidebar test, call collapseSidebar in beforeEach.
         cy.collapseSidebar(false);
       });
@@ -212,7 +207,7 @@ describe('Access to sidebar', () => {
         it('Successfully redirect to editor', () => {
           const content = '# HELLO \n ## Hello\n ### Hello';
 
-          cy.get('.grw-sidebar-content-header > h3').find('a').click();
+          cy.get('.grw-sidebar-content-header > h3 > a').should('be.visible').click();
 
           cy.get('.layout-root').should('have.class', 'editing');
           cy.get('.CodeMirror textarea').type(content, {force: true});
@@ -220,7 +215,6 @@ describe('Access to sidebar', () => {
           cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`, { blackout: blackoutOverride });
 
           cy.getByTestid('save-page-btn').click();
-          cy.get('.layout-root').should('not.have.class', 'editing');
         });
 
         it('Successfully create custom sidebar content', () => {

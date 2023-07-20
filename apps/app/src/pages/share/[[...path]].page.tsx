@@ -12,7 +12,7 @@ import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { ShareLinkPageView } from '~/components/ShareLink/ShareLinkPageView';
+import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
