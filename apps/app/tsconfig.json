@@ -4,7 +4,7 @@
   "compilerOptions": {
     "module": "CommonJS",
 
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "resolveJsonModule": true,
     "types": [
       "vitest/globals"
