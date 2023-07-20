@@ -9,7 +9,7 @@ import { Button } from 'reactstrap';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import { RendererOptions } from '~/interfaces/renderer-options';
-import { useSWRMUTxCurrentPage } from '~/stores/page';
+import { useSWRxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -57,7 +57,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
@@ -86,8 +86,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const onDeleteCommentAfterOperation = useCallback(() => {
     onCancelDeleteComment();
     mutate();
-    mutateCurrentPage();
-  }, [mutate, onCancelDeleteComment, mutateCurrentPage]);
+    mutatePageInfo();
+  }, [mutate, onCancelDeleteComment, mutatePageInfo]);
 
   const onDeleteComment = useCallback(async() => {
     if (commentToBeDeleted == null) return;
@@ -114,8 +114,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const onCommentButtonClickHandler = useCallback((commentId: string) => {
     removeShowEditorId(commentId);
     mutate();
-    mutateCurrentPage();
-  }, [removeShowEditorId, mutate, mutateCurrentPage]);
+    mutatePageInfo();
+  }, [removeShowEditorId, mutate, mutatePageInfo]);
 
   if (hideIfEmpty && comments?.length === 0) {
     return <PageCommentRoot />;

@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 
 import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
-import { useIsTrashPage, useSWRMUTxCurrentPage } from '~/stores/page';
+import { useIsTrashPage, useSWRxPageInfo } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
@@ -32,9 +32,9 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const pageCommentParentRef = useRef<HTMLDivElement>(null);
 
@@ -72,7 +72,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const onCommentButtonClickHandler = () => {
     mutate();
-    mutateCurrentPage();
+    mutatePageInfo();
   };
 
   return (

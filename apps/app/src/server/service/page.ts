@@ -2319,6 +2319,8 @@ class PageService {
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
       contentAge: page.getContentAge(),
+      descendantCount: page.descendantCount,
+      commentCount: page.commentCount,
     };
 
   }

@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
 import { useDescendantsPageListModal } from '~/stores/modal';
+import { useSWRxPageInfo } from '~/stores/page';
 
 import CountBadge from './Common/CountBadge';
 import { ContentLinkButtons } from './ContentLinkButtons';
@@ -29,6 +30,8 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const { page, isSharedUser } = props;
 
+  const { data: pageInfo } = useSWRxPageInfo(page.id);
+
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
   const isUsersHomePagePath = isUsersHomePage(pagePath);
@@ -51,7 +54,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             {t('page_list')}
 
             {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
-            { !isTrash ? <CountBadge count={page?.descendantCount} offset={1} /> : <div className='px-2'></div>}
+            { !isTrash ? <CountBadge count={pageInfo.descendantCount} offset={1} /> : <div className='px-2'></div>}
           </button>
         )}
       </div>
@@ -67,7 +70,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
               <span>Comments</span>
-              <CountBadge count={page.commentCount} />
+              <CountBadge count={pageInfo.commentCount} />
             </button>
           </Link>
         </div>
