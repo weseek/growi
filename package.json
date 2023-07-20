@@ -64,7 +64,7 @@
     "@vitest/coverage-c8": "^0.31.1",
     "@vitest/ui": "^0.31.1",
     "cypress": "^12.17.2",
-    "cypress-wait-until": "^2.0.0",
+    "cypress-wait-until": "^1.7.2",
     "eslint": "^8.41.0",
     "eslint-config-next": "^12.1.6",
     "eslint-config-weseek": "^2.1.1",
