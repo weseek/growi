@@ -70,7 +70,7 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
     >
       {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
       <h4 className="mb-1">{localizedTemplate.title}
-        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted"></i> : ''}
+        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted"></i> : ''}
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
@@ -99,7 +99,7 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
     >
       {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
       <h4 className="mb-1 text-wrap">{localizedTemplate.title}
-        {localizedTemplate.pluginId != null ? <i className="fa fa-puzzle-piece ml-2 text-muted"></i> : ''}
+        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted"></i> : ''}
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
