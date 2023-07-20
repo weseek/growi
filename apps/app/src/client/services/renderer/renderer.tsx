@@ -4,7 +4,7 @@ import { isClient } from '@growi/core/dist/utils/browser-utils';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client/index.mjs';
 import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
-import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client/index.mjs';
+import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';

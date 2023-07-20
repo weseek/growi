@@ -2559,6 +2559,7 @@
     "@growi/ui" "link:packages/ui"
     escape-string-regexp "^4.0.0"
     express "^4.16.1"
+    http-errors "^2.0.0"
     mongoose "^6.11.3"
     swr "^2.0.3"
 
@@ -9423,6 +9424,13 @@ hast-util-sanitize@^4.0.0:
   dependencies:
     "@types/hast" "^2.0.0"
 
+hast-util-sanitize@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/hast-util-sanitize/-/hast-util-sanitize-4.1.0.tgz#d90f8521f5083547095c5c63a7e03150303e0286"
+  integrity sha512-Hd9tU0ltknMGRDv+d6Ro/4XKzBqQnP/EZrpiTbpFYfXv/uOhWeKc+2uajcbEvAEH98VZd7eII2PiXm13RihnLw==
+  dependencies:
+    "@types/hast" "^2.0.0"
+
 hast-util-select@^5.0.2, hast-util-select@~5.0.1:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.2.tgz#8c603ebacf0f47e154c5fa2e5b7efc520813866b"
@@ -9436,6 +9444,27 @@ hast-util-select@^5.0.2, hast-util-select@~5.0.1:
     direction "^2.0.0"
     hast-util-has-property "^2.0.0"
     hast-util-is-element "^2.0.0"
+    hast-util-to-string "^2.0.0"
+    hast-util-whitespace "^2.0.0"
+    not "^0.1.0"
+    nth-check "^2.0.0"
+    property-information "^6.0.0"
+    space-separated-tokens "^2.0.0"
+    unist-util-visit "^4.0.0"
+    zwitch "^2.0.0"
+
+hast-util-select@^5.0.5:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.5.tgz#be9ccb71d2278681ca024727f12abd4f93b3e9bc"
+  integrity sha512-QQhWMhgTFRhCaQdgTKzZ5g31GLQ9qRb1hZtDPMqQaOhpLBziWcshUS0uCR5IJ0U1jrK/mxg35fmcq+Dp/Cy2Aw==
+  dependencies:
+    "@types/hast" "^2.0.0"
+    "@types/unist" "^2.0.0"
+    bcp-47-match "^2.0.0"
+    comma-separated-tokens "^2.0.0"
+    css-selector-parser "^1.0.0"
+    direction "^2.0.0"
+    hast-util-has-property "^2.0.0"
     hast-util-to-string "^2.0.0"
     hast-util-whitespace "^2.0.0"
     not "^0.1.0"
@@ -15268,6 +15297,11 @@ robust-predicates@^3.0.0:
   resolved "https://registry.yarnpkg.com/robust-predicates/-/robust-predicates-3.0.1.tgz#ecde075044f7f30118682bd9fb3f123109577f9a"
   integrity sha512-ndEIpszUHiG4HtDsQLeIuMvRsDnn8c8rYStabochtUeCvfuvNptb5TUbVD68LRAILPX7p9nqQGh4xJgn3EHS/g==
 
+rollup-plugin-node-externals@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-node-externals/-/rollup-plugin-node-externals-6.1.1.tgz#dff1a85073fe3c0b2c423b280259fe80392026a8"
+  integrity sha512-127OFMkpH5rBVlRHRBDUMk1m1sGuzbGy7so5aj/IkpUb2r3+wOWjR/erUzd2ChEQWPsxsyQG6xpYYvPBAdcBRA==
+
 rollup@^3.25.2:
   version "3.26.3"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.26.3.tgz#bbc8818cadd0aebca348dbb3d68d296d220967b8"
@@ -17094,7 +17128,7 @@ undici@^5.5.1:
   dependencies:
     busboy "^1.6.0"
 
-unified@^10.0.0, unified@~10.1.1:
+unified@^10.0.0, unified@^10.1.2, unified@~10.1.1:
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/unified/-/unified-10.1.2.tgz#b1d64e55dafe1f0b98bb6c719881103ecf6c86df"
   integrity sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==
@@ -17498,7 +17532,7 @@ vite-node@0.31.4:
     picocolors "^1.0.0"
     vite "^3.0.0 || ^4.0.0"
 
-vite-plugin-dts@^2.3.0:
+vite-plugin-dts@^2.0.0-beta.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-2.3.0.tgz#6ab2edf56f48261bfede03958704bfaee2fca3e4"
   integrity sha512-WbJgGtsStgQhdm3EosYmIdTGbag5YQpZ3HXWUAPCDyoXI5qN6EY0V7NXq0lAmnv9hVQsvh0htbYcg0Or5Db9JQ==
