@@ -1,7 +1,8 @@
 import { pathUtils } from '@growi/core';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
-import { selectAll, HastNode } from 'hast-util-select';
+import { selectAll } from 'hast-util-select';
+import type { Node as HastNode } from 'hast-util-select/lib/types';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
