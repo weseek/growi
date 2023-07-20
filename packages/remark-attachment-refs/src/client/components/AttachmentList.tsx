@@ -67,7 +67,7 @@ export const AttachmentList = ({
       : attachments.map((attachment) => {
         return <AttachmentLink key={attachment._id} attachment={attachment} inUse={false} />;
       });
-  }, [refsContext, isLoading, attachments]);
+  }, [isLoading, error, attachments, refsContext, renderNoAttachmentsMessage]);
 
   return <div className={styles['attachment-refs']}>{renderContents()}</div>;
 

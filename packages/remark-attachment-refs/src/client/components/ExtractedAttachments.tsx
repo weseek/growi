@@ -32,7 +32,7 @@ export const ExtractedAttachments = React.memo(({
   const getAttachmentsFilteredByFormat = useCallback(() => {
     return attachments
       .filter(attachment => attachment.fileFormat.startsWith('image/'));
-  }, []);
+  }, [attachments]);
 
   const getClassesAndStylesForNonGrid = useCallback(() => {
     const { options } = refsContext;
@@ -95,7 +95,7 @@ export const ExtractedAttachments = React.memo(({
     return (options?.grid != null)
       ? getClassesAndStylesForGrid()
       : getClassesAndStylesForNonGrid();
-  }, []);
+  }, [getClassesAndStylesForGrid, getClassesAndStylesForNonGrid, refsContext]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const renderExtractedImage = useCallback((attachment: IAttachmentHasId, index: number) => {
@@ -122,13 +122,14 @@ export const ExtractedAttachments = React.memo(({
     // }
 
     return (
-      <div key={attachment._id} style={containerStyles}
-      // onClick={onClick}
+      <div
+        key={attachment._id}
+        style={containerStyles}
       >
         <img src={attachment.filePathProxied} alt={alt} className={imageClasses.join(' ')} style={imageStyles} />
       </div>
     );
-  }, [refsContext]);
+  }, [getClassesAndStyles, refsContext]);
 
   // const renderCarousel = useCallback(() => {
   //   const { options } = refsContext;

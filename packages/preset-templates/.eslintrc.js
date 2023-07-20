@@ -1,5 +1,5 @@
 module.exports = {
   extends: [
-    'weseek/react',
+    'plugin:vitest/recommended',
   ],
 };
