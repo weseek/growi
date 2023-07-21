@@ -42,9 +42,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
           </div>
         </Clamp>
       ) : (
-        <span>
-          { pagePathElement }
-        </span>
+        pagePathElement
       )}
       <span className="ml-2">
         <PageListMeta page={page} />
