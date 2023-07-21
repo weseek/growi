@@ -6,6 +6,10 @@ import type { Node as HastNode } from 'hast-util-select/lib/types';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
+import loggerFactory from '../../../utils/logger';
+
+const logger = loggerFactory('growi:remark-attachment-refs:services:renderer:refs');
+
 const REF_SINGLE_NAME_PATTERN = new RegExp(/refimg|ref/);
 const REF_MULTI_NAME_PATTERN = new RegExp(/refsimg|refs|gallery/);
 
@@ -60,6 +64,8 @@ export const remarkPlugin: Plugin = function() {
         else {
           return;
         }
+
+        logger.debug('a node detected', attributes);
 
         // kebab case to camel case
         attributes.maxWidth = attributes['max-width'];
