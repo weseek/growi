@@ -2,7 +2,7 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUser } from '@growi/core/dist/interfaces';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { useTranslation } from 'next-i18next';
 import {

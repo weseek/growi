@@ -1,4 +1,6 @@
-import { IPageForItem, IPageHasId } from './page';
+import type { IPageHasId } from '@growi/core/dist/interfaces';
+
+import type { IPageForItem } from './page';
 
 
 type ParentPath = string;

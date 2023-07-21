@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUser } from '@growi/core/dist/interfaces';
 import { Collapse } from 'reactstrap';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';

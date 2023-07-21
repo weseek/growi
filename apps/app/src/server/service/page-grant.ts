@@ -1,7 +1,9 @@
 import {
+  PageGrant, type PageGrantCanBeOnTree,
+} from '@growi/core/dist/interfaces';
+import {
   pagePathUtils, pathUtils, pageUtils,
-  PageGrant, PageGrantCanBeOnTree,
-} from '@growi/core';
+} from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 

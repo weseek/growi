@@ -1,4 +1,4 @@
-import { IDataWithMeta, IPageHasId } from './page';
+import type { IDataWithMeta, IPageHasId } from '@growi/core/dist/interfaces';
 
 export type IPageSearchMeta = {
   bookmarkCount?: number,

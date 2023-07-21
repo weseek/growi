@@ -1,4 +1,4 @@
-import type { IExternalAuthProviderType } from '@growi/core';
+import type { IExternalAuthProviderType } from '@growi/core/dist/interfaces';
 import mongoose from 'mongoose';
 
 interface AggregateResult {

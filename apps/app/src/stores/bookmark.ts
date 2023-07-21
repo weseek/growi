@@ -1,10 +1,8 @@
-import { IUser } from '@growi/core';
+import type { IUser, IPageHasId } from '@growi/core/dist/interfaces';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
-
-import { IPageHasId } from '~/interfaces/page';
 
 import { apiv3Get } from '../client/util/apiv3-client';
 import { IBookmarkInfo } from '../interfaces/bookmark-info';

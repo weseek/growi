@@ -1,16 +1,16 @@
 import { useCallback, useMemo } from 'react';
 
-import type { IAttachmentHasId } from '@growi/core';
+import type {
+  IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
+} from '@growi/core/dist/interfaces';
 import { SWRResponse } from 'swr';
 
 import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
 } from '~/interfaces/ui';
-import { IUserGroupHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';

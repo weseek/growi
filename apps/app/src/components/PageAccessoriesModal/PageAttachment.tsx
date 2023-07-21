@@ -2,7 +2,7 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 
-import { IAttachmentHasId } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core/dist/interfaces';
 
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';

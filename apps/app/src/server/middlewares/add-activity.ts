@@ -1,7 +1,7 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { NextFunction, Request, Response } from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { IUserHasId } from '~/interfaces/user';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 

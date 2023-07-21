@@ -1,4 +1,4 @@
-import type { IPageHasId, IUser } from '@growi/core';
+import type { IPageHasId, IUser } from '@growi/core/dist/interfaces';
 import { model } from 'mongoose';
 import type { Document, Query } from 'mongoose';
 

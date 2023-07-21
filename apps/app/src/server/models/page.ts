@@ -2,7 +2,7 @@
 
 import nodePath from 'path';
 
-import { type IPage, type HasObjectId, pathUtils } from '@growi/core';
+import type { IPage, HasObjectId } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -174,7 +174,7 @@ export class PageQueryBuilder {
       return this;
     }
 
-    const pathNormalized = pathUtils.normalizePath(path);
+    const pathNormalized = normalizePath(path);
     const pathWithTrailingSlash = addTrailingSlash(path);
 
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
@@ -215,7 +215,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToListOnlyAncestors(path: string): PageQueryBuilder {
-    const pathNormalized = pathUtils.normalizePath(path);
+    const pathNormalized = normalizePath(path);
     const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
 
     this.query = this.query

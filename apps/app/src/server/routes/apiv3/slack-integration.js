@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import { supportedGrowiCommands } from '@growi/slack';
 import { verifySlackRequest } from '@growi/slack/dist/middlewares';
 import { InvalidGrowiCommandError } from '@growi/slack/dist/models/errors';

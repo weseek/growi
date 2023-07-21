@@ -1,4 +1,4 @@
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core/dist/interfaces';
 
 import { GrowiServiceType } from './growi-info';
 import { UserType } from './user-info';

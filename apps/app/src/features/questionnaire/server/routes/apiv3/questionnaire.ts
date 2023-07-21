@@ -1,7 +1,7 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { Router, Request } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import { IUserHasId } from '~/interfaces/user';
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import axios from '~/utils/axios';

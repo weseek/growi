@@ -1,14 +1,16 @@
+import type { IPage } from '@growi/core/dist/interfaces';
 import mongoose from 'mongoose';
 
-import { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IPage } from '~/interfaces/page';
+import { ISearchResult } from '~/interfaces/search';
+import { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
+
 import {
   QueryTerms, MongoTermsKey,
   SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms,
 } from '../../interfaces/search';
 import { serializeUserSecurely } from '../../models/serializers/user-serializer';
-import { ISearchResult } from '~/interfaces/search';
+
 
 const AVAILABLE_KEYS = ['match', 'not_match', 'prefix', 'not_prefix'];
 

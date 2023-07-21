@@ -1,11 +1,11 @@
 
 import React, { useCallback } from 'react';
 
+import type { IPageToDeleteWithMeta } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { toastSuccess } from '~/client/util/toastr';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import {
   useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,

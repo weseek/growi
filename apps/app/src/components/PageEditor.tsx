@@ -6,9 +6,8 @@ import EventEmitter from 'events';
 import nodePath from 'path';
 
 
-import {
-  IPageHasId, pathUtils,
-} from '@growi/core';
+import type { IPageHasId } from '@growi/core/dist/interfaces';
+import { pathUtils } from '@growi/core/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';

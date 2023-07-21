@@ -1,5 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 
+import type {
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
+} from '@growi/core/dist/interfaces';
+import {
+  isIPageInfoForEntity, isIPageInfoForOperation,
+} from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
@@ -7,9 +13,6 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import {
-  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
-} from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 

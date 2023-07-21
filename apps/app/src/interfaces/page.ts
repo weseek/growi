@@ -1,16 +1,16 @@
-import { IPageHasId, Nullable } from '@growi/core';
+import type { IPageHasId, Nullable } from '@growi/core/dist/interfaces';
 
-import { IPageOperationProcessData } from './page-operation';
+import type { IPageOperationProcessData } from './page-operation';
 
-export { PageGrant } from '@growi/core';
+export { PageGrant } from '@growi/core/dist/interfaces';
 export type {
   IPage, IPageHasId, IPageInfo, IPageInfoForEntity, IPageInfoForOperation, IPageInfoForListing, IPageInfoAll,
   IDataWithMeta, IPageWithMeta, IPageToDeleteWithMeta, IPageToRenameWithMeta,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 
 export {
   isIPageInfoForEntity, isIPageInfoForOperation, isIPageInfoForListing,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 

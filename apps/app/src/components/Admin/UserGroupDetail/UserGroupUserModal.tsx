@@ -1,11 +1,11 @@
 import React from 'react';
 
+import type { IUserGroupHasId } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';

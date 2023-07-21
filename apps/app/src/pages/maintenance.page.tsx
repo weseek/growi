@@ -1,4 +1,4 @@
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core/dist/interfaces';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

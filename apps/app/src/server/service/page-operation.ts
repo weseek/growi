@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 
 import {

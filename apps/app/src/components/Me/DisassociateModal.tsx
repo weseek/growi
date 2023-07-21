@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import type { IExternalAccountHasId } from '@growi/core';
+import type { IExternalAccountHasId } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,

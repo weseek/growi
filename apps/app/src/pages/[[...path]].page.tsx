@@ -3,12 +3,13 @@ import React, { ReactNode, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import {
-  isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
-} from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core/dist/interfaces';
 import type {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
+import {
+  isClient, pagePathUtils, pathUtils,
+} from '@growi/core/dist/utils';
 import ExtensibleCustomError from 'extensible-custom-error';
 import type {
   GetServerSideProps, GetServerSidePropsContext,

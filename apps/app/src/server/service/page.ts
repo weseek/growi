@@ -4,10 +4,11 @@ import { Readable, Writable } from 'stream';
 import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
+import { PageGrant, PageStatus } from '@growi/core/dist/interfaces';
 import {
-  pagePathUtils, pathUtils, PageGrant, PageStatus,
-} from '@growi/core';
+  pagePathUtils, pathUtils,
+} from '@growi/core/dist/utils';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';

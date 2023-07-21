@@ -1,8 +1,8 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { IUserHasId } from '~/interfaces/user';
 import { checkAndUpdateImageUrlCached } from '~/stores/middlewares/user';
 
 export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], Error> => {

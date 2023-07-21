@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IPage, IUser } from '@growi/core';
+import type { IPage, IUser } from '@growi/core/dist/interfaces';
 import dynamic from 'next/dynamic';
 
 import type { AuthorInfoProps } from './Navbar/AuthorInfo';

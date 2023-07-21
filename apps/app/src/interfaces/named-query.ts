@@ -1,4 +1,4 @@
-import { IUser } from './user';
+import type { IUser } from '@growi/core/dist/interfaces';
 
 
 export enum SearchDelegatorName {

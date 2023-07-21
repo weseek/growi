@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { IRevisionHasId, pathUtils } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core/dist/interfaces';
+import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -26,8 +27,6 @@ export const Revision = (props: RevisionProps): JSX.Element => {
   const {
     revision, isLatestRevision, hasDiff, onClose, currentPageId, currentPagePath,
   } = props;
-
-  const { returnPathForURL } = pathUtils;
 
   const renderSimplifiedNodiff = (revision: IRevisionHasId) => {
 

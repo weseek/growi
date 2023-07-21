@@ -1,9 +1,8 @@
-import { HasObjectId, Ref } from '@growi/core';
-
-import { IPageHasId } from './page';
-import {
+import type {
+  HasObjectId, Ref,
+  IPageHasId,
   IUser, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId,
-} from './user';
+} from '@growi/core/dist/interfaces';
 
 export type UserGroupResult = {
   userGroup: IUserGroupHasId,

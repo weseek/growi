@@ -1,8 +1,8 @@
+import type { IPageHasId } from '@growi/core/dist/interfaces';
 import mongoose from 'mongoose';
 import { FilterXSS } from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IPageHasId } from '~/interfaces/page';
 import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 

@@ -4,13 +4,12 @@ import React, {
 
 import path from 'path';
 
-import { Nullable } from '@growi/core';
+import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';

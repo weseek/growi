@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
+import type { IUserGroupHasId } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -9,8 +10,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { IPageGrantData } from '~/interfaces/page';
-import { IUserGroupHasId } from '~/interfaces/user';
+import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
 

@@ -1,8 +1,8 @@
 import { useMemo, useCallback } from 'react';
 
+import type { IUser } from '@growi/core/dist/interfaces';
 import { SWRResponse } from 'swr';
 
-import { IUser } from '~/interfaces/user';
 
 import { useRevisionIdHackmdSynced, useHasDraftOnHackmd } from './hackmd';
 import { useStaticSWR } from './use-static-swr';

@@ -1,4 +1,4 @@
-import { Ref, IPage, IUser } from '@growi/core';
+import type { Ref, IPage, IUser } from '@growi/core/dist/interfaces';
 import mongoose from 'mongoose';
 
 import {

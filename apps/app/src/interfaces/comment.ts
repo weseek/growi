@@ -1,8 +1,7 @@
-import { Nullable, Ref, HasObjectId } from '@growi/core';
-
-import { IPage } from './page';
-import { IRevision } from './revision';
-import { IUser } from './user';
+import type {
+  Nullable, Ref, HasObjectId,
+  IPage, IRevision, IUser,
+} from '@growi/core/dist/interfaces';
 
 export type IComment = {
   comment: string;

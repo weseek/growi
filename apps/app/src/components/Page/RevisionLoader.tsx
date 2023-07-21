@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import type { Ref, IRevision, IRevisionHasId } from '@growi/core';
+import type { Ref, IRevision, IRevisionHasId } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';

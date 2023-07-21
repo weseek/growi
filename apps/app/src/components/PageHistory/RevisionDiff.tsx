@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { IRevisionHasPageId, pathUtils } from '@growi/core';
+import type { IRevisionHasPageId } from '@growi/core/dist/interfaces';
+import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { createPatch } from 'diff';
 import { html, Diff2HtmlConfig } from 'diff2html';
 import { useTranslation } from 'next-i18next';
@@ -28,8 +29,6 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   const {
     currentRevision, previousRevision, revisionDiffOpened, currentPageId, currentPagePath, onClose,
   } = props;
-
-  const { returnPathForURL } = pathUtils;
 
   const previousText = (currentRevision._id === previousRevision._id) ? '' : previousRevision.body;
 

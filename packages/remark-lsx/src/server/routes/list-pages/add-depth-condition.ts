@@ -1,4 +1,4 @@
-import type { ParseRangeResult } from '@growi/core';
+import type { ParseRangeResult } from '@growi/core/dist/plugin';
 import createError from 'http-errors';
 
 import { getDepthOfPath } from '../../../utils/depth-utils';

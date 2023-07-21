@@ -1,10 +1,10 @@
-import { objectIdUtils } from '@growi/core';
+import type { IPageHasId } from '@growi/core/dist/interfaces';
+import { objectIdUtils } from '@growi/core/dist/utils';
 import monggoose, {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
 import { BookmarkFolderItems, IBookmarkFolder } from '~/interfaces/bookmark-info';
-import { IPageHasId } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';

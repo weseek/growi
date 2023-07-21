@@ -1,8 +1,8 @@
 
+import type { IPageHasId } from '@growi/core/dist/interfaces';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { IPageHasId } from '~/interfaces/page';
 
 
 type PageTimelineResult = {

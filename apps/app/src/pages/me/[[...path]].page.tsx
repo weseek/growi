@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';

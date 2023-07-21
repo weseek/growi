@@ -1,6 +1,8 @@
 import {
-  pagePathUtils, AllSubscriptionStatusType, SubscriptionStatusType, ErrorV3,
-} from '@growi/core';
+  AllSubscriptionStatusType, SubscriptionStatusType,
+} from '@growi/core/dist/interfaces';
+import { ErrorV3 } from '@growi/core/dist/models';
+import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -16,7 +18,6 @@ const express = require('express');
 const { body, query, param } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 
 /**
  * @swagger

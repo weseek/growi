@@ -2,7 +2,7 @@ import {
   FormEventHandler, memo, useCallback, useState,
 } from 'react';
 
-import { Lang, AllLang } from '@growi/core';
+import { Lang, AllLang } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 

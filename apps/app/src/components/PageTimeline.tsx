@@ -1,9 +1,9 @@
 import React from 'react';
 
+import type { IPageHasId } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath } from '~/stores/page';
 import { useSWRINFxPageTimeline } from '~/stores/page-timeline';
 import { useTimelineOptions } from '~/stores/renderer';

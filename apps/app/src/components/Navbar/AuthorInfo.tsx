@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { pagePathUtils } from '@growi/core';
-import type { IUser } from '@growi/core';
+import type { IUser } from '@growi/core/dist/interfaces';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format } from 'date-fns';
 import Link from 'next/link';

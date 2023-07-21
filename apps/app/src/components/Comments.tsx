@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-import { type IRevisionHasId, pagePathUtils } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core/dist/interfaces';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 
 import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';

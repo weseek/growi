@@ -2,7 +2,9 @@ import React, { useCallback, useState } from 'react';
 
 import nodePath from 'path';
 
-import { DevidedPagePath, pathUtils } from '@growi/core';
+import type { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core/dist/interfaces';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
@@ -13,7 +15,6 @@ import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
-import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 

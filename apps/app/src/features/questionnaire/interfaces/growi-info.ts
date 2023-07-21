@@ -1,6 +1,6 @@
 import * as os from 'node:os';
 
-import { IExternalAuthProviderType } from '@growi/core';
+import { IExternalAuthProviderType } from '@growi/core/dist/interfaces';
 
 export const GrowiServiceType = {
   cloud: 'cloud',

@@ -1,10 +1,9 @@
+import type { IPageHasId, IUserGroupHasId, IUserGroupRelationHasId } from '@growi/core/dist/interfaces';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { IPageHasId } from '~/interfaces/page';
-import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
   IUserGroupRelationHasIdPopulatedUser,
   UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupRelationsResult,

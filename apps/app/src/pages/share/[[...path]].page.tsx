@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
+import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';

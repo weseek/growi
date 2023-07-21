@@ -1,6 +1,7 @@
 const path = require('path');
 
-const { isServer, AllLang, Lang } = require('@growi/core');
+const { AllLang, Lang } = require('@growi/core/dist/interfaces');
+const { isServer } = require('@growi/core/dist/utils');
 const I18nextChainedBackend = require('i18next-chained-backend').default;
 const I18NextHttpBackend = require('i18next-http-backend');
 const I18NextLocalStorageBackend = require('i18next-localstorage-backend').default;

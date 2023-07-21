@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
+import type { IRevision } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { IRevision } from '~/interfaces/revision';
 import { useSWRxPageByPath } from '~/stores/page';
 import { useCustomSidebarOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';

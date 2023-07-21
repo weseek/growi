@@ -2,8 +2,8 @@ import React, {
   forwardRef, useCallback, useRef,
 } from 'react';
 
-import type { Ref, IUser } from '@growi/core';
-import { pagePathUtils } from '@growi/core';
+import type { Ref, IUser } from '@growi/core/dist/interfaces';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import type { UncontrolledTooltipProps } from 'reactstrap';

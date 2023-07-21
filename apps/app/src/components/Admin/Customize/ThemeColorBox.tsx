@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { GrowiThemeMetadata } from '@growi/core';
+import type { GrowiThemeMetadata } from '@growi/core/dist/interfaces';
 
 
 type Props = {

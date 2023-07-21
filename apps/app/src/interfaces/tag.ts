@@ -1,8 +1,6 @@
-import { ITag } from '@growi/core';
+import type { ITag, IPageHasId } from '@growi/core/dist/interfaces';
 
-import { IPageHasId } from './page';
-
-export type { ITag } from '@growi/core';
+export type { ITag } from '@growi/core/dist/interfaces';
 
 export type IDataTagCount = ITag & {count: number}
 

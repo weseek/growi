@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
+import type { IPageHasId } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { IPageHasId } from '~/interfaces/page';
 
 import { PageListItemS } from '../../PageList/PageListItemS';
 import PaginationWrapper from '../../PaginationWrapper';

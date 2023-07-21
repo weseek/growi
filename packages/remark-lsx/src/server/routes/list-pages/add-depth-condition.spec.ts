@@ -1,4 +1,4 @@
-import type { ParseRangeResult } from '@growi/core';
+import type { ParseRangeResult } from '@growi/core/dist/interfaces';
 import { mock } from 'vitest-mock-extended';
 
 import { addDepthCondition } from './add-depth-condition';

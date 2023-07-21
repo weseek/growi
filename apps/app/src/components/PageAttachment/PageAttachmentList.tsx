@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IAttachmentHasId } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core/dist/interfaces';
 import { Attachment } from '@growi/ui/dist/components/Attachment';
 import { useTranslation } from 'next-i18next';
 

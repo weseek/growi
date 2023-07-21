@@ -1,4 +1,4 @@
-import { Nullable } from '@growi/core';
+import type { Nullable } from '@growi/core/dist/interfaces';
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiGet, apiPost } from '~/client/util/apiv1-client';

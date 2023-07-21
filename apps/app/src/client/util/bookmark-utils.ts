@@ -1,4 +1,4 @@
-import { IRevision, Ref } from '@growi/core';
+import type { IRevision, Ref } from '@growi/core/dist/interfaces';
 
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 

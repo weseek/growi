@@ -5,6 +5,10 @@ import React, {
 
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
+import type {
+  IPageInfoAll, IPageWithMeta, IPageInfoForListing,
+} from '@growi/core/dist/interfaces';
+import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core/dist/interfaces';
 import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
 import { format } from 'date-fns';
@@ -16,9 +20,6 @@ import { CustomInput } from 'reactstrap';
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import {
-  IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
-} from '~/interfaces/page';
 import { IPageSearchMeta, IPageWithSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,

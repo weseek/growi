@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { GrowiPluginType } from '@growi/core';
+import { GrowiPluginType } from '@growi/core/dist/consts';
 import { TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { scanAllTemplates, getMarkdown } from '@growi/pluginkit/dist/v4/server/index.cjs';
 import express from 'express';

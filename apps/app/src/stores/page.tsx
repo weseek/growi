@@ -3,7 +3,8 @@ import { useEffect, useMemo } from 'react';
 import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable, SWRInfinitePageRevisionsResponse,
 } from '@growi/core';
-import { Ref, isClient, pagePathUtils } from '@growi/core';
+import type { Ref } from '@growi/core/dist/interfaces';
+import { isClient, pagePathUtils } from '@growi/core/dist/utils';
 import useSWR, { mutate, useSWRConfig, type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
