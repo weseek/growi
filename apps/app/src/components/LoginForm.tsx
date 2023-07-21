@@ -12,12 +12,14 @@ import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 
 import styles from './LoginForm.module.scss';
 
+const logger = loggerFactory('components:Page:RevisionRenderer');
 
 type LoginFormProps = {
   username?: string,
@@ -104,6 +106,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post('/login', { loginForm });
       const { redirectTo } = res.data;
+
+
+      // redirectTo === '/admin' かつ、リクエストを投げたユーザーがadminでなければ、、っていう条件式
+      if (redirectTo === '/admin') {
+        return router.push('/');
+      }
 
       if (redirectTo != null) {
         return router.push(redirectTo);
@@ -335,6 +343,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       resetRegisterErrors();
 
       const { redirectTo } = res.data;
+
       if (redirectTo != null) {
         router.push(redirectTo);
       }
