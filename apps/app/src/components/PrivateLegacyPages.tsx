@@ -14,7 +14,7 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
-import { useCurrentUser } from '~/stores/context';
+import { useIsAdmin } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
@@ -191,9 +191,8 @@ ConvertByPathModal.displayName = 'ConvertByPathModal';
 
 const PrivateLegacyPages = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
 
-  const isAdmin = currentUser?.admin;
+  const { data: isAdmin } = useIsAdmin();
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
