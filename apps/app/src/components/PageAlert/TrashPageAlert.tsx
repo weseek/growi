@@ -45,6 +45,7 @@ export const TrashPageAlert = (): JSX.Element => {
   const isEmptyPage = pageId == null || revisionId == null || pagePath == null;
 
   const openPutbackPageModalHandler = useCallback(() => {
+    // User cannot operate empty page.
     if (isEmptyPage) {
       return;
     }
@@ -65,6 +66,7 @@ export const TrashPageAlert = (): JSX.Element => {
   }, [currentPagePath, mutateCurrentPage, openPutBackPageModal, pageId, pagePath, router, isEmptyPage]);
 
   const openPageDeleteModalHandler = useCallback(() => {
+    // User cannot operate empty page.
     if (isEmptyPage) {
       return;
     }
