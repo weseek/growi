@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IRevisionOnConflict } from '@growi/core/dist/interfaces';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';

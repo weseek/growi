@@ -5,7 +5,7 @@ import {
 } from '@growi/core';
 import type { Nullable } from '@growi/core/dist/interfaces';
 import type { SWRResponseWithUtils } from '@growi/core/dist/utils';
-import { Breakpoint } from '@growi/ui/dist/interfaces/breakpoints';
+import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';

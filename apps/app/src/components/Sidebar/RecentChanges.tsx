@@ -4,8 +4,7 @@ import React, {
 
 import { DevidedPagePath, isPopulated } from '@growi/core';
 import type { IPageHasId } from '@growi/core/dist/interfaces';
-import { FootstampIcon } from '@growi/ui/dist/components/FootstampIcon';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 

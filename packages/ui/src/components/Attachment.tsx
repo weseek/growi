@@ -1,6 +1,6 @@
-import { IAttachmentHasId } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core/dist/interfaces';
 
-import { UserPicture } from './User/UserPicture';
+import { UserPicture } from './UserPicture';
 
 type AttachmentProps = {
   attachment: IAttachmentHasId,

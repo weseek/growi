@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { IRevisionHasId } from '@growi/core/dist/interfaces';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';

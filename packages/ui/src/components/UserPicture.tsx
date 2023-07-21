@@ -1,5 +1,6 @@
-import React, {
-  forwardRef, useCallback, useRef,
+import {
+  type ReactNode,
+  memo, forwardRef, useCallback, useRef,
 } from 'react';
 
 import type { Ref, IUser } from '@growi/core/dist/interfaces';
@@ -18,7 +19,7 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 type UserPictureRootProps = {
   user: Partial<IUser>,
   className?: string,
-  children?: React.ReactNode,
+  children?: ReactNode,
 }
 
 const UserPictureRootWithoutLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
@@ -77,7 +78,7 @@ type Props = {
   noTooltip?: boolean,
 };
 
-export const UserPicture = React.memo((props: Props): JSX.Element => {
+export const UserPicture = memo((props: Props): JSX.Element => {
 
   const {
     user, size, noLink, noTooltip,

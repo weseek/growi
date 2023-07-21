@@ -9,8 +9,8 @@ import type {
   IPageInfoAll, IPageWithMeta, IPageInfoForListing,
 } from '@growi/core/dist/interfaces';
 import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core/dist/interfaces';
-import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
+import { PageListMeta } from '@growi/ui/dist/components/PagePath';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
