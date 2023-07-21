@@ -1,4 +1,4 @@
-import { IPage } from '@growi/core';
+import type { IPage } from '@growi/core';
 import { model } from 'mongoose';
 
 export const getToppageViewersCount = async(): Promise<number> => {

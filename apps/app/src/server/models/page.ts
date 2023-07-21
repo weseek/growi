@@ -2,8 +2,9 @@
 
 import nodePath from 'path';
 
-import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
+import { type IPage, type HasObjectId, pathUtils } from '@growi/core';
+import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -11,19 +12,12 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { IPage, IPageHasId, PageGrant } from '~/interfaces/page';
-import { IUserHasId } from '~/interfaces/user';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-
-const { addTrailingSlash, normalizePath } = pathUtils;
-const {
-  isTopPage, hasSlash,
-} = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 /*
