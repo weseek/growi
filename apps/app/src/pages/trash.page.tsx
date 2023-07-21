@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUser, IUserHasId } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';

@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 
-import type { IUserGroupHasId } from '@growi/core/dist/interfaces';
+import type { IUserGroupHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 

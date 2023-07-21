@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import { type IUserHasId, USER_STATUS } from '@growi/core/dist/interfaces';
+import { type IUserHasId, USER_STATUS } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,

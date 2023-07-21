@@ -1,4 +1,4 @@
-import { PageGrant } from '@growi/core/dist/interfaces';
+import { PageGrant } from '@growi/core';
 
 const mongoose = require('mongoose');
 

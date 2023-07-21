@@ -1,4 +1,4 @@
-import type { Ref, IPageHasId, IUser } from '@growi/core/dist/interfaces';
+import type { Ref, IPageHasId, IUser } from '@growi/core';
 
 export interface IBookmarkInfo {
   sumOfBookmarks: number,

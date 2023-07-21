@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import type { IRevisionHasId } from '@growi/core/dist/interfaces';
+import type { IRevisionHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 

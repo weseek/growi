@@ -1,6 +1,6 @@
 import type { IncomingHttpHeaders } from 'http';
 
-import { Lang } from '@growi/core/dist/interfaces';
+import { Lang } from '@growi/core';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 

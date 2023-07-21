@@ -1,4 +1,4 @@
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 
 import type { IPageForItem } from './page';
 

@@ -1,4 +1,4 @@
-import type { ColorScheme, IUserHasId } from '@growi/core/dist/interfaces';
+import type { ColorScheme, IUserHasId } from '@growi/core';
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 

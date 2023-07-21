@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { SWRResponse } from 'swr';
 
 import Linker from '~/client/models/Linker';

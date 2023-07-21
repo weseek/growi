@@ -1,4 +1,4 @@
-import { GrowiPluginType } from '@growi/core/dist/consts';
+import { GrowiPluginType } from '@growi/core';
 import {
   Schema, type Model, type Document, type Types,
 } from 'mongoose';

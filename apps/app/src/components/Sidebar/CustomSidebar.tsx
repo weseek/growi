@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import type { IRevision } from '@growi/core/dist/interfaces';
+import type { IRevision } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 

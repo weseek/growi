@@ -1,5 +1,4 @@
-import type { GrowiPluginType } from '@growi/core/dist/consts';
-import type { GrowiThemeMetadata, HasObjectId } from '@growi/core/dist/interfaces';
+import type { GrowiPluginType, GrowiThemeMetadata, HasObjectId } from '@growi/core';
 import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
 
 export type IGrowiPluginOrigin = {

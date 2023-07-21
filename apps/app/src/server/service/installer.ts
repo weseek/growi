@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { Lang } from '@growi/core/dist/interfaces';
+import { Lang } from '@growi/core';
 import { addSeconds } from 'date-fns';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';

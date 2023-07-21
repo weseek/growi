@@ -1,4 +1,4 @@
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/plugin';
 import { mock } from 'vitest-mock-extended';
 

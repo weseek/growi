@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import type { IAttachmentHasId } from '@growi/core/dist/interfaces';
+import type { IAttachmentHasId } from '@growi/core';
 import { Attachment } from '@growi/ui/dist/components';
 
 import { ExtractedAttachments } from './ExtractedAttachments';

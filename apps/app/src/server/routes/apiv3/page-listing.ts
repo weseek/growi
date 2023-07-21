@@ -1,7 +1,7 @@
 import type {
   IPageInfoForListing, IPageInfo, IUserHasId,
-} from '@growi/core/dist/interfaces';
-import { isIPageInfoForEntity } from '@growi/core/dist/interfaces';
+} from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';

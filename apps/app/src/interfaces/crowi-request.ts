@@ -1,4 +1,4 @@
-import type { IUser, IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUser, IUserHasId } from '@growi/core';
 import { Request } from 'express';
 
 export interface CrowiRequest<U extends IUser = IUserHasId> extends Request {

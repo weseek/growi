@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core';
 import { Link as ScrollLink } from 'react-scroll';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';

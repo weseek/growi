@@ -1,7 +1,7 @@
 import type {
   Nullable, Ref, HasObjectId,
   IPage, IRevision, IUser,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 
 export type IComment = {
   comment: string;

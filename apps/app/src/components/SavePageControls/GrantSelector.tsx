@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
-import type { IUserGroupHasId } from '@growi/core/dist/interfaces';
+import type { IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,

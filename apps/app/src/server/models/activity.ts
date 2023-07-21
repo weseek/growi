@@ -1,4 +1,4 @@
-import type { Ref, IPage } from '@growi/core/dist/interfaces';
+import type { Ref, IPage } from '@growi/core';
 import {
   Types, Document, Model, Schema, SortOrder,
 } from 'mongoose';

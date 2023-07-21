@@ -1,6 +1,6 @@
 import * as url from 'url';
 
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 import type { ParseRangeResult } from '@growi/core/dist/plugin';
 import { removeTrailingSlash } from '@growi/core/dist/utils/path-utils';
 

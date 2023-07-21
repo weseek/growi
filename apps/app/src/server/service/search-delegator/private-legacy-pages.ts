@@ -1,4 +1,4 @@
-import type { IPage } from '@growi/core/dist/interfaces';
+import type { IPage } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';

@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import type { IUser } from '@growi/core/dist/interfaces';
+import type { IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 

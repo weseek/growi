@@ -1,7 +1,7 @@
 
 import React, { useCallback } from 'react';
 
-import type { IPageToDeleteWithMeta } from '@growi/core/dist/interfaces';
+import type { IPageToDeleteWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 

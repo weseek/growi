@@ -6,8 +6,8 @@ import React, {
 
 import type {
   IPageInfoAll, IPageWithMeta, IPageInfoForListing,
-} from '@growi/core/dist/interfaces';
-import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core/dist/interfaces';
+} from '@growi/core';
+import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';

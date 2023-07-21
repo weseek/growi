@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get } from '~/client/util/apiv3-client';

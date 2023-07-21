@@ -1,4 +1,4 @@
-import type { HasObjectId } from '@growi/core/dist/interfaces';
+import type { HasObjectId } from '@growi/core';
 
 import { ICondition, IConditionHasId } from './condition';
 import { IQuestion, IQuestionHasId } from './question';

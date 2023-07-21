@@ -1,4 +1,4 @@
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 

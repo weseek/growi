@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { isPopulated } from '@growi/core/dist/interfaces';
+import { isPopulated } from '@growi/core';
 import type {
   IUser, IPagePopulatedToShowRevision,
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';

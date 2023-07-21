@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
-import type { IRevisionOnConflict } from '@growi/core/dist/interfaces';
+import type { IRevisionOnConflict } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format, parseISO } from 'date-fns';

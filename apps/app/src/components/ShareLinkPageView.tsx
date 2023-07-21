@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';

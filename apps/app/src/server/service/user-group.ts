@@ -1,4 +1,4 @@
-import type { IUser } from '@growi/core/dist/interfaces';
+import type { IUser } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IUser } from '@growi/core/dist/interfaces';
+import type { IUser } from '@growi/core';
 import Link from 'next/link';
 
 export const Username: React.FC<{ user?: IUser }> = ({ user }): JSX.Element => {

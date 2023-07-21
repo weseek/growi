@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import assert from 'assert';
 
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 import { templateChecker, pagePathUtils } from '@growi/core/dist/utils';
 
 import { FootstampIcon } from '../FootstampIcon';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import type { IRevisionHasPageId } from '@growi/core/dist/interfaces';
+import type { IRevisionHasPageId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';

@@ -1,4 +1,4 @@
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 import { objectIdUtils } from '@growi/core/dist/utils';
 import monggoose, {
   Types, Document, Model, Schema,

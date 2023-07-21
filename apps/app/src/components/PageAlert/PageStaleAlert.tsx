@@ -1,4 +1,4 @@
-import { isIPageInfoForEntity } from '@growi/core/dist/interfaces';
+import { isIPageInfoForEntity } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 

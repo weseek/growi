@@ -3,10 +3,10 @@ import React, { ReactNode, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core/dist/interfaces';
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';

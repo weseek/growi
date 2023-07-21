@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 

@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 

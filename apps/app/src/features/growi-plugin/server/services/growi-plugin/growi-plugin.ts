@@ -1,8 +1,8 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 
-import { GrowiPluginType } from '@growi/core/dist/consts';
-import type { GrowiThemeMetadata, ViteManifest } from '@growi/core/dist/interfaces';
+import { GrowiPluginType } from '@growi/core';
+import type { GrowiThemeMetadata, ViteManifest } from '@growi/core';
 import type { GrowiPluginPackageData } from '@growi/pluginkit';
 import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server/index.cjs';
 // eslint-disable-next-line no-restricted-imports

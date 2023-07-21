@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IRevisionHasPageId } from '@growi/core/dist/interfaces';
+import type { IRevisionHasPageId } from '@growi/core';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { createPatch } from 'diff';
 import { html, Diff2HtmlConfig } from 'diff2html';

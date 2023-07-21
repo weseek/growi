@@ -1,4 +1,4 @@
-import type { Ref, HasObjectId, IUser } from '@growi/core/dist/interfaces';
+import type { Ref, HasObjectId, IUser } from '@growi/core';
 
 // Model
 const MODEL_PAGE = 'Page';

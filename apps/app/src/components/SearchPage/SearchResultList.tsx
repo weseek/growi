@@ -5,7 +5,7 @@ import React, {
 
 import {
   type IPageInfoForListing, type IPageWithMeta, isIPageInfoForListing,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';

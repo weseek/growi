@@ -1,4 +1,4 @@
-import type { Nullable } from '@growi/core/dist/interfaces';
+import type { Nullable } from '@growi/core';
 
 export const SidebarContentsType = {
   CUSTOM: 'custom',

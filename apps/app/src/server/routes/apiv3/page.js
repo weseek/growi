@@ -1,6 +1,6 @@
 import {
   AllSubscriptionStatusType, SubscriptionStatusType,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 

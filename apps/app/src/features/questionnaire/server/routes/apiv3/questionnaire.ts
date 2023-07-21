@@ -1,4 +1,4 @@
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core';
 import { Router, Request } from 'express';
 import { body, validationResult } from 'express-validator';
 

@@ -1,4 +1,4 @@
-import type { Ref, IUser } from '@growi/core/dist/interfaces';
+import type { Ref, IUser } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';

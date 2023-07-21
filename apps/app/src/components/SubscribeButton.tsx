@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 
-import { SubscriptionStatusType } from '@growi/core/dist/interfaces';
+import { SubscriptionStatusType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 

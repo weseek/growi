@@ -1,4 +1,4 @@
-import type { IAttachmentHasId } from '@growi/core/dist/interfaces';
+import type { IAttachmentHasId } from '@growi/core';
 
 import { UserPicture } from './UserPicture';
 

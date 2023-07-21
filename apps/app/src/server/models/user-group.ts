@@ -1,4 +1,4 @@
-import type { IUserGroup } from '@growi/core/dist/interfaces';
+import type { IUserGroup } from '@growi/core';
 import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';

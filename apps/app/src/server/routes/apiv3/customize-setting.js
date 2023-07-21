@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { GrowiPluginType } from '@growi/core/dist/consts';
+import { GrowiPluginType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import express from 'express';
 import { body } from 'express-validator';

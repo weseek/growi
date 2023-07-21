@@ -2,7 +2,7 @@
 
 import nodePath from 'path';
 
-import type { IPage, HasObjectId } from '@growi/core/dist/interfaces';
+import type { IPage, HasObjectId } from '@growi/core';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';

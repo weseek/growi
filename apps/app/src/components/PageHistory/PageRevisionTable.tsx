@@ -2,7 +2,7 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
-import type { IRevisionHasId, IRevisionHasPageId } from '@growi/core/dist/interfaces';
+import type { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useSWRxInfinitePageRevisions } from '~/stores/page';

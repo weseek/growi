@@ -2,7 +2,7 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core/dist/interfaces';
+import type { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import { useRouter } from 'next/router';
 

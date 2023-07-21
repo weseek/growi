@@ -2,11 +2,11 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
   HasObjectId,
   IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
-} from '@growi/core/dist/interfaces';
-import { isIPageInfoForEntity } from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {

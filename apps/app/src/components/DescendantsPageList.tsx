@@ -4,7 +4,7 @@ import type {
   IDataWithMeta,
   IPageHasId,
   IPageInfoForOperation,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/toastr';

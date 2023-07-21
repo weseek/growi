@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 
-import type { IUser } from '@growi/core/dist/interfaces';
+import type { IUser } from '@growi/core';
 import { SWRResponse } from 'swr';
 
 

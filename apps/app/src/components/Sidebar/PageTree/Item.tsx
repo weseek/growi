@@ -7,7 +7,7 @@ import nodePath from 'path';
 import type {
   Nullable,
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   pathUtils, pagePathUtils,
 } from '@growi/core/dist/utils';

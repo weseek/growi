@@ -2,10 +2,10 @@ import React, { useCallback, useMemo } from 'react';
 
 import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 

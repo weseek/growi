@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';

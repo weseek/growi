@@ -1,6 +1,6 @@
 import {
   PageGrant, type PageGrantCanBeOnTree,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
 } from '@growi/core/dist/utils';

@@ -1,9 +1,9 @@
 import type {
   Ref, IPage, IUser, ISubscription,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   SubscriptionStatusType, AllSubscriptionStatusType,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   type Types, type Document, type Model, Schema,
 } from 'mongoose';

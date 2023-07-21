@@ -2,7 +2,7 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
-import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core/dist/interfaces';
+import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,

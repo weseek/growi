@@ -1,4 +1,4 @@
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core';
 import { Middleware, SWRHook } from 'swr';
 
 import { apiv3Put } from '~/client/util/apiv3-client';

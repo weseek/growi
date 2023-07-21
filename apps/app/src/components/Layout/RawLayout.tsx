@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 
-import { ColorScheme } from '@growi/core/dist/interfaces';
+import { ColorScheme } from '@growi/core';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';

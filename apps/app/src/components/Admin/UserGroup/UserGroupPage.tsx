@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import type { IUserGroup, IUserGroupHasId } from '@growi/core/dist/interfaces';
+import type { IUserGroup, IUserGroupHasId } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 

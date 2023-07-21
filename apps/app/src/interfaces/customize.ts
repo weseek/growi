@@ -1,4 +1,4 @@
-import type { GrowiThemeMetadata } from '@growi/core/dist/interfaces';
+import type { GrowiThemeMetadata } from '@growi/core';
 
 export type IResLayoutSetting = {
   isContainerFluid: boolean,

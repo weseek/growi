@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import type {
   IAttachmentHasId, Nullable,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import {
   type SWRResponseWithUtils, withUtils,
 } from '@growi/core/dist/utils';

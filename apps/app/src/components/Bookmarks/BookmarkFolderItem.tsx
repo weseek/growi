@@ -2,7 +2,7 @@ import {
   FC, useCallback, useState,
 } from 'react';
 
-import type { IPageToDeleteWithMeta } from '@growi/core/dist/interfaces';
+import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
 
 import {

@@ -4,7 +4,7 @@ import React, {
 
 import path from 'path';
 
-import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core/dist/interfaces';
+import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';

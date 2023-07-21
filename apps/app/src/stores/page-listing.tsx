@@ -3,7 +3,7 @@ import assert from 'assert';
 import type {
   Nullable, HasObjectId,
   IDataWithMeta, IPageHasId, IPageInfoForListing, IPageInfoForOperation,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 import useSWR, { Arguments, mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';

@@ -4,8 +4,8 @@ import { Readable, Writable } from 'stream';
 import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
-} from '@growi/core/dist/interfaces';
-import { PageGrant, PageStatus } from '@growi/core/dist/interfaces';
+} from '@growi/core';
+import { PageGrant, PageStatus } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';

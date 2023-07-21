@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IPageInfoForEntity, IPageWithMeta } from '@growi/core/dist/interfaces';
+import type { IPageInfoForEntity, IPageWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';

@@ -1,4 +1,4 @@
-import type { IPageHasId, IUser } from '@growi/core/dist/interfaces';
+import type { IPageHasId, IUser } from '@growi/core';
 import type { Request, Response } from 'express';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';

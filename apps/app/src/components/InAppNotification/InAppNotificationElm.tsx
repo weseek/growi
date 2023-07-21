@@ -2,7 +2,7 @@ import React, {
   FC, useRef,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core/dist/interfaces';
+import type { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { DropdownItem } from 'reactstrap';
 

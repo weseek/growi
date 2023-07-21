@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { type GrowiThemeMetadata, GrowiThemeSchemeType } from '@growi/core/dist/interfaces';
+import { type GrowiThemeMetadata, GrowiThemeSchemeType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { ThemeColorBox } from './ThemeColorBox';

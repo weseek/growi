@@ -2,7 +2,7 @@ import type {
   HasObjectId, Ref,
   IPageHasId,
   IUser, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId,
-} from '@growi/core/dist/interfaces';
+} from '@growi/core';
 
 export type UserGroupResult = {
   userGroup: IUserGroupHasId,
