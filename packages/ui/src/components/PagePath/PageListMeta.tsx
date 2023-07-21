@@ -102,7 +102,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
     <span className="page-list-meta">
       {topLabel}
       {templateLabel}
-      <SeenUsersCount count={page.seenUsers.length} basisViewersCount={basisViewersCount} />
+      <SeenUsersCount count={page.seenUsers.length} basisViewersCount={basisViewersCount} shouldSpaceOutIcon />
       {commentCount}
       {likerCount}
       {locked}
