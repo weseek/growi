@@ -30,9 +30,13 @@
       "import": "./dist/models/index.js",
       "require": "./dist/models/index.cjs"
     },
-    "./dist/plugin": {
-      "import": "./dist/plugin/index.js",
-      "require": "./dist/plugin/index.cjs"
+    "./dist/remark-plugins": {
+      "import": "./dist/remark-plugins/index.js",
+      "require": "./dist/remark-plugins/index.cjs"
+    },
+    "./dist/swr": {
+      "import": "./dist/swr/index.js",
+      "require": "./dist/swr/index.cjs"
     },
     "./dist/utils": {
       "import": "./dist/utils/index.js",

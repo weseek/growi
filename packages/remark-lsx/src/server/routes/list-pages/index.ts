@@ -1,6 +1,6 @@
 
 import type { IUser } from '@growi/core';
-import { OptionParser } from '@growi/core/dist/plugin';
+import { OptionParser } from '@growi/core/dist/remark-plugins';
 import { pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';

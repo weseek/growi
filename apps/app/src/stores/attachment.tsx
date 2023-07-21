@@ -5,7 +5,7 @@ import type {
 } from '@growi/core';
 import {
   type SWRResponseWithUtils, withUtils,
-} from '@growi/core/dist/utils';
+} from '@growi/core/dist/swr';
 import { Util } from 'reactstrap';
 import useSWR, { useSWRConfig } from 'swr';
 
