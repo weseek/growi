@@ -45,7 +45,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
         pagePathElement
       )}
       <span className="ml-2">
-        <PageListMeta page={page} />
+        <PageListMeta page={page} shouldSpaceOutIcon />
       </span>
     </>
   );
