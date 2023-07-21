@@ -68,8 +68,8 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
-      {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
-      <h4 className="mb-1">{localizedTemplate.title}
+      <h4 className="mb-1 d-flex">
+        <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
         {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
@@ -97,8 +97,8 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       className="px-4 py-3"
     >
-      {/* TODO: [テンプレート名が長すぎる場合に省略して表示させる](https://redmine.weseek.co.jp/issues/127116) */}
-      <h4 className="mb-1 text-wrap">{localizedTemplate.title}
+      <h4 className="mb-1 d-flex">
+        <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
         {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
@@ -223,7 +223,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                   })() }
                 </span>
               </DropdownToggle>
-              <DropdownMenu role="menu" className={`p-0 ${styles['dm-templates']}`}>
+              <DropdownMenu role="menu" className={`p-0 mw-100 ${styles['dm-templates']}`}>
                 { templateSummaries != null && templateSummaries.map((templateSummary) => {
                   const templateId = constructTemplateId(templateSummary);
 
