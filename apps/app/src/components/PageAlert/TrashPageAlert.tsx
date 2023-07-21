@@ -42,7 +42,7 @@ export const TrashPageAlert = (): JSX.Element => {
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
-
+  const isEmptyPage = pageId == null || pagePath == null;
 
   const openPutbackPageModalHandler = useCallback(() => {
     if (pageId == null || pagePath == null) {
@@ -103,7 +103,8 @@ export const TrashPageAlert = (): JSX.Element => {
     );
   }, [openPageDeleteModalHandler, openPutbackPageModalHandler, pageInfo?.isAbleToDeleteCompletely, t]);
 
-  if (!isTrashPage) {
+  // Show this alert only for non-empty pages in trash.
+  if (!isTrashPage || isEmptyPage) {
     return <></>;
   }
 
