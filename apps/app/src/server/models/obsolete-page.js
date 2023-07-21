@@ -1,7 +1,7 @@
+import { PageGrant } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
-import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 

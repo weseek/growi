@@ -4,6 +4,8 @@ import type {
   Ref, Nullable,
   IPageInfoForEntity, IPagePopulatedToShowRevision,
   SWRInfinitePageRevisionsResponse,
+  IPageInfo, IPageInfoForOperation,
+  IRevision, IRevisionHasId,
 } from '@growi/core';
 import { isClient, pagePathUtils } from '@growi/core/dist/utils';
 import useSWR, { mutate, useSWRConfig, type SWRResponse } from 'swr';
@@ -13,11 +15,7 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type {
-  IPageInfo, IPageInfoForOperation,
-} from '~/interfaces/page';
 import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import type { IRevision, IRevisionHasId } from '~/interfaces/revision';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
 
