@@ -2,10 +2,40 @@
   "name": "@growi/slack",
   "version": "6.1.8-RC.0",
   "license": "MIT",
+  "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/consts": {
+      "import": "./dist/consts/index.js",
+      "require": "./dist/consts/index.cjs"
+    },
+    "./dist/interfaces": {
+      "import": "./dist/interfaces/index.js",
+      "require": "./dist/interfaces/index.cjs"
+    },
+    "./dist/middlewares": {
+      "import": "./dist/middlewares/index.js",
+      "require": "./dist/middlewares/index.cjs"
+    },
+    "./dist/models": {
+      "import": "./dist/models/index.js",
+      "require": "./dist/models/index.cjs"
+    },
+    "./dist/utils": {
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs"
+    },
+    "./dist/utils/*": {
+      "import": "./dist/utils/*.js",
+      "require": "./dist/utils/*.cjs"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "clean": "shx rm -rf dist",

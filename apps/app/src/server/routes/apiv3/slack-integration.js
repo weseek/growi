@@ -1,7 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { supportedGrowiCommands } from '@growi/slack';
 import { verifySlackRequest } from '@growi/slack/dist/middlewares';
-import { InvalidGrowiCommandError } from '@growi/slack/dist/models/errors';
+import { InvalidGrowiCommandError } from '@growi/slack/dist/models';
 import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import { generateRespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
