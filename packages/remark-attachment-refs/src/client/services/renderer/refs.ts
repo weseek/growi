@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll } from 'hast-util-select';

@@ -4,11 +4,12 @@ import React, {
 } from 'react';
 
 
-import { DevidedPagePath, pathUtils } from '@growi/core';
 import type {
   IPageInfoAll, IPageWithMeta, IPageInfoForListing,
 } from '@growi/core/dist/interfaces';
 import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core/dist/interfaces';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { pathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
 import { PageListMeta } from '@growi/ui/dist/components/PagePath';
 import { format } from 'date-fns';

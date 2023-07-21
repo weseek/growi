@@ -1,10 +1,9 @@
 import { type RefObject, useCallback, useEffect } from 'react';
 
+import { PageGrant, type Nullable } from '@growi/core';
 import {
-  isClient, isServer, pagePathUtils, PageGrant, withUtils,
-} from '@growi/core';
-import type { Nullable } from '@growi/core/dist/interfaces';
-import type { SWRResponseWithUtils } from '@growi/core/dist/utils';
+  type SWRResponseWithUtils, withUtils, pagePathUtils, isClient, isServer,
+} from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';

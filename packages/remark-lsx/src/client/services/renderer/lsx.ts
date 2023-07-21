@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { pathUtils } from '@growi/core';
+import { hasHeadingSlash, removeTrailingSlash, addTrailingSlash } from '@growi/core/dist/utils/path-utils';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll } from 'hast-util-select';
@@ -11,8 +11,6 @@ import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except', 'isSharedPage'];
-
-const { hasHeadingSlash, removeTrailingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 
@@ -68,7 +66,7 @@ const pathResolver = (href: string, basePath: string): string => {
   }
 
   // generate relative pathname
-  const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
+  const baseUrl = new URL(addTrailingSlash(basePath), 'https://example.com');
   const relativeUrl = new URL(href, baseUrl);
 
   return removeTrailingSlash(relativeUrl.pathname);

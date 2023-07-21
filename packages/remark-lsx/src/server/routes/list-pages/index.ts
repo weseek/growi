@@ -1,5 +1,6 @@
 
-import { type IUser, OptionParser } from '@growi/core';
+import type { IUser } from '@growi/core/dist/interfaces';
+import { OptionParser } from '@growi/core/dist/plugin';
 import { pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';

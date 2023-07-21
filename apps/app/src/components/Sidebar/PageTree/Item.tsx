@@ -4,13 +4,13 @@ import React, {
 
 import nodePath from 'path';
 
-import {
-  pathUtils, pagePathUtils,
-} from '@growi/core';
 import type {
   Nullable,
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '@growi/core/dist/interfaces';
+import {
+  pathUtils, pagePathUtils,
+} from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';

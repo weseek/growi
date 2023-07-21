@@ -1,4 +1,4 @@
-import { OptionParser } from '@growi/core';
+import { OptionParser } from '@growi/core/dist/plugin';
 
 import loggerFactory from '../../utils/logger';
 

@@ -2,8 +2,8 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 
-import { DevidedPagePath, isPopulated } from '@growi/core';
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import { isPopulated, type IPageHasId } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
