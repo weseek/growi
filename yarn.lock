@@ -2568,9 +2568,12 @@
   version "6.1.8-RC.0"
   dependencies:
     "@slack/oauth" "^2.0.1"
+    "@slack/web-api" "^6.2.4"
     axios "^0.24.0"
     browser-bunyan "^1.6.3"
     bunyan "^1.8.15"
+    crypto "^1.0.1"
+    date-fns "^2.23.0"
     extensible-custom-error "^0.0.7"
     http-errors "^2.0.0"
     qs "^6.10.2"
@@ -6593,6 +6596,11 @@ crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
+
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
 csrf@3.1.0:
   version "3.1.0"
@@ -14529,7 +14537,7 @@ react@^18.2.0:
   dependencies:
     loose-envify "^1.1.0"
 
-reactstrap@^8.10.1:
+reactstrap@8.10.1, reactstrap@^8.10.1:
   version "8.10.1"
   resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-8.10.1.tgz#43ea596c7f82f88997a9c8aae203417910262d3f"
   integrity sha512-StjLADa/12yMNjafrSs+UD7sZAGtKpLO9fZp++2Dj0IzJinqY7eQhXlM3nFf0q40YsIcLvQdFc9pKF8PF4f0Qg==
