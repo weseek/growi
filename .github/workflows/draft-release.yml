@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      - dev/*.*.*
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -60,7 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release/current
-          GIT_PR_RELEASE_BRANCH_STAGING: master
+          GIT_PR_RELEASE_BRANCH_STAGING: ${{ github.ref_name }}
           GIT_PR_RELEASE_TEMPLATE: .github/git-pr-release-template.erb
           GIT_PR_RELEASE_TITLE: Release v${{ steps.release-version.outputs.RELEASE_VERSION }}
           GIT_PR_RELEASE_BODY: ${{ needs.update-release-draft.outputs.RELEASE_DRAFT_BODY }}
