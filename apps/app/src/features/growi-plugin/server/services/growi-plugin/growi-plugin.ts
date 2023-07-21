@@ -3,7 +3,7 @@ import path from 'path';
 
 import { GrowiPluginType, type GrowiThemeMetadata, type ViteManifest } from '@growi/core';
 import type { GrowiPluginPackageData } from '@growi/pluginkit';
-import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server';
+import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server/index.cjs';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
