@@ -20,6 +20,6 @@
   "dependencies": {},
   "devDependencies": {
     "penpal": "^4.0.0",
-    "throttle-debounce": "^3.0.1"
+    "throttle-debounce": "^5.0.0"
   }
 }

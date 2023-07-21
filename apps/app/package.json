@@ -195,7 +195,7 @@
     "superjson": "^1.9.1",
     "swagger-jsdoc": "^6.1.0",
     "swr": "^2.0.3",
-    "throttle-debounce": "^3.0.1",
+    "throttle-debounce": "^5.0.0",
     "toastr": "^2.1.2",
     "uglifycss": "^0.0.29",
     "universal-bunyan": "^0.9.2",
