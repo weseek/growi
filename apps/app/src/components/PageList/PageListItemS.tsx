@@ -34,27 +34,19 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
   return (
     <>
+      <UserPicture user={page.lastUpdateUser} noLink={noLink} />
       {isNarrowView ? (
-        <div className="d-flex align-items-center">
-          <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-          <Clamp lines={2}>
-            <div className={`mx-2 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
-              {pagePathElement}
-            </div>
-          </Clamp>
-          <span className="ml-2">
-            <PageListMeta page={page} shouldSpaceOutIcon />
-          </span>
-        </div>
+        <Clamp lines={2}>
+          <div className={`mx-2 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
+            {pagePathElement}
+          </div>
+        </Clamp>
       ) : (
-        <>
-          <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-          {pagePathElement}
-          <span className="ml-2">
-            <PageListMeta page={page} />
-          </span>
-        </>
+        pagePathElement
       )}
+      <span className="ml-2">
+        <PageListMeta page={page} />
+      </span>
     </>
   );
 
