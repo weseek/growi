@@ -20,7 +20,6 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
-
 import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
@@ -157,6 +156,7 @@ export const generateSSRViewOptions = (
     katex,
   );
 
+  // add components
   // if (components != null) {
   // }
 
