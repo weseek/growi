@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import FsLightbox from 'fslightbox-react';
 
-export const LightBox = ({ node, ...props }) => {
+export const LightBox = (props) => {
   const [toggler, setToggler] = useState(false);
   return (
     <>

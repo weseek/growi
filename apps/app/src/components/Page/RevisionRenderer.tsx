@@ -6,7 +6,6 @@ import ReactMarkdown from 'react-markdown';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import loggerFactory from '~/utils/logger';
 
-import { LightBox } from '../ReactMarkdownComponents/LightBox';
 import 'katex/dist/katex.min.css';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
@@ -34,16 +33,11 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName,
   } = props;
 
-  const className = `wiki ${additionalClassName ?? ''}`;
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
         {...rendererOptions}
-        className={className}
-        components={{
-          img: LightBox,
-        }}
+        className={`wiki ${additionalClassName ?? ''}`}
       >
         {markdown}
       </ReactMarkdown>
