@@ -5,6 +5,7 @@ import type { SubscriptionStatusType } from './subscription';
 import type { ITag } from './tag';
 import type { IUser, IUserGroupHasId, IUserHasId } from './user';
 
+export type GroupType = 'UserGroup' | 'ExternalUserGroup'
 
 export type IPage = {
   path: string,
@@ -20,8 +21,10 @@ export type IPage = {
   isEmpty: boolean,
   grant: PageGrant,
   grantedUsers: Ref<IUser>[],
-  grantedGroup: Ref<any>,
-  grantedGroupModel?: string,
+  grantedGroups: {
+    type: GroupType,
+    item: Ref<any>,
+  }[],
   lastUpdateUser: Ref<IUser>,
   liker: Ref<IUser>[],
   commentCount: number

@@ -72,7 +72,7 @@ export const populateDataToShowRevision = (page, userPublicFields, shouldExclude
       { path: 'lastUpdateUser', select: userPublicFields },
       { path: 'creator', select: userPublicFields },
       { path: 'deleteUser', select: userPublicFields },
-      { path: 'grantedGroup' },
+      { path: 'grantedGroups.item' },
       { path: 'revision', select: shouldExcludeBody ? '-body' : undefined, populate: {
         path: 'author', select: userPublicFields,
       } },

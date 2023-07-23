@@ -97,13 +97,16 @@ const schema = new Schema<PageDocument, PageModel>({
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, refPath: 'grantedGroupModel', index: true },
-  grantedGroupModel: {
-    type: String,
-    enum: ['UserGroup', 'ExternalUserGroup'],
-    required: true,
-    default: 'UserGroup',
-  },
+  grantedGroups: [{
+    type: {
+      type: String,
+      enum: ['UserGroup', 'ExternalUserGroup'],
+      required: true,
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true, index: true,
+    },
+  }],
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
   liker: [{ type: ObjectId, ref: 'User' }],
@@ -331,7 +334,7 @@ export class PageQueryBuilder {
 
     if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
-        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+        { grant: GRANT_USER_GROUP, 'grantedGroups.item': { $in: userGroups } },
       );
     }
 
@@ -937,7 +940,7 @@ export function generateGrantCondition(
   }
   else if (userGroups != null && userGroups.length > 0) {
     grantConditions.push(
-      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+      { grant: GRANT_USER_GROUP, 'grantedGroups.item': { $in: userGroups } },
     );
   }
 

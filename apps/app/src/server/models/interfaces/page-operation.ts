@@ -1,3 +1,5 @@
+import { GroupType } from '@growi/core';
+
 import { PageGrant } from '~/interfaces/page';
 
 import { ObjectIdLike } from '../../interfaces/mongoose-utils';
@@ -9,8 +11,10 @@ export type IPageForResuming = {
   parent?: ObjectIdLike,
   grant?: number,
   grantedUsers?: ObjectIdLike[],
-  grantedGroup?: ObjectIdLike,
-  grantedGroupModel?: string,
+  grantedGroups: {
+    type: GroupType,
+    item: ObjectIdLike,
+  }[],
   descendantCount: number,
   status?: number,
   revision?: ObjectIdLike,
@@ -24,16 +28,20 @@ export type IUserForResuming = {
 
 export type IOptionsForUpdate = {
   grant?: PageGrant,
-  grantUserGroupId?: ObjectIdLike,
-  grantUserGroupIdModel?: string,
+  grantUserGroupIds?: {
+    type: GroupType,
+    item: ObjectIdLike,
+  }[],
   isSyncRevisionToHackmd?: boolean,
   overwriteScopesOfDescendants?: boolean,
 };
 
 export type IOptionsForCreate = {
   format?: string,
-  grantUserGroupId?: ObjectIdLike,
-  grantUserGroupIdModel?: string,
+  grantUserGroupIds?: {
+    type: GroupType,
+    item: ObjectIdLike,
+  }[],
   grant?: PageGrant,
   overwriteScopesOfDescendants?: boolean,
   isSynchronously?: boolean,

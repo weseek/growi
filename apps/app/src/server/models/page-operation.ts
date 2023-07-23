@@ -59,13 +59,16 @@ const pageSchemaForResuming = new Schema<IPageForResuming>({
   status: { type: String },
   grant: { type: Number },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, refPath: 'grantedGroupModel', index: true },
-  grantedGroupModel: {
-    type: String,
-    enum: ['UserGroup', 'ExternalUserGroup'],
-    required: true,
-    default: 'UserGroup',
-  },
+  grantedGroups: [{
+    type: {
+      type: String,
+      enum: ['UserGroup', 'ExternalUserGroup'],
+      required: true,
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true,
+    },
+  }],
   creator: { type: ObjectId, ref: 'User' },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
 });
@@ -79,13 +82,16 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   updateMetadata: { type: Boolean },
   prevDescendantCount: { type: Number },
   grant: { type: Number },
-  grantUserGroupId: { type: ObjectId, refPath: 'grantedGroupModel' },
-  grantUserGroupIdModel: {
-    type: String,
-    enum: ['UserGroup', 'ExternalUserGroup'],
-    required: true,
-    default: 'UserGroup',
-  },
+  grantUserGroupIds: [{
+    type: {
+      type: String,
+      enum: ['UserGroup', 'ExternalUserGroup'],
+      required: true,
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true,
+    },
+  }],
   format: { type: String },
   isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },
