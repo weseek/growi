@@ -172,7 +172,7 @@
   "folder_name": "文件夹名称",
   "field": "字段",
   "not_creatable_page": {
-    "could_not_creata_path": "无法创建路径"
+    "message": "无法在此路径中创建页面内容。"
   },
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
