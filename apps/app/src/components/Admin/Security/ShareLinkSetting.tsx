@@ -8,8 +8,8 @@ import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurit
 import { apiv3Delete } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
+import ShareLinkList from '../../PageAccessoriesModal/ShareLink/ShareLinkList';
 import PaginationWrapper from '../../PaginationWrapper';
-import ShareLinkList from '../../ShareLink/ShareLinkList';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';

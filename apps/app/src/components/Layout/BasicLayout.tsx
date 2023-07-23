@@ -23,7 +23,7 @@ const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr:
 const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
-const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
+const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 // Fab
 const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
@@ -41,7 +41,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <GrowiNavbar />
 
         <div className="page-wrapper d-flex d-print-block">
-          <div className="grw-sidebar-wrapper" data-testid="grw-sidebar-wrapper">
+          <div className="grw-sidebar-wrapper">
             <Sidebar />
           </div>
 
