@@ -38,6 +38,7 @@ import loggerFactory from '~/utils/logger';
 
 import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
+import { components } from '^/config/swagger-definition';
 
 
 const logger = loggerFactory('growi:cli:services:renderer');
@@ -220,6 +221,7 @@ export const generateSimpleViewOptions = (
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -234,6 +236,10 @@ export const generatePresentationViewOptions = (
 ): RendererOptions => {
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
+
+  if (components != null) {
+    components.img = LightBox;
+  }
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
@@ -297,6 +303,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
   }
 
   if (config.isEnabledXssPrevention) {
