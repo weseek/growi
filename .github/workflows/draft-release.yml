@@ -34,7 +34,7 @@ jobs:
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
           BRANCH_NAME_REPLACED=${BRANCH_NAME/\//-}
-          echo "value=release-drafter-${BRANCH_NAME_REPLACED.yml" >> $GITHUB_OUTPUT
+          echo "value=release-drafter-$BRANCH_NAME_REPLACED.yml" >> $GITHUB_OUTPUT
 
       - uses: release-drafter/release-drafter@v5
         id: release-drafter
