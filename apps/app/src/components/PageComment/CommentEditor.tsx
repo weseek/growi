@@ -91,7 +91,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
   const onRouterChangeComplete = useCallback(() => {
-    setIsReadyToUse(false);
     editorRef.current?.setValue('');
   }, []);
 
