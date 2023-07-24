@@ -1,6 +1,6 @@
 {
   "name": "@growi/hackmd",
-  "version": "6.1.8-RC.0",
+  "version": "6.1.8",
   "description": "GROWI js and css files to use hackmd",
   "license": "MIT",
   "type": "module",
