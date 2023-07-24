@@ -83,7 +83,7 @@ export const PageView = (props: Props): JSX.Element => {
 
     const targetId = hash.slice(1);
 
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(decodeURIComponent(targetId));
     target?.scrollIntoView();
 
   }, [isCommentsLoaded]);
@@ -111,11 +111,16 @@ export const PageView = (props: Props): JSX.Element => {
     ? (
       <>
         <div id="comments-container" ref={commentsContainerRef}>
-          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} />
+          <Comments
+            pageId={page._id}
+            pagePath={pagePath}
+            revision={page.revision}
+            onLoaded={() => setCommentsLoaded(true)}
+          />
         </div>
-        { (isUsersHomepagePath && page.creator != null) && (
-          <UsersHomepageFooter creatorId={page.creator._id}/>
-        ) }
+        {(isUsersHomepagePath && page.creator != null) && (
+          <UsersHomepageFooter creatorId={page.creator._id} />
+        )}
         <PageContentFooter page={page} />
       </>
     )
@@ -144,15 +149,15 @@ export const PageView = (props: Props): JSX.Element => {
     >
       <PageAlerts />
 
-      { specialContents }
-      { specialContents == null && (
+      {specialContents}
+      {specialContents == null && (
         <>
-          { (isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} /> }
+          {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
           <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
             <Contents />
           </div>
         </>
-      ) }
+      )}
 
     </MainPane>
   );

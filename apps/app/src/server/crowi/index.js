@@ -705,7 +705,7 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupGrowiPluginService = async function() {
-  const { growiPluginService } = require('~/features/growi-plugin/services');
+  const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
 
   // download plugin repositories, if document exists but there is no repository
   // TODO: Cannot download unless connected to the Internet at setup.

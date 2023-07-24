@@ -165,7 +165,7 @@
   "folder_name": "Folder name",
   "field": "field",
   "not_creatable_page": {
-    "could_not_creata_path": "Couldn't create path."
+    "message": "Page contents cannot be created in this path."
   },
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
@@ -820,5 +820,11 @@
     "tags_input": {
       "tag_name": "tag name"
     }
+  },
+  "delete_attachment_modal": {
+    "confirm_delete_attachment": "Delete attachment?"
+  },
+  "rich_attachment": {
+    "attachment_not_be_found": "The attachment could not be found"
   }
 }

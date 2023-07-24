@@ -172,7 +172,7 @@
   "folder_name": "文件夹名称",
   "field": "字段",
   "not_creatable_page": {
-    "could_not_creata_path": "无法创建路径"
+    "message": "无法在此路径中创建页面内容。"
   },
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
@@ -823,5 +823,11 @@
     "tags_input": {
       "tag_name": "标签名称"
     }
+  },
+  "delete_attachment_modal": {
+    "confirm_delete_attachment": "你想删除一个附件吗？"
+  },
+  "rich_attachment": {
+    "attachment_not_be_found": "没有找到附件"
   }
 }

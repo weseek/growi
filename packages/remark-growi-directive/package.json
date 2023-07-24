@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-growi-directive",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.8-RC.0",
   "description": "remark plugin to support GROWI plugin (forked from remark-directive@2.0.1)",
   "license": "MIT",
   "keywords": [
@@ -17,14 +17,15 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "yarn tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "yarn build",
     "watch": "yarn tsc -w",
     "test": "cross-env NODE_ENV=test npm run test-coverage",
     "test-api": "tape --conditions development test/**.test.js",
     "test-coverage": "c8 --check-coverage --branches 100 --functions 100 --lines 100 --statements 100 --reporter lcov npm run test-api",
     "lint": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\"",
-    "lint:fix": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\" --fix"
+    "lint:fix": "yarn eslint \"**/*.{cjs, js,jsx,ts,tsx}\" --fix",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "@types/mdast": "^3.0.0",

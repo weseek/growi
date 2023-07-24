@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import SearchResultLayout from '~/components/Layout/SearchResultLayout';
@@ -13,7 +12,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IUser, IUserHasId } from '~/interfaces/user';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri,
 } from '~/stores/context';
 
 import { SearchPage } from '../components/SearchPage';
@@ -47,6 +46,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   // commons
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
 
@@ -65,11 +65,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useShowPageLimitationL(props.showPageLimitationL);
   useIsContainerFluid(props.isContainerFluid);
 
-  const PutbackPageModal = (): JSX.Element => {
-    const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-    return <PutbackPageModal />;
-  };
-
   const title = generateCustomTitle(props, t('search_result.title'));
 
   return (
@@ -81,8 +76,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
       <div id="search-page" className="dynamic-layout-root">
         <SearchPage />
       </div>
-
-      <PutbackPageModal />
     </>
   );
 };

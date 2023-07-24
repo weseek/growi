@@ -26,7 +26,7 @@ export const getModelSafely = <T>(modelName: string): Model<T & Document> | null
 };
 
 // TODO: Do not use any type
-export const getOrCreateModel = <Interface, Method>(modelName: string, schema: any): any => {
+export const getOrCreateModel = <Interface, Method>(modelName: string, schema: any): Method & Model<Interface & Document> => {
   if (mongoose.modelNames().includes(modelName)) {
     return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName);
   }

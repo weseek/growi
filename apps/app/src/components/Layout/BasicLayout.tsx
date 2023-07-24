@@ -10,18 +10,20 @@ import Sidebar from '../Sidebar';
 import { RawLayout } from './RawLayout';
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
+const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
 const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+const PutbackPageModal = dynamic(() => import('../PutbackPageModal'), { ssr: false });
 // Page modals
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
 const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
-const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
+const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 // Fab
 const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
@@ -39,7 +41,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <GrowiNavbar />
 
         <div className="page-wrapper d-flex d-print-block">
-          <div className="grw-sidebar-wrapper" data-testid="grw-sidebar-wrapper">
+          <div className="grw-sidebar-wrapper">
             <Sidebar />
           </div>
 
@@ -56,7 +58,9 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <PageDeleteModal />
         <PageRenameModal />
         <PageAccessoriesModal />
+        <DeleteAttachmentModal />
         <DeleteBookmarkFolderModal />
+        <PutbackPageModal />
       </DndProvider>
 
       <PagePresentationModal />

@@ -1,3 +1,4 @@
+import { pagePathUtils } from '@growi/core';
 import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';
@@ -22,8 +23,16 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
   }
 };
 
-const isAttached = (href: string): boolean => {
-  return href.startsWith('/attachment/');
+const isCreatablePage = (href: string) => {
+  try {
+    const url = new URL(href);
+    const pathName = url.pathname;
+    return pagePathUtils.isCreatablePage(pathName);
+  }
+  catch (err) {
+    logger.debug(err);
+    return false;
+  }
 };
 
 type Props = Omit<LinkProps, 'href'> & {
@@ -49,13 +58,6 @@ export const NextLink = (props: Props): JSX.Element => {
     Object.entries(rest).filter(([key]) => key.startsWith('data-')),
   );
 
-  // when href is an anchor link
-  if (isAnchorLink(href)) {
-    return (
-      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
-    );
-  }
-
   if (isExternalLink(href, siteUrl)) {
     return (
       <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
@@ -64,16 +66,10 @@ export const NextLink = (props: Props): JSX.Element => {
     );
   }
 
-  // when href is an attachment file
-  if (isAttached(href)) {
-    const dlhref = href.replace('/attachment/', '/download/');
+  // when href is an anchor link or not-creatable path
+  if (isAnchorLink(href) || !isCreatablePage(href)) {
     return (
-      <span>
-        <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
-          {children}
-        </a>&nbsp;
-        <a href={dlhref} className="attachment-download"><i className='icon-cloud-download'></i></a>
-      </span>
+      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
     );
   }
 

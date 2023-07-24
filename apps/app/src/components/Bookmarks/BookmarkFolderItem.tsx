@@ -121,7 +121,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
   };
 
-  const isDropable = (item: DragItemDataType, type: string | null| symbol): boolean => {
+  const isDropable = (item: DragItemDataType, type: string | null | symbol): boolean => {
     if (type === DRAG_ITEM_TYPE.FOLDER) {
       if (item.bookmarkFolder.parent === bookmarkFolder._id || item.bookmarkFolder._id === bookmarkFolder._id) {
         return false;
@@ -142,6 +142,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
     return true;
   };
+
 
   const renderChildFolder = () => {
     return isOpen && children?.map((childFolder) => {
@@ -256,7 +257,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               </div>
             </>
           )}
-          { isOperable && (
+          {isOperable && (
             <div className="grw-foldertree-control d-flex">
               <BookmarkFolderItemControl
                 onClickRename={onClickRenameHandler}

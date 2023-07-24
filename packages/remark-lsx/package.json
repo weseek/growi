@@ -1,15 +1,20 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.8-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
-  "keywords": ["growi", "growi-plugin"],
-  "files": ["dist"],
+  "keywords": [
+    "growi",
+    "growi-plugin"
+  ],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "run-p build:*",
     "build:client": "vite build -c vite.client.config.ts",
     "build:server": "vite build -c vite.server.config.ts",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "run-p dev:*",
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
@@ -20,18 +25,19 @@
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"
   },
   "dependencies": {
-    "@growi/core": "^6.1.4-RC.0",
-    "@growi/remark-growi-directive": "^6.1.4-RC.0",
-    "@growi/ui": "^6.1.4-RC.0",
+    "@growi/core": "link:../core",
+    "@growi/remark-growi-directive": "link:../remark-growi-directive",
+    "@growi/ui": "link:../ui",
     "escape-string-regexp": "^4.0.0",
     "express": "^4.16.1",
-    "mongoose": "^6.5.0",
+    "mongoose": "^6.11.3",
     "swr": "^2.0.3"
   },
   "devDependencies": {

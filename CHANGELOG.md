@@ -1,8 +1,89 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.7](https://github.com/weseek/growi/compare/v6.1.6...v6.1.7) - 2023-07-19
+
+### 💎 Features
+
+- feat: Authentication settings cannot be disabled if there will be no administrator user available to log in (#7761) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Show spinner while installing and logging-in (#7823) @soumaeda
+- imprv: Routing with next link (#7880) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Auto popup PageAccessoriesModal and show page history (#7888) @yuki-takei
+- fix: Auto-scroll does not work when accessing the page when the header string is CJK (#7882) @yuki-takei
+- fix: Avoid unnecessary next routing (#7863) @miya
+- fix: Work put back page on bookmark sidebar (#7698) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Render SearchPageBase in CSR (#7889) @yuki-takei
+
+## [v6.1.6](https://github.com/weseek/growi/compare/v6.1.5...v6.1.6) - 2023-07-12
+
+### 🐛 Bug Fixes
+
+- fix: Revert current page mutation and add workaround for saving page (#7877) @yuki-takei
+- fix: The official docker image missed preset-templates (#7865) @yuki-takei
+- fix: SSL connection error to Elasticsearch8 using self certificate (#7818) @miya
+
+## [v6.1.5](https://github.com/weseek/growi/compare/v6.1.4...v6.1.5) - 2023-07-10
+
+### 💎 Features
+
+- feat: Rich Attachment (#7534) @jam411
+- feat: Plugin kit (#7830) @yuki-takei
+- feat: Deciding whether to use SSR based on the volume of latestRevisionBodyLength (#7772) @miya
+
+### 🚀 Improvement
+
+- imprv: Load templates from the server 2 (#7850) @yuki-takei
+- imprv: Improve release parent group button (#7838) @WNomunomu
+- imprv: Load templates from the server (#7842) @yuki-takei
+- imprv: Able to send new passsword by email (#7758) @soumaeda
+- imprv: Convert jsx into tsx (#7832) @WNomunomu
+- imprv: After reset password footer modal design (#7790) @soumaeda
+- imprv: Update email alert (#7771) @WNomunomu
+- imprv: Can use normal browser transition in searching page (#7826) @yuki-takei
+- imprv: Show tooltip when copying password (#7800) @soumaeda
+
+### 🐛 Bug Fixes
+
+- fix(lsx): Except option (#7855) @yuki-takei
+- fix: Page body is not displayed when skipSSR (#7849) @miya
+- fix: When uploading an attachment file to a new page and pressing the update button, an error occurs (#7844) @miya
+- fix: Editing user group settings (#7827) @WNomunomu
+- fix: Handsontable not display full screen (#7784) @mudana-grune
+- fix: Brand logo fill color transition (#7828) @yuki-takei
+- fix: Email body of global notification is not displayed (#7824) @jam411
+- fix(lsx): Prefix is not uniquely determined by usage (#7815) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Dependencies specification for local packages (#7809) @yuki-takei
+
+## [v6.1.4](https://github.com/weseek/growi/compare/v6.1.3...v6.1.4) - 2023-06-12
+
+### 💎 Features
+
+- feat(plugin): Specify repository branch name (#7783) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Suppress unnecessary bookmark API requests (#7798) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Bookmarks mutation for the current user (#7797) @yuki-takei
+- fix: Slack channels data for User Triggered Notification is not loaded (#7794) @yuki-takei
+- fix: The input of the editor is cleared when an attachment is added when a new page editing (#7788) @miya
 
 ## [v6.1.3](https://github.com/weseek/growi/compare/v6.1.2...v6.1.3) - 2023-06-07
 

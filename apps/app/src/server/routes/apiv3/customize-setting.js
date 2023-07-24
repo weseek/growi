@@ -1,13 +1,11 @@
 /* eslint-disable no-unused-vars */
 
-import { ErrorV3 } from '@growi/core';
+import { GrowiPluginType, ErrorV3 } from '@growi/core';
 import express from 'express';
 import { body } from 'express-validator';
-import mongoose from 'mongoose';
 import multer from 'multer';
 
-import { GrowiPluginResourceType } from '~/features/growi-plugin/interfaces';
-import { GrowiPlugin } from '~/features/growi-plugin/models';
+import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
@@ -275,7 +273,7 @@ module.exports = (crowi) => {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
 
       // retrieve plugin manifests
-      const themePlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+      const themePlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
 
       const pluginThemesMetadatas = themePlugins
         .map(themePlugin => themePlugin.meta.themes)

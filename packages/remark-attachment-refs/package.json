@@ -1,18 +1,23 @@
 {
   "name": "@growi/remark-attachment-refs",
-  "version": "6.1.4-RC.0",
+  "version": "6.1.8-RC.0",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
-  "keywords": ["growi", "growi-plugin"],
+  "keywords": [
+    "growi",
+    "growi-plugin"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "run-p build:*",
     "build:server": "vite build -c vite.server.config.ts",
     "build:client": "vite build -c vite.client.config.ts",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "run-p dev:*",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
@@ -21,14 +26,15 @@
     "lint:styles": "stylelint src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "test": ""
+    "test": "",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
+    "@growi/core": "link:../core",
+    "@growi/remark-growi-directive": "link:../remark-growi-directive",
+    "@growi/ui": "link:../ui",
     "bunyan": "^1.8.15",
-    "universal-bunyan": "^0.9.2",
-    "@growi/core": "^6.1.4-RC.0",
-    "@growi/remark-growi-directive": "^6.1.4-RC.0",
-    "@growi/ui": "^6.1.4-RC.0"
+    "universal-bunyan": "^0.9.2"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
