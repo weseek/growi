@@ -1,3 +1,4 @@
+import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
 import { i18n } from '^/config/next-i18next.config';
@@ -8,12 +9,10 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-import { ErrorV3 } from '@growi/core';
-
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
-const { pathUtils } = require('@growi/core');
+const { pathUtils } = require('@growi/core/dist/utils');
 const debug = require('debug')('growi:routes:admin');
 const express = require('express');
 

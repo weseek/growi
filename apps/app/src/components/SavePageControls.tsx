@@ -2,14 +2,14 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';

@@ -1,7 +1,5 @@
 
-import { pagePathUtils } from '@growi/core';
-
-const { encodeSpaces } = pagePathUtils;
+import { encodeSpaces } from '@growi/core/dist/utils/page-path-utils';
 
 export default class Linker {
 

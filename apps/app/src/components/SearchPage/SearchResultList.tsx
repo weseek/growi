@@ -3,13 +3,13 @@ import React, {
   ForwardRefRenderFunction, useCallback, useImperativeHandle, useRef,
 } from 'react';
 
+import {
+  type IPageInfoForListing, type IPageWithMeta, isIPageInfoForListing,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
-import {
-  IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
-} from '~/interfaces/page';
 import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';

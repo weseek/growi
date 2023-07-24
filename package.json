@@ -84,6 +84,7 @@
     "reg-notify-slack-plugin": "^0.11.0",
     "reg-publish-s3-plugin": "^0.11.0",
     "reg-suit": "^0.12.2",
+    "rollup-plugin-node-externals": "^6.1.1",
     "shx": "^0.3.4",
     "stylelint": "^14.2.0",
     "stylelint-config-recess-order": "^3.0.0",
