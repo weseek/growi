@@ -29,17 +29,9 @@ jobs:
         uses: myrotvorets/info-from-package-json-action@1.2.0
         id: package-json
 
-      - name: Determine config file
-        id: determine-config-name
-        run: |
-          BRANCH_NAME="${{ github.ref_name }}"
-          BRANCH_NAME_REPLACED=${BRANCH_NAME/\//-}
-          echo "value=release-drafter-$BRANCH_NAME_REPLACED.yml" >> $GITHUB_OUTPUT
-
       - uses: release-drafter/release-drafter@v5
         id: release-drafter
         with:
-          config-name: ${{ steps.determine-config-name.outputs.value }}
           name: v${{ steps.package-json.outputs.packageVersion }}
           tag: v${{ steps.package-json.outputs.packageVersion }}
           version: ${{ steps.package-json.outputs.packageVersion }}
