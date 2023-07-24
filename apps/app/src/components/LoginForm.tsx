@@ -11,6 +11,7 @@ import type { IExternalAccountLoginError } from '~/interfaces/errors/external-ac
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
+import { useIsAdmin } from '~/stores/context';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -37,6 +38,7 @@ type LoginFormProps = {
   externalAccountLoginError?: IExternalAccountLoginError,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
+  const { data: isAdmin } = useIsAdmin();
   const { t } = useTranslation();
 
   const router = useRouter();
@@ -107,9 +109,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const res = await apiv3Post('/login', { loginForm });
       const { redirectTo } = res.data;
 
-
       // redirectTo === '/admin' かつ、リクエストを投げたユーザーがadminでなければ、、っていう条件式
-      if (redirectTo === '/admin') {
+      if (!isAdmin && redirectTo === '/admin') {
         return router.push('/');
       }
 
