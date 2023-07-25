@@ -1,5 +1,4 @@
 # Filter previous releases to consider only those with the target matching commitish.
-filter-by-commitish: true
 categories:
   - title: 'BREAKING CHANGES'
     labels:

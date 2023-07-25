@@ -1,0 +1,4 @@
+_extends: growi:.github/release-drafter.yml
+
+# Filter previous releases to consider only those with the master branch
+filter-by-commitish: true
