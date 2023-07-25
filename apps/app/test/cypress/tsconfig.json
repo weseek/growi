@@ -4,7 +4,10 @@
     "noEmit": true,
     // be explicit about types included
     // to avoid clashing with Jest types
-    "types": ["cypress"]
+    "types": ["cypress"],
+    // turn off sourceMap
+    // see: https://github.com/cypress-io/cypress/issues/26203
+    "sourceMap": false
   },
   "include": [
     "../../node_modules/cypress",

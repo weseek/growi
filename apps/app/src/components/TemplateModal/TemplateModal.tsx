@@ -68,7 +68,10 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       aria-current="true"
     >
-      <h4 className="mb-1">{localizedTemplate.title}</h4>
+      <h4 className="mb-1 d-flex">
+        <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
+        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
+      </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
@@ -94,7 +97,10 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       onClick={onClick}
       className="px-4 py-3"
     >
-      <h4 className="mb-1 text-wrap">{localizedTemplate.title}</h4>
+      <h4 className="mb-1 d-flex">
+        <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
+        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
+      </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
         <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
@@ -217,7 +223,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                   })() }
                 </span>
               </DropdownToggle>
-              <DropdownMenu role="menu" className={`p-0 ${styles['dm-templates']}`}>
+              <DropdownMenu role="menu" className={`p-0 mw-100 ${styles['dm-templates']}`}>
                 { templateSummaries != null && templateSummaries.map((templateSummary) => {
                   const templateId = constructTemplateId(templateSummary);
 
