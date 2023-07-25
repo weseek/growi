@@ -1,8 +1,31 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.8](https://github.com/weseek/growi/compare/v6.1.7...v6.1.8) - 2023-07-24
+
+### 💎 Features
+
+- feat: Add plugin badge to TemplateModal's list of templates (#7897) @TatsuyaIse
+
+### 🚀 Improvement
+
+- imprv: Replace isAdmin with usersAdminHooks (#7840) @WNomunomu
+- imprv: Show alert for trashed pages only when the page is not empty (#7903) @TatsuyaIse
+- imprv: Template name truncation (#7898) @TatsuyaIse
+
+### 🐛 Bug Fixes
+
+- fix: Cancel a comment will cancel all comments (#7804) @mudana-grune
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump vite from 4.3.8 to 4.4.5 (#7901) @dependabot
+- ci(deps): bump semver from 5.7.1 to 5.7.2 (#7867) @dependabot
+- ci(deps): bump mongoose from 6.11.1 to 6.11.3 (#7891) @dependabot
+- ci(deps): bump word-wrap from 1.2.3 to 1.2.4 (#7892) @dependabot
 
 ## [v6.1.7](https://github.com/weseek/growi/compare/v6.1.6...v6.1.7) - 2023-07-19
 
