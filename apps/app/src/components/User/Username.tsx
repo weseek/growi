@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { type IUser, pagePathUtils } from '@growi/core';
+import type { IUser } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import Link from 'next/link';
 
 export const Username: React.FC<{ user?: IUser }> = ({ user }): JSX.Element => {

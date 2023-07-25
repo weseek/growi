@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 
-import { type IUserHasId, pagePathUtils } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 
 import loggerFactory from '~/utils/logger';
 
