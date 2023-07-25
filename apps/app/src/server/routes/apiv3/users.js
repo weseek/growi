@@ -1,6 +1,6 @@
 
 import { ErrorV3 } from '@growi/core/dist/models';
-import { userHomepagePath } from '@growi/core/dist/utils';
+import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
