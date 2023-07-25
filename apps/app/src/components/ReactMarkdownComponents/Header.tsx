@@ -75,7 +75,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const activateByHash = useCallback((url: string) => {
     try {
       const hash = (new URL(url, 'https://example.com')).hash.slice(1);
-      setActive(hash === id);
+      setActive(decodeURIComponent(hash) === id);
     }
     catch (err) {
       logger.debug(err);

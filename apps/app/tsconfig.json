@@ -20,7 +20,7 @@
   "include": [
     "next-env.d.ts",
     "config",
-    "src",
+    "src"
   ],
   "ts-node": {
     "transpileOnly": true,

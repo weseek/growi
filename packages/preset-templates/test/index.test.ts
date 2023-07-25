@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { scanAllTemplateStatus, validateTemplatePluginPackageJson, validateTemplatePlugin } from '@growi/pluginkit/dist/server/utils/v4';
+import { scanAllTemplates, validateTemplatePluginGrowiDirective, validateAllTemplateLocales } from '@growi/pluginkit/dist/v4/server';
 
 
 const projectDirRoot = path.resolve(__dirname, '../');
@@ -9,27 +9,44 @@ const projectDirRoot = path.resolve(__dirname, '../');
 it('Validation for package.json should be passed', () => {
 
   // when
-  const caller = () => validateTemplatePluginPackageJson(projectDirRoot);
+  const caller = () => validateTemplatePluginGrowiDirective(projectDirRoot);
 
   // then
   expect(caller).not.toThrow();
+});
+
+it('Validation for package.json should be return data', () => {
+
+  // when
+  const data = validateTemplatePluginGrowiDirective(projectDirRoot);
+
+  // then
+  expect(data).not.toBeNull();
 });
 
 it('Scanning the templates ends up with no errors', async() => {
-
-  // setup
-  const data = await validateTemplatePluginPackageJson(projectDirRoot);
-
   // when
-  const caller = () => scanAllTemplateStatus(projectDirRoot, data);
+  const results = await scanAllTemplates(projectDirRoot);
 
   // then
-  expect(caller).not.toThrow();
+  expect(results).not.toBeNull();
 });
 
-it('Validation templates returns true', async() => {
+it('Scanning the templates ends up with no errors with opts.data', async() => {
+
+  // setup
+  const data = validateTemplatePluginGrowiDirective(projectDirRoot);
+
   // when
-  const result = await validateTemplatePlugin(projectDirRoot);
+  const results = await scanAllTemplates(projectDirRoot, { data });
+
+  // then
+  expect(results).not.toBeNull();
+});
+
+it('Validation templates returns true', () => {
+  // when
+  const result = validateAllTemplateLocales(projectDirRoot);
 
   // then
   expect(result).toBeTruthy();

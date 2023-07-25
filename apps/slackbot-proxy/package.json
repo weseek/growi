@@ -1,10 +1,10 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "6.1.4-slackbot-proxy.0",
+  "version": "6.1.9-slackbot-proxy.0",
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
     "cp:bootstrap": "cp -RT ./node_modules/bootstrap/dist ./dist/public/bootstrap",
@@ -18,7 +18,8 @@
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
     "predev": "yarn cp:bootstrap:dev",
     "lint": "yarn eslint src --ext .ts",
-    "lint:fix": "yarn eslint src --ext .ts --fix"
+    "lint:fix": "yarn eslint src --ext .ts --fix",
+    "version": "yarn version --no-git-tag-version --preid=slackbot-proxy"
   },
   "// comments for dependencies": {
     "read-pkg-up": "v8 doesn't support CommonJS anymore. https://github.com/sindresorhus/read-pkg-up/issues/17"

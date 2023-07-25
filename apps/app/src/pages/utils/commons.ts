@@ -30,6 +30,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   isDefaultLogo: boolean,
+  growiCloudUri: string,
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
   sidebarConfig: ISidebarConfig,
@@ -96,6 +97,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser,
     isDefaultLogo,
     forcedColorScheme,
+    growiCloudUri: configManager.getConfig('crowi', 'app:growiCloudUri'),
     sidebarConfig: {
       isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
       isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),

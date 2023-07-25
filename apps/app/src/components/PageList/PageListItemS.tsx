@@ -3,6 +3,7 @@ import React from 'react';
 import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
 import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
 import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 
 import { IPageHasId } from '~/interfaces/page';
@@ -29,7 +30,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
 
   let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-1']} />;
   if (!noLink) {
-    pagePathElement = <a className="text-break" href={page.path}>{pagePathElement}</a>;
+    pagePathElement = <Link href={`/${page._id}`} className="text-break" prefetch={false}>{pagePathElement}</Link>;
   }
 
   return (
