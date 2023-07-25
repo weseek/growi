@@ -22,39 +22,39 @@
     "@growi/pluginkit#build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/remark-attachment-refs#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/remark-lsx#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/ui#build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/app#styles-prebuilt": {
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
         "src/styles/**/*.scss"
       ],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/app#build": {
       "dependsOn": ["^build", "@growi/app#styles-prebuilt"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/slackbot-proxy#build": {
       "dependsOn": ["@growi/slack#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "build": {
       "outputs": ["dist/**"],
@@ -65,34 +65,34 @@
         "tsconfig*.json",
         "vite*.ts"
       ],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
 
     "@growi/pluginkit#dev": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/remark-attachment-refs#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/remark-lsx#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/ui#dev": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/app#dev:migrate": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migrations/*.js"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/app#dev:styles-prebuilt": {
       "outputs": ["src/styles/prebuilt/**"],
@@ -100,7 +100,7 @@
         "src/styles/**/*.scss",
         "!src/styles/prebuilt/**"
       ],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/app#dev": {
       "dependsOn": ["^dev", "@growi/app#dev:migrate", "@growi/app#dev:styles-prebuilt"],
@@ -129,7 +129,7 @@
         "tsconfig*.json",
         "vite*.ts"
       ],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
 
     "watch": {
@@ -167,26 +167,26 @@
 
     "@growi/app#test": {
       "dependsOn": ["^dev"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/slackbot-proxy#test": {
       "dependsOn": ["@growi/slack#dev"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/pluginkit#test": {
       "dependsOn": ["@growi/core#dev"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/preset-templates#test": {
       "dependsOn": ["@growi/pluginkit#dev"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/remark-lsx#test": {
       "dependsOn": ["@growi/core#dev"],
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "test": {
-      "outputMode": "new"
+      "outputMode": "new-only"
     },
     "@growi/app#version": {
       "cache": false,
