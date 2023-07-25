@@ -1,8 +1,11 @@
-import {
-  SubscriptionStatusType, AllSubscriptionStatusType, Ref, IPage, IUser, ISubscription,
+import type {
+  Ref, IPage, IUser, ISubscription,
 } from '@growi/core';
 import {
-  Types, Document, Model, Schema,
+  SubscriptionStatusType, AllSubscriptionStatusType,
+} from '@growi/core';
+import {
+  type Types, type Document, type Model, Schema,
 } from 'mongoose';
 
 import { AllSupportedTargetModels } from '~/interfaces/activity';

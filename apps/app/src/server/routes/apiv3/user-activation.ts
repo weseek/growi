@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
 

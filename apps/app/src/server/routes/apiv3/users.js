@@ -1,4 +1,6 @@
-import { ErrorV3, pagePathUtils } from '@growi/core';
+
+import { ErrorV3 } from '@growi/core/dist/models';
+import { userHomepagePath } from '@growi/core/dist/utils';
 
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
@@ -806,9 +808,9 @@ module.exports = (crowi) => {
 
     try {
       const user = await User.findById(id);
-      // !! DO NOT MOVE userHomepagePath FROM THIS POSITION !! -- 05.31.2023
+      // !! DO NOT MOVE homepagePath FROM THIS POSITION !! -- 05.31.2023
       // catch username before delete user because username will be change to deleted_at_*
-      const userHomepagePath = pagePathUtils.userHomepagePath(user);
+      const homepagePath = userHomepagePath(user);
 
       await UserGroupRelation.remove({ relatedUser: user });
       await user.statusDelete();
@@ -819,7 +821,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       if (isUsersHomepageDeletionEnabled) {
-        crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
+        crowi.pageService.deleteCompletelyUserHomeBySystem(homepagePath);
       }
 
       return res.apiv3({ user: serializedUser });

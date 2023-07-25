@@ -1,4 +1,4 @@
-import { BasicInterceptor } from '@growi/core';
+import { BasicInterceptor } from '@growi/core/dist/utils';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 

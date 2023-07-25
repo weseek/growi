@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
 
-import {
-  IAttachmentHasId, Nullable, type SWRResponseWithUtils, withUtils,
+import type {
+  IAttachmentHasId, Nullable,
 } from '@growi/core';
+import {
+  type SWRResponseWithUtils, withUtils,
+} from '@growi/core/dist/swr';
 import { Util } from 'reactstrap';
 import useSWR, { useSWRConfig } from 'swr';
 

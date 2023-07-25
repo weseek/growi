@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
 
 import assert from 'assert';
 
-import { templateChecker, pagePathUtils, IPageHasId } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
+import { templateChecker, pagePathUtils } from '@growi/core/dist/utils';
 
 import { FootstampIcon } from '../FootstampIcon';
 

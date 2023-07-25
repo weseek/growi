@@ -2,15 +2,14 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core';
-import { isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
@@ -29,8 +28,6 @@ declare global {
 
 
 const logger = loggerFactory('growi:SavePageControls');
-
-const { isTopPage } = pagePathUtils;
 
 export type SavePageControlsProps = {
   slackChannels: string
@@ -73,7 +70,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isGrantSelectorDisabledPage = isTopPage(currentPagePath ?? '') || isUsersProtectedPages(currentPagePath ?? '');
+  const isGrantSelectorDisabledPage = pagePathUtils.isTopPage(currentPagePath ?? '') || pagePathUtils.isUsersProtectedPages(currentPagePath ?? '');
   const labelSubmitButton = pageId == null ? t('Create') : t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 

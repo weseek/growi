@@ -2,7 +2,7 @@ import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
 
-import { Breakpoint } from '@growi/ui/dist/interfaces/breakpoints';
+import { Breakpoint } from '@growi/ui/dist/interfaces';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';

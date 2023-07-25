@@ -2,7 +2,7 @@ import React, {
   useEffect, useState, useMemo,
 } from 'react';
 
-import { pagePathUtils, pathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';

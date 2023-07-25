@@ -1,4 +1,4 @@
-import { envUtils } from '@growi/core';
+import { envUtils } from '@growi/core/dist/utils';
 import { parseISO } from 'date-fns';
 
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';

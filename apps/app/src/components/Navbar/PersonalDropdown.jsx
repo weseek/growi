@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';

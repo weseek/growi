@@ -2,14 +2,13 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 
-import { DevidedPagePath, isPopulated } from '@growi/core';
-import { FootstampIcon } from '@growi/ui/dist/components/FootstampIcon';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { isPopulated, type IPageHasId } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';

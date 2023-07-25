@@ -1,14 +1,15 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import { IUserHasId } from '~/interfaces/user';
+import type { IUserHasId } from '@growi/core';
+
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import {
   GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
 } from '../../interfaces/growi-info';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
-import { IUserInfo, UserType } from '../../interfaces/user-info';
+import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';

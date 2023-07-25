@@ -1,5 +1,4 @@
-import { IPage } from './page';
-import { ITag } from './tag';
+import type { IPage, ITag } from '@growi/core';
 
 export type IPageTagRelation = {
   relatedPage: IPage,
