@@ -70,7 +70,6 @@ describe('QuestionnaireService', () => {
         expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       });
     });
-
   });
 
   describe('getUserInfo', () => {
