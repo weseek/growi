@@ -1,13 +1,12 @@
 import path from 'path';
 
 import { Lang } from '@growi/core';
+import type { IPage, IUser } from '@growi/core';
 import { addSeconds } from 'date-fns';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
 
-import type { IPage } from '~/interfaces/page';
-import type { IUser } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
 import { generateConfigsForInstalling } from '../models/config';

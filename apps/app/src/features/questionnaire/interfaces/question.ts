@@ -1,4 +1,4 @@
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 
 export const QuestionType = { points: 'points', text: 'text' } as const;
 

@@ -2,8 +2,8 @@ import React, {
   FC, useRef,
 } from 'react';
 
-import { HasObjectId } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type { HasObjectId } from '@growi/core';
+import { UserPicture } from '@growi/ui/dist/components';
 import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';

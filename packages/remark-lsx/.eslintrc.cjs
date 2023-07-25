@@ -1,7 +1,7 @@
 module.exports = {
   extends: [
     'weseek/react',
-    'weseek/typescript',
+    'plugin:vitest/recommended',
   ],
   env: {
   },

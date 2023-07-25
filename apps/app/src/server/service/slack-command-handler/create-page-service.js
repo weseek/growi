@@ -4,7 +4,7 @@ import { reshapeContentsBody } from '@growi/slack/dist/utils/reshape-contents-bo
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:CreatePageService');
-const { pathUtils } = require('@growi/core');
+const { pathUtils } = require('@growi/core/dist/utils');
 const mongoose = require('mongoose');
 
 class CreatePageService {

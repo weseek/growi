@@ -2,7 +2,8 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type { IRevisionOnConflict } from '@growi/core';
+import { UserPicture } from '@growi/ui/dist/components';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
@@ -19,7 +20,6 @@ import {
   useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
 
-import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 

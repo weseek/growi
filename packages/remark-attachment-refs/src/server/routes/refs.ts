@@ -1,8 +1,8 @@
-import { OptionParser } from '@growi/core';
+import { OptionParser } from '@growi/core/dist/remark-plugins';
 
 import loggerFactory from '../../utils/logger';
 
-const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
+const logger = loggerFactory('growi:remark-attachment-refs:routes:refs');
 
 
 const loginRequiredFallback = (req, res) => {

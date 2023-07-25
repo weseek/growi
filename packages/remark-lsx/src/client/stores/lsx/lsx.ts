@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
 
-import type { LsxApiOptions, LsxApiParams, LsxApiResponseData } from '../../interfaces/api';
+import type { LsxApiOptions, LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
 
 import { type ParseNumOptionResult, parseNumOption } from './parse-num-option';
 

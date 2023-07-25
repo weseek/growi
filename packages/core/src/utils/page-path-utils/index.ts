@@ -286,3 +286,6 @@ export const generateChildrenRegExp = (path: string): RegExp => {
   // ex. /parent/any_child OR /any_level1
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
+
+export * from './is-top-page';
+export * from './collect-ancestor-paths';

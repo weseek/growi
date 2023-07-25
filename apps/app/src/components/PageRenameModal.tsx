@@ -2,7 +2,8 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -11,7 +12,6 @@ import { debounce } from 'throttle-debounce';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { isIPageInfoForEntity } from '~/interfaces/page';
 import { useSiteUrl, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';

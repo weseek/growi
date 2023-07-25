@@ -3,7 +3,8 @@ import React, {
 } from 'react';
 
 
-import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { isUsersHomePage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -27,9 +28,6 @@ import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
 import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
-
-
-const { isUsersHomePage } = pagePathUtils;
 
 
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });

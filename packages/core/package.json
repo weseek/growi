@@ -6,12 +6,51 @@
   "keywords": [
     "growi"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/consts": {
+      "import": "./dist/consts/index.js",
+      "require": "./dist/consts/index.cjs"
+    },
+    "./dist/interfaces": {
+      "import": "./dist/interfaces/index.js",
+      "require": "./dist/interfaces/index.cjs"
+    },
+    "./dist/models": {
+      "import": "./dist/models/index.js",
+      "require": "./dist/models/index.cjs"
+    },
+    "./dist/remark-plugins": {
+      "import": "./dist/remark-plugins/index.js",
+      "require": "./dist/remark-plugins/index.cjs"
+    },
+    "./dist/swr": {
+      "import": "./dist/swr/index.js",
+      "require": "./dist/swr/index.cjs"
+    },
+    "./dist/utils": {
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs"
+    },
+    "./dist/utils/page-path-utils": {
+      "import": "./dist/utils/page-path-utils/index.js",
+      "require": "./dist/utils/page-path-utils/index.cjs"
+    },
+    "./dist/utils/*": {
+      "import": "./dist/utils/*.js",
+      "require": "./dist/utils/*.cjs"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "clean": "shx rm -rf dist",

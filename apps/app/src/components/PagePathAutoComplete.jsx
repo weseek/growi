@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
+import PropTypes from 'prop-types';
 
 import SearchTypeahead from './SearchTypeahead';
 
