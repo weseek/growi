@@ -1,4 +1,3 @@
-# Filter previous releases to consider only those with the target matching commitish.
 categories:
   - title: 'BREAKING CHANGES'
     labels:
