@@ -4,7 +4,10 @@ import ReactDOM from 'react-dom/client';
 
 import { CodemirrorEditor } from './components/CodemirrorEditor';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElem = document.getElementById('root');
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+ReactDOM.createRoot(rootElem!).render(
   <React.StrictMode>
     <CodemirrorEditor />
   </React.StrictMode>,
