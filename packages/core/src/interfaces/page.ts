@@ -87,6 +87,8 @@ export type IPageInfoForEntity = IPageInfo & {
   sumOfSeenUsers: number,
   seenUserIds: string[],
   contentAge: number,
+  descendantCount: number,
+  commentCount: number,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {

@@ -10,7 +10,7 @@ export const NotCreatablePage: FC = () => {
       <div className="col-md-12">
         <h2 className="text-muted">
           <i className="icon-ban mr-1" aria-hidden="true"></i>
-          { t('not_creatable_page.could_not_creata_path') }
+          { t('not_creatable_page.message') }
         </h2>
       </div>
     </div>

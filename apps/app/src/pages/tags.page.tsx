@@ -16,7 +16,7 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault,
+  useIsSearchScopeChildrenAsDefault, useGrowiCloudUri,
 } from '../stores/context';
 
 import { NextPageWithLayout } from './_app.page';
@@ -55,6 +55,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
 
+  useGrowiCloudUri(props.growiCloudUri);
 
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);

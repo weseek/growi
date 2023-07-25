@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
@@ -16,7 +16,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@growi/core": "^6.1.5-RC",
+    "@growi/core": "link:../core",
     "extensible-custom-error": "^0.0.7"
   },
   "devDependencies": {

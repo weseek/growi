@@ -120,6 +120,7 @@ context('Page Accessories Modal', () => {
     });
 
     cy.visit('/');
+    cy.collapseSidebar(true, true);
 
     cy.waitUntil(() => {
       // do
@@ -141,7 +142,6 @@ context('Page Accessories Modal', () => {
 
     cy.getByTestid('page-history').should('be.visible');
 
-    cy.collapseSidebar(true, true);
     cy.waitUntilSpinnerDisappear();
     cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
   });
@@ -154,7 +154,6 @@ context('Page Accessories Modal', () => {
     cy.waitUntilSpinnerDisappear();
     cy.getByTestid('page-attachment').should('be.visible').contains('No attachments yet.');
 
-    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
   });
 
@@ -167,7 +166,6 @@ context('Page Accessories Modal', () => {
     cy.getByTestid('page-accessories-modal').should('be.visible');
     cy.getByTestid('share-link-management').should('be.visible');
 
-    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-open-share-link-management-bootstrap4`);
   });
 });
@@ -186,6 +184,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     const tag = 'we';
 
     cy.visit('/Sandbox/Bootstrap4');
+    cy.collapseSidebar(true);
 
     // Add tag
     cy.get('#edit-tags-btn-wrapper-for-tooltip').as('edit-tag-tooltip').should('be.visible');
@@ -198,7 +197,6 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
       return cy.get('#edit-tag-modal').then($elem => $elem.is(':visible'));
     });
 
-    cy.collapseSidebar(true);
     cy.get('#edit-tag-modal').should('be.visible').screenshot(`${ssPrefix}1-edit-tag-input`);
 
     cy.get('#edit-tag-modal').should('be.visible').within(() => {

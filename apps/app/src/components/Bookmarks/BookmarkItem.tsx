@@ -3,16 +3,19 @@ import React, { useCallback, useState } from 'react';
 import nodePath from 'path';
 
 import { DevidedPagePath, pathUtils } from '@growi/core';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+
+import { bookmark, unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
-import { toastError } from '~/client/util/toastr';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { useSWRxPageInfo } from '~/stores/page';
+import { usePutBackPageModal } from '~/stores/modal';
+import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -29,7 +32,7 @@ type Props = {
   parentFolder: BookmarkFolderItems | null,
   canMoveToRoot: boolean,
   onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void,
-  bookmarkFolderTreeMutation: () => void
+  bookmarkFolderTreeMutation: () => void,
 }
 
 export const BookmarkItem = (props: Props): JSX.Element => {
@@ -37,15 +40,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const BASE_BOOKMARK_PADDING = 20;
 
   const { t } = useTranslation();
+  const router = useRouter();
 
   const {
     isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteMenuItemHandler,
     parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
-
+  const { open: openPutBackPageModal } = usePutBackPageModal();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
@@ -116,6 +121,24 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteMenuItemHandler(pageToDelete);
   }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteMenuItemHandler]);
 
+  const putBackClickHandler = useCallback(() => {
+    const { _id: pageId, path } = bookmarkedPage;
+    const putBackedHandler = async() => {
+      try {
+        await unlink(path);
+        mutateAllPageInfo();
+        bookmarkFolderTreeMutation();
+        router.push(`/${pageId}`);
+        mutateCurrentPage();
+        toastSuccess(t('page_has_been_reverted', { path }));
+      }
+      catch (err) {
+        toastError(err);
+      }
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
+  }, [bookmarkedPage, openPutBackPageModal, bookmarkFolderTreeMutation, router, mutateCurrentPage, t]);
+
   return (
     <DragAndDropWrapper
       item={dragItem}
@@ -128,15 +151,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         id={bookmarkItemId}
         style={{ paddingLeft }}
       >
-        { isRenameInputShown ? (
-          <ClosableTextInput
-            value={nodePath.basename(bookmarkedPage.path ?? '')}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={pressEnterForRenameHandler}
-            validationTarget={ValidationTarget.PAGE}
-          />
-        ) : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView/>}
+        { isRenameInputShown
+          ? (
+            <ClosableTextInput
+              value={nodePath.basename(bookmarkedPage.path ?? '')}
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setRenameInputShown(false) }}
+              onPressEnter={pressEnterForRenameHandler}
+              validationTarget={ValidationTarget.PAGE}
+            />
+          )
+          : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}
 
         <div className='grw-foldertree-control'>
           <PageItemControl
@@ -148,8 +173,9 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            additionalMenuItemOnTopRenderer={canMoveToRoot && isOperable
-              ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler}/>
+            onClickRevertMenuItem={putBackClickHandler}
+            additionalMenuItemOnTopRenderer={canMoveToRoot
+              ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler} />
               : undefined}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">

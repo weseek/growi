@@ -213,9 +213,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 linkedPagePath={linkedPagePathFormer}
                 linkedPagePathByHtml={linkedPagePathHighlightedFormer}
               />
-              { showPageUpdatedTime && (
+              {showPageUpdatedTime && (
                 <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
-              ) }
+              )}
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
@@ -254,32 +254,32 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
               {/* doropdown icon includes page control buttons */}
               {hasBrowsingRights
-              && <div className="ml-auto">
-                <PageItemControl
-                  alignRight
-                  pageId={pageData._id}
-                  pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
-                  isEnableActions={isEnableActions}
-                  isReadOnlyUser={isReadOnlyUser}
-                  forceHideMenuItems={forceHideMenuItems}
-                  onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-                  onClickRenameMenuItem={renameMenuItemClickHandler}
-                  onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                  onClickRevertMenuItem={revertMenuItemClickHandler}
-                />
-              </div>
+                && <div className="ml-auto">
+                  <PageItemControl
+                    alignRight
+                    pageId={pageData._id}
+                    pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
+                    isEnableActions={isEnableActions}
+                    isReadOnlyUser={isReadOnlyUser}
+                    forceHideMenuItems={forceHideMenuItems}
+                    onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                    onClickRenameMenuItem={renameMenuItemClickHandler}
+                    onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                    onClickRevertMenuItem={revertMenuItemClickHandler}
+                  />
+                </div>
               }
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
-                { elasticSearchResult != null && elasticSearchResult.snippet != null && (
+                {elasticSearchResult != null && elasticSearchResult.snippet != null && (
                   // eslint-disable-next-line react/no-danger
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
-                ) }
-                { revisionShortBody != null && (
+                )}
+                {revisionShortBody != null && (
                   <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
-                ) }
+                )}
                 {
                   !hasBrowsingRights && (
                     <>

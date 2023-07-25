@@ -1,7 +1,12 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-confusing-arrow */
-import { Client as ES7Client, ApiResponse as ES7ApiResponse, RequestParams as ES7RequestParams } from '@elastic/elasticsearch7';
-import { Client as ES8Client, estypes } from '@elastic/elasticsearch8';
+import {
+  Client as ES7Client,
+  ClientOptions as ES7ClientOptions,
+  ApiResponse as ES7ApiResponse,
+  RequestParams as ES7RequestParams,
+} from '@elastic/elasticsearch7';
+import { ClientOptions as ES8ClientOptions, Client as ES8Client, estypes } from '@elastic/elasticsearch8';
 
 import {
   BulkResponse,
@@ -17,12 +22,21 @@ import {
   ReindexResponse,
 } from './elasticsearch-client-types';
 
+
+type ElasticsearchClientParams =
+  | [ isES7: true, options: ES7ClientOptions, rejectUnauthorized: boolean ]
+  | [ isES7: false, options: ES8ClientOptions, rejectUnauthorized: boolean ]
+
 export default class ElasticsearchClient {
 
-  client: ES7Client | ES8Client;
+  private client: ES7Client | ES8Client;
 
-  constructor(client: ES7Client | ES8Client) {
-    this.client = client;
+  constructor(...params: ElasticsearchClientParams) {
+    const [isES7, options, rejectUnauthorized] = params;
+
+    this.client = isES7
+      ? new ES7Client({ ...options, ssl: { rejectUnauthorized } })
+      : new ES8Client({ ...options, tls: { rejectUnauthorized } });
   }
 
   async bulk(params: ES7RequestParams.Bulk & estypes.BulkRequest): Promise<BulkResponse | estypes.BulkResponse> {

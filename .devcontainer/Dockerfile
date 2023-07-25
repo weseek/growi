@@ -39,9 +39,9 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-ke
 RUN apt-get update \
     && apt-get -y install --no-install-recommends git-lfs \
 
-    # Uncomment below lines to install Chrome and libs for Cypress
+    # Uncomment below lines to install Chromium
     # --- works only on AMD64 ---
-    # && apt-get -y install --no-install-recommends google-chrome-stable \
+    # && apt-get -y install --no-install-recommends chromium \
     #    libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
 
     # Clean up

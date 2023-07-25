@@ -42,10 +42,11 @@ export const TrashPageAlert = (): JSX.Element => {
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
-
+  const isEmptyPage = pageId == null || revisionId == null || pagePath == null;
 
   const openPutbackPageModalHandler = useCallback(() => {
-    if (pageId == null || pagePath == null) {
+    // User cannot operate empty page.
+    if (isEmptyPage) {
       return;
     }
     const putBackedHandler = () => {
@@ -62,10 +63,11 @@ export const TrashPageAlert = (): JSX.Element => {
       }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }, [currentPagePath, mutateCurrentPage, openPutBackPageModal, pageId, pagePath, router]);
+  }, [currentPagePath, mutateCurrentPage, openPutBackPageModal, pageId, pagePath, router, isEmptyPage]);
 
   const openPageDeleteModalHandler = useCallback(() => {
-    if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
+    // User cannot operate empty page.
+    if (isEmptyPage) {
       return;
     }
     const pageToDelete = {
@@ -77,7 +79,7 @@ export const TrashPageAlert = (): JSX.Element => {
       meta: pageInfo,
     };
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId]);
+  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId, isEmptyPage]);
 
   const renderTrashPageManagementButtons = useCallback(() => {
     return (
@@ -89,7 +91,7 @@ export const TrashPageAlert = (): JSX.Element => {
           data-toggle="modal"
           data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
+          <i className="icon-action-undo" aria-hidden="true"></i> {t('Put Back')}
         </button>
         <button
           type="button"
@@ -97,13 +99,14 @@ export const TrashPageAlert = (): JSX.Element => {
           disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
-          <i className="icon-fire" aria-hidden="true"></i> { t('Delete Completely') }
+          <i className="icon-fire" aria-hidden="true"></i> {t('Delete Completely')}
         </button>
       </>
     );
   }, [openPageDeleteModalHandler, openPutbackPageModalHandler, pageInfo?.isAbleToDeleteCompletely, t]);
 
-  if (!isTrashPage) {
+  // Show this alert only for non-empty pages in trash.
+  if (!isTrashPage || isEmptyPage) {
     return <></>;
   }
 
@@ -115,11 +118,11 @@ export const TrashPageAlert = (): JSX.Element => {
           <br />
           <UserPicture user={deleteUser} />
           <span className="ml-2">
-            Deleted by { deleteUser?.name } at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
+            Deleted by {deleteUser?.name} at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
           </span>
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
-          { isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+          {isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
         </div>
       </div>
     </>

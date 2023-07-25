@@ -1,6 +1,6 @@
 {
   "name": "@growi/ui",
-  "version": "6.1.5-RC.0",
+  "version": "6.1.9-RC.0",
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": [
@@ -12,13 +12,13 @@
   ],
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
-    "version": "yarn version --no-git-tag-version"
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "@growi/core": "link:../core"
