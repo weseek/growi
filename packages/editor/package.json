@@ -1,12 +1,18 @@
 {
   "name": "@growi/editor",
   "version": "0.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "clean": "shx rm -rf dist",
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w --emptyOutDir=false",
+    "serve": "vite",
+    "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:typecheck": "tsc",
+    "lint": "npm-run-all -p lint:*",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "react": "^18.2.0",
