@@ -191,6 +191,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                       <NotAvailableForGuest>
                         <NotAvailableForReadOnlyUser>
                           <Button
+                            data-testid="comemnt-reply-button"
                             outline
                             color="secondary"
                             size="sm"

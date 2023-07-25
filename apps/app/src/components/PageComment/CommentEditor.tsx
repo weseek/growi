@@ -279,6 +279,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
     const submitButton = (
       <Button
+        data-testid="commet-submit-button"
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"
