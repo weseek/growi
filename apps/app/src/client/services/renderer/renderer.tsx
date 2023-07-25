@@ -38,7 +38,6 @@ import loggerFactory from '~/utils/logger';
 
 import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
-import { components } from '^/config/swagger-definition';
 
 
 const logger = loggerFactory('growi:cli:services:renderer');
@@ -236,7 +235,9 @@ export const generatePresentationViewOptions = (
 ): RendererOptions => {
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
+  const { remarkPlugins, rehypePlugins, components } = options;
 
+  // add components
   if (components != null) {
     components.img = LightBox;
   }
