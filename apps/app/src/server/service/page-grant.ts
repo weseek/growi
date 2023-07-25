@@ -1,19 +1,14 @@
 import {
-  GrantedGroup,
   pagePathUtils, pathUtils, pageUtils,
-  PageGrant, PageGrantCanBeOnTree, GroupType,
+  PageGrant, PageGrantCanBeOnTree,
 } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
-import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
-import { isIncludesObjectId, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
-
-import { divideByType } from '../util/granted-group';
+import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
@@ -25,10 +20,7 @@ type ObjectIdLike = mongoose.Types.ObjectId | string;
 type ComparableTarget = {
   grant: number,
   grantedUserIds?: ObjectIdLike[],
-  grantedGroupIds?: {
-    type: GroupType,
-    item: ObjectIdLike,
-  }[],
+  grantedGroupId?: ObjectIdLike,
   applicableUserIds?: ObjectIdLike[],
   applicableGroupIds?: ObjectIdLike[],
 };
@@ -90,13 +82,13 @@ class PageGrantService {
   private validateComparableTarget(comparable: ComparableTarget) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const { grant, grantedUserIds, grantedGroupIds } = comparable;
+    const { grant, grantedUserIds, grantedGroupId } = comparable;
 
     if (grant === Page.GRANT_OWNER && (grantedUserIds == null || grantedUserIds.length !== 1)) {
       throw Error('grantedUserIds must not be null and must have 1 length');
     }
-    if (grant === Page.GRANT_USER_GROUP && grantedGroupIds == null) {
-      throw Error('grantedGroupIds is not specified');
+    if (grant === Page.GRANT_USER_GROUP && grantedGroupId == null) {
+      throw Error('grantedGroupId is not specified');
     }
   }
 
@@ -151,11 +143,11 @@ class PageGrantService {
       }
 
       if (target.grant === Page.GRANT_USER_GROUP) {
-        if (target.grantedGroupIds == null) {
+        if (target.grantedGroupId == null) {
           throw Error('grantedGroupId must not be null');
         }
 
-        if (!hasIntersection(ancestor.applicableGroupIds, target.grantedGroupIds.map(e => e.item))) { // only child groups or the same group can exist under GRANT_USER_GROUP page
+        if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
       }
@@ -215,7 +207,7 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: GrantedGroup[] | undefined, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupId: ObjectIdLike | undefined, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
       const Page = mongoose.model('Page') as unknown as PageModel;
@@ -225,34 +217,22 @@ class PageGrantService {
       let applicableGroupIds: ObjectIdLike[] | undefined;
 
       if (grant === Page.GRANT_USER_GROUP) {
-        if (grantedGroupIds == null || grantedGroupIds.length === 0) {
-          throw Error('Target user group is not given');
-        }
-
-        const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroupIds);
-        const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
-        const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
-        if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
+        const targetUserGroup = await UserGroup.findOne({ _id: grantedGroupId });
+        if (targetUserGroup == null) {
           throw Error('Target user group does not exist');
         }
 
-        const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
-        const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
-        applicableUserIds = [...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser);
+        const relatedUsers = await UserGroupRelation.find({ relatedGroup: targetUserGroup._id });
+        applicableUserIds = relatedUsers.map(u => u.relatedUser);
 
-        const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
-          return UserGroup.findGroupsWithDescendantsById(group._id);
-        }))).flat();
-        const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
-          return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
-        }))).flat();
-        applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id) || null;
+        const applicableGroups = grantedGroupId != null ? await UserGroup.findGroupsWithDescendantsById(grantedGroupId) : null;
+        applicableGroupIds = applicableGroups?.map(g => g._id) || null;
       }
 
       return {
         grant,
         grantedUserIds,
-        grantedGroupIds,
+        grantedGroupId,
         applicableUserIds,
         applicableGroupIds,
       };
@@ -261,7 +241,7 @@ class PageGrantService {
     return {
       grant,
       grantedUserIds,
-      grantedGroupIds,
+      grantedGroupId,
     };
   }
 
@@ -403,7 +383,7 @@ class PageGrantService {
    */
   async isGrantNormalized(
       // eslint-disable-next-line max-len
-      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupIds?: GrantedGroup[], shouldCheckDescendants = false, includeNotMigratedPages = false,
+      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false, includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
@@ -412,11 +392,11 @@ class PageGrantService {
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
     if (!shouldCheckDescendants) { // checking the parent is enough
-      const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, false);
+      const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, false);
       return this.processValidation(comparableTarget, comparableAncestor);
     }
 
-    const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, true);
+    const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, true);
     const comparableDescendants = await this.generateComparableDescendants(targetPath, user, includeNotMigratedPages);
 
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
@@ -441,7 +421,7 @@ class PageGrantService {
 
     for await (const page of pages) {
       const {
-        path, grant, grantedUsers: grantedUserIds, grantedGroups,
+        path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
 
       if (!pageUtils.isPageNormalized(page)) {
@@ -449,7 +429,7 @@ class PageGrantService {
         continue;
       }
 
-      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroups, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
+      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
       }
       else {

@@ -249,7 +249,7 @@ export const getPageSchema = (crowi) => {
     return this.populate('revision');
   };
 
-  pageSchema.methods.applyScope = function(user, grant, grantUserGroupIds) {
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
     // Reset
     this.grantedUsers = [];
     this.grantedGroup = null;
@@ -261,7 +261,7 @@ export const getPageSchema = (crowi) => {
     }
 
     if (grant === GRANT_USER_GROUP) {
-      this.grantedGroups = grantUserGroupIds;
+      this.grantedGroup = grantUserGroupId;
     }
   };
 

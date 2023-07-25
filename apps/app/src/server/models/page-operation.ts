@@ -1,4 +1,3 @@
-import { GroupType } from '@growi/core';
 import { addSeconds } from 'date-fns';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
@@ -63,9 +62,8 @@ const pageSchemaForResuming = new Schema<IPageForResuming>({
   grantedGroups: [{
     type: {
       type: String,
-      enum: Object.values(GroupType),
+      enum: ['UserGroup', 'ExternalUserGroup'],
       required: true,
-      default: 'UserGroup',
     },
     item: {
       type: ObjectId, refPath: 'grantedGroups.type', required: true,
@@ -87,9 +85,8 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   grantUserGroupIds: [{
     type: {
       type: String,
-      enum: Object.values(GroupType),
+      enum: ['UserGroup', 'ExternalUserGroup'],
       required: true,
-      default: 'UserGroup',
     },
     item: {
       type: ObjectId, refPath: 'grantedGroups.type', required: true,

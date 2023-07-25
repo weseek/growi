@@ -57,6 +57,4 @@ schema.statics.findGroupsWithAncestorsRecursively = UserGroup.findGroupsWithAnce
 
 schema.statics.findGroupsWithDescendantsRecursively = UserGroup.findGroupsWithDescendantsRecursively;
 
-schema.statics.findGroupsWithDescendantsById = UserGroup.findGroupsWithDescendantsById;
-
 export default getOrCreateModel<ExternalUserGroupDocument, ExternalUserGroupModel>('ExternalUserGroup', schema);

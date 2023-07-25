@@ -2,9 +2,7 @@
 
 import nodePath from 'path';
 
-import {
-  GroupType, HasObjectId, pagePathUtils, pathUtils,
-} from '@growi/core';
+import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
@@ -102,9 +100,8 @@ const schema = new Schema<PageDocument, PageModel>({
   grantedGroups: [{
     type: {
       type: String,
-      enum: Object.values(GroupType),
+      enum: ['UserGroup', 'ExternalUserGroup'],
       required: true,
-      default: 'UserGroup',
     },
     item: {
       type: ObjectId, refPath: 'grantedGroups.type', required: true, index: true,
@@ -974,10 +971,7 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
 
 export type PageCreateOptions = {
   format?: string
-  grantUserGroupIds?: {
-    type: string,
-    item: ObjectIdLike
-  }[],
+  grantUserGroupId?: ObjectIdLike
   grant?: number
   overwriteScopesOfDescendants?: boolean
 }

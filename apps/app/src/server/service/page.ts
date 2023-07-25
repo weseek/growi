@@ -3,7 +3,7 @@ import { Readable, Writable } from 'stream';
 
 import type {
   Ref, HasObjectId, IUserHasId,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, GrantedGroup,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, PageGrant, PageStatus,
@@ -452,7 +452,7 @@ class PageService {
     // use the parent's grant when target page is an empty page
     let grant;
     let grantedUserIds;
-    let grantedGroupIds;
+    let grantedGroupId;
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
@@ -460,18 +460,18 @@ class PageService {
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
-      grantedGroupIds = parent.grantedGroups;
+      grantedGroupId = parent.grantedGroup;
     }
     else {
       grant = page.grant;
       grantedUserIds = page.grantedUsers;
-      grantedGroupIds = page.grantedGroups;
+      grantedGroupId = page.grantedGroup;
     }
 
     if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupIds, false);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupId, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
@@ -959,7 +959,7 @@ class PageService {
     // use the parent's grant when target page is an empty page
     let grant;
     let grantedUserIds;
-    let grantedGroupIds;
+    let grantedGroupId;
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
@@ -967,18 +967,18 @@ class PageService {
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
-      grantedGroupIds = parent.grantedGroups;
+      grantedGroupId = parent.grantedGroup;
     }
     else {
       grant = page.grant;
       grantedUserIds = page.grantedUsers;
-      grantedGroupIds = page.grantedGroups;
+      grantedGroupId = page.grantedGroup;
     }
 
     if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupIds, false);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupId, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when duplicating`, err);
@@ -995,7 +995,7 @@ class PageService {
     // 3. Duplicate target
     const options: PageCreateOptions = {
       grant: page.grant,
-      grantUserGroupIds: page.grantedGroups,
+      grantUserGroupId: page.grantedGroup,
     };
     let duplicatedTarget;
     if (page.isEmpty) {
@@ -1107,7 +1107,7 @@ class PageService {
     // create option
     const options: any = { page };
     options.grant = page.grant;
-    options.grantUserGroupIds = page.grantedGroups;
+    options.grantUserGroupId = page.grantedGroup;
     options.grantedUserIds = page.grantedUsers;
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
@@ -1208,7 +1208,7 @@ class PageService {
           path: newPagePath,
           creator: user._id,
           grant: page.grant,
-          grantedGroups: page.grantedGroups,
+          grantedGroup: page.grantedGroup,
           grantedUsers: page.grantedUsers,
           lastUpdateUser: user._id,
           revision: revisionId,
@@ -1254,7 +1254,7 @@ class PageService {
         path: newPagePath,
         creator: user._id,
         grant: page.grant,
-        grantedGroups: page.grantedGroups,
+        grantedGroup: page.grantedGroup,
         grantedUsers: page.grantedUsers,
         lastUpdateUser: user._id,
         revision: revisionId,
@@ -2268,13 +2268,7 @@ class PageService {
 
   async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user) {
     const Page = this.crowi.model('Page');
-    const pages = await Page.find({
-      grantedGroups: {
-        $elemMatch: {
-          item: { $in: groupsToDelete },
-        },
-      },
-    });
+    const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
 
     switch (action) {
       case 'public':
@@ -2445,7 +2439,7 @@ class PageService {
 
       const options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] | undefined } = {
         grant: notEmptyParent.grant,
-        grantUserGroupIds: notEmptyParent.grantedGroups,
+        grantUserGroupId: notEmptyParent.grantedGroup,
         grantedUsers: notEmptyParent.grantedUsers,
       };
 
@@ -2462,7 +2456,7 @@ class PageService {
 
     const grant = page.grant;
     const grantedUserIds = page.grantedUsers;
-    const grantedGroupIds = page.grantedGroups;
+    const grantedGroupId = page.grantedGroup;
 
     /*
      * UserGroup & Owner validation
@@ -2471,7 +2465,7 @@ class PageService {
     try {
       const shouldCheckDescendants = true;
 
-      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
+      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
     }
     catch (err) {
       logger.error(`Failed to validate grant of page at "${path}"`, err);
@@ -2571,7 +2565,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const {
-      path, grant, grantedUsers: grantedUserIds, grantedGroups: grantedGroupIds,
+      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
     } = page;
 
     // check if any page exists at target path already
@@ -2588,7 +2582,7 @@ class PageService {
       try {
         const shouldCheckDescendants = true;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}"`, err);
@@ -3460,7 +3454,7 @@ class PageService {
       grantData: {
         grant: number,
         grantedUserIds?: ObjectIdLike[],
-        grantUserGroupIds?: GrantedGroup[],
+        grantUserGroupId?: ObjectIdLike,
       },
       shouldValidateGrant: boolean,
       user?,
@@ -3483,7 +3477,7 @@ class PageService {
     }
 
     // UserGroup & Owner validation
-    const { grant, grantedUserIds, grantUserGroupIds } = grantData;
+    const { grant, grantedUserIds, grantUserGroupId } = grantData;
     if (shouldValidateGrant) {
       if (user == null) {
         throw Error('user is required to validate grant');
@@ -3495,7 +3489,7 @@ class PageService {
         const isEmptyPageAlreadyExist = await Page.count({ path, isEmpty: true }) > 0;
         const shouldCheckDescendants = isEmptyPageAlreadyExist && !options?.overwriteScopesOfDescendants;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
@@ -3506,7 +3500,7 @@ class PageService {
       }
 
       if (options?.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
+        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
         const canOverwriteDescendants = await this.crowi.pageGrantService.canOverwriteDescendants(path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
@@ -3535,13 +3529,13 @@ class PageService {
     // eslint-disable-next-line no-param-reassign
     path = this.crowi.xss.process(path); // sanitize path
     const {
-      format = 'markdown', grantUserGroupIds,
+      format = 'markdown', grantUserGroupId,
     } = options;
     const grant = isTopPage(path) ? Page.GRANT_PUBLIC : options.grant;
     const grantData = {
       grant,
       grantedUserIds: grant === Page.GRANT_OWNER ? [user._id] : undefined,
-      grantUserGroupIds,
+      grantUserGroupId,
     };
 
     const isGrantRestricted = grant === Page.GRANT_RESTRICTED;
@@ -3561,7 +3555,7 @@ class PageService {
     this.setFieldExceptForGrantRevisionParent(page, path, user);
 
     // Apply scope
-    page.applyScope(user, grant, grantUserGroupIds);
+    page.applyScope(user, grant, grantUserGroupId);
 
     // Set parent
     if (isTopPage(path) || isGrantRestricted) { // set parent to null when GRANT_RESTRICTED
@@ -3722,7 +3716,7 @@ class PageService {
     path = this.crowi.xss.process(path); // sanitize path
 
     const {
-      format = 'markdown', grantUserGroupIds, grantedUsers,
+      format = 'markdown', grantUserGroupId, grantedUsers,
     } = options;
     const grant = isTopPage(path) ? Page.GRANT_PUBLIC : options.grant;
 
@@ -3732,7 +3726,7 @@ class PageService {
     const grantData = {
       grant,
       grantedUserIds: isGrantOwner ? grantedUsers : undefined,
-      grantUserGroupIds,
+      grantUserGroupId,
     };
 
     // Validate
@@ -3752,7 +3746,7 @@ class PageService {
     this.setFieldExceptForGrantRevisionParent(page, path);
 
     // Apply scope
-    page.applyScope({ _id: grantedUsers?.[0] }, grant, grantUserGroupIds);
+    page.applyScope({ _id: grantedUsers?.[0] }, grant, grantUserGroupId);
 
     // Set parent
     if (isTopPage(path) || isGrantRestricted) { // set parent to null when GRANT_RESTRICTED
@@ -3792,12 +3786,12 @@ class PageService {
    * @param {UserDocument} user
    * @param options
    */
-  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroups: GrantedGroup[]}): Promise<PageDocument> {
-    const { grant, grantedGroups } = grantData;
+  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}): Promise<PageDocument> {
+    const { grant, grantedGroup } = grantData;
 
     const options = {
       grant,
-      grantUserGroupIds: grantedGroups,
+      grantUserGroupId: grantedGroup,
       isSyncRevisionToHackmd: false,
     };
 
@@ -3867,7 +3861,7 @@ class PageService {
     const newPageData = pageData;
 
     const grant = options.grant ?? clonedPageData.grant; // use the previous data if absence
-    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupIds ?? clonedPageData.grantedGroup?._id.toString();
+    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? clonedPageData.grantedGroup?._id.toString();
 
     const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
@@ -3891,7 +3885,7 @@ class PageService {
       }
 
       if (options.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
+        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
         const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
