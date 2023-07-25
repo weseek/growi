@@ -30,6 +30,11 @@ describe('QuestionnaireService', () => {
     });
   });
 
+  afterAll(async() => {
+    delete process.env.FORCE_WIKI_MODE;
+    await crowi.setupConfigManager();
+  });
+
   describe('getGrowiInfo', () => {
     test('Should get correct GROWI info', async() => {
       const growiInfo = await crowi.questionnaireService.getGrowiInfo();
@@ -53,7 +58,7 @@ describe('QuestionnaireService', () => {
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',
         version: crowi.version,
-        wikiType: 'open',
+        wikiType: 'closed',
       });
     });
 
@@ -70,6 +75,23 @@ describe('QuestionnaireService', () => {
         expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       });
     });
+
+    test('WikiType is "open" when env value FORCE_WIKI_MODE is "public"', async() => {
+      process.env.FORCE_WIKI_MODE = 'public';
+      await crowi.setupConfigManager();
+
+      const growiInfo = await crowi.questionnaireService.getGrowiInfo();
+      expect(growiInfo.wikiType).toEqual('open');
+    });
+
+    test('WikiType is "close" when env value FORCE_WIKI_MODE is "private"', async() => {
+      process.env.FORCE_WIKI_MODE = 'private';
+      await crowi.setupConfigManager();
+
+      const growiInfo = await crowi.questionnaireService.getGrowiInfo();
+      expect(growiInfo.wikiType).toEqual('closed');
+    });
+
   });
 
   describe('getUserInfo', () => {
