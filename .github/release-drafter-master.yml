@@ -1,5 +1,7 @@
 _extends: growi:.github/release-drafter.yml
 
-# Filter previous releases to consider only those with the master branch
 prerelease: true
+
+# Filter previous releases to consider only those with the master branch
+include-pre-releases: true
 filter-by-commitish: true
