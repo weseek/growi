@@ -1,4 +1,5 @@
 _extends: growi:.github/release-drafter.yml
 
 # Filter previous releases to consider only those with the tags starts with 'v6.2'
+prerelease: true
 tag-prefix: v6.2
