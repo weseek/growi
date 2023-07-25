@@ -18,7 +18,6 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     date, user, mode = 'create', locate = 'subnav',
   } = props;
 
-  const { userHomepagePath } = pagePathUtils;
   const formatType = 'yyyy/MM/dd HH:mm';
 
   const infoLabelForSubNav = mode === 'create'
@@ -32,7 +31,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     : 'Last revision posted at';
   const userLabel = user != null
     ? (
-      <Link href={userHomepagePath(user)} prefetch={false}>
+      <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
         {user.name}
       </Link>
     )
