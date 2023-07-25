@@ -354,7 +354,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         path: newPagePath,
         body: undefined,
         grant: page.grant,
-        grantUserGroupId: page.grantedGroup,
+        grantUserGroupIds: page.grantedGroups,
       });
 
       mutateChildren();
