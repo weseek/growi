@@ -36,7 +36,7 @@ jobs:
 
     - name: Install turbo
       run: |
-        yarn global add turbo
+        yarn global add turbo@1.10.9
 
     - name: Prune repositories
       run: |
@@ -147,7 +147,7 @@ jobs:
 
     - name: Install turbo
       run: |
-        yarn global add turbo
+        yarn global add turbo@1.10.9
 
     - name: Prune repositories
       run: |
@@ -238,7 +238,7 @@ jobs:
 
     - name: Install turbo
       run: |
-        yarn global add turbo
+        yarn global add turbo@1.10.9
 
     - name: Prune repositories
       run: |

@@ -2,9 +2,7 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsxdev",
-
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "jsx": "react-jsx",
 
     "types": [
       "vitest/globals"

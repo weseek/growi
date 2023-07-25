@@ -1,4 +1,4 @@
-import { OptionParser } from '@growi/core/dist/plugin';
+import { OptionParser } from '@growi/core/dist/remark-plugins';
 
 export type ParseNumOptionResult = { offset: number, limit?: number } | { offset?: number, limit: number };
 

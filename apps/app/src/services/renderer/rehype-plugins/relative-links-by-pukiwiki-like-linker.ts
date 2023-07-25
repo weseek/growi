@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { addTrailingSlash } from '@growi/core/dist/utils/path-utils';
 import { selectAll } from 'hast-util-select';
 import type { Plugin } from 'unified';
 
@@ -13,7 +13,7 @@ const customAnchorsSelector: IAnchorsSelector = (node) => {
 
 const customUrlResolver: IUrlResolver = (relativeHref, basePath) => {
   // generate relative pathname
-  const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
+  const baseUrl = new URL(addTrailingSlash(basePath), 'https://example.com');
   return new URL(relativeHref, baseUrl);
 };
 

@@ -1,2 +1,2 @@
-export * from '../components';
-export * from '../services/renderer';
+export * from './components';
+export * from './services/renderer';

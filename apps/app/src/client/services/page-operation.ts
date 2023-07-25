@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { SubscriptionStatusType, Nullable } from '@growi/core';
+import { SubscriptionStatusType, type Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
