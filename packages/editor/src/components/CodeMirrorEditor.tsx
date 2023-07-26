@@ -4,10 +4,10 @@ import { scrollPastEnd } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
 
 
-import style from './CodemirrorEditor2.module.scss';
+import style from './CodeMirrorEditor.module.scss';
 
 
-export const CodemirrorEditor = (): JSX.Element => {
+export const CodeMirrorEditor = (): JSX.Element => {
   return (
     <CodeMirror
       className={`${style['codemirror-editor']}`}
