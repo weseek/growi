@@ -27,14 +27,13 @@ context('Mention username in comment', () => {
   });
 
   it('Successfully mention username in comment', () => {
-    const username = '@adm';
+    const username = 'adm';
 
-    cy.waitUntil(() => {
-      // do
-      cy.get('.CodeMirror').type(username);
-      // wait until
-      return cy.get('.CodeMirror-hints').then($elem => $elem.is(':visible'));
-    });
+    cy.intercept('GET', `/_api/v3/users/usernames?q=${username}&limit=20`).as('searchUsername');
+    cy.get('.CodeMirror').type('@' + username);
+    cy.wait('@searchUsername');
+    cy.get('.CodeMirror-hints').should('be.visible');
+
 
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}1-username-found`) });
     // Click on mentioned username
@@ -43,14 +42,12 @@ context('Mention username in comment', () => {
   });
 
   it('Username not found when mention username in comment', () => {
-    const username = '@user';
+    const username = 'user';
 
-    cy.waitUntil(() => {
-      // do
-      cy.get('.CodeMirror').type(username);
-      // wait until
-      return cy.get('.CodeMirror-hints').then($elem => $elem.is(':visible'));
-    });
+    cy.intercept('GET', `/_api/v3/users/usernames?q=${username}&limit=20`).as('searchUsername');
+    cy.get('.CodeMirror').type('@' + username);
+    cy.wait('@searchUsername');
+    cy.get('.CodeMirror-hints').should('be.visible');
 
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}3-username-not-found`) });
     // Click on username not found hint
