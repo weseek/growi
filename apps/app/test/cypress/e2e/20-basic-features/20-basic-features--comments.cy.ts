@@ -45,7 +45,7 @@ context('Comment', () => {
     });
 
     cy.get('.CodeMirror').type(commetText);
-    cy.getByTestid("commet-submit-button").eq(0).click();
+    cy.getByTestid("comment-submit-button").eq(0).click();
 
     // Check update comment count
     commentCount += 1
@@ -61,13 +61,13 @@ context('Comment', () => {
     // Open reply comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('comemnt-reply-button').eq(0).click();
+      cy.getByTestid('comment-reply-button').eq(0).click();
       // wait until
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
 
     cy.get('.CodeMirror').type(commetText);
-    cy.getByTestid("commet-submit-button").eq(0).click();
+    cy.getByTestid("comment-submit-button").eq(0).click();
 
     // Check update comment count
     commentCount += 1
