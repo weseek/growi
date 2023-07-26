@@ -4,7 +4,7 @@ import { scrollPastEnd } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
 
 
-import style from './CodemirrorEditor.module.scss';
+import style from './CodemirrorEditor2.module.scss';
 
 
 export const CodemirrorEditor = (): JSX.Element => {
