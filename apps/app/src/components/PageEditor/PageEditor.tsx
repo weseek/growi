@@ -8,6 +8,7 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
+import { CodeMirrorEditor } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -55,6 +56,9 @@ import { ConflictDiffModal } from './ConflictDiffModal';
 import Editor from './Editor';
 import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
+
+
+import '@growi/editor/dist/style.css';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -556,7 +560,7 @@ export const PageEditor = React.memo((): JSX.Element => {
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-        <Editor
+        {/* <Editor
           ref={editorRef}
           value={initialValue}
           isUploadable={isUploadable}
@@ -567,7 +571,8 @@ export const PageEditor = React.memo((): JSX.Element => {
           onChange={markdownChangedHandler}
           onUpload={uploadHandler}
           onSave={saveWithShortcut}
-        />
+        /> */}
+        <CodeMirrorEditor />
       </div>
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
