@@ -38,7 +38,7 @@ type LoginFormProps = {
   externalAccountLoginError?: IExternalAccountLoginError,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
-  const { data: isAdmin } = useIsAdmin();
+  // const { data: isAdmin } = useIsAdmin();
   const { t } = useTranslation();
 
   const router = useRouter();
@@ -107,7 +107,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
-      const { redirectTo } = res.data;
+      const { redirectTo, isAdmin } = res.data;
 
       // redirectTo === '/admin' かつ、リクエストを投げたユーザーがadminでなければ、、っていう条件式
       if (!isAdmin && redirectTo === '/admin') {
