@@ -17,7 +17,6 @@ import { mutatePageTree } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
-// TODO: use dynamic import. refs: https://redmine.weseek.co.jp/issues/127500
 import { SearchResultList } from './SearchResultList';
 
 import styles from './SearchPageBase.module.scss';
@@ -44,8 +43,6 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
-// TODO: use dynamic import. refs: https://redmine.weseek.co.jp/issues/127500
-// const SearchResultList = dynamic(() => import('./SearchResultList').then(mod => mod.SearchResultList), { ssr: false });
 const SearchResultContent = dynamic(() => import('./SearchResultContent').then(mod => mod.SearchResultContent), {
   ssr: false,
   loading: () => <></>,
