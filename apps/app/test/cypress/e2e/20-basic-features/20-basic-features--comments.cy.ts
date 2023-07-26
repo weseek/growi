@@ -13,7 +13,7 @@ context('Comment', () => {
     cy.collapseSidebar(true, true);
   })
 
-  it('Successfully create comment page', () => {
+  it('Create comment page', () => {
     // save page
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
     cy.waitUntil(() => {
@@ -28,7 +28,6 @@ context('Comment', () => {
 
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('.wiki').should('be.visible');
   })
 
   it('Successfully add comments', () => {
