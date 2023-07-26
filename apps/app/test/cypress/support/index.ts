@@ -40,7 +40,7 @@ declare global {
        collapseSidebar(isCollapsed: boolean, waitUntilSaving?: boolean): Chainable<void>,
        waitUntilSkeletonDisappear(): Chainable<void>,
        waitUntilSpinnerDisappear(): Chainable<void>,
-       appendTextToEditorUntilContains(inputText: string): Chainable<void>
+       appendTextToEditorUntilContains(inputText: string, timeout?: number): Chainable<void>
     }
   }
 }

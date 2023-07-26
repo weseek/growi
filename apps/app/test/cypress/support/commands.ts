@@ -102,7 +102,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
 
 });
 
-Cypress.Commands.add('appendTextToEditorUntilContains', (inputText: string) => {
+Cypress.Commands.add('appendTextToEditorUntilContains', (inputText: string, timeout?: number) => {
   const lines: string[] = [];
   cy.waitUntil(() => {
     // do
@@ -114,5 +114,5 @@ Cypress.Commands.add('appendTextToEditorUntilContains', (inputText: string) => {
       }).then(() => {
         return lines.join('\n').endsWith(inputText);
       });
-  });
+  }, { timeout }); // default: 5000
 });
