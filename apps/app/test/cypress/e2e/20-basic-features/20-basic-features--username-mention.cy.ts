@@ -30,8 +30,7 @@ context('Mention username in comment', () => {
     const username = 'adm';
 
     cy.intercept('GET', `/_api/v3/users/usernames?q=${username}&limit=20`).as('searchUsername');
-    cy.get('.CodeMirror').type('@' + username);
-    cy.get('.comment').should('have.text', '@' + username);
+    cy.appendTextToEditorUntilContains('@' + username);
     cy.wait('@searchUsername');
     cy.get('.CodeMirror-hints').should('be.visible');
 
@@ -45,8 +44,7 @@ context('Mention username in comment', () => {
     const username = 'user';
 
     cy.intercept('GET', `/_api/v3/users/usernames?q=${username}&limit=20`).as('searchUsername');
-    cy.get('.CodeMirror').type('@' + username);
-    cy.get('.comment').should('have.text', '@' + username);
+    cy.appendTextToEditorUntilContains('@' + username);
     cy.wait('@searchUsername');
     cy.get('.CodeMirror-hints').should('be.visible');
 
