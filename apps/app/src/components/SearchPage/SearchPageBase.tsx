@@ -17,6 +17,8 @@ import { mutatePageTree } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
+import { SearchResultList } from './SearchResultList';
+
 import styles from './SearchPageBase.module.scss';
 
 // https://regex101.com/r/brrkBu/1
@@ -42,7 +44,7 @@ type Props = {
 }
 
 
-const SearchResultList = dynamic(() => import('./SearchResultList').then(mod => mod.SearchResultList), { ssr: false });
+// const SearchResultList = dynamic(() => import('./SearchResultList').then(mod => mod.SearchResultList), { ssr: false });
 const SearchResultContent = dynamic(() => import('./SearchResultContent').then(mod => mod.SearchResultContent), {
   ssr: false,
   loading: () => <></>,
