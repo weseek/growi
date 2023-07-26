@@ -212,6 +212,7 @@
     "handsontable": "v7.0.0 or above is no loger MIT lisence."
   },
   "devDependencies": {
+    "@growi/editor": "link:../../packages/editor",
     "@growi/presentation": "link:../../packages/presentation",
     "@growi/ui": "link:../../packages/ui",
     "@handsontable/react": "=2.1.0",
