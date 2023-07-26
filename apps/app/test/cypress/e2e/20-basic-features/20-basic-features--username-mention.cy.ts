@@ -29,11 +29,12 @@ context('Mention username in comment', () => {
   it('Successfully mention username in comment', () => {
     const username = 'adm';
 
+    cy.get('.comment').should('have.text', '');
+
     cy.intercept('GET', `/_api/v3/users/usernames?q=${username}&limit=20`).as('searchUsername');
     cy.get('.CodeMirror').type('@' + username);
     cy.wait('@searchUsername');
     cy.get('.CodeMirror-hints').should('be.visible');
-
 
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}1-username-found`) });
     // Click on mentioned username
@@ -43,6 +44,8 @@ context('Mention username in comment', () => {
 
   it('Username not found when mention username in comment', () => {
     const username = 'user';
+
+    cy.get('.comment').should('have.text', '');
 
     cy.intercept('GET', `/_api/v3/users/usernames?q=${username}&limit=20`).as('searchUsername');
     cy.get('.CodeMirror').type('@' + username);
