@@ -235,12 +235,6 @@ export const generatePresentationViewOptions = (
 ): RendererOptions => {
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
-  const { remarkPlugins, rehypePlugins, components } = options;
-
-  // add components
-  if (components != null) {
-    components.img = LightBox;
-  }
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
