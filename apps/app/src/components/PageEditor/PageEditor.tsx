@@ -51,10 +51,10 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-import Editor from './PageEditor/Editor';
-import Preview from './PageEditor/Preview';
-import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { ConflictDiffModal } from './ConflictDiffModal';
+import Editor from './Editor';
+import Preview from './Preview';
+import scrollSyncHelper from './ScrollSyncHelper';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -71,7 +71,7 @@ let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
-const PageEditor = React.memo((): JSX.Element => {
+export const PageEditor = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -589,5 +589,3 @@ const PageEditor = React.memo((): JSX.Element => {
   );
 });
 PageEditor.displayName = 'PageEditor';
-
-export default PageEditor;
