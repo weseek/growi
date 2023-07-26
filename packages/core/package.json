@@ -1,6 +1,6 @@
 {
   "name": "@growi/core",
-  "version": "6.1.5-RC.0",
+  "version": "6.1.9-RC.0",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",

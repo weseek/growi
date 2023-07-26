@@ -1,12 +1,5 @@
-import { GrowiThemeMetadata, HasObjectId } from '@growi/core';
-
-export const GrowiPluginResourceType = {
-  Template: 'template',
-  Style: 'style',
-  Theme: 'theme',
-  Script: 'script',
-} as const;
-export type GrowiPluginResourceType = typeof GrowiPluginResourceType[keyof typeof GrowiPluginResourceType];
+import type { GrowiPluginType, GrowiThemeMetadata, HasObjectId } from '@growi/core';
+import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
 
 export type IGrowiPluginOrigin = {
   url: string,
@@ -24,13 +17,23 @@ export type IGrowiPlugin<M extends IGrowiPluginMeta = IGrowiPluginMeta> = {
 
 export type IGrowiPluginMeta = {
   name: string,
-  types: GrowiPluginResourceType[],
+  types: GrowiPluginType[],
   desc?: string,
   author?: string,
 }
 
 export type IGrowiThemePluginMeta = IGrowiPluginMeta & {
-  themes: GrowiThemeMetadata[]
+  themes: GrowiThemeMetadata[],
 }
+
+export type IGrowiTemplatePluginMeta = IGrowiPluginMeta & {
+  templateSummaries: TemplateSummary[],
+}
+
+export type IGrowiPluginMetaByType<T extends GrowiPluginType = any> = T extends 'theme'
+  ? IGrowiThemePluginMeta
+  : T extends 'template'
+    ? IGrowiTemplatePluginMeta
+    : IGrowiPluginMeta;
 
 export type IGrowiPluginHasId = IGrowiPlugin & HasObjectId;

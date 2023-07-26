@@ -357,6 +357,7 @@ type PageAccessoriesModalStatus = {
 type PageAccessoriesModalUtils = {
   open(activatedContents: PageAccessoriesModalContents): void
   close(): void
+  selectContents(activatedContents: PageAccessoriesModalContents): void
 }
 
 export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
@@ -364,9 +365,8 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
   const initialStatus = { isOpened: false };
   const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
 
-  return {
-    ...swrResponse,
-    open: (activatedContents: PageAccessoriesModalContents) => {
+  return Object.assign(swrResponse, {
+    open: (activatedContents) => {
       if (swrResponse.data == null) {
         return;
       }
@@ -381,7 +381,16 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
       }
       swrResponse.mutate({ isOpened: false });
     },
-  };
+    selectContents: (activatedContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: swrResponse.data.isOpened,
+        activatedContents,
+      });
+    },
+  });
 };
 
 /*
@@ -633,7 +642,7 @@ type TemplateSelectedCallback = (templateText: string) => void;
 type TemplateModalOptions = {
   onSubmit?: TemplateSelectedCallback,
 }
-type TemplateModalStatus = TemplateModalOptions & {
+export type TemplateModalStatus = TemplateModalOptions & {
   isOpened: boolean,
 }
 
