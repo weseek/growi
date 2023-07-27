@@ -17,6 +17,8 @@ import { mutatePageTree } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
+// Do not import with next/dynamic
+// see: https://github.com/weseek/growi/pull/7923
 import { SearchResultList } from './SearchResultList';
 
 import styles from './SearchPageBase.module.scss';
