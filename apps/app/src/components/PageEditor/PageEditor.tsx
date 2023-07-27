@@ -558,7 +558,7 @@ export const PageEditor = React.memo((): JSX.Element => {
   const isUploadable = isUploadableImage || isUploadableFile;
 
   return (
-    <div className="d-flex flex-wrap">
+    <div data-testid="page-editor" id="page-editor" className="d-flex flex-grow-1 overflow-auto">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         {/* <Editor
           ref={editorRef}
@@ -574,7 +574,7 @@ export const PageEditor = React.memo((): JSX.Element => {
         /> */}
         <CodeMirrorEditor />
       </div>
-      <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+      <div className="d-none d-lg-flex page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
           ref={previewRef}
           rendererOptions={rendererOptions}

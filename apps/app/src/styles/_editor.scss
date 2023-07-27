@@ -1,6 +1,5 @@
 @import './bootstrap/init' ;
 @import './variables' ;
-@import './mixins' ;
 @import './organisms/wiki-custom-sidebar';
 
 // global imported
@@ -29,16 +28,6 @@
     position: relative;
     top: $grw-navbar-border-width;
     height: calc(100vh - #{$grw-navbar-border-width});
-  }
-
-  // calculate margin
-  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-on-edit;
-  @include expand-editor($editor-margin-top);
-
-  @include media-breakpoint-up(lg) {
-    // calculate margin
-    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-lg-on-edit;
-    @include expand-editor($editor-margin-top);
   }
 
   // show
