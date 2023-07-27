@@ -1,9 +1,10 @@
-name: PR to master
+name: Auto-labeling
 
 on:
   pull_request:
     branches:
       - master
+      - dev/*.*.*
     # Only following types are handled by the action, but one can default to all as well
     types: [opened, reopened, edited, synchronize]
 
