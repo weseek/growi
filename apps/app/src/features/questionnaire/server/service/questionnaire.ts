@@ -4,6 +4,7 @@ import * as os from 'node:os';
 import type { IUserHasId } from '@growi/core';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import { aclService } from '~/server/service/acl';
 
 import {
   GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
@@ -34,8 +35,8 @@ class QuestionnaireService {
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
 
-    const wikiMode = this.crowi.configManager.getConfig('crowi', 'security:wikiMode');
-    const wikiType = wikiMode === 'private' ? GrowiWikiType.closed : GrowiWikiType.open;
+    const isGuestAllowedToRead = aclService.isGuestAllowedToRead();
+    const wikiType = isGuestAllowedToRead ? GrowiWikiType.open : GrowiWikiType.closed;
 
     const activeExternalAccountTypes: GrowiExternalAuthProviderType[] = Object.values(GrowiExternalAuthProviderType).filter((type) => {
       return this.crowi.configManager.getConfig('crowi', `security:passport-${type}:isEnabled`);
