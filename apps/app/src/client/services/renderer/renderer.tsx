@@ -1,6 +1,7 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
+import * as slides from '@growi/presentation';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client/index.mjs';
 import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
@@ -28,7 +29,6 @@ import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
-import * as slides from '~/services/renderer/remark-plugins/slides';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
