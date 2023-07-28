@@ -1,6 +1,7 @@
 export * from './attachment';
 export * from './color-scheme';
 export * from './common';
+export * from './external-account';
 export * from './growi-facade';
 export * from './growi-theme-metadata';
 export * from './has-object-id';

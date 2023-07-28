@@ -9,8 +9,8 @@ import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 
-import { PageAttachmentList } from './PageAttachment/PageAttachmentList';
-import PaginationWrapper from './PaginationWrapper';
+import { PageAttachmentList } from '../PageAttachment/PageAttachmentList';
+import PaginationWrapper from '../PaginationWrapper';
 
 // Utility
 const checkIfFileInUse = (markdown: string, attachment): boolean => {

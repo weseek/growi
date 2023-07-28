@@ -297,7 +297,7 @@ const Sidebar = memo((): JSX.Element => {
   const isOpenClass = `${isDrawerOpened ? 'open' : ''}`;
   return (
     <>
-      <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`}>
+      <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`} data-testid="grw-sidebar">
         <div className="data-layout-container">
           <div
             className='navigation transition-enabled'

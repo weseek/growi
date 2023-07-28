@@ -109,6 +109,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, []);
 
   const initializeEditor = useCallback(async() => {
+    const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
+
     setComment('');
     setActiveTab('comment_editor');
     setError(undefined);
@@ -116,11 +118,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     // reset value
     if (editorRef.current == null) { return }
     editorRef.current.setValue('');
-    const editingCommentsNum = await decrementEditingCommentsNum();
-    if (editingCommentsNum === 0) {
+
+    if (editingCommentsNum != null && editingCommentsNum === 0) {
       mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
     }
-  }, [initializeSlackEnabled, mutateIsEnabledUnsavedWarning, decrementEditingCommentsNum]);
+  }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
     // change state to not ready
@@ -277,6 +279,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
     const submitButton = (
       <Button
+        data-testid="comment-submit-button"
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"
