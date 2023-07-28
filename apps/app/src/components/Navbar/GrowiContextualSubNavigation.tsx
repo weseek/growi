@@ -25,8 +25,9 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData,
+  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
 } from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
@@ -98,7 +99,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         <i className="icon-fw grw-page-control-dropdown-icon">
           <PresentationIcon />
         </i>
-        { t('Presentation Mode') }
+        {t('Presentation Mode')}
       </DropdownItem>
 
       {/* Export markdown */}
@@ -139,7 +140,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         {t('attachment_data')}
       </DropdownItem>
 
-      { !isGuestUser && !isReadOnlyUser && !isSharedUser && (
+      {!isGuestUser && !isReadOnlyUser && !isSharedUser && (
         <NotAvailable isDisabled={isLinkSharingDisabled ?? false} title="Disabled by admin">
           <DropdownItem
             onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
@@ -152,7 +153,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
             {t('share_links.share_link_management')}
           </DropdownItem>
         </NotAvailable>
-      ) }
+      )}
     </>
   );
 };
@@ -179,7 +180,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
         data-testid="open-page-template-modal-btn"
       >
         <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
-        { t('template.option_label.create/edit') }
+        {t('template.option_label.create/edit')}
       </DropdownItem>
     </>
   );
@@ -231,6 +232,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
@@ -282,12 +284,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     return;
   }, [mutatePageTagsForEditors]);
 
-  const reload = useCallback(() => {
-    if (currentPathname != null) {
-      router.push(currentPathname);
-    }
-  }, [currentPathname, router]);
-
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       router.push(toPath);
@@ -297,10 +293,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      reload();
+      mutateCurrentPage();
+      mutatePageInfo();
+      mutatePageTree();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [openRenameModal, reload]);
+  }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -319,9 +317,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       }
 
       mutateCurrentPage();
+      mutatePageInfo();
+      mutatePageTree();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, mutateCurrentPage, openDeleteModal, router]);
+  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {
@@ -341,9 +341,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         return (
           <>
             {!isReadOnlyUser
-            && <CreateTemplateMenuItems
-              onClickTemplateMenuItem={templateMenuItemClickHandler}
-            />
+              && <CreateTemplateMenuItems
+                onClickTemplateMenuItem={templateMenuItemClickHandler}
+              />
             }
           </>);
       }
@@ -368,9 +368,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       <>
         <div className="d-flex">
           <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-            { isViewMode && (
+            {isViewMode && (
               <div className="h-50">
-                { pageId != null && (
+                {pageId != null && (
                   <SubNavButtons
                     isCompactMode={isCompactMode}
                     pageId={pageId}
@@ -386,9 +386,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     onClickDeleteMenuItem={deleteItemClickedHandler}
                     onClickSwitchContentWidth={switchContentWidthHandler}
                   />
-                ) }
+                )}
               </div>
-            ) }
+            )}
             {isAbleToChangeEditorMode && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
@@ -397,22 +397,22 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-          { (isAbleToShowPageAuthors && !isCompactMode && !isUsersHomePage(path ?? '')) && (
+          {(isAbleToShowPageAuthors && !isCompactMode && !isUsersHomePage(path ?? '')) && (
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
               <li className="pb-1">
-                { currentPage != null
+                {currentPage != null
                   ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
                   : <AuthorInfoSkeleton />
                 }
               </li>
               <li className="mt-1 pt-1 border-top">
-                { currentPage != null
+                {currentPage != null
                   ? <AuthorInfo user={currentPage.lastUpdateUser as IUser} date={currentPage.updatedAt} mode="update" locate="subnav" />
                   : <AuthorInfoSkeleton />
                 }
               </li>
             </ul>
-          ) }
+          )}
         </div>
 
         {path != null && currentUser != null && !isReadOnlyUser && (

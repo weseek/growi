@@ -1,5 +1,7 @@
 import * as os from 'node:os';
 
+import { IExternalAuthProviderType } from '@growi/core';
+
 export const GrowiServiceType = {
   cloud: 'cloud',
   privateCloud: 'private-cloud',
@@ -23,13 +25,7 @@ export const GrowiDeploymentType = {
   node: 'node',
   others: 'others',
 } as const;
-export const GrowiExternalAuthProviderType = {
-  ldap: 'ldap',
-  saml: 'saml',
-  oicd: 'oidc',
-  google: 'google',
-  github: 'github',
-} as const;
+export const GrowiExternalAuthProviderType = IExternalAuthProviderType;
 
 export type GrowiServiceType = typeof GrowiServiceType[keyof typeof GrowiServiceType]
 type GrowiWikiType = typeof GrowiWikiType[keyof typeof GrowiWikiType]

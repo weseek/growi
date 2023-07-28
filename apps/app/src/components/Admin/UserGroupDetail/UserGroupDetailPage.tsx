@@ -334,7 +334,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link href="/admin/user-groups" prefetch={false}>
+            <Link href="/admin/user-groups">
               {t('user_group_management.group_list')}
             </Link>
           </li>
@@ -348,7 +348,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                 { ancestorUserGroup._id === currentUserGroupId ? (
                   <span>{ancestorUserGroup.name}</span>
                 ) : (
-                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
+                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>
                     {ancestorUserGroup.name}
                   </Link>
                 ) }

@@ -17,6 +17,7 @@ import type { Pluggable } from 'unified';
 
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
 // eslint-disable-next-line import/no-cycle
 import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
@@ -118,6 +119,7 @@ export const generateViewOptions = (
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
     components.slide = SlideViewer;
   }
 
@@ -224,6 +226,7 @@ export const generateSimpleViewOptions = (
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -303,6 +306,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
     components.slide = SlideViewer;
   }
 
