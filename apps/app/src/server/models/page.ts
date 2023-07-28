@@ -722,6 +722,56 @@ export async function pushRevision(pageData, newRevision, user) {
   return pageData.save();
 }
 
+/*
+ * add latestRevisionBodyLength fuilds
+ */
+schema.statics.updateLatestRevisionBodyLength = async function(pageId: ObjectIdLike): Promise<number> {
+  const pipeline = [
+    {
+      $match: {
+        _id: pageId,
+      },
+    },
+    {
+      $lookup: {
+        from: 'revisions',
+        localField: 'revision',
+        foreignField: '_id',
+        as: 'latestRevisionData',
+      },
+    },
+    {
+      $addFields: {
+        latestRevisionData: { $arrayElemAt: ['$latestRevisionData', 0] },
+      },
+    },
+    {
+      $set: {
+        latestRevisionBodyLength: { $strLenCP: '$latestRevisionData.body' },
+      },
+    },
+    {
+      $project: {
+        latestRevisionData: 0,
+      },
+    },
+  ];
+
+  const result = await this.aggregate(pipeline);
+
+  if (result.length !== 1) {
+    throw new Error('latestRevisionBodyLength is not found');
+  }
+
+  await this.findByIdAndUpdate(pageId, {
+    $set: {
+      latestRevisionBodyLength: result[0].latestRevisionBodyLength,
+    },
+  });
+
+  return result[0].latestRevisionBodyLength;
+};
+
 /**
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
