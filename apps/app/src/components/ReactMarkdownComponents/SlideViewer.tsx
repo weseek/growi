@@ -5,6 +5,7 @@ import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
 // TODO: Fix Dependency cycle
 // https://redmine.weseek.co.jp/issues/126744
+// eslint-disable-next-line import/no-cycle
 import { usePresentationViewOptions } from '~/stores/renderer';
 
 
