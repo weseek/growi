@@ -960,11 +960,12 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
-export async function calculateAndUpdateLatestRevisionBodyLength(page: PageDocument): Promise<number> {
+export async function calculateAndUpdateLatestRevisionBodyLength(page: PageDocument): Promise<number | null> {
   const latestRevisionData = await mongoose.model('Revision').findById(page.revision, { body: 1 });
 
   if (latestRevisionData == null || typeof latestRevisionData.body !== 'string') {
-    throw new Error('The latest revision body could not be found or is not a string.');
+    logger.error('The latest revision body could not be found or is not a string.');
+    return null;
   }
 
   const latestRevisionBodyLength = latestRevisionData.body.length;
