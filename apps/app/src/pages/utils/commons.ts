@@ -2,7 +2,6 @@ import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
   DevidedPagePath, Lang, AllLang, isServer,
 } from '@growi/core';
-import mongoose from 'mongoose';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
 
@@ -12,7 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { PageModel, PageDocument } from '~/server/models/page';
+import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -173,21 +172,16 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 };
 
-async function ensureLatestRevisionBodyLength(page: PageDocument): Promise<number> {
-  if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    return Page.updateLatestRevisionBodyLength(page._id);
-  }
-
-  return page.latestRevisionBodyLength;
-}
-
 export const skipSSR = async(page: PageDocument): Promise<boolean> => {
   if (!isServer()) {
     throw new Error('This method is not available on the client-side');
   }
 
-  const latestRevisionBodyLength = await ensureLatestRevisionBodyLength(page);
+  const latestRevisionBodyLength = await page.ensureLatestRevisionBodyLength();
+
+  if (latestRevisionBodyLength == null) {
+    return false;
+  }
 
   const { configManager } = await import('~/server/service/config-manager');
   await configManager.loadConfigs();

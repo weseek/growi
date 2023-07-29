@@ -40,6 +40,7 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {
   [x:string]: any // for obsolete methods
+  ensureLatestRevisionBodyLength(): Promise<number | null>
 }
 
 
@@ -722,56 +723,6 @@ export async function pushRevision(pageData, newRevision, user) {
   return pageData.save();
 }
 
-/*
- * add latestRevisionBodyLength fuilds
- */
-schema.statics.updateLatestRevisionBodyLength = async function(pageId: ObjectIdLike): Promise<number> {
-  const pipeline = [
-    {
-      $match: {
-        _id: pageId,
-      },
-    },
-    {
-      $lookup: {
-        from: 'revisions',
-        localField: 'revision',
-        foreignField: '_id',
-        as: 'latestRevisionData',
-      },
-    },
-    {
-      $addFields: {
-        latestRevisionData: { $arrayElemAt: ['$latestRevisionData', 0] },
-      },
-    },
-    {
-      $set: {
-        latestRevisionBodyLength: { $strLenCP: '$latestRevisionData.body' },
-      },
-    },
-    {
-      $project: {
-        latestRevisionData: 0,
-      },
-    },
-  ];
-
-  const result = await this.aggregate(pipeline);
-
-  if (result.length !== 1) {
-    throw new Error('latestRevisionBodyLength is not found');
-  }
-
-  await this.findByIdAndUpdate(pageId, {
-    $set: {
-      latestRevisionBodyLength: result[0].latestRevisionBodyLength,
-    },
-  });
-
-  return result[0].latestRevisionBodyLength;
-};
-
 /**
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
@@ -1009,6 +960,36 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
+export async function calculateAndUpdateLatestRevisionBodyLength(page: PageDocument): Promise<number> {
+  const latestRevisionData = await mongoose.model('Revision').findById(page.revision, { body: 1 });
+
+  if (latestRevisionData == null || typeof latestRevisionData.body !== 'string') {
+    throw new Error('The latest revision body could not be found or is not a string.');
+  }
+
+  const latestRevisionBodyLength = latestRevisionData.body.length;
+
+  page.latestRevisionBodyLength = latestRevisionBodyLength;
+  await page.save();
+
+  return latestRevisionBodyLength;
+}
+
+/*
+ * ensure latest revision body length
+ */
+schema.methods.ensureLatestRevisionBodyLength = async function(this: PageDocument): Promise<number | null> {
+  if (!this.isLatestRevision() || this.revision == null) {
+    return null;
+  }
+
+  if (this.latestRevisionBodyLength == null) {
+    const calculatedLatestRevisionBodyLength = await calculateAndUpdateLatestRevisionBodyLength(this);
+    return calculatedLatestRevisionBodyLength;
+  }
+
+  return this.latestRevisionBodyLength;
+};
 
 export type PageCreateOptions = {
   format?: string
