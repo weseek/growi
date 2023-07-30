@@ -43,7 +43,7 @@ type ComparableAncestor = {
 type ComparableDescendants = {
   isPublicExist: boolean,
   grantedUserIds: ObjectIdLike[],
-  grantedGroupIds: ObjectIdLike[],
+  grantedGroupIds: GrantedGroup[],
 };
 
 /**
@@ -67,7 +67,7 @@ type UpdateGrantInfo = {
 type DescendantPagesGrantInfo = {
   grantSet: Set<number>,
   grantedUserIds: Set<ObjectIdLike>, // all only me users of descendant pages
-  grantedUserGroupIds: Set<ObjectIdLike>, // all user groups of descendant pages
+  grantedUserGroupIds: Set<GrantedGroup>, // all user groups of descendant pages
 };
 
 /**
@@ -151,8 +151,8 @@ class PageGrantService {
       }
 
       if (target.grant === Page.GRANT_USER_GROUP) {
-        if (target.grantedGroupIds == null) {
-          throw Error('grantedGroupId must not be null');
+        if (target.grantedGroupIds == null || target.grantedGroupIds.length === 0) {
+          throw Error('grantedGroupId must not be empty');
         }
 
         if (!hasIntersection(ancestor.applicableGroupIds, target.grantedGroupIds.map(e => e.item))) { // only child groups or the same group can exist under GRANT_USER_GROUP page
@@ -200,7 +200,7 @@ class PageGrantService {
         return false;
       }
 
-      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(descendants.grantedGroupIds, target.applicableGroupIds);
+      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(descendants.grantedGroupIds.map(g => g.item), target.applicableGroupIds);
       const shouldNotExistUserIds = excludeTestIdsFromTargetIds(descendants.grantedUserIds, target.applicableUserIds);
       if (shouldNotExistGroupIds.length !== 0 || shouldNotExistUserIds.length !== 0) {
         return false;
@@ -371,19 +371,24 @@ class PageGrantService {
           _id: 0,
           grant: 1,
           grantedUsers: 1,
-          grantedGroup: 1,
+          grantedGroups: 1,
         },
       },
       { // remove duplicates from pipeline
         $group: {
           _id: '$grant',
-          grantedGroupSet: { $addToSet: '$grantedGroup' },
+          grantedGroupsSet: { $addToSet: '$grantedGroups' },
           grantedUsersSet: { $addToSet: '$grantedUsers' },
         },
       },
       { // flatten granted user set
         $unwind: {
           path: '$grantedUsersSet',
+        },
+      },
+      { // flatten granted group set
+        $unwind: {
+          path: '$grantedGroupsSet',
         },
       },
     ]);
@@ -395,7 +400,7 @@ class PageGrantService {
     const grantedUserIds: ObjectIdLike[] = grantOwnerResult?.grantedUsersSet ?? [];
     // GRANT_USER_GROUP group
     const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
-    const grantedGroupIds = grantUserGroupResult?.grantedGroupSet ?? [];
+    const grantedGroupIds = grantUserGroupResult?.grantedGroupsSet ?? [];
 
     return {
       isPublicExist,
