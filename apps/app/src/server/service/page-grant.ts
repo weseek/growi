@@ -536,13 +536,13 @@ class PageGrantService {
       }))).flat();
       const applicableGroups = [...applicableUserGroups, ...applicableExternalUserGroups];
 
-      const isUserExistInUserGroup = () => targetUserGroups.some(async(group) => {
-        return await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
-      });
-      const isUserExistInExternalUserGroup = () => targetExternalUserGroups.some(async(group) => {
-        return await ExternalUserGroupRelation.countByGroupIdAndUser(group, user) > 0;
-      });
-      const isUserExistInGroup = isUserExistInUserGroup() || isUserExistInExternalUserGroup();
+      const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
+        return UserGroupRelation.countByGroupIdAndUser(group, user);
+      }))).some(count => count > 0);
+      const isUserExistInExternalUserGroup = (await Promise.all(targetExternalUserGroups.map((group) => {
+        return ExternalUserGroupRelation.countByGroupIdAndUser(group, user);
+      }))).some(count => count > 0);
+      const isUserExistInGroup = await isUserExistInUserGroup || isUserExistInExternalUserGroup;
 
       if (isUserExistInGroup) {
         data[PageGrant.GRANT_OWNER] = null;

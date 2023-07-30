@@ -647,26 +647,26 @@ describe('PageGrantService', () => {
       );
 
       // // OnlyMe
-      // const onlyInsideTheGroupOnlyMePage = await Page.findOne({ path: pageOnlyInsideTheGroupOnlyMePath });
-      // const onlyInsideTheGroupOnlyMeRes = await pageGrantService.calcApplicableGrantData(onlyInsideTheGroupOnlyMePage, user1);
-      // expect(onlyInsideTheGroupOnlyMeRes).toStrictEqual(
-      //   {
-      //     [PageGrant.GRANT_RESTRICTED]: null,
-      //     [PageGrant.GRANT_OWNER]: null,
-      //     [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
-      //   },
-      // );
+      const onlyInsideTheGroupOnlyMePage = await Page.findOne({ path: pageOnlyInsideTheGroupOnlyMePath });
+      const onlyInsideTheGroupOnlyMeRes = await pageGrantService.calcApplicableGrantData(onlyInsideTheGroupOnlyMePage, user1);
+      expect(onlyInsideTheGroupOnlyMeRes).toStrictEqual(
+        {
+          [PageGrant.GRANT_RESTRICTED]: null,
+          [PageGrant.GRANT_OWNER]: null,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
+        },
+      );
 
       // // AnyoneWithTheLink
-      // const onlyInsideTheGroupAnyoneWithTheLinkPage = await Page.findOne({ path: pageOnlyInsideTheGroupAnyoneWithTheLinkPath });
-      // const onlyInsideTheGroupAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(onlyInsideTheGroupAnyoneWithTheLinkPage, user1);
-      // expect(onlyInsideTheGroupAnyoneWithTheLinkRes).toStrictEqual(
-      //   {
-      //     [PageGrant.GRANT_RESTRICTED]: null,
-      //     [PageGrant.GRANT_OWNER]: null,
-      //     [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
-      //   },
-      // );
+      const onlyInsideTheGroupAnyoneWithTheLinkPage = await Page.findOne({ path: pageOnlyInsideTheGroupAnyoneWithTheLinkPath });
+      const onlyInsideTheGroupAnyoneWithTheLinkRes = await pageGrantService.calcApplicableGrantData(onlyInsideTheGroupAnyoneWithTheLinkPage, user1);
+      expect(onlyInsideTheGroupAnyoneWithTheLinkRes).toStrictEqual(
+        {
+          [PageGrant.GRANT_RESTRICTED]: null,
+          [PageGrant.GRANT_OWNER]: null,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
+        },
+      );
     });
   });
 });
