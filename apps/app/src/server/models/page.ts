@@ -41,6 +41,7 @@ const STATUS_DELETED = 'deleted';
 export interface PageDocument extends IPage, Document {
   [x:string]: any // for obsolete methods
   getLatestRevisionBodyLength(): Promise<number | null | undefined>
+  calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
 }
 
 
@@ -961,28 +962,6 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
 };
 
 /*
- * method for getLatestRevisionBodyLength
- */
-async function calculateAndUpdateLatestRevisionBodyLength(pageDocument: PageDocument): Promise<void> {
-  if (!pageDocument.isLatestRevision() || pageDocument.revision == null) {
-    logger.error('revision field is required.');
-    return;
-  }
-
-  // Infer the type as Omit<PageDocument, never> due to the population
-  // Cast the type back to PageDocument to restore the original type
-  // eslint-disable-next-line rulesdir/no-populate
-  const populatedPageDocument = await pageDocument.populate('revision', 'body') as PageDocument;
-
-  if (typeof populatedPageDocument.revision === 'string') {
-    throw new Error('Failed to populate revision field in the page document.');
-  }
-
-  pageDocument.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
-  await pageDocument.save();
-}
-
-/*
  * get latest revision body length
  */
 schema.methods.getLatestRevisionBodyLength = async function(this: PageDocument): Promise<number | null | undefined> {
@@ -991,10 +970,32 @@ schema.methods.getLatestRevisionBodyLength = async function(this: PageDocument):
   }
 
   if (this.latestRevisionBodyLength == null) {
-    await calculateAndUpdateLatestRevisionBodyLength(this);
+    await this.calculateAndUpdateLatestRevisionBodyLength();
   }
 
   return this.latestRevisionBodyLength;
+};
+
+/*
+ * calculate and update latestRevisionBodyLength
+ */
+schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this: PageDocument): Promise<void> {
+  if (!this.isLatestRevision() || this.revision == null) {
+    logger.error('revision field is required.');
+    return;
+  }
+
+  // Infer the type as Omit<PageDocument, never> due to the population
+  // Cast the type back to PageDocument to restore the original type
+  // eslint-disable-next-line rulesdir/no-populate
+  const populatedPageDocument = await this.populate('revision', 'body') as PageDocument;
+
+  if (typeof populatedPageDocument.revision === 'string') {
+    throw new Error('Failed to populate revision field in the page document.');
+  }
+
+  this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
+  await this.save();
 };
 
 export type PageCreateOptions = {
