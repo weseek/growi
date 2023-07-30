@@ -2,7 +2,9 @@
 
 import nodePath from 'path';
 
-import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
+import {
+  HasObjectId, isPopulated, pagePathUtils, pathUtils,
+} from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
@@ -985,14 +987,10 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
     return;
   }
 
-  // Infer the type as Omit<PageDocument, never> due to the population
-  // Cast the type back to PageDocument to restore the original type
   // eslint-disable-next-line rulesdir/no-populate
-  const populatedPageDocument = await this.populate('revision', 'body') as PageDocument;
+  const populatedPageDocument = await this.populate<PageDocument>('revision', 'body');
 
-  if (typeof populatedPageDocument.revision === 'string') {
-    throw new Error('Failed to populate revision field in the page document.');
-  }
+  assert(isPopulated(populatedPageDocument.revision));
 
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
   await this.save();

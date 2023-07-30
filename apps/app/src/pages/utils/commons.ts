@@ -180,7 +180,7 @@ export const skipSSR = async(page: PageDocument): Promise<boolean> => {
   const latestRevisionBodyLength = await page.getLatestRevisionBodyLength();
 
   if (latestRevisionBodyLength == null) {
-    return false;
+    return true;
   }
 
   const { configManager } = await import('~/server/service/config-manager');
