@@ -16,7 +16,12 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
       <button type="button" className="btn btn-link p-2" onClick={onClickEditBtn}>
         <i className="ti ti-pencil"></i>
       </button>
-      <button type="button" className="btn btn-link p-2 mr-2" onClick={onClickDeleteBtn}>
+      <button
+        data-testid="comment-delete-button"
+        type="button"
+        className="btn btn-link p-2 mr-2"
+        onClick={onClickDeleteBtn}
+      >
         <i className="ti ti-close"></i>
       </button>
     </div>
