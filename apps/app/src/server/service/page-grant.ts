@@ -237,7 +237,7 @@ class PageGrantService {
         }
 
         const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
-        const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
+        const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map(g => g._id) } });
         applicableUserIds = [...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser);
 
         const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
@@ -297,10 +297,20 @@ class PageGrantService {
 
     if (testAncestor.grant === Page.GRANT_USER_GROUP) {
       // make a set of all users
-      const grantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
-      const grantedGroups = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
-      applicableGroupIds = grantedGroups.map(g => g._id);
-      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectIdLike[];
+      const { grantedUserGroups, grantedExternalUserGroups } = divideByType(testAncestor.grantedGroups);
+
+      const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: grantedUserGroups } }, { _id: 0, relatedUser: 1 });
+      const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: grantedExternalUserGroups } }, { _id: 0, relatedUser: 1 });
+      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(r => r.relatedUser))) as ObjectIdLike[];
+
+      const applicableUserGroups = (await Promise.all(grantedUserGroups.map((groupId) => {
+        return UserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      const applicableExternalUserGroups = (await Promise.all(grantedExternalUserGroups.map((groupId) => {
+        return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
+
     }
 
     return {
@@ -441,7 +451,7 @@ class PageGrantService {
 
     for await (const page of pages) {
       const {
-        path, grant, grantedUsers: grantedUserIds, grantedGroups,
+        path, grant, grantedUsers: grantedUserIds, grantedGroups: grantedGroupIds,
       } = page;
 
       if (!pageUtils.isPageNormalized(page)) {
@@ -449,7 +459,7 @@ class PageGrantService {
         continue;
       }
 
-      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroups, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
+      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
       }
       else {
@@ -493,7 +503,7 @@ class PageGrantService {
     }
 
     const {
-      grant, grantedUsers, grantedGroup,
+      grant, grantedUsers, grantedGroups,
     } = parent;
 
     if (grant === PageGrant.GRANT_PUBLIC) {
@@ -511,14 +521,28 @@ class PageGrantService {
       }
     }
     else if (grant === PageGrant.GRANT_USER_GROUP) {
-      const group = await UserGroup.findById(grantedGroup);
-      if (group == null) {
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroups);
+      const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
+      const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
+      if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
         throw Error('Group not found to calculate grant data.');
       }
 
-      const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
+        return UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      }))).flat();
+      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
+        return ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      }))).flat();
+      const applicableGroups = [...applicableUserGroups, ...applicableExternalUserGroups];
 
-      const isUserExistInGroup = await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
+      const isUserExistInUserGroup = () => targetUserGroups.some(async(group) => {
+        return await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
+      });
+      const isUserExistInExternalUserGroup = () => targetExternalUserGroups.some(async(group) => {
+        return await ExternalUserGroupRelation.countByGroupIdAndUser(group, user) > 0;
+      });
+      const isUserExistInGroup = isUserExistInUserGroup() || isUserExistInExternalUserGroup();
 
       if (isUserExistInGroup) {
         data[PageGrant.GRANT_OWNER] = null;

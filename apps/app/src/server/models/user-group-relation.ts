@@ -310,7 +310,7 @@ schema.statics.createByGroupIdsAndUserIds = async function(groupIds, userIds) {
 /**
  * Recursively finds descendant groups by populating relations.
  * @static
- * @param {UserGroupDocument[]} groups
+ * @param {UserGroupDocument} group
  * @param {UserDocument} user
  * @returns UserGroupDocument[]
  */
@@ -328,7 +328,7 @@ schema.statics.findGroupsWithDescendantsByGroupAndUser = async function(group, u
       },
       {
         $lookup: {
-          from: 'usergroups',
+          from: this.collection.collectionName,
           localField: 'relatedGroup',
           foreignField: '_id',
           as: 'relatedGroup',
