@@ -9,7 +9,7 @@
 export const batchProcessPromiseAll = async<I, O>(
   items: Array<I>,
   limit: number,
-  fn: (item: I) => Promise<O>,
+  fn: (item: I, index?: number, array?: Array<I>) => Promise<O>,
 ): Promise<O[]> => {
   let results: O[] = [];
   for (let start = 0; start < items.length; start += limit) {

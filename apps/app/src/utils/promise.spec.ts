@@ -8,12 +8,21 @@ describe('batchProcessPromiseAll', () => {
 
     const all = [...batch1, ...batch2, ...batch3];
 
-    const result = await batchProcessPromiseAll(all, 5, async(num) => {
+    const actualProcessedBatches: number[][] = [];
+    const result = await batchProcessPromiseAll(all, 5, async(num, i, arr) => {
+      if (arr != null && i === 0) {
+        actualProcessedBatches.push(arr);
+      }
       return num * 10;
     });
 
     const expected = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
 
     expect(result).toStrictEqual(expected);
+    expect(actualProcessedBatches).toStrictEqual([
+      batch1,
+      batch2,
+      batch3,
+    ]);
   });
 });

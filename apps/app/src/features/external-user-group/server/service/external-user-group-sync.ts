@@ -15,7 +15,7 @@ import ExternalUserGroupRelation from '../models/external-user-group-relation';
 // Max space complexity of syncExternalUserGroups will be:
 // O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
 const TREES_BATCH_SIZE = 10;
-const USERS_BATCH_SIZE = 100;
+const USERS_BATCH_SIZE = 30;
 
 abstract class ExternalUserGroupSyncService {
 

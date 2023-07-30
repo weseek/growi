@@ -13,7 +13,7 @@ import ExternalUserGroupSyncService from './external-user-group-sync';
 // Max space complexity of generateExternalUserGroupTrees will be:
 // O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
 const TREES_BATCH_SIZE = 10;
-const USERS_BATCH_SIZE = 100;
+const USERS_BATCH_SIZE = 30;
 
 class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
