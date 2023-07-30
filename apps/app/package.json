@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "6.1.8-RC.0",
+  "version": "6.1.9-RC.0",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -265,6 +265,7 @@
     "socket.io-client": "^4.2.0",
     "source-map-loader": "^4.0.1",
     "swagger2openapi": "^5.3.1",
-    "tsc-alias": "^1.2.9"
+    "tsc-alias": "^1.2.9",
+    "fslightbox-react": "^1.7.6"
   }
 }
