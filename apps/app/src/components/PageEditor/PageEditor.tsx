@@ -8,7 +8,7 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditor } from '@growi/editor';
+import { CodeMirrorEditor, CodeMirrorEditorContainer, useCodeMirrorEditor } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -80,6 +80,10 @@ export const PageEditor = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const editorRef = useRef<IEditorMethods>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const codeMirrorEditorContainerRef = useRef<HTMLDivElement>(null);
+
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -106,6 +110,15 @@ export const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+
+  const { setContainer } = useCodeMirrorEditor({
+    container: codeMirrorEditorContainerRef.current,
+  });
+  useEffect(() => {
+    if (codeMirrorEditorContainerRef.current != null) {
+      setContainer(codeMirrorEditorContainerRef.current);
+    }
+  }, [setContainer]);
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -145,9 +158,6 @@ export const PageEditor = React.memo((): JSX.Element => {
 
   const { mutate: mutateIsConflict } = useIsConflict();
 
-
-  const editorRef = useRef<IEditorMethods>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
 
   const checkIsConflict = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
@@ -572,7 +582,7 @@ export const PageEditor = React.memo((): JSX.Element => {
           onUpload={uploadHandler}
           onSave={saveWithShortcut}
         /> */}
-        <CodeMirrorEditor />
+        <CodeMirrorEditorContainer ref={codeMirrorEditorContainerRef} />
       </div>
       <div className="d-none d-lg-flex page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
