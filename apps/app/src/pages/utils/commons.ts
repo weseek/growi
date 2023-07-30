@@ -177,7 +177,7 @@ export const skipSSR = async(page: PageDocument): Promise<boolean> => {
     throw new Error('This method is not available on the client-side');
   }
 
-  const latestRevisionBodyLength = await page.ensureLatestRevisionBodyLength();
+  const latestRevisionBodyLength = await page.getLatestRevisionBodyLength();
 
   if (latestRevisionBodyLength == null) {
     return false;

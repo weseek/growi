@@ -40,7 +40,7 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {
   [x:string]: any // for obsolete methods
-  ensureLatestRevisionBodyLength(): Promise<number | null>
+  getLatestRevisionBodyLength(): Promise<number | null | undefined>
 }
 
 
@@ -960,33 +960,38 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
-export async function calculateAndUpdateLatestRevisionBodyLength(page: PageDocument): Promise<number | null> {
-  const latestRevisionData = await mongoose.model('Revision').findById(page.revision, { body: 1 });
-
-  if (latestRevisionData == null || typeof latestRevisionData.body !== 'string') {
-    logger.error('The latest revision body could not be found or is not a string.');
-    return null;
+/*
+ * method for getLatestRevisionBodyLength
+ */
+async function calculateAndUpdateLatestRevisionBodyLength(pageDocument: PageDocument): Promise<void> {
+  if (!pageDocument.isLatestRevision() || pageDocument.revision == null) {
+    logger.error('revision field is required.');
+    return;
   }
 
-  const latestRevisionBodyLength = latestRevisionData.body.length;
+  // Infer the type as Omit<PageDocument, never> due to the population
+  // Cast the type back to PageDocument to restore the original type
+  // eslint-disable-next-line rulesdir/no-populate
+  const populatedPageDocument = await pageDocument.populate('revision', 'body') as PageDocument;
 
-  page.latestRevisionBodyLength = latestRevisionBodyLength;
-  await page.save();
+  if (typeof populatedPageDocument.revision === 'string') {
+    throw new Error('Failed to populate revision field in the page document.');
+  }
 
-  return latestRevisionBodyLength;
+  pageDocument.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
+  await pageDocument.save();
 }
 
 /*
- * ensure latest revision body length
+ * get latest revision body length
  */
-schema.methods.ensureLatestRevisionBodyLength = async function(this: PageDocument): Promise<number | null> {
+schema.methods.getLatestRevisionBodyLength = async function(this: PageDocument): Promise<number | null | undefined> {
   if (!this.isLatestRevision() || this.revision == null) {
     return null;
   }
 
   if (this.latestRevisionBodyLength == null) {
-    const calculatedLatestRevisionBodyLength = await calculateAndUpdateLatestRevisionBodyLength(this);
-    return calculatedLatestRevisionBodyLength;
+    await calculateAndUpdateLatestRevisionBodyLength(this);
   }
 
   return this.latestRevisionBodyLength;
