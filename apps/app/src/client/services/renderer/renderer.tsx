@@ -19,7 +19,6 @@ import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
-// eslint-disable-next-line import/no-cycle
 import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
