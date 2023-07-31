@@ -58,7 +58,7 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
 
   private lastLoadedAt?: Date;
 
-  get isInitialized() {
+  private get isInitialized() {
     return this.lastLoadedAt != null;
   }
 
