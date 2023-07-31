@@ -24,15 +24,39 @@ const marp = new Marp({
   math: false,
 });
 
+// TODO: to change better slide style
+// https://redmine.weseek.co.jp/issues/125680
+const marpSlideTheme = marp.themeSet.add(`
+    /*!
+     * @theme slide_preview
+     */
+    section {
+      max-width: 90%;
+    }
+`);
+marp.themeSet.default = marpSlideTheme;
+
 
 type Props = {
   options: PresentationOptions,
   children?: string,
+  hasMarpFlag?: boolean,
 }
 
 export const Slides = (props: Props): JSX.Element => {
-  const { options, children } = props;
-  const { rendererOptions, isDarkMode, disableSeparationByHeader } = options;
+  const { options, children, hasMarpFlag } = props;
+  const {
+    rendererOptions, isDarkMode, disableSeparationByHeader,
+  } = options;
+
+
+  // TODO: can Marp rendering
+  // https://redmine.weseek.co.jp/issues/115673
+  if (hasMarpFlag) {
+    return (
+      <></>
+    );
+  }
 
   rendererOptions.remarkPlugins?.push([
     extractSections.remarkPlugin,
@@ -43,7 +67,6 @@ export const Slides = (props: Props): JSX.Element => {
   ]);
 
   const { css } = marp.render('', { htmlAsArray: true });
-
   return (
     <>
       <Head>

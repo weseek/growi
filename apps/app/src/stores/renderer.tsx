@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { useCallback } from 'react';
 
 import type { HtmlElementNode } from 'rehype-toc';
