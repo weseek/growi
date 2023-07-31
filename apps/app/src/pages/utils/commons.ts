@@ -172,14 +172,14 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 };
 
-
 export const skipSSR = async(page: PageDocument): Promise<boolean> => {
   if (!isServer()) {
     throw new Error('This method is not available on the client-side');
   }
 
-  // page document only stores the bodyLength of the latest revision
-  if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
+  const latestRevisionBodyLength = await page.getLatestRevisionBodyLength();
+
+  if (latestRevisionBodyLength == null) {
     return true;
   }
 
@@ -191,9 +191,6 @@ export const skipSSR = async(page: PageDocument): Promise<boolean> => {
       return mod.configManager;
     });
   const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-  if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
-    return true;
-  }
 
-  return false;
+  return ssrMaxRevisionBodyLength < latestRevisionBodyLength;
 };
