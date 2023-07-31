@@ -183,8 +183,13 @@ export const skipSSR = async(page: PageDocument): Promise<boolean> => {
     return true;
   }
 
-  const { configManager } = await import('~/server/service/config-manager');
-  await configManager.loadConfigs();
+  const configManager = await import('~/server/service/config-manager')
+    .then(async(mod) => {
+      if (!mod.configManager.isInitialized) {
+        await mod.configManager.loadConfigs();
+      }
+      return mod.configManager;
+    });
   const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
   if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
     return true;
