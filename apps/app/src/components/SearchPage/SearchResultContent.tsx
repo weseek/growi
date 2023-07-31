@@ -234,40 +234,45 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems, isContainerFluid,
       duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
 
-  // return if page or growiRenderer is null
-  if (page == null || rendererOptions == null) return <></>;
+  const isRenderable = page != null && rendererOptions != null;
 
   return (
     <div key={page._id} data-testid="search-result-content" className={`search-result-content ${styles['search-result-content']} d-flex flex-column`}>
       <div className="grw-page-path-text-muted-container">
-        <GrowiSubNavigation
-          pagePath={page.path}
-          pageId={page._id}
-          rightComponent={RightComponent}
-          isCompactMode
-          additionalClasses={['px-4']}
-        />
+        { isRenderable && (
+          <GrowiSubNavigation
+            pagePath={page.path}
+            pageId={page._id}
+            rightComponent={RightComponent}
+            isCompactMode
+            additionalClasses={['px-4']}
+          />
+        ) }
       </div>
       <div id="search-result-content-body-container" className="search-result-content-body-container" ref={scrollElementRef}>
-        {/* RevisionLoader will render '#revision-loader' after loaded */}
-        <RevisionLoader
-          rendererOptions={rendererOptions}
-          pageId={page._id}
-          revisionId={page.revision}
-        />
-        {/* PageComment will render '#page-comment' after loaded */}
-        <PageComment
-          rendererOptions={rendererOptions}
-          pageId={page._id}
-          pagePath={page.path}
-          revision={page.revision}
-          currentUser={currentUser}
-          isReadOnly
-          hideIfEmpty
-        />
-        <PageContentFooter
-          page={page}
-        />
+        { isRenderable && (
+          <RevisionLoader
+            rendererOptions={rendererOptions}
+            pageId={page._id}
+            revisionId={page.revision}
+          />
+        )}
+        { isRenderable && (
+          <PageComment
+            rendererOptions={rendererOptions}
+            pageId={page._id}
+            pagePath={page.path}
+            revision={page.revision}
+            currentUser={currentUser}
+            isReadOnly
+            hideIfEmpty
+          />
+        )}
+        { isRenderable && (
+          <PageContentFooter
+            page={page}
+          />
+        )}
       </div>
     </div>
   );
