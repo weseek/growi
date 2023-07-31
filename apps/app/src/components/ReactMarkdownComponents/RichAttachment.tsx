@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import prettyBytes from 'pretty-bytes';
 

@@ -7,6 +7,7 @@ import {
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
@@ -18,7 +19,6 @@ import { MarkdownTableDataImportForm } from './MarkdownTableDataImportForm';
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
-import { debounce } from 'throttle-debounce';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {

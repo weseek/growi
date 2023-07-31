@@ -2,7 +2,7 @@ import path from 'path';
 
 import { GrowiPluginType } from '@growi/core';
 import { TemplateSummary } from '@growi/pluginkit/dist/v4';
-import { scanAllTemplates, getMarkdown } from '@growi/pluginkit/dist/v4/server';
+import { scanAllTemplates, getMarkdown } from '@growi/pluginkit/dist/v4/server/index.cjs';
 import express from 'express';
 import { param, query } from 'express-validator';
 

@@ -1,18 +1,30 @@
 {
   "name": "@growi/remark-attachment-refs",
-  "version": "6.1.9-RC.0",
+  "version": "6.2.0-RC.0",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
   "keywords": [
     "growi",
     "growi-plugin"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "type": "module",
+  "exports": {
+    "./dist/client": {
+      "require": "./dist/client/index.cjs",
+      "import": "./dist/client/index.js"
+    },
+    "./dist/client/*": {
+      "require": "./dist/client/*",
+      "import": "./dist/client/*"
+    },
+    "./dist/server": {
+      "require": "./dist/server/index.cjs",
+      "import": "./dist/server/index.js"
+    }
+  },
   "scripts": {
     "build": "run-p build:*",
     "build:server": "vite build -c vite.server.config.ts",
@@ -33,12 +45,22 @@
     "@growi/core": "link:../core",
     "@growi/remark-growi-directive": "link:../remark-growi-directive",
     "@growi/ui": "link:../ui",
+    "axios": "^0.24.0",
     "bunyan": "^1.8.15",
-    "universal-bunyan": "^0.9.2"
+    "hast-util-select": "^5.0.5",
+    "universal-bunyan": "^0.9.2",
+    "swr": "^2.0.3"
   },
   "devDependencies": {
+    "csstype": "^3.1.2",
     "eslint-plugin-regex": "^1.8.0",
+    "hast-util-sanitize": "^4.1.0",
+    "hast-util-select": "^5.0.5",
     "npm-run-all": "^4.1.5",
+    "unified": "^10.1.2",
+    "unist-util-visit": "^4.0.0"
+  },
+  "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

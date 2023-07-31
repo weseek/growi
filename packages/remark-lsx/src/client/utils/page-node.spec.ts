@@ -1,7 +1,8 @@
-import { IPageHasId, OptionParser } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
+import { OptionParser } from '@growi/core/dist/remark-plugins';
 import { mock } from 'vitest-mock-extended';
 
-import { PageNode } from '../interfaces/page-node';
+import { PageNode } from '../../interfaces/page-node';
 
 import { generatePageNodeTree } from './page-node';
 

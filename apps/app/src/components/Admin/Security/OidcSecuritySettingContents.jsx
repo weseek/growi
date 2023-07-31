@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
