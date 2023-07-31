@@ -118,8 +118,6 @@ module.exports = function(crowi, app) {
       },
     };
 
-    const isAdmin = req.user.admin;
-
     await crowi.activityService.createActivity(parameters);
 
     const redirectToForUnauthenticated = createRedirectToForUnauthenticated(req.user.status);
@@ -129,7 +127,7 @@ module.exports = function(crowi, app) {
       return res.redirect(redirectTo);
     }
 
-    return res.apiv3({ redirectTo, isAdmin });
+    return res.apiv3({ redirectTo });
   };
 
   const injectRedirectTo = (req, res, next) => {

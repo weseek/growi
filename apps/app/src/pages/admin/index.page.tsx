@@ -5,12 +5,15 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores/context';
+import {
+  useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud, useIsAdmin,
+} from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -32,6 +35,12 @@ const AdminHomePage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
+  const { data: isAdmin } = useIsAdmin();
+  const router = useRouter();
+
+  if (!isAdmin) {
+    router.push('/Page403');
+  }
 
   const { t } = useTranslation('admin');
 
