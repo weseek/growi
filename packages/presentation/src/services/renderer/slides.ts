@@ -1,3 +1,4 @@
+
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Root } from 'mdast';
 import { frontmatterToMarkdown } from 'mdast-util-frontmatter';
@@ -28,6 +29,34 @@ const rewriteNode = (tree: Node, node: Node) => {
 
   if (marp || slide) {
 
+    let markdown = '';
+    const createMarkdownParent = new Set<Node>([tree]);
+    visit(tree, (node, index, parent: Node) => {
+      try {
+        if (createMarkdownParent.has(parent)) {
+          const tmp = toMarkdown(node as Root, {
+            extensions: [
+              frontmatterToMarkdown(['yaml']),
+              gfmToMarkdown(),
+            ],
+          });
+          if (node.type === 'heading') {
+            markdown += '\n';
+          }
+          markdown += tmp;
+        }
+      }
+      catch (err) {
+        createMarkdownParent.add(node);
+        if (node?.children == null) {
+          markdown += ' ';
+        }
+      }
+    });
+
+    console.log(markdown);
+    console.log(createMarkdownParent);
+
     const newNode: Node = {
       type: 'root',
       data: {},
@@ -35,19 +64,13 @@ const rewriteNode = (tree: Node, node: Node) => {
       children: tree.children,
     };
 
+
     const data = newNode.data ?? (newNode.data = {});
     tree.children = [newNode];
     data.hName = 'slide';
     data.hProperties = {
       marp: marp ? 'marp' : '',
-      children: toMarkdown(tree as Root, {
-        extensions: [
-          frontmatterToMarkdown(['yaml']),
-          gfmToMarkdown(),
-          // TODO: add new extension remark-growi-directive to markdown
-          // https://redmine.weseek.co.jp/issues/126744
-        ],
-      }),
+      children: markdown,
     };
   }
 };
