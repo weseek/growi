@@ -169,6 +169,7 @@ type Props = CommonProps & {
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
   skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 
   grantData?: IPageGrantData,
 
@@ -476,7 +477,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
-    props.skipSSR = await skipSSR(page);
+    props.skipSSR = await skipSSR(page, props.ssrMaxRevisionBodyLength);
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
@@ -602,6 +603,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 /**
