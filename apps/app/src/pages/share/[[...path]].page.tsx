@@ -237,7 +237,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
     else {
       props.isNotFound = false;
-      props.skipSSR = await skipSSR(shareLink.relatedPage, props.ssrMaxRevisionBodyLength);
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+      props.skipSSR = await skipSSR(shareLink.relatedPage, ssrMaxRevisionBodyLength);
       props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
