@@ -17,12 +17,14 @@ import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
 import { IEditorMethods } from '../../interfaces/editor-methods';
+import { ModalForParentPageSelection } from '../ModalForParentPageSelection';
 
 import AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
+
 
 import styles from './Editor.module.scss';
 
@@ -334,6 +336,8 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
             );
           }}
         </Dropzone>
+
+        <ModalForParentPageSelection></ModalForParentPageSelection>
 
         { isUploadable
           && (
