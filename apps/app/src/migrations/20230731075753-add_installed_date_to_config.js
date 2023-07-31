@@ -15,7 +15,7 @@ module.exports = {
     mongoose.connect(getMongoUri(), mongoOptions);
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
-    if (appInstalled.createdAt == null) {
+    if (appInstalled != null && appInstalled.createdAt == null) {
       const initialUser = await User.find().limit(1).sort({ createdAt: 1 });
       appInstalled.createdAt = initialUser.createdAt;
       await appInstalled.save();
@@ -24,14 +24,16 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, client) {
+  async down() {
     logger.info('Rollback migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
-    appInstalled.createdAt = null;
+    if (appInstalled != null) {
+      appInstalled.createdAt = null;
 
-    await appInstalled.save();
+      await appInstalled.save();
+    }
 
     logger.info('Migration has been successfully rollbacked');
   },
