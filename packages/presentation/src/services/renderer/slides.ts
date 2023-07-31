@@ -69,7 +69,7 @@ const rewriteNode = (tree: Node, node: Node) => {
     tree.children = [newNode];
     data.hName = 'slide';
     data.hProperties = {
-      marp: marp ? 'marp' : '',
+      marp: marp ? '' : undefined,
       children: markdown,
     };
   }

@@ -13,7 +13,7 @@ import { usePresentationViewOptions } from '~/stores/renderer';
 const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });
 
 type SlideViewerProps = {
-  marp: string,
+  marp: string | undefined,
   children: string,
 }
 
@@ -28,7 +28,7 @@ export const SlideViewer: React.FC<SlideViewerProps> = React.memo((props: SlideV
     <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
       <div className="slides">
         <Slides
-          hasMarpFlag={marp === 'marp'}
+          hasMarpFlag={marp != null}
           options={{ rendererOptions: rendererOptions as ReactMarkdownOptions }}
         >
           {children}
