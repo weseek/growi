@@ -29,33 +29,33 @@ const rewriteNode = (tree: Node, node: Node) => {
 
   if (marp || slide) {
 
-    let markdown = '';
-    const createMarkdownParent = new Set<Node>([tree]);
-    visit(tree, (node, index, parent: Node) => {
+    visit(tree, (node) => {
+      const tmp = node?.children;
+      node.children = [];
       try {
-        if (createMarkdownParent.has(parent)) {
-          const tmp = toMarkdown(node as Root, {
-            extensions: [
-              frontmatterToMarkdown(['yaml']),
-              gfmToMarkdown(),
-            ],
-          });
-          if (node.type === 'heading') {
-            markdown += '\n';
-          }
-          markdown += tmp;
-        }
+        toMarkdown(node as Root, {
+          extensions: [
+            frontmatterToMarkdown(['yaml']),
+            gfmToMarkdown(),
+          ],
+        });
       }
       catch (err) {
-        createMarkdownParent.add(node);
-        if (node?.children == null) {
-          markdown += ' ';
-        }
+        node.type = 'text';
+        node.value = ' ';
+      }
+      finally {
+        node.children = tmp;
       }
     });
 
-    console.log(markdown);
-    console.log(createMarkdownParent);
+    const markdown = toMarkdown(tree as Root, {
+      extensions: [
+        frontmatterToMarkdown(['yaml']),
+        gfmToMarkdown(),
+      ],
+    });
+
 
     const newNode: Node = {
       type: 'root',
