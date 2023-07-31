@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { SubscriptionStatusType, Nullable } from '@growi/core';
+import { SubscriptionStatusType, type Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
@@ -153,10 +153,8 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     // markdown = pageEditor.getMarkdown();
     // }
 
-    const isNoRevisionPage = pageId != null && revisionId == null;
-
     let res;
-    if (pageId == null || isNoRevisionPage) {
+    if (pageId == null || revisionId == null) {
       res = await createPage(path, markdown, options);
     }
     else {
