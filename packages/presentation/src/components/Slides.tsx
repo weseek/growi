@@ -67,10 +67,10 @@ export const Slides = (props: Props): JSX.Element => {
     },
   ]);
   if (rendererOptions.components != null) {
-    // rendererOptions.components.section = RichSlideSection;
+    rendererOptions.components.section = RichSlideSection;
   }
 
-  const { css } = marpSlide.render('', { htmlAsArray: true });
+  const { css } = marpSlide.render('');
   return (
     <>
       <Head>
