@@ -3,11 +3,10 @@
 import nodePath from 'path';
 
 import {
-  isPopulated, pagePathUtils, pathUtils,
+  isPopulated,
 } from '@growi/core';
 import type { IPage, HasObjectId } from '@growi/core';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
