@@ -20,13 +20,13 @@ export const Playground = (): JSX.Element => {
   return (
     <>
       <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
-        <div className="text-white">GrowiSubnavigation</div>
+        <div className="text-white">GrowiSubNavigation</div>
       </div>
       <div className="flex-grow-1 d-flex overflow-y-auto">
-        <div className="flex-grow-1 d-flex flex-column">
+        <div className="flex-grow-1 d-flex flex-column" style={{ flexBasis: 0 }}>
           <CodeMirrorEditorContainer ref={containerRef} />
         </div>
-        <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center bg-light border-start border-dark-subtle">
+        <div className="flex-grow-1 d-flex flex-column bg-light border-start border-dark-subtle p-3" style={{ flexBasis: 0 }}>
           <p>PREVIEW</p>
         </div>
       </div>
