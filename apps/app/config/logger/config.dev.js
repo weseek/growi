@@ -29,6 +29,8 @@ module.exports = {
   'growi:service:search-delegator:elasticsearch': 'debug',
   'growi:service:g2g-transfer': 'debug',
 
+  'growi:migration:add-installed-date-to-config': 'debug',
+
   /*
    * configure level for client
    */
