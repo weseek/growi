@@ -18,6 +18,21 @@ export const Playground = (): JSX.Element => {
   }, [setContainer]);
 
   return (
-    <CodeMirrorEditorContainer ref={containerRef} />
+    <>
+      <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
+        <div className="text-white">GrowiSubnavigation</div>
+      </div>
+      <div className="flex-grow-1 d-flex overflow-auto">
+        <div className="flex-grow-1 d-flex flex-column">
+          <CodeMirrorEditorContainer ref={containerRef} />
+        </div>
+        <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center bg-light border-left border-dark-subtle">
+          <p>PREVIEW</p>
+        </div>
+      </div>
+      <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>
+        <div className="text-white">EditorNavbarBottom</div>
+      </div>
+    </>
   );
 };
