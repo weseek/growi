@@ -2,13 +2,13 @@ import React, {
   FC, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { isPopulated, getIdForRef } from '@growi/core/dist/interfaces/common';
-import { type IRevisionHasId } from '@growi/core/dist/interfaces/revision';
+import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
 import { Button } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import { RendererOptions } from '~/interfaces/renderer-options';
+import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -42,7 +42,7 @@ export type PageCommentProps = {
   hideIfEmpty?: boolean,
 }
 
-export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): JSX.Element => {
+export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): JSX.Element => {
 
   const {
     rendererOptions: rendererOptionsByProps,
@@ -56,6 +56,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
@@ -84,7 +85,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   const onDeleteCommentAfterOperation = useCallback(() => {
     onCancelDeleteComment();
     mutate();
-  }, [mutate, onCancelDeleteComment]);
+    mutatePageInfo();
+  }, [mutate, onCancelDeleteComment, mutatePageInfo]);
 
   const onDeleteComment = useCallback(async() => {
     if (commentToBeDeleted == null) return;
@@ -92,7 +94,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       await apiPost('/comments.remove', { comment_id: commentToBeDeleted._id });
       onDeleteCommentAfterOperation();
     }
-    catch (error:unknown) {
+    catch (error: unknown) {
       setErrorMessageOnDelete(error as string);
       toastError(`error: ${error}`);
     }
@@ -100,11 +102,19 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
-      const previousShowEditorIds = new Set(...previousState);
-      previousShowEditorIds.delete(commentId);
-      return previousShowEditorIds;
+      return new Set([...previousState].filter(id => id !== commentId));
     });
   }, []);
+
+  const onReplyButtonClickHandler = useCallback((commentId: string) => {
+    setShowEditorIds(previousState => new Set([...previousState, commentId]));
+  }, []);
+
+  const onCommentButtonClickHandler = useCallback((commentId: string) => {
+    removeShowEditorId(commentId);
+    mutate();
+    mutatePageInfo();
+  }, [removeShowEditorId, mutate, mutatePageInfo]);
 
   if (hideIfEmpty && comments?.length === 0) {
     return <PageCommentRoot />;
@@ -163,7 +173,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
         <div className="page-comments">
           <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
           <div className="page-comments-list" id="page-comments-list">
-            { commentsExceptReply.map((comment) => {
+            {commentsExceptReply.map((comment) => {
 
               const defaultCommentThreadClasses = 'page-comment-thread pb-5';
               const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
@@ -180,13 +190,12 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                       <NotAvailableForGuest>
                         <NotAvailableForReadOnlyUser>
                           <Button
+                            data-testid="comment-reply-button"
                             outline
                             color="secondary"
                             size="sm"
                             className="btn-comment-reply"
-                            onClick={() => {
-                              setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
-                            }}
+                            onClick={() => onReplyButtonClickHandler(comment._id)}
                           >
                             <i className="icon-fw icon-action-undo"></i> Reply
                           </Button>
@@ -201,10 +210,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                       onCancelButtonClicked={() => {
                         removeShowEditorId(comment._id);
                       }}
-                      onCommentButtonClicked={() => {
-                        removeShowEditorId(comment._id);
-                        mutate();
-                      }}
+                      onCommentButtonClicked={() => onCommentButtonClickHandler(comment._id)}
                       revisionId={revisionId}
                     />
                   )}

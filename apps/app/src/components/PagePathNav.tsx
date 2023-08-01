@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
-import { DevidedPagePath, pagePathUtils } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 
 import { useIsNotFound } from '~/stores/page';

@@ -1,12 +1,10 @@
 import React, { useMemo, useCallback } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
 import { toastSuccess } from '~/client/util/toastr';
-import {
-  IPageHasId,
-} from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { useIsReadOnlyUser, useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';

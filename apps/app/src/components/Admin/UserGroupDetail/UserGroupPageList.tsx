@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { IPageHasId } from '~/interfaces/page';
 
 import { PageListItemS } from '../../PageList/PageListItemS';
 import PaginationWrapper from '../../PaginationWrapper';
@@ -49,8 +49,12 @@ const UserGroupPageList = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ul className="page-list-ul page-list-ul-flat mb-3">
-        {currentPages.map(page => <li key={page._id}><PageListItemS page={page} /></li>)}
+      <ul className="page-list-ul page-list-ul-flat mt-3 mb-3">
+        { currentPages.map(page => (
+          <li key={page._id} className="mt-2">
+            <PageListItemS page={page} />
+          </li>
+        )) }
       </ul>
       {relatedPages != null && relatedPages.length === 0 ? <p>{t('user_group_management.no_pages')}</p> : (
         <PaginationWrapper

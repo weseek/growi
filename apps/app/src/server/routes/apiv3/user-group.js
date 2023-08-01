@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';

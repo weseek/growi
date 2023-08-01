@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 
-import { type IRevisionHasId, pagePathUtils } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 
 import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
-import { useIsTrashPage } from '~/stores/page';
+import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
@@ -32,6 +33,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
 
@@ -41,8 +43,8 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     const parent = pageCommentParentRef.current;
     if (parent == null) return;
 
-    const observerCallback = (mutationRecords:MutationRecord[]) => {
-      mutationRecords.forEach((record:MutationRecord) => {
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach((record: MutationRecord) => {
         const target = record.target as HTMLElement;
 
         for (const child of Array.from(target.children)) {
@@ -69,6 +71,11 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     return <></>;
   }
 
+  const onCommentButtonClickHandler = () => {
+    mutate();
+    mutatePageInfo();
+  };
+
   return (
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
       <div className="container-lg">
@@ -83,12 +90,12 @@ export const Comments = (props: CommentsProps): JSX.Element => {
             hideIfEmpty={false}
           />
         </div>
-        { !isDeleted && (
+        {!isDeleted && (
           <div id="page-comment-write">
             <CommentEditor
               pageId={pageId}
               isForNewComment
-              onCommentButtonClicked={mutate}
+              onCommentButtonClicked={onCommentButtonClickHandler}
               revisionId={revision._id}
             />
           </div>

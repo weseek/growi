@@ -1,7 +1,7 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import {
-  DevidedPagePath, Lang, AllLang, isServer,
-} from '@growi/core';
+import { Lang, AllLang } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
 
@@ -172,23 +172,20 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 };
 
-
 export const skipSSR = async(page: PageDocument): Promise<boolean> => {
   if (!isServer()) {
     throw new Error('This method is not available on the client-side');
   }
 
-  // page document only stores the bodyLength of the latest revision
-  if (!page.isLatestRevision() || page.latestRevisionBodyLength == null) {
+  const latestRevisionBodyLength = await page.getLatestRevisionBodyLength();
+
+  if (latestRevisionBodyLength == null) {
     return true;
   }
 
   const { configManager } = await import('~/server/service/config-manager');
   await configManager.loadConfigs();
   const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-  if (ssrMaxRevisionBodyLength < page.latestRevisionBodyLength) {
-    return true;
-  }
 
-  return false;
+  return ssrMaxRevisionBodyLength < latestRevisionBodyLength;
 };

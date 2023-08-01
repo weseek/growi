@@ -4,7 +4,7 @@ import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
 import attachmentRoutes from '@growi/remark-attachment-refs/dist/server';
-import lsxRoutes from '@growi/remark-lsx/dist/server';
+import lsxRoutes from '@growi/remark-lsx/dist/server/index.cjs';
 import mongoose from 'mongoose';
 import next from 'next';
 

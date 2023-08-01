@@ -1,18 +1,16 @@
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
-import { toastSuccess } from '~/client/util/toastr';
-import {
+import type {
   IDataWithMeta,
   IPageHasId,
   IPageInfoForOperation,
-} from '~/interfaces/page';
+} from '@growi/core';
+import { useTranslation } from 'next-i18next';
+
+import { toastSuccess } from '~/client/util/toastr';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
-import {
-  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
-} from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores/context';
 import {
   mutatePageTree,
   useSWRxPageInfoForList, useSWRxPageList,
@@ -21,7 +19,6 @@ import {
 import { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
-
 
 type SubstanceProps = {
   pagingResult: IPagingResult<IPageHasId> | undefined,
@@ -71,7 +68,6 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     }
 
     mutatePageTree();
-
     if (onPagesDeleted != null) {
       onPagesDeleted(...args);
     }
@@ -81,7 +77,6 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     toastSuccess(t('page_has_been_reverted', { path }));
 
     mutatePageTree();
-
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }

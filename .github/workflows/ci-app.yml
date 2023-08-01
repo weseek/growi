@@ -60,7 +60,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
+          yarn global add turbo@1.10.9
           yarn --frozen-lockfile
 
       - name: Lint
@@ -131,7 +131,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
+          yarn global add turbo@1.10.9
           yarn --frozen-lockfile
 
       - name: Test
@@ -213,7 +213,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
+          yarn global add turbo@1.10.9
           yarn --frozen-lockfile
 
       - name: turbo run dev:ci

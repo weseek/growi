@@ -1,4 +1,4 @@
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 
 import { ICondition, IConditionHasId } from './condition';
 import { IQuestion, IQuestionHasId } from './question';

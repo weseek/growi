@@ -8,7 +8,7 @@ import {
   supportedGrowiCommands,
 } from '@growi/slack';
 import { parseSlackInteractionRequest, verifySlackRequest } from '@growi/slack/dist/middlewares';
-import { InvalidGrowiCommandError } from '@growi/slack/dist/models/errors';
+import { InvalidGrowiCommandError } from '@growi/slack/dist/models';
 import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 import { respondRejectedErrors } from '@growi/slack/dist/utils/post-ephemeral-errors';
 import { respond } from '@growi/slack/dist/utils/response-url';

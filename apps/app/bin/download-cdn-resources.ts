@@ -3,10 +3,11 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-import { envUtils } from '@growi/core';
+import { envUtils } from '@growi/core/dist/utils';
+
+import loggerFactory from '../src/utils/logger';
 
 import CdnResourcesDownloader from './cdn/cdn-resources-downloader';
-import loggerFactory from '../src/utils/logger';
 
 const logger = loggerFactory('growi:bin:download-cdn-resources');
 

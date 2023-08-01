@@ -1,10 +1,11 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
-import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client/index.mjs';
+import * as slides from '@growi/presentation';
+import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
-import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client/index.mjs';
+import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
@@ -16,7 +17,9 @@ import type { Pluggable } from 'unified';
 
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
+// eslint-disable-next-line import/no-cycle
 import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
@@ -28,7 +31,6 @@ import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
-import * as slides from '~/services/renderer/remark-plugins/slides';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
@@ -117,6 +119,7 @@ export const generateViewOptions = (
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
     components.slide = SlideViewer;
   }
 
@@ -223,6 +226,7 @@ export const generateSimpleViewOptions = (
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -302,6 +306,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
+    components.img = LightBox;
     components.slide = SlideViewer;
   }
 
