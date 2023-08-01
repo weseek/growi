@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
 import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
@@ -18,6 +20,13 @@ describe('QuestionnaireService', () => {
       'security:passport-github:isEnabled': true,
     });
 
+    await mongoose.model('Config').create({
+      ns: 'crowi',
+      key: 'app:installed',
+      value: true,
+      createdAt: '2000-01-01',
+    });
+
     crowi.setupQuestionnaireService();
 
     const User = crowi.model('User');
@@ -36,6 +45,8 @@ describe('QuestionnaireService', () => {
 
       expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
+      expect(growiInfo.installedAt).toBeTruthy();
+      expect(typeof growiInfo.installedAt).toBe(Date);
       expect(growiInfo.osInfo.type).toBeTruthy();
       expect(growiInfo.osInfo.platform).toBeTruthy();
       expect(growiInfo.osInfo.arch).toBeTruthy();
@@ -44,6 +55,7 @@ describe('QuestionnaireService', () => {
       delete growiInfo.appSiteUrlHashed;
       delete growiInfo.currentActiveUsersCount;
       delete growiInfo.currentUsersCount;
+      delete growiInfo.installedAt;
       delete growiInfo.osInfo;
 
       expect(growiInfo).toEqual({
