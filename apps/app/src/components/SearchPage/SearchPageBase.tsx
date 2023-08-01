@@ -17,6 +17,10 @@ import { mutatePageTree } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
+// Do not import with next/dynamic
+// see: https://github.com/weseek/growi/pull/7923
+import { SearchResultList } from './SearchResultList';
+
 import styles from './SearchPageBase.module.scss';
 
 // https://regex101.com/r/brrkBu/1
@@ -41,8 +45,6 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
-
-const SearchResultList = dynamic(() => import('./SearchResultList').then(mod => mod.SearchResultList), { ssr: false });
 const SearchResultContent = dynamic(() => import('./SearchResultContent').then(mod => mod.SearchResultContent), {
   ssr: false,
   loading: () => <></>,

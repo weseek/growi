@@ -1,5 +1,5 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
@@ -232,14 +232,16 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
 export const useIsAdmin = (): SWRResponse<boolean, Error> => {
   const { data: currentUser, isLoading } = useCurrentUser();
 
-  const isAdminUser = currentUser != null ? currentUser.admin : false;
-
-  return useSWRImmutable(
-    isLoading ? null : ['isAdminUser', currentUser?._id],
-    () => isAdminUser,
+  return useSWR(
+    isLoading ? null : ['isAdminUser', currentUser?._id, currentUser?.admin],
+    ([, , isAdmin]) => isAdmin ?? false,
     {
-      fallbackData: isAdminUser,
+      fallbackData: currentUser?.admin ?? false,
       keepPreviousData: true,
+      // disable all revalidation but revalidateIfStale
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };

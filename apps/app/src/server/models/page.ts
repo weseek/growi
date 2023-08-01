@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import assert from 'assert';
 import nodePath from 'path';
 
-import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
+import {
+  HasObjectId, isPopulated, pagePathUtils, pathUtils,
+} from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
@@ -40,6 +43,8 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {
   [x:string]: any // for obsolete methods
+  getLatestRevisionBodyLength(): Promise<number | null | undefined>
+  calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
 }
 
 
@@ -959,6 +964,38 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
+/*
+ * get latest revision body length
+ */
+schema.methods.getLatestRevisionBodyLength = async function(this: PageDocument): Promise<number | null | undefined> {
+  if (!this.isLatestRevision() || this.revision == null) {
+    return null;
+  }
+
+  if (this.latestRevisionBodyLength == null) {
+    await this.calculateAndUpdateLatestRevisionBodyLength();
+  }
+
+  return this.latestRevisionBodyLength;
+};
+
+/*
+ * calculate and update latestRevisionBodyLength
+ */
+schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this: PageDocument): Promise<void> {
+  if (!this.isLatestRevision() || this.revision == null) {
+    logger.error('revision field is required.');
+    return;
+  }
+
+  // eslint-disable-next-line rulesdir/no-populate
+  const populatedPageDocument = await this.populate<PageDocument>('revision', 'body');
+
+  assert(isPopulated(populatedPageDocument.revision));
+
+  this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
+  await this.save();
+};
 
 export type PageCreateOptions = {
   format?: string

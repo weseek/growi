@@ -1,8 +1,28 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.9](https://github.com/weseek/growi/compare/v6.1.8...v6.1.9) - 2023-07-31
+
+### 💎 Features
+
+- feat: LightBox for enlargement of image (#7899) @WNomunomu
+
+### 🚀 Improvement
+
+- imprv: Do not use loadConfigs in skipSSR (#7929) @jam411
+- imprv: Improve default behavior of skipSSR (#7927) @jam411
+- imprv: Improved Design for Bookmarks Sidebar (#7886) @soumaeda
+
+### 🐛 Bug Fixes
+
+- fix: Page creation and update process (#7925) @yuki-takei
+- fix: Sidebar doesn't show the link to the administration panel when logged in as an Admin (#7914) @miya
+- fix: Improve page data mutation after renaming and deleting by GrowiContextualSubNavigation (#7926) @yuki-takei
+- fix: Revert dynamic import. (#7923) @TatsuyaIse
+- fix: Questionnaire wikiType (#7907) @TatsuyaIse
 
 ## [v6.1.8](https://github.com/weseek/growi/compare/v6.1.7...v6.1.8) - 2023-07-24
 
