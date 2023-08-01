@@ -1,9 +1,10 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
+import mongoose from 'mongoose';
+
 import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import Config from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
 
 import {
@@ -14,7 +15,6 @@ import { IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
-import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 class QuestionnaireService {
 
@@ -27,15 +27,14 @@ class QuestionnaireService {
 
   async getGrowiInfo(): Promise<IGrowiInfo> {
     const User = this.crowi.model('User');
-    const Config = getOrCreateModel('Config', );
 
     const appSiteUrl = this.crowi.appService.getSiteUrl();
     const hasher = crypto.createHash('sha256');
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
 
-    const appInstalledConfig = await Config.findOne({ ns: 'crowi', key: 'app:installed' });
-    const installedAt = appInstalledConfig != null ? appInstalledConfig.createdAt;
+    const appInstalledConfig = await mongoose.model('Config').findOne({ key: 'app:installed' });
+    const installedAt = appInstalledConfig != null ? appInstalledConfig.createdAt : null;
 
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
