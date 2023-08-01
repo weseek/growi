@@ -21,13 +21,15 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@codemirror/state": "^6.2.1",
-    "@codemirror/view": "^6.15.3",
     "@codemirror/lang-markdown": "^6.2.0",
     "@codemirror/language-data": "^6.3.1",
+    "@codemirror/state": "^6.2.1",
+    "@codemirror/view": "^6.15.3",
+    "@popperjs/core": "^2.11.8",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@uiw/react-codemirror": "^4.21.8",
+    "bootstrap": "^5.3.1",
     "codemirror": "^6.0.1",
     "eslint-plugin-react-refresh": "^0.4.1"
   }
