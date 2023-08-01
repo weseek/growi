@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { CodeMirrorEditorContainer } from '..';
-import { useCodeMirrorEditor } from '../../services';
+import { useCodeMirrorEditorMain } from '../../stores';
 
 import { PlaygroundController } from './PlaygroundController';
 
@@ -9,15 +9,9 @@ export const Playground = (): JSX.Element => {
 
   const containerRef = useRef(null);
 
-  const { setContainer } = useCodeMirrorEditor({
+  useCodeMirrorEditorMain({
     container: containerRef.current,
   });
-
-  useEffect(() => {
-    if (containerRef.current != null) {
-      setContainer(containerRef.current);
-    }
-  }, [setContainer]);
 
   return (
     <>
@@ -28,7 +22,7 @@ export const Playground = (): JSX.Element => {
         <div className="flex-grow-1 d-flex flex-column" style={{ flexBasis: 0 }}>
           <CodeMirrorEditorContainer ref={containerRef} />
         </div>
-        <div className="flex-grow-1 d-flex flex-column bg-light border-start border-dark-subtle p-3" style={{ flexBasis: 0 }}>
+        <div className="flex-grow-1 mw-0 d-flex flex-column bg-light border-start border-dark-subtle p-3" style={{ flexBasis: 0 }}>
           <PlaygroundController />
         </div>
       </div>
