@@ -44,6 +44,7 @@ export interface IGrowiInfo {
   version: string
   appSiteUrl?: string
   appSiteUrlHashed: string
+  installedAt: Date
   type: GrowiServiceType
   currentUsersCount: number
   currentActiveUsersCount: number
