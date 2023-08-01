@@ -31,6 +31,8 @@ class QuestionnaireService {
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
 
+    const installedAt = this.crowi.configManager.getConfig('crowi', 'app:installed');
+
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
 
@@ -60,6 +62,7 @@ class QuestionnaireService {
       },
       appSiteUrl: this.crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
       appSiteUrlHashed,
+      installedAt,
       type,
       currentUsersCount,
       currentActiveUsersCount,
