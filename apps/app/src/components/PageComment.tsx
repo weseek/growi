@@ -24,13 +24,6 @@ import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
 
-export const ROOT_ELEM_ID = 'page-comments' as const;
-
-// Always render '#page-comments' for MutationObserver of SearchResultContent
-const PageCommentRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
-  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
-);
-
 
 export type PageCommentProps = {
   rendererOptions?: RendererOptions,
@@ -40,14 +33,13 @@ export type PageCommentProps = {
   currentUser: any,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  hideIfEmpty?: boolean,
 }
 
 export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): JSX.Element => {
 
   const {
     rendererOptions: rendererOptionsByProps,
-    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -117,8 +109,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     mutatePageInfo();
   }, [removeShowEditorId, mutate, mutatePageInfo]);
 
-  if (hideIfEmpty && comments?.length === 0) {
-    return <PageCommentRoot />;
+  if (comments?.length === 0) {
+    return <></>;
   }
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
@@ -127,12 +119,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const rendererOptions = rendererOptionsByProps ?? rendererOptionsForCurrentPage;
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
-    if (hideIfEmpty) {
-      return <PageCommentRoot />;
-    }
-    return (
-      <></>
-    );
+    return <></>;
   }
 
   const revisionId = getIdForRef(revision);
@@ -169,7 +156,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   );
 
   return (
-    <PageCommentRoot className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
+    <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
       <div className="container-lg">
         <div className="page-comments">
           <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
@@ -231,7 +218,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
           confirmToDelete={onDeleteComment}
         />
       )}
-    </PageCommentRoot>
+    </div>
   );
 });
 
