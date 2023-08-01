@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
-
+import { debounce } from 'throttle-debounce';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
@@ -25,8 +25,8 @@ import { mutateSearching } from '~/stores/search';
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import type { SubNavButtonsProps } from '../Navbar/SubNavButtons';
-import { ROOT_ELEM_ID as RevisionLoaderRoomElemId, type RevisionLoaderProps } from '../Page/RevisionLoader';
-import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '../PageComment';
+import { type RevisionLoaderProps } from '../Page/RevisionLoader';
+import { type PageCommentProps } from '../PageComment';
 import type { PageContentFooterProps } from '../PageContentFooter';
 
 import styles from './SearchResultContent.module.scss';
@@ -61,7 +61,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 };
 
 const SCROLL_OFFSET_TOP = 30;
-const MUTATION_OBSERVER_CONFIG = { childList: true }; // omit 'subtree: true'
+const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true }; // omit 'subtree: true'
 
 type Props ={
   pageWithMeta : IPageWithSearchMeta,
@@ -70,72 +70,40 @@ type Props ={
   forceHideMenuItems?: ForceHideMenuItems,
 }
 
-const scrollToFirstHighlightedKeyword = (scrollElement: HTMLElement): boolean => {
+const scrollToFirstHighlightedKeyword = (scrollElement: HTMLElement): void => {
   // use querySelector to intentionally get the first element found
   const toElem = scrollElement.querySelector('.highlighted-keyword') as HTMLElement | null;
   if (toElem == null) {
-    return false;
+    return;
   }
 
   animateScroll.scrollTo(toElem.offsetTop - SCROLL_OFFSET_TOP, {
     containerId: scrollElement.id,
     duration: 200,
   });
-  return true;
 };
+const scrollToFirstHighlightedKeywordDebounced = debounce(500, scrollToFirstHighlightedKeyword);
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const scrollElementRef = useRef<HTMLDivElement|null>(null);
 
-  const [isRevisionLoaded, setRevisionLoaded] = useState(false);
-  const [isPageCommentLoaded, setPageCommentLoaded] = useState(false);
-
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     const scrollElement = scrollElementRef.current;
+
     if (scrollElement == null) return;
 
-    const observerCallback = (mutationRecords:MutationRecord[]) => {
-      mutationRecords.forEach((record:MutationRecord) => {
-        const target = record.target as HTMLElement;
-
-        // turn on boolean if loaded
-        Array.from(target.children).forEach((child) => {
-          const childId = (child as HTMLElement).id;
-          if (childId === RevisionLoaderRoomElemId) {
-            setRevisionLoaded(true);
-          }
-          else if (childId === PageCommentRootElemId) {
-            setPageCommentLoaded(true);
-          }
-        });
-      });
-    };
-
-    const observer = new MutationObserver(observerCallback);
+    const observer = new MutationObserver(() => {
+      scrollToFirstHighlightedKeywordDebounced(scrollElement);
+    });
     observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
-  useEffect(() => {
-    if (!isRevisionLoaded || !isPageCommentLoaded) {
-      return;
-    }
-    if (scrollElementRef.current == null) {
-      return;
-    }
-
-    const scrollElement = scrollElementRef.current;
-    const isScrollProcessed = scrollToFirstHighlightedKeyword(scrollElement);
-    // retry after 1000ms if highlighted element is absense
-    if (!isScrollProcessed) {
-      setTimeout(() => scrollToFirstHighlightedKeyword(scrollElement), 1000);
-    }
-
-  }, [isPageCommentLoaded, isRevisionLoaded]);
+    // no cleanup function -- 2023.07.31 Yuki Takei
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
+    // > You can call observe() multiple times on the same MutationObserver
+    // > to watch for changes to different parts of the DOM tree and/or different types of changes.
+  });
   // *******************************  end  *******************************
 
   const {
@@ -234,40 +202,44 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems, isContainerFluid,
       duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
 
-  // return if page or growiRenderer is null
-  if (page == null || rendererOptions == null) return <></>;
+  const isRenderable = page != null && rendererOptions != null;
 
   return (
     <div key={page._id} data-testid="search-result-content" className={`search-result-content ${styles['search-result-content']} d-flex flex-column`}>
       <div className="grw-page-path-text-muted-container">
-        <GrowiSubNavigation
-          pagePath={page.path}
-          pageId={page._id}
-          rightComponent={RightComponent}
-          isCompactMode
-          additionalClasses={['px-4']}
-        />
+        { isRenderable && (
+          <GrowiSubNavigation
+            pagePath={page.path}
+            pageId={page._id}
+            rightComponent={RightComponent}
+            isCompactMode
+            additionalClasses={['px-4']}
+          />
+        ) }
       </div>
       <div id="search-result-content-body-container" className="search-result-content-body-container" ref={scrollElementRef}>
-        {/* RevisionLoader will render '#revision-loader' after loaded */}
-        <RevisionLoader
-          rendererOptions={rendererOptions}
-          pageId={page._id}
-          revisionId={page.revision}
-        />
-        {/* PageComment will render '#page-comment' after loaded */}
-        <PageComment
-          rendererOptions={rendererOptions}
-          pageId={page._id}
-          pagePath={page.path}
-          revision={page.revision}
-          currentUser={currentUser}
-          isReadOnly
-          hideIfEmpty
-        />
-        <PageContentFooter
-          page={page}
-        />
+        { isRenderable && (
+          <RevisionLoader
+            rendererOptions={rendererOptions}
+            pageId={page._id}
+            revisionId={page.revision}
+          />
+        )}
+        { isRenderable && (
+          <PageComment
+            rendererOptions={rendererOptions}
+            pageId={page._id}
+            pagePath={page.path}
+            revision={page.revision}
+            currentUser={currentUser}
+            isReadOnly
+          />
+        )}
+        { isRenderable && (
+          <PageContentFooter
+            page={page}
+          />
+        )}
       </div>
     </div>
   );
