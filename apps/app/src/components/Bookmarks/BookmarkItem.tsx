@@ -162,7 +162,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               validationTarget={ValidationTarget.PAGE}
             />
           )
-          : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} />}
+          : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}
 
         <div className='grw-foldertree-control'>
           <PageItemControl

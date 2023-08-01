@@ -111,7 +111,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
-  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState('');
+  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
@@ -157,7 +157,7 @@ const PageEditor = React.memo((): JSX.Element => {
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
   useEffect(() => {
-    setCreatedPageRevisionIdWithAttachment('');
+    setCreatedPageRevisionIdWithAttachment(undefined);
   }, [router]);
 
   useEffect(() => {

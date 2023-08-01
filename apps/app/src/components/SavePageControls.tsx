@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -14,7 +14,7 @@ import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
 import { useWaitingSaveProcessing } from '~/stores/editor';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -36,11 +36,10 @@ export type SavePageControlsProps = {
 export const SavePageControls = (props: SavePageControlsProps): JSX.Element | null => {
   const { slackChannels } = props;
   const { t } = useTranslation();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
-  const { data: pageId } = useCurrentPageId();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
@@ -70,8 +69,8 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isGrantSelectorDisabledPage = pagePathUtils.isTopPage(currentPagePath ?? '') || pagePathUtils.isUsersProtectedPages(currentPagePath ?? '');
-  const labelSubmitButton = pageId == null ? t('Create') : t('Update');
+  const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
+  const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
   return (
