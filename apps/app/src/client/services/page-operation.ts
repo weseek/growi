@@ -153,10 +153,8 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     // markdown = pageEditor.getMarkdown();
     // }
 
-    const isNoRevisionPage = pageId != null && revisionId == null;
-
     let res;
-    if (pageId == null || isNoRevisionPage) {
+    if (pageId == null || revisionId == null) {
       res = await createPage(path, markdown, options);
     }
     else {
