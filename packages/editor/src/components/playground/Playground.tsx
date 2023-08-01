@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { CodeMirrorEditorContainer } from '..';
 import { useCodeMirrorEditor } from '../../services';
 
+import { PlaygroundController } from './PlaygroundController';
+
 export const Playground = (): JSX.Element => {
 
   const containerRef = useRef(null);
@@ -27,7 +29,7 @@ export const Playground = (): JSX.Element => {
           <CodeMirrorEditorContainer ref={containerRef} />
         </div>
         <div className="flex-grow-1 d-flex flex-column bg-light border-start border-dark-subtle p-3" style={{ flexBasis: 0 }}>
-          <p>PREVIEW</p>
+          <PlaygroundController />
         </div>
       </div>
       <div className="flex-grow-1 d-flex flex-column justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>
