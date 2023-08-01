@@ -1,8 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.10...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.10](https://github.com/weseek/growi/compare/v6.1.9...v6.1.10) - 2023-08-01
+
+### 🐛 Bug Fixes
+
+- fix: Unsaved comments remain in the editor when transitioning to a new page  (#7912) @miya
+- fix: SWR settings for searching (#7940) @yuki-takei
+- fix: Auto-scroll search result content (#7935) @yuki-takei
 
 ## [v6.1.9](https://github.com/weseek/growi/compare/v6.1.8...v6.1.9) - 2023-07-31
 
