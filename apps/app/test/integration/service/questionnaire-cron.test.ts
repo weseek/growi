@@ -267,6 +267,7 @@ describe('QuestionnaireCronService', () => {
       growiInfo: {
         version: '1.0',
         appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        installedAt: new Date('2000-01-01'),
         type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
@@ -293,6 +294,7 @@ describe('QuestionnaireCronService', () => {
       growiInfo: {
         version: '1.0',
         appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        installedAt: new Date('2000-01-01'),
         type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
