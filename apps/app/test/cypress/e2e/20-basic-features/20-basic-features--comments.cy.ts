@@ -103,7 +103,7 @@ context('Comment', () => {
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
 
-    cy.appendTextToEditorUntilContains(username, 10000);
+    cy.appendTextToEditorUntilContains(username);
 
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}4-mention-username-found`) });
     // Click on mentioned username
