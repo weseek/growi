@@ -14,7 +14,7 @@ export const PlaygroundController = (): JSX.Element => {
     states.view?.dispatch({
       changes: {
         from: 0,
-        to: states.state?.doc.toString().length,
+        to: states.view.state.doc.toString().length,
         insert: '# Header\n\n- foo\n-bar\n',
       },
     });
