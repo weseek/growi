@@ -11,6 +11,7 @@ context('PageCreateModal', () => {
 
   it("PageCreateModal is shown and closed successfully", () => {
     cy.visit('/');
+    cy.collapseSidebar(true, true);
 
     cy.waitUntil(() => {
       // do
@@ -24,13 +25,13 @@ context('PageCreateModal', () => {
       cy.get('button.close').click();
     });
 
-    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
 
   it("Successfully Create Today's page", () => {
     const pageName = "Today's page";
     cy.visit('/');
+    cy.collapseSidebar(true);
 
     cy.waitUntil(() => {
       // do
@@ -55,7 +56,6 @@ context('PageCreateModal', () => {
     });
     cy.get('.layout-root').should('not.have.class', 'editing');
 
-    cy.collapseSidebar(true);
     cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
@@ -64,6 +64,7 @@ context('PageCreateModal', () => {
     const pageName = 'child';
 
     cy.visit('/foo/bar');
+    cy.collapseSidebar(true);
 
     cy.waitUntil(() => {
       // do
@@ -94,12 +95,12 @@ context('PageCreateModal', () => {
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
 
     cy.waitUntilSkeletonDisappear();
-    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
   });
 
   it('Trying to create template page under the root page fail', () => {
     cy.visit('/');
+    cy.collapseSidebar(true);
 
     cy.waitUntil(() => {
       // do
@@ -116,8 +117,9 @@ context('PageCreateModal', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.Toastify__toast').should('be.visible');
-    cy.collapseSidebar(true);
+
     cy.screenshot(`${ssPrefix}create-template-for-children-error`);
+
     cy.get('.Toastify__toast').should('be.visible').within(() => {
       cy.get('.Toastify__close-button').should('be.visible').click();
       cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
@@ -129,7 +131,6 @@ context('PageCreateModal', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.Toastify__toast').should('be.visible');
-    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`);
   });
 

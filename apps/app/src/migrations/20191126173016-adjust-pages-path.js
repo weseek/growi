@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { addHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import mongoose from 'mongoose';
 
 import getPageModel from '~/server/models/page';
@@ -21,7 +21,7 @@ module.exports = {
 
     // create requests for bulkWrite
     const requests = pages.map((page) => {
-      const adjustedPath = pathUtils.addHeadingSlash(page.path);
+      const adjustedPath = addHeadingSlash(page.path);
       return {
         updateOne: {
           filter: { _id: page._id },

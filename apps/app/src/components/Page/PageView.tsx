@@ -3,7 +3,8 @@ import React, {
 } from 'react';
 
 
-import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { isUsersHomePage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -27,9 +28,6 @@ import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
 import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
-
-
-const { isUsersHomePage } = pagePathUtils;
 
 
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
@@ -83,7 +81,7 @@ export const PageView = (props: Props): JSX.Element => {
 
     const targetId = hash.slice(1);
 
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(decodeURIComponent(targetId));
     target?.scrollIntoView();
 
   }, [isCommentsLoaded]);
@@ -111,11 +109,16 @@ export const PageView = (props: Props): JSX.Element => {
     ? (
       <>
         <div id="comments-container" ref={commentsContainerRef}>
-          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} />
+          <Comments
+            pageId={page._id}
+            pagePath={pagePath}
+            revision={page.revision}
+            onLoaded={() => setCommentsLoaded(true)}
+          />
         </div>
-        { (isUsersHomePagePath && page.creator != null) && (
-          <UsersHomePageFooter creatorId={page.creator._id}/>
-        ) }
+        {(isUsersHomePagePath && page.creator != null) && (
+          <UsersHomePageFooter creatorId={page.creator._id} />
+        )}
         <PageContentFooter page={page} />
       </>
     )
@@ -144,15 +147,15 @@ export const PageView = (props: Props): JSX.Element => {
     >
       <PageAlerts />
 
-      { specialContents }
-      { specialContents == null && (
+      {specialContents}
+      {specialContents == null && (
         <>
-          { (isUsersHomePagePath && page?.creator != null) && <UserInfo author={page.creator} /> }
+          {(isUsersHomePagePath && page?.creator != null) && <UserInfo author={page.creator} />}
           <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
             <Contents />
           </div>
         </>
-      ) }
+      )}
 
     </MainPane>
   );

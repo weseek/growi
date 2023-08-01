@@ -2,6 +2,7 @@ import path from 'path';
 
 import react from '@vitejs/plugin-react';
 import glob from 'glob';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -9,13 +10,24 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     react(),
-    dts(),
+    dts({
+      copyDtsFiles: true,
+    }),
+    {
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
+      enforce: 'pre',
+    },
   ],
   build: {
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      entry: glob.sync(path.resolve(__dirname, 'src/**/*.{ts,tsx}')),
+      entry: glob.sync(path.resolve(__dirname, 'src/**/*.{ts,tsx}'), {
+        ignore: '**/*.spec.ts',
+      }),
       name: 'ui-libs',
       formats: ['es'],
     },
@@ -24,13 +36,6 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
-      external: [
-        'react', 'react-dom',
-        'assert',
-        'reactstrap',
-        /^next\/.*/,
-        /^@growi\/.*/,
-      ],
     },
   },
 });

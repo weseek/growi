@@ -1,16 +1,16 @@
 import { useCallback, useMemo } from 'react';
 
-import type { IAttachmentHasId } from '@growi/core';
+import type {
+  IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
+} from '@growi/core';
 import { SWRResponse } from 'swr';
 
 import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
 } from '~/interfaces/ui';
-import { IUserGroupHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -357,6 +357,7 @@ type PageAccessoriesModalStatus = {
 type PageAccessoriesModalUtils = {
   open(activatedContents: PageAccessoriesModalContents): void
   close(): void
+  selectContents(activatedContents: PageAccessoriesModalContents): void
 }
 
 export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
@@ -364,9 +365,8 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
   const initialStatus = { isOpened: false };
   const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
 
-  return {
-    ...swrResponse,
-    open: (activatedContents: PageAccessoriesModalContents) => {
+  return Object.assign(swrResponse, {
+    open: (activatedContents) => {
       if (swrResponse.data == null) {
         return;
       }
@@ -381,7 +381,16 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
       }
       swrResponse.mutate({ isOpened: false });
     },
-  };
+    selectContents: (activatedContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: swrResponse.data.isOpened,
+        activatedContents,
+      });
+    },
+  });
 };
 
 /*
