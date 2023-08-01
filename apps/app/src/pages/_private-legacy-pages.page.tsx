@@ -12,7 +12,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp,
 } from '~/stores/context';
 
 import type { CommonProps } from './utils/commons';
@@ -28,6 +28,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
 
   // Render config
   rendererConfig: RendererConfig,
@@ -50,6 +51,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  useIsEnabledMarp(props.isEnabledMarp);
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -84,6 +86,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),

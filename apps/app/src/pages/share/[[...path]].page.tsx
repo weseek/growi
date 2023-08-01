@@ -20,7 +20,7 @@ import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
-  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid,
+  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
 } from '~/stores/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -41,6 +41,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
   skipSSR: boolean,
@@ -91,6 +92,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  useIsEnabledMarp(props.isEnabledMarp);
   useIsContainerFluid(props.isContainerFluid);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
@@ -158,6 +160,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 

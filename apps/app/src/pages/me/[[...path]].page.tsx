@@ -17,7 +17,7 @@ import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig,
+  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
@@ -34,6 +34,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
   rendererConfig: RendererConfig,
   showPageLimitationXL: number,
 
@@ -97,6 +98,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  useIsEnabledMarp(props.isEnabledMarp);
 
   useRendererConfig(props.rendererConfig);
 
@@ -143,6 +145,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
 
