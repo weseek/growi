@@ -87,7 +87,6 @@ export const useSWRxSearch = (
     },
     {
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
     },
   );
 
