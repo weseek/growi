@@ -85,6 +85,20 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const editorRef = useRef<IEditorMethods>(null);
 
+  const router = useRouter();
+
+  // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
+  const onRouterChangeComplete = useCallback(() => {
+    editorRef.current?.setValue('');
+  }, []);
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
+
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
   }, []);
