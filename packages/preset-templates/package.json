@@ -1,6 +1,6 @@
 {
   "name": "@growi/preset-templates",
-  "version": "6.1.6-RC.0",
+  "version": "6.1.10-RC.0",
   "scripts": {
     "test": "vitest run",
     "version": "yarn version --no-git-tag-version --preid=RC"

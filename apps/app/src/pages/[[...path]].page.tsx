@@ -83,7 +83,7 @@ const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
+  isPermalink: _isPermalink, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -129,11 +129,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
-const PutbackPageModal = (): JSX.Element => {
-  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-  return <PutbackPageModal />;
-};
-
 type Props = CommonProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
@@ -174,6 +169,7 @@ type Props = CommonProps & {
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
   skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 
   grantData?: IPageGrantData,
 
@@ -238,36 +234,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  const { mutate: mutateInitialPage } = useSWRxCurrentPage();
+  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  // Store initial data
-  useEffect(() => {
-    if (!props.skipSSR) {
-      mutateInitialPage(pageWithMeta?.data ?? null);
-    }
-  }, [mutateInitialPage, pageWithMeta, props.skipSSR]);
-
-  // Store initial data (When revisionBody is not SSR)
-  useEffect(() => {
-    if (!props.skipSSR) {
-      return;
-    }
-
-    if (currentPageId != null && !props.isNotFound) {
-      const mutatePageData = async() => {
-        const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
-      };
-
-      // If skipSSR is true, use the API to retrieve page data.
-      // Because pageWIthMeta does not contain revision.body
-      mutatePageData();
-    }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
 
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
@@ -287,9 +258,23 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data);
 
-  const shouldRenderPutbackPageModal = pageWithMeta != null
-    ? _isTrashPage(pageWithMeta.data.path)
-    : false;
+  // Store initial data (When revisionBody is not SSR)
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {
@@ -371,8 +356,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         />
 
         <PageStatusAlert />
-
-        {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>
     </>
   );
@@ -455,7 +438,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService } = crowi;
+  const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -494,7 +477,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
-    props.skipSSR = await skipSSR(page);
+    const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
@@ -620,6 +604,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 /**

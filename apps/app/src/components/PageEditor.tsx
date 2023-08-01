@@ -83,7 +83,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantData } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -110,7 +110,13 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
-  const currentRevisionId = currentPage?.revision?._id;
+  // TODO: remove workaround
+  // for https://redmine.weseek.co.jp/issues/125923
+  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
+
+  // TODO: remove workaround
+  // for https://redmine.weseek.co.jp/issues/125923
+  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
 
   const initialValue = useMemo(() => {
     if (!isNotFound) {
@@ -148,6 +154,12 @@ const PageEditor = React.memo((): JSX.Element => {
     mutateIsConflict(isConflict);
 
   }, [markdownToPreview, mutateIsConflict]);
+
+  // TODO: remove workaround
+  // for https://redmine.weseek.co.jp/issues/125923
+  useEffect(() => {
+    setCreatedPageRevisionIdWithAttachment(undefined);
+  }, [router]);
 
   useEffect(() => {
     markdownToSave.current = initialValue;
@@ -327,6 +339,7 @@ const PageEditor = React.memo((): JSX.Element => {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
         mutateIsLatestRevision(true);
+        setCreatedPageRevisionIdWithAttachment(res.page.revision);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
       }

@@ -12,7 +12,7 @@ import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { ShareLinkPageView } from '~/components/ShareLink/ShareLinkPageView';
+import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -44,6 +44,7 @@ type Props = CommonProps & {
   drawioUri: string | null,
   rendererConfig: RendererConfig,
   skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 };
 
 type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
@@ -178,6 +179,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
+
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
@@ -234,7 +237,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
     else {
       props.isNotFound = false;
-      props.skipSSR = await skipSSR(shareLink.relatedPage);
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+      props.skipSSR = await skipSSR(shareLink.relatedPage, ssrMaxRevisionBodyLength);
       props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();

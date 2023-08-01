@@ -1,8 +1,81 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.9](https://github.com/weseek/growi/compare/v6.1.8...v6.1.9) - 2023-07-31
+
+### 💎 Features
+
+- feat: LightBox for enlargement of image (#7899) @WNomunomu
+
+### 🚀 Improvement
+
+- imprv: Do not use loadConfigs in skipSSR (#7929) @jam411
+- imprv: Improve default behavior of skipSSR (#7927) @jam411
+- imprv: Improved Design for Bookmarks Sidebar (#7886) @soumaeda
+
+### 🐛 Bug Fixes
+
+- fix: Page creation and update process (#7925) @yuki-takei
+- fix: Sidebar doesn't show the link to the administration panel when logged in as an Admin (#7914) @miya
+- fix: Improve page data mutation after renaming and deleting by GrowiContextualSubNavigation (#7926) @yuki-takei
+- fix: Revert dynamic import. (#7923) @TatsuyaIse
+- fix: Questionnaire wikiType (#7907) @TatsuyaIse
+
+## [v6.1.8](https://github.com/weseek/growi/compare/v6.1.7...v6.1.8) - 2023-07-24
+
+### 💎 Features
+
+- feat: Add plugin badge to TemplateModal's list of templates (#7897) @TatsuyaIse
+
+### 🚀 Improvement
+
+- imprv: Replace isAdmin with usersAdminHooks (#7840) @WNomunomu
+- imprv: Show alert for trashed pages only when the page is not empty (#7903) @TatsuyaIse
+- imprv: Template name truncation (#7898) @TatsuyaIse
+
+### 🐛 Bug Fixes
+
+- fix: Cancel a comment will cancel all comments (#7804) @mudana-grune
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump vite from 4.3.8 to 4.4.5 (#7901) @dependabot
+- ci(deps): bump semver from 5.7.1 to 5.7.2 (#7867) @dependabot
+- ci(deps): bump mongoose from 6.11.1 to 6.11.3 (#7891) @dependabot
+- ci(deps): bump word-wrap from 1.2.3 to 1.2.4 (#7892) @dependabot
+
+## [v6.1.7](https://github.com/weseek/growi/compare/v6.1.6...v6.1.7) - 2023-07-19
+
+### 💎 Features
+
+- feat: Authentication settings cannot be disabled if there will be no administrator user available to log in (#7761) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Show spinner while installing and logging-in (#7823) @soumaeda
+- imprv: Routing with next link (#7880) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Auto popup PageAccessoriesModal and show page history (#7888) @yuki-takei
+- fix: Auto-scroll does not work when accessing the page when the header string is CJK (#7882) @yuki-takei
+- fix: Avoid unnecessary next routing (#7863) @miya
+- fix: Work put back page on bookmark sidebar (#7698) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Render SearchPageBase in CSR (#7889) @yuki-takei
+
+## [v6.1.6](https://github.com/weseek/growi/compare/v6.1.5...v6.1.6) - 2023-07-12
+
+### 🐛 Bug Fixes
+
+- fix: Revert current page mutation and add workaround for saving page (#7877) @yuki-takei
+- fix: The official docker image missed preset-templates (#7865) @yuki-takei
+- fix: SSL connection error to Elasticsearch8 using self certificate (#7818) @miya
 
 ## [v6.1.5](https://github.com/weseek/growi/compare/v6.1.4...v6.1.5) - 2023-07-10
 
