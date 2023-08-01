@@ -45,8 +45,6 @@ describe('QuestionnaireService', () => {
 
       expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
-      expect(growiInfo.installedAt).toBeTruthy();
-      expect(typeof growiInfo.installedAt).toBe(Date);
       expect(growiInfo.osInfo.type).toBeTruthy();
       expect(growiInfo.osInfo.platform).toBeTruthy();
       expect(growiInfo.osInfo.arch).toBeTruthy();
@@ -55,12 +53,12 @@ describe('QuestionnaireService', () => {
       delete growiInfo.appSiteUrlHashed;
       delete growiInfo.currentActiveUsersCount;
       delete growiInfo.currentUsersCount;
-      delete growiInfo.installedAt;
       delete growiInfo.osInfo;
 
       expect(growiInfo).toEqual({
         activeExternalAccountTypes: ['saml', 'github'],
         appSiteUrl: 'http://growi.test.jp',
+        installedAt: new Date('2000-01-01'),
         attachmentType: 'aws',
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',
