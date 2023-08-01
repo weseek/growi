@@ -3,6 +3,7 @@
 import nodePath from 'path';
 
 import {
+  GrantedGroup,
   GroupType, HasObjectId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
@@ -974,10 +975,7 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
 
 export type PageCreateOptions = {
   format?: string
-  grantUserGroupIds?: {
-    type: string,
-    item: ObjectIdLike
-  }[],
+  grantUserGroupIds?: GrantedGroup[],
   grant?: number
   overwriteScopesOfDescendants?: boolean
 }

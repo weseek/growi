@@ -13,6 +13,7 @@ import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
 import { isIncludesObjectId, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
 
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { divideByType } from '../util/granted-group';
 
 const { addTrailingSlash } = pathUtils;
@@ -20,15 +21,10 @@ const { isTopPage } = pagePathUtils;
 
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-type ObjectIdLike = mongoose.Types.ObjectId | string;
-
 type ComparableTarget = {
   grant: number,
   grantedUserIds?: ObjectIdLike[],
-  grantedGroupIds?: {
-    type: GroupType,
-    item: ObjectIdLike,
-  }[],
+  grantedGroupIds?: GrantedGroup[],
   applicableUserIds?: ObjectIdLike[],
   applicableGroupIds?: ObjectIdLike[],
 };
@@ -246,7 +242,7 @@ class PageGrantService {
         const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
           return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
         }))).flat();
-        applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id) || null;
+        applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
       }
 
       return {
@@ -547,7 +543,7 @@ class PageGrantService {
       const isUserExistInExternalUserGroup = (await Promise.all(targetExternalUserGroups.map((group) => {
         return ExternalUserGroupRelation.countByGroupIdAndUser(group, user);
       }))).some(count => count > 0);
-      const isUserExistInGroup = await isUserExistInUserGroup || isUserExistInExternalUserGroup;
+      const isUserExistInGroup = isUserExistInUserGroup || isUserExistInExternalUserGroup;
 
       if (isUserExistInGroup) {
         data[PageGrant.GRANT_OWNER] = null;
