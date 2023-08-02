@@ -782,7 +782,7 @@ export default class ConfigLoader {
   /**
    * get config from the environment variables for display admin page
    *
-   * **use this only admin home page.**
+   * **use this only admin homepage.**
    */
   static getEnvVarsForDisplay(avoidSecurity = false): any {
     const config = {};
