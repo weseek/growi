@@ -103,12 +103,7 @@ context('Comment', () => {
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
 
-    cy.waitUntil(() => {
-      // do
-      cy.get('.CodeMirror').type(username);
-      // wait until
-      return cy.get('.CodeMirror-hints').then($elem => $elem.is(':visible'));
-    });
+    cy.appendTextToEditorUntilContains(username);
 
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}4-mention-username-found`) });
     // Click on mentioned username
@@ -129,12 +124,7 @@ context('Comment', () => {
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
 
-    cy.waitUntil(() => {
-      // do
-      cy.get('.CodeMirror').type(username);
-      // wait until
-      return cy.get('.CodeMirror-hints').then($elem => $elem.is(':visible'));
-    });
+    cy.appendTextToEditorUntilContains(username);
 
     cy.get('#comments-container').within(() => { cy.screenshot(`${ssPrefix}6-mention-username-not-found`) });
     // Click on username not found hint

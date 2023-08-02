@@ -101,3 +101,18 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
   });
 
 });
+
+Cypress.Commands.add('appendTextToEditorUntilContains', (inputText: string) => {
+  const lines: string[] = [];
+  cy.waitUntil(() => {
+    // do
+    cy.get('.CodeMirror textarea').type(inputText, { force: true });
+    // until
+    return cy.get('.CodeMirror-line')
+      .each(($item) => {
+        lines.push($item.text());
+      }).then(() => {
+        return lines.join('\n').endsWith(inputText);
+      });
+  });
+});

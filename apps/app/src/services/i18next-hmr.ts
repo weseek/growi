@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { isServer } from '@growi/core';
+import { isServer } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 export const useI18nextHMR = (isDev: boolean): void => {

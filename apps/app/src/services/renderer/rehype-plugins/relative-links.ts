@@ -1,6 +1,7 @@
 import assert from 'assert';
 
-import { selectAll, type HastNode, type Element } from 'hast-util-select';
+import { selectAll } from 'hast-util-select';
+import type { Node as HastNode, Element } from 'hast-util-select/lib/types';
 import isAbsolute from 'is-absolute-url';
 import type { Plugin } from 'unified';
 

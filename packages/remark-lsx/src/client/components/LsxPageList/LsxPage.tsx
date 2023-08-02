@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
 
-import { pathUtils } from '@growi/core';
-import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
+import { pathUtils } from '@growi/core/dist/utils';
+import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import Link from 'next/link';
 
-import type { PageNode } from '../../interfaces/page-node';
+import type { PageNode } from '../../../interfaces/page-node';
 import { LsxContext } from '../lsx-context';
 
 

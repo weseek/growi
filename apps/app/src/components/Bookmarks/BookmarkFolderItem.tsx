@@ -2,6 +2,7 @@ import {
   FC, useCallback, useState,
 } from 'react';
 
+import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
 
 import {
@@ -13,7 +14,6 @@ import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
   BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
 } from '~/interfaces/bookmark-info';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 

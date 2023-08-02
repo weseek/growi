@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import path from 'path';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import {

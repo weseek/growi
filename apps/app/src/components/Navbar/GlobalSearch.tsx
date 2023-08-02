@@ -4,7 +4,7 @@ import React, {
 
 import assert from 'assert';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 

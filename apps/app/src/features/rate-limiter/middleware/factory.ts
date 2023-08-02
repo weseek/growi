@@ -1,9 +1,9 @@
+import type { IUserHasId } from '@growi/core';
 import type { Handler, Request } from 'express';
 import md5 from 'md5';
 import { connection } from 'mongoose';
 import { type IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexible';
 
-import type { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
 import {
