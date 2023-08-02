@@ -77,7 +77,8 @@ const scrollToFirstHighlightedKeyword = (scrollElement: HTMLElement): void => {
     return;
   }
 
-  animateScroll.scrollTo(toElem.offsetTop - SCROLL_OFFSET_TOP, {
+  const distance = toElem.getBoundingClientRect().top - scrollElement.getBoundingClientRect().top - SCROLL_OFFSET_TOP;
+  animateScroll.scrollMore(distance, {
     containerId: scrollElement.id,
     duration: 200,
   });
