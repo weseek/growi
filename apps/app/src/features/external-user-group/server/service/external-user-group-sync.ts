@@ -1,6 +1,7 @@
 import { IUserHasId } from '~/interfaces/user';
 import ExternalAccount from '~/server/models/external-account';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { configManager } from '../../../../server/service/config-manager';
 import { externalAccountService } from '../../../../server/service/external-account';
@@ -10,13 +11,18 @@ import {
 import ExternalUserGroup from '../models/external-user-group';
 import ExternalUserGroupRelation from '../models/external-user-group-relation';
 
+// When d = max depth of group trees
+// Max space complexity of syncExternalUserGroups will be:
+// O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
+const TREES_BATCH_SIZE = 10;
+const USERS_BATCH_SIZE = 30;
+
 abstract class ExternalUserGroupSyncService {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
   authProviderType: string; // auth provider type (e.g: ldap, oidc)
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string) {
     this.groupProviderType = groupProviderType;
     this.authProviderType = authProviderType;
@@ -35,14 +41,16 @@ abstract class ExternalUserGroupSyncService {
     const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
       const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
       existingExternalUserGroupIds.push(externalUserGroup._id);
-      await Promise.all(node.childGroupNodes.map((childNode) => {
-        return syncNode(childNode, externalUserGroup._id);
-      }));
+      // Do not use Promise.all, because the number of promises processed can
+      // exponentially grow when group tree is enormous
+      for await (const childNode of node.childGroupNodes) {
+        await syncNode(childNode, externalUserGroup._id);
+      }
     };
 
-    await Promise.all(trees.map((root) => {
+    await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
       return syncNode(root);
-    }));
+    });
 
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     if (!preserveDeletedLdapGroups) {
@@ -63,23 +71,21 @@ abstract class ExternalUserGroupSyncService {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
       node.name, node.id, this.groupProviderType, node.description, parentId,
     );
-    await Promise.all(node.userInfos.map((userInfo) => {
-      return (async() => {
-        const user = await this.getMemberUser(userInfo);
+    await batchProcessPromiseAll(node.userInfos, USERS_BATCH_SIZE, async(userInfo) => {
+      const user = await this.getMemberUser(userInfo);
 
-        if (user != null) {
-          const userGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(externalUserGroup);
-          const userGroupIds = userGroups.map(g => g._id);
+      if (user != null) {
+        const userGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(externalUserGroup);
+        const userGroupIds = userGroups.map(g => g._id);
 
-          // remove existing relations from list to create
-          const existingRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
-          const existingGroupIds = existingRelations.map(r => r.relatedGroup.toString());
-          const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
+        // remove existing relations from list to create
+        const existingRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
+        const existingGroupIds = existingRelations.map(r => r.relatedGroup.toString());
+        const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
-          await ExternalUserGroupRelation.createRelations(groupIdsToCreateRelation, user);
-        }
-      })();
-    }));
+        await ExternalUserGroupRelation.createRelations(groupIdsToCreateRelation, user);
+      }
+    });
 
     return externalUserGroup;
   }
