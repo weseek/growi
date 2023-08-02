@@ -4,6 +4,7 @@ import React, {
 
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
