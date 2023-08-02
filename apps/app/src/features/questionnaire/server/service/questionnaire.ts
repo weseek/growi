@@ -33,7 +33,7 @@ class QuestionnaireService {
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
 
-    const users = await User.find().limit(1).sort({ createdAt: 1 });
+    const users = await User.find({ createdAt: { $ne: null } }).limit(1).sort({ createdAt: 1 });
     const installedAtByOldestUser = users[0].createdAt;
 
     const appInstalledConfig = await mongoose.model('Config').findOne({ key: 'app:installed' });
