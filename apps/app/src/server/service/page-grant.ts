@@ -1,7 +1,7 @@
 import {
   GrantedGroup,
   pagePathUtils, pathUtils, pageUtils,
-  PageGrant, PageGrantCanBeOnTree, GroupType,
+  PageGrant, PageGrantCanBeOnTree,
 } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
@@ -297,7 +297,7 @@ class PageGrantService {
 
       const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: grantedUserGroups } }, { _id: 0, relatedUser: 1 });
       const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: grantedExternalUserGroups } }, { _id: 0, relatedUser: 1 });
-      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(r => r.relatedUser))) as ObjectIdLike[];
+      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(r => r.relatedUser)));
 
       const applicableUserGroups = (await Promise.all(grantedUserGroups.map((groupId) => {
         return UserGroup.findGroupsWithDescendantsById(groupId);
