@@ -1,6 +1,5 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import { isInteger } from 'core-js/fn/number';
 import {
   format, parse, addDays, set,
 } from 'date-fns';
@@ -63,7 +62,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
     }
 
     if (expirationType === ExpirationType.NUMBER_OF_DAYS) {
-      if (!isInteger(Number(numberOfDays))) {
+      if (!Number.isInteger(numberOfDays)) {
         throw new Error(t('share_links.Invalid_Number_of_Date'));
       }
       return addDays(new Date(), numberOfDays);
