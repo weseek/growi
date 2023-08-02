@@ -33,8 +33,11 @@ class QuestionnaireService {
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
 
+    const users = await User.find().limit(1).sort({ createdAt: 1 });
+    const installedAtByOldestUser = users[0].createdAt;
+
     const appInstalledConfig = await mongoose.model('Config').findOne({ key: 'app:installed' });
-    const installedAt = appInstalledConfig != null ? appInstalledConfig.createdAt : null;
+    const installedAt = appInstalledConfig.createdAt != null ? appInstalledConfig.createdAt : installedAtByOldestUser;
 
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
@@ -66,6 +69,7 @@ class QuestionnaireService {
       appSiteUrl: this.crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
       appSiteUrlHashed,
       installedAt,
+      installedAtByOldestUser,
       type,
       currentUsersCount,
       currentActiveUsersCount,

@@ -138,6 +138,14 @@ describe('QuestionnaireCronService', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
+    const User = crowi.model('User');
+    await User.create({
+      name: 'Example for Questionnaire Service Test',
+      username: 'questionnaire cron test user',
+      email: 'questionnaireCronTestUser@example.com',
+      password: 'usertestpass',
+      createdAt: '2020-01-01',
+    });
   });
 
   beforeEach(async() => {
@@ -268,6 +276,7 @@ describe('QuestionnaireCronService', () => {
         version: '1.0',
         appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
         installedAt: new Date('2000-01-01'),
+        installedAtByOldestUser: new Date('2020-01-01'),
         type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
@@ -295,6 +304,7 @@ describe('QuestionnaireCronService', () => {
         version: '1.0',
         appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
         installedAt: new Date('2000-01-01'),
+        installedAtByOldestUser: new Date('2020-01-01'),
         type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,

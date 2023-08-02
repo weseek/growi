@@ -59,6 +59,7 @@ describe('QuestionnaireService', () => {
         activeExternalAccountTypes: ['saml', 'github'],
         appSiteUrl: 'http://growi.test.jp',
         installedAt: new Date('2000-01-01'),
+        installedAtByOldestUser: new Date('2000-01-01'),
         attachmentType: 'aws',
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',
