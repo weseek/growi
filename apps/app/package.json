@@ -227,7 +227,6 @@
     "bootstrap": "^4.6.1",
     "codemirror": "^5.64.0",
     "connect-browser-sync": "^2.1.0",
-    "core-js": "=2.6.9",
     "diff2html": "^3.4.35",
     "eazy-logger": "^3.1.0",
     "emoji-mart": "npm:panta82-emoji-mart@^3.0.1",
@@ -263,7 +262,7 @@
     "simplebar-react": "^2.3.6",
     "socket.io-client": "^4.2.0",
     "source-map-loader": "^4.0.1",
-    "swagger2openapi": "^5.3.1",
+    "swagger2openapi": "^7.0.8",
     "tsc-alias": "^1.2.9"
   }
 }
