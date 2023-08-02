@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 
-import { ErrorV3 } from '@growi/core';
-import mongoose from 'mongoose';
+import { GrowiPluginType, ErrorV3 } from '@growi/core';
+import express from 'express';
+import { body } from 'express-validator';
+import multer from 'multer';
 
+import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
-import { GrowiPluginResourceType } from '~/interfaces/plugin';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -14,12 +16,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
-const express = require('express');
-
 const router = express.Router();
-
-const { body, query } = require('express-validator');
-const multer = require('multer');
 
 
 /**
@@ -276,8 +273,7 @@ module.exports = (crowi) => {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
 
       // retrieve plugin manifests
-      const GrowiPluginModel = mongoose.model('GrowiPlugin');
-      const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+      const themePlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
 
       const pluginThemesMetadatas = themePlugins
         .map(themePlugin => themePlugin.meta.themes)

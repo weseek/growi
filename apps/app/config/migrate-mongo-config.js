@@ -8,7 +8,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const { URL } = require('url');
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = isProduction
+const { getMongoUri, mongoOptions } = isProduction
   // eslint-disable-next-line import/extensions, import/no-unresolved
   ? require('../dist/server/util/mongoose-utils')
   : require('../src/server/util/mongoose-utils');
@@ -18,9 +18,6 @@ const migrationsDir = process.env.MIGRATIONS_DIR;
 if (migrationsDir == null) {
   throw new Error('An env var MIGRATIONS_DIR must be set.');
 }
-
-
-initMongooseGlobalSettings();
 
 const mongoUri = getMongoUri();
 

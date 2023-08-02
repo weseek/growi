@@ -1,6 +1,6 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import {
-  DevidedPagePath, Lang, AllLang,
+  DevidedPagePath, Lang, AllLang, isServer,
 } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
@@ -11,6 +11,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-util
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -29,6 +30,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   isDefaultLogo: boolean,
+  growiCloudUri: string,
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
   sidebarConfig: ISidebarConfig,
@@ -74,7 +76,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
-  // retrieve UserUISettings
+  // retrieve UserUISett ings
   const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
   const userUISettings = user != null && UserUISettings != null
     ? await UserUISettings.findOne({ user: user._id }).exec()
@@ -95,6 +97,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser,
     isDefaultLogo,
     forcedColorScheme,
+    growiCloudUri: configManager.getConfig('crowi', 'app:growiCloudUri'),
     sidebarConfig: {
       isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
       isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
@@ -167,4 +170,18 @@ export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettin
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+};
+
+export const skipSSR = async(page: PageDocument, ssrMaxRevisionBodyLength: number): Promise<boolean> => {
+  if (!isServer()) {
+    throw new Error('This method is not available on the client-side');
+  }
+
+  const latestRevisionBodyLength = await page.getLatestRevisionBodyLength();
+
+  if (latestRevisionBodyLength == null) {
+    return true;
+  }
+
+  return ssrMaxRevisionBodyLength < latestRevisionBodyLength;
 };

@@ -3,15 +3,8 @@ module.exports = {
   extends: [
     'weseek',
     'weseek/typescript',
-    'plugin:jest/recommended',
   ],
-  env: {
-    'jest/globals': true,
-  },
-  globals: {
-  },
   plugins: [
-    'jest',
     'regex',
   ],
   rules: {
@@ -66,10 +59,6 @@ module.exports = {
         FunctionDeclaration: { body: 1, parameters: 2 },
         FunctionExpression: { body: 1, parameters: 2 },
       },
-    ],
-    'jest/no-standalone-expect': [
-      'error',
-      { additionalTestBlockFunctions: ['each.test'] },
     ],
     'regex/invalid': ['error', [
       {

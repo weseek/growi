@@ -7,6 +7,14 @@ import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import styles from './CodeBlock.module.scss';
 
 
+// remove font-family
+Object.entries<object>(oneDark).forEach(([key, value]) => {
+  if ('fontFamily' in value) {
+    delete oneDark[key].fontFamily;
+  }
+});
+
+
 function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
 
   if (children == null) {

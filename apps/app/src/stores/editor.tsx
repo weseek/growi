@@ -1,16 +1,16 @@
 import { useCallback } from 'react';
 
 import { Nullable, withUtils, type SWRResponseWithUtils } from '@growi/core';
-import { SWRResponse } from 'swr';
+import useSWR, { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { IEditorSettings } from '~/interfaces/editor-settings';
-import { SlackChannels } from '~/interfaces/user-trigger-notification';
+import type { IEditorSettings } from '~/interfaces/editor-settings';
+import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser,
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
@@ -37,10 +37,13 @@ type EditorSettingsOperation = {
 export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const swrResult = useSWRImmutable(
-    isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
-    ([endpoint]) => apiv3Get(endpoint).then(result => result.data),
+    (isGuestUser || isReadOnlyUser) ? null : ['/personal-setting/editor-settings', currentUser?.username],
+    ([endpoint]) => {
+      return apiv3Get(endpoint).then(result => result.data);
+    },
     {
       // use: [localStorageMiddleware], // store to localStorage for initialization fastly
       // fallbackData: undefined,
@@ -77,10 +80,13 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 */
 export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResponse<string[], Error> => {
   const shouldFetch: boolean = currentPagePath != null;
-  return useSWRImmutable(
+  return useSWR(
     shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
     ([endpoint, path]) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
-    { fallbackData: [''] },
+    {
+      revalidateOnFocus: false,
+      fallbackData: [''],
+    },
   );
 };
 

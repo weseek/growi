@@ -1,7 +1,13 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-confusing-arrow */
-import { Client as ES6Client, ApiResponse as ES6ApiResponse, RequestParams as ES6RequestParams } from '@elastic/elasticsearch6';
-import { Client as ES7Client, ApiResponse as ES7ApiResponse, RequestParams as ES7RequestParams } from '@elastic/elasticsearch7';
+import {
+  Client as ES7Client,
+  ClientOptions as ES7ClientOptions,
+  ApiResponse as ES7ApiResponse,
+  RequestParams as ES7RequestParams,
+} from '@elastic/elasticsearch7';
+import { ClientOptions as ES8ClientOptions, Client as ES8Client, estypes } from '@elastic/elasticsearch8';
+
 import {
   BulkResponse,
   CatAliasesResponse,
@@ -16,68 +22,97 @@ import {
   ReindexResponse,
 } from './elasticsearch-client-types';
 
-type ApiResponse<T = any, C = any> = ES6ApiResponse<T, C> | ES7ApiResponse<T, C>
+
+type ElasticsearchClientParams =
+  | [ isES7: true, options: ES7ClientOptions, rejectUnauthorized: boolean ]
+  | [ isES7: false, options: ES8ClientOptions, rejectUnauthorized: boolean ]
 
 export default class ElasticsearchClient {
 
-  client: ES6Client | ES7Client;
+  private client: ES7Client | ES8Client;
 
-  constructor(client: ES6Client | ES7Client) {
-    this.client = client;
+  constructor(...params: ElasticsearchClientParams) {
+    const [isES7, options, rejectUnauthorized] = params;
+
+    this.client = isES7
+      ? new ES7Client({ ...options, ssl: { rejectUnauthorized } })
+      : new ES8Client({ ...options, tls: { rejectUnauthorized } });
   }
 
-  bulk(params: ES6RequestParams.Bulk & ES7RequestParams.Bulk): Promise<ApiResponse<BulkResponse>> {
-    return this.client instanceof ES6Client ? this.client.bulk(params) : this.client.bulk(params);
+  async bulk(params: ES7RequestParams.Bulk & estypes.BulkRequest): Promise<BulkResponse | estypes.BulkResponse> {
+    return this.client instanceof ES7Client ? (await this.client.bulk(params)).body as BulkResponse : this.client.bulk(params);
   }
 
   // TODO: cat is not used in current Implementation, remove cat?
   cat = {
-    aliases: (params: ES6RequestParams.CatAliases & ES7RequestParams.CatAliases): Promise<ApiResponse<CatAliasesResponse>> =>
-      this.client instanceof ES6Client ? this.client.cat.aliases(params) : this.client.cat.aliases(params),
-    indices: (params: ES6RequestParams.CatIndices & ES7RequestParams.CatIndices): Promise<ApiResponse<CatIndicesResponse>> =>
-      this.client instanceof ES6Client ? this.client.cat.indices(params) : this.client.cat.indices(params),
+    aliases: (params: ES7RequestParams.CatAliases & estypes.CatAliasesRequest): Promise<ES7ApiResponse<CatAliasesResponse> | estypes.CatAliasesResponse> =>
+      this.client instanceof ES7Client ? this.client.cat.aliases(params) : this.client.cat.aliases(params),
+
+    indices: (params: ES7RequestParams.CatIndices & estypes.CatIndicesRequest): Promise<ES7ApiResponse<CatIndicesResponse> | estypes.CatAliasesResponse> =>
+      this.client instanceof ES7Client ? this.client.cat.indices(params) : this.client.cat.indices(params),
   };
 
   cluster = {
-    health: (params: ES6RequestParams.ClusterHealth & ES7RequestParams.ClusterHealth): Promise<ApiResponse<ClusterHealthResponse>> =>
-      this.client instanceof ES6Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
+    health: (params: ES7RequestParams.ClusterHealth & estypes.ClusterHealthRequest)
+    : Promise<ES7ApiResponse<ClusterHealthResponse> | estypes.ClusterHealthResponse> =>
+      this.client instanceof ES7Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
   };
 
   indices = {
-    create: (params: ES6RequestParams.IndicesCreate & ES7RequestParams.IndicesCreate) =>
-      this.client instanceof ES6Client ? this.client.indices.create(params) : this.client.indices.create(params),
-    delete: (params: ES6RequestParams.IndicesDelete & ES7RequestParams.IndicesDelete) =>
-      this.client instanceof ES6Client ? this.client.indices.delete(params) : this.client.indices.delete(params),
-    exists: (params: ES6RequestParams.IndicesExists & ES7RequestParams.IndicesExists): Promise<ApiResponse<IndicesExistsResponse>> =>
-      this.client instanceof ES6Client ? this.client.indices.exists(params) : this.client.indices.exists(params),
-    existsAlias: (params: ES6RequestParams.IndicesExistsAlias & ES7RequestParams.IndicesExistsAlias): Promise<ApiResponse<IndicesExistsAliasResponse>> =>
-      this.client instanceof ES6Client ? this.client.indices.existsAlias(params) : this.client.indices.existsAlias(params),
-    putAlias: (params: ES6RequestParams.IndicesPutAlias & ES7RequestParams.IndicesPutAlias) =>
-      this.client instanceof ES6Client ? this.client.indices.putAlias(params) : this.client.indices.putAlias(params),
-    getAlias: (params: ES6RequestParams.IndicesGetAlias & ES7RequestParams.IndicesGetAlias) =>
-      this.client instanceof ES6Client ? this.client.indices.getAlias(params) : this.client.indices.getAlias(params),
-    updateAliases: (params: ES6RequestParams.IndicesUpdateAliases & ES7RequestParams.IndicesUpdateAliases) =>
-      this.client instanceof ES6Client ? this.client.indices.updateAliases(params) : this.client.indices.updateAliases(params),
-    validateQuery: (params: ES6RequestParams.IndicesValidateQuery & ES7RequestParams.IndicesValidateQuery): Promise<ApiResponse<ValidateQueryResponse>> =>
-      this.client instanceof ES6Client ? this.client.indices.validateQuery(params) : this.client.indices.validateQuery(params),
-    stats: (params: ES6RequestParams.IndicesStats & ES7RequestParams.IndicesStats): Promise<ApiResponse<IndicesStatsResponse>> =>
-      this.client instanceof ES6Client ? this.client.indices.stats(params) : this.client.indices.stats(params),
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    create: (params: ES7RequestParams.IndicesCreate & estypes.IndicesCreateRequest) =>
+      this.client instanceof ES7Client ? this.client.indices.create(params) : this.client.indices.create(params),
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    delete: (params: ES7RequestParams.IndicesDelete & estypes.IndicesDeleteRequest) =>
+      this.client instanceof ES7Client ? this.client.indices.delete(params) : this.client.indices.delete(params),
+
+    exists: async(params: ES7RequestParams.IndicesExists & estypes.IndicesExistsRequest)
+    : Promise<IndicesExistsResponse | estypes.IndicesExistsResponse> =>
+      this.client instanceof ES7Client ? (await this.client.indices.exists(params)).body as IndicesExistsResponse : this.client.indices.exists(params),
+
+    existsAlias: (params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
+    : Promise<ES7ApiResponse<IndicesExistsAliasResponse> | estypes.IndicesExistsAliasResponse> =>
+      this.client instanceof ES7Client ? this.client.indices.existsAlias(params) : this.client.indices.existsAlias(params),
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    putAlias: (params: ES7RequestParams.IndicesPutAlias & estypes.IndicesPutAliasRequest) =>
+      this.client instanceof ES7Client ? this.client.indices.putAlias(params) : this.client.indices.putAlias(params),
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    getAlias: async(params: ES7RequestParams.IndicesGetAlias & estypes.IndicesGetAliasRequest) =>
+      this.client instanceof ES7Client ? (await this.client.indices.getAlias(params)).body : this.client.indices.getAlias(params),
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    updateAliases: (params: ES7RequestParams.IndicesUpdateAliases & estypes.IndicesUpdateAliasesRequest) =>
+      this.client instanceof ES7Client ? this.client.indices.updateAliases(params) : this.client.indices.updateAliases(params),
+
+    validateQuery: async(params: ES7RequestParams.IndicesValidateQuery & estypes.IndicesValidateQueryRequest)
+    : Promise<ValidateQueryResponse | estypes.IndicesValidateQueryResponse> =>
+      // eslint-disable-next-line max-len
+      this.client instanceof ES7Client ? (await this.client.indices.validateQuery(params)).body as ValidateQueryResponse : this.client.indices.validateQuery(params),
+
+    stats: async(params: ES7RequestParams.IndicesStats & estypes.IndicesStatsRequest)
+    : Promise<IndicesStatsResponse | estypes.IndicesStatsResponse> =>
+      this.client instanceof ES7Client ? (await this.client.indices.stats(params)).body as IndicesStatsResponse : this.client.indices.stats(params),
   };
 
   nodes = {
-    info: (): Promise<ApiResponse<NodesInfoResponse>> => (this.client instanceof ES6Client ? this.client.nodes.info() : this.client.nodes.info()),
+    info: (): Promise<ES7ApiResponse<NodesInfoResponse> | estypes.NodesInfoResponse> =>
+      (this.client instanceof ES7Client ? this.client.nodes.info() : this.client.nodes.info()),
   };
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   ping() {
-    return this.client instanceof ES6Client ? this.client.ping() : this.client.ping();
+    return this.client instanceof ES7Client ? this.client.ping() : this.client.ping();
   }
 
-  reindex(params: ES6RequestParams.Reindex & ES7RequestParams.Reindex): Promise<ApiResponse<ReindexResponse>> {
-    return this.client instanceof ES6Client ? this.client.reindex(params) : this.client.reindex(params);
+  reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
+    return this.client instanceof ES7Client ? this.client.reindex(params) : this.client.reindex(params);
   }
 
-  search(params: ES6RequestParams.Search & ES7RequestParams.Search): Promise<ApiResponse<SearchResponse>> {
-    return this.client instanceof ES6Client ? this.client.search(params) : this.client.search(params);
+  async search(params: ES7RequestParams.Search & estypes.SearchRequest): Promise<SearchResponse | estypes.SearchResponse> {
+    return this.client instanceof ES7Client ? (await this.client.search(params)).body as SearchResponse : this.client.search(params);
   }
 
 }

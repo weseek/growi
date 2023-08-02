@@ -47,6 +47,8 @@
   "Sign up with Google Account": "Google で登録",
   "Sign in with Google Account": "Google でログイン",
   "Sign up with this Google Account": "この Google アカウントで登録します",
+  "Select": "選択してください",
+  "Required": "必須",
   "Example": "例",
   "Taro Yamada": "山田 太郎",
   "List View": "リスト表示",
@@ -157,13 +159,17 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください"
+    "title_required": "タイトルを入力してください",
+    "field_required": "{{target}}に値を入力してください"
   },
+  "page_name": "ページ名",
+  "folder_name": "フォルダ名",
+  "field": "フィールド",
   "not_creatable_page": {
-    "could_not_creata_path": "パスを作成できませんでした。"
+    "message": "このパスではページ コンテンツを作成できません。"
   },
   "custom_navigation": {
-    "no_page_list": "このページの配下にはページが存在しません。"
+    "no_pages_under_this_page": "このページの配下にはページが存在しません。"
   },
   "installer": {
     "tab": "アカウント作成",
@@ -234,6 +240,7 @@
     "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
+  "Other Settings": "その他の設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
@@ -470,11 +477,17 @@
   "toaster": {
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
-    "save_succeeded": "保存に成功しました",
-    "issue_share_link": "共有リンクを作成しました"
+    "initialize_successed": "{{target}}を初期化しました",
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "issue_share_link": "共有リンクを作成しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました",
+    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "save_succeeded": "保存に成功しました"
   },
   "template": {
     "modal_label": {
+      "Select template": "テンプレートの選択",
       "Create/Edit Template Page": "テンプレートページの作成/編集",
       "Create template under": "配下にテンプレートページを作成"
     },
@@ -796,9 +809,43 @@
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
   },
+  "bookmark_folder":{
+    "bookmark_folder": "ブックマークフォルダ",
+    "bookmark": "ブックマーク",
+    "delete_modal": {
+      "modal_header_label": "ブックマークフォルダを削除",
+      "modal_body_description": "このブックマークフォルダと配下のブックマークを削除する",
+      "modal_body_alert": "削除されたフォルダとその内容は復元できません",
+      "modal_footer_button": "フォルダを削除"
+    },
+    "input_placeholder": "フォルダ名を入力してください",
+    "new_folder": "新しいフォルダ",
+    "delete": "フォルダを削除",
+    "drop_item_here": "ルートに配置する",
+    "cancel_bookmark": "このページのブックマークを解除",
+    "move_to_root": "ルートに配置する",
+    "root": "root (default)"
+  },
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
+  },
+  "questionnaire": {
+    "give_us_feedback": "GROWI の改善のために、アンケートにご協力ください",
+    "thank_you_for_answering": "ご回答ありがとうございます",
+    "additional_feedback": "その他ご意見ご要望はユーザーアイコンのドロップダウンからお願い致します。",
+    "dont_show_again": "今後このアンケートを表示しない",
+    "deny": "回答しない",
+    "agree": "そう思う",
+    "disagree": "そう思わない",
+    "answer": "回答する",
+    "no_answer": "わからない",
+    "settings": "アンケート設定",
+    "failed_to_send": "回答送信に失敗しました",
+    "denied": "このアンケートは今後表示されません",
+    "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
+    "enable_questionnaire": "アンケートを有効にする",
+    "disabled_by_admin": "管理者によってアンケートは無効化されています"
   },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",
@@ -806,5 +853,11 @@
     "tags_input": {
       "tag_name": "タグ名"
     }
+  },
+  "delete_attachment_modal": {
+    "confirm_delete_attachment": "アタッチメントを削除しますか？"
+  },
+  "rich_attachment": {
+    "attachment_not_be_found": "アタッチメントが見つかりません"
   }
 }

@@ -1,0 +1,85 @@
+$grw-foldertree-item-padding-left: 15px;
+$grw-bookmark-item-padding-left: 35px;
+
+.grw-folder-tree-container :global {
+  .grw-foldertree-item-container, .grw-drop-item-area {
+    & .grw-accept-drop-item {
+      border-style: dashed !important;
+      border-width: 0.15rem !important;
+    }
+  }
+
+  .grw-drop-item-area {
+    padding: 1rem;
+    & .grw-accept-drop-item {
+      padding: 0.7rem;
+    }
+  }
+  .grw-drag-drop-container > .grw-drop-item-area {
+    margin: 1rem;
+    border-style: dashed !important;
+    border-width: 0.15rem !important;
+  }
+}
+
+.grw-foldertree :global {
+
+  .btn-page-item-control .icon-plus::before {
+    font-size: 18px;
+  }
+
+  .list-group-item {
+    .grw-visible-on-hover {
+      display: none;
+    }
+
+    &:hover {
+      .grw-visible-on-hover {
+        display: block;
+      }
+    }
+
+    .grw-foldertree-triangle-btn {
+      background-color: transparent;
+      transition: all 0.2s ease-out;
+      transform: rotate(0deg);
+
+      &.grw-foldertree-open {
+        transform: rotate(90deg);
+      }
+    }
+
+    .grw-foldertree-title-anchor {
+      width: 100%;
+      overflow: hidden;
+      text-decoration: none;
+    }
+  }
+
+  .grw-foldertree-item-container {
+    .grw-triangle-container {
+      min-width: 35px;
+      height: 40px;
+    }
+
+    .grw-bookmark-item-list{
+      min-width: 30px;
+      height: 50px;
+
+      .picture {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+
+        &.picture-md {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .grw-foldertree-control{
+        margin-left: auto;
+      }
+    }
+  }
+}

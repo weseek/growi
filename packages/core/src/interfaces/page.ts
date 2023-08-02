@@ -31,6 +31,7 @@ export type IPage = {
   deleteUser: Ref<IUser>,
   deletedAt: Date,
   latestRevision?: Ref<IRevision>,
+  latestRevisionBodyLength?: number,
   expandContentWidth?: boolean,
 }
 
@@ -86,6 +87,8 @@ export type IPageInfoForEntity = IPageInfo & {
   sumOfSeenUsers: number,
   seenUserIds: string[],
   contentAge: number,
+  descendantCount: number,
+  commentCount: number,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {

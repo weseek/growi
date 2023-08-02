@@ -14,9 +14,9 @@ import { useDrawerMode } from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser, useCurrentPathname,
+  useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useIsReadOnlyUser,
 } from '../stores/context';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -27,7 +27,6 @@ import {
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
-const PutbackPageModal = dynamic(() => import('~/components/PutbackPageModal'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -41,6 +40,8 @@ type Props = CommonProps & {
 
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
+
+  useGrowiCloudUri(props.growiCloudUri);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -57,6 +58,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const title = generateCustomTitleForPage(props, '/trash');
 
@@ -70,7 +72,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           <GrowiSubNavigation
             pagePath="/trash"
             showDrawerToggler={isDrawerMode}
-            isGuestUser={isGuestUser}
+            isTagLabelsDisabled={!!isGuestUser || !!isReadOnlyUser}
             isDrawerMode={isDrawerMode}
             additionalClasses={['container-fluid']}
           />
@@ -104,7 +106,6 @@ TrashPage.getLayout = function getLayout(page) {
         {page}
       </Layout>
       <EmptyTrashModal />
-      <PutbackPageModal />
     </>
   );
 };

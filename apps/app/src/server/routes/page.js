@@ -155,8 +155,8 @@ module.exports = function(crowi, app) {
   const Xss = require('~/services/xss/index');
   const initializedConfig = {
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    tagWhiteList: xssService.getTagWhiteList(),
-    attrWhiteList: xssService.getAttrWhiteList(),
+    tagWhitelist: xssService.getTagWhitelist(),
+    attrWhitelist: xssService.getAttrWhitelist(),
   };
   const xssOption = new XssOption(initializedConfig);
   const xss = new Xss(xssOption);

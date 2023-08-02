@@ -14,7 +14,7 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { V5MigrationStatus } from '~/interfaces/page-listing-results';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
-import { useCurrentUser } from '~/stores/context';
+import { useIsAdmin } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
@@ -191,9 +191,8 @@ ConvertByPathModal.displayName = 'ConvertByPathModal';
 
 const PrivateLegacyPages = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
 
-  const isAdmin = currentUser?.admin;
+  const { data: isAdmin } = useIsAdmin();
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
@@ -436,7 +435,13 @@ const PrivateLegacyPages = (): JSX.Element => {
         ref={searchPageBaseRef}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT, MenuItemType.PATH_RECOVERY]}
+        forceHideMenuItems={[
+          MenuItemType.BOOKMARK,
+          MenuItemType.RENAME,
+          MenuItemType.DUPLICATE,
+          MenuItemType.REVERT,
+          MenuItemType.PATH_RECOVERY,
+        ]}
         // Components
         searchControl={searchControl}
         searchResultListHead={searchResultListHead}

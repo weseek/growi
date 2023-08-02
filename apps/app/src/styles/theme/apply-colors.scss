@@ -145,8 +145,8 @@ ul.pagination {
 //
 
 .grw-logo {
-  set transition for fill
-  svg * {
+  // set transition for fill
+  svg, svg * {
     transition: fill 0.8s ease-out;
   }
 
@@ -279,13 +279,14 @@ ul.pagination {
     }
   }
 
-  .grw-pagetree {
+  .grw-pagetree, .grw-foldertree {
     .list-group-item {
-      .grw-pagetree-title-anchor {
+      .grw-pagetree-title-anchor, .grw-foldertree-title-anchor {
         color: inherit;
       }
     }
   }
+
   .grw-pagetree-footer {
     .h5.grw-private-legacy-pages-anchor {
       color: inherit;
@@ -311,6 +312,7 @@ ul.pagination {
       }
     }
   }
+
 }
 
 /*
@@ -697,8 +699,40 @@ Emoji picker modal
 }
 
 /*
-* revision-history-diff
+Expand / compress button bookmark list on users page
 */
+.grw-user-page-list-m {
+  .grw-expand-compress-btn {
+    color: $body-color;
+    background-color: $body-bg;
+    &.active {
+      background-color: hsl.darken($body-bg, 12%),
+    }
+  }
+}
+
+/*
+ * Questionnaire modal
+ */
+.grw-questionnaire-btn-group {
+  .btn-outline-primary {
+    @include hsl-button.button-outline-variant(
+      #{hsl.lighten(var(--primary), 30%)} !important,
+      #{hsl.contrast(var(--primary))} !important,
+      var(--primary) !important,
+      #{hsl.lighten(var(--primary), 30%)} !important,
+    );
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      color: #{hsl.contrast(var(--primary))} !important;
+      background-color: var(--primary) !important;
+    }
+  }
+}
+
+/*
+ * revision-history-diff
+ */
 .revision-history-diff {
   background-color: white;
 }

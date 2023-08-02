@@ -1,7 +1,7 @@
+import type { IExternalAccountHasId, IExternalAuthProviderType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
-import { IExternalAccount } from '~/interfaces/external-account';
 import { IUser } from '~/interfaces/user';
 import { useIsGuestUser } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -9,6 +9,7 @@ import loggerFactory from '~/utils/logger';
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 
 import { useStaticSWR } from './use-static-swr';
+
 
 const logger = loggerFactory('growi:stores:personal-settings');
 
@@ -29,7 +30,7 @@ export type IPersonalSettingsInfoOption = {
   sync: () => void,
   updateBasicInfo: () => Promise<void>,
   associateLdapAccount: (account: { username: string, password: string }) => Promise<void>,
-  disassociateLdapAccount: (account: { providerType: string, accountId: string }) => Promise<void>,
+  disassociateLdapAccount: (account: { providerType: IExternalAuthProviderType, accountId: string }) => Promise<void>,
 }
 
 export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
@@ -66,9 +67,9 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
       await apiv3Put('/personal-setting/', updateData);
       i18n.changeLanguage(updateData.lang);
     }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to update personal data');
+    catch (errs) {
+      logger.error(errs);
+      throw errs;
     }
   };
 
@@ -102,7 +103,7 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
   };
 };
 
-export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccount[], Error> => {
+export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccountHasId[], Error> => {
   return useSWR(
     '/personal-setting/external-accounts',
     endpoint => apiv3Get(endpoint).then(response => response.data.externalAccounts),

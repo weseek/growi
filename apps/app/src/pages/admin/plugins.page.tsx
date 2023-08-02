@@ -18,7 +18,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const PluginsExtensionPageContents = dynamic(
-  () => import('~/components/Admin/PluginsExtension/PluginsExtensionPageContents').then(mod => mod.PluginsExtensionPageContents),
+  () => import('~/features/growi-plugin/client/components/Admin').then(mod => mod.PluginsExtensionPageContents),
   { ssr: false },
 );
 

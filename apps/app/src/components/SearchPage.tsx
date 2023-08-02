@@ -13,6 +13,7 @@ import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/co
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
@@ -91,7 +92,10 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
+
+  // routerRef solve the problem of infinite redrawing that occurs with routers
   const router = useRouter();
+  const routerRef = useRef(router);
 
   // parse URL Query
   const queries = router.query.q;
@@ -164,10 +168,10 @@ export const SearchPage = (): JSX.Element => {
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
-      keyword: initQ,
+      keyword,
       limit: INITIAL_PAGIONG_SIZE,
     };
-  }, [initQ]);
+  }, [keyword]);
 
   // for bulk deletion
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
@@ -176,8 +180,21 @@ export const SearchPage = (): JSX.Element => {
   useEffect(() => {
     const newUrl = new URL('/_search', 'http://example.com');
     newUrl.searchParams.append('q', keyword);
-    window.history.pushState('', `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
-  }, [keyword]);
+    routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
+  }, [keyword, routerRef]);
+
+  // browser back and forward
+  useEffect(() => {
+    routerRef.current.beforePopState(({ url }) => {
+      const newUrl = new URL(url, 'https://exmple.com');
+      const newKeyword = newUrl.searchParams.get('q');
+      if (newKeyword != null) {
+        setKeyword(newKeyword);
+      }
+      return true;
+    });
+  }, [setKeyword, routerRef]);
+
   const hitsCount = data?.meta.hitsCount;
 
   const allControl = useMemo(() => {
@@ -185,21 +202,23 @@ export const SearchPage = (): JSX.Element => {
 
     return (
       <NotAvailableForGuest>
-        <OperateAllControl
-          ref={selectAllControlRef}
-          isCheckboxDisabled={isDisabled}
-          onCheckboxChanged={selectAllCheckboxChangedHandler}
-        >
-          <button
-            type="button"
-            className="btn btn-outline-danger text-nowrap border-0 px-2"
-            disabled={isDisabled}
-            onClick={deleteAllButtonClickedHandler}
+        <NotAvailableForReadOnlyUser>
+          <OperateAllControl
+            ref={selectAllControlRef}
+            isCheckboxDisabled={isDisabled}
+            onCheckboxChanged={selectAllCheckboxChangedHandler}
           >
-            <i className="icon-fw icon-trash"></i>
-            {t('search_result.delete_all_selected_page')}
-          </button>
-        </OperateAllControl>
+            <button
+              type="button"
+              className="btn btn-outline-danger text-nowrap border-0 px-2"
+              disabled={isDisabled}
+              onClick={deleteAllButtonClickedHandler}
+            >
+              <i className="icon-fw icon-trash"></i>
+              {t('search_result.delete_all_selected_page')}
+            </button>
+          </OperateAllControl>
+        </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
   }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);

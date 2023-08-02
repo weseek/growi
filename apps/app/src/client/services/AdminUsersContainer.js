@@ -205,26 +205,52 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
-   * Give user admin
+   * Grant user admin
    * @memberOf AdminUsersContainer
    * @param {string} userId
    * @return {string} username
    */
-  async giveUserAdmin(userId) {
-    const response = await apiv3Put(`/users/${userId}/giveAdmin`);
+  async grantUserAdmin(userId) {
+    const response = await apiv3Put(`/users/${userId}/grant-admin`);
     const { username } = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
   }
 
   /**
-   * Remove user admin
+   * Revoke user admin
    * @memberOf AdminUsersContainer
    * @param {string} userId
    * @return {string} username
    */
-  async removeUserAdmin(userId) {
-    const response = await apiv3Put(`/users/${userId}/removeAdmin`);
+  async revokeUserAdmin(userId) {
+    const response = await apiv3Put(`/users/${userId}/revoke-admin`);
+    const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
+    return username;
+  }
+
+  /**
+   * Grant user read only access
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async grantUserReadOnly(userId) {
+    const response = await apiv3Put(`/users/${userId}/grant-read-only`);
+    const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
+    return username;
+  }
+
+  /**
+   * Revoke user read only access
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async revokeUserReadOnly(userId) {
+    const response = await apiv3Put(`/users/${userId}/revoke-read-only`);
     const { username } = response.data.userData;
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;

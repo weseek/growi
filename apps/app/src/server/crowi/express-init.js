@@ -2,8 +2,11 @@ import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import qs from 'qs';
 
+import { PLUGIN_EXPRESS_STATIC_DIR, PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
+
+import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 
 const logger = loggerFactory('growi:crowi:express-init');
 
@@ -22,7 +25,7 @@ module.exports = function(crowi, app) {
   const mongoSanitize = require('express-mongo-sanitize');
 
   const promster = require('../middlewares/promster')(crowi, app);
-  const registerSafeRedirect = require('../middlewares/safe-redirect')();
+  const registerSafeRedirect = registerSafeRedirectFactory();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
 
@@ -86,7 +89,7 @@ module.exports = function(crowi, app) {
   app.use('/static/preset-themes', express.static(
     resolveFromRoot(`../../node_modules/@growi/preset-themes/${path.dirname(presetThemesManifestPath)}`),
   ));
-  app.use('/static/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
+  app.use(PLUGIN_EXPRESS_STATIC_DIR, express.static(PLUGIN_STORING_PATH));
 
   app.use(methodOverride());
 

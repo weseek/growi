@@ -61,7 +61,8 @@
         background-color: $bgcolor-active;
       }
     }
-    .grw-pagetree-title-anchor {
+    .grw-pagetree-title-anchor,
+    .grw-foldertree-title-anchor {
       .grw-sidebar-text-muted {
         // color: rgba(desaturate($color, 50%), 0.6);
       }

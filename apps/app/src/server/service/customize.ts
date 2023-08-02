@@ -3,13 +3,13 @@ import { ColorScheme, DevidedPagePath, getForcedColorScheme } from '@growi/core'
 import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
 import uglifycss from 'uglifycss';
 
+import { growiPluginService } from '~/features/growi-plugin/server/services';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
-import ConfigManager from './config-manager';
-import type { IPluginService } from './plugin';
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { ConfigManager } from './config-manager';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 
 const logger = loggerFactory('growi:service:CustomizeService');
@@ -28,8 +28,6 @@ class CustomizeService implements S2sMessageHandlable {
 
   xssService: any;
 
-  pluginService: IPluginService;
-
   lastLoadedAt?: Date;
 
   customCss?: string;
@@ -47,7 +45,6 @@ class CustomizeService implements S2sMessageHandlable {
     this.s2sMessagingService = crowi.s2sMessagingService;
     this.appService = crowi.appService;
     this.xssService = crowi.xssService;
-    this.pluginService = crowi.pluginService;
   }
 
   /**
@@ -155,7 +152,7 @@ class CustomizeService implements S2sMessageHandlable {
 
     this.theme = theme;
 
-    const resultForThemePlugin = await this.pluginService.findThemePlugin(theme);
+    const resultForThemePlugin = await growiPluginService.findThemePlugin(theme);
 
     if (resultForThemePlugin != null) {
       this.forcedColorScheme = getForcedColorScheme(resultForThemePlugin.themeMetadata.schemeType);

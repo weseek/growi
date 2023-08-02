@@ -6,12 +6,14 @@
 
     "jsx": "preserve",
     "resolveJsonModule": true,
+    "types": [
+      "vitest/globals"
+    ],
 
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   },

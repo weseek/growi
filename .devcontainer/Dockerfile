@@ -37,15 +37,17 @@ RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable 
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 
 RUN apt-get update \
-   && apt-get -y install --no-install-recommends git-lfs \
-      # Chrome
-      google-chrome-stable \
-      # for Cypress
-      libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
-   # Clean up
-   && apt-get autoremove -y \
-   && apt-get clean -y \
-   && rm -rf /var/lib/apt/lists/*
+    && apt-get -y install --no-install-recommends git-lfs \
+
+    # Uncomment below lines to install Chromium
+    # --- works only on AMD64 ---
+    # && apt-get -y install --no-install-recommends chromium \
+    #    libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
+
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
 
 RUN yarn global add turbo

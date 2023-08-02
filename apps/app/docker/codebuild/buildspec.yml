@@ -12,6 +12,11 @@ env:
 phases:
   pre_build:
     commands:
+      # install Git LFS
+      - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash
+      - yum install -y git-lfs
+      # fetch LFS files
+      - git-lfs pull
       # login to docker.io
       - echo ${DOCKER_REGISTRY_PASSWORD} | docker login --username wsmoogle --password-stdin
       # login to ghcr.io
@@ -29,4 +34,5 @@ phases:
 cache:
   paths:
     - node_modules/**/*
+    - apps/*/node_modules/**/*
     - packages/*/node_modules/**/*

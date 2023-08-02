@@ -1,3 +1,4 @@
+import growiPlugin from '~/features/growi-plugin/server/routes/apiv3/admin';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -8,6 +9,7 @@ import * as registerFormValidator from '../../middlewares/register-form-validato
 import g2gTransfer from './g2g-transfer';
 import importRoute from './import';
 import pageListing from './page-listing';
+import securitySettings from './security-settings';
 import * as userActivation from './user-activation';
 
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
@@ -37,12 +39,13 @@ module.exports = (crowi, app) => {
   routerForAdmin.use('/export', require('./export')(crowi));
   routerForAdmin.use('/import', importRoute(crowi));
   routerForAdmin.use('/search', require('./search')(crowi));
-  routerForAdmin.use('/security-setting', require('./security-setting')(crowi));
+  routerForAdmin.use('/security-setting', securitySettings(crowi));
   routerForAdmin.use('/mongo', require('./mongo')(crowi));
   routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
   routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
   routerForAdmin.use('/activity', require('./activity')(crowi));
   routerForAdmin.use('/g2g-transfer', g2gTransfer(crowi));
+  routerForAdmin.use('/plugins', growiPlugin(crowi));
 
   // auth
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
@@ -108,10 +111,11 @@ module.exports = (crowi, app) => {
     userActivation.validateCompleteRegistration,
     userActivation.completeRegistrationAction(crowi));
 
-  router.use('/plugins', require('./plugins')(crowi));
-
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
+  router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
+  router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
+  router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };

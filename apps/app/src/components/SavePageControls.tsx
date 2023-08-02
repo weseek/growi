@@ -14,7 +14,7 @@ import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
 import { useWaitingSaveProcessing } from '~/stores/editor';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -38,11 +38,10 @@ export type SavePageControlsProps = {
 export const SavePageControls = (props: SavePageControlsProps): JSX.Element | null => {
   const { slackChannels } = props;
   const { t } = useTranslation();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
-  const { data: pageId } = useCurrentPageId();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
@@ -72,25 +71,25 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isRootPage = isTopPage(currentPagePath ?? '');
-  const labelSubmitButton = pageId == null ? t('Create') : t('Update');
+  const isRootPage = isTopPage(currentPage?.path ?? '');
+  const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
   return (
     <div className="d-flex align-items-center form-inline flex-nowrap">
 
       {isAclEnabled
-          && (
-            <div className="mr-2">
-              <GrantSelector
-                grant={grant}
-                disabled={isRootPage}
-                grantGroupId={grantedGroup?.id}
-                grantGroupName={grantedGroup?.name}
-                onUpdateGrant={updateGrantHandler}
-              />
-            </div>
-          )
+        && (
+          <div className="mr-2">
+            <GrantSelector
+              grant={grant}
+              disabled={isRootPage}
+              grantGroupId={grantedGroup?.id}
+              grantGroupName={grantedGroup?.name}
+              onUpdateGrant={updateGrantHandler}
+            />
+          </div>
+        )
       }
 
       <UncontrolledButtonDropdown direction="up">
@@ -101,9 +100,9 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           onClick={save}
           disabled={isWaitingSaveProcessing}
         >
-          { isWaitingSaveProcessing && (
+          {isWaitingSaveProcessing && (
             <i className="fa fa-spinner fa-pulse mr-1"></i>
-          ) }
+          )}
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />

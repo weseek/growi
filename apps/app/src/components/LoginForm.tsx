@@ -25,7 +25,7 @@ type LoginFormProps = {
   email?: string,
   isEmailAuthenticationEnabled: boolean,
   registrationMode: RegistrationMode,
-  registrationWhiteList: string[],
+  registrationWhitelist: string[],
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
@@ -41,13 +41,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
   const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
@@ -93,6 +94,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
     resetLoginErrors();
+    setIsLoading(true);
 
     const loginForm = {
       username: usernameForLogin,
@@ -112,6 +114,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     catch (err) {
       const errs = toArrayIfNot(err);
       setLoginErrors(errs);
+      setIsLoading(false);
     }
     return;
 
@@ -176,6 +179,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
+        {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
+        {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
+        <div className='sr-only'>
+          <i className="fa fa-spinner fa-pulse" />
+        </div>
+        {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
             <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br/>
@@ -214,10 +223,16 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
+            <button
+              type="submit"
+              id="login"
+              className="btn btn-fill rounded-0 login mx-auto"
+              data-testid="btnSubmitForLogin"
+              disabled={isLoading}
+            >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className="icon-login"></i>
+                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -225,8 +240,18 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
-      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, t]);
+  }, [
+    props,
+    separateErrorsBasedOnErrorCode,
+    loginErrors,
+    generateDangerouslySetErrors,
+    generateSafelySetErrors,
+    isLdapSetupFailed,
+    t,
+    handleLoginWithLocalSubmit,
+    isLoading,
+  ]);
+
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
@@ -295,6 +320,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
     setIsSuccessToRagistration(false);
+    setIsLoading(true);
 
     const registerForm = {
       username: usernameForRegister,
@@ -323,6 +349,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       if (err != null || err.length > 0) {
         setRegisterErrors(err);
       }
+      setIsLoading(false);
     }
     return;
   }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled]);
@@ -439,11 +466,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             />
           </div>
 
-          {registrationWhiteList.length > 0 && (
+          {registrationWhitelist.length > 0 && (
             <>
               <p className="form-text">{t('page_register.form_help.email')}</p>
               <ul>
-                {registrationWhiteList.map((elem) => {
+                {registrationWhitelist.map((elem) => {
                   return (
                     <li key={elem}>
                       <code>{elem}</code>
@@ -478,11 +505,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button
               className="btn btn-fill rounded-0"
               id="register"
-              disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}
+              disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className="icon-user-follow"></i>
+                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} />
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -493,7 +520,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <div className="row">
           <div className="text-right col-12 mt-2 py-2">
-            <a href="#login" id="login" className="link-switch" onClick={switchForm}>
+            <a
+              href="#login"
+              id="login"
+              className="link-switch"
+              style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+              onClick={switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -503,7 +535,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
-    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhiteList, switchForm, handleRegisterFormSubmit,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit, isLoading,
   ]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
@@ -529,7 +561,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
                   <div className="text-right mb-2">
-                    <a href="#register" id="register" className="link-switch" onClick={switchForm}>
+                    <a
+                      href="#register"
+                      id="register"
+                      className="link-switch"
+                      style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+                      onClick={switchForm}>
                       <i className="ti ti-check-box"></i> {t('Sign up is here')}
                     </a>
                   </div>
@@ -543,7 +580,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
         </div>
         <a href="https://growi.org" className="link-growi-org pl-3">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          <span className="growi">GROWI</span>.<span className="org">org</span>
         </a>
       </div>
     </div>

@@ -3,37 +3,39 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
+import attachmentRoutes from '@growi/remark-attachment-refs/dist/server';
 import lsxRoutes from '@growi/remark-lsx/dist/server';
 import mongoose from 'mongoose';
 import next from 'next';
 
 import pkg from '^/package.json';
 
+import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
+import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+
 import Activity from '../models/activity';
-import GrowiPlugin from '../models/growi-plugin';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
-import AclService from '../service/acl';
+import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
-import ConfigManager from '../service/config-manager';
+import { configManager as configManagerSingletonInstance } from '../service/config-manager';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
-// eslint-disable-next-line import/no-cycle
-import { PluginService } from '../service/plugin';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -82,6 +84,8 @@ function Crowi() {
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
+  this.questionnaireService = null;
+  this.questionnaireCronService = null;
 
   this.tokens = null;
 
@@ -108,6 +112,7 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupConfigManager();
   await this.setupSessionConfig();
+  this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
@@ -126,7 +131,6 @@ Crowi.prototype.init = async function() {
     this.scanRuntimeVersions(),
     this.setupPassport(),
     this.setupSearcher(),
-    this.setupPluginer(),
     this.setupMailer(),
     this.setupSlackIntegrationService(),
     this.setupG2GTransferService(),
@@ -138,12 +142,13 @@ Crowi.prototype.init = async function() {
     this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
-    this.setupPluginService(),
+    this.setupGrowiPluginService(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
+    this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
   ]);
 
@@ -215,8 +220,6 @@ Crowi.prototype.setupDatabase = function() {
   // mongoUri = mongodb://user:password@host/dbname
   const mongoUri = getMongoUri();
 
-  initMongooseGlobalSettings();
-
   return mongoose.connect(mongoUri, mongoOptions);
 };
 
@@ -267,7 +270,7 @@ Crowi.prototype.setupSessionConfig = async function() {
 };
 
 Crowi.prototype.setupConfigManager = async function() {
-  this.configManager = new ConfigManager();
+  this.configManager = configManagerSingletonInstance;
   return this.configManager.loadConfigs();
 };
 
@@ -301,11 +304,20 @@ Crowi.prototype.setupModels = async function() {
   allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
-  allModels.growiPlugin = GrowiPlugin;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
+
+};
+
+Crowi.prototype.setupCron = function() {
+  this.questionnaireCronService = new QuestionnaireCronService(this);
+  this.questionnaireCronService.startCron();
+};
+
+Crowi.prototype.setupQuestionnaireService = function() {
+  this.questionnaireService = new QuestionnaireService(this);
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
@@ -375,13 +387,6 @@ Crowi.prototype.setupPassport = async function() {
 
 Crowi.prototype.setupSearcher = async function() {
   this.searchService = new SearchService(this);
-};
-
-/**
- * setup PluginService
- */
-Crowi.prototype.setupPluginer = async function() {
-  this.pluginService = new PluginService(this);
 };
 
 Crowi.prototype.setupMailer = async function() {
@@ -531,6 +536,7 @@ Crowi.prototype.setupTerminus = function(server) {
 
 Crowi.prototype.setupRoutesForPlugins = function() {
   lsxRoutes(this, this.express);
+  attachmentRoutes(this, this.express);
 };
 
 /**
@@ -594,9 +600,7 @@ Crowi.prototype.setUpXss = async function() {
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
-  if (this.aclService == null) {
-    this.aclService = new AclService(this.configManager);
-  }
+  this.aclService = aclServiceSingletonInstance;
 };
 
 /**
@@ -701,14 +705,12 @@ Crowi.prototype.setupImport = async function() {
   }
 };
 
-Crowi.prototype.setupPluginService = async function() {
-  const { PluginService } = require('../service/plugin');
-  if (this.pluginService == null) {
-    this.pluginService = new PluginService(this);
-  }
+Crowi.prototype.setupGrowiPluginService = async function() {
+  const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
+
   // download plugin repositories, if document exists but there is no repository
   // TODO: Cannot download unless connected to the Internet at setup.
-  await this.pluginService.downloadNotExistPluginRepositories();
+  await growiPluginService.downloadNotExistPluginRepositories();
 };
 
 Crowi.prototype.setupPageService = async function() {

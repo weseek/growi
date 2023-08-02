@@ -12,7 +12,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IUser, IUserHasId } from '~/interfaces/user';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri,
 } from '~/stores/context';
 
 import type { CommonProps } from './utils/commons';
@@ -41,6 +41,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 
   // commons
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
 
@@ -101,8 +102,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }

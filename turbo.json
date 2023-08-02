@@ -19,13 +19,23 @@
       "cache": false
     },
 
-    "@growi/ui#build": {
+    "@growi/pluginkit#build": {
       "dependsOn": ["@growi/core#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-attachment-refs#build": {
+      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
     "@growi/remark-lsx#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/ui#build": {
+      "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
       "outputMode": "new-only"
     },
@@ -58,6 +68,16 @@
       "outputMode": "new-only"
     },
 
+    "@growi/pluginkit#dev": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-attachment-refs#dev": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "@growi/remark-lsx#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
@@ -69,8 +89,9 @@
       "outputMode": "new-only"
     },
     "@growi/app#dev:migrate": {
+      "dependsOn": ["@growi/core#dev"],
       "outputs": ["tmp/cache/migration-status.out"],
-      "inputs": ["src/migration/*.js"],
+      "inputs": ["src/migrations/*.js"],
       "outputMode": "new-only"
     },
     "@growi/app#dev:styles-prebuilt": {
@@ -123,11 +144,17 @@
       "persistent": true
     },
 
-    "@growi/ui#lint": {
+    "@growi/pluginkit#lint": {
       "dependsOn": ["@growi/core#dev"]
+    },
+    "@growi/remark-attachment-refs#lint": {
+      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
     "@growi/remark-lsx#lint": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
+    },
+    "@growi/ui#lint": {
+      "dependsOn": ["@growi/core#dev"]
     },
     "@growi/app#lint": {
       "dependsOn": ["^dev", "@growi/app#dev:styles-prebuilt"]
@@ -146,8 +173,30 @@
       "dependsOn": ["@growi/slack#dev"],
       "outputMode": "new-only"
     },
+    "@growi/pluginkit#test": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputMode": "new-only"
+    },
+    "@growi/preset-templates#test": {
+      "dependsOn": ["@growi/pluginkit#dev"],
+      "outputMode": "new-only"
+    },
+    "@growi/remark-lsx#test": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputMode": "new-only"
+    },
     "test": {
       "outputMode": "new-only"
+    },
+    "@growi/app#version": {
+      "cache": false,
+      "dependsOn": ["^version", "//#version"]
+    },
+    "version": {
+      "cache": false
+    },
+    "//#version": {
+      "cache": false
     }
 
   }

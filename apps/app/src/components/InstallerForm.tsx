@@ -19,7 +19,7 @@ const InstallerForm = memo((): JSX.Element => {
   const isSupportedLang = AllLang.includes(i18n.language as Lang);
 
   const [isValidUserName, setValidUserName] = useState(true);
-  const [isSubmittingDisabled, setSubmittingDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(isSupportedLang ? i18n.language : Lang.en_US);
 
   const checkUserName = useCallback(async(event) => {
@@ -42,18 +42,7 @@ const InstallerForm = memo((): JSX.Element => {
   const submitHandler: FormEventHandler = useCallback(async(e: any) => {
     e.preventDefault();
 
-    if (isSubmittingDisabled) {
-      return;
-    }
-
-    setSubmittingDisabled(true);
-    setTimeout(() => {
-      setSubmittingDisabled(false);
-    }, 3000);
-
-    if (e.target.elements == null) {
-      return;
-    }
+    setIsLoading(true);
 
     const formData = e.target.elements;
 
@@ -81,6 +70,7 @@ const InstallerForm = memo((): JSX.Element => {
     catch (errs) {
       const err = errs[0];
       const code = err.code;
+      setIsLoading(false);
 
       if (code === 'failed_to_login_after_install') {
         toastError(t('installer.failed_to_login_after_install'));
@@ -89,7 +79,7 @@ const InstallerForm = memo((): JSX.Element => {
 
       toastError(t('installer.failed_to_install'));
     }
-  }, [isSubmittingDisabled, currentLocale, router, t]);
+  }, [currentLocale, router, t]);
 
   const hasErrorClass = isValidUserName ? '' : ' has-error';
   const unavailableUserId = isValidUserName
@@ -214,25 +204,26 @@ const InstallerForm = memo((): JSX.Element => {
             />
           </div>
 
-          <div className="input-group mt-4 mb-3 d-flex justify-content-center">
+          <div className="input-group mt-4 d-flex justify-content-center">
             <button
               data-testid="btnSubmit"
               type="submit"
               className="btn-fill btn btn-register"
               id="register"
-              disabled={isSubmittingDisabled}
+              disabled={isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label"><i className="icon-user-follow" /></span>
+              <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
               <span className="btn-label-text">{ t('Create') }</span>
             </button>
           </div>
 
-          <div className="input-group mt-4 d-flex justify-content-center">
+          <div>
             <a href="https://growi.org" className="link-growi-org">
-              <span className="growi">GROWI</span>.<span className="org">ORG</span>
+              <span className="growi">GROWI</span>.<span className="org">org</span>
             </a>
           </div>
+
         </form>
       </div>
     </div>

@@ -83,6 +83,7 @@ RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
 # build
+RUN turbo run clean
 RUN turbo run build
 
 # make artifacts
@@ -96,6 +97,7 @@ RUN tar -cf packages.tar \
   apps/app/tmp \
   apps/app/.env.production* \
   apps/app/next.config.js \
+  apps/app/package.json \
   packages/*/package.json \
   packages/*/dist
 

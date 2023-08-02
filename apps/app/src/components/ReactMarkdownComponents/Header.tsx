@@ -5,7 +5,9 @@ import EventEmitter from 'events';
 import { useRouter } from 'next/router';
 import { Element } from 'react-markdown/lib/rehype-filter';
 
-import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+} from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 import { NextLink } from './NextLink';
@@ -60,6 +62,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -72,7 +75,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const activateByHash = useCallback((url: string) => {
     try {
       const hash = (new URL(url, 'https://example.com')).hash.slice(1);
-      setActive(hash === id);
+      setActive(decodeURIComponent(hash) === id);
     }
     catch (err) {
       logger.debug(err);
@@ -107,7 +110,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
     };
   }, [activateByHash, router.events]);
 
-  const showEditButton = !isGuestUser && !isSharedUser && shareLinkId == null;
+  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
     <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>

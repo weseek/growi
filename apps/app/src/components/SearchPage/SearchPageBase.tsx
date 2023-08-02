@@ -9,12 +9,16 @@ import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
 import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSearchServiceConfigured, useIsSearchServiceReachable,
+} from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
+// Do not import with next/dynamic
+// see: https://github.com/weseek/growi/pull/7923
 import { SearchResultList } from './SearchResultList';
 
 import styles from './SearchPageBase.module.scss';
@@ -41,8 +45,12 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
+const SearchResultContent = dynamic(() => import('./SearchResultContent').then(mod => mod.SearchResultContent), {
+  ssr: false,
+  loading: () => <></>,
+});
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
-  const SearchResultContent = dynamic(import('./SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
+
   const {
     pages,
     searchingKeyword,
@@ -54,11 +62,13 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
+
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
 
   // publish selectAll()
@@ -105,10 +115,13 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   // select first item on load
   useEffect(() => {
-    if (selectedPageWithMeta == null && pages != null && pages.length > 0) {
+    if ((pages == null || pages.length === 0)) {
+      setSelectedPageWithMeta(undefined);
+    }
+    else if ((pages != null && pages.length > 0)) {
       setSelectedPageWithMeta(pages[0]);
     }
-  }, [pages, selectedPageWithMeta]);
+  }, [pages, setSelectedPageWithMeta]);
 
   // reset selectedPageIdsByCheckboxes
   useEffect(() => {
@@ -186,7 +199,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
-                      onPageSelected={page => setSelectedPageWithMeta(page)}
+                      onPageSelected={page => (setSelectedPageWithMeta(page)) }
                       onCheckboxChanged={checkboxChangedHandler}
                     />
                   </div>
@@ -202,11 +215,11 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
         </div>
 
         <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-          { selectedPageWithMeta != null && (
+          {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
             <SearchResultContent
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
-              showPageControlDropdown={!isGuestUser}
+              showPageControlDropdown={!(isGuestUser || isReadOnlyUser)}
               forceHideMenuItems={forceHideMenuItems}
             />
           )}

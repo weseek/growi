@@ -71,9 +71,9 @@ $container-max-widths: (
 //== Typography
 //
 //## Font, line-height, and color for body text, headings, and more.
-$font-family-sans-serif: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-$font-family-serif: Georgia, 'Times New Roman', Times, serif;
-$font-family-monospace: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+$font-family-sans-serif: var(--font-family-sans-serif);
+$font-family-serif: var(--font-family-serif);
+$font-family-monospace: var(--font-family-monospace);
 $font-family-base: $font-family-sans-serif;
 
 $font-size-base: 0.875rem;  // 16px -> 14px

@@ -6,7 +6,7 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     react(),
-    dts(),
+    dts({ copyDtsFiles: true }),
   ],
   build: {
     outDir: 'dist/client',
@@ -29,6 +29,7 @@ export default defineConfig({
         'next/link',
         'unified',
         'swr',
+        /^swr\/.*/,
         /^hast-.*/,
         /^unist-.*/,
         /^@growi\/.*/,

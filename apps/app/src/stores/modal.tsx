@@ -1,15 +1,21 @@
 import { useCallback, useMemo } from 'react';
 
+import type { IAttachmentHasId } from '@growi/core';
 import { SWRResponse } from 'swr';
 
+import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
+import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
+
+const logger = loggerFactory('growi:stores:modal');
 
 /*
 * PageCreateModal
@@ -174,7 +180,7 @@ type RenameModalStatusUtils = {
   open(
     page?: IPageToRenameWithMeta,
     opts?: IRenameModalOption
-    ): Promise<RenameModalStatus | undefined>
+  ): Promise<RenameModalStatus | undefined>
   close(): Promise<RenameModalStatus | undefined>
 }
 
@@ -217,8 +223,8 @@ type PutBackPageModalUtils = {
   open(
     page?: IPageForPagePutBackModal,
     opts?: IPutBackPageModalOption,
-    ): Promise<PutBackPageModalStatus | undefined>
-  close():Promise<PutBackPageModalStatus | undefined>
+  ): Promise<PutBackPageModalStatus | undefined>
+  close(): Promise<PutBackPageModalStatus | undefined>
 }
 
 export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
@@ -351,6 +357,7 @@ type PageAccessoriesModalStatus = {
 type PageAccessoriesModalUtils = {
   open(activatedContents: PageAccessoriesModalContents): void
   close(): void
+  selectContents(activatedContents: PageAccessoriesModalContents): void
 }
 
 export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
@@ -358,9 +365,8 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
   const initialStatus = { isOpened: false };
   const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
 
-  return {
-    ...swrResponse,
-    open: (activatedContents: PageAccessoriesModalContents) => {
+  return Object.assign(swrResponse, {
+    open: (activatedContents) => {
       if (swrResponse.data == null) {
         return;
       }
@@ -375,7 +381,16 @@ export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatu
       }
       swrResponse.mutate({ isOpened: false });
     },
-  };
+    selectContents: (activatedContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: swrResponse.data.isOpened,
+        activatedContents,
+      });
+    },
+  });
 };
 
 /*
@@ -579,17 +594,60 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   });
 };
 
+/*
+* BookmarkFolderDeleteModal
+*/
+export type IDeleteBookmarkFolderModalOption = {
+  onDeleted?: onDeletedBookmarkFolderFunction,
+}
+
+type DeleteBookmarkFolderModalStatus = {
+  isOpened: boolean,
+  bookmarkFolder?: BookmarkFolderItems,
+  opts?: IDeleteBookmarkFolderModalOption,
+}
+
+type DeleteModalBookmarkFolderStatusUtils = {
+  open(
+    bookmarkFolder?: BookmarkFolderItems,
+    opts?: IDeleteBookmarkFolderModalOption,
+  ): Promise<DeleteBookmarkFolderModalStatus | undefined>,
+  close(): Promise<DeleteBookmarkFolderModalStatus | undefined>,
+}
+
+export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalStatus):
+  SWRResponse<DeleteBookmarkFolderModalStatus, Error> & DeleteModalBookmarkFolderStatusUtils => {
+  const initialData: DeleteBookmarkFolderModalStatus = {
+    isOpened: false,
+  };
+  const swrResponse = useStaticSWR<DeleteBookmarkFolderModalStatus, Error>('deleteBookmarkFolderModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (
+        bookmarkFolder?: BookmarkFolderItems,
+        opts?: IDeleteBookmarkFolderModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, bookmarkFolder, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
 
 /*
  * TemplateModal
  */
-type TemplateModalStatus = {
+
+type TemplateSelectedCallback = (templateText: string) => void;
+type TemplateModalOptions = {
+  onSubmit?: TemplateSelectedCallback,
+}
+export type TemplateModalStatus = TemplateModalOptions & {
   isOpened: boolean,
-  onSubmit?: (templateText: string) => void
 }
 
 type TemplateModalUtils = {
-  open(onSubmit: (templateText: string) => void): void,
+  open(opts: TemplateModalOptions): void,
   close(): void,
 }
 
@@ -599,8 +657,82 @@ export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & Te
   const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: (onSubmit: (templateText: string) => void) => {
-      swrResponse.mutate({ isOpened: true, onSubmit });
+    open: (opts: TemplateModalOptions) => {
+      swrResponse.mutate({ isOpened: true, onSubmit: opts.onSubmit });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
+
+/**
+ * DeleteAttachmentModal
+ */
+type Remove =
+  (body: {
+    attachment_id: string;
+  }) => Promise<void>
+
+type DeleteAttachmentModalStatus = {
+  isOpened: boolean,
+  attachment?: IAttachmentHasId,
+  remove?: Remove,
+}
+
+type DeleteAttachmentModalUtils = {
+  open(
+    attachment: IAttachmentHasId,
+    remove: Remove,
+  ): void,
+  close(): void,
+}
+
+export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalStatus, Error> & DeleteAttachmentModalUtils => {
+  const initialStatus: DeleteAttachmentModalStatus = {
+    isOpened: false,
+    attachment: undefined,
+    remove: undefined,
+  };
+  const swrResponse = useStaticSWR<DeleteAttachmentModalStatus, Error>('deleteAttachmentModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
+
+  const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
+    mutate({ isOpened: true, attachment, remove });
+  }, [mutate]);
+  const close = useCallback((): void => {
+    mutate({ isOpened: false });
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
+};
+
+/*
+ * LinkEditModal
+ */
+type LinkEditModalStatus = {
+  isOpened: boolean,
+  defaultMarkdownLink?: Linker,
+  onSave?: (linkText: string) => void
+}
+
+type LinkEditModalUtils = {
+  open(defaultMarkdownLink: Linker, onSave: (linkText: string) => void): void,
+  close(): void,
+}
+
+export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & LinkEditModalUtils => {
+
+  const initialStatus: LinkEditModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<LinkEditModalStatus, Error>('linkEditModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: (defaultMarkdownLink: Linker, onSave: (linkText: string) => void) => {
+      swrResponse.mutate({ isOpened: true, defaultMarkdownLink, onSave });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });

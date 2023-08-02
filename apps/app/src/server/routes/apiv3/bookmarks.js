@@ -1,9 +1,10 @@
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
+import BookmarkFolder from '../../models/bookmark-folder';
 
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
@@ -127,6 +128,7 @@ module.exports = (crowi) => {
       }
       responsesParams.sumOfBookmarks = bookmarks.length;
       responsesParams.bookmarkedUsers = users;
+      responsesParams.pageId = pageId;
     }
     catch (err) {
       logger.error('get-bookmark-document-failed', err);
@@ -192,47 +194,32 @@ module.exports = (crowi) => {
    */
   validator.userBookmarkList = [
     param('userId').isMongoId().withMessage('userId is required'),
-    query('page').isInt({ min: 1 }),
-    query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
   router.get('/:userId', accessTokenParser, loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
-    const page = req.query.page;
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
 
     if (userId == null) {
       return res.apiv3Err('User id is not found or forbidden', 400);
     }
-    if (limit == null) {
-      return res.apiv3Err('Could not catch page limit', 400);
-    }
     try {
-      const paginationResult = await Bookmark.paginate(
-        {
-          user: { $in: userId },
+      const bookmarkIdsInFolders = await BookmarkFolder.distinct('bookmarks', { owner: userId });
+      const userRootBookmarks = await Bookmark.find({
+        _id: { $nin: bookmarkIdsInFolders },
+        user: userId,
+      }).populate({
+        path: 'page',
+        model: 'Page',
+        populate: {
+          path: 'lastUpdateUser',
+          model: 'User',
         },
-        {
-          populate: {
-            path: 'page',
-            model: 'Page',
-            populate: {
-              path: 'lastUpdateUser',
-              model: 'User',
-            },
-          },
-          page,
-          limit,
-        },
-      );
+      }).exec();
 
-      paginationResult.docs.forEach((doc) => {
-        if (doc.page.lastUpdateUser != null && doc.page.lastUpdateUser instanceof User) {
-          doc.page.lastUpdateUser = serializeUserSecurely(doc.page.lastUpdateUser);
-        }
-      });
+      // serialize Bookmark
+      const serializedUserRootBookmarks = userRootBookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
-      return res.apiv3({ paginationResult });
+      return res.apiv3({ userRootBookmarks: serializedUserRootBookmarks });
     }
     catch (err) {
       logger.error('get-bookmark-failed', err);

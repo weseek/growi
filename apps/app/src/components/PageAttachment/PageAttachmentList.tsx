@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { HasObjectId, IAttachment } from '@growi/core';
+import { IAttachmentHasId } from '@growi/core';
 import { Attachment } from '@growi/ui/dist/components/Attachment';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
-  attachments: (IAttachment & HasObjectId)[],
+  attachments: (IAttachmentHasId)[],
   inUse: { [id: string]: boolean },
-  onAttachmentDeleteClicked?: (attachment: IAttachment & HasObjectId) => void,
+  onAttachmentDeleteClicked: (attachment: IAttachmentHasId) => void,
   isUserLoggedIn?: boolean,
 }
 

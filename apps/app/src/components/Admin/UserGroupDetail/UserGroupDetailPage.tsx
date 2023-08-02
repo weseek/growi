@@ -21,8 +21,11 @@ import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups, useSWRxUserGroupRelations,
 } from '~/stores/user-group';
+import loggerFactory from '~/utils/logger';
 
 import styles from './UserGroupDetailPage.module.scss';
+
+const logger = loggerFactory('growi:services:AdminCustomizeContainer');
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
@@ -48,6 +51,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { userGroupId: currentUserGroupId } = props;
 
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
+
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
@@ -91,6 +95,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
+  const parentUserGroup = selectableParentUserGroups?.find(selectableParentUserGroup => selectableParentUserGroup._id === currentUserGroup?.parent);
   /*
    * Function
    */
@@ -135,9 +140,10 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     [t, updateUserGroup],
   );
 
-  const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
-    if (typeof userGroupData?.parent === 'string') {
+  const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: IUserGroupHasId) => {
+    if (typeof userGroupData.parent === 'string') {
       toastError(t('Something went wrong. Please try again.'));
+      logger.error('Something went wrong.');
       return;
     }
 
@@ -328,7 +334,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link href="/admin/user-groups" prefetch={false}>
+            <Link href="/admin/user-groups">
               {t('user_group_management.group_list')}
             </Link>
           </li>
@@ -342,7 +348,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                 { ancestorUserGroup._id === currentUserGroupId ? (
                   <span>{ancestorUserGroup.name}</span>
                 ) : (
-                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
+                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>
                     {ancestorUserGroup.name}
                   </Link>
                 ) }
@@ -356,6 +362,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={currentUserGroup}
+          parentUserGroup={parentUserGroup}
           selectableParentUserGroups={selectableParentUserGroups}
           submitButtonLabel={t('Update')}
           onSubmit={onClickSubmitForm}

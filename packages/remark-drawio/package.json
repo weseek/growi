@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-drawio",
-  "version": "6.1.0-RC.0",
+  "version": "6.1.11-RC.0",
   "description": "remark plugin to draw diagrams with draw.io (diagrams.net)",
   "license": "MIT",
   "keywords": [
@@ -21,13 +21,14 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "vite build",
-    "clean": "npx -y shx rm -rf dist",
+    "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
     "lint:typecheck": "tsc",
-    "lint": "run-p lint:*"
+    "lint": "run-p lint:*",
+    "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
     "pako": "^2.1.0"

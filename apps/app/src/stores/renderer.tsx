@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import type { HtmlElementNode } from 'rehype-toc';
 import useSWR, { type SWRResponse } from 'swr';
 
-import { getGrowiFacade } from '~/features/activate-plugin';
+import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facade-utils';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 

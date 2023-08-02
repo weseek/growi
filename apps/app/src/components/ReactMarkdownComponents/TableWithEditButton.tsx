@@ -4,7 +4,9 @@ import EventEmitter from 'events';
 
 import { Element } from 'react-markdown/lib/rehype-filter';
 
-import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+} from '~/stores/context';
 
 import styles from './TableWithEditButton.module.scss';
 
@@ -24,6 +26,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
   const { children, node, className } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -34,7 +37,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
     globalEmitter.emit('launchHandsonTableModal', bol, eol);
   }, [bol, eol]);
 
-  const showEditButton = !isGuestUser && !isSharedUser && shareLinkId == null;
+  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
     <div className={`editable-with-handsontable ${styles['editable-with-handsontable']}`}>
@@ -43,7 +46,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
           <i className="icon-note"></i>
         </button>
       )}
-      <table className={`${className}`}>
+      <table className={className}>
         {children}
       </table>
     </div>

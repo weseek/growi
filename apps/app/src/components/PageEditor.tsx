@@ -83,7 +83,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantData } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -108,9 +108,15 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
-  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
-  const currentRevisionId = currentPage?.revision?._id;
+  // TODO: remove workaround
+  // for https://redmine.weseek.co.jp/issues/125923
+  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
+
+  // TODO: remove workaround
+  // for https://redmine.weseek.co.jp/issues/125923
+  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
 
   const initialValue = useMemo(() => {
     if (!isNotFound) {
@@ -148,6 +154,12 @@ const PageEditor = React.memo((): JSX.Element => {
     mutateIsConflict(isConflict);
 
   }, [markdownToPreview, mutateIsConflict]);
+
+  // TODO: remove workaround
+  // for https://redmine.weseek.co.jp/issues/125923
+  useEffect(() => {
+    setCreatedPageRevisionIdWithAttachment(undefined);
+  }, [router]);
 
   useEffect(() => {
     markdownToSave.current = initialValue;
@@ -322,11 +334,12 @@ const PageEditor = React.memo((): JSX.Element => {
       editorRef.current.insertText(insertText);
 
       // when if created newly
+      // Not using 'mutateGrant' to inherit the grant of the parent page
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         globalEmitter.emit('resetInitializedHackMdStatus');
-        mutateGrant(res.page.grant);
         mutateIsLatestRevision(true);
+        setCreatedPageRevisionIdWithAttachment(res.page.revision);
         await mutateCurrentPageId(res.page._id);
         await mutateCurrentPage();
       }
@@ -338,7 +351,7 @@ const PageEditor = React.memo((): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateGrant, mutateIsLatestRevision, pageId]);
+  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -516,6 +529,20 @@ const PageEditor = React.memo((): JSX.Element => {
       }
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
+
+  // when transitioning to a different page, if the initialValue is the same,
+  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  const onRouterChangeComplete = useCallback(() => {
+    editorRef.current?.setValue(initialValue);
+    editorRef.current?.setCaretLine(0);
+  }, [initialValue]);
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
 
   if (!isEditable) {
     return <></>;

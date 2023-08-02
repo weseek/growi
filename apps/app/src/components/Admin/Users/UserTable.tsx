@@ -157,6 +157,11 @@ const UserTable = (props: UserTableProps) => {
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
+                  {(user.readOnly) && (
+                    <span className="badge badge-light badge-pill ml-2">
+                      {t('admin:user_management.user_table.read_only')}
+                    </span>
+                  )}
                 </td>
                 <td>
                   <strong>{user.username}</strong>

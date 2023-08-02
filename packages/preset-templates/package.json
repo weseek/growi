@@ -1,0 +1,23 @@
+{
+  "name": "@growi/preset-templates",
+  "version": "6.1.11-RC.0",
+  "scripts": {
+    "test": "vitest run",
+    "version": "yarn version --no-git-tag-version --preid=RC"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@growi/pluginkit": "link:../pluginkit"
+  },
+  "growiPlugin": {
+    "schemaVersion": "4",
+    "types": [
+      "template"
+    ],
+    "locales": [
+      "en_US",
+      "ja_JP",
+      "zh_CN"
+    ]
+  }
+}

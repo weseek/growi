@@ -21,8 +21,7 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -36,13 +35,14 @@ import {
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig,
+  useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -58,7 +58,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
 } from './utils/commons';
 
 
@@ -68,7 +68,7 @@ declare global {
 }
 
 
-const GrowiPluginsActivator = dynamic(() => import('~/features/activate-plugin').then(mod => mod.GrowiPluginsActivator), { ssr: false });
+const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
@@ -76,12 +76,14 @@ const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() =
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
+const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isTrashPage: _isTrashPage, isCreatablePage,
+  isPermalink: _isPermalink, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -127,11 +129,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
-const PutbackPageModal = (): JSX.Element => {
-  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-  return <PutbackPageModal />;
-};
-
 type Props = CommonProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
@@ -171,6 +168,8 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
+  skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 
   grantData?: IPageGrantData,
 
@@ -190,6 +189,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   // page
   useIsContainerFluid(props.isContainerFluid);
@@ -236,11 +236,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+
   const { mutate: mutateIsNotFound } = useIsNotFound();
 
-  const { mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -257,9 +258,23 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data);
 
-  const shouldRenderPutbackPageModal = pageWithMeta != null
-    ? _isTrashPage(pageWithMeta.data.path)
-    : false;
+  // Store initial data (When revisionBody is not SSR)
+  useEffect(() => {
+    if (!props.skipSSR) {
+      return;
+    }
+
+    if (currentPageId != null && !props.isNotFound) {
+      const mutatePageData = async() => {
+        const pageData = await mutateCurrentPage();
+        mutateEditingMarkdown(pageData?.revision.body);
+      };
+
+      // If skipSSR is true, use the API to retrieve page data.
+      // Because pageWIthMeta does not contain revision.body
+      mutatePageData();
+    }
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync grant data
   useEffect(() => {
@@ -341,8 +356,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         />
 
         <PageStatusAlert />
-
-        {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>
     </>
   );
@@ -378,7 +391,9 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <DescendantsPageListModal />
       <DrawioModal />
       <HandsontableModal />
+      <QuestionnaireModalManager />
       <TemplateModal />
+      <LinkEditModal />
     </>
   );
 };
@@ -423,7 +438,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService } = crowi;
+  const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -461,8 +476,10 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
-    await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+    const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
+    await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
   if (page == null && user != null) {
@@ -582,11 +599,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhiteList: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhiteList: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 /**

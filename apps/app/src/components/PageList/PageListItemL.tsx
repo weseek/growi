@@ -24,12 +24,13 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
+import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
-import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
@@ -37,6 +38,7 @@ type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
+  isReadOnlyUser: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
@@ -49,7 +51,7 @@ type Props = {
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
+    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions, isReadOnlyUser,
     forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
@@ -88,7 +90,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
-
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageData?._id ?? null);
+  const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
@@ -125,6 +128,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
+    mutateCurrentUserBookmarks();
+    mutatePageInfo();
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
@@ -208,9 +213,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 linkedPagePath={linkedPagePathFormer}
                 linkedPagePathByHtml={linkedPagePathHighlightedFormer}
               />
-              { showPageUpdatedTime && (
+              {showPageUpdatedTime && (
                 <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
-              ) }
+              )}
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
@@ -249,31 +254,32 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
               {/* doropdown icon includes page control buttons */}
               {hasBrowsingRights
-              && <div className="ml-auto">
-                <PageItemControl
-                  alignRight
-                  pageId={pageData._id}
-                  pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
-                  isEnableActions={isEnableActions}
-                  forceHideMenuItems={forceHideMenuItems}
-                  onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-                  onClickRenameMenuItem={renameMenuItemClickHandler}
-                  onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                  onClickRevertMenuItem={revertMenuItemClickHandler}
-                />
-              </div>
+                && <div className="ml-auto">
+                  <PageItemControl
+                    alignRight
+                    pageId={pageData._id}
+                    pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
+                    isEnableActions={isEnableActions}
+                    isReadOnlyUser={isReadOnlyUser}
+                    forceHideMenuItems={forceHideMenuItems}
+                    onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                    onClickRenameMenuItem={renameMenuItemClickHandler}
+                    onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                    onClickRevertMenuItem={revertMenuItemClickHandler}
+                  />
+                </div>
               }
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
-                { elasticSearchResult != null && elasticSearchResult.snippet != null && (
+                {elasticSearchResult != null && elasticSearchResult.snippet != null && (
                   // eslint-disable-next-line react/no-danger
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
-                ) }
-                { revisionShortBody != null && (
+                )}
+                {revisionShortBody != null && (
                   <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
-                ) }
+                )}
                 {
                   !hasBrowsingRights && (
                     <>

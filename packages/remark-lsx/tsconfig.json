@@ -4,10 +4,11 @@
   "compilerOptions": {
     "jsx": "react-jsxdev",
 
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"],
-    }
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+
+    "types": [
+      "vitest/globals"
+    ]
   },
   "include": [
     "src"

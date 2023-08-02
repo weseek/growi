@@ -1,5 +1,4 @@
-import { mutate, SWRResponse } from 'swr';
-import useSWRImmutable from 'swr/immutable';
+import useSWR, { mutate, SWRResponse } from 'swr';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { IFormattedSearchResult, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
@@ -67,7 +66,7 @@ export const useSWRxSearch = (
 
   const isKeywordValid = keyword != null && keyword.length > 0;
 
-  const swrResult = useSWRImmutable(
+  const swrResult = useSWR(
     isKeywordValid ? ['/search', keyword, fixedConfigurations] : null,
     ([endpoint, , fixedConfigurations]) => {
       const {
@@ -85,6 +84,9 @@ export const useSWRxSearch = (
         },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ).then(result => result as IFormattedSearchResult);
+    },
+    {
+      revalidateOnFocus: false,
     },
   );
 

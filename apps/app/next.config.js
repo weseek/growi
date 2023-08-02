@@ -30,6 +30,7 @@ const getTranspilePackages = () => {
     'hastscript',
     'html-void-elements',
     'is-absolute-url',
+    'is-plain-obj',
     'longest-streak',
     'micromark',
     'property-information',
@@ -85,16 +86,25 @@ module.exports = async(phase, { defaultConfig }) => {
 
     /** @param config {import('next').NextConfig} */
     webpack(config, options) {
-      // Avoid "Module not found: Can't resolve 'fs'"
-      // See: https://stackoverflow.com/a/68511591
       if (!options.isServer) {
+        // Avoid "Module not found: Can't resolve 'fs'"
+        // See: https://stackoverflow.com/a/68511591
         config.resolve.fallback.fs = false;
-      }
 
-      // See: https://webpack.js.org/configuration/externals/
-      // This provides a way of excluding dependencies from the output bundles
-      config.externals.push('dtrace-provider');
-      config.externals.push('mongoose');
+        // exclude packages from the output bundles
+        config.module.rules.push(
+          ...[
+            /dtrace-provider/,
+            /mongoose/,
+            /mathjax-full/, // required from marp
+          ].map((packageRegExp) => {
+            return {
+              test: packageRegExp,
+              use: 'null-loader',
+            };
+          }),
+        );
+      }
 
       // extract sourcemap
       if (options.dev) {
