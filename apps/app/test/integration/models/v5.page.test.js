@@ -150,7 +150,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdAB,
+        grantedGroups: [{ item: upodUserGroupIdAB, type: 'UserGroup' }],
         parent: rootPage._id,
       },
       {
@@ -159,7 +159,7 @@ describe('Page', () => {
         creator: upodUserB,
         lastUpdateUser: upodUserB,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdB,
+        grantedGroups: [{ item: upodUserGroupIdB, type: 'UserGroup' }],
         parent: upodPageIdgAB1,
       },
       {
@@ -168,7 +168,7 @@ describe('Page', () => {
         creator: upodUserB,
         lastUpdateUser: upodUserB,
         grantedUsers: [upodUserB._id],
-        grantedGroup: null,
+        grantedGroups: null,
         parent: upodPageIdgAB1,
       },
       // case 2
@@ -179,7 +179,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: null,
+        grantedGroups: null,
         parent: rootPage._id,
       },
       {
@@ -188,7 +188,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdA,
+        grantedGroups: [{ item: upodUserGroupIdA, type: 'UserGroup' }],
         parent: upodPageIdPublic2,
       },
       {
@@ -197,7 +197,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdAIsolated,
+        grantedGroups: [{ item: upodUserGroupIdAIsolated, type: 'UserGroup' }],
         parent: upodPageIdPublic2,
       },
       {
@@ -206,7 +206,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: [upodUserA._id],
-        grantedGroup: null,
+        grantedGroups: null,
         parent: upodPageIdPublic2,
       },
       // case 3
@@ -217,7 +217,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: null,
+        grantedGroups: null,
         parent: rootPage._id,
       },
       {
@@ -226,7 +226,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdAB,
+        grantedGroups: [{ item: upodUserGroupIdAB, type: 'UserGroup' }],
         parent: upodPageIdPublic3,
       },
       {
@@ -235,7 +235,7 @@ describe('Page', () => {
         creator: upodUserB,
         lastUpdateUser: upodUserB,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdB,
+        grantedGroups: [{ item: upodUserGroupIdB, type: 'UserGroup' }],
         parent: upodPageIdPublic3,
       },
       {
@@ -244,7 +244,7 @@ describe('Page', () => {
         creator: upodUserB,
         lastUpdateUser: upodUserB,
         grantedUsers: [upodUserB._id],
-        grantedGroup: null,
+        grantedGroups: null,
         parent: upodPageIdPublic3,
       },
       // case 4
@@ -255,7 +255,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: null,
+        grantedGroups: null,
         parent: rootPage._id,
       },
       {
@@ -264,7 +264,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdA,
+        grantedGroups: [{ item: upodUserGroupIdA, type: 'UserGroup' }],
         parent: upodPageIdPublic4,
       },
       {
@@ -273,7 +273,7 @@ describe('Page', () => {
         creator: upodUserC,
         lastUpdateUser: upodUserC,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdC,
+        grantedGroups: [{ item: upodUserGroupIdC, type: 'UserGroup' }],
         parent: upodPageIdPublic4,
       },
       // case 5
@@ -284,7 +284,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: null,
+        grantedGroups: null,
         parent: rootPage._id,
       },
       {
@@ -293,7 +293,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: upodUserGroupIdA,
+        grantedGroups: [{ item: upodUserGroupIdA, type: 'UserGroup' }],
         parent: upodPageIdPublic5,
       },
       {
@@ -302,7 +302,7 @@ describe('Page', () => {
         creator: upodUserC,
         lastUpdateUser: upodUserC,
         grantedUsers: [upodUserC._id],
-        grantedGroup: null,
+        grantedGroups: null,
         parent: upodPageIdPublic5,
       },
       // case 6
@@ -313,7 +313,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroup: null,
+        grantedGroups: null,
         parent: rootPage._id,
       },
       {
@@ -322,7 +322,7 @@ describe('Page', () => {
         creator: upodUserC,
         lastUpdateUser: upodUserC,
         grantedUsers: [upodUserC._id],
-        grantedGroup: null,
+        grantedGroups: null,
         parent: upodPageIdPublic6,
       },
     ]);
@@ -611,7 +611,7 @@ describe('Page', () => {
       {
         path: '/mup20',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: userGroupIdPModelA,
+        grantedGroups: [{ item: userGroupIdPModelA, type: 'UserGroup' }],
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
@@ -639,7 +639,7 @@ describe('Page', () => {
       {
         path: '/mup22/mup23',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: userGroupIdPModelA,
+        grantedGroups: [{ item: userGroupIdPModelA, type: 'UserGroup' }],
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
@@ -697,7 +697,7 @@ describe('Page', () => {
         _id: pageIdUpd16,
         path: '/mup29_A',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: userGroupIdPModelA,
+        grantedGroups: [{ item: userGroupIdPModelA, type: 'UserGroup' }],
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
@@ -718,7 +718,7 @@ describe('Page', () => {
         _id: pageIdUpd17,
         path: '/mup31_A',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: userGroupIdPModelA,
+        grantedGroups: [{ item: userGroupIdPModelA, type: 'UserGroup' }],
         creator: pModelUserId1,
         lastUpdateUser: pModelUserId1,
         isEmpty: false,
@@ -739,7 +739,7 @@ describe('Page', () => {
         _id: pageIdUpd18,
         path: '/mup33_C',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: userGroupIdPModelC,
+        grantedGroups: [{ item: userGroupIdPModelC, type: 'UserGroup' }],
         creator: pModelUserId3,
         lastUpdateUser: pModelUserId3,
         isEmpty: false,
@@ -955,7 +955,7 @@ describe('Page', () => {
       });
       test('successfully change to GRANT_OWNER from GRANT_USER_GROUP', async() => {
         const path = '/mup20';
-        const _page = await Page.findOne({ path, grant: Page.GRANT_USER_GROUP, grantedGroup: userGroupIdPModelA });
+        const _page = await Page.findOne({ path, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: userGroupIdPModelA } } });
         expect(_page).toBeTruthy();
 
         await updatePage(_page, 'newRevisionBody', 'oldRevisionBody', pModelUser1, { grant: Page.GRANT_OWNER });
@@ -980,7 +980,7 @@ describe('Page', () => {
         const path1 = '/mup22';
         const path2 = '/mup22/mup23';
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
-        const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroup: userGroupIdPModelA });
+        const _page2 = await Page.findOne({ path: path2, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: userGroupIdPModelA } } });
         expect(_page1).toBeTruthy();
         expect(_page2).toBeTruthy();
 
@@ -1079,7 +1079,7 @@ describe('Page', () => {
           const _path1 = '/mup29_A';
           const _path2 = '/mup29_A/mup30_owner';
           // page
-          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: userGroupIdPModelA }); // out of update scope
+          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: userGroupIdPModelA } } }); // out of update scope
           const _page2 = await Page.findOne({ // update target
             path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1], parent: _page1._id,
           });
@@ -1117,7 +1117,7 @@ describe('Page', () => {
           const _path1 = '/mup31_A';
           const _path2 = '/mup31_A/mup32_owner';
           // page
-          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: userGroupIdPModelA });
+          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: userGroupIdPModelA } } });
           const _page2 = await Page.findOne({ // update target
             path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser1._id], parent: _page1._id,
           });
@@ -1148,7 +1148,7 @@ describe('Page', () => {
           const _path1 = '/mup33_C';
           const _path2 = '/mup33_C/mup34_owner';
           // page
-          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: userGroupIdPModelC }); // groupC
+          const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: userGroupIdPModelC } } }); // groupC
           const _page2 = await Page.findOne({ // update target
             path: _path2, grant: Page.GRANT_OWNER, grantedUsers: [pModelUser3], parent: _page1._id,
           });
