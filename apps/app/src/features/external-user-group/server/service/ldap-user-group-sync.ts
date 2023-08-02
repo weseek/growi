@@ -1,12 +1,19 @@
 import { configManager } from '~/server/service/config-manager';
 import LdapService, { SearchResultEntry } from '~/server/service/ldap';
 import PassportService from '~/server/service/passport';
+import { batchProcessPromiseAll } from '~/utils/promise';
 
 import {
   ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, LdapGroupMembershipAttributeType,
 } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
+
+// When d = max depth of group trees
+// Max space complexity of generateExternalUserGroupTrees will be:
+// O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
+const TREES_BATCH_SIZE = 10;
+const USERS_BATCH_SIZE = 30;
 
 class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
@@ -54,17 +61,23 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
       converted.push(entry.objectName);
 
       const userIds = getUserIdsFromGroupEntry(entry);
-      const userInfos = (await Promise.all(userIds.map((id) => {
+
+      const userInfos = (await batchProcessPromiseAll(userIds, USERS_BATCH_SIZE, (id) => {
         return this.getUserInfo(id);
-      }))).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
+      })).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
       const name = this.ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
       const description = this.ldapService.getStringValFromSearchResultEntry(entry, groupDescriptionAttribute);
       const childGroupDNs = getChildGroupDnsFromGroupEntry(entry);
 
-      const childGroupNodes: ExternalUserGroupTreeNode[] = (await Promise.all(childGroupDNs.map((dn) => {
+      const childGroupNodesWithNull: (ExternalUserGroupTreeNode | null)[] = [];
+      // Do not use Promise.all, because the number of promises processed can
+      // exponentially grow when group tree is enormous
+      for await (const dn of childGroupDNs) {
         const childEntry = groupEntries.find(ge => ge.objectName === dn);
-        return childEntry != null ? convert(childEntry, converted) : null;
-      }))).filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
+        childGroupNodesWithNull.push(childEntry != null ? await convert(childEntry, converted) : null);
+      }
+      const childGroupNodes: ExternalUserGroupTreeNode[] = childGroupNodesWithNull
+        .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
 
       return name != null ? {
         id: entry.objectName,
@@ -85,7 +98,8 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
       return !allChildGroupDNs.has(entry.objectName);
     });
 
-    return (await Promise.all(rootEntries.map(entry => convert(entry, [])))).filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
+    return (await batchProcessPromiseAll(rootEntries, TREES_BATCH_SIZE, entry => convert(entry, [])))
+      .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
   }
 
   private async getUserInfo(userId: string): Promise<ExternalUserInfo | null> {

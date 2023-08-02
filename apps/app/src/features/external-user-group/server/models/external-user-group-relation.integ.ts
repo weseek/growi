@@ -39,7 +39,7 @@ describe('ExternalUserGroupRelation model', () => {
           _id: groupId1, name: 'test group 1', externalId: 'testExternalId', provider: 'testProvider',
         },
         {
-          _id: groupId2, name: 'test group 2', externalId: 'testExternalId', provider: 'testProvider',
+          _id: groupId2, name: 'test group 2', externalId: 'testExternalId2', provider: 'testProvider',
         },
       ]);
     });
