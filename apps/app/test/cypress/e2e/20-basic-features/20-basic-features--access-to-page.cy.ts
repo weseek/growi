@@ -11,21 +11,6 @@ function openEditor() {
   cy.get('.CodeMirror').should('be.visible');
 }
 
-function appendTextToEditorUntilContains(inputText: string) {
-  const lines: string[] = [];
-  cy.waitUntil(() => {
-    // do
-    cy.get('.CodeMirror textarea').type(inputText, { force: true });
-    // until
-    return cy.get('.CodeMirror-line')
-      .each(($item) => {
-        lines.push($item.text());
-      }).then(() => {
-        return lines.join('\n').endsWith(inputText);
-      });
-  });
-}
-
 context('Access to page', () => {
   const ssPrefix = 'access-to-page-';
 
@@ -107,7 +92,7 @@ context('Access to page', () => {
     openEditor();
 
     // check edited contents after save
-    appendTextToEditorUntilContains(body1);
+    cy.appendTextToEditorUntilContains(body1);
     cy.get('.page-editor-preview-body').should('contain.text', body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -124,7 +109,7 @@ context('Access to page', () => {
     openEditor();
 
     // check editing contents with shortcut key
-    appendTextToEditorUntilContains(body2);
+    cy.appendTextToEditorUntilContains(body2);
     cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
     cy.get('.CodeMirror').click().type(savePageShortcutKey);
     cy.get('.CodeMirror-code').should('contain.text', body1+body2);
@@ -295,7 +280,7 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
     });
 
-    appendTextToEditorUntilContains(templateBody1);
+    cy.appendTextToEditorUntilContains(templateBody1);
     cy.get('.page-editor-preview-body').should('contain.text', templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -329,7 +314,7 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
-    appendTextToEditorUntilContains(templateBody2);
+    cy.appendTextToEditorUntilContains(templateBody2);
     cy.get('.page-editor-preview-body').should('contain.text', templateBody2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
