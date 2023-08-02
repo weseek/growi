@@ -33,6 +33,7 @@ class QuestionnaireService {
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
 
+    // Get the oldest user who probably installed this GROWI.
     const users = await User.find({ createdAt: { $ne: null } }).limit(1).sort({ createdAt: 1 });
     const installedAtByOldestUser = users[0].createdAt;
 
