@@ -108,7 +108,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         return router.push(redirectTo);
       }
 
-      return router.push('/Page403');
+      return router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);

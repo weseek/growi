@@ -39,7 +39,7 @@ const AdminHomePage: NextPage<Props> = (props) => {
   const router = useRouter();
 
   if (!isAdmin) {
-    router.push('/Page403');
+    router.push('/page403');
   }
 
   const { t } = useTranslation('admin');
