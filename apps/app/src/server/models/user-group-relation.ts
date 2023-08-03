@@ -1,6 +1,7 @@
 import { IUserGroupRelation } from '@growi/core';
 import mongoose, { Model, Schema, Document } from 'mongoose';
 
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { UserGroupDocument } from './user-group';
@@ -81,13 +82,14 @@ schema.statics.findAllRelationForUserGroup = function(userGroup) {
     .exec();
 };
 
-schema.statics.findAllUserIdsForUserGroup = async function(userGroup) {
+schema.statics.findAllUserIdsForUserGroups = async function(userGroupIds: ObjectIdLike[]): Promise<string[]> {
   const relations = await this
-    .find({ relatedGroup: userGroup })
+    .find({ relatedGroup: { $in: userGroupIds } })
     .select('relatedUser')
     .exec();
 
-  return relations.map(r => r.relatedUser);
+  // return unique ids
+  return [...new Set(relations.map(r => r.relatedUser.toString()))];
 };
 
 /**

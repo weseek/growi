@@ -54,7 +54,6 @@ type UpdateGrantInfo = {
 } | {
   grant: typeof PageGrant.GRANT_USER_GROUP,
   grantedUserGroupInfo: {
-    groupId: ObjectIdLike,
     userIds: Set<ObjectIdLike>,
     childrenOrItselfGroupIds: Set<ObjectIdLike>,
   },
@@ -63,7 +62,7 @@ type UpdateGrantInfo = {
 type DescendantPagesGrantInfo = {
   grantSet: Set<number>,
   grantedUserIds: Set<ObjectIdLike>, // all only me users of descendant pages
-  grantedUserGroupIds: Set<GrantedGroup>, // all user groups of descendant pages
+  grantedUserGroupIds: Set<ObjectIdLike>, // all user groups of descendant pages
 };
 
 /**
@@ -585,13 +584,15 @@ class PageGrantService {
     const descendantPagesGrantInfo = {
       grantSet,
       grantedUserIds: new Set(comparableDescendants.grantedUserIds), // all only me users of descendant pages
-      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds), // all user groups of descendant pages
+      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds.map(g => g.item)), // all user groups of descendant pages
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
   }
 
-  async generateUpdateGrantInfoToOverwriteDescendants(operator, updateGrant: PageGrantCanBeOnTree, grantUserGroupId?: ObjectIdLike): Promise<UpdateGrantInfo> {
+  async generateUpdateGrantInfoToOverwriteDescendants(
+      operator, updateGrant: PageGrantCanBeOnTree, grantGroupIds?: GrantedGroup[],
+  ): Promise<UpdateGrantInfo> {
     let updateGrantInfo: UpdateGrantInfo | null = null;
 
     if (updateGrant === PageGrant.GRANT_PUBLIC) {
@@ -606,18 +607,28 @@ class PageGrantService {
       };
     }
     else if (updateGrant === PageGrant.GRANT_USER_GROUP) {
-      if (grantUserGroupId == null) {
-        throw Error('The parameter `grantUserGroupId` is required.');
+      if (grantGroupIds == null) {
+        throw Error('The parameter `grantGroupIds` is required.');
       }
       const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-      const userIds = await UserGroupRelation.findAllUserIdsForUserGroup(grantUserGroupId);
-      const childrenOrItselfGroups = await UserGroup.findGroupsWithDescendantsById(grantUserGroupId);
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantGroupIds);
+
+      const userGroupUserIds = await UserGroupRelation.findAllUserIdsForUserGroups(grantedUserGroupIds);
+      const externalUserGroupUserIds = await ExternalUserGroupRelation.findAllUserIdsForUserGroups(grantedExternalUserGroupIds);
+      const userIds = [...userGroupUserIds, ...externalUserGroupUserIds];
+
+      const childrenOrItselfUserGroups = (await Promise.all(grantedUserGroupIds.map((groupId) => {
+        return UserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      const childrenOrItselfExternalUserGroups = (await Promise.all(externalUserGroupUserIds.map((groupId) => {
+        return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      const childrenOrItselfGroups = [...childrenOrItselfUserGroups, ...childrenOrItselfExternalUserGroups];
       const childrenOrItselfGroupIds = childrenOrItselfGroups.map(d => d._id);
 
       updateGrantInfo = {
         grant: PageGrant.GRANT_USER_GROUP,
         grantedUserGroupInfo: {
-          groupId: grantUserGroupId,
           userIds: new Set<ObjectIdLike>(userIds),
           childrenOrItselfGroupIds: new Set<ObjectIdLike>(childrenOrItselfGroupIds),
         },

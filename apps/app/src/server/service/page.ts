@@ -3867,7 +3867,7 @@ class PageService {
     const newPageData = pageData;
 
     const grant = options.grant ?? clonedPageData.grant; // use the previous data if absence
-    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupIds ?? clonedPageData.grantedGroup?._id.toString();
+    const grantUserGroupIds: undefined | GrantedGroup[] = options.grantUserGroupIds ?? clonedPageData.grantedGroups;
 
     const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
@@ -3880,7 +3880,7 @@ class PageService {
       try {
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         // eslint-disable-next-line max-len
-        isGrantNormalized = await pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${clonedPageData.path}" of grant ${grant}:`, err);
@@ -3918,7 +3918,7 @@ class PageService {
       newPageData.descendantCount = 0;
     }
 
-    newPageData.applyScope(user, grant, grantUserGroupId);
+    newPageData.applyScope(user, grant, grantUserGroupIds);
 
     // update existing page
     let savedPage = await newPageData.save();

@@ -36,4 +36,6 @@ schema.statics.findGroupsWithDescendantsByGroupAndUser = UserGroupRelation.findG
 
 schema.statics.countByGroupIdAndUser = UserGroupRelation.countByGroupIdAndUser;
 
+schema.statics.findAllUserIdsForUserGroups = UserGroupRelation.findAllUserIdsForUserGroups;
+
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);
