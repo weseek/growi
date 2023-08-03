@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { IUser } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroup, { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
-import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
+import { excludeTestIdsFromTargetIds, includesObjectIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
 import UserGroupRelation, { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
@@ -78,7 +78,7 @@ class UserGroupService {
 
     // throw if parent was in self and its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-    if (isIncludesObjectId(descendantsWithTarget.map(d => d._id), parent._id)) {
+    if (includesObjectIds(descendantsWithTarget.map(d => d._id), [parent._id])) {
       throw Error('It is not allowed to choose parent from descendant groups.');
     }
 
