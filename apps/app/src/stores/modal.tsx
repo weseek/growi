@@ -739,3 +739,14 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
+
+export const useParentPageSelectModal = () => {
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR('parentPageSelectModal', undefined, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: () => swrResponse.mutate({ isOpened: true }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
