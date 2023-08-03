@@ -10,11 +10,12 @@ export const divideByType = (grantedGroups: GrantedGroup[]): {
   const grantedExternalUserGroups: ObjectIdLike[] = [];
 
   grantedGroups.forEach((group) => {
+    const id = typeof group.item === 'string' ? group.item : group.item._id;
     if (group.type === GroupType.userGroup) {
-      grantedUserGroups.push(group.item);
+      grantedUserGroups.push(id);
     }
     else {
-      grantedExternalUserGroups.push(group.item);
+      grantedExternalUserGroups.push(id);
     }
   });
 
