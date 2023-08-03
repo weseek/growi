@@ -131,6 +131,10 @@
     "page_not_exist": "该页面不存在"
   },
 
+  "forbidden_page": {
+    "do_not_have_admin_permission": "没有管理权限的用户无法访问管理屏幕。"
+  },
+
   "g2g_data_transfer": {
     "tab": "数据迁移",
     "data_transfer": "数据迁移",

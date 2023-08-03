@@ -16,7 +16,7 @@ module.exports = (crowi, fallback = null) => {
       if (fallback != null) {
         return fallback(req, res, next);
       }
-      return res.redirect('/Page403');
+      return res.redirect('/');
     }
 
     logger.warn('This user has not logged in.');
