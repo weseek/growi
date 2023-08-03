@@ -7,7 +7,7 @@ import React, {
 import Dropzone from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import {
-  Modal, ModalHeader, ModalBody,
+  Modal, ModalHeader, ModalBody, Button,
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
@@ -17,7 +17,7 @@ import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
 import { IEditorMethods } from '../../interfaces/editor-methods';
-import { ModalForParentPageSelection } from '../ModalForParentPageSelection';
+import { ModalForParentPageSelection } from '../ParentPageSelectModal';
 
 import AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
