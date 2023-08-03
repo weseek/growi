@@ -1,4 +1,4 @@
-import { GroupType } from '@growi/core';
+import { GrantedGroup } from '@growi/core';
 
 import { PageGrant } from '~/interfaces/page';
 
@@ -11,10 +11,7 @@ export type IPageForResuming = {
   parent?: ObjectIdLike,
   grant?: number,
   grantedUsers?: ObjectIdLike[],
-  grantedGroups: {
-    type: GroupType,
-    item: ObjectIdLike,
-  }[],
+  grantedGroups: GrantedGroup[],
   descendantCount: number,
   status?: number,
   revision?: ObjectIdLike,
@@ -28,20 +25,14 @@ export type IUserForResuming = {
 
 export type IOptionsForUpdate = {
   grant?: PageGrant,
-  grantUserGroupIds?: {
-    type: GroupType,
-    item: ObjectIdLike,
-  }[],
+  grantUserGroupIds?: GrantedGroup[],
   isSyncRevisionToHackmd?: boolean,
   overwriteScopesOfDescendants?: boolean,
 };
 
 export type IOptionsForCreate = {
   format?: string,
-  grantUserGroupIds?: {
-    type: GroupType,
-    item: ObjectIdLike,
-  }[],
+  grantUserGroupIds?: GrantedGroup[],
   grant?: PageGrant,
   overwriteScopesOfDescendants?: boolean,
   isSynchronously?: boolean,
