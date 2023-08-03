@@ -20,11 +20,6 @@ export type RevisionLoaderProps = {
 
 const logger = loggerFactory('growi:Page:RevisionLoader');
 
-// Always render '#revision-loader' for MutationObserver of SearchResultContent
-const RevisionLoaderRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
-  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
-);
-
 /**
  * Load data from server and render RevisionBody component
  */
@@ -76,11 +71,9 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   }
 
   return (
-    <RevisionLoaderRoot>
-      <RevisionRenderer
-        rendererOptions={rendererOptions}
-        markdown={markdown}
-      />
-    </RevisionLoaderRoot>
+    <RevisionRenderer
+      rendererOptions={rendererOptions}
+      markdown={markdown}
+    />
   );
 };

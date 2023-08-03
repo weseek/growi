@@ -1,7 +1,7 @@
 {
   "name": "@growi/preset-themes",
   "description": "GROWI preset themes",
-  "version": "6.1.8-RC.0",
+  "version": "6.1.11-RC.0",
   "license": "MIT",
   "main": "dist/libs/preset-themes.umd.js",
   "module": "dist/libs/preset-themes.mjs",
