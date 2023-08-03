@@ -72,6 +72,13 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
+      const page = pagesMap[key];
+      if (page == null) {
+        return {
+          title: 'NotFoundPage',
+          component: <h1 className="title">{t('commons:not_found_page.page_not_exist')}</h1>,
+        };
+      }
       return pagesMap[key];
     }, pagesMap);
   };
