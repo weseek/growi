@@ -76,7 +76,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
       if (page == null) {
         return {
           title: 'NotFoundPage',
-          component: <h1 className="title">{t('commons:not_found_page.page_not_exist')}</h1>,
+          component: <h2>{t('commons:not_found_page.page_not_exist')}</h2>,
         };
       }
       return pagesMap[key];
