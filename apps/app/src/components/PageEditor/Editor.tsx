@@ -14,10 +14,11 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
+import { useParentPageSelectModal } from '~/stores/modal';
 import { useIsMobile } from '~/stores/ui';
 
 import { IEditorMethods } from '../../interfaces/editor-methods';
-import { ModalForParentPageSelection } from '../ParentPageSelectModal';
+import { ParentPageSelectModal } from '../ParentPageSelectModal';
 
 import AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
@@ -68,6 +69,9 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const { data: editorSettings } = useEditorSettings();
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: isMobile } = useIsMobile();
+  const {
+    open: openModal,
+  } = useParentPageSelectModal();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
   // CodeMirrorEditor ref
@@ -337,7 +341,8 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           }}
         </Dropzone>
 
-        <ModalForParentPageSelection></ModalForParentPageSelection>
+        <Button onClick={() => openModal()}>起動！</Button>
+        <ParentPageSelectModal></ParentPageSelectModal>
 
         { isUploadable
           && (
