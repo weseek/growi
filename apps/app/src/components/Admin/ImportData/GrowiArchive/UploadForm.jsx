@@ -32,7 +32,6 @@ class UploadForm extends React.Component {
 
     try {
       const { data } = await apiv3PostForm('/import/upload', formData);
-      // TODO: toastSuccess, toastError
       this.props.onUpload(data);
     }
     catch (err) {
