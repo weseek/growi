@@ -130,10 +130,6 @@
     "page_not_exist": "このページは存在しません。"
   },
 
-  "forbidden_page": {
-    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません。"
-  },
-
   "g2g_data_transfer": {
     "tab": "データ移行",
     "data_transfer": "データ移行",

@@ -128,10 +128,6 @@
     "page_not_exist": "This page does not exist."
   },
 
-  "forbidden_page": {
-    "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen."
-  },
-
   "g2g_data_transfer": {
     "tab": "Data transfer",
     "data_transfer": "Data Transfer",
