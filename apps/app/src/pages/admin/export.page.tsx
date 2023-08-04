@@ -15,6 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArchiveDataPage'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
@@ -28,6 +29,10 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   if (isClient()) {
     const adminAppContainer = new AdminAppContainer();
     injectableContainers.push(adminAppContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
   }
 
   return (

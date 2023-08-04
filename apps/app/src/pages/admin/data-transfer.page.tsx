@@ -15,6 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const G2GDataTransferPage = dynamic(() => import('~/components/Admin/G2GDataTransfer'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 type Props = CommonProps;
@@ -30,6 +31,10 @@ const DataTransferPage: NextPage<Props> = (props) => {
   if (isClient()) {
     const adminAppContainer = new AdminAppContainer();
     injectableContainers.push(adminAppContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
   }
 
   return (

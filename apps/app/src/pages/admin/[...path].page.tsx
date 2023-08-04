@@ -11,11 +11,16 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const AdminNotFoundPage = dynamic(() => import('~/components/Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
+  }
 
   return (
     <AdminLayout>

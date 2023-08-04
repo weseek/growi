@@ -21,6 +21,7 @@ const PluginsExtensionPageContents = dynamic(
   () => import('~/features/growi-plugin/client/components/Admin').then(mod => mod.PluginsExtensionPageContents),
   { ssr: false },
 );
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
@@ -34,6 +35,10 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   if (isClient()) {
     const adminAppContainer = new AdminAppContainer();
     injectableContainers.push(adminAppContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
   }
 
   return (

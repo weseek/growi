@@ -9,11 +9,13 @@ import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import { Page403 } from '~/components/Admin/page403';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import {
   useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud, useIsAdmin,
 } from '~/stores/context';
+
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -52,6 +54,10 @@ const AdminHomePage: NextPage<Props> = (props) => {
     const adminHomeContainer = new AdminHomeContainer();
 
     injectableContainers.push(adminHomeContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
   }
 
 

@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Container, Provider } from 'unstated';
+// import { Page403 } from '~/components/Admin/page403';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -16,6 +17,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('~/components/Admin/Customize/Customize'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -40,6 +42,9 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
     injectableContainers.push(adminCustomizeContainer);
   }
 
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
+  }
 
   return (
     <Provider inject={[...injectableContainers]}>

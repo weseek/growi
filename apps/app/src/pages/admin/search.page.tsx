@@ -15,6 +15,7 @@ const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { s
 const FullTextSearchManagement = dynamic(
   () => import('~/components/Admin//FullTextSearchManagement').then(mod => mod.FullTextSearchManagement), { ssr: false },
 );
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -29,6 +30,10 @@ const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
 
   const title = t('full_text_search_management.full_text_search_management');
   const headTitle = generateCustomTitle(props, title);
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
+  }
 
   return (
     <AdminLayout componentTitle={title}>

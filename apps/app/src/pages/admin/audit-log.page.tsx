@@ -13,8 +13,8 @@ import { useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions } from 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
 const AuditLogManagement = dynamic(() => import('~/components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -31,6 +31,10 @@ const AdminAuditLogPage: NextPage<Props> = (props) => {
 
   const title = t('audit_log_management.audit_log');
   const headTitle = generateCustomTitle(props, title);
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
+  }
 
   return (
     <AdminLayout componentTitle={title}>

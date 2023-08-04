@@ -13,6 +13,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const UserGroupPage = dynamic(() => import('~/components/Admin/UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -27,6 +28,10 @@ const AdminUserGroupPage: NextPage<Props> = (props) => {
 
   const title = t('user_group_management.user_group_management');
   const headTitle = generateCustomTitle(props, title);
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
+  }
 
   return (
     <AdminLayout componentTitle={title}>

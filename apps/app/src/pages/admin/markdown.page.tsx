@@ -16,6 +16,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('~/components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
 
 
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
@@ -32,6 +33,9 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
     injectableContainers.push(adminMarkDownContainer);
   }
 
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <Page403 />;
+  }
 
   return (
     <Provider inject={[...injectableContainers]}>
