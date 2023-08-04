@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -6,7 +7,17 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     react(),
-    dts({ copyDtsFiles: true }),
+    dts({
+      outputDir: 'dist',
+      copyDtsFiles: true,
+    }),
+    {
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
+      enforce: 'pre',
+    },
   ],
   build: {
     outDir: 'dist/client',
@@ -17,23 +28,6 @@ export default defineConfig({
       },
       name: 'remark-lsx-libs',
       formats: ['es'],
-    },
-    rollupOptions: {
-      external: [
-        'react', 'react-dom',
-        'assert',
-        'axios',
-        'http-errors',
-        'is-absolute-url',
-        'react',
-        'next/link',
-        'unified',
-        'swr',
-        /^swr\/.*/,
-        /^hast-.*/,
-        /^unist-.*/,
-        /^@growi\/.*/,
-      ],
     },
   },
 });

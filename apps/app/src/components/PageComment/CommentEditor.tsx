@@ -2,7 +2,7 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,

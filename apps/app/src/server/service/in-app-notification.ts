@@ -1,6 +1,7 @@
-import {
-  HasObjectId, SubscriptionStatusType, Ref, IPage, IUser,
+import type {
+  HasObjectId, Ref, IUser,
 } from '@growi/core';
+import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types, FilterQuery, UpdateQuery } from 'mongoose';
 

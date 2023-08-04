@@ -2495,13 +2495,13 @@
     xdg-basedir "^4.0.0"
 
 "@growi/core@link:packages/core":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     bson-objectid "^2.0.4"
     escape-string-regexp "^4.0.0"
 
 "@growi/hackmd@link:packages/hackmd":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
 
 "@growi/pluginkit@link:packages/pluginkit":
   version "0.1.0"
@@ -2510,32 +2510,35 @@
     extensible-custom-error "^0.0.7"
 
 "@growi/presentation@link:packages/presentation":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
 
 "@growi/preset-templates@link:packages/preset-templates":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
 
 "@growi/preset-themes@link:packages/preset-themes":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
 
 "@growi/remark-attachment-refs@link:packages/remark-attachment-refs":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
     "@growi/remark-growi-directive" "link:packages/remark-growi-directive"
     "@growi/ui" "link:packages/ui"
+    axios "^0.24.0"
     bunyan "^1.8.15"
+    hast-util-select "^5.0.5"
+    swr "^2.0.3"
     universal-bunyan "^0.9.2"
 
 "@growi/remark-drawio@link:packages/remark-drawio":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     pako "^2.1.0"
 
 "@growi/remark-growi-directive@link:packages/remark-growi-directive":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     "@types/mdast" "^3.0.0"
     "@types/unist" "^2.0.0"
@@ -2552,23 +2555,27 @@
     uvu "^0.5.0"
 
 "@growi/remark-lsx@link:packages/remark-lsx":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
     "@growi/remark-growi-directive" "link:packages/remark-growi-directive"
     "@growi/ui" "link:packages/ui"
     escape-string-regexp "^4.0.0"
     express "^4.16.1"
+    http-errors "^2.0.0"
     mongoose "^6.11.3"
     swr "^2.0.3"
 
 "@growi/slack@link:packages/slack":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     "@slack/oauth" "^2.0.1"
+    "@slack/web-api" "^6.2.4"
     axios "^0.24.0"
     browser-bunyan "^1.6.3"
     bunyan "^1.8.15"
+    crypto "^1.0.1"
+    date-fns "^2.23.0"
     extensible-custom-error "^0.0.7"
     http-errors "^2.0.0"
     qs "^6.10.2"
@@ -2576,7 +2583,7 @@
     url-join "^4.0.0"
 
 "@growi/ui@link:packages/ui":
-  version "6.1.9-RC.0"
+  version "6.2.0-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
 
@@ -6448,6 +6455,11 @@ crypto-random-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
+
 csrf@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/csrf/-/csrf-3.1.0.tgz#ec75e9656d004d674b8ef5ba47b41fbfd6cb9c30"
@@ -6470,10 +6482,10 @@ cssfilter@0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/cssfilter/-/cssfilter-0.0.10.tgz#c6d2672632a2e5c83e013e6864a42ce8defd20ae"
 
-csstype@^3.0.2:
-  version "3.0.11"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.11.tgz#d66700c5eacfac1940deb4e3ee5642792d85cd33"
-  integrity sha512-sa6P2wJ+CAbgyy4KFssIb/JNMLxFvKF1pCYCSXS8ZMuqZnMsrxqI2E5sPyoTpxoPU/gVZMzr2zjOfg8GIZOMsw==
+csstype@^3.0.2, csstype@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
+  integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
 
 csurf@^1.11.0:
   version "1.11.0"
@@ -9115,10 +9127,17 @@ hast-util-sanitize@^4.0.0:
   dependencies:
     "@types/hast" "^2.0.0"
 
-hast-util-select@^5.0.2, hast-util-select@~5.0.1:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.2.tgz#8c603ebacf0f47e154c5fa2e5b7efc520813866b"
-  integrity sha512-QGN5o7N8gq1BhUX96ApLE8izOXlf+IPkOVGXcp9Dskdd3w0OqZrn6faPAmS0/oVogwJOd0lWFSYmBK75e+030g==
+hast-util-sanitize@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/hast-util-sanitize/-/hast-util-sanitize-4.1.0.tgz#d90f8521f5083547095c5c63a7e03150303e0286"
+  integrity sha512-Hd9tU0ltknMGRDv+d6Ro/4XKzBqQnP/EZrpiTbpFYfXv/uOhWeKc+2uajcbEvAEH98VZd7eII2PiXm13RihnLw==
+  dependencies:
+    "@types/hast" "^2.0.0"
+
+hast-util-select@^5.0.5, hast-util-select@~5.0.1:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/hast-util-select/-/hast-util-select-5.0.5.tgz#be9ccb71d2278681ca024727f12abd4f93b3e9bc"
+  integrity sha512-QQhWMhgTFRhCaQdgTKzZ5g31GLQ9qRb1hZtDPMqQaOhpLBziWcshUS0uCR5IJ0U1jrK/mxg35fmcq+Dp/Cy2Aw==
   dependencies:
     "@types/hast" "^2.0.0"
     "@types/unist" "^2.0.0"
@@ -9127,7 +9146,6 @@ hast-util-select@^5.0.2, hast-util-select@~5.0.1:
     css-selector-parser "^1.0.0"
     direction "^2.0.0"
     hast-util-has-property "^2.0.0"
-    hast-util-is-element "^2.0.0"
     hast-util-to-string "^2.0.0"
     hast-util-whitespace "^2.0.0"
     not "^0.1.0"
@@ -14003,7 +14021,7 @@ react@^18.2.0:
   dependencies:
     loose-envify "^1.1.0"
 
-reactstrap@^8.10.1:
+reactstrap@8.10.1, reactstrap@^8.10.1:
   version "8.10.1"
   resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-8.10.1.tgz#43ea596c7f82f88997a9c8aae203417910262d3f"
   integrity sha512-StjLADa/12yMNjafrSs+UD7sZAGtKpLO9fZp++2Dj0IzJinqY7eQhXlM3nFf0q40YsIcLvQdFc9pKF8PF4f0Qg==
@@ -14727,6 +14745,11 @@ robust-predicates@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/robust-predicates/-/robust-predicates-3.0.1.tgz#ecde075044f7f30118682bd9fb3f123109577f9a"
   integrity sha512-ndEIpszUHiG4HtDsQLeIuMvRsDnn8c8rYStabochtUeCvfuvNptb5TUbVD68LRAILPX7p9nqQGh4xJgn3EHS/g==
+
+rollup-plugin-node-externals@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-node-externals/-/rollup-plugin-node-externals-6.1.1.tgz#dff1a85073fe3c0b2c423b280259fe80392026a8"
+  integrity sha512-127OFMkpH5rBVlRHRBDUMk1m1sGuzbGy7so5aj/IkpUb2r3+wOWjR/erUzd2ChEQWPsxsyQG6xpYYvPBAdcBRA==
 
 rollup@^3.25.2:
   version "3.26.3"
@@ -15973,10 +15996,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-throttle-debounce@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-3.0.1.tgz#32f94d84dfa894f786c9a1f290e7a645b6a19abb"
-  integrity sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==
+throttle-debounce@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-5.0.0.tgz#a17a4039e82a2ed38a5e7268e4132d6960d41933"
+  integrity sha512-2iQTSgkkc1Zyk0MeVrt/3BvuOXYPl/R8Z0U2xxo9rjwNciaHDG3R+Lm6dh4EeUci49DanvBnuqI6jshoQQRGEg==
 
 throttleit@^1.0.0:
   version "1.0.0"
@@ -16472,7 +16495,7 @@ undici@^5.5.1:
   dependencies:
     busboy "^1.6.0"
 
-unified@^10.0.0, unified@~10.1.1:
+unified@^10.0.0, unified@^10.1.2, unified@~10.1.1:
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/unified/-/unified-10.1.2.tgz#b1d64e55dafe1f0b98bb6c719881103ecf6c86df"
   integrity sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==

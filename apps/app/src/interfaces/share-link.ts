@@ -1,4 +1,4 @@
-import { IPageHasId, HasObjectId } from '@growi/core';
+import type { IPageHasId, HasObjectId } from '@growi/core';
 
 // Todo: specify more detailed Type
 export type IResShareLinkList = {

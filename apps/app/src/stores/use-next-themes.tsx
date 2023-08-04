@@ -1,4 +1,5 @@
-import { isClient, ColorScheme } from '@growi/core';
+import { ColorScheme } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import { ThemeProvider, useTheme } from 'next-themes';
 import { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types';
 

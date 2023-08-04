@@ -1,4 +1,4 @@
-import { PageGrant } from '~/interfaces/page';
+import { PageGrant } from '@growi/core';
 
 import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 
