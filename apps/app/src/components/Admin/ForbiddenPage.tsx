@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 
 export const ForbiddenPage = (): JSX.Element => {
-  const { t } = useTranslation('commons');
+  const { t } = useTranslation('admin');
 
   const errorMessage = t('forbidden_page.do_not_have_admin_permission', { ns: 'commons' });
 
