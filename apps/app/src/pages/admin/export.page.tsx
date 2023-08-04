@@ -15,7 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArchiveDataPage'), { ssr: false });
-const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
@@ -32,7 +32,7 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   }
 
   if (props.isAccessDeniedForNonAdminUser) {
-    return <Page403 />;
+    return <ForbiddenPage />;
   }
 
   return (

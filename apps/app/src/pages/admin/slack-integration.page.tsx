@@ -14,7 +14,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const SlackIntegration = dynamic(() => import('~/components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
-const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -31,7 +31,7 @@ const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   const pageTitle = generateCustomTitle(props, componentTitle);
 
   if (props.isAccessDeniedForNonAdminUser) {
-    return <Page403 />;
+    return <ForbiddenPage />;
   }
 
   return (

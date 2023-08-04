@@ -5,7 +5,6 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
@@ -20,7 +19,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const AdminHome = dynamic(() => import('~/components/Admin/AdminHome/AdminHome'), { ssr: false });
-const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -38,11 +37,6 @@ const AdminHomePage: NextPage<Props> = (props) => {
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
   const { data: isAdmin } = useIsAdmin();
-  const router = useRouter();
-
-  if (!isAdmin) {
-    router.push('/page403');
-  }
 
   const { t } = useTranslation('admin');
 
@@ -57,7 +51,7 @@ const AdminHomePage: NextPage<Props> = (props) => {
   }
 
   if (props.isAccessDeniedForNonAdminUser) {
-    return <Page403 />;
+    return <ForbiddenPage />;
   }
 
 
