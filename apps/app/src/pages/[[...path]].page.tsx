@@ -207,7 +207,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useIsEnabledMarp(props.isEnabledMarp);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
 
   useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
@@ -564,7 +564,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
-  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
