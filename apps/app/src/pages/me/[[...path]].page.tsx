@@ -98,9 +98,9 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useIsEnabledMarp(props.isEnabledMarp);
 
   useRendererConfig(props.rendererConfig);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
 
   const title = generateCustomTitle(props, targetPage.title);
 
@@ -145,7 +145,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
-  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
 

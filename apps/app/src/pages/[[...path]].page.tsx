@@ -207,7 +207,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
 
   useIsSlackConfigured(props.isSlackConfigured);
   // useIsMailerSetup(props.isMailerSetup);
@@ -219,6 +218,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
   useRendererConfig(props.rendererConfig);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);

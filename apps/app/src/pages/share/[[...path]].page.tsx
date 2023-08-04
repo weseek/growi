@@ -92,7 +92,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useIsEnabledMarp(props.isEnabledMarp);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   useIsContainerFluid(props.isContainerFluid);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
@@ -160,7 +160,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
-  props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
