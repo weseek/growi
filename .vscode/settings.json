@@ -19,6 +19,5 @@
 
   "githubPullRequests.ignoredPullRequestBranches": [
     "master"
-  ],
-  "debug.allowBreakpointsEverywhere": true
+  ]
 }
