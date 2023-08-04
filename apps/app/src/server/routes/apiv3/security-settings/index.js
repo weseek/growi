@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core';
+import xss from 'xss';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
@@ -799,13 +800,17 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/LocalSetting'
    */
   router.put('/local-setting', loginRequiredStrictly, adminRequired, addActivity, validator.localSetting, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:registrationMode': req.body.registrationMode,
-      'security:registrationWhitelist': req.body.registrationWhitelist,
-      'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
-      'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
-    };
     try {
+      const sanitizedRegistrationWhitelist = req.body.registrationWhitelist
+        .map(line => xss(line, { stripIgnoreTag: true }));
+
+      const requestParams = {
+        'security:registrationMode': req.body.registrationMode,
+        'security:registrationWhitelist': sanitizedRegistrationWhitelist,
+        'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
+        'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
+      };
+
       await updateAndReloadStrategySettings('local', requestParams);
 
       const localSettingParams = {
