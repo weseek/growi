@@ -486,9 +486,9 @@
       "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。",
       "enable_marp": "启用 Marp",
       "enable_marp_desc": "当设置值为“关”时，则不能使用 Marp。",
-      "marp_official_site": "Marp 官方网站: ",
+      "marp_official_site": "参考资料：Marp 官方网站",
       "marp_official_site_link": "https://marp.app",
-      "marp_in_growi" : "如何使用 GROWI 中的 Marp: ",
+      "marp_in_growi" : "参考资料：GROWI Docs - Create slide using Marp",
       "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "自定义标题",

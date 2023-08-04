@@ -486,9 +486,9 @@
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
       "enable_marp": "Marp を有効化する",
       "enable_marp_desc": "OFFの場合、Marp は使用できません。",
-      "marp_official_site": "Marp 公式サイト: ",
+      "marp_official_site": "参考：Marp 公式サイト",
       "marp_official_site_link": "https://marp.app",
-      "marp_in_growi" : "GROWI での Marp の使い方: ",
+      "marp_in_growi" : "参考：GROWI Docs - Marp でスライドを作成する",
       "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
     },
     "custom_title": "カスタム Title",
