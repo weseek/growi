@@ -143,8 +143,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
               >
                 <p className="form-text text-muted">
                   {t('admin:customize_settings.function_options.enable_marp_desc')}
-                </p>
-                <p className="form-text text-muted">
+                  <br></br>
                   {t('admin:customize_settings.function_options.marp_official_site')}
                   <a
                     href={`${t('admin:customize_settings.function_options.marp_official_site_link')}`}
@@ -152,8 +151,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                     rel="noopener noreferrer"
                   >{`${t('admin:customize_settings.function_options.marp_official_site_link')}`}
                   </a>
-                </p>
-                <p className="form-text text-muted">
+                  <br></br>
                   {t('admin:customize_settings.function_options.marp_in_growi')}
                   <a
                     href={`${t('admin:customize_settings.function_options.marp_in_gorwi_link')}`}
