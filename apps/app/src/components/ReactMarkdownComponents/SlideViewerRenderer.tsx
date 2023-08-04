@@ -1,6 +1,6 @@
 
 
-import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client/';
+import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
