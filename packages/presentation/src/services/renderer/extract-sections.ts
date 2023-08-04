@@ -18,13 +18,13 @@ function wrapWithSection(parentNode: Parent, startElem: Node, endElem: Node | nu
 
   const section = {
     type: 'section',
+    children: between,
     data: {
       hName: 'section',
       hProperties: {
         className: isDarkMode ? 'invert' : '',
       },
     },
-    children: between,
   };
 
   siblings.splice(startIndex, between.length, section);
