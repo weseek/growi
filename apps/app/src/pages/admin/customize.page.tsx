@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Container, Provider } from 'unstated';
-// import { Page403 } from '~/components/Admin/page403';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
