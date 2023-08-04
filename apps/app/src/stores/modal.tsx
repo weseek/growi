@@ -13,7 +13,6 @@ import {
 import { IUserGroupHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
-import { useSWRxAdminPlugins } from '../features/growi-plugin/client/stores/admin-plugins';
 import type { IGrowiPluginHasId } from '../features/growi-plugin/interfaces';
 
 import { useStaticSWR } from './use-static-swr';

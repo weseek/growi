@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { usePluginDeleteModal } from '~/stores/modal';
 
 import styles from './PluginCard.module.scss';
 
@@ -26,7 +25,6 @@ export const PluginCard = (props: Props): JSX.Element => {
   } = props;
 
   const { t } = useTranslation('admin');
-  const { open: openPluginDeleteModal } = usePluginDeleteModal();
 
   const PluginCardButton = (): JSX.Element => {
     const [isEnabled, setState] = useState<boolean>(isEnalbed);
@@ -80,7 +78,7 @@ export const PluginCard = (props: Props): JSX.Element => {
           className="btn btn-primary"
           onClick={props.onDelete}
         >
-          {t('plugins.delete')}
+          {t('Delete')}
         </button>
       </div>
     );
