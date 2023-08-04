@@ -55,7 +55,7 @@
     "@tsed/exceptions": "^6.43.0",
     "@tsed/json-mapper": "^6.43.0",
     "@tsed/schema": "^6.43.0",
-    "bootstrap": "^5.0.2",
+    "bootstrap": "^5.3.1",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
     "morgan": "^1.10.0",
