@@ -3,6 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { Spinner } from 'reactstrap';
 
+import { usePluginDeleteModal } from '~/stores/modal';
+
 import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
 
 import { PluginCard } from './PluginCard';
@@ -20,6 +22,8 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { data, mutate } = useSWRxAdminPlugins();
+
+  const { open: openPluginDeleteModal } = usePluginDeleteModal();
 
   return (
     <div>
@@ -45,12 +49,22 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                 { data.plugins.length === 0 && (
                   <div>{t('plugins.plugin_is_not_installed')}</div>
                 )}
-                { data.plugins.map((plugin) => {
+                {data.plugins.map((plugin) => {
                   const pluginId = plugin._id;
                   const pluginName = plugin.meta.name;
                   const pluginUrl = plugin.origin.url;
                   const pluginIsEnabled = plugin.isEnabled;
                   const pluginDiscription = plugin.meta.desc;
+                  const onDeleteClicked = () => {
+                    openPluginDeleteModal({
+                      _id: pluginId,
+                      meta: { name: pluginName, types: [], desc: pluginDiscription },
+                      origin: { url: pluginUrl },
+                      isEnabled: pluginIsEnabled,
+                      installedPath: '',
+                      organizationName: '',
+                    });
+                  };
                   return (
                     <PluginCard
                       key={pluginId}
@@ -59,6 +73,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                       url={pluginUrl}
                       isEnalbed={pluginIsEnabled}
                       desc={pluginDiscription}
+                      onDelete={onDeleteClicked}
                       mutate={mutate}
                     />
                   );

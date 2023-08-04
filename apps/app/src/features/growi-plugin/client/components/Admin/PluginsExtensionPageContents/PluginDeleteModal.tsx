@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -6,21 +6,37 @@ import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { apiv3Delete } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
+import { usePluginDeleteModal } from '~/stores/modal';
 
-export type PluginDeleteModalProps = {
-  isShown: boolean,
-  name: string,
-  url: string,
-  cancelToDelete: () => void,
-  confirmToDelete: () => void,
-}
 
-export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element => {
-  const {
-    isShown, name, url, cancelToDelete, confirmToDelete,
-  } = props;
+export const PluginDeleteModal: React.FC = () => {
 
   const { t } = useTranslation('admin');
+  const { data: pluginDeleteModal, close: closePluginDeleteModal } = usePluginDeleteModal();
+  const isShown = pluginDeleteModal?.isShown;
+  const name = pluginDeleteModal?.name;
+  const url = pluginDeleteModal?.url;
+  const id = pluginDeleteModal?.id;
+
+  const toggleHandler = useCallback(() => {
+    closePluginDeleteModal();
+  }, [closePluginDeleteModal]);
+
+  const onClickDeleteButtonHandler = useCallback(async() => {
+    const reqUrl = `/plugins/${id}/remove`;
+
+    try {
+      const res = await apiv3Delete(reqUrl);
+      const pluginName = res.data.pluginName;
+      closePluginDeleteModal();
+      toastSuccess(t('toaster.remove_plugin_success', { pluginName }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [id, closePluginDeleteModal, t]);
 
   const headerContent = () => {
     return (
@@ -33,7 +49,7 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   const bodyContent = () => {
 
     return (
-      <div className="card well mt-2 p-2">
+      <div className="card well mt-2 p-2" key={id}>
         <Link href={`${url}`} legacyBehavior>{name}</Link>
       </div>
     );
@@ -42,7 +58,7 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   const footerContent = () => {
     return (
       <>
-        <Button color="danger" onClick={confirmToDelete}>
+        <Button color="danger" onClick={onClickDeleteButtonHandler}>
           {t('plugins.delete')}
         </Button>
       </>
@@ -50,8 +66,8 @@ export const PluginDeleteModal = (props: PluginDeleteModalProps): JSX.Element =>
   };
 
   return (
-    <Modal isOpen={isShown} toggle={cancelToDelete}>
-      <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
+    <Modal isOpen={isShown} toggle={toggleHandler}>
+      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light" name={name}>
         {headerContent()}
       </ModalHeader>
       <ModalBody>

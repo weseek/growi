@@ -13,7 +13,11 @@ import {
 import { IUserGroupHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
+import { useSWRxAdminPlugins } from '../features/growi-plugin/client/stores/admin-plugins';
+import type { IGrowiPluginHasId } from '../features/growi-plugin/interfaces';
+
 import { useStaticSWR } from './use-static-swr';
+
 
 const logger = loggerFactory('growi:stores:modal');
 
@@ -729,4 +733,68 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+/*
+ * PluginDeleteModal
+ */
+type PluginDeleteModalStatus = {
+  isShown: boolean,
+  plugins?: IGrowiPluginHasId[]
+  name: string,
+  url: string,
+  id: string,
+}
+
+type PluginDeleteModalUtils = {
+  open(plugin: IGrowiPluginHasId): void,
+  close(): void,
+}
+
+export interface PluginData {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
+  const initialStatus: PluginDeleteModalStatus = {
+    isShown: false,
+    plugins: [],
+    name: '',
+    url: '',
+    id: '',
+  };
+
+  const swrResponse = useStaticSWR<PluginDeleteModalStatus, Error>('pluginDeleteModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
+
+  const open = useCallback((plugin: IGrowiPluginHasId) => {
+
+    // Update the plugins field in the current state with the extractedPlugins
+    mutate({
+      ...swrResponse.data,
+      isShown: true,
+      name: plugin.meta.name,
+      url: plugin.origin.url,
+      id: plugin._id,
+    });
+  }, [mutate, swrResponse.data]);
+
+  const close = useCallback((): void => {
+    mutate({
+      ...swrResponse.data,
+      isShown: false,
+      plugins: [],
+      name: '',
+      url: '',
+      id: '',
+    });
+  }, [mutate, swrResponse.data]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
 };

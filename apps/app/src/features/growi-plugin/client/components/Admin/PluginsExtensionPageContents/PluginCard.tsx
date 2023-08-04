@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-
-import { PluginDeleteModal } from './PluginDeleteModal';
+import { usePluginDeleteModal } from '~/stores/modal';
 
 import styles from './PluginCard.module.scss';
 
@@ -15,17 +14,19 @@ type Props = {
   name: string,
   url: string,
   isEnalbed: boolean,
-  mutate: () => void,
   desc?: string,
+  onDelete: () => void,
+  mutate: () => void,
 }
 
 export const PluginCard = (props: Props): JSX.Element => {
 
   const {
-    id, name, url, isEnalbed, desc, mutate,
+    id, name, url, isEnalbed, desc,
   } = props;
 
   const { t } = useTranslation('admin');
+  const { open: openPluginDeleteModal } = usePluginDeleteModal();
 
   const PluginCardButton = (): JSX.Element => {
     const [isEnabled, setState] = useState<boolean>(isEnalbed);
@@ -71,51 +72,16 @@ export const PluginCard = (props: Props): JSX.Element => {
   };
 
   const PluginDeleteButton = (): JSX.Element => {
-    const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
-
-    const onClickPluginDeleteButton = () => {
-      setIsDeleteConfirmModalShown(true);
-    };
-
-    const onCancelDeletePlugin = () => {
-      setIsDeleteConfirmModalShown(false);
-    };
-
-    const onClickPluginDeleteBtnHandler = async() => {
-      const reqUrl = `/plugins/${id}/remove`;
-
-      try {
-        const res = await apiv3Delete(reqUrl);
-        const pluginName = res.data.pluginName;
-        toastSuccess(t('toaster.remove_plugin_success', { pluginName }));
-      }
-      catch (err) {
-        toastError(err);
-      }
-      finally {
-        mutate();
-        setIsDeleteConfirmModalShown(false);
-      }
-    };
 
     return (
       <div className="">
         <button
           type="submit"
           className="btn btn-primary"
-          onClick={() => onClickPluginDeleteButton()}
+          onClick={props.onDelete}
         >
           {t('plugins.delete')}
         </button>
-        {isDeleteConfirmModalShown && (
-          <PluginDeleteModal
-            isShown={isDeleteConfirmModalShown}
-            name={name}
-            url={url}
-            cancelToDelete={onCancelDeletePlugin}
-            confirmToDelete={onClickPluginDeleteBtnHandler}
-          />
-        )}
       </div>
     );
   };
