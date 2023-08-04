@@ -16,7 +16,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('~/components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
-const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
 
 
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {

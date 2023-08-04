@@ -15,7 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('~/components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
-const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
 
 const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');

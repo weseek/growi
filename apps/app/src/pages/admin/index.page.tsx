@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import { Page403 } from '~/components/Admin/page403';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import {
@@ -21,6 +20,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const AdminHome = dynamic(() => import('~/components/Admin/AdminHome/AdminHome'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
 
 
 type Props = CommonProps & {

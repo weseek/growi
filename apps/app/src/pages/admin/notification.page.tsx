@@ -15,7 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const NotificationSetting = dynamic(() => import('~/components/Admin/Notification/NotificationSetting'), { ssr: false });
-const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
 
 
 const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {

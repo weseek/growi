@@ -21,7 +21,7 @@ const PluginsExtensionPageContents = dynamic(
   () => import('~/features/growi-plugin/client/components/Admin').then(mod => mod.PluginsExtensionPageContents),
   { ssr: false },
 );
-const Page403 = dynamic(() => import('~/components/Admin/page403'), { ssr: false });
+const Page403 = dynamic(() => import('~/components/Admin/page403').then(mod => mod.Page403), { ssr: false });
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
