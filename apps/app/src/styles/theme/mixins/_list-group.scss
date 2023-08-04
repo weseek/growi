@@ -38,7 +38,7 @@
     .btn.btn-page-item-control {
       color: $btn-color;
       background-color: transparent;
-      @include bs.hover() {
+      &:hover {
         color: $btn-color-hover;
         background-color: $btn-bgcolor-hover;
       }

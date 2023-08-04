@@ -5,7 +5,7 @@
     fill: color-yiq($background);
   }
 
-  @include bs.hover() {
+  &:hover {
     svg {
       fill: color-yiq($hover-background);
     }
@@ -39,7 +39,7 @@
   svg {
     fill: $value;
   }
-  @include bs.hover() {
+  &:hover {
     svg {
       fill: $color-hover;
     }

@@ -11,7 +11,7 @@
   border-color: $border;
   // @include box-shadow($btn-box-shadow);
 
-  @include bs.hover() {
+  &:hover {
     color: hsl.contrast($background);
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
@@ -70,7 +70,7 @@
   color: $color;
   border-color: $color;
 
-  @include bs.hover() {
+  &:hover {
     color: $color-hover;
     background-color: $active-background;
     border-color: $active-border;
@@ -111,7 +111,7 @@
     fill: hsl.contrast($background);
   }
 
-  @include bs.hover() {
+  &:hover {
     svg {
       fill: hsl.contrast($background);
     }

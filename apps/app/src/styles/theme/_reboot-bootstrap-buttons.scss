@@ -4,7 +4,7 @@
     fill: var(--color-link);
   }
 
-  @include hover() {
+  &:hover {
     color: var(--color-link-hover);
     svg {
       fill: var(--color-link-hover);

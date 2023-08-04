@@ -49,12 +49,12 @@
   $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
   @import './mixins/list-group';
-  @import './reboot-bootstrap-text';
-  @import './reboot-bootstrap-border-colors';
-  @import './reboot-bootstrap-tables';
-  @import './reboot-bootstrap-theme-colors';
-  @import 'hsl-reboot-bootstrap-theme-colors';
-  @import './reboot-bootstrap-dropdown';
+  // @import './reboot-bootstrap-text';
+  // @import './reboot-bootstrap-border-colors';
+  // @import './reboot-bootstrap-tables';
+  // @import './reboot-bootstrap-theme-colors';
+  // @import 'hsl-reboot-bootstrap-theme-colors';
+  // @import './reboot-bootstrap-dropdown';
 
   // List Group
   @include override-list-group-item(
@@ -117,7 +117,7 @@
       background-color: rgba(white, 0.5);
       .link-switch {
         color: #1939b8;
-        @include hover() {
+        &:hover {
           color: lighten(#1939b8,20%);
         }
       }
@@ -264,7 +264,7 @@
     --gray-500-hs: 210,13%;
     --gray-500-l: 61%;
     @include hsl-button.button-outline-variant(var(--gray-500), var(--primary), #{hsl.lighten(var(--primary), 52%)}, transparent);
-    @include hover() {
+    &:hover {
       background-color: hsl.lighten(var(--primary), 58%);
     }
     &:not(:disabled):not(.disabled):active,
@@ -356,7 +356,7 @@
   * GROWI Editor
   */
   .grw-editor-navbar-bottom {
-    background-color: $gray-50;
+    background-color: $gray-100;
 
     #slack-mark-white {
       display: none;

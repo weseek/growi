@@ -34,7 +34,7 @@ a {
     fill: var(--color-link);
   }
 
-  @include hover() {
+  &:hover {
     color: var(--color-link-hover);
     text-decoration: $link-hover-decoration;
 
@@ -53,7 +53,7 @@ a {
 //   color: inherit;
 //   text-decoration: none;
 
-//   @include hover() {
+//   &:hover {
 //     color: inherit;
 //     text-decoration: none;
 //   }
