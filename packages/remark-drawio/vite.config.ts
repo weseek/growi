@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -6,7 +7,16 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     react(),
-    dts(),
+    dts({
+      copyDtsFiles: true,
+    }),
+    {
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
+      enforce: 'pre',
+    },
   ],
   build: {
     outDir: 'dist',
@@ -17,18 +27,6 @@ export default defineConfig({
       },
       name: 'remark-drawio-libs',
       formats: ['es'],
-    },
-    rollupOptions: {
-      external: [
-        'react', 'react-dom',
-        'pako',
-        'throttle-debounce',
-        'unified',
-        'unist',
-        /^hast-.*/,
-        /^unist-.*/,
-        /^@growi\/.*/,
-      ],
     },
   },
 });

@@ -3,9 +3,8 @@ import React, {
   KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
-import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
+import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { IFocusable } from '~/client/interfaces/focusable';

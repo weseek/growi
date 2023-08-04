@@ -76,13 +76,9 @@ export const Slides = (props: Props): JSX.Element => {
       <Head>
         <style>{css}</style>
       </Head>
-      <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
-        <div className="slides">
-          <ReactMarkdown {...rendererOptions}>
-            { children ?? '## No Contents' }
-          </ReactMarkdown>
-        </div>
-      </div>
+      <ReactMarkdown {...rendererOptions}>
+        { children ?? '## No Contents' }
+      </ReactMarkdown>
     </>
   );
 };

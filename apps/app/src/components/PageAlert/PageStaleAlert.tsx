@@ -1,6 +1,6 @@
+import { isIPageInfoForEntity } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { isIPageInfoForEntity } from '~/interfaces/page';
 
 import { useIsEnabledStaleNotification } from '../../stores/context';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page';

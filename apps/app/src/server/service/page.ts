@@ -5,10 +5,11 @@ import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
+import { PageGrant, PageStatus } from '@growi/core';
 import {
-  pagePathUtils, pathUtils, PageGrant, PageStatus,
-} from '@growi/core';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
+  pagePathUtils, pathUtils,
+} from '@growi/core/dist/utils';
+import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -2319,6 +2320,8 @@ class PageService {
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
       contentAge: page.getContentAge(),
+      descendantCount: page.descendantCount,
+      commentCount: page.commentCount,
     };
 
   }

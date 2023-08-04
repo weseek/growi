@@ -1,8 +1,4 @@
-import { ITag } from '@growi/core';
-
-import { IPageHasId } from './page';
-
-export type { ITag } from '@growi/core';
+import type { ITag, IPageHasId } from '@growi/core';
 
 export type IDataTagCount = ITag & {count: number}
 

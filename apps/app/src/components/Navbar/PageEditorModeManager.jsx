@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { useCurrentUser, useHackmdUri } from '~/stores/context';
+import { useIsAdmin, useHackmdUri } from '~/stores/context';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import styles from './PageEditorModeManager.module.scss';
@@ -47,10 +47,9 @@ function PageEditorModeManager(props) {
 
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { data: currentUser } = useCurrentUser();
   const { data: hackmdUri } = useHackmdUri();
 
-  const isAdmin = currentUser?.admin;
+  const { data: isAdmin } = useIsAdmin();
   const isHackmdEnabled = hackmdUri != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
 

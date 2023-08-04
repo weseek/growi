@@ -6,9 +6,8 @@ import EventEmitter from 'events';
 import nodePath from 'path';
 
 
-import {
-  IPageHasId, pathUtils,
-} from '@growi/core';
+import type { IPageHasId } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -112,7 +111,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
-  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState('');
+  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
@@ -158,7 +157,7 @@ const PageEditor = React.memo((): JSX.Element => {
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
   useEffect(() => {
-    setCreatedPageRevisionIdWithAttachment('');
+    setCreatedPageRevisionIdWithAttachment(undefined);
   }, [router]);
 
   useEffect(() => {

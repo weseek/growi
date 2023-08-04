@@ -1,4 +1,5 @@
-import type { IPage } from '~/interfaces/page';
+import type { IPage } from '@growi/core';
+
 import { useIsContainerFluid } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useEditorMode } from '~/stores/ui';

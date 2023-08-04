@@ -1,10 +1,21 @@
+import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    dts(),
+    dts({
+      outputDir: 'dist',
+      copyDtsFiles: true,
+    }),
+    {
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
+      enforce: 'pre',
+    },
   ],
   build: {
     outDir: 'dist/server',
@@ -21,21 +32,6 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src/server',
       },
-      external: [
-        'react',
-        'axios',
-        'escape-string-regexp',
-        'express',
-        'http-errors',
-        'is-absolute-url',
-        'mongoose',
-        'next/link',
-        'unified',
-        'swr',
-        /^hast-.*/,
-        /^unist-.*/,
-        /^@growi\/.*/,
-      ],
     },
   },
 });

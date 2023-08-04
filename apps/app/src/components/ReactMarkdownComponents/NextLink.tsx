@@ -1,3 +1,4 @@
+import { pagePathUtils } from '@growi/core/dist/utils';
 import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';
@@ -15,6 +16,18 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
     const baseUrl = new URL(siteUrl ?? 'https://example.com');
     const hrefUrl = new URL(href, baseUrl);
     return baseUrl.host !== hrefUrl.host;
+  }
+  catch (err) {
+    logger.debug(err);
+    return false;
+  }
+};
+
+const isCreatablePage = (href: string) => {
+  try {
+    const url = new URL(href);
+    const pathName = url.pathname;
+    return pagePathUtils.isCreatablePage(pathName);
   }
   catch (err) {
     logger.debug(err);
@@ -45,18 +58,18 @@ export const NextLink = (props: Props): JSX.Element => {
     Object.entries(rest).filter(([key]) => key.startsWith('data-')),
   );
 
-  // when href is an anchor link
-  if (isAnchorLink(href)) {
-    return (
-      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
-    );
-  }
-
   if (isExternalLink(href, siteUrl)) {
     return (
       <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
         {children}&nbsp;<i className='icon-share-alt small'></i>
       </a>
+    );
+  }
+
+  // when href is an anchor link or not-creatable path
+  if (isAnchorLink(href) || !isCreatablePage(href)) {
+    return (
+      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
     );
   }
 
