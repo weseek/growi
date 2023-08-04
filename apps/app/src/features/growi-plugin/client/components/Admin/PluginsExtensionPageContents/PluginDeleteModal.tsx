@@ -59,7 +59,7 @@ export const PluginDeleteModal: React.FC = () => {
     return (
       <>
         <Button color="danger" onClick={onClickDeleteButtonHandler}>
-          {t('plugins.delete')}
+          {t('Delete')}
         </Button>
       </>
     );

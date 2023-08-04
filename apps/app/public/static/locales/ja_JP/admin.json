@@ -874,7 +874,6 @@
     "plugin_card": "プラグインカード",
     "plugin_is_not_installed": "プラグインがインストールされていません",
     "install": "インストール",
-    "delete": "削除",
     "confirm": "プラグインを削除しますか？"
   },
   "cloud_setting_management": {
