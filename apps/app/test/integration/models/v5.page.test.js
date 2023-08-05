@@ -1074,7 +1074,7 @@ describe('Page', () => {
         });
       });
       describe('update grant of a page under a page with GRANT_USER_GROUP', () => {
-        test.only('successfully change to GRANT_USER_GROUP if the group to set is the child or descendant of the parent page group', async() => {
+        test('successfully change to GRANT_USER_GROUP if the group to set is the child or descendant of the parent page group', async() => {
           // path
           const _path1 = '/mup29_A';
           const _path2 = '/mup29_A/mup30_owner';
