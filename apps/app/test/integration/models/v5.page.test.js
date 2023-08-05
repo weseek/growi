@@ -1106,13 +1106,15 @@ describe('Page', () => {
           // Second round
           // Update group to groupC which is a grandchild from pageA's point of view
           const secondRoundOptions = { grant: Page.GRANT_USER_GROUP, grantUserGroupIds: [{ item: userGroupIdPModelC, type: 'UserGroup' }] }; // from GRANT_USER_GROUP(userGroupIdPModelB) to GRANT_USER_GROUP(userGroupIdPModelC)
-          console.log('い');
-          console.log(_page2);
+          // undo grantedGroups populate to prevent Page.hydrate error
+          _page2.grantedGroups.forEach((group) => {
+            group.item = group.item._id;
+          });
           const secondRoundUpdatedPage = await updatePage(_page2, 'new', 'new', pModelUser3, secondRoundOptions);
 
           expect(secondRoundUpdatedPage).toBeTruthy();
           expect(secondRoundUpdatedPage.grant).toBe(Page.GRANT_USER_GROUP);
-          expect(secondRoundUpdatedPage.grantedGroups.map(g => g.item)).toStrictEqual([userGroupIdPModelC]);
+          expect(secondRoundUpdatedPage.grantedGroups.map(g => g.item._id)).toStrictEqual([userGroupIdPModelC]);
         });
         test('Fail to change to GRANT_USER_GROUP if the group to set is NOT the child or descendant of the parent page group', async() => {
           // path

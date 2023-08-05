@@ -585,7 +585,9 @@ class PageGrantService {
     const descendantPagesGrantInfo = {
       grantSet,
       grantedUserIds: new Set(comparableDescendants.grantedUserIds), // all only me users of descendant pages
-      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds.map(g => g.item)), // all user groups of descendant pages
+      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds.map((g) => {
+        return typeof g.item === 'string' ? g.item : g.item._id;
+      })), // all user groups of descendant pages
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
