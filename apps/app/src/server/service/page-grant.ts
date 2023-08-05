@@ -3,6 +3,7 @@ import {
   pagePathUtils, pathUtils, pageUtils,
   PageGrant, PageGrantCanBeOnTree,
 } from '@growi/core';
+import { et } from 'date-fns/locale';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
@@ -11,7 +12,7 @@ import ExternalUserGroupRelation from '~/features/external-user-group/server/mod
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
-import { isIncludesObjectId, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
+import { includesObjectIds, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { divideByType } from '../util/granted-group';
@@ -140,7 +141,7 @@ class PageGrantService {
           throw Error('grantedUserIds must have one user');
         }
 
-        if (!isIncludesObjectId(ancestor.applicableUserIds, target.grantedUserIds[0])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
+        if (!includesObjectIds(ancestor.applicableUserIds, [target.grantedUserIds[0]])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
           return false;
         }
       }
@@ -149,8 +150,8 @@ class PageGrantService {
         if (target.grantedGroupIds == null || target.grantedGroupIds.length === 0) {
           throw Error('grantedGroupId must not be empty');
         }
-
-        if (!hasIntersection(ancestor.applicableGroupIds, target.grantedGroupIds.map(e => e.item))) { // only child groups or the same group can exist under GRANT_USER_GROUP page
+        const targetGrantedGroupStrIds = target.grantedGroupIds.map(e => (typeof e.item === 'string' ? e.item : e.item._id));
+        if (!includesObjectIds(ancestor.applicableGroupIds, targetGrantedGroupStrIds)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
       }
@@ -233,7 +234,7 @@ class PageGrantService {
 
         const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
         const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map(g => g._id) } });
-        applicableUserIds = [...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser);
+        applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser)));
 
         const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
           return UserGroup.findGroupsWithDescendantsById(group._id);
@@ -645,7 +646,7 @@ class PageGrantService {
   private calcIsAllDescendantsGrantedByOperator(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_OWNER)) {
       const isNonApplicableOwnerExist = descendantPagesGrantInfo.grantedUserIds.size >= 2
-        || !isIncludesObjectId([...descendantPagesGrantInfo.grantedUserIds], operatorGrantInfo.userId);
+        || !includesObjectIds([...descendantPagesGrantInfo.grantedUserIds], [operatorGrantInfo.userId]);
       if (isNonApplicableOwnerExist) {
         return false;
       }

@@ -3,14 +3,16 @@ import type { HasObjectId } from './has-object-id';
 import type { IRevision, HasRevisionShortbody, IRevisionHasId } from './revision';
 import type { SubscriptionStatusType } from './subscription';
 import type { ITag } from './tag';
-import type { IUser, IUserGroupHasId, IUserHasId } from './user';
+import type {
+  IUser, IUserGroup, IUserGroupHasId, IUserHasId,
+} from './user';
 
 export const GroupType = { userGroup: 'UserGroup', externalUserGroup: 'ExternalUserGroup' } as const;
 export type GroupType = typeof GroupType[keyof typeof GroupType];
 
 export type GrantedGroup = {
   type: GroupType,
-  item: Ref<any>,
+  item: Ref<IUserGroup>,
 }
 
 export type IPage = {
