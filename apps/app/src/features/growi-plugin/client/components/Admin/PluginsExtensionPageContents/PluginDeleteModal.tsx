@@ -10,12 +10,15 @@ import { apiv3Delete } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { usePluginDeleteModal } from '~/stores/modal';
 
+import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
+
 
 export const PluginDeleteModal: React.FC = () => {
 
   const { t } = useTranslation('admin');
+  const { mutate } = useSWRxAdminPlugins();
   const { data: pluginDeleteModal, close: closePluginDeleteModal } = usePluginDeleteModal();
-  const isShown = pluginDeleteModal?.isShown;
+  const isOpen = pluginDeleteModal?.isOpen;
   const name = pluginDeleteModal?.name;
   const url = pluginDeleteModal?.url;
   const id = pluginDeleteModal?.id;
@@ -32,11 +35,12 @@ export const PluginDeleteModal: React.FC = () => {
       const pluginName = res.data.pluginName;
       closePluginDeleteModal();
       toastSuccess(t('toaster.remove_plugin_success', { pluginName }));
+      mutate();
     }
     catch (err) {
       toastError(err);
     }
-  }, [id, closePluginDeleteModal, t]);
+  }, [id, closePluginDeleteModal, t, mutate]);
 
   const headerContent = () => {
     return (
@@ -66,7 +70,7 @@ export const PluginDeleteModal: React.FC = () => {
   };
 
   return (
-    <Modal isOpen={isShown} toggle={toggleHandler}>
+    <Modal isOpen={isOpen} toggle={toggleHandler}>
       <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light" name={name}>
         {headerContent()}
       </ModalHeader>

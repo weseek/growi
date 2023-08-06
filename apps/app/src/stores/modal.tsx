@@ -738,8 +738,7 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
  * PluginDeleteModal
  */
 type PluginDeleteModalStatus = {
-  isShown: boolean,
-  plugins?: IGrowiPluginHasId[]
+  isOpen: boolean,
   name: string,
   url: string,
   id: string,
@@ -758,8 +757,7 @@ export interface PluginData {
 
 export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
   const initialStatus: PluginDeleteModalStatus = {
-    isShown: false,
-    plugins: [],
+    isOpen: false,
     name: '',
     url: '',
     id: '',
@@ -770,10 +768,9 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
 
   const open = useCallback((plugin: IGrowiPluginHasId) => {
 
-    // Update the plugins field in the current state with the extractedPlugins
     mutate({
       ...swrResponse.data,
-      isShown: true,
+      isOpen: true,
       name: plugin.meta.name,
       url: plugin.origin.url,
       id: plugin._id,
@@ -783,8 +780,7 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   const close = useCallback((): void => {
     mutate({
       ...swrResponse.data,
-      isShown: false,
-      plugins: [],
+      isOpen: false,
       name: '',
       url: '',
       id: '',
