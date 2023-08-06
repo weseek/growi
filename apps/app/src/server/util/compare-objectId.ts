@@ -19,6 +19,19 @@ export const includesObjectIds = (arr: ObjectIdLike[], potentialSubset: ObjectId
 };
 
 /**
+ * Check if 2 arrays have an intersection
+ * @param arr1 an array with ObjectIds
+ * @param arr2 another array with ObjectIds
+ * @returns Whether or not arr1 and arr2 have an intersection
+ */
+export const hasIntersection = (arr1: ObjectIdLike[], arr2: ObjectIdLike[]): boolean => {
+  const _arr1 = arr1.map(i => i.toString());
+  const _arr2 = arr2.map(i => i.toString());
+
+  return _arr1.some(item => _arr2.includes(item));
+};
+
+/**
  * Exclude ObjectIds which exist in testIds from targetIds
  * @param targetIds Array of mongoose.Types.ObjectId
  * @param testIds Array of mongoose.Types.ObjectId

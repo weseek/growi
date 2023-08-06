@@ -48,11 +48,11 @@ export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
   lastUpdateUser: IUserHasId,
 }
 
-export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroup'|'revision'|'author'> & {
+export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroups'|'revision'|'author'> & {
   lastUpdateUser: IUserHasId,
   creator: IUserHasId | null,
   deleteUser: IUserHasId,
-  grantedGroup: IUserGroupHasId,
+  grantedGroups: { type: string, item: IUserGroupHasId }[],
   revision: IRevisionHasId,
   author: IUserHasId,
 }

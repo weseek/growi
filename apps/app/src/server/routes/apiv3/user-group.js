@@ -812,7 +812,11 @@ module.exports = (crowi) => {
     try {
       const { docs, totalDocs } = await Page.paginate({
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: { $in: [id] },
+        grantedGroups: {
+          $elemMatch: {
+            item: id,
+          },
+        },
       }, {
         offset,
         limit,
