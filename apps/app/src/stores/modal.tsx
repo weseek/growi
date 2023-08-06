@@ -17,7 +17,6 @@ import type { IGrowiPluginHasId } from '../features/growi-plugin/interfaces';
 
 import { useStaticSWR } from './use-static-swr';
 
-
 const logger = loggerFactory('growi:stores:modal');
 
 /*
