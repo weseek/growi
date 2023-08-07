@@ -170,6 +170,7 @@ type Props = CommonProps & {
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
   skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 
   grantData?: IPageGrantData,
 
@@ -438,7 +439,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService } = crowi;
+  const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -477,7 +478,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
-    props.skipSSR = await skipSSR(page);
+    const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
@@ -603,6 +605,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 /**
