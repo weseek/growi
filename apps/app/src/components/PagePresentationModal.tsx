@@ -88,7 +88,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
-            isEnabledMarp = {isEnabledMarp}
+            isEnabledMarp = {isEnabledMarp as boolean}
           >
             {markdown}
           </Presentation>
