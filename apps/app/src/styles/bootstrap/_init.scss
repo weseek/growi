@@ -1,8 +1,11 @@
 @import 'bootstrap/scss/functions';
 
 @import './variables';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
 
 @import 'bootstrap/scss/maps';
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 // merge $colors to $theme-colors
 // $theme-colors: map-merge($theme-colors, $colors);
 

@@ -41,6 +41,7 @@ $nav-tabs-link-active-bg: var(--bgcolor-global);
 $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 // @import 'reboot-bootstrap-buttons';
 // @import 'reboot-bootstrap-colors';
 // @import 'reboot-bootstrap-theme-colors';
@@ -63,6 +64,7 @@ code:not([class^='language-']) {
 //== Apply to Bootstrap Elements
 //
 
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 // Alert link
 // @each $color, $value in $theme-colors {
 //   .alert.alert-#{$color} {
@@ -86,6 +88,7 @@ code:not([class^='language-']) {
   }
 }
 
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 // Form
 // .form-control {
 //   @include form-control-focus();

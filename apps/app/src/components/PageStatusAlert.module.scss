@@ -17,7 +17,8 @@
       text-align: center;
 
       .btn {
-        @include bs.button-size(bs.$btn-padding-y-lg, bs.$btn-padding-x-lg, bs.$btn-font-size-lg, bs.$btn-line-height-lg, bs.$btn-border-radius-lg);
+        // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+        // @include bs.button-size(bs.$btn-padding-y-lg, bs.$btn-padding-x-lg, bs.$btn-font-size-lg, bs.$btn-line-height-lg, bs.$btn-border-radius-lg);
       }
     }
   }

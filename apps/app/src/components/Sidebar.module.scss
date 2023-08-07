@@ -128,7 +128,7 @@
         }
         .hitarea {
           position: absolute;
-          border-radius: bs.$rounded-pill;
+          border-radius: bs.$border-radius-pill;
 
           @include hitarea(30px);
         }
