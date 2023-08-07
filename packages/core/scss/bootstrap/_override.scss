@@ -100,10 +100,10 @@
 //   }
 // }
 
-// // Badges
-// .badge {
-//   @extend .badge-pill;
-// }
+// Badges
+.badge {
+  @extend .rounded-pill;
+}
 
 // //Modals
 // .modal-open {
