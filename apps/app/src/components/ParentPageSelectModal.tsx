@@ -25,9 +25,9 @@ export const ParentPageSelectModal = (): JSX.Element => {
         toggle={() => closeModal()}
         centered={true}
       >
-        <ModalHeader toggle={() => closeModal()}>モーダル</ModalHeader>
+        <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
         <ModalBody >
-        少年老い易く学成り難し
+        Art is long, life is short.
         </ModalBody>
         <ModalFooter>
           <Button color="primary">
