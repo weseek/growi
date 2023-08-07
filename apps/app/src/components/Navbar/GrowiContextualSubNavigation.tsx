@@ -27,6 +27,7 @@ import {
 import {
   useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
 } from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
@@ -283,12 +284,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     return;
   }, [mutatePageTagsForEditors]);
 
-  const reload = useCallback(() => {
-    if (currentPathname != null) {
-      router.push(currentPathname);
-    }
-  }, [currentPathname, router]);
-
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       router.push(toPath);
@@ -298,10 +293,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      reload();
+      mutateCurrentPage();
+      mutatePageInfo();
+      mutatePageTree();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [openRenameModal, reload]);
+  }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -321,6 +318,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
       mutateCurrentPage();
       mutatePageInfo();
+      mutatePageTree();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);

@@ -7,7 +7,7 @@ function openEditor() {
     });
     // until
     return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-  })
+  });
   cy.get('.CodeMirror').should('be.visible');
 }
 
@@ -23,20 +23,20 @@ context('Access to page', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true, true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
   // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#headers');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
@@ -45,18 +45,21 @@ context('Access to page', () => {
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
+    // assert the element is in viewport
+    cy.get('#headers').should('be.inViewport');
+
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#headers').invoke('removeClass', 'blink');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
@@ -64,69 +67,67 @@ context('Access to page', () => {
 
     cy.get('.math').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     cy.getByTestid('navbar-editor').should('be.visible');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.getByTestid('save-page-btn').should('be.visible');
     cy.get('.grw-grant-selector').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
   const body1 = 'hello';
   const body2 = ' world!';
-  it('View and Edit contents are successfully loaded', () => {
+  it('Edit and save with save-page-btn', () => {
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
 
     // check edited contents after save
-    cy.get('.CodeMirror textarea').type(body1, { force: true });
-    cy.get('.CodeMirror-code').contains(body1);
-    cy.get('.page-editor-preview-body').contains(body1);
+    cy.appendTextToEditorUntilContains(body1);
+    cy.get('.page-editor-preview-body').should('contain.text', body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
     cy.get('.wiki').should('be.visible');
     cy.get('.wiki').children().first().should('have.text', body1);
+    cy.screenshot(`${ssPrefix}-edit-and-save-with-save-page-btn`);
   })
 
-  it('Editing contents are successfully loaded with shortcut key', () => {
+  it('Edit and save with shortcut key', () => {
     const savePageShortcutKey = '{ctrl+s}';
 
     cy.visit('/Sandbox/testForUseEditingMarkdown');
 
     openEditor();
 
-    cy.get('.CodeMirror-code').contains(body1);
-
     // check editing contents with shortcut key
-    cy.get('.CodeMirror textarea').type(body2, { force: true });
-    cy.get('.CodeMirror-code').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.appendTextToEditorUntilContains(body2);
+    cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
     cy.get('.CodeMirror').click().type(savePageShortcutKey);
-    cy.get('.CodeMirror-code').contains(body1+body2);
-    cy.get('.page-editor-preview-body').contains(body1+body2);
+    cy.get('.CodeMirror-code').should('contain.text', body1+body2);
+    cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
+    cy.screenshot(`${ssPrefix}-edit-and-save-with-shortcut-key`);
   })
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin');
+    cy.collapseSidebar(true);
 
-    cy.waitUntilSkeletonDisappear();
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
-    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
@@ -172,7 +173,7 @@ context('Access to special pages', () => {
   it('/trash is successfully loaded', () => {
     cy.visit('/trash');
 
-    cy.getByTestid('trash-page-list').contains('There are no pages under this page.');
+    cy.getByTestid('trash-page-list').should('contain.text', 'There are no pages under this page.');
 
     cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-trash`);
@@ -191,7 +192,7 @@ context('Access to special pages', () => {
 
     cy.getByTestid('tags-page').within(() => {
       cy.getByTestid('grw-tags-list').should('be.visible');
-      cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
+      cy.getByTestid('grw-tags-list').should('contain.text', 'You have no tag, You can set tags on pages');
     });
 
     cy.collapseSidebar(true);
@@ -279,9 +280,8 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
     });
 
-    cy.get('.CodeMirror textarea').type(templateBody1, { force: true });
-    cy.get('.CodeMirror-code').contains(templateBody1);
-    cy.get('.page-editor-preview-body').contains(templateBody1);
+    cy.appendTextToEditorUntilContains(templateBody1);
+    cy.get('.page-editor-preview-body').should('contain.text', templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
@@ -314,9 +314,8 @@ context('Access to Template Editing Mode', () => {
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
-    cy.get('.CodeMirror textarea').type(templateBody2, { force: true });
-    cy.get('.CodeMirror-code').contains(templateBody2);
-    cy.get('.page-editor-preview-body').contains(templateBody2);
+    cy.appendTextToEditorUntilContains(templateBody2);
+    cy.get('.page-editor-preview-body').should('contain.text', templateBody2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });

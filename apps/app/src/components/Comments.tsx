@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import { type IRevisionHasId, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
+import { debounce } from 'throttle-debounce';
 
-import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';
+import { type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
-import { useIsTrashPage } from '~/stores/page';
+import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
@@ -32,35 +33,27 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
+  const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
 
   const pageCommentParentRef = useRef<HTMLDivElement>(null);
 
+  const onLoadedDebounced = useMemo(() => debounce(500, () => onLoaded?.()), [onLoaded]);
+
   useEffect(() => {
     const parent = pageCommentParentRef.current;
     if (parent == null) return;
 
-    const observerCallback = (mutationRecords:MutationRecord[]) => {
-      mutationRecords.forEach((record:MutationRecord) => {
-        const target = record.target as HTMLElement;
+    const observer = new MutationObserver(() => {
+      onLoadedDebounced();
+    });
+    observer.observe(parent, { childList: true, subtree: true });
 
-        for (const child of Array.from(target.children)) {
-          const childId = (child as HTMLElement).id;
-          if (childId === PageCommentRootElemId) {
-            onLoaded?.();
-            break;
-          }
-        }
-
-      });
-    };
-
-    const observer = new MutationObserver(observerCallback);
-    observer.observe(parent, { childList: true });
-    return () => {
-      observer.disconnect();
-    };
+    // no cleanup function -- 2023.07.31 Yuki Takei
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
+    // > You can call observe() multiple times on the same MutationObserver
+    // > to watch for changes to different parts of the DOM tree and/or different types of changes.
   }, [onLoaded]);
 
   const isTopPagePath = isTopPage(pagePath);
@@ -68,6 +61,11 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   if (pageId == null || isTopPagePath) {
     return <></>;
   }
+
+  const onCommentButtonClickHandler = () => {
+    mutate();
+    mutatePageInfo();
+  };
 
   return (
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
@@ -80,15 +78,14 @@ export const Comments = (props: CommentsProps): JSX.Element => {
             currentUser={currentUser}
             isReadOnly={false}
             titleAlign="left"
-            hideIfEmpty={false}
           />
         </div>
-        { !isDeleted && (
+        {!isDeleted && (
           <div id="page-comment-write">
             <CommentEditor
               pageId={pageId}
               isForNewComment
-              onCommentButtonClicked={mutate}
+              onCommentButtonClicked={onCommentButtonClickHandler}
               revisionId={revision._id}
             />
           </div>
