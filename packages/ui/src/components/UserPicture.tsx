@@ -11,8 +11,6 @@ import type { UncontrolledTooltipProps } from 'reactstrap';
 
 const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
 
-const { userPageRoot } = pagePathUtils;
-
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
@@ -30,7 +28,7 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps
   const router = useRouter();
 
   const { user } = props;
-  const href = userPageRoot(user);
+  const href = pagePathUtils.userHomepagePath(user);
 
   const clickHandler = useCallback(() => {
     router.push(href);

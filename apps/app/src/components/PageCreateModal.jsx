@@ -21,7 +21,7 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 import styles from './PageCreateModal.module.scss';
 
 const {
-  userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
+  isCreatablePage, generateEditorPath, isUsersHomepage,
 } = pagePathUtils;
 
 const PageCreateModal = () => {
@@ -35,8 +35,8 @@ const PageCreateModal = () => {
 
   const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
-  const userPageRootPath = userPageRoot(currentUser);
-  const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
+  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
+  const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
 
@@ -46,7 +46,7 @@ const PageCreateModal = () => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
-  const [isMatchedWithUserHomePagePath, setIsMatchedWithUserHomePagePath] = useState(false);
+  const [isMatchedWithUserHomepagePath, setIsMatchedWithUserHomepagePath] = useState(false);
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
@@ -59,19 +59,19 @@ const PageCreateModal = () => {
     setTodayInput1(t('Memo'));
   }, [t]);
 
-  const checkIsUsersHomePageDebounce = useMemo(() => {
-    const checkIsUsersHomePage = () => {
-      setIsMatchedWithUserHomePagePath(isUsersHomePage(pageNameInput));
+  const checkIsUsersHomepageDebounce = useMemo(() => {
+    const checkIsUsersHomepage = () => {
+      setIsMatchedWithUserHomepagePath(isUsersHomepage(pageNameInput));
     };
 
-    return debounce(1000, checkIsUsersHomePage);
+    return debounce(1000, checkIsUsersHomepage);
   }, [pageNameInput]);
 
   useEffect(() => {
     if (isOpened) {
-      checkIsUsersHomePageDebounce(pageNameInput);
+      checkIsUsersHomepageDebounce(pageNameInput);
     }
-  }, [isOpened, checkIsUsersHomePageDebounce, pageNameInput]);
+  }, [isOpened, checkIsUsersHomepageDebounce, pageNameInput]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -129,7 +129,7 @@ const PageCreateModal = () => {
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    redirectToEditor(userPageRootPath, tmpTodayInput1, now, todayInput2);
+    redirectToEditor(userHomepagePath, tmpTodayInput1, now, todayInput2);
   }
 
   /**
@@ -164,7 +164,7 @@ const PageCreateModal = () => {
 
             <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
               <div className="d-flex align-items-center">
-                <span>{userPageRootPath}/</span>
+                <span>{userHomepagePath}/</span>
                 <form onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
                   <input
                     type="text"
@@ -246,14 +246,14 @@ const PageCreateModal = () => {
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createInputPage}
-                disabled={isMatchedWithUserHomePagePath}
+                disabled={isMatchedWithUserHomepagePath}
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
 
           </div>
-          { isMatchedWithUserHomePagePath && (
+          { isMatchedWithUserHomepagePath && (
             <p className="text-danger mt-2">Error: Cannot create page under /user page directory.</p>
           ) }
 

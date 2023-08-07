@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -64,7 +65,7 @@ const PersonalDropdown = () => {
 
           <div className="btn-group btn-block mt-2" role="group">
             <Link
-              href={`/user/${currentUser.username}`}
+              href={pagePathUtils.userHomepagePath(currentUser)}
               className="btn btn-sm btn-outline-secondary col"
               data-testid="grw-personal-dropdown-menu-user-home"
             >

@@ -4,12 +4,13 @@ import React, {
 
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
-import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { toastError } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
@@ -199,14 +200,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [postCommentHandler]);
 
   const apiErrorHandler = useCallback((error: Error) => {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+    toastError(error.message);
   }, []);
 
   const uploadHandler = useCallback(async(file) => {
