@@ -485,7 +485,7 @@
       "select_search_scope_children_as_default": "选择“当前分支以下内容”, 作为搜索范围的默认值",
       "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。",
       "enable_marp": "启用 Marp",
-      "enable_marp_desc": "当设置值为“关”时，则不能使用 Marp。",
+      "enable_marp_desc": "Marp 可在演示视图中使用。该选项可能会使您受到 XSS 的攻击。",
       "marp_official_site": "参考资料：Marp 官方网站",
       "marp_official_site_link": "https://marp.app",
       "marp_in_growi" : "参考资料：GROWI Docs - Create slide using Marp",
