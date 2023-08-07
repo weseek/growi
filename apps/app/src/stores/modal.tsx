@@ -778,9 +778,7 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   }, [mutate]);
 
   const close = useCallback((): void => {
-    mutate(
-      initialStatus,
-    );
+    mutate(initialStatus);
   }, [mutate]);
 
   return {
