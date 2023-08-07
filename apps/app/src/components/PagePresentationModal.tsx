@@ -8,6 +8,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
+import { useIsEnabledMarp } from '~/stores/context';
 import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
@@ -34,6 +35,8 @@ const PagePresentationModal = (): JSX.Element => {
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePresentationViewOptions();
+
+  const { data: isEnabledMarp } = useIsEnabledMarp();
 
   const toggleFullscreenHandler = useCallback(() => {
     if (fullscreen.active) {
@@ -85,6 +88,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
+            isEnabledMarp = {isEnabledMarp}
           >
             {markdown}
           </Presentation>

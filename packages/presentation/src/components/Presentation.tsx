@@ -37,11 +37,12 @@ const removeAllHiddenElements = () => {
 
 export type PresentationProps = {
   options: PresentationOptions,
+  isEnabledMarp: boolean,
   children?: string,
 }
 
 export const Presentation = (props: PresentationProps): JSX.Element => {
-  const { options, children } = props;
+  const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
 
   const [marp, setMarp] = useState<boolean>(false);
@@ -84,7 +85,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
       <div className="slides">
-        <Slides options={options} hasMarpFlag={marp}>{children}</Slides>
+        <Slides options={options} hasMarpFlag={marp && isEnabledMarp}>{children}</Slides>
       </div>
     </div>
   );
