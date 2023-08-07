@@ -45,6 +45,7 @@ export const PluginDeleteModal: React.FC = () => {
   const headerContent = () => {
     return (
       <span>
+        <i className="icon-fw icon-fire"></i>
         {t('plugins.confirm')}
       </span>
     );
@@ -63,6 +64,7 @@ export const PluginDeleteModal: React.FC = () => {
     return (
       <>
         <Button color="danger" onClick={onClickDeleteButtonHandler}>
+          <i className="icon-fw icon-fire"></i>
           {t('Delete')}
         </Button>
       </>
