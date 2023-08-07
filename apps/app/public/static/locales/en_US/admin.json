@@ -1055,5 +1055,8 @@
     "activate_plugin_success": "Succeeded to activating {{pluginName}}",
     "deactivate_plugin_success": "Succeeded to deactivate {{pluginName}}",
     "remove_plugin_success": "Succeeded to removing {{pluginName}}"
+  },
+  "forbidden_page": {
+    "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen."
   }
 }
