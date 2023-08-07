@@ -12,7 +12,6 @@ import { usePluginDeleteModal } from '~/stores/modal';
 
 import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
 
-
 export const PluginDeleteModal: React.FC = () => {
 
   const { t } = useTranslation('admin');

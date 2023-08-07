@@ -20,9 +20,7 @@ const Loading = (): JSX.Element => {
 
 export const PluginsExtensionPageContents = (): JSX.Element => {
   const { t } = useTranslation('admin');
-
   const { data, mutate } = useSWRxAdminPlugins();
-
   const { open: openPluginDeleteModal } = usePluginDeleteModal();
 
   return (
