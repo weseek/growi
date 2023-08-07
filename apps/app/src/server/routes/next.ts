@@ -1,23 +1,25 @@
-import {
-  Request, Response,
-} from 'express';
+import type { IncomingMessage } from 'http';
+
+import type { NextServer, RequestHandler } from 'next/dist/server/next';
 
 type Crowi = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nextApp: any,
+  nextApp: NextServer,
 }
 
-type CrowiReq = Request & {
+type CrowiReq = IncomingMessage & {
   crowi: Crowi,
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const delegator = (crowi: Crowi) => {
+type NextDelegatorResult = {
+  delegateToNext: RequestHandler,
+};
+
+const delegator = (crowi: Crowi): NextDelegatorResult => {
 
   const { nextApp } = crowi;
   const handle = nextApp.getRequestHandler();
 
-  const delegateToNext = (req: CrowiReq, res: Response): void => {
+  const delegateToNext: RequestHandler = (req: CrowiReq, res): Promise<void> => {
     req.crowi = crowi;
     return handle(req, res);
   };

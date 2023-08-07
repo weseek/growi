@@ -25,10 +25,10 @@ export const isPermalink = (path: string): boolean => {
 };
 
 /**
- * Whether path is user's home page
+ * Whether path is user's homepage
  * @param path
  */
-export const isUsersHomePage = (path: string): boolean => {
+export const isUsersHomepage = (path: string): boolean => {
   // https://regex101.com/r/utVQct/1
   if (path.match(/^\/user\/[^/]+$/)) {
     return true;
@@ -41,7 +41,7 @@ export const isUsersHomePage = (path: string): boolean => {
  * @param path
  */
 export const isUsersProtectedPages = (path: string): boolean => {
-  return isUsersTopPage(path) || isUsersHomePage(path);
+  return isUsersTopPage(path) || isUsersHomepage(path);
 };
 
 /**
@@ -121,11 +121,11 @@ export const isCreatablePage = (path: string): boolean => {
 };
 
 /**
- * return user path
+ * return user's homepage path
  * @param user
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const userPageRoot = (user: any): string => {
+export const userHomepagePath = (user: any): string => {
   if (!user || !user.username) {
     return '';
   }
