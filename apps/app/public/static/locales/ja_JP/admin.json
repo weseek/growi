@@ -483,7 +483,13 @@
       "show_all_reply_comments": "返信コメントを全て表示する",
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
-      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
+      "enable_marp": "Marp を有効化する",
+      "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
+      "marp_official_site": "参考：Marp 公式サイト",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "参考：GROWI Docs - Marp でスライドを作成する",
+      "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",

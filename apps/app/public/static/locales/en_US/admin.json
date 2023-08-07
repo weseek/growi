@@ -475,7 +475,13 @@
       "show_all_reply_comments": "Show all reply comments",
       "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted.",
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
-      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
+      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range.",
+      "enable_marp": "Enable Marp ",
+      "enable_marp_desc": "Marp can be used in presentation preview. This option may make you vulnerable to XSS.",
+      "marp_official_site": "The Marp Official Site",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
