@@ -40,7 +40,7 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
   }
 
   if (props.isAccessDeniedForNonAdminUser) {
-    <ForbiddenPage />;
+    return <ForbiddenPage />;
   }
 
   return (

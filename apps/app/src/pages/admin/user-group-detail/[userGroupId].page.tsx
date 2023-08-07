@@ -36,7 +36,7 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   useIsAclEnabled(props.isAclEnabled);
 
   if (props.isAccessDeniedForNonAdminUser) {
-    <ForbiddenPage />;
+    return <ForbiddenPage />;
   }
 
   return (

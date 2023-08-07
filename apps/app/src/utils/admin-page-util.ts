@@ -45,7 +45,7 @@ export const retrieveServerSideProps: any = async(
   }
 
   props.isAccessDeniedForNonAdminUser = props.currentUser == null
-    ? false
+    ? true
     : !props.currentUser.admin;
 
   await injectNextI18NextConfigurations(context, props, ['admin', 'commons']);
