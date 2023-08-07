@@ -768,23 +768,21 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   const open = useCallback((plugin: IGrowiPluginHasId) => {
 
     mutate({
-      ...swrResponse.data,
       isOpen: true,
       name: plugin.meta.name,
       url: plugin.origin.url,
       id: plugin._id,
     });
-  }, [mutate, swrResponse.data]);
+  }, [mutate]);
 
   const close = useCallback((): void => {
     mutate({
-      ...swrResponse.data,
       isOpen: false,
       name: '',
       url: '',
       id: '',
     });
-  }, [mutate, swrResponse.data]);
+  }, [mutate]);
 
   return {
     ...swrResponse,
