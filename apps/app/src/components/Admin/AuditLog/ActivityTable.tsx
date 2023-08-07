@@ -48,7 +48,12 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                   { activity.user != null && (
                     <>
                       <UserPicture user={activity.user} />
-                      <a className="ml-2" href={pagePathUtils.userPageRoot(activity.user)}>{activity.snapshot?.username}</a>
+                      <a
+                        className="ml-2"
+                        href={pagePathUtils.userHomepagePath(activity.user)}
+                      >
+                        {activity.snapshot?.username}
+                      </a>
                     </>
                   )}
                 </td>
