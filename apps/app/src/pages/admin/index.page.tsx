@@ -11,7 +11,7 @@ import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import {
-  useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud, useIsAdmin,
+  useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud,
 } from '~/stores/context';
 
 
@@ -36,7 +36,6 @@ const AdminHomePage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
-  const { data: isAdmin } = useIsAdmin();
 
   const { t } = useTranslation('admin');
 
