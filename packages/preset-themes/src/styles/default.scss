@@ -1,5 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 @use './variables' as var;
-@use './bootstrap/init' as *;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -20,8 +21,8 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
-  --bgcolor-inline-code: #{$gray-100}; //optional
-  --bgcolor-card: #{$gray-100};
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
+  --bgcolor-card: #{bs.$gray-100};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
   // --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
@@ -39,8 +40,8 @@
   --color-link-wiki-hs: var(--color-link-hs);
   --color-link-wiki-l: var(--color-link-l);
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
-  --color-link-nabvar: #{$gray-500};
-  --color-inline-code: #{darken($red, 15%)}; // optional
+  --color-link-nabvar: #{bs.$gray-500};
+  --color-inline-code: #{darken(bs.$red, 15%)}; // optional
 
   // List Group colors
   --color-list: var(--color-global); // optional
@@ -49,7 +50,7 @@
   --bgcolor-list-hover: #{hsl.darken(var(--bgcolor-global),3%)};// optional
   // --color-list-active: white ; // optional
   // --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
-  // --color-page-list-group-item-meta: #{$gray-500}; // optional
+  // --color-page-list-group-item-meta: #{bs.$gray-500}; // optional
 
   // Table colors
   // --color-table: #; // optional
@@ -59,7 +60,7 @@
   // --bgcolor-table-hover: #; // optional
 
   // Navbar
-  --bgcolor-navbar: #{$gray-900};
+  --bgcolor-navbar: #{bs.$gray-900};
   --bgcolor-navbar-h:0;
   --bgcolor-navbar-s:0%;
   --bgcolor-navbar-l:12.94%;
@@ -97,7 +98,7 @@
   --bgcolor-sidebar-context-l: calc(var(--primary-l) + 77%);
 
   // Sidebar list group
-  // --bgcolor-sidebar-list-group: #{$gray-50}; // optional
+  // --bgcolor-sidebar-list-group: #{bs.$gray-50}; // optional
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
@@ -105,7 +106,7 @@
   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   // Tabs
-  // --bordercolor-nav-tabs: #{$gray-300}; // optional
+  // --bordercolor-nav-tabs: #{bs.$gray-300}; // optional
   // --color-nav-tabs-link-active: #; //optional
   // --bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
   // --bordercolor-nav-tabs-active: # # // optional
@@ -118,8 +119,8 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-400};
-  --bordercolor-inline-code: #{$gray-400}; // optional
+  --border-color-theme: #{bs.$gray-400};
+  --bordercolor-inline-code: #{bs.$gray-400}; // optional
 
   // Dropdown colors
   --bgcolor-dropdown-link-active: #{var.$growi-blue};
@@ -161,7 +162,7 @@
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 0,0%;
   --color-global-l: 74%;
-  --color-reversal: #{$gray-900};
+  --color-reversal: #{bs.$gray-900};
   // --color-header: desaturate($primary, 20%);
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 219.3,51.7%;
@@ -198,7 +199,7 @@
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: #{$gray-700};
+  --fillcolor-logo-mark: #{bs.$gray-700};
 
   // Sidebar
   --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
@@ -227,7 +228,7 @@
   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
 
   // Tabs
-  --bordercolor-nav-tabs: #{$gray-700}; // optional
+  --bordercolor-nav-tabs: #{bs.$gray-700}; // optional
   // --color-nav-tabs-link-active: #; //optional
   --bordercolor-nav-tabs-hover: #666 #666 var(--bordercolor-nav-tabs); // optional
   --bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global); // optional

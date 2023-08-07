@@ -1,5 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 @use '../variables' as var;
-@use '../bootstrap/init' as bs;
 
 .wiki {
   @mixin add-left-border($width) {

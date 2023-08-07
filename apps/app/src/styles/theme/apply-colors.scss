@@ -1,5 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as *;
+
 @use '../variables' as var;
-@use '../bootstrap/init' as *;
 @use '../mixins';
 @use '../atoms/mixins/code';
 @use './mixins/hsl-button';

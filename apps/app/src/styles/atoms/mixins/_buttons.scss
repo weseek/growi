@@ -1,4 +1,4 @@
-@use '../../bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 @mixin button-svg-icon-variant($background, $hover-background: darken($background, 7.5%), $active-background: darken($background, 10%)) {
   svg {

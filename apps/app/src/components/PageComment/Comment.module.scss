@@ -1,5 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 @use '../../styles/variables' as var;
-@use '../../styles/bootstrap/init' as bs;
 @use './_comment-inheritance';
 
 .comment-styles :global {

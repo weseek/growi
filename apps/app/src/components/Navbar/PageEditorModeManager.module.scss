@@ -1,5 +1,5 @@
 // @mixin page-editor-mode-manager($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
 $btn-line-height: 1.2rem;
