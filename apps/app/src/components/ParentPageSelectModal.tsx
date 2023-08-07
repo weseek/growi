@@ -12,7 +12,7 @@ export const ParentPageSelectModal = (): JSX.Element => {
     close: closeModal,
   } = useParentPageSelectModal();
 
-  const { isOpened } = parentPageSelectModalData;
+  const isOpened = parentPageSelectModalData?.isOpened ?? false;
 
   if (!isOpened) {
     return <></>;
