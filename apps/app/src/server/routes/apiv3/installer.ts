@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import express, { Request, Router } from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';

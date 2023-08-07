@@ -1,6 +1,6 @@
 {
   "name": "@growi/hackmd",
-  "version": "6.1.12-RC.0",
+  "version": "6.2.0-RC.0",
   "description": "GROWI js and css files to use hackmd",
   "license": "MIT",
   "type": "module",
@@ -20,6 +20,6 @@
   "dependencies": {},
   "devDependencies": {
     "penpal": "^4.0.0",
-    "throttle-debounce": "^3.0.1"
+    "throttle-debounce": "^5.0.0"
   }
 }

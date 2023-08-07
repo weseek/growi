@@ -1,4 +1,5 @@
-import { pagePathUtils, DevidedPagePath, pathUtils } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 
 const { isTrashPage } = pagePathUtils;
 

@@ -1,10 +1,13 @@
-import { ErrorV3 } from '@growi/core';
+import type {
+  IPageInfoForListing, IPageInfo, IUserHasId,
+} from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { isIPageInfoForEntity, IPageInfoForListing, IPageInfo } from '~/interfaces/page';
-import { IUserHasId } from '~/interfaces/user';
+
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';

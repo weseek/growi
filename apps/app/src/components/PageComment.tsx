@@ -2,8 +2,7 @@ import React, {
   FC, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { isPopulated, getIdForRef } from '@growi/core/dist/interfaces/common';
-import { type IRevisionHasId } from '@growi/core/dist/interfaces/revision';
+import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
 import { Button } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';

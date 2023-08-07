@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPathname } from '~/stores/context';

@@ -1,4 +1,4 @@
-import type { IUser } from '~/interfaces/user';
+import type { IUser } from '@growi/core';
 
 export interface IUserSnapshot {
   username: string

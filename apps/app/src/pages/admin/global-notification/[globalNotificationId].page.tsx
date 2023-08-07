@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { isClient, objectIdUtils } from '@growi/core';
+import { isClient, objectIdUtils } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';

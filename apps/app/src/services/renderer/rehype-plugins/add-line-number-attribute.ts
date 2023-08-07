@@ -1,6 +1,6 @@
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
-import { Element } from 'hast-util-select';
-import { Plugin } from 'unified';
+import type { Element } from 'hast-util-select/lib/types';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 import { addClassToProperties } from './add-class';

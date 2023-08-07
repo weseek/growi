@@ -1,8 +1,8 @@
 import React from 'react';
 
+import type { IPageInfoForEntity, IPageWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { IPageInfoForEntity, IPageWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';

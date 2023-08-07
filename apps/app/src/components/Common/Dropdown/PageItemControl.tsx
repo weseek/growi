@@ -2,6 +2,9 @@ import React, {
   useState, useCallback, useEffect,
 } from 'react';
 
+import {
+  type IPageInfoAll, isIPageInfoForOperation,
+} from '@growi/core';
 import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
@@ -9,9 +12,6 @@ import {
 } from 'reactstrap';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import {
-  IPageInfoAll, isIPageInfoForOperation,
-} from '~/interfaces/page';
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';

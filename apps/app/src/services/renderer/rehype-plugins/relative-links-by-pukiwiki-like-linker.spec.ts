@@ -1,4 +1,5 @@
-import { type HastNode, select } from 'hast-util-select';
+import { select } from 'hast-util-select';
+import type { Node as HastNode } from 'hast-util-select/lib/types';
 import parse from 'remark-parse';
 import rehype from 'remark-rehype';
 import { unified } from 'unified';

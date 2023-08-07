@@ -4,11 +4,9 @@ import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import * as toastr from 'toastr';
 
 import { apiPost } from '~/client/util/apiv1-client';
-
-// import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 
 
 const GROUPS_PAGE = [
@@ -72,37 +70,19 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
     try {
       // TODO: use apiv3Post
       const result = await apiPost<any>('/v3/export', { collections: Array.from(selectedCollections) });
-      // TODO: toastSuccess, toastError
 
       if (!result.ok) {
         throw new Error('Error occured.');
       }
 
-      // TODO: toastSuccess, toastError
-      toastr.success(undefined, 'Export process has requested.', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
-      });
+      toastSuccess('Export process has requested.');
 
       onExportingRequested();
       onClose();
       uncheckAll();
     }
     catch (err) {
-      // TODO: toastSuccess, toastError
-      toastr.error(err, 'Error', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '3000',
-      });
+      toastError(err);
     }
   }, [onClose, onExportingRequested, selectedCollections, uncheckAll]);
 
