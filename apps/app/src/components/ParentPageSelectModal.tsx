@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
@@ -6,26 +6,18 @@ import {
 
 import { useParentPageSelectModal } from '~/stores/modal';
 
-export const ParentPageSelectModal = () => {
+export const ParentPageSelectModal = (): JSX.Element => {
   const {
     data: parentPageSelectModalData,
-    open: openModal,
     close: closeModal,
-    error,
   } = useParentPageSelectModal();
 
   const { isOpened } = parentPageSelectModalData;
 
-  if (error) {
-    // エラーが発生した場合の処理
-  }
-
   if (!isOpened) {
-    // modalが開いていないときの処理
     return <></>;
   }
 
-  // modalが開いている時の処理
   return (
     <>
       <Modal
