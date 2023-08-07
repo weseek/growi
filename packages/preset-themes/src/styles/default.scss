@@ -1,5 +1,5 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use './variables' as var;
+@use './bootstrap/init' as *;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -21,7 +21,7 @@
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
   --bgcolor-inline-code: #{$gray-100}; //optional
-  --bgcolor-card: #{$gray-50};
+  --bgcolor-card: #{$gray-100};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
   // --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
@@ -122,7 +122,7 @@
   --bordercolor-inline-code: #{$gray-400}; // optional
 
   // Dropdown colors
-  --bgcolor-dropdown-link-active: #{$growi-blue};
+  --bgcolor-dropdown-link-active: #{var.$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
@@ -155,7 +155,7 @@
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global),5%)};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 40%)};
-  --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
+  --bgcolor-keyword-highlighted: #{darken(var.$grw-marker-red, 30%)};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));

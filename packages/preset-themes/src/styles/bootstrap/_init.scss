@@ -1,6 +1,8 @@
 @import 'bootstrap/scss/functions';
 
 @import './variables';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
 
 @import 'bootstrap/scss/maps';
 // merge $colors to $theme-colors
