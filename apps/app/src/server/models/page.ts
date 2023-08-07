@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import assert from 'assert';
 import nodePath from 'path';
 
-import {
-  isPopulated,
-} from '@growi/core';
 import type { IPage, HasObjectId } from '@growi/core';
+import { isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -372,6 +371,12 @@ export class PageQueryBuilder {
     this.query = this.query
       .and(condition);
 
+    return this;
+  }
+
+  addConditionForSystemDeletion(): PageQueryBuilder {
+    const condition = generateGrantConditionForSystemDeletion();
+    this.query = this.query.and(condition);
     return this;
   }
 
@@ -940,6 +945,23 @@ export function generateGrantCondition(
 }
 
 schema.statics.generateGrantCondition = generateGrantCondition;
+
+function generateGrantConditionForSystemDeletion(): { $or: any[] } {
+  const grantCondition: AnyObject[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+    { grant: GRANT_RESTRICTED },
+    { grant: GRANT_SPECIFIED },
+    { grant: GRANT_OWNER },
+    { grant: GRANT_USER_GROUP },
+  ];
+
+  return {
+    $or: grantCondition,
+  };
+}
+
+schema.statics.generateGrantConditionForSystemDeletion = generateGrantConditionForSystemDeletion;
 
 // find ancestor page with isEmpty: false. If parameter path is '/', return undefined
 schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {

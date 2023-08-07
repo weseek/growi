@@ -38,6 +38,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
+      isUsersHomepageDeletionEnabled: false,
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
@@ -73,6 +74,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveCompleteDeletionAuthority: generalSetting.pageRecursiveCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
+      isUsersHomepageDeletionEnabled: generalSetting.isUsersHomepageDeletionEnabled,
       sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
       disableLinkSharing: shareLinkSetting.disableLinkSharing,
@@ -194,6 +196,13 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch isUsersHomepageDeletionEnabled
+   */
+  switchIsUsersHomepageDeletionEnabled() {
+    this.setState({ isUsersHomepageDeletionEnabled: !this.state.isUsersHomepageDeletionEnabled });
+  }
+
+  /**
    * Update restrictGuestMode
    * @memberOf AdminGeneralSecuritySContainer
    * @return {string} Appearance
@@ -209,6 +218,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageRecursiveCompleteDeletionAuthority: this.state.currentPageRecursiveCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
+      isUsersHomepageDeletionEnabled: this.state.isUsersHomepageDeletionEnabled,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);

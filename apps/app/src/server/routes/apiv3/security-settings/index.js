@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import xss from 'xss';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
@@ -28,6 +29,7 @@ const validator = {
     body('pageCompleteDeletionAuthority').if(value => value != null).isString().isIn(Object.values(PageDeleteConfigValue)),
     body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
     body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
+    body('isUsersHomepageDeletionEnabled').if(value => value != null).isBoolean(),
   ],
   shareLinkSetting: [
     body('disableLinkSharing').if(value => value != null).isBoolean(),
@@ -355,6 +357,7 @@ module.exports = (crowi) => {
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
         hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
+        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled'),
         wikiMode: await configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
@@ -622,6 +625,7 @@ module.exports = (crowi) => {
       'security:pageRecursiveCompleteDeletionAuthority': req.body.pageRecursiveCompleteDeletionAuthority,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
+      'security:isUsersHomepageDeletionEnabled': req.body.isUsersHomepageDeletionEnabled,
     };
 
     // Validate delete config
@@ -650,6 +654,7 @@ module.exports = (crowi) => {
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
         hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
+        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };
@@ -799,13 +804,17 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/LocalSetting'
    */
   router.put('/local-setting', loginRequiredStrictly, adminRequired, addActivity, validator.localSetting, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:registrationMode': req.body.registrationMode,
-      'security:registrationWhitelist': req.body.registrationWhitelist,
-      'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
-      'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
-    };
     try {
+      const sanitizedRegistrationWhitelist = req.body.registrationWhitelist
+        .map(line => xss(line, { stripIgnoreTag: true }));
+
+      const requestParams = {
+        'security:registrationMode': req.body.registrationMode,
+        'security:registrationWhitelist': sanitizedRegistrationWhitelist,
+        'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
+        'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
+      };
+
       await updateAndReloadStrategySettings('local', requestParams);
 
       const localSettingParams = {

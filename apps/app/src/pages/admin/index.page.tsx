@@ -28,14 +28,14 @@ type Props = CommonProps & {
 };
 
 
-const AdminHomePage: NextPage<Props> = (props) => {
+const AdminHomepage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
 
   const { t } = useTranslation('admin');
 
-  const title = generateCustomTitle(props, t('wiki_management_home_page'));
+  const title = generateCustomTitle(props, t('wiki_management_homepage'));
 
   const injectableContainers: Container<any>[] = [];
 
@@ -82,4 +82,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 };
 
 
-export default AdminHomePage;
+export default AdminHomepage;
