@@ -5,11 +5,17 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-export const isIncludesObjectId = (arr: ObjectIdLike[], id: ObjectIdLike): boolean => {
+/**
+ * Check if array contains all specified ObjectIds
+ * @param arr array that potentially contains potentialSubset
+ * @param potentialSubset array that is potentially a subset of arr
+ * @returns Whether or not arr includes all elements of potentialSubset
+ */
+export const includesObjectIds = (arr: ObjectIdLike[], potentialSubset: ObjectIdLike[]): boolean => {
   const _arr = arr.map(i => i.toString());
-  const _id = id.toString();
+  const _potentialSubset = potentialSubset.map(i => i.toString());
 
-  return _arr.includes(_id);
+  return _potentialSubset.every(id => _arr.includes(id));
 };
 
 /**

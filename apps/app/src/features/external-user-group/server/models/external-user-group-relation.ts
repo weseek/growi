@@ -32,4 +32,8 @@ schema.statics.findAllRelation = UserGroupRelation.findAllRelation;
 
 schema.statics.removeAllInvalidRelations = UserGroupRelation.removeAllInvalidRelations;
 
+schema.statics.findGroupsWithDescendantsByGroupAndUser = UserGroupRelation.findGroupsWithDescendantsByGroupAndUser;
+
+schema.statics.countByGroupIdAndUser = UserGroupRelation.countByGroupIdAndUser;
+
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

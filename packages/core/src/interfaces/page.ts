@@ -3,9 +3,17 @@ import type { HasObjectId } from './has-object-id';
 import type { IRevision, HasRevisionShortbody, IRevisionHasId } from './revision';
 import type { SubscriptionStatusType } from './subscription';
 import type { ITag } from './tag';
-import type { IUser, IUserGroupHasId, IUserHasId } from './user';
+import type {
+  IUser, IUserGroup, IUserGroupHasId, IUserHasId,
+} from './user';
 
-export type GroupType = 'UserGroup' | 'ExternalUserGroup'
+export const GroupType = { userGroup: 'UserGroup', externalUserGroup: 'ExternalUserGroup' } as const;
+export type GroupType = typeof GroupType[keyof typeof GroupType];
+
+export type GrantedGroup = {
+  type: GroupType,
+  item: Ref<IUserGroup>,
+}
 
 export type IPage = {
   path: string,
@@ -21,10 +29,7 @@ export type IPage = {
   isEmpty: boolean,
   grant: PageGrant,
   grantedUsers: Ref<IUser>[],
-  grantedGroups: {
-    type: GroupType,
-    item: Ref<any>,
-  }[],
+  grantedGroups: GrantedGroup[],
   lastUpdateUser: Ref<IUser>,
   liker: Ref<IUser>[],
   commentCount: number
