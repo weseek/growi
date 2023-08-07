@@ -1,5 +1,4 @@
 import { toast, ToastContent, ToastOptions } from 'react-toastify';
-import * as toastrLegacy from 'toastr';
 
 import { toArrayIfNot } from '~/utils/array-utils';
 
@@ -34,5 +33,5 @@ export const toastWarningOption: ToastOptions = {
   closeButton: true,
 };
 export const toastWarning = (content: ToastContent, option: ToastOptions = toastWarningOption): void => {
-  toastrLegacy.warning(content, option);
+  toast.warning(content, option);
 };

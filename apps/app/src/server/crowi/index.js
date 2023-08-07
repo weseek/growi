@@ -17,7 +17,7 @@ import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-
+import UserEvent from '../events/user';
 import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
@@ -35,7 +35,6 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
-
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -97,7 +96,7 @@ function Crowi() {
   this.port = this.env.PORT || 3000;
 
   this.events = {
-    user: new (require('../events/user'))(this),
+    user: new UserEvent(this),
     page: new (require('../events/page'))(this),
     activity: new (require('../events/activity'))(this),
     bookmark: new (require('../events/bookmark'))(this),
