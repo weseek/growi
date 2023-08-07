@@ -13,11 +13,8 @@ import styles from './Admin.module.scss';
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
-const PluginDeleteModal = dynamic(() => import(
-  '../../features/growi-plugin/client/components/Admin/PluginsExtensionPageContents/PluginDeleteModal'
-).then(
-  mod => mod.PluginDeleteModal,
-), { ssr: false });
+const PluginDeleteModal = dynamic(() => import('~/features/growi-plugin/client/components/Admin/PluginsExtensionPageContents/PluginDeleteModal')
+  .then(mod => mod.PluginDeleteModal), { ssr: false });
 
 
 type Props = {

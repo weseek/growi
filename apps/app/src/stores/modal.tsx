@@ -757,12 +757,6 @@ type PluginDeleteModalUtils = {
   close(): void,
 }
 
-export interface PluginData {
-  id: string;
-  name: string;
-  url: string;
-}
-
 export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
   const initialStatus: PluginDeleteModalStatus = {
     isOpen: false,
@@ -775,7 +769,6 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   const { mutate } = swrResponse;
 
   const open = useCallback((plugin: IGrowiPluginHasId) => {
-
     mutate({
       isOpen: true,
       name: plugin.meta.name,
@@ -785,12 +778,9 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   }, [mutate]);
 
   const close = useCallback((): void => {
-    mutate({
-      isOpen: false,
-      name: '',
-      url: '',
-      id: '',
-    });
+    mutate(
+      initialStatus,
+    );
   }, [mutate]);
 
   return {

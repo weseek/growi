@@ -15,7 +15,6 @@ type Props = {
   isEnalbed: boolean,
   desc?: string,
   onDelete: () => void,
-  mutate: () => void,
 }
 
 export const PluginCard = (props: Props): JSX.Element => {

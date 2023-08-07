@@ -42,45 +42,24 @@ export const PluginDeleteModal: React.FC = () => {
     }
   }, [id, closePluginDeleteModal, t, mutate]);
 
-  const headerContent = () => {
-    return (
-      <span>
-        <i className="icon-fw icon-fire"></i>
-        {t('plugins.confirm')}
-      </span>
-    );
-  };
-
-  const bodyContent = () => {
-
-    return (
-      <div className="card well mt-2 p-2" key={id}>
-        <Link href={`${url}`} legacyBehavior>{name}</Link>
-      </div>
-    );
-  };
-
-  const footerContent = () => {
-    return (
-      <>
+  return (
+    <Modal isOpen={isOpen} toggle={toggleHandler}>
+      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light" name={name}>
+        <span>
+          <i className="icon-fw icon-fire"></i>
+          {t('plugins.confirm')}
+        </span>
+      </ModalHeader>
+      <ModalBody>
+        <div className="card well mt-2 p-2" key={id}>
+          <Link href={`${url}`} legacyBehavior>{name}</Link>
+        </div>
+      </ModalBody>
+      <ModalFooter>
         <Button color="danger" onClick={onClickDeleteButtonHandler}>
           <i className="icon-fw icon-fire"></i>
           {t('Delete')}
         </Button>
-      </>
-    );
-  };
-
-  return (
-    <Modal isOpen={isOpen} toggle={toggleHandler}>
-      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light" name={name}>
-        {headerContent()}
-      </ModalHeader>
-      <ModalBody>
-        {bodyContent()}
-      </ModalBody>
-      <ModalFooter>
-        {footerContent()}
       </ModalFooter>
     </Modal>
   );

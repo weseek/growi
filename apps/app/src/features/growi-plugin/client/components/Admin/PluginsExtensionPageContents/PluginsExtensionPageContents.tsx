@@ -74,7 +74,6 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                       isEnalbed={pluginIsEnabled}
                       desc={pluginDiscription}
                       onDelete={onDeleteClicked}
-                      mutate={mutate}
                     />
                   );
                 })}
