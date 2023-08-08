@@ -12,9 +12,6 @@ const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').th
 const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
-// Fab
-const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
-
 
 type Props = {
   children?: ReactNode
@@ -34,8 +31,6 @@ export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
       </div>
 
       <GrowiNavbarBottom />
-
-      <Fab />
 
       <ShortcutsModal />
       <PageCreateModal />

@@ -42,9 +42,6 @@ context('Access to page', () => {
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
-
     // assert the element is in viewport
     cy.get('#headers').should('be.inViewport');
 

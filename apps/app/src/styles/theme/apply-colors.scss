@@ -665,18 +665,6 @@ mark.rbt-highlight-text {
   background-color: var(--bgcolor-global);
 }
 
-.grw-fab {
-  .btn-create-page {
-    svg {
-      fill: hsl.contrast(var(--primary));
-    }
-  }
-
-  .btn-scroll-to-top {
-    fill: $gray-900;
-  }
-}
-
 /*
   Slack Integration
 */
