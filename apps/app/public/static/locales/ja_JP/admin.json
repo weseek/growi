@@ -11,7 +11,7 @@
   "Edit": "編集",
   "Description": "説明",
   "last_login": "最終ログイン",
-  "wiki_management_home_page": "Wiki管理トップ",
+  "wiki_management_homepage": "Wiki管理トップ",
   "public": "公開",
   "anyone_with_the_link": "リンクを知っている人のみ",
   "specified_users": "特定ユーザーのみ",
@@ -53,6 +53,11 @@
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
+    "user_homepage_deletion": {
+      "user_homepage_deletion": "ユーザーページの削除",
+      "enable_user_homepage_deletion": "ユーザーページの削除を有効化",
+      "when_deleting_a_user_the_user_homepage_is_also_deleted": "ユーザー削除時にユーザーページも削除します。"
+    },
     "session": "セッション",
     "max_age": "有効期間 (ミリ秒)",
     "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
@@ -1063,5 +1068,8 @@
     "activate_plugin_success": "{{pluginName}}を有効化しました",
     "deactivate_plugin_success": "{{pluginName}}を無効化しました",
     "remove_plugin_success": "{{pluginName}}を削除しました"
+  },
+  "forbidden_page": {
+    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません。"
   }
 }

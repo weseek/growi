@@ -26,5 +26,4 @@ module.exports = (crowi, fallback = null) => {
     }
     return res.redirect('/login');
   };
-
 };

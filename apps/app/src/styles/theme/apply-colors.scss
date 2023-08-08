@@ -1,5 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as *;
+
 @use '../variables' as var;
-@use '../bootstrap/init' as *;
 @use '../mixins';
 @use '../atoms/mixins/code';
 @use './mixins/hsl-button';
@@ -41,12 +42,13 @@ $nav-tabs-link-active-bg: var(--bgcolor-global);
 $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
-@import 'reboot-bootstrap-buttons';
-@import 'reboot-bootstrap-colors';
-@import 'reboot-bootstrap-theme-colors';
-@import 'hsl-reboot-bootstrap-theme-colors';
-@import 'reboot-bootstrap-nav';
-@import 'reboot-toastr-colors';
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+// @import 'reboot-bootstrap-buttons';
+// @import 'reboot-bootstrap-colors';
+// @import 'reboot-bootstrap-theme-colors';
+// @import 'hsl-reboot-bootstrap-theme-colors';
+// @import 'reboot-bootstrap-nav';
+// @import 'reboot-toastr-colors';
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: var(--color-modal-header,#{hsl.contrast(var(--primary))});
@@ -63,15 +65,16 @@ code:not([class^='language-']) {
 //== Apply to Bootstrap Elements
 //
 
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 // Alert link
-@each $color, $value in $theme-colors {
-  .alert.alert-#{$color} {
-    a,
-    a:hover {
-      color: theme-color-level($color, $alert-color-level - 2);
-    }
-  }
-}
+// @each $color, $value in $theme-colors {
+//   .alert.alert-#{$color} {
+//     a,
+//     a:hover {
+//       color: theme-color-level($color, $alert-color-level - 2);
+//     }
+//   }
+// }
 
 // Dropdown
 .grw-apperance-mode-dropdown {
@@ -86,10 +89,11 @@ code:not([class^='language-']) {
   }
 }
 
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 // Form
-.form-control {
-  @include form-control-focus();
-}
+// .form-control {
+//   @include form-control-focus();
+// }
 
 // Tabs
 .nav.nav-tabs .nav-link.active {
@@ -481,7 +485,7 @@ ul.pagination {
           fill: var(--color-global);
         }
 
-        @include hover() {
+        &:hover {
           svg {
             fill: var(--color-global);
           }

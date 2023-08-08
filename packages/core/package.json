@@ -1,13 +1,14 @@
 {
   "name": "@growi/core",
-  "version": "6.2.0-RC.0",
+  "version": "7.0.0-RC.0",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
     "growi"
   ],
   "files": [
-    "dist"
+    "dist",
+    "scss"
   ],
   "type": "module",
   "main": "dist/index.cjs",
@@ -49,7 +50,8 @@
     "./dist/utils/*": {
       "import": "./dist/utils/*.js",
       "require": "./dist/utils/*.cjs"
-    }
+    },
+    "./scss/*": "./scss/*.scss"
   },
   "scripts": {
     "build": "vite build",

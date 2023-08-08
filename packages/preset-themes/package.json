@@ -1,7 +1,7 @@
 {
   "name": "@growi/preset-themes",
   "description": "GROWI preset themes",
-  "version": "6.2.0-RC.0",
+  "version": "7.0.0-RC.0",
   "license": "MIT",
   "main": "dist/libs/preset-themes.umd.js",
   "module": "dist/libs/preset-themes.mjs",
@@ -28,7 +28,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^5.3.1",
     "sass": "^1.55.0"
   },
   "peerDependencies": {

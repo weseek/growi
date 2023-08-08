@@ -15,6 +15,7 @@ import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ManageGlobalNotification = dynamic(() => import('~/components/Admin/Notification/ManageGlobalNotification'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
@@ -29,6 +30,9 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
     injectableContainers.push(adminNotificationContainer);
   }
 
+  if (props.isAccessDeniedForNonAdminUser) {
+    <ForbiddenPage />;
+  }
 
   return (
     <Provider inject={[...injectableContainers]}>

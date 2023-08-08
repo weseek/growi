@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import * as toastr from 'toastr';
 
 
 import { apiDelete } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import LabeledProgressBar from './Common/LabeledProgressBar';
@@ -34,7 +34,6 @@ const ExportArchiveDataPage = (): JSX.Element => {
       apiv3Get<{collections: any[]}>('/mongo/collections', {}),
       apiv3Get<{status: { zipFileStats: any[], isExporting: boolean, progressList: any[] }}>('/export/status', {}),
     ]);
-    // TODO: toastSuccess, toastError
 
     // filter only not ignored collection names
     const filteredCollections = collectionsData.collections.filter((collectionName) => {
@@ -69,16 +68,7 @@ const ExportArchiveDataPage = (): JSX.Element => {
         setExported(true);
         setZipFileStats(prev => prev.concat([addedZipFileStat]));
 
-        // TODO: toastSuccess, toastError
-        toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '1200',
-          extendedTimeOut: '150',
-        });
+        toastSuccess(`New Archive Data '${addedZipFileStat.fileName}' is added`);
       });
     }
   }, [socket]);
@@ -89,27 +79,10 @@ const ExportArchiveDataPage = (): JSX.Element => {
 
       setZipFileStats(prev => prev.filter(stat => stat.fileName !== fileName));
 
-      // TODO: toastSuccess, toastError
-      toastr.success(undefined, `Deleted ${fileName}`, {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
-      });
+      toastSuccess(`Deleted ${fileName}`);
     }
     catch (err) {
-      // TODO: toastSuccess, toastError
-      toastr.error(err, 'Error', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '3000',
-      });
+      toastError(err);
     }
   }, []);
 

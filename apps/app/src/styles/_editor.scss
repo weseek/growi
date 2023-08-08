@@ -1,4 +1,5 @@
-@import './bootstrap/init' ;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 @import './variables' ;
 @import './organisms/wiki-custom-sidebar';
 
@@ -19,7 +20,7 @@
     padding-right: 15px;
     padding-left: 15px;
 
-    @include media-breakpoint-up(lg) {
+    @include bs.media-breakpoint-up(lg) {
       height: $grw-subnav-height-lg-on-edit;
     }
   }
@@ -66,12 +67,12 @@
     height: $grw-editor-navbar-bottom-height;
 
     .grw-grant-selector {
-      @include media-breakpoint-down(sm) {
+      @include bs.media-breakpoint-down(sm) {
         .btn .label {
           display: none;
         }
       }
-      @include media-breakpoint-up(md) {
+      @include bs.media-breakpoint-up(md) {
         .dropdown-toggle {
           min-width: 100px;
 
@@ -239,7 +240,7 @@
 
     .hackmd-error {
       top: 0;
-      background-color: rgba($gray-800, 0.8);
+      background-color: rgba(bs.$gray-800, 0.8);
     }
 
     .hackmd-status-label {
@@ -289,10 +290,10 @@
   .tooltip-inner {
     color: black;
     background-color: white;
-    border: 1px solid $gray-300;
+    border: 1px solid bs.$gray-300;
   }
 
   .tooltip-arrow {
-    border-bottom: 5px solid $gray-300;
+    border-bottom: 5px solid bs.$gray-300;
   }
 }

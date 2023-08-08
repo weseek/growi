@@ -1,4 +1,4 @@
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 .btn-group-like :global {
   .btn-like {

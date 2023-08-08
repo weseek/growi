@@ -10,12 +10,16 @@ import { Container, Provider } from 'unstated';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores/context';
+import {
+  useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud,
+} from '~/stores/context';
+
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const AdminHome = dynamic(() => import('~/components/Admin/AdminHome/AdminHome'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -28,14 +32,14 @@ type Props = CommonProps & {
 };
 
 
-const AdminHomePage: NextPage<Props> = (props) => {
+const AdminHomepage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
 
   const { t } = useTranslation('admin');
 
-  const title = generateCustomTitle(props, t('wiki_management_home_page'));
+  const title = generateCustomTitle(props, t('wiki_management_homepage'));
 
   const injectableContainers: Container<any>[] = [];
 
@@ -43,6 +47,10 @@ const AdminHomePage: NextPage<Props> = (props) => {
     const adminHomeContainer = new AdminHomeContainer();
 
     injectableContainers.push(adminHomeContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
   }
 
 
@@ -82,4 +90,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 };
 
 
-export default AdminHomePage;
+export default AdminHomepage;

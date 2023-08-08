@@ -288,10 +288,6 @@ export const getPageSchema = (crowi) => {
       });
   };
 
-  pageSchema.statics.getUserPagePath = function(user) {
-    return `/user/${user.username}`;
-  };
-
   pageSchema.statics.getDeletedPageName = function(path) {
     if (path.match('/')) {
       // eslint-disable-next-line no-param-reassign
@@ -671,13 +667,6 @@ export const getPageSchema = (crowi) => {
       grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
     });
 
-  };
-
-  pageSchema.statics.removeByPath = function(path) {
-    if (path == null) {
-      throw new Error('path is required');
-    }
-    return this.findOneAndRemove({ path }).exec();
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {

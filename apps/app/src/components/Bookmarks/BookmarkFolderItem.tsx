@@ -29,7 +29,7 @@ type BookmarkFolderItemProps = {
   isOperable: boolean,
   level: number
   root: string
-  isUserHomePage?: boolean
+  isUserHomepage?: boolean
   onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void
   bookmarkFolderTreeMutation: () => void
 }
@@ -38,7 +38,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
-    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomePage,
+    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomepage,
     onClickDeleteMenuItemHandler, bookmarkFolderTreeMutation,
   } = props;
 
@@ -155,7 +155,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
-            isUserHomePage={isUserHomePage}
+            isUserHomepage={isUserHomepage}
             onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
             bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
           />

@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "6.2.0-RC.0",
+  "version": "7.0.0-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -26,8 +26,7 @@
       "apps/*"
     ],
     "nohoist": [
-      "**/uvu/*",
-      "**/slackbot-proxy/bootstrap"
+      "**/uvu/*"
     ]
   },
   "scripts": {
