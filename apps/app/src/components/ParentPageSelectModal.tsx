@@ -23,39 +23,26 @@ export const ParentPageSelectModal = (): JSX.Element => {
 
   const isOpened = parentPageSelectModalData?.isOpened ?? false;
 
-  if (!isOpened) {
-    return <></>;
-  }
-
   const targetPathOrId = targetId || currentPath;
   const path = currentPath || '/';
 
   return (
-    <>
-      <Modal
-        isOpen={isOpened}
-        toggle={() => closeModal()}
-        centered={true}
-      >
-        <ModalHeader toggle={() => closeModal()}>モーダル</ModalHeader>
-        <ModalBody >
-        ` <ItemsTree
-            isEnableActions={!isGuestUser}
-            isReadOnlyUser={!!isReadOnlyUser}
-            targetPath={path}
-            targetPathOrId={targetPathOrId}
-            targetAndAncestorsData={targetAndAncestorsData}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary">
-          Do Something
-          </Button>{' '}
-          <Button color="secondary">
-          Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
-    </>
+    <Modal
+      isOpen={isOpened}
+      toggle={() => closeModal()}
+      centered={true}
+    >
+      <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
+      <ModalBody >
+      </ModalBody>
+      <ModalFooter>
+        <Button color="primary">
+        Do Something
+        </Button>{' '}
+        <Button color="secondary">
+        Cancel
+        </Button>
+      </ModalFooter>
+    </Modal>
   );
 };
