@@ -205,11 +205,13 @@
     }
 
     .page-editor-preview-body {
+      flex-grow: 1;
       padding: 18px 15px 0;
       overflow-y: scroll;
     }
     // editing /Sidebar
     .page-editor-preview-body.preview-sidebar {
+      flex-grow: 0;
       width: 320px;
       margin-right: auto;
       margin-left: auto;
