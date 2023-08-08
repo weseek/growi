@@ -3,11 +3,16 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Button } from 'reactstrap';
+
+import { useParentPageSelectModal } from '~/stores/modal';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
+import { ParentPageSelectModal } from '../ParentPageSelectModal';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
+
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
@@ -34,7 +39,12 @@ type Props = {
   className?: string
 }
 
+
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
+  const {
+    open: openModal,
+  } = useParentPageSelectModal();
+
   return (
     <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>
@@ -70,6 +80,10 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
 
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
+
+      <Button onClick={() => openModal()}>Open!</Button>
+      <ParentPageSelectModal/>
+      {/* TODO: remove unnecessary code with https://redmine.weseek.co.jp/issues/128327 */}
     </RawLayout>
   );
 };
