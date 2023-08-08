@@ -1,6 +1,6 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use './variables' as *;
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -18,10 +18,10 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 208,100%;
   --bgcolor-global-l: 97%;
-  --bgcolor-inline-code: #{$gray-100}; //optional
-  --bgcolor-card: #{$gray-50};
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
+  --bgcolor-card: #{bs.$gray-100};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 15%)};
-  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+  --bgcolor-keyword-highlighted: #{var.$grw-marker-yellow};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
@@ -66,7 +66,7 @@
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: #{lighten(desaturate($gray-100, 10%), 15%)};
+  --fillcolor-logo-mark: #{lighten(desaturate(bs.$gray-100, 10%), 15%)};
 
   // Sidebar
   --bgcolor-sidebar: var(--primary);
@@ -103,12 +103,12 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-400};
+  --border-color-theme: #{bs.$gray-400};
   --border-color-global: #{gray-400};
   --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  --bgcolor-dropdown-link-active: #{$growi-blue};
+  --bgcolor-dropdown-link-active: #{var.$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
