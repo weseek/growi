@@ -534,10 +534,10 @@ class PageGrantService {
       const applicableGroups = [...applicableUserGroups, ...applicableExternalUserGroups];
 
       const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
-        return UserGroupRelation.countByGroupIdAndUser(group, user);
+        return UserGroupRelation.countByGroupIdAndUser(group._id, user);
       }))).some(count => count > 0);
       const isUserExistInExternalUserGroup = (await Promise.all(targetExternalUserGroups.map((group) => {
-        return ExternalUserGroupRelation.countByGroupIdAndUser(group, user);
+        return ExternalUserGroupRelation.countByGroupIdAndUser(group._id, user);
       }))).some(count => count > 0);
       const isUserExistInGroup = isUserExistInUserGroup || isUserExistInExternalUserGroup;
 
