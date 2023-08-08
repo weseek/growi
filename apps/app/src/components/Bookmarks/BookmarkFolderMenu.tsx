@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { getCustomModifiers } from '@growi/ui/dist/utils';
+// import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 
@@ -195,7 +195,8 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
         persist
         positionFixed
         className='grw-bookmark-folder-menu'
-        modifiers={getCustomModifiers(true)}
+        // TODO: activate (https://redmine.weseek.co.jp/issues/128468)
+        // modifiers={getCustomModifiers(true)}
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>
