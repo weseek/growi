@@ -22,6 +22,14 @@
 
   height: 100vh;
 
+  .grw-logo {
+    svg {
+      width: var.$grw-logo-width;
+      height: var.$grw-logo-width;
+      padding: (var.$grw-logo-width - var.$grw-logomark-width) / 2;
+    }
+  }
+
   .btn {
     width: var.$grw-sidebar-nav-width;
     line-height: 1em;

@@ -6,8 +6,10 @@ import Link from 'next/link';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useIsAdmin, useGrowiCloudUri } from '~/stores/context';
+import { useIsAdmin, useGrowiCloudUri, useIsDefaultLogo } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
+
+import { SidebarBrandLogo } from './SidebarBrandLogo';
 
 import styles from './SidebarNav.module.scss';
 
@@ -84,11 +86,19 @@ type Props = {
 export const SidebarNav: FC<Props> = (props: Props) => {
   const { data: isAdmin } = useIsAdmin();
   const { data: growiCloudUri } = useGrowiCloudUri();
+  const { data: isDefaultLogo } = useIsDefaultLogo();
 
   const { onItemSelected } = props;
 
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
+      {/* Brand Logo  */}
+      <div className="navbar-brand">
+        <Link href="/" className="grw-logo d-block">
+          <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
+        </Link>
+      </div>
+
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
