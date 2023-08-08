@@ -316,10 +316,9 @@ export const Sidebar = memo((): JSX.Element => {
                 onMouseLeave={hoverOutResizableContainerHandler}
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
-                <div className="grw-contextual-navigation-child">
-                  <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                    <SidebarContentsWrapper></SidebarContentsWrapper>
-                  </div>
+                <div className={`grw-contextual-navigation-child ${showContents ? '' : 'd-none'}`} data-testid="grw-contextual-navigation-child">
+                  <SidebarContents />
+                  <DrawerToggler iconClass="icon-arrow-left" />
                 </div>
               </div>
             </div>

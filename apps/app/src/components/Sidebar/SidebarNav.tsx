@@ -12,6 +12,8 @@ import {
 } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
+import DrawerToggler from '../Navbar/DrawerToggler';
+
 import { SidebarBrandLogo } from './SidebarBrandLogo';
 
 import styles from './SidebarNav.module.scss';
@@ -109,6 +111,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <Link href="/" className="grw-logo d-block">
           <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
         </Link>
+        <DrawerToggler />
       </div>
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 import { useDrawerOpened } from '~/stores/ui';
 
@@ -6,11 +6,13 @@ type Props = {
   iconClass?: string,
 }
 
-const DrawerToggler: FC<Props> = (props: Props) => {
+const DrawerToggler = (props: Props): JSX.Element => {
 
   const { data: isOpened, mutate } = useDrawerOpened();
 
-  const iconClass = props.iconClass || 'icon-menu';
+  const iconClass = props.iconClass ?? isOpened
+    ? 'icon-arrow-left'
+    : 'icon-arrow-right';
 
   return (
     <button
