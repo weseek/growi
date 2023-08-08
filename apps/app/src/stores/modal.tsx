@@ -753,8 +753,8 @@ type PluginDeleteModalStatus = {
 }
 
 type PluginDeleteModalUtils = {
-  open(plugin: IGrowiPluginHasId): Promise<PluginDeleteModalStatus | undefined>,
-  close(): Promise<PluginDeleteModalStatus | undefined>,
+  open(plugin: IGrowiPluginHasId): Promise<void>,
+  close(): Promise<void>,
 }
 
 export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
@@ -775,12 +775,10 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
       name: plugin.meta.name,
       url: plugin.origin.url,
     });
-    return swrResponse.data;
   };
 
   const close = async() => {
     mutate(initialStatus);
-    return swrResponse.data;
   };
 
   return {
