@@ -108,7 +108,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn global add turbo@1.10.9
+        yarn global add turbo
         yarn --frozen-lockfile
 
     - name: Bump versions for next RC
