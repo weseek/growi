@@ -14,7 +14,7 @@
   .search-result-list {
     .search-result-list-scroll {
       // subtract the height of (SearchControl component + other factors)
-      height: calc(100vh - 110px));
+      height: calc(100vh - 110px);
       overflow-y: scroll;
 
       @include bs.media-breakpoint-down(sm) {
