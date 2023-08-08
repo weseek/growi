@@ -24,7 +24,7 @@
 
 //== Light Mode
 //
-:root[data-theme='light'] {
+:root[data-bs-theme='light'] {
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 55,31%;
   --primary-l: 52%;

@@ -3,7 +3,7 @@
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-:root[data-theme='light'] {
+:root[data-bs-theme='light'] {
   // Theme colors
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 160,53%;
@@ -125,7 +125,7 @@
   }
 }
 
-:root[data-theme='dark'] {
+:root[data-bs-theme='dark'] {
   // Theme colors
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 160,53%;

@@ -3,7 +3,7 @@
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-:root[data-theme='dark']{
+:root[data-bs-theme='dark']{
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 181,100%;
   --primary-l: 36%;

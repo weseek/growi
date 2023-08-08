@@ -7,7 +7,7 @@
 @use './hsl-functions' as hsl;
 
 // determine optional variables
-:root[data-theme='dark'] {
+:root[data-bs-theme='dark'] {
   $color-list: var(--color-list,var(--color-global));
   $bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
   $color-list-hover: var(--color-list-hover,var(--color-global));

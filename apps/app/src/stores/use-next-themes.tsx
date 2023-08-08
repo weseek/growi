@@ -12,7 +12,7 @@ export const Themes = {
 export type Themes = typeof Themes[keyof typeof Themes];
 
 
-const ATTRIBUTE = 'data-theme';
+const ATTRIBUTE = 'data-bs-theme';
 
 export const NextThemesProvider: React.FC<ThemeProviderProps> = (props) => {
   const { data: forcedColorScheme } = useForcedColorScheme();

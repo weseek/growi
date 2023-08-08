@@ -16,7 +16,7 @@ $bordercolor: #7e0d7e;
 }
 
 
-:root[data-theme='dark'] {
+:root[data-bs-theme='dark'] {
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 25,95%;
   --primary-l: 34%;
