@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
 import { useEditorModeClassName } from '../../client/services/layout';
-import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
 
@@ -22,7 +21,6 @@ export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
 
   return (
     <RawLayout className={className}>
-      <GrowiNavbar isGlobalSearchHidden={true} />
 
       <div className="page-wrapper d-flex d-print-block">
         <div className="flex-fill mw-0">
