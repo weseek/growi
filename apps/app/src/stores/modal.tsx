@@ -747,9 +747,9 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
  */
 type PluginDeleteModalStatus = {
   isOpen: boolean,
+  id: string,
   name: string,
   url: string,
-  id: string,
 }
 
 type PluginDeleteModalUtils = {
@@ -760,9 +760,9 @@ type PluginDeleteModalUtils = {
 export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
   const initialStatus: PluginDeleteModalStatus = {
     isOpen: false,
+    id: '',
     name: '',
     url: '',
-    id: '',
   };
 
   const swrResponse = useStaticSWR<PluginDeleteModalStatus, Error>('pluginDeleteModal', undefined, { fallbackData: initialStatus });
@@ -771,9 +771,9 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   const open = useCallback((plugin: IGrowiPluginHasId) => {
     mutate({
       isOpen: true,
+      id: plugin._id,
       name: plugin.meta.name,
       url: plugin.origin.url,
-      id: plugin._id,
     });
   }, [mutate]);
 

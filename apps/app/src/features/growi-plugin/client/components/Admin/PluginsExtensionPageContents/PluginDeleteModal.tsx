@@ -16,11 +16,11 @@ export const PluginDeleteModal: React.FC = () => {
 
   const { t } = useTranslation('admin');
   const { mutate } = useSWRxAdminPlugins();
-  const { data: pluginDeleteModal, close: closePluginDeleteModal } = usePluginDeleteModal();
-  const isOpen = pluginDeleteModal?.isOpen;
-  const name = pluginDeleteModal?.name;
-  const url = pluginDeleteModal?.url;
-  const id = pluginDeleteModal?.id;
+  const { data: pluginDeleteModalData, close: closePluginDeleteModal } = usePluginDeleteModal();
+  const isOpen = pluginDeleteModalData?.isOpen;
+  const id = pluginDeleteModalData?.id;
+  const name = pluginDeleteModalData?.name;
+  const url = pluginDeleteModalData?.url;
 
   const toggleHandler = useCallback(() => {
     closePluginDeleteModal();

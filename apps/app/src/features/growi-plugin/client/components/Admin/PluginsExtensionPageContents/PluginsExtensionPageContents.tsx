@@ -47,34 +47,17 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                 { data.plugins.length === 0 && (
                   <div>{t('plugins.plugin_is_not_installed')}</div>
                 )}
-                {data.plugins.map((plugin) => {
-                  const pluginId = plugin._id;
-                  const pluginName = plugin.meta.name;
-                  const pluginUrl = plugin.origin.url;
-                  const pluginIsEnabled = plugin.isEnabled;
-                  const pluginDiscription = plugin.meta.desc;
-                  const onDeleteClicked = () => {
-                    openPluginDeleteModal({
-                      _id: pluginId,
-                      meta: { name: pluginName, types: [], desc: pluginDiscription },
-                      origin: { url: pluginUrl },
-                      isEnabled: pluginIsEnabled,
-                      installedPath: '',
-                      organizationName: '',
-                    });
-                  };
-                  return (
-                    <PluginCard
-                      key={pluginId}
-                      id={pluginId}
-                      name={pluginName}
-                      url={pluginUrl}
-                      isEnalbed={pluginIsEnabled}
-                      desc={pluginDiscription}
-                      onDelete={onDeleteClicked}
-                    />
-                  );
-                })}
+                {data.plugins.map(plugin => (
+                  <PluginCard
+                    key={plugin._id}
+                    id={plugin._id}
+                    name={plugin.meta.name}
+                    url={plugin.origin.url}
+                    isEnalbed={plugin.isEnabled}
+                    desc={plugin.meta.desc}
+                    onDelete={() => openPluginDeleteModal(plugin)}
+                  />
+                ))}
               </div>
             )}
         </div>
