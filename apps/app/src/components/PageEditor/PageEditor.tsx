@@ -75,7 +75,12 @@ let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
-export const PageEditor = React.memo((): JSX.Element => {
+
+type Props = {
+  visibility?: boolean,
+}
+
+export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -568,7 +573,7 @@ export const PageEditor = React.memo((): JSX.Element => {
   const isUploadable = isUploadableImage || isUploadableFile;
 
   return (
-    <div data-testid="page-editor" id="page-editor" className="d-flex flex-grow-1 overflow-auto">
+    <div data-testid="page-editor" id="page-editor" className={`d-flex flex-grow-1 overflow-auto ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         {/* <Editor
           ref={editorRef}
@@ -584,7 +589,7 @@ export const PageEditor = React.memo((): JSX.Element => {
         /> */}
         <CodeMirrorEditorContainer ref={codeMirrorEditorContainerRef} />
       </div>
-      <div className="d-none d-lg-flex page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+      <div className="d-none d-lg-flex page-editor-preview-container justify-content-center flex-grow-1 flex-basis-0 mw-0">
         <Preview
           ref={previewRef}
           rendererOptions={rendererOptions}
