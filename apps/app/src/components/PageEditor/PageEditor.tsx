@@ -8,7 +8,7 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditor, CodeMirrorEditorContainer, useCodeMirrorEditor } from '@growi/editor';
+import { CodeMirrorEditorContainer, useCodeMirrorEditor } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -52,8 +52,8 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-import { ConflictDiffModal } from './ConflictDiffModal';
-import Editor from './Editor';
+// import { ConflictDiffModal } from './ConflictDiffModal';
+// import Editor from './Editor';
 import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
@@ -593,6 +593,7 @@ export const PageEditor = React.memo((): JSX.Element => {
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
+      {/*
       <ConflictDiffModal
         isOpen={conflictDiffModalStatus?.isOpened}
         onClose={() => closeConflictDiffModal()}
@@ -600,6 +601,7 @@ export const PageEditor = React.memo((): JSX.Element => {
         optionsToSave={optionsToSave}
         afterResolvedHandler={afterResolvedHandler}
       />
+       */}
     </div>
   );
 });
