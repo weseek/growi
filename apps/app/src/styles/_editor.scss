@@ -1,7 +1,6 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 @use './variables' as var;
 
-@import './mixins' ;
 @import './organisms/wiki-custom-sidebar';
 
 // global imported
@@ -26,14 +25,9 @@
     }
   }
 
-  // calculate margin
-  $editor-margin-top: var.$grw-subnav-height-on-edit;
-  @include expand-editor($editor-margin-top);
-
-  @include bs.media-breakpoint-up(lg) {
-    // calculate margin
-    $editor-margin-top: var.$grw-subnav-height-lg-on-edit;
-    @include expand-editor($editor-margin-top);
+  .page-wrapper {
+    top: 0;
+    height: 100vh;
   }
 
   // show
@@ -211,11 +205,13 @@
     }
 
     .page-editor-preview-body {
+      flex-grow: 1;
       padding: 18px 15px 0;
       overflow-y: scroll;
     }
     // editing /Sidebar
     .page-editor-preview-body.preview-sidebar {
+      flex-grow: 0;
       width: 320px;
       margin-right: auto;
       margin-left: auto;

@@ -20,7 +20,7 @@ import { IEditorMethods } from '../../interfaces/editor-methods';
 
 import AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
-import CodeMirrorEditor from './CodeMirrorEditor';
+// import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
@@ -306,17 +306,18 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
                 {/* for PC */}
                 { !isMobile && (
-                  <CodeMirrorEditor
-                    ref={cmEditorRef}
-                    indentSize={indentSize ?? defaultIndentSize}
-                    onPasteFiles={pasteFilesHandler}
-                    onDragEnter={dragEnterHandler}
-                    onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
-                    onAddAttachmentButtonClicked={addAttachmentHandler}
-                    editorSettings={editorSettings}
-                    isGfmMode={isGfmMode}
-                    {...props}
-                  />
+                  // <CodeMirrorEditor
+                  //   ref={cmEditorRef}
+                  //   indentSize={indentSize ?? defaultIndentSize}
+                  //   onPasteFiles={pasteFilesHandler}
+                  //   onDragEnter={dragEnterHandler}
+                  //   onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
+                  //   onAddAttachmentButtonClicked={addAttachmentHandler}
+                  //   editorSettings={editorSettings}
+                  //   isGfmMode={isGfmMode}
+                  //   {...props}
+                  // />
+                  <></>
                 )}
 
                 {/* for mobile */}

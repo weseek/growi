@@ -21,17 +21,12 @@ export const LazyRenderer = (props: Props): JSX.Element => {
     setActivated(shouldRender);
   }, [isActivated, shouldRender]);
 
-  const additionalClassName = shouldRender ? '' : 'd-none';
-
   if (!isActivated) {
     return <></>;
   }
 
-  return (
-    <>
-      { React.cloneElement(children, {
-        className: `${children.props.className ?? ''} ${additionalClassName}`,
-      }) }
-    </>
-  );
+  const child = React.Children.only(children);
+
+  return React.cloneElement(child, { visibility: shouldRender });
+
 };

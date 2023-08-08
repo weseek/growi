@@ -13,7 +13,6 @@ import { LazyRenderer } from '../Common/LazyRenderer';
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
-const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
 const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
 
@@ -38,15 +37,7 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
       { isViewMode && pageView }
 
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
-        <div data-testid="page-editor" id="page-editor" className="editor-root">
-          <PageEditor />
-        </div>
-      </LazyRenderer>
-
-      <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.HackMD}>
-        <div id="page-editor-with-hackmd" className="editor-root">
-          <PageEditorByHackmd />
-        </div>
+        <PageEditor />
       </LazyRenderer>
 
       { isEditable && !isViewMode && <EditorNavbarBottom /> }
