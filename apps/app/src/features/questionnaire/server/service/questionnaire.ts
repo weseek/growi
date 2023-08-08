@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
+import type { IUserHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
-import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { aclService } from '~/server/service/acl';
 
