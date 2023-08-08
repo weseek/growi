@@ -4,6 +4,8 @@ import escapeStringRegexp from 'escape-string-regexp';
 import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
+import UserGroupRelation from './user-group-relation';
+
 
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
@@ -326,7 +328,6 @@ export const getPageSchema = (crowi) => {
     let userGroups = [];
     if (user != null) {
       validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -347,8 +348,6 @@ export const getPageSchema = (crowi) => {
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -390,8 +389,6 @@ export const getPageSchema = (crowi) => {
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -519,7 +516,6 @@ export const getPageSchema = (crowi) => {
     // determine UserGroup condition
     let userGroups = null;
     if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -535,12 +531,9 @@ export const getPageSchema = (crowi) => {
    * @param {boolean} showAnyoneKnowsLink
    */
   async function addConditionToFilteringByViewerToEdit(builder, user) {
-    validateCrowi();
-
     // determine UserGroup condition
     let userGroups = null;
     if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 

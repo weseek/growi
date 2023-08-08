@@ -36,6 +36,7 @@ import PageOperation, { PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
+import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 
 const debug = require('debug')('growi:services:page');
@@ -2338,7 +2339,6 @@ class PageService {
     // aggregation options
     let userGroups;
     if (user != null && userGroups == null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // Typescriptize model
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
     const viewerCondition = Page.generateGrantCondition(user, userGroups);
@@ -2889,7 +2889,6 @@ class PageService {
     // determine UserGroup condition
     let userGroups = null;
     if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -3292,7 +3291,6 @@ class PageService {
     const pipeline = this.buildBasePipelineToCreateEmptyPages(paths, onlyMigratedAsExistingPages, andFilter);
     let userGroups = null;
     if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
     const grantCondition = Page.generateGrantCondition(user, userGroups);
@@ -3446,7 +3444,6 @@ class PageService {
     }
 
     if (grant === PageGrant.GRANT_USER_GROUP) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
       const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
 
       if (count === 0) {
@@ -3867,7 +3864,7 @@ class PageService {
     const newPageData = pageData;
 
     const grant = options.grant ?? clonedPageData.grant; // use the previous data if absence
-    const grantUserGroupIds: undefined | GrantedGroup[] = options.grantUserGroupIds ?? clonedPageData.grantedGroups;
+    const grantUserGroupIds = options.grantUserGroupIds ?? clonedPageData.grantedGroups;
 
     const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;

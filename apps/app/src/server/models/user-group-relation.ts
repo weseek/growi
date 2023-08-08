@@ -20,6 +20,12 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
   PAGE_ITEMS: 50,
 
   removeAllByUserGroups: (groupsToDelete: UserGroupDocument[]) => Promise<any>,
+
+  findAllUserIdsForUserGroups: (userGroupIds: ObjectIdLike[]) => Promise<string[]>,
+
+  findGroupsWithDescendantsByGroupAndUser: (group: UserGroupDocument, user) => Promise<UserGroupDocument[]>,
+
+  countByGroupIdAndUser: (userGroupId: string, userData) => Promise<number>
 }
 
 /*
@@ -150,7 +156,7 @@ schema.statics.findAllUserGroupIdsRelatedToUser = async function(user) {
  * @param {User} userData find query param for relatedUser
  * @returns {Promise<number>}
  */
-schema.statics.countByGroupIdAndUser = async function(userGroupId, userData) {
+schema.statics.countByGroupIdAndUser = async function(userGroupId: string, userData): Promise<number> {
   const query = {
     relatedGroup: userGroupId,
     relatedUser: userData.id,
@@ -316,7 +322,7 @@ schema.statics.createByGroupIdsAndUserIds = async function(groupIds, userIds) {
  * @param {UserDocument} user
  * @returns UserGroupDocument[]
  */
-schema.statics.findGroupsWithDescendantsByGroupAndUser = async function(group, user) {
+schema.statics.findGroupsWithDescendantsByGroupAndUser = async function(group: UserGroupDocument, user): Promise<UserGroupDocument[]> {
   const descendantGroups = [group];
 
   const incrementGroupsRecursively = async(groups, user) => {
