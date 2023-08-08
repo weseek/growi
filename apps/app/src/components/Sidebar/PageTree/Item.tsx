@@ -9,6 +9,7 @@ import {
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useDrag, useDrop } from 'react-dnd';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
@@ -110,6 +111,8 @@ const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
+  const router = useRouter();
+
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
@@ -388,6 +391,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   };
 
+  const pageTreeItemClickHandler = (e) => {
+    e.preventDefault();
+
+    if (page.path == null || page._id == null) {
+      return;
+    }
+
+    const link = pathUtils.returnPathForURL(page.path, page._id);
+
+    router.push(link);
+  };
+
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -417,6 +432,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // Rename process
   // Icon that draw attention from users for some actions
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
+  const pageName = nodePath.basename(page.path ?? '') || '/';
 
   return (
     <div
@@ -469,13 +485,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
               {page != null && page.path != null && page._id != null && (
-                <Link
-                  href={pathUtils.returnPathForURL(page.path, page._id)}
-                  className="grw-pagetree-title-anchor flex-grow-1"
-                  prefetch={false}
-                >
-                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-                </Link>
+                <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
               )}
             </>
           )}
