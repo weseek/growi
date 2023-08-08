@@ -50,9 +50,9 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -66,10 +66,10 @@ jobs:
           **/.turbo
           **/dist
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+        key: dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
-          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
       working-directory: ./apps/app
@@ -161,9 +161,9 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-7.x-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-7.x-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -252,9 +252,9 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
       uses: actions/cache@v3
