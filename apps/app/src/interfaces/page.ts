@@ -16,10 +16,11 @@ export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData
 
 export type IPageGrantData = {
   grant: number,
-  grantedGroup?: {
+  grantedGroups?: {
     id: string,
-    name: string
-  }
+    name: string,
+    type: string,
+  }[]
 }
 
 export type IDeleteSinglePageApiv1Result = {

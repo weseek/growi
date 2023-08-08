@@ -471,17 +471,15 @@ module.exports = (crowi) => {
     const { grantedUserGroups, grantedExternalUserGroups } = divideByType(grantedGroups);
     const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
     const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
-    currentPageUserGroups.map((group) => {
-      return { id: group._id, name: group.name };
+    const grantedUserGroupData = currentPageUserGroups.map((group) => {
+      return { id: group._id, name: group.name, type: 'UserGroup' };
+    });
+    const grantedExternalUserGroupData = currentPageExternalUserGroups.map((group) => {
+      return { id: group._id, name: group.name, type: 'ExternalUserGroup' };
     });
     const currentPageGrant = {
       grant,
-      grantedUserGroups: currentPageUserGroups.map((group) => {
-        return { id: group._id, name: group.name };
-      }),
-      grantedExternalUserGroups: currentPageExternalUserGroups.map((group) => {
-        return { id: group._id, name: group.name };
-      }),
+      grantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
     };
 
     // page doesn't have parent page
@@ -512,14 +510,15 @@ module.exports = (crowi) => {
     } = divideByType(parentPage.grantedGroup);
     const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
     const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
+    const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {
+      return { id: group._id, name: group.name };
+    });
+    const parentGrantedExternalUserGroupData = parentPageExternalUserGroups.map((group) => {
+      return { id: group._id, name: group.name };
+    });
     const parentPageGrant = {
       grant: parentPage.grant,
-      grantedUserGroups: parentPageUserGroups.map((group) => {
-        return { id: group._id, name: group.name };
-      }),
-      grantedExternalUserGroups: parentPageExternalUserGroups.map((group) => {
-        return { id: group._id, name: group.name };
-      }),
+      grantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
     };
 
     const grantData = {

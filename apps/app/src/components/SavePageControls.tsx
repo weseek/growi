@@ -69,7 +69,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     return null;
   }
 
-  const { grant, grantedGroup } = grantData;
+  const { grant, grantedGroups } = grantData;
 
   const isRootPage = isTopPage(currentPage?.path ?? '');
   const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');

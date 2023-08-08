@@ -419,13 +419,16 @@ async function applyGrantToPage(props: Props, ancestor: any) {
   const grant = {
     grant: ancestor.grant,
   };
-  const grantedGroup = ancestor.grantedGroup ? {
-    grantedGroup: {
-      id: ancestor.grantedGroup.id,
-      name: ancestor.grantedGroup.name,
-    },
+  const grantedGroups = ancestor.grantedGroups ? {
+    grantedGroups: ancestor.grantedGroups.map((group) => {
+      return {
+        id: group.id,
+        name: group.name,
+        type: group.type,
+      };
+    }),
   } : {};
-  props.grantData = Object.assign(grant, grantedGroup);
+  props.grantData = Object.assign(grant, grantedGroups);
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {

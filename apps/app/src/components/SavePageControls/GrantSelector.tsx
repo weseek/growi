@@ -79,13 +79,13 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     if (onUpdateGrant != null) {
-      onUpdateGrant({ grant, grantedGroup: undefined });
+      onUpdateGrant({ grant, grantedGroups: undefined });
     }
   }, [onUpdateGrant, showSelectGroupModal]);
 
   const groupListItemClickHandler = useCallback((grantGroup: IUserGroupHasId) => {
     if (onUpdateGrant != null) {
-      onUpdateGrant({ grant: 5, grantedGroup: { id: grantGroup._id, name: grantGroup.name } });
+      onUpdateGrant({ grant: 5, grantedGroups: [{ id: grantGroup._id, name: grantGroup.name, type: 'UserGroup' }] });
     }
 
     // hide modal

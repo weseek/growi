@@ -47,8 +47,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
       isSlackEnabled: false,
       slackChannels: '',
       grant: currentPage.grant,
-      grantUserGroupId: currentPage.grantedGroup?._id,
-      grantUserGroupName: currentPage.grantedGroup?.name,
+      grantUserGroupIds: currentPage.grantedGroups,
       pageTags: tagsInfo.tags,
     };
 
