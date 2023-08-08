@@ -1,21 +1,19 @@
-@use '~/styles/variables' as var;
 @use '~/styles/mixins';
 @use '@growi/core/scss/bootstrap/init' as bs;
 
 .grw-sidebar :global {
   // sticky
   position: sticky;
-  top: var.$grw-navbar-border-width;
+  top: 0;
 
   // set the max value that should be taken when sticky
-  height: calc(100vh - var.$grw-navbar-border-width);
+  height: 100vh;
 
-  // override @atlaskit/navigation-next styles
-  $navbar-total-height: var.$grw-navbar-height + var.$grw-navbar-border-width;
+
   .data-layout-container {
     display: flex;
     flex-direction: row;
-    height: calc(100vh - 0px);
+    height: 100vh;
     margin-top: 0px;
     // css-teprsg
     > div:nth-of-type(2) {
@@ -169,18 +167,6 @@
 
 // Dock Mode
 @mixin dock() {
-  z-index: bs.$zindex-sticky;
-
-  // override @atlaskit/navigation-next styles
-  $navbar-total-height: var.$grw-navbar-height + var.$grw-navbar-border-width;
-  .data-layout-container {
-    max-height: calc(100vh - #{var.$grw-navbar-border-width});
-  }
-  .navigation {
-    position: unset;
-
-    top: $navbar-total-height;
-  }
 }
 
 // Drawer Mode

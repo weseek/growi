@@ -1,4 +1,5 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
+@use './variables' as var;
 
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
@@ -18,7 +19,7 @@
 }
 
 @mixin expand-editor($editor-margin-top) {
-  $header-plus-footer: $editor-margin-top + $grw-editor-navbar-bottom-height;
+  $header-plus-footer: $editor-margin-top + var.$grw-editor-navbar-bottom-height;
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
