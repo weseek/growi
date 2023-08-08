@@ -1,7 +1,9 @@
+import { UserGroupDocument } from '~/server/models/user-group';
+
 import { PageGrant, IPageGrantData } from './page';
 
 export type IDataApplicableGroup = {
-  applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
+  applicableGroups?: UserGroupDocument[]
 }
 
 export type IDataApplicableGrant = null | IDataApplicableGroup;

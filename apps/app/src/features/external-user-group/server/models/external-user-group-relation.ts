@@ -1,5 +1,6 @@
 import { Schema, Model, Document } from 'mongoose';
 
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
@@ -15,6 +16,12 @@ export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupR
   PAGE_ITEMS: 50,
 
   removeAllByUserGroups: (groupsToDelete: ExternalUserGroupDocument[]) => Promise<any>,
+
+  findAllUserIdsForUserGroups: (userGroupIds: ObjectIdLike[]) => Promise<string[]>,
+
+  findGroupsWithDescendantsByGroupAndUser: (group: ExternalUserGroupDocument, user) => Promise<ExternalUserGroupDocument[]>,
+
+  countByGroupIdAndUser: (userGroupId: string, userData) => Promise<number>
 }
 
 const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>({

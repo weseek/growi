@@ -22,6 +22,7 @@ import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
+import UserGroupRelation from './user-group-relation';
 
 const { addTrailingSlash, normalizePath } = pathUtils;
 const {
@@ -321,7 +322,6 @@ export class PageQueryBuilder {
     // determine UserGroup condition
     let userGroups;
     if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -370,7 +370,6 @@ export class PageQueryBuilder {
   async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
-      const UserGroupRelation: any = mongoose.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
