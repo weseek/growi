@@ -30,6 +30,7 @@ import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
 import Item from './Item';
 import { ItemNode } from './ItemNode';
+import SimpleItem from './SimpleItem';
 
 import styles from './ItemsTree.module.scss';
 
@@ -273,7 +274,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   if (initialItemNode != null) {
     return (
       <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
-        <Item
+        <SimpleItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
