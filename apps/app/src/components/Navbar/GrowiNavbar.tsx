@@ -19,11 +19,6 @@ import { GlobalSearchProps } from './GlobalSearch';
 
 import styles from './GrowiNavbar.module.scss';
 
-const PersonalDropdown = dynamic(() => import('./PersonalDropdown'), { ssr: false });
-const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
-  .then(mod => mod.InAppNotificationDropdown), { ssr: false });
-const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
-
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
 
@@ -42,10 +37,6 @@ const NavbarRight = memo((): JSX.Element => {
   const authenticatedNavItem = useMemo(() => {
     return (
       <>
-        <li className="nav-item">
-          <InAppNotificationDropdown />
-        </li>
-
         {!isReadOnlyUser
           && <li className="nav-item d-none d-md-block">
             <button
@@ -60,28 +51,17 @@ const NavbarRight = memo((): JSX.Element => {
             </button>
           </li>
         }
-
-        <li className="grw-apperance-mode-dropdown nav-item dropdown">
-          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
-        </li>
-
-        <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
-          <PersonalDropdown />
-        </li>
       </>
     );
-  }, [isReadOnlyUser, t, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [isReadOnlyUser, t, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (
       <>
-        <li className="grw-apperance-mode-dropdown nav-item dropdown">
-          <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
-        </li>
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
       </>
     );
-  }, [isAuthenticated]);
+  }, []);
 
   return (
     <>

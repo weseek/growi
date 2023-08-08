@@ -1,3 +1,5 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 @use '~/styles/variables' as var;
 
 .grw-sidebar-nav :global {
@@ -20,6 +22,10 @@
     }
   }
 
+  // set position and z-index to prevent dropdowns covered by other element
+  position: relative;
+  z-index: bs.$zindex-fixed;
+
   height: 100vh;
 
   .grw-logo {
@@ -27,6 +33,18 @@
       width: var.$grw-logo-width;
       height: var.$grw-logo-width;
       padding: (var.$grw-logo-width - var.$grw-logomark-width) / 2;
+    }
+  }
+
+  .grw-apperance-mode-dropdown,
+  .grw-personal-dropdown {
+    .dropdown-menu {
+      min-width: 15rem;
+
+      .grw-icon-container svg {
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 

@@ -12,7 +12,7 @@ import { useCurrentUser } from '~/stores/context';
 
 const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
-const PersonalDropdown = () => {
+export const PersonalDropdown = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { data: currentUser } = useCurrentUser();
 
@@ -103,5 +103,3 @@ const PersonalDropdown = () => {
   );
 
 };
-
-export default PersonalDropdown;

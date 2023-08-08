@@ -4,8 +4,7 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { GrowiNavbar } from '../Navbar/GrowiNavbar';
-import Sidebar from '../Sidebar';
+import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
