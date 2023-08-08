@@ -367,21 +367,23 @@ class PageGrantService {
           grantedGroups: 1,
         },
       },
+      {
+        $unwind: { // preprocess for creating groups set
+          path: '$grantedGroups',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $unwind: { // preprocess for creating users set
+          path: '$grantedUsersSet',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       { // remove duplicates from pipeline
         $group: {
           _id: '$grant',
           grantedGroupsSet: { $addToSet: '$grantedGroups' },
           grantedUsersSet: { $addToSet: '$grantedUsers' },
-        },
-      },
-      { // flatten granted user set
-        $unwind: {
-          path: '$grantedUsersSet',
-        },
-      },
-      { // flatten granted group set
-        $unwind: {
-          path: '$grantedGroupsSet',
         },
       },
     ]);
@@ -651,7 +653,6 @@ class PageGrantService {
       const isNonApplicableGroupExist = excludeTestIdsFromTargetIds(
         [...descendantPagesGrantInfo.grantedUserGroupIds], [...operatorGrantInfo.userGroupIds],
       ).length > 0;
-
       if (isNonApplicableGroupExist) {
         return false;
       }
@@ -689,7 +690,6 @@ class PageGrantService {
       const isUpdateGroupUsersIncludeAllDescendantsOwners = excludeTestIdsFromTargetIds(
         [...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.userIds],
       ).length === 0; // b.
-
       return isAllDescendantGroupsChildrenOrItselfOfUpdateGroup && isUpdateGroupUsersIncludeAllDescendantsOwners;
     }
 

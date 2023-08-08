@@ -338,7 +338,10 @@ export class PageQueryBuilder {
 
     if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
-        { grant: GRANT_USER_GROUP, 'grantedGroups.item': { $in: userGroups } },
+        {
+          grant: GRANT_USER_GROUP,
+          grantedGroups: { $elemMatch: { item: { $in: userGroups } } },
+        },
       );
     }
 
@@ -943,7 +946,10 @@ export function generateGrantCondition(
   }
   else if (userGroups != null && userGroups.length > 0) {
     grantConditions.push(
-      { grant: GRANT_USER_GROUP, 'grantedGroups.item': { $in: userGroups } },
+      {
+        grant: GRANT_USER_GROUP,
+        grantedGroups: { $elemMatch: { item: { $in: userGroups } } },
+      },
     );
   }
 
