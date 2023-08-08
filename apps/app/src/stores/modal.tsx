@@ -753,8 +753,8 @@ type PluginDeleteModalStatus = {
 }
 
 type PluginDeleteModalUtils = {
-  open(plugin: IGrowiPluginHasId): void,
-  close(): void,
+  open(plugin: IGrowiPluginHasId): Promise<PluginDeleteModalStatus | undefined>,
+  close(): Promise<PluginDeleteModalStatus | undefined>,
 }
 
 export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
@@ -768,18 +768,20 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   const swrResponse = useStaticSWR<PluginDeleteModalStatus, Error>('pluginDeleteModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
-  const open = useCallback((plugin: IGrowiPluginHasId) => {
+  const open = async(plugin: IGrowiPluginHasId): Promise<PluginDeleteModalStatus | undefined> => {
     mutate({
       isOpen: true,
       id: plugin._id,
       name: plugin.meta.name,
       url: plugin.origin.url,
     });
-  }, [mutate]);
+    return swrResponse.data;
+  };
 
-  const close = useCallback((): void => {
+  const close = async(): Promise<PluginDeleteModalStatus | undefined> => {
     mutate(initialStatus);
-  }, [mutate]);
+    return swrResponse.data;
+  };
 
   return {
     ...swrResponse,
