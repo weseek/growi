@@ -13,12 +13,12 @@
   }
   .search-result-list {
     .search-result-list-scroll {
-      // subtract the height of GrowiNavbar + (SearchControl component + other factors)
-      height: calc(100vh - ((var.$grw-navbar-height + var.$grw-navbar-border-width) + 110px));
+      // subtract the height of (SearchControl component + other factors)
+      height: calc(100vh - 110px));
       overflow-y: scroll;
 
       @include bs.media-breakpoint-down(sm) {
-        height: calc(100vh - ((var.$grw-navbar-height + var.$grw-navbar-border-width + var.$grw-navbar-bottom-height) + 123px));
+        height: calc(100vh - (var.$grw-navbar-bottom-height + 123px));
       }
     }
 
@@ -54,7 +54,7 @@
     }
 
     .search-result-content {
-      height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
+      height: 100vh;
 
       > h2 {
         margin-right: 10px;
@@ -85,7 +85,7 @@
 // style to apply when displaying search page
 .on-search :global {
   // set sidebar height shown in search page
-  $search-page-sidebar-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
+  $search-page-sidebar-height: 100vh;
 
   .grw-sidebar {
     height: $search-page-sidebar-height;
