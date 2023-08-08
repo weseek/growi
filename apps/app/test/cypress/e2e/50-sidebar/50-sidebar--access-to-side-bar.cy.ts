@@ -27,7 +27,7 @@ describe('Access to sidebar', () => {
 
       describe('Test show/collapse button', () => {
         it('Successfully show sidebar', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+          cy.getByTestid('grw-contextual-navigation-child').should('be.visible');
 
           cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
@@ -39,7 +39,7 @@ describe('Access to sidebar', () => {
         it('Successfully collapse sidebar', () => {
           cy.getByTestid('grw-navigation-resize-button').click({force: true});
 
-          cy.getByTestid('grw-contextual-navigation-sub').should('not.be.visible');
+          cy.getByTestid('grw-contextual-navigation-child').should('not.be.visible');
 
           cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {
@@ -61,7 +61,7 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully access to page tree', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+          cy.getByTestid('grw-contextual-navigation-child').within(() => {
             cy.getByTestid('grw-pagetree-item-container').should('be.visible');
 
             cy.waitUntilSkeletonDisappear();
@@ -70,7 +70,7 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully hide page tree items', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+          cy.getByTestid('grw-contextual-navigation-child').within(() => {
             cy.get('.grw-pagetree-open').should('be.visible');
 
             // hide page tree tiems
@@ -83,7 +83,7 @@ describe('Access to sidebar', () => {
         it('Successfully click Add to Bookmarks button', () => {
           cy.waitUntil(() => {
             // do
-            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.getByTestid('grw-contextual-navigation-child').within(() => {
               cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
                 cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
               });
@@ -101,7 +101,7 @@ describe('Access to sidebar', () => {
           // show dropdown again
           cy.waitUntil(() => {
             // do
-            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.getByTestid('grw-contextual-navigation-child').within(() => {
               cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
                 cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
               });
@@ -116,7 +116,7 @@ describe('Access to sidebar', () => {
         it('Successfully show duplicate page modal', () => {
           cy.waitUntil(() => {
             // do
-            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.getByTestid('grw-contextual-navigation-child').within(() => {
               cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
                 cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
               });
@@ -141,7 +141,7 @@ describe('Access to sidebar', () => {
         it('Successfully rename page', () => {
           cy.waitUntil(() => {
             // do
-            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.getByTestid('grw-contextual-navigation-child').within(() => {
               cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
                 cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
               });
@@ -164,7 +164,7 @@ describe('Access to sidebar', () => {
         it('Successfully show delete page modal', () => {
           cy.waitUntil(() => {
             // do
-            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.getByTestid('grw-contextual-navigation-child').within(() => {
               cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
                 cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
               });
@@ -196,7 +196,7 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully access to custom sidebar', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+          cy.getByTestid('grw-contextual-navigation-child').within(() => {
             cy.get('.grw-sidebar-content-header > h3').find('a');
 
             cy.waitUntilSkeletonDisappear();
@@ -269,7 +269,7 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully access to tags', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+          cy.getByTestid('grw-contextual-navigation-child').within(() => {
             cy.getByTestid('grw-tags-list').should('be.visible');
 
             cy.screenshot(`${ssPrefix}tags-1-access-to-tags`, { blackout: blackoutOverride });

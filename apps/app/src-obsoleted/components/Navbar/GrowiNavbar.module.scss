@@ -1,16 +1,8 @@
 @use '~/styles/variables' as var;
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '~/styles/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
 .grw-navbar :global {
-
-  .grw-logo {
-    svg {
-      width: var.$grw-logo-width;
-      height: var.$grw-navbar-height;
-      padding: (var.$grw-logo-width - var.$grw-logomark-width) / 2;
-    }
-  }
 
   .confidential {
     font-weight: bold;
@@ -70,17 +62,6 @@
     background: rgba(0, 0, 0, 0.2);
   }
 
-  .grw-apperance-mode-dropdown,
-  .grw-personal-dropdown {
-    .dropdown-menu {
-      min-width: 15rem;
-
-      .grw-icon-container svg {
-        width: 18px;
-        height: 18px;
-      }
-    }
-  }
   .grw-email-sm {
     font-size: 0.75em;
   }

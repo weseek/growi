@@ -10,12 +10,6 @@ $grw-marker-cyan: #6ff;
 $grw-marker-green: #6f6;
 
 //== Layout
-$grw-navbar-height: 52px;
-$grw-navbar-border-width: 3.3333px;
-// slightly larger than $zindex-sticky
-// https://getbootstrap.jp/docs/4.6/layout/overview/#z-index
-$grw-navbar-z-index: 1025;
-
 $grw-subnav-min-height: 95px;
 $grw-subnav-min-height-md: 115px;
 $grw-subnav-height-on-edit: 95px;
@@ -30,11 +24,5 @@ $grw-sidebar-nav-width: 64px; // !!DO NOT CHANGE!! 'margin-left' for '.css-teprs
 
 $grw-logo-width: $grw-sidebar-nav-width;
 $grw-logomark-width: 36px;
-
-// fix tab width to 95 pixels
-// see also '_editor.scss'
-$grw-nav-main-left-tab-width: 95px;
-$grw-nav-main-left-tab-width-mobile: 50px;
-$grw-nav-main-tab-height: 42px;
 
 $grw-scroll-margin-top-in-view: 130px;

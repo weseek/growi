@@ -43,10 +43,10 @@ jobs:
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+          key: node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Restore dist
         uses: actions/cache/restore@v3
@@ -54,13 +54,13 @@ jobs:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
-            dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
-          yarn global add turbo@1.10.9
+          yarn global add turbo
           yarn --frozen-lockfile
 
       - name: Lint
@@ -83,7 +83,7 @@ jobs:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   test:
@@ -114,10 +114,10 @@ jobs:
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+          key: node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Restore dist
         uses: actions/cache/restore@v3
@@ -125,13 +125,13 @@ jobs:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
-            dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
-          yarn global add turbo@1.10.9
+          yarn global add turbo
           yarn --frozen-lockfile
 
       - name: Test
@@ -164,7 +164,7 @@ jobs:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   launch-dev:
@@ -195,10 +195,10 @@ jobs:
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+          key: node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Restore dist
         uses: actions/cache/restore@v3
@@ -207,13 +207,13 @@ jobs:
             **/.turbo
             **/dist
             ${{ github.workspace }}/apps/app/.next
-          key: dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-app-7.x-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
           restore-keys: |
-            dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-app-7.x-dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
-          yarn global add turbo@1.10.9
+          yarn global add turbo
           yarn --frozen-lockfile
 
       - name: turbo run dev:ci
@@ -241,4 +241,4 @@ jobs:
             **/.turbo
             **/dist
             ${{ github.workspace }}/apps/app/.next
-          key: dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+          key: dist-app-7.x-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}

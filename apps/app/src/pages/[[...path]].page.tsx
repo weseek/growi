@@ -53,7 +53,6 @@ import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import type { GrowiSubNavigationSwitcherProps } from '../components/Navbar/GrowiSubNavigationSwitcher';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -72,8 +71,6 @@ declare global {
 const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const GrowiSubNavigationSwitcher = dynamic<GrowiSubNavigationSwitcherProps>(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
-  .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
@@ -338,10 +335,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
-
-        <div className="d-edit-none">
-          <GrowiSubNavigationSwitcher isLinkSharingDisabled={props.disableLinkSharing} />
-        </div>
 
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>

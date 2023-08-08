@@ -101,16 +101,16 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   }, [isPreferDrawerMode, isPreferDrawerModeOnEdit, preferDrawerModeSwitchModifiedHandler, t]);
 
   return (
-    <>
+    <div className="dropend">
       {/* setting button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <button className="bg-transparent border-0 nav-link" type="button" data-toggle="dropdown" ref={buttonRef} aria-haspopup="true">
-        <i className="icon-settings"></i>
+      <button className="btn btn-primary" type="button" data-bs-toggle="dropdown" ref={buttonRef} aria-haspopup="true">
+        <i className="material-icons">settings</i>
       </button>
 
       {/* dropdown */}
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className="dropdown-menu">
 
         {/* sidebar mode */}
         {renderSidebarModeSwitch(false)}
@@ -170,7 +170,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
 
       </div>
 
-    </>
+    </div>
   );
 
 };
