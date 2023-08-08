@@ -14,17 +14,18 @@ import {
   useSidebarScrollerRef,
 } from '~/stores/ui';
 
-import DrawerToggler from './Navbar/DrawerToggler';
-import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
-import { SidebarNav } from './Sidebar/SidebarNav';
-import { SidebarSkeleton } from './Sidebar/Skeleton/SidebarSkeleton';
-import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
+import DrawerToggler from '../Navbar/DrawerToggler';
+import { StickyStretchableScrollerProps } from '../StickyStretchableScroller';
+
+import { NavigationResizeHexagon } from './NavigationResizeHexagon';
+import { SidebarNav } from './SidebarNav';
+import { SidebarSkeleton } from './Skeleton/SidebarSkeleton';
 
 import styles from './Sidebar.module.scss';
 
-const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
+const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('../StickyStretchableScroller')
   .then(mod => mod.StickyStretchableScroller), { ssr: false });
-const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents')
+const SidebarContents = dynamic(() => import('./SidebarContents')
   .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
 
 const sidebarMinWidth = 240;
@@ -90,7 +91,7 @@ const SidebarContentsWrapper = memo(() => {
 SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
 
 
-const Sidebar = memo((): JSX.Element => {
+export const Sidebar = memo((): JSX.Element => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
@@ -315,10 +316,9 @@ const Sidebar = memo((): JSX.Element => {
                 onMouseLeave={hoverOutResizableContainerHandler}
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
-                <div className="grw-contextual-navigation-child">
-                  <div role="group" data-testid="grw-contextual-navigation-sub" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                    <SidebarContentsWrapper></SidebarContentsWrapper>
-                  </div>
+                <div className={`grw-contextual-navigation-child ${showContents ? '' : 'd-none'}`} data-testid="grw-contextual-navigation-child">
+                  <SidebarContents />
+                  <DrawerToggler iconClass="icon-arrow-left" />
                 </div>
               </div>
             </div>
@@ -358,5 +358,3 @@ const Sidebar = memo((): JSX.Element => {
 
 });
 Sidebar.displayName = 'Sidebar';
-
-export default Sidebar;

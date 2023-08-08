@@ -2,14 +2,27 @@ import React, {
   FC, memo, useCallback,
 } from 'react';
 
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useIsAdmin, useGrowiCloudUri } from '~/stores/context';
+import {
+  useIsAdmin, useGrowiCloudUri, useIsDefaultLogo, useIsGuestUser,
+} from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
+import DrawerToggler from '../Navbar/DrawerToggler';
+
+import { SidebarBrandLogo } from './SidebarBrandLogo';
+
 import styles from './SidebarNav.module.scss';
+
+
+const PersonalDropdown = dynamic(() => import('./PersonalDropdown').then(mod => mod.PersonalDropdown), { ssr: false });
+const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
+  .then(mod => mod.InAppNotificationDropdown), { ssr: false });
+const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
 
 
 type PrimaryItemProps = {
@@ -83,12 +96,24 @@ type Props = {
 
 export const SidebarNav: FC<Props> = (props: Props) => {
   const { data: isAdmin } = useIsAdmin();
+  const { data: isGuestUser } = useIsGuestUser();
   const { data: growiCloudUri } = useGrowiCloudUri();
+  const { data: isDefaultLogo } = useIsDefaultLogo();
 
   const { onItemSelected } = props;
 
+  const isAuthenticated = isGuestUser === false;
+
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
+      {/* Brand Logo  */}
+      <div className="navbar-brand">
+        <Link href="/" className="grw-logo d-block">
+          <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
+        </Link>
+        <DrawerToggler />
+      </div>
+
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
@@ -102,6 +127,10 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
+        <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        <PersonalDropdown />
+        <InAppNotificationDropdown />
+
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
         {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
         <SecondaryItem label="Help" iconName="help" href={ growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org' } isBlank />
