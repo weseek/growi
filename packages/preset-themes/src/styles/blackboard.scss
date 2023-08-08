@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 @use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
@@ -20,7 +20,7 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 140,24%;
   --bgcolor-global-l: 17%;
-  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 50%)};
   --bgcolor-keyword-highlighted: #{darken(var.$grw-marker-red, 30%)};
