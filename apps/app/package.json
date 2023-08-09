@@ -174,7 +174,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-toastify": "^9.1.1",
     "react-use-ripple": "^1.5.2",
-    "reactstrap": "^8.10.1",
+    "reactstrap": "^9.2.0",
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rehype-katex": "^6.0.2",
