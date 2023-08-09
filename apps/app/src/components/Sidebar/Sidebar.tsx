@@ -129,11 +129,6 @@ export const Sidebar = memo((): JSX.Element => {
     }
   }, [isResizeDisabled, mutateSidebarResizeDisabled]);
 
-  const backdropClickedHandler = useCallback(() => {
-    mutateDrawerOpened(false, false);
-  }, [mutateDrawerOpened]);
-
-
   const setContentWidth = useCallback((newWidth: number) => {
     if (resizableContainer.current == null) {
       return;
@@ -350,9 +345,6 @@ export const Sidebar = memo((): JSX.Element => {
         </div>
       </div>
 
-      { isDrawerOpened && (
-        <div className={`${styles['grw-sidebar-backdrop']} modal-backdrop show`} onClick={backdropClickedHandler}></div>
-      ) }
     </>
   );
 
