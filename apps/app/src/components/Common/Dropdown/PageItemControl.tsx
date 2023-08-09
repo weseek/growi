@@ -51,7 +51,7 @@ type CommonProps = {
   additionalMenuItemOnTopRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
-  alignRight?: boolean,
+  alignEnd?: boolean,
 }
 
 
@@ -70,7 +70,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
     additionalMenuItemRenderer: AdditionalMenuItems,
-    isInstantRename, alignRight,
+    isInstantRename, alignEnd,
   } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -252,11 +252,9 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   return (
     <DropdownMenu
       data-testid="page-item-control-menu"
-      right={alignRight}
-      // TODO: activate (https://redmine.weseek.co.jp/issues/128468)
-      // modifiers={getCustomModifiers(alignRight)}
+      end={alignEnd}
       container="body"
-      persist={!!alignRight}
+      persist={!!alignEnd}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >
       {contents}

@@ -258,7 +258,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               {hasBrowsingRights
                 && <div className="ml-auto">
                   <PageItemControl
-                    alignRight
+                    alignEnd
                     pageId={pageData._id}
                     pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                     isEnableActions={isEnableActions}
