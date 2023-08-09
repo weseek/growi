@@ -5,7 +5,7 @@ import React, {
 import {
   type IPageInfoAll, isIPageInfoForOperation,
 } from '@growi/core';
-import { getCustomModifiers } from '@growi/ui/dist/utils';
+// import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
@@ -253,7 +253,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     <DropdownMenu
       data-testid="page-item-control-menu"
       right={alignRight}
-      modifiers={getCustomModifiers(alignRight)}
+      // TODO: activate (https://redmine.weseek.co.jp/issues/128468)
+      // modifiers={getCustomModifiers(alignRight)}
       container="body"
       persist={!!alignRight}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */

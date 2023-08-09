@@ -1,5 +1,4 @@
 @use '@growi/ui/src/styles/molecules/page_list';
-@use '~/styles/variables' as var;
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
 
@@ -97,11 +96,11 @@ $grw-sidebar-content-footer-height: 50px;
 }
 
 .grw-bookarks-contents-compressed {
-  max-height: calc(70vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+  max-height: calc(70vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
   overflow-y: scroll;
 }
 
 .grw-bookarks-contents-expanded {
-  max-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+  max-height: calc(100vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
   overflow-y: scroll;
 }

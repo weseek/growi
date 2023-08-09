@@ -8,6 +8,7 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
+import { CodeMirrorEditorContainer, useCodeMirrorEditor } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -51,10 +52,13 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-import Editor from './PageEditor/Editor';
-import Preview from './PageEditor/Preview';
-import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+// import { ConflictDiffModal } from './ConflictDiffModal';
+// import Editor from './Editor';
+import Preview from './Preview';
+import scrollSyncHelper from './ScrollSyncHelper';
+
+
+import '@growi/editor/dist/style.css';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -71,10 +75,19 @@ let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
-const PageEditor = React.memo((): JSX.Element => {
+
+type Props = {
+  visibility?: boolean,
+}
+
+export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const router = useRouter();
+
+  const editorRef = useRef<IEditorMethods>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const codeMirrorEditorContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
@@ -102,6 +115,15 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+
+  const { setContainer } = useCodeMirrorEditor({
+    container: codeMirrorEditorContainerRef.current,
+  });
+  useEffect(() => {
+    if (codeMirrorEditorContainerRef.current != null) {
+      setContainer(codeMirrorEditorContainerRef.current);
+    }
+  }, [setContainer]);
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -141,9 +163,6 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const { mutate: mutateIsConflict } = useIsConflict();
 
-
-  const editorRef = useRef<IEditorMethods>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
 
   const checkIsConflict = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
@@ -554,9 +573,9 @@ const PageEditor = React.memo((): JSX.Element => {
   const isUploadable = isUploadableImage || isUploadableFile;
 
   return (
-    <div className="d-flex flex-wrap">
+    <div data-testid="page-editor" id="page-editor" className={`d-flex flex-grow-1 overflow-auto ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-        <Editor
+        {/* <Editor
           ref={editorRef}
           value={initialValue}
           isUploadable={isUploadable}
@@ -567,9 +586,10 @@ const PageEditor = React.memo((): JSX.Element => {
           onChange={markdownChangedHandler}
           onUpload={uploadHandler}
           onSave={saveWithShortcut}
-        />
+        /> */}
+        <CodeMirrorEditorContainer ref={codeMirrorEditorContainerRef} />
       </div>
-      <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
+      <div className="d-none d-lg-flex page-editor-preview-container justify-content-center flex-grow-1 flex-basis-0 mw-0">
         <Preview
           ref={previewRef}
           rendererOptions={rendererOptions}
@@ -578,6 +598,7 @@ const PageEditor = React.memo((): JSX.Element => {
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
+      {/*
       <ConflictDiffModal
         isOpen={conflictDiffModalStatus?.isOpened}
         onClose={() => closeConflictDiffModal()}
@@ -585,9 +606,8 @@ const PageEditor = React.memo((): JSX.Element => {
         optionsToSave={optionsToSave}
         afterResolvedHandler={afterResolvedHandler}
       />
+       */}
     </div>
   );
 });
 PageEditor.displayName = 'PageEditor';
-
-export default PageEditor;

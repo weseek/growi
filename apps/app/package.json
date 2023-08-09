@@ -211,6 +211,7 @@
     "handsontable": "v7.0.0 or above is no loger MIT lisence."
   },
   "devDependencies": {
+    "@growi/editor": "link:../../packages/editor",
     "@growi/presentation": "link:../../packages/presentation",
     "@growi/ui": "link:../../packages/ui",
     "@handsontable/react": "=2.1.0",
@@ -224,7 +225,6 @@
     "autoprefixer": "^9.0.0",
     "babel-loader": "^8.2.5",
     "bootstrap": "^5.3.1",
-    "codemirror": "^5.64.0",
     "connect-browser-sync": "^2.1.0",
     "diff2html": "^3.4.35",
     "eazy-logger": "^3.1.0",

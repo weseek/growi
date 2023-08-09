@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     dts({
-      outputDir: 'dist',
+      entryRoot: 'src/client',
       copyDtsFiles: true,
     }),
     {

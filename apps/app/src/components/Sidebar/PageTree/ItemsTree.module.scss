@@ -1,4 +1,3 @@
-@use '~/styles/variables' as var;
 @use '~/styles/mixins' as *;
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
@@ -18,7 +17,7 @@ $grw-pagetree-item-container-height: 40px;
   }
 
   :global {
-    min-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+    min-height: calc(100vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
     .btn-page-item-control {
       .icon-plus::before {

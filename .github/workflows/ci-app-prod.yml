@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - dev/7.*.x
       - dev/6.*.x
     paths:
       - .github/workflows/ci-app-prod.yml
@@ -19,6 +20,7 @@ on:
   pull_request:
     branches:
       - master
+      - dev/7.*.x
       - dev/6.*.x
     types: [opened, reopened, synchronize]
     paths:
@@ -47,7 +49,7 @@ concurrency:
 jobs:
 
   test-prod-node16:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@dev/7.0.x
     with:
       node-version: 16.x
       skip-cypress: true
@@ -56,7 +58,7 @@ jobs:
 
 
   test-prod-node18:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@dev/7.0.x
     with:
       node-version: 18.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
@@ -69,7 +71,7 @@ jobs:
   run-reg-suit-node18:
     needs: [test-prod-node18]
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@dev/7.0.x
 
     if: always()
 

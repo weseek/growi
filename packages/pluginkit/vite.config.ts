@@ -9,6 +9,7 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [
     dts({
+      entryRoot: 'src',
       copyDtsFiles: true,
     }),
     {

@@ -42,9 +42,6 @@ context('Access to page', () => {
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
-
     // assert the element is in viewport
     cy.get('#headers').should('be.inViewport');
 
@@ -212,7 +209,7 @@ context('Access to Template Editing Mode', () => {
 
     // Open sidebar
     cy.collapseSidebar(false);
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+    cy.getByTestid('grw-contextual-navigation-child').should('be.visible');
     cy.waitUntilSkeletonDisappear();
 
     // If PageTree is not active when the sidebar is opened, make it active
@@ -224,7 +221,7 @@ context('Access to Template Editing Mode', () => {
       });
 
     // Create page (/{parentPath}}/{newPagePath}) from PageTree
-    cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+    cy.getByTestid('grw-contextual-navigation-child').within(() => {
       cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
         cy.get('#page-create-button-in-page-tree').first().click({force: true})
       });

@@ -1,4 +1,5 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
+@use './variables' as var;
 
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
@@ -14,52 +15,6 @@
   }
   @include bs.media-breakpoint-up(xl) {
     font-size: $basesize;
-  }
-}
-
-@mixin expand-editor($editor-margin-top) {
-  $header-plus-footer: $editor-margin-top + $grw-editor-navbar-bottom-height;
-
-  $editor-margin: $header-plus-footer //
-    + 25px //   add .btn-open-dropzone height
-    + 30px; //  add .navbar-editor height
-
-  .editor-root {
-    width: 100%;
-    height: calc(100vh - #{$header-plus-footer});
-    min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-    margin-top: 0px !important;
-
-    // left(editor)
-    .page-editor-editor-container {
-      height: calc(100vh - #{$header-plus-footer});
-      min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-
-      .react-codemirror2,
-      .CodeMirror,
-      .CodeMirror-scroll,
-      .textarea-editor {
-        height: calc(100vh - #{$editor-margin});
-      }
-    }
-
-    // right(preview)
-    .page-editor-preview-container,
-    .page-editor-preview-body {
-      height: calc(100vh - #{$header-plus-footer});
-      min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-    }
-  }
-
-  .editor-root#page-editor-with-hackmd {
-    &,
-    .hackmd-preinit,
-    .hackmd-error,
-    #iframe-hackmd-container > iframe {
-      width: 100%;
-      height: calc(100vh - #{$header-plus-footer});
-      min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-    }
   }
 }
 
