@@ -43,11 +43,18 @@ export const useHandsontableModalLauncherForView = (opts?: {
     const currentMarkdown = currentPage.revision.body;
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
 
+    const grantUserGroupIds = currentPage.grantedGroups?.map((g) => {
+      return {
+        type: g.type,
+        item: g.item._id,
+      };
+    });
+
     const optionsToSave: OptionsToSave = {
       isSlackEnabled: false,
       slackChannels: '',
       grant: currentPage.grant,
-      grantUserGroupIds: currentPage.grantedGroups,
+      grantUserGroupIds,
       pageTags: tagsInfo.tags,
     };
 

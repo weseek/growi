@@ -52,7 +52,7 @@ export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'cr
   lastUpdateUser: IUserHasId,
   creator: IUserHasId | null,
   deleteUser: IUserHasId,
-  grantedGroups: { type: string, item: IUserGroupHasId }[],
+  grantedGroups: { type: GroupType, item: IUserGroupHasId }[],
   revision: IRevisionHasId,
   author: IUserHasId,
 }
