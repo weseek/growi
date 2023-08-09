@@ -1,5 +1,6 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -19,7 +20,7 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 200,60%;
   --bgcolor-global-l: 98%;
-  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
@@ -28,7 +29,7 @@
   --color-global: var(--primary);
   --color-global-hs: var(--primary-hs);
   --color-global-l: var(--primary-l);
-  --color-reversal: #{$gray-100};
+  --color-reversal: #{bs.$gray-100};
   --color-link: #{hsl.lighten(var(--primary),5%)};
   --color-link-hs: var(--primary-hs);
   --color-link-l: calc(var(--primary-l) + 5%);
@@ -149,13 +150,13 @@
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
-  --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
+  --bgcolor-keyword-highlighted: #{darken(var.$grw-marker-red, 30%)};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 180,1%;
   --color-global-l: 83%;
-  --color-reversal: #{$gray-100};
+  --color-reversal: #{bs.$gray-100};
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 201,75%;
   --color-link-l: 77%;
