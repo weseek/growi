@@ -109,6 +109,11 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToSh
   return useSWR(
     path != null ? ['/page', path] : null,
     ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
+    {
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 

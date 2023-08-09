@@ -18,15 +18,13 @@ import DrawerToggler from '../Navbar/DrawerToggler';
 import { StickyStretchableScrollerProps } from '../StickyStretchableScroller';
 
 import { NavigationResizeHexagon } from './NavigationResizeHexagon';
+import { SidebarContents } from './SidebarContents';
 import { SidebarNav } from './SidebarNav';
-import { SidebarSkeleton } from './Skeleton/SidebarSkeleton';
 
 import styles from './Sidebar.module.scss';
 
 const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('../StickyStretchableScroller')
   .then(mod => mod.StickyStretchableScroller), { ssr: false });
-const SidebarContents = dynamic(() => import('./SidebarContents')
-  .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
