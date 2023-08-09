@@ -485,7 +485,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
               {page != null && page.path != null && page._id != null && (
-                <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+                <div className="grw-pagetree-title-anchor flex-grow-1">
+                  <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+                </div>
               )}
             </>
           )}
