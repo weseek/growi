@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3, GroupType } from '@growi/core';
 import { Router, Request } from 'express';
 import {
   body, param, query, validationResult,
@@ -137,9 +137,14 @@ module.exports = (crowi: Crowi): Router => {
       const { id: deleteGroupId } = req.params;
       const { actionName, transferToUserGroupId } = req.query;
 
+      const transferGroupInfo = transferToUserGroupId != null ? {
+        item: transferToUserGroupId as string,
+        type: GroupType.externalUserGroup,
+      } : undefined;
+
       try {
         const userGroups = await (crowi.userGroupService as UserGroupService)
-          .removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user, ExternalUserGroup, ExternalUserGroupRelation);
+          .removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferGroupInfo, ExternalUserGroup, ExternalUserGroupRelation);
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

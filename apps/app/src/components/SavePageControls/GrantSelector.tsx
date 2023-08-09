@@ -35,8 +35,11 @@ const AVAILABLE_GRANTS = [
 type Props = {
   disabled?: boolean,
   grant: number,
-  grantGroupId?: string,
-  grantGroupName?: string,
+  grantedGroups?: {
+    id: string,
+    name: string,
+    type: string,
+  }[]
 
   onUpdateGrant?: (grantData: IPageGrantData) => void,
 }
@@ -49,10 +52,9 @@ const GrantSelector = (props: Props): JSX.Element => {
 
   const {
     disabled,
-    grantGroupName,
+    grantedGroups,
     onUpdateGrant,
     grant: currentGrant,
-    grantGroupId,
   } = props;
 
 
@@ -101,7 +103,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     let dropdownToggleLabelElm;
 
     const dropdownMenuElems = AVAILABLE_GRANTS.map((opt) => {
-      const label = ((opt.grant === 5 && opt.reselectLabel != null) && grantGroupId != null)
+      const label = ((opt.grant === 5 && opt.reselectLabel != null) && grantedGroups != null && grantedGroups.length > 0)
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
@@ -122,11 +124,11 @@ const GrantSelector = (props: Props): JSX.Element => {
     });
 
     // add specified group option
-    if (grantGroupId != null) {
+    if (grantedGroups != null && grantedGroups.length > 0) {
       const labelElm = (
         <span>
           <i className="icon icon-fw icon-organization"></i>
-          <span className="label">{grantGroupName}</span>
+          <span className="label">{grantedGroups[0].name}</span>
         </span>
       );
 
@@ -148,7 +150,7 @@ const GrantSelector = (props: Props): JSX.Element => {
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, currentGrant, disabled, grantGroupId, grantGroupName, t]);
+  }, [changeGrantHandler, currentGrant, disabled, grantedGroups, t]);
 
   /**
    * Render select grantgroup modal.

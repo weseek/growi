@@ -1,3 +1,4 @@
+import { GrantedGroup } from '@growi/core';
 import { Model } from 'mongoose';
 
 import { IUser } from '~/interfaces/user';
@@ -114,7 +115,7 @@ class UserGroupService {
   }
 
   async removeCompletelyByRootGroupId(
-      deleteRootGroupId, action, transferToUserGroupId, user,
+      deleteRootGroupId, action, user, transferToUserGroup?: GrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
       userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
   ) {
@@ -126,8 +127,7 @@ class UserGroupService {
     const groupsToDelete = await userGroupModel.findGroupsWithDescendantsRecursively([rootGroup]);
 
     // 1. update page & remove all groups
-    // TODO: update pageService logic to handle external user groups (https://redmine.weseek.co.jp/issues/124385)
-    await this.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user);
+    await this.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup, user);
     // 2. remove all groups
     const deletedGroups = await userGroupModel.deleteMany({ _id: { $in: groupsToDelete.map(g => g._id) } });
     // 3. remove all relations

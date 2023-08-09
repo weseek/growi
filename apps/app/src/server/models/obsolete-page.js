@@ -1,9 +1,13 @@
-import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
+import {
+  templateChecker, pagePathUtils, pathUtils, GroupType,
+} from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
+import UserGroup from './user-group';
 import UserGroupRelation from './user-group-relation';
 
 
@@ -660,7 +664,7 @@ export const getPageSchema = (crowi) => {
 
     await builder.query.updateMany({}, {
       grant,
-      grantedGroup: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroup : null,
+      grantedGroups: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroups : null,
       grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
     });
 
@@ -686,7 +690,7 @@ export const getPageSchema = (crowi) => {
         updateOne: {
           filter: { _id: page._id },
           update: {
-            grantedGroup: null,
+            grantedGroups: null,
             grant: this.GRANT_PUBLIC,
           },
         },
@@ -695,14 +699,19 @@ export const getPageSchema = (crowi) => {
     await this.bulkWrite(operationsToPublicize);
   };
 
-  pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroupId) {
-    const UserGroup = mongoose.model('UserGroup');
+  /**
+   * transfer pages grant to specified user group
+   * @param {Page[]} pages
+   * @param {GrantedGroup} transferToUserGroup
+   */
+  pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroup) {
+    const userGroupModel = transferToUserGroup.type === GroupType.userGroup ? UserGroup : ExternalUserGroup;
 
-    if ((await UserGroup.count({ _id: transferToUserGroupId })) === 0) {
-      throw Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
+    if ((await userGroupModel.count({ _id: transferToUserGroup.item })) === 0) {
+      throw Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroup.item);
     }
 
-    await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroup: transferToUserGroupId });
+    await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroups: [transferToUserGroup] });
   };
 
   /**

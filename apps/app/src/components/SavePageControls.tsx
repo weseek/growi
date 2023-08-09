@@ -84,8 +84,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
             <GrantSelector
               grant={grant}
               disabled={isRootPage}
-              grantGroupId={grantedGroup?.id}
-              grantGroupName={grantedGroup?.name}
+              grantedGroups={grantedGroups}
               onUpdateGrant={updateGrantHandler}
             />
           </div>

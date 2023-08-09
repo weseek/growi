@@ -32,7 +32,9 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 5) {
         return (
           <>
-            <i className="icon-fw icon-organization"></i><strong>{pageData.grantedGroups[0].item.name}</strong>
+            <i className="icon-fw icon-organization"></i><strong>{
+              typeof pageData.grantedGroups[0].item !== 'string' && pageData.grantedGroups[0].item.name
+            }</strong>
           </>
         );
       }
