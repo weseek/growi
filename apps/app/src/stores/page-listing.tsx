@@ -205,7 +205,7 @@ export const useSWRxPageChildren = (
 
 export const useSWRxV5MigrationStatus = (
 ): SWRResponse<V5MigrationStatus, Error> => {
-  return useSWR(
+  return useSWRImmutable(
     '/pages/v5-migration-status',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {

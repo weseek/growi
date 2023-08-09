@@ -8,14 +8,16 @@ import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './ItemsTree';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
-import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 
-const PageTreeHeader = () => {
+const PageTreeUnavailable = () => {
   const { t } = useTranslation();
 
+  // TODO : improve design
+  // Story : https://redmine.weseek.co.jp/issues/83755
   return (
-    <div className="grw-sidebar-content-header py-3 d-flex">
-      <h3 className="mb-0">{t('Page Tree')}</h3>
+    <div className="mt-5 mx-2 text-center">
+      <h3 className="text-gray">{t('v5_page_migration.page_tree_not_avaliable')}</h3>
+      <a href="/admin">{t('v5_page_migration.go_to_settings')}</a>
     </div>
   );
 };
@@ -28,29 +30,19 @@ export const PageTree = memo(() => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
+
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   const targetPathOrId = targetId || currentPath;
 
-  if (migrationStatus == null) {
-    return (
-      <div className="px-3">
-        <PageTreeHeader />
-        <PageTreeContentSkeleton />
-      </div>
-    );
-  }
-
   if (!migrationStatus?.isV5Compatible) {
-    // TODO : improve design
-    // Story : https://redmine.weseek.co.jp/issues/83755
+
     return (
       <div className="px-3">
-        <PageTreeHeader />
-        <div className="mt-5 mx-2 text-center">
-          <h3 className="text-gray">{t('v5_page_migration.page_tree_not_avaliable')}</h3>
-          <a href="/admin">{t('v5_page_migration.go_to_settings')}</a>
+        <div className="grw-sidebar-content-header py-3 d-flex">
+          <h3 className="mb-0">{t('Page Tree')}</h3>
         </div>
+        <PageTreeUnavailable />
       </div>
     );
   }
@@ -66,7 +58,9 @@ export const PageTree = memo(() => {
 
   return (
     <div className="px-3">
-      <PageTreeHeader />
+      <div className="grw-sidebar-content-header py-3 d-flex">
+        <h3 className="mb-0">{t('Page Tree')}</h3>
+      </div>
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
