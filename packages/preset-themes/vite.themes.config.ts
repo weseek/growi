@@ -22,8 +22,8 @@ export default defineConfig({
         '/src/styles/kibela.scss',
         '/src/styles/mono-blue.scss',
         '/src/styles/nature.scss',
-        // '/src/styles/spring.scss',
-        // '/src/styles/wood.scss',
+        '/src/styles/spring.scss',
+        '/src/styles/wood.scss',
       ],
       output: {
         assetFileNames: isProd
