@@ -1,30 +1,20 @@
-import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxPageByPath } from '~/stores/page';
-import { useCustomSidebarOptions } from '~/stores/renderer';
 
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 import DefaultContentSkeleton from '../Skeleton/DefaultContentSkeleton';
 
-import { SidebarNotFound } from './CustomSidebarNotFound';
+import { CustomSidebarSubstance } from './CustomSidebarSubstance';
 
-
-const CustomSidebarSubstance = dynamic(
-  () => import('./CustomSidebarSubstance').then(mod => mod.CustomSidebarSubstance),
-  { ssr: false, loading: DefaultContentSkeleton },
-);
 
 export const CustomSidebar = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: rendererOptions, isLoading: isLoadingRendererOptions } = useCustomSidebarOptions();
-  const { data: page, mutate, isLoading: isLoadingPage } = useSWRxPageByPath('/Sidebar');
-
-  const isLoading = isLoadingPage || isLoadingRendererOptions;
-
-  const markdown = page?.revision.body;
+  const { mutate, isLoading } = useSWRxPageByPath('/Sidebar');
 
   return (
     <div className="px-3">
@@ -36,19 +26,9 @@ export const CustomSidebar = (): JSX.Element => {
         { !isLoading && <SidebarHeaderReloadButton onClick={() => mutate()} /> }
       </div>
 
-      { isLoading
-        ? <DefaultContentSkeleton />
-        : (
-          <>
-            { rendererOptions != null && markdown != null && (
-              <CustomSidebarSubstance markdown={markdown} rendererOptions={rendererOptions} />
-            ) }
-            { markdown === undefined && (
-              <SidebarNotFound />
-            ) }
-          </>
-        )
-      }
+      <Suspense fallback={<DefaultContentSkeleton />}>
+        <CustomSidebarSubstance />
+      </Suspense>
     </div>
   );
 };

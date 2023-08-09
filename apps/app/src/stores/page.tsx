@@ -8,7 +8,9 @@ import type {
   IRevision, IRevisionHasId,
 } from '@growi/core';
 import { isClient, pagePathUtils } from '@growi/core/dist/utils';
-import useSWR, { mutate, useSWRConfig, type SWRResponse } from 'swr';
+import useSWR, {
+  mutate, useSWRConfig, type SWRResponse, type SWRConfiguration,
+} from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
@@ -105,11 +107,12 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
   );
 };
 
-export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+export const useSWRxPageByPath = (path?: string, config?: SWRConfiguration): SWRResponse<IPagePopulatedToShowRevision, Error> => {
   return useSWR(
     path != null ? ['/page', path] : null,
     ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
     {
+      ...config,
       keepPreviousData: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

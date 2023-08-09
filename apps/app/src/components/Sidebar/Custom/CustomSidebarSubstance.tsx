@@ -1,8 +1,11 @@
 import React from 'react';
 
 import RevisionRenderer from '~/components/Page/RevisionRenderer';
-import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useSWRxPageByPath } from '~/stores/page';
+import { useCustomSidebarOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
+
+import { SidebarNotFound } from './CustomSidebarNotFound';
 
 import styles from './CustomSidebarSubstance.module.scss';
 
@@ -10,20 +13,25 @@ import styles from './CustomSidebarSubstance.module.scss';
 const logger = loggerFactory('growi:components:CustomSidebarSubstance');
 
 
-type Props = {
-  markdown: string,
-  rendererOptions: RendererOptions
-}
+export const CustomSidebarSubstance = (): JSX.Element => {
+  const { data: rendererOptions } = useCustomSidebarOptions({ suspense: true });
+  const { data: page } = useSWRxPageByPath('/Sidebar', { suspense: true });
 
-export const CustomSidebarSubstance = (props: Props): JSX.Element => {
-  const { markdown, rendererOptions } = props;
+  if (rendererOptions == null) return <></>;
+
+  const markdown = page?.revision.body;
 
   return (
     <div className={`py-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
-      <RevisionRenderer
-        rendererOptions={rendererOptions}
-        markdown={markdown}
-      />
+      { markdown === undefined
+        ? <SidebarNotFound />
+        : (
+          <RevisionRenderer
+            rendererOptions={rendererOptions}
+            markdown={markdown}
+          />
+        )
+      }
     </div>
   );
 };
