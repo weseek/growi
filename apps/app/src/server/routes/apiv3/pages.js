@@ -773,7 +773,7 @@ module.exports = (crowi) => {
       if (isUserPage(newPagePath)) {
         const isExistUser = await User.isExistUserByUserPagePath(newPagePath);
         if (!isExistUser) {
-          return res.apiv3Err("Unable to rename a page under a non-existent user's user page");
+          return res.apiv3Err("Unable to duplicate a page under a non-existent user's user page");
         }
       }
 
