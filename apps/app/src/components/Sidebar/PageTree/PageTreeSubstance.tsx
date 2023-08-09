@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -22,7 +22,7 @@ const PageTreeUnavailable = () => {
   );
 };
 
-export const PageTree = memo(() => {
+export const PageTreeSubstance = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -80,4 +80,4 @@ export const PageTree = memo(() => {
   );
 });
 
-PageTree.displayName = 'PageTree';
+PageTreeSubstance.displayName = 'PageTreeSubstance';
