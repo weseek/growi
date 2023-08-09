@@ -327,7 +327,6 @@ export const getPageSchema = (crowi) => {
 
     let userGroups = [];
     if (user != null) {
-      validateCrowi();
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
