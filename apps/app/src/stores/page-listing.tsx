@@ -4,7 +4,9 @@ import type {
   Nullable, HasObjectId,
   IDataWithMeta, IPageHasId, IPageInfoForListing, IPageInfoForOperation,
 } from '@growi/core';
-import useSWR, { Arguments, mutate, SWRResponse } from 'swr';
+import useSWR, {
+  mutate, type SWRConfiguration, type SWRResponse, type Arguments,
+} from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
@@ -30,7 +32,7 @@ type RecentApiResult = {
   totalCount: number,
   offset: number,
 }
-export const useSWRINFxRecentlyUpdated = (limit: number) : SWRInfiniteResponse<RecentApiResult, Error> => {
+export const useSWRINFxRecentlyUpdated = (limit: number, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
@@ -44,6 +46,7 @@ export const useSWRINFxRecentlyUpdated = (limit: number) : SWRInfiniteResponse<R
     },
     ([endpoint, offset, limit]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit }).then(response => response.data),
     {
+      ...config,
       revalidateFirstPage: false,
       revalidateAll: false,
     },

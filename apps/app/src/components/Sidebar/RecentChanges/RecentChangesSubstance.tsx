@@ -1,11 +1,10 @@
 import React, {
-  memo, useCallback, useEffect, useState,
+  memo, useCallback, useEffect,
 } from 'react';
 
 import { isPopulated, type IPageHasId } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
-import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import FormattedDistanceDate from '~/components/FormattedDistanceDate';
@@ -109,7 +108,7 @@ type HeaderProps = {
 const PER_PAGE = 20;
 export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX.Element => {
 
-  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE);
+  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -151,7 +150,7 @@ type ContentProps = {
 }
 
 export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => {
-  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE);
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 
   const isEmpty = data?.[0]?.pages.length === 0;
