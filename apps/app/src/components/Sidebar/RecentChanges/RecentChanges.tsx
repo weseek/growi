@@ -8,16 +8,16 @@ import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
+import FormattedDistanceDate from '~/components/FormattedDistanceDate';
+import InfiniteScroll from '~/components/InfiniteScroll';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
-import FormattedDistanceDate from '../FormattedDistanceDate';
-import InfiniteScroll from '../InfiniteScroll';
+import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
-import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
-import RecentChangesContentSkeleton from './Skeleton/RecentChangesContentSkeleton';
+import RecentChangesContentSkeleton from './RecentChangesContentSkeleton';
 
 import styles from './RecentChanges.module.scss';
 
@@ -102,7 +102,7 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
 });
 PageItem.displayName = 'PageItem';
 
-const RecentChanges = (): JSX.Element => {
+export const RecentChanges = (): JSX.Element => {
 
   const PER_PAGE = 20;
   const { t } = useTranslation();
@@ -172,4 +172,3 @@ const RecentChanges = (): JSX.Element => {
   );
 
 };
-export default RecentChanges;

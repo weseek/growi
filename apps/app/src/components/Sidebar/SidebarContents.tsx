@@ -6,7 +6,7 @@ import { useCurrentSidebarContents } from '~/stores/ui';
 import { Bookmarks } from './Bookmarks';
 import { CustomSidebar } from './Custom';
 import PageTree from './PageTree';
-import RecentChanges from './RecentChanges';
+import { RecentChanges } from './RecentChanges';
 import Tag from './Tag';
 
 export const SidebarContents = memo(() => {

@@ -1,6 +1,0 @@
-@use '~/styles/mixins' as *;
-
-.grw-sidebar-content-header-skeleton {
-  @include grw-skeleton-h3;
-  max-width: 100%;
-}
