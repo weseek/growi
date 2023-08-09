@@ -6,9 +6,9 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
-import ItemsTree from './PageTree/ItemsTree';
-import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
-import PageTreeContentSkeleton from './Skeleton/PageTreeContentSkeleton';
+import ItemsTree from './ItemsTree';
+import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
+import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 
 const PageTreeHeader = () => {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ const PageTreeHeader = () => {
   );
 };
 
-const PageTree: FC = memo(() => {
+export const PageTree = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -87,5 +87,3 @@ const PageTree: FC = memo(() => {
 });
 
 PageTree.displayName = 'PageTree';
-
-export default PageTree;
