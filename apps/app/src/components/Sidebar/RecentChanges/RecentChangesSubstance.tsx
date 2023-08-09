@@ -17,9 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
-import RecentChangesContentSkeleton from './RecentChangesContentSkeleton';
-
-import styles from './RecentChanges.module.scss';
+import styles from './RecentChangesSubstance.module.scss';
 
 
 const logger = loggerFactory('growi:History');
@@ -102,29 +100,27 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
 });
 PageItem.displayName = 'PageItem';
 
-export const RecentChanges = (): JSX.Element => {
 
-  const PER_PAGE = 20;
-  const { t } = useTranslation();
-  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE);
-  const {
-    data, mutate, isLoading,
-  } = swrInifinitexRecentlyUpdated;
+type HeaderProps = {
+  isSmall: boolean,
+  onSizeChange: (isSmall: boolean) => void,
+}
 
-  const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-  const isEmpty = data?.[0]?.pages.length === 0;
-  const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
+const PER_PAGE = 20;
+export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX.Element => {
+
+  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE);
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
-      setIsRecentChangesSidebarSmall(true);
+      onSizeChange(true);
     }
-  }, []);
+  }, [onSizeChange]);
 
   const changeSizeHandler = useCallback((e) => {
-    setIsRecentChangesSidebarSmall(e.target.checked);
+    onSizeChange(e.target.checked);
     window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
-  }, []);
+  }, [onSizeChange]);
 
   // componentDidMount
   useEffect(() => {
@@ -132,43 +128,49 @@ export const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <div className="px-3" data-testid="grw-recent-changes">
-      <div className="grw-sidebar-content-header py-3 d-flex">
-        <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
-        <SidebarHeaderReloadButton onClick={() => mutate()}/>
-        <div className="d-flex align-items-center">
-          <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
-            <input
-              id="recentChangesResize"
-              className="custom-control-input"
-              type="checkbox"
-              checked={isRecentChangesSidebarSmall}
-              onChange={changeSizeHandler}
-            />
-            <label className="custom-control-label" htmlFor="recentChangesResize">
-            </label>
-          </div>
+    <>
+      <SidebarHeaderReloadButton onClick={() => mutate()}/>
+      <div className="d-flex align-items-center">
+        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
+          <input
+            id="recentChangesResize"
+            className="custom-control-input"
+            type="checkbox"
+            checked={isSmall}
+            onChange={changeSizeHandler}
+          />
+          <label className="custom-control-label" htmlFor="recentChangesResize" />
         </div>
       </div>
-      {
-        isLoading ? <RecentChangesContentSkeleton /> : (
-          <div className="grw-recent-changes py-3">
-            <ul className="list-group list-group-flush">
-              <InfiniteScroll
-                swrInifiniteResponse={swrInifinitexRecentlyUpdated}
-                isReachingEnd={isReachingEnd}
-              >
-                { data != null && data.map(apiResult => apiResult.pages).flat()
-                  .map(page => (
-                    <PageItem key={page._id} page={page} isSmall={isRecentChangesSidebarSmall} />
-                  ))
-                }
-              </InfiniteScroll>
-            </ul>
-          </div>
-        )
-      }
+    </>
+  );
+};
+
+type ContentProps = {
+  isSmall: boolean,
+}
+
+export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => {
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE);
+  const { data } = swrInifinitexRecentlyUpdated;
+
+  const isEmpty = data?.[0]?.pages.length === 0;
+  const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
+
+  return (
+    <div className="grw-recent-changes py-3">
+      <ul className="list-group list-group-flush">
+        <InfiniteScroll
+          swrInifiniteResponse={swrInifinitexRecentlyUpdated}
+          isReachingEnd={isReachingEnd}
+        >
+          { data != null && data.map(apiResult => apiResult.pages).flat()
+            .map(page => (
+              <PageItem key={page._id} page={page} isSmall={isSmall} />
+            ))
+          }
+        </InfiniteScroll>
+      </ul>
     </div>
   );
-
 };
