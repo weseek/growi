@@ -134,8 +134,8 @@ export const useSWRxPageInfoForList = (
   };
 };
 
-export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
-  return useSWRImmutable(
+export const useSWRxRootPage = (config?: SWRConfiguration): SWRResponse<RootPageResult, Error> => {
+  return useSWR(
     '/page-listing/root',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
@@ -143,7 +143,10 @@ export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
       };
     }),
     {
+      ...config,
       keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -203,8 +206,7 @@ export const useSWRxPageChildren = (
   );
 };
 
-export const useSWRxV5MigrationStatus = (
-): SWRResponse<V5MigrationStatus, Error> => {
+export const useSWRxV5MigrationStatus = (config?: SWRConfiguration): SWRResponse<V5MigrationStatus, Error> => {
   return useSWRImmutable(
     '/pages/v5-migration-status',
     endpoint => apiv3Get(endpoint).then((response) => {
@@ -213,5 +215,6 @@ export const useSWRxV5MigrationStatus = (
         migratablePagesCount: response.data.migratablePagesCount,
       };
     }),
+    config,
   );
 };

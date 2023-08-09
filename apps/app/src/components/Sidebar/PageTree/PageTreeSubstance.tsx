@@ -1,13 +1,34 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxRootPage, useSWRxV5MigrationStatus } from '~/stores/page-listing';
+
+import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
 import ItemsTree from './ItemsTree';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
+
+
+export const PageTreeHeader = memo(() => {
+  const { mutate: mutateRootPage } = useSWRxRootPage({ suspense: true });
+  useSWRxV5MigrationStatus({ suspense: true });
+
+  const mutate = useCallback(() => {
+    mutateRootPage();
+    mutatePageTree();
+  }, [mutateRootPage]);
+
+  return (
+    <>
+      <SidebarHeaderReloadButton onClick={() => mutate()}/>
+    </>
+  );
+});
+PageTreeHeader.displayName = 'PageTreeHeader';
+
 
 const PageTreeUnavailable = () => {
   const { t } = useTranslation();
@@ -22,29 +43,19 @@ const PageTreeUnavailable = () => {
   );
 };
 
-export const PageTreeSubstance = memo(() => {
-  const { t } = useTranslation();
-
+export const PageTreeContent = memo(() => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
 
-  const { data: migrationStatus } = useSWRxV5MigrationStatus();
+  const { data: migrationStatus } = useSWRxV5MigrationStatus({ suspense: true });
 
   const targetPathOrId = targetId || currentPath;
 
   if (!migrationStatus?.isV5Compatible) {
-
-    return (
-      <div className="px-3">
-        <div className="grw-sidebar-content-header py-3 d-flex">
-          <h3 className="mb-0">{t('Page Tree')}</h3>
-        </div>
-        <PageTreeUnavailable />
-      </div>
-    );
+    return <PageTreeUnavailable />;
   }
 
   /*
@@ -57,10 +68,7 @@ export const PageTreeSubstance = memo(() => {
   const path = currentPath || '/';
 
   return (
-    <div className="px-3">
-      <div className="grw-sidebar-content-header py-3 d-flex">
-        <h3 className="mb-0">{t('Page Tree')}</h3>
-      </div>
+    <>
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
@@ -76,8 +84,8 @@ export const PageTreeSubstance = memo(() => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 });
 
-PageTreeSubstance.displayName = 'PageTreeSubstance';
+PageTreeContent.displayName = 'PageTreeContent';
