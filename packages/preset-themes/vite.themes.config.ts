@@ -11,7 +11,7 @@ export default defineConfig({
       input: [
         // '/src/styles/antarctic.scss',
         '/src/styles/blackboard.scss',
-        // '/src/styles/christmas.scss',
+        '/src/styles/christmas.scss',
         '/src/styles/default.scss',
         // '/src/styles/fire-red.scss',
         // '/src/styles/future.scss',
