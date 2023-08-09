@@ -710,6 +710,13 @@ module.exports = function(crowi) {
     return username;
   };
 
+  userSchema.statics.isExistUserByUserPagePath = async function(path) {
+    const username = this.getUsernameByPath(path);
+    const user = await this.findOne({ username });
+
+    return user != null;
+  };
+
   userSchema.statics.updateIsInvitationEmailSended = async function(id) {
     const user = await this.findById(id);
 
