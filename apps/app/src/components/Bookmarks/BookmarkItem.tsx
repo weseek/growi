@@ -186,7 +186,6 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         </div>
 
         <UncontrolledTooltip
-          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
           autohide={false}
           placement="right"
           target={bookmarkItemId}
