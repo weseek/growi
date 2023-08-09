@@ -106,8 +106,8 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { data: rootPageResult, error: error2 } = useSWRxRootPage();
+  const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath, { suspense: true });
+  const { data: rootPageResult, error: error2 } = useSWRxRootPage({ suspense: true });
   const { data: currentPagePath } = useCurrentPagePath();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();

@@ -161,6 +161,7 @@ export const mutatePageTree = async(): Promise<undefined[]> => {
 
 export const useSWRxPageAncestorsChildren = (
     path: string | null,
+    config?: SWRConfiguration,
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const key = path ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/ancestors-children', path] : null;
 
@@ -179,6 +180,7 @@ export const useSWRxPageAncestorsChildren = (
       };
     }),
     {
+      ...config,
       keepPreviousData: true,
     },
   );
