@@ -9,7 +9,7 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: [
-        // '/src/styles/antarctic.scss',
+        '/src/styles/antarctic.scss',
         '/src/styles/blackboard.scss',
         '/src/styles/christmas.scss',
         '/src/styles/default.scss',
