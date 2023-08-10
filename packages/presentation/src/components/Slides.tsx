@@ -5,6 +5,8 @@ import { MarpSlides } from './MarpSlides';
 
 import './Slides.global.scss';
 
+// TODO: to remove MARP_CONTAINER_CLASS_NAME
+// https://redmine.weseek.co.jp/issues/125680
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
 type Props = {
