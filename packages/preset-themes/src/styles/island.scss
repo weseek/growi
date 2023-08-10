@@ -1,5 +1,6 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './atoms/mixins/buttons' as mixins-buttons;
 @use './theme/hsl-functions' as hsl;
@@ -18,8 +19,8 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 170,43%;
   --bgcolor-global-l: 90%;
-  --bgcolor-card: #{$gray-50};
-  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{bs.$gray-100};
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 30%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
@@ -66,7 +67,7 @@
 
   // Logo colors
   --bgcolor-logo: #0d3955;
-  --fillcolor-logo-mark: #{lighten(desaturate($gray-100, 10%), 15%)};
+  --fillcolor-logo-mark: #{lighten(desaturate(bs.$gray-100, 10%), 15%)};
 
   // Sidebar
   --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
@@ -101,17 +102,17 @@
   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
 
   // Tabs
-  --bordercolor-nav-tabs: #{$gray-300}; // optional
+  --bordercolor-nav-tabs: #{bs.$gray-300}; // optional
 
   // Icon colors
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-300};
+  --border-color-theme: #{bs.$gray-300};
   --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  --bgcolor-dropdown-link-active: #{$growi-blue};
+  --bgcolor-dropdown-link-active: #{var.$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.darken(var(--primary), 15%)};
@@ -156,13 +157,13 @@
     // Pagetree
     .grw-pagetree {
       .grw-pagetree-triangle-btn {
-        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, #0d3955);
+        @include mixins-buttons.button-outline-svg-icon-variant(bs.$gray-400, #0d3955);
       }
     }
     // Foldertree
     .grw-foldertree {
       .grw-foldertree-triangle-btn {
-        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, var(--bgcolor-sidebar));
+        @include mixins-buttons.button-outline-svg-icon-variant(bs.$gray-400, var(--bgcolor-sidebar));
       }
     }
   }
