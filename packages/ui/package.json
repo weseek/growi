@@ -23,6 +23,9 @@
   "dependencies": {
     "@growi/core": "link:../core"
   },
+  "devDependencies": {
+    "reactstrap": "^9.2.0"
+  },
   "peerDependencies": {
     "next": "^13",
     "react": "^18.2.0",
