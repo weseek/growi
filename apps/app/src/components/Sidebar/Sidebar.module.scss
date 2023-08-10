@@ -218,11 +218,3 @@
     }
   }
 }
-
-// '&' could not be set after :global
-// workaround from https://github.com/css-modules/css-modules/issues/295#issuecomment-952885628
-.grw-sidebar-backdrop {
-  &:global(.modal-backdrop) {
-    z-index: bs.$zindex-fixed + 1;
-  }
-}

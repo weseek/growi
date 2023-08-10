@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import type { HtmlElementNode } from 'rehype-toc';
-import useSWR, { type SWRResponse } from 'swr';
+import useSWR, { type SWRConfiguration, type SWRResponse } from 'swr';
 
 import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facade-utils';
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -147,7 +147,7 @@ export const useSearchResultOptions = useSelectedPagePreviewOptions;
 
 export const useTimelineOptions = useSelectedPagePreviewOptions;
 
-export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> => {
+export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<RendererOptions, Error> => {
   const { data: rendererConfig } = useRendererConfig();
 
   const isAllDataValid = rendererConfig != null;
@@ -161,6 +161,7 @@ export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> =
       return generateSimpleViewOptions(rendererConfig, '/');
     },
     {
+      ...config,
       keepPreviousData: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
