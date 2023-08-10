@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import loggerFactory from '~/utils/logger';
 
 

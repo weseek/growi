@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 
 const { isCreatablePage } = pagePathUtils;
 

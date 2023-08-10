@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
-import { type IRevisionHasId, pagePathUtils } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
+import { debounce } from 'throttle-debounce';
 
-import { ROOT_ELEM_ID as PageCommentRootElemId, type PageCommentProps } from '~/components/PageComment';
+import { type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
@@ -38,30 +40,21 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const pageCommentParentRef = useRef<HTMLDivElement>(null);
 
+  const onLoadedDebounced = useMemo(() => debounce(500, () => onLoaded?.()), [onLoaded]);
+
   useEffect(() => {
     const parent = pageCommentParentRef.current;
     if (parent == null) return;
 
-    const observerCallback = (mutationRecords: MutationRecord[]) => {
-      mutationRecords.forEach((record: MutationRecord) => {
-        const target = record.target as HTMLElement;
+    const observer = new MutationObserver(() => {
+      onLoadedDebounced();
+    });
+    observer.observe(parent, { childList: true, subtree: true });
 
-        for (const child of Array.from(target.children)) {
-          const childId = (child as HTMLElement).id;
-          if (childId === PageCommentRootElemId) {
-            onLoaded?.();
-            break;
-          }
-        }
-
-      });
-    };
-
-    const observer = new MutationObserver(observerCallback);
-    observer.observe(parent, { childList: true });
-    return () => {
-      observer.disconnect();
-    };
+    // no cleanup function -- 2023.07.31 Yuki Takei
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
+    // > You can call observe() multiple times on the same MutationObserver
+    // > to watch for changes to different parts of the DOM tree and/or different types of changes.
   }, [onLoaded]);
 
   const isTopPagePath = isTopPage(pagePath);
@@ -86,7 +79,6 @@ export const Comments = (props: CommentsProps): JSX.Element => {
             currentUser={currentUser}
             isReadOnly={false}
             titleAlign="left"
-            hideIfEmpty={false}
           />
         </div>
         {!isDeleted && (

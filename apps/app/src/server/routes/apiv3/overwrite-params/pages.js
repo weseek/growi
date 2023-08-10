@@ -1,4 +1,5 @@
-const { PageGrant } = require('@growi/core');
+import { PageGrant } from '@growi/core';
+
 const mongoose = require('mongoose');
 
 // eslint-disable-next-line no-unused-vars

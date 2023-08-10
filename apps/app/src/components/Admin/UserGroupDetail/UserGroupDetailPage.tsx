@@ -2,7 +2,10 @@ import React, {
   useState, useCallback, useEffect, useMemo,
 } from 'react';
 
-import { objectIdUtils } from '@growi/core';
+import type {
+  IUserGroup, IUserGroupHasId, IUserGroup, IUserGroupHasId,
+} from '@growi/core';
+import { objectIdUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -17,7 +20,6 @@ import {
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';

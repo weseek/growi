@@ -2,12 +2,12 @@ import React, {
   FC, useCallback, useState, useMemo,
 } from 'react';
 
+import type { IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { IUserGroupHasId } from '~/interfaces/user';
 
 /**
  * Delete User Group Select component

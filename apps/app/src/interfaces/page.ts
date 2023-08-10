@@ -1,12 +1,6 @@
-import { IPageHasId, Nullable } from '@growi/core';
+import type { IPageHasId, Nullable } from '@growi/core';
 
-import { IPageOperationProcessData } from './page-operation';
-
-export { PageGrant } from '@growi/core';
-export type {
-  IPage, IPageHasId, IPageInfo, IPageInfoForEntity, IPageInfoForOperation, IPageInfoForListing, IPageInfoAll,
-  IDataWithMeta, IPageWithMeta, IPageToDeleteWithMeta, IPageToRenameWithMeta,
-} from '@growi/core';
+import type { IPageOperationProcessData } from './page-operation';
 
 export {
   isIPageInfoForEntity, isIPageInfoForOperation, isIPageInfoForListing,

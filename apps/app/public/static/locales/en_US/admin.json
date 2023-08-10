@@ -3,7 +3,7 @@
     "display_name": "English"
   },
   "last_login": "Last login",
-  "wiki_management_home_page": "Wiki Management Home Page",
+  "wiki_management_homepage": "Wiki Management Homepage",
   "public": "Public",
   "anyone_with_the_link": "Anyone with the link",
   "specified_users": "Specified users",
@@ -46,6 +46,11 @@
     "admin_only": "Admin only",
     "admin_and_author": "Admin and author",
     "anyone": "Anyone",
+    "user_homepage_deletion": {
+      "user_homepage_deletion": "User homepage deletion",
+      "enable_user_homepage_deletion": "Enable user homepage deletion",
+      "when_deleting_a_user_the_user_homepage_is_also_deleted": "When deleting a user, the user homepage is also deleted."
+    },
     "session": "Session",
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
@@ -1085,5 +1090,8 @@
     "activate_plugin_success": "Succeeded to activating {{pluginName}}",
     "deactivate_plugin_success": "Succeeded to deactivate {{pluginName}}",
     "remove_plugin_success": "Succeeded to removing {{pluginName}}"
+  },
+  "forbidden_page": {
+    "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen."
   }
 }
