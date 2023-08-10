@@ -4,9 +4,13 @@ import React, {
 
 import nodePath from 'path';
 
-import {
-  pathUtils, pagePathUtils, Nullable,
+import type {
+  Nullable,
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '@growi/core';
+import {
+  pathUtils, pagePathUtils,
+} from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
@@ -19,9 +23,6 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
-import {
-  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
-} from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRMUTxPageInfo } from '~/stores/page';

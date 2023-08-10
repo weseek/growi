@@ -1,6 +1,5 @@
+import { PageGrant } from '@growi/core';
 import mongoose from 'mongoose';
-
-import { PageGrant } from '~/interfaces/page';
 
 import { getInstance } from '../setup-crowi';
 

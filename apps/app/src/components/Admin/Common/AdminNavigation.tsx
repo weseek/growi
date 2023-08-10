@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
@@ -29,7 +29,7 @@ const MenuLabel = ({ menu }: { menu: string }) => {
     case 'plugins':                  return <><i className="mr-1 icon-fw icon-puzzle"></i>{          t('plugins.plugins')}</>;
     case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
     case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
-    default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
+    default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_homepage') }</>;
       /* eslint-enable no-multi-spaces, max-len */
   }
 };

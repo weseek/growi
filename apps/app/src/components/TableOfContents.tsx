@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import ReactMarkdown from 'react-markdown';
 
 import { useCurrentPagePath } from '~/stores/page';

@@ -1,11 +1,11 @@
 import * as url from 'url';
 
-import type { IPageHasId, ParseRangeResult } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
+import type { ParseRangeResult } from '@growi/core/dist/remark-plugins';
 import { removeTrailingSlash } from '@growi/core/dist/utils/path-utils';
 
-import type { PageNode } from '../interfaces/page-node';
-
-import { getDepthOfPath } from './depth-utils';
+import type { PageNode } from '../../interfaces/page-node';
+import { getDepthOfPath } from '../../utils/depth-utils';
 
 
 function getParentPath(path: string) {

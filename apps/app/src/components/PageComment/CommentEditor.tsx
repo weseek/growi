@@ -2,14 +2,15 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
-import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { toastError } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
@@ -84,6 +85,20 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const [incremented, setIncremented] = useState(false);
 
   const editorRef = useRef<IEditorMethods>(null);
+
+  const router = useRouter();
+
+  // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
+  const onRouterChangeComplete = useCallback(() => {
+    editorRef.current?.setValue('');
+  }, []);
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
@@ -185,14 +200,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [postCommentHandler]);
 
   const apiErrorHandler = useCallback((error: Error) => {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+    toastError(error.message);
   }, []);
 
   const uploadHandler = useCallback(async(file) => {

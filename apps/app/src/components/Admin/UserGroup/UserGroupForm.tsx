@@ -2,10 +2,9 @@ import React, {
   FC, useCallback, useEffect, useState,
 } from 'react';
 
+import type { IUserGroupHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
-
-import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   userGroup: IUserGroupHasId,

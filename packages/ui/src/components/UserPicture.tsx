@@ -1,16 +1,15 @@
-import React, {
-  forwardRef, useCallback, useRef,
+import {
+  type ReactNode,
+  memo, forwardRef, useCallback, useRef,
 } from 'react';
 
 import type { Ref, IUser } from '@growi/core';
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import type { UncontrolledTooltipProps } from 'reactstrap';
 
 const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
-
-const { userPageRoot } = pagePathUtils;
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
@@ -18,7 +17,7 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 type UserPictureRootProps = {
   user: Partial<IUser>,
   className?: string,
-  children?: React.ReactNode,
+  children?: ReactNode,
 }
 
 const UserPictureRootWithoutLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
@@ -29,7 +28,7 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps
   const router = useRouter();
 
   const { user } = props;
-  const href = userPageRoot(user);
+  const href = pagePathUtils.userHomepagePath(user);
 
   const clickHandler = useCallback(() => {
     router.push(href);
@@ -77,7 +76,7 @@ type Props = {
   noTooltip?: boolean,
 };
 
-export const UserPicture = React.memo((props: Props): JSX.Element => {
+export const UserPicture = memo((props: Props): JSX.Element => {
 
   const {
     user, size, noLink, noTooltip,

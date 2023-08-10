@@ -1,19 +1,31 @@
 import path from 'path';
 
 import glob from 'glob';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    dts({ copyDtsFiles: true }),
+    dts({
+      copyDtsFiles: true,
+    }),
+    {
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
+      enforce: 'pre',
+    },
   ],
   build: {
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts')),
+      entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts'), {
+        ignore: '**/*.{spec,test}.ts',
+      }),
       name: 'slack-libs',
       formats: ['es', 'cjs'],
     },
@@ -22,19 +34,6 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
-      external: [
-        'assert',
-        'axios',
-        'crypto',
-        'date-fns',
-        'express',
-        'extensible-custom-error',
-        'http-errors',
-        'bunyan', 'universal-bunyan',
-        'url-join',
-        'qs',
-        /^@slack\/.*/,
-      ],
     },
   },
 });

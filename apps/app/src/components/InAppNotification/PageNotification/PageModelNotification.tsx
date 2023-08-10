@@ -2,8 +2,8 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
-import { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
+import type { HasObjectId } from '@growi/core';
+import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
