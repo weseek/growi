@@ -1,10 +1,11 @@
-
 import type { PresentationOptions } from '../consts';
 
 import { GrowiSlides } from './GrowiSlides';
 import { MarpSlides } from './MarpSlides';
 
 import './Slides.global.scss';
+
+export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
 type Props = {
   options: PresentationOptions,
