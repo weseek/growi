@@ -1,4 +1,4 @@
-import { GrantedGroup, GroupType } from '@growi/core';
+import { type GrantedGroup, GroupType } from '@growi/core';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
