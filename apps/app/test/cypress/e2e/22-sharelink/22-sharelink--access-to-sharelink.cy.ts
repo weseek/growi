@@ -31,7 +31,14 @@ context('Access to sharelink by guest', () => {
 
     // create share link
     cy.getByTestid('share-link-management').within(() => {
-      cy.getByTestid('btn-sharelink-toggleform').should('be.visible').click();
+      // open form
+      cy.waitUntil(() => {
+        // do
+        cy.getByTestid('btn-sharelink-toggleform').find('button').click();
+        // wait until
+        return cy.getByTestid('btn-sharelink-issue').then($elem => $elem.is(':visible'))
+      });
+
       cy.getByTestid('btn-sharelink-issue').should('be.visible').click();
 
       cy.get('tbody')
