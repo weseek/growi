@@ -4,7 +4,7 @@ import { MARP_CONTAINER_CLASS_NAME } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
-import { usePresentationViewOptions } from './SlideViewerRenderer';
+import { usePresentationViewOptions } from '~/stores/slide-viewer-renderer';
 
 
 const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });

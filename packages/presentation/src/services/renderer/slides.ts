@@ -1,4 +1,3 @@
-
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Root } from 'mdast';
 import { frontmatterToMarkdown } from 'mdast-util-frontmatter';
@@ -42,7 +41,7 @@ const rewriteNode = (tree: Node, node: Node) => {
       }
       catch (err) {
         node.type = 'text';
-        node.value = ' ';
+        node.value = '';
       }
       finally {
         node.children = tmp;
