@@ -1,6 +1,7 @@
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import UserGroupRelation from '../models/user-group-relation';
 import { isSearchError } from '../models/vo/search-error';
 
 
@@ -129,7 +130,6 @@ module.exports = function(crowi, app) {
 
     let userGroups = [];
     if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 

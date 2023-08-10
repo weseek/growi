@@ -1,6 +1,7 @@
 import type { IUserGroupRelation } from '@growi/core';
 import mongoose, { Model, Schema, Document } from 'mongoose';
 
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { UserGroupDocument } from './user-group';
@@ -19,6 +20,12 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
   PAGE_ITEMS: 50,
 
   removeAllByUserGroups: (groupsToDelete: UserGroupDocument[]) => Promise<any>,
+
+  findAllUserIdsForUserGroups: (userGroupIds: ObjectIdLike[]) => Promise<string[]>,
+
+  findGroupsWithDescendantsByGroupAndUser: (group: UserGroupDocument, user) => Promise<UserGroupDocument[]>,
+
+  countByGroupIdAndUser: (userGroupId: string, userData) => Promise<number>
 }
 
 /*
@@ -81,13 +88,14 @@ schema.statics.findAllRelationForUserGroup = function(userGroup) {
     .exec();
 };
 
-schema.statics.findAllUserIdsForUserGroup = async function(userGroup) {
+schema.statics.findAllUserIdsForUserGroups = async function(userGroupIds: ObjectIdLike[]): Promise<string[]> {
   const relations = await this
-    .find({ relatedGroup: userGroup })
+    .find({ relatedGroup: { $in: userGroupIds } })
     .select('relatedUser')
     .exec();
 
-  return relations.map(r => r.relatedUser);
+  // return unique ids
+  return [...new Set(relations.map(r => r.relatedUser.toString()))];
 };
 
 /**
@@ -148,7 +156,7 @@ schema.statics.findAllUserGroupIdsRelatedToUser = async function(user) {
  * @param {User} userData find query param for relatedUser
  * @returns {Promise<number>}
  */
-schema.statics.countByGroupIdAndUser = async function(userGroupId, userData) {
+schema.statics.countByGroupIdAndUser = async function(userGroupId: string, userData): Promise<number> {
   const query = {
     relatedGroup: userGroupId,
     relatedUser: userData.id,
@@ -314,7 +322,7 @@ schema.statics.createByGroupIdsAndUserIds = async function(groupIds, userIds) {
  * @param {UserDocument} user
  * @returns UserGroupDocument[]
  */
-schema.statics.findGroupsWithDescendantsByGroupAndUser = async function(group, user) {
+schema.statics.findGroupsWithDescendantsByGroupAndUser = async function(group: UserGroupDocument, user): Promise<UserGroupDocument[]> {
   const descendantGroups = [group];
 
   const incrementGroupsRecursively = async(groups, user) => {

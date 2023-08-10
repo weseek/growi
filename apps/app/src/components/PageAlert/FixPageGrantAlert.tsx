@@ -10,6 +10,7 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import { UserGroupDocument } from '~/server/models/user-group';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -29,7 +30,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
-  const [selectedGroup, setSelectedGroup] = useState<{_id: string, name: string} | undefined>(undefined); // TODO: Typescriptize model
+  const [selectedGroup, setSelectedGroup] = useState<UserGroupDocument | undefined>(undefined);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);

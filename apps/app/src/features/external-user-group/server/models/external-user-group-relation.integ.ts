@@ -72,4 +72,26 @@ describe('ExternalUserGroupRelation model', () => {
       expect(relationsAfterRemoval.length).toBe(0);
     });
   });
+
+  describe('findAllUserIdsForUserGroups', () => {
+    const groupId1 = new mongoose.Types.ObjectId();
+    const groupId2 = new mongoose.Types.ObjectId();
+    const groupId3 = new mongoose.Types.ObjectId();
+
+    let user2;
+
+    beforeAll(async() => {
+      user2 = await User.create({
+        name: 'user2', username: 'user2', email: 'user2@example.com',
+      });
+
+      await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
+      await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
+    });
+
+    it('finds all unique user ids for specified user groups', async() => {
+      const userIds = await ExternalUserGroupRelation.findAllUserIdsForUserGroups([groupId1, groupId2, groupId3]);
+      expect(userIds).toStrictEqual([userId1.toString(), user2._id.toString()]);
+    });
+  });
 });
