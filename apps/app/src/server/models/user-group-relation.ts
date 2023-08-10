@@ -1,4 +1,4 @@
-import { IUserGroupRelation } from '@growi/core';
+import type { IUserGroupRelation } from '@growi/core';
 import mongoose, { Model, Schema, Document } from 'mongoose';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
