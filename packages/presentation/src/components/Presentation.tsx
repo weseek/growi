@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
@@ -58,34 +57,36 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
       deck.on('slidechanged', removeAllHiddenElements);
     }
 
-    unified()
-      .use(remarkParse)
-      .use(remarkStringify)
-      .use(remarkFrontmatter, ['yaml'])
-      .use(() => (obj) => {
-        setMarp(false);
-        if (obj.children[0]?.type === 'yaml') {
-          const lines = (obj.children[0]?.value as string).split('\n');
-          lines.forEach((line) => {
-            const [key, value] = line.split(':').map(part => part.trim());
-            if (key === 'marp' && value === 'true') {
-              setMarp(true);
-            }
-          });
-        }
-      })
-      .process(children as string);
+    setMarp(false);
+    if (isEnabledMarp) {
+      unified()
+        .use(remarkParse)
+        .use(remarkStringify)
+        .use(remarkFrontmatter, ['yaml'])
+        .use(() => (obj) => {
+          if (obj.children[0]?.type === 'yaml') {
+            const lines = (obj.children[0]?.value as string).split('\n');
+            lines.forEach((line) => {
+              const [key, value] = line.split(':').map(part => part.trim());
+              if (key === 'marp' && value === 'true') {
+                setMarp(true);
+              }
+            });
+          }
+        })
+        .process(children as string);
+    }
 
     return function cleanup() {
       deck?.off('ready', removeAllHiddenElements);
       deck?.off('slidechanged', removeAllHiddenElements);
     };
-  }, [children, revealOptions, setMarp]);
+  }, [children, revealOptions, isEnabledMarp, setMarp]);
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
       <div className="slides">
-        <Slides options={options} hasMarpFlag={marp && isEnabledMarp}>{children}</Slides>
+        <Slides options={options} hasMarpFlag={marp}>{children}</Slides>
       </div>
     </div>
   );

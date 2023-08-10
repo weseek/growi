@@ -78,7 +78,7 @@ const PagePresentationModal = (): JSX.Element => {
         </button>
       </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
-        { rendererOptions != null && (
+        { rendererOptions != null && isEnabledMarp != null && (
           <Presentation
             options={{
               rendererOptions: rendererOptions as ReactMarkdownOptions,
@@ -88,7 +88,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
-            isEnabledMarp = {isEnabledMarp as boolean}
+            isEnabledMarp = {isEnabledMarp}
           >
             {markdown}
           </Presentation>
