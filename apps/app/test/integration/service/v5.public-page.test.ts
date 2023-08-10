@@ -315,7 +315,7 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdForRename16,
+        parent: childPageIdForRename7,
       },
       {
         _id: pageIdForRename17,
@@ -1398,7 +1398,7 @@ describe('PageService page operations with only public pages', () => {
       expect(pageDistination).toBeTruthy();
       expect(pageDistination.isEmpty).toBe(true);
 
-      const newPath = 'v5_ParentForRename11';
+      const newPath = '/v5_ParentForRename11';
       const renamedPage = await renamePage(page, newPath, dummyUser1, {}, {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/rename',
