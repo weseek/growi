@@ -2,9 +2,7 @@ import React, {
   useState, useCallback, useEffect, useMemo,
 } from 'react';
 
-import type {
-  IUserGroup, IUserGroupHasId, IUserGroup, IUserGroupHasId,
-} from '@growi/core';
+import type { IUserGroup, IUserGroupHasId } from '@growi/core';
 import { objectIdUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';

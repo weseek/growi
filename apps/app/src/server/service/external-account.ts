@@ -1,4 +1,4 @@
-import { ErrorV3 } from '^/../../packages/core/dist';
+import { ErrorV3 } from '@growi/core/dist/models';
 
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import loggerFactory from '~/utils/logger';
