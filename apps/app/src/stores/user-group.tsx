@@ -1,5 +1,5 @@
-import { SWRResponseWithUtils, withUtils } from '@growi/core';
 import type { IPageHasId, IUserGroupHasId, IUserGroupRelationHasId } from '@growi/core';
+import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
