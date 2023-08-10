@@ -491,6 +491,7 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForDuplicate13 = new mongoose.Types.ObjectId();
     const pageIdForDuplicate14 = new mongoose.Types.ObjectId();
     const pageIdForDuplicate15 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate16 = new mongoose.Types.ObjectId();
 
     // revision ids
     const revisionIdForDuplicate1 = new mongoose.Types.ObjectId();
@@ -626,6 +627,13 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForDuplicate14,
         revision: revisionIdForDuplicate12,
+      },
+      {
+        _id: pageIdForDuplicate16,
+        path: '/v5_PageForDuplicate16',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
       },
     ]);
 
@@ -1733,6 +1741,24 @@ describe('PageService page operations with only public pages', () => {
 
       expect(duplicatedPage).toBeUndefined();
       expect(isThrown).toBe(true);
+    });
+
+    test('Should duplicate to the path that exists as an empty page', async() => {
+      const page = await Page.findOne({ path: '/v5_PageForDuplicate1' });
+      expect(page).toBeTruthy();
+
+      const newPagePath = '/v5_PageForDuplicate16';
+      const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
+
+      const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
+      const baseRevision = await Revision.findOne({ pageId: page._id });
+
+      // new path
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedPage._id).not.toStrictEqual(page._id);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
+      expect(duplicatedRevision.body).toEqual(baseRevision.body);
     });
 
     test('Should duplicate multiple pages', async() => {
