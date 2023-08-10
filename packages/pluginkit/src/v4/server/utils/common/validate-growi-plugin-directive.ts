@@ -1,4 +1,4 @@
-import { GrowiPluginType } from '@growi/core/dist/consts';
+import { GrowiPluginType } from '@growi/core';
 
 import { type GrowiPluginValidationData, GrowiPluginValidationError } from '../../../../model';
 

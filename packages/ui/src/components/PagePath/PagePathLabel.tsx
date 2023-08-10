@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
 
 
 type TextElemProps = {
-  children?: React.ReactNode
+  children?: ReactNode
   isHTML?: boolean,
 }
 

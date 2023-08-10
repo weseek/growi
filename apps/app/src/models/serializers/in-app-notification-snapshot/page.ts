@@ -1,5 +1,4 @@
-import type { IPage } from '~/interfaces/page';
-import type { IUser } from '~/interfaces/user';
+import type { IPage, IUser } from '@growi/core';
 
 export interface IPageSnapshot {
   path: string

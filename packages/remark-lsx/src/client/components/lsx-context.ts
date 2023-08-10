@@ -1,4 +1,4 @@
-import { OptionParser, type ParseRangeResult } from '@growi/core/dist/plugin';
+import { OptionParser, type ParseRangeResult } from '@growi/core/dist/remark-plugins';
 
 
 export class LsxContext {

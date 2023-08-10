@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';

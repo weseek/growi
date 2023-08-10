@@ -23,7 +23,10 @@ const schema = new Schema<Config>({
   ns: { type: String, required: true },
   key: { type: String, required: true },
   value: { type: String, required: true },
+}, {
+  timestamps: true,
 });
+
 // define unique compound index
 schema.index({ ns: 1, key: 1 }, { unique: true });
 schema.plugin(uniqueValidator);
@@ -67,6 +70,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:pageRecursiveDeletionAuthority' : undefined,
   'security:pageRecursiveCompleteDeletionAuthority' : undefined,
   'security:disableLinkSharing' : false,
+  'security:isUsersHomepageDeletionEnabled': false,
 
   'security:passport-local:isEnabled' : true,
   'security:passport-ldap:isEnabled' : false,

@@ -38,12 +38,14 @@ const RefImgSubstance = React.memo(({
   const { data, error, isLoading } = useSWRxRef(pagePath, fileNameOrId, isImmutable);
   const attachments = data != null ? [data] : [];
 
-  return <AttachmentList
-    refsContext={refsContext}
-    isLoading={isLoading}
-    error={error}
-    attachments={attachments}
-  />;
+  return (
+    <AttachmentList
+      refsContext={refsContext}
+      isLoading={isLoading}
+      error={error}
+      attachments={attachments}
+    />
+  );
 });
 
 export const RefImg = React.memo((props: Props): JSX.Element => {

@@ -1,4 +1,4 @@
-import { isServer } from '@growi/core';
+import { isServer } from '@growi/core/dist/utils';
 import { debounce } from 'throttle-debounce';
 import { Container } from 'unstated';
 

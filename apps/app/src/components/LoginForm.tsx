@@ -18,7 +18,6 @@ import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 import styles from './LoginForm.module.scss';
 
-
 type LoginFormProps = {
   username?: string,
   name?: string,
@@ -335,6 +334,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       resetRegisterErrors();
 
       const { redirectTo } = res.data;
+
       if (redirectTo != null) {
         router.push(redirectTo);
       }

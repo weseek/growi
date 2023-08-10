@@ -1,6 +1,6 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';

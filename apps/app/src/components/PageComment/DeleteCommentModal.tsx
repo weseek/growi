@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
