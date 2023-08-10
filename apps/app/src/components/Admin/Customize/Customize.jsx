@@ -12,7 +12,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
-import CustomizeFunctionSettingPresentation from './CustomizeFunctionSettingPresentation';
+import CutomizeFunctionSettingPresentation from './CustomizeFunctionSettingPresentation';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeLogoSetting from './CustomizeLogoSetting';
 import CustomizeNoscriptSetting from './CustomizeNoscriptSetting';

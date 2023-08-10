@@ -12,7 +12,7 @@ import CustomizeFunctionOption from './CustomizeFunctionOption';
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
-export const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
+const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
@@ -63,5 +63,6 @@ export const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element 
 
     </React.Fragment>
   );
-
 };
+
+export default CustomizeFunctionSettingPresentation;
