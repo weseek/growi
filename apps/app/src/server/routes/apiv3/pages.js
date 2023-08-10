@@ -529,7 +529,7 @@ module.exports = (crowi) => {
     // check whether path starts slash
     newPagePath = addHeadingSlash(newPagePath);
 
-    const isExist = await Page.count({ path: newPagePath }) > 0;
+    const isExist = await Page.exists({ path: newPagePath, isEmpty: false });
     if (isExist) {
       // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
@@ -757,7 +757,7 @@ module.exports = (crowi) => {
       }
 
       // check page existence
-      const isExist = (await Page.count({ path: newPagePath })) > 0;
+      const isExist = (await Page.exists({ path: newPagePath, isEmpty: false }));
       if (isExist) {
         return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
       }
