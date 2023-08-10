@@ -1,5 +1,5 @@
 import {
-  GrantedGroup,
+  type GrantedGroup,
   PageGrant, type PageGrantCanBeOnTree,
 } from '@growi/core';
 import {

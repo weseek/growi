@@ -4,9 +4,9 @@ import assert from 'assert';
 import nodePath from 'path';
 
 import {
-  IPage,
-  GrantedGroup,
-  GroupType, HasObjectId,
+  type IPage,
+  type GrantedGroup,
+  GroupType, type HasObjectId,
 } from '@growi/core';
 import { isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
