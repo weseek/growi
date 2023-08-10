@@ -1,4 +1,5 @@
-import { IUserHasId } from '~/interfaces/user';
+import type { IUserHasId } from '@growi/core';
+
 import ExternalAccount from '~/server/models/external-account';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import { batchProcessPromiseAll } from '~/utils/promise';
