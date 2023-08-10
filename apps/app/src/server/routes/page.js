@@ -451,7 +451,7 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
-    const grantUserGroupId = req.body.grantUserGroupId || null;
+    const grantUserGroupIds = req.body.grantUserGroupIds || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
@@ -485,7 +485,7 @@ module.exports = function(crowi, app) {
     const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupId = grantUserGroupId;
+      options.grantUserGroupIds = grantUserGroupIds;
     }
 
     const previousRevision = await Revision.findById(revisionId);
