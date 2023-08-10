@@ -32,7 +32,9 @@ let childForRename1;
 let childForRename2;
 let childForRename3;
 
-let parentForDuplicate;
+let parentForDuplicate1;
+
+let parentForDuplicate2Child;
 
 let parentForDelete1;
 let parentForDelete2;
@@ -123,6 +125,13 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
+        path: '/level1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        isEmpty: true,
+      },
+      {
         path: '/level1/level2',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
@@ -171,18 +180,32 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForDuplicate',
+        path: '/parentForDuplicate1',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
         revision: '600d395667536503354cbe91',
       },
       {
-        path: '/parentForDuplicate/child',
+        path: '/parentForDuplicate1/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
         revision: '600d395667536503354cbe92',
+      },
+      {
+        path: '/parentForDuplicate2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        isEmpty: true,
+      },
+      {
+        path: '/parentForDuplicate2/child',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        revision: '600d395667536503354cbe93',
       },
       {
         path: '/parentForDelete1',
@@ -250,7 +273,8 @@ describe('PageService', () => {
     irrelevantPage1 = await Page.findOne({ path: '/parentForRename6-2021H1' });
     irrelevantPage2 = await Page.findOne({ path: '/level1-2021H1' });
 
-    parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
+    parentForDuplicate1 = await Page.findOne({ path: '/parentForDuplicate1' });
+    parentForDuplicate2Child = await Page.findOne({ path: '/parentForDuplicate1/child' });
 
     parentForDelete1 = await Page.findOne({ path: '/parentForDelete1' });
     parentForDelete2 = await Page.findOne({ path: '/parentForDelete2' });
@@ -263,7 +287,7 @@ describe('PageService', () => {
     childForRename2 = await Page.findOne({ path: '/parentForRename2/child' });
     childForRename3 = await Page.findOne({ path: '/parentForRename3/child' });
 
-    childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
+    childForDuplicate = await Page.findOne({ path: '/parentForDuplicate1/child' });
     childForDelete = await Page.findOne({ path: '/parentForDelete/child' });
     childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
     childForRevert = await Page.findOne({ path: '/trash/parentForRevert/child' });
@@ -278,14 +302,14 @@ describe('PageService', () => {
     childTag = await Tag.findOne({ name: 'Child' });
 
     await PageTagRelation.insertMany([
-      { relatedPage: parentForDuplicate, relatedTag: parentTag },
+      { relatedPage: parentForDuplicate1, relatedTag: parentTag },
       { relatedPage: childForDuplicate, relatedTag: childTag },
     ]);
 
     await Revision.insertMany([
       {
         _id: '600d395667536503354cbe91',
-        pageId: parentForDuplicate._id,
+        pageId: parentForDuplicate1._id,
         body: 'duplicateBody',
       },
       {
@@ -571,17 +595,17 @@ describe('PageService', () => {
       jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
       jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
 
-      const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
+      const resultPage = await crowi.pageService.duplicate(parentForDuplicate1, '/newParentDuplicate1', testUser2, false);
       const duplicatedToPageRevision = await Revision.findOne({ pageId: resultPage._id });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
       // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
       // expect(serializePageSecurely).toHaveBeenCalled();
-      expect(resultPage.path).toBe('/newParentDuplicate');
+      expect(resultPage.path).toBe('/newParentDuplicate1');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
-      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
-      expect(resultPage.grant).toEqual(parentForDuplicate.grant);
+      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate1.revision._id);
+      expect(resultPage.grant).toEqual(parentForDuplicate1.grant);
       expect(resultPage.tags).toEqual([originTagsMock().name]);
     });
 
@@ -592,7 +616,7 @@ describe('PageService', () => {
       jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
       jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
 
-      const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicateRecursively', testUser2, true);
+      const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate1, '/newParentDuplicateRecursively1', testUser2, true);
       const duplicatedRecursivelyToPageRevision = await Revision.findOne({ pageId: resultPageRecursivly._id });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -601,14 +625,14 @@ describe('PageService', () => {
       // expect(serializePageSecurely).toHaveBeenCalled();
       expect(resultPageRecursivly.path).toBe('/newParentDuplicateRecursively');
       expect(resultPageRecursivly.lastUpdateUser._id).toEqual(testUser2._id);
-      expect(duplicatedRecursivelyToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
-      expect(resultPageRecursivly.grant).toEqual(parentForDuplicate.grant);
+      expect(duplicatedRecursivelyToPageRevision._id).not.toEqual(parentForDuplicate1.revision._id);
+      expect(resultPageRecursivly.grant).toEqual(parentForDuplicate1.grant);
       expect(resultPageRecursivly.tags).toEqual([originTagsMock().name]);
     });
 
     test('duplicateDescendants()', async() => {
       const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementationOnce();
-      await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate.path, '/newPathPrefix');
+      await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate1.path, '/newPathPrefix');
 
       const childForDuplicateRevision = await Revision.findOne({ pageId: childForDuplicate._id });
       const insertedPage = await Page.findOne({ path: '/newPathPrefix/child' });
@@ -628,12 +652,28 @@ describe('PageService', () => {
 
     test('duplicateTags()', async() => {
       const pageIdMapping = {
-        [parentForDuplicate._id]: '60110bdd85339d7dc732dddd',
+        [parentForDuplicate1._id]: '60110bdd85339d7dc732dddd',
       };
       const duplicateTagsReturn = await crowi.pageService.duplicateTags(pageIdMapping);
-      const parentoForDuplicateTag = await PageTagRelation.findOne({ relatedPage: parentForDuplicate._id });
+      const parentoForDuplicateTag = await PageTagRelation.findOne({ relatedPage: parentForDuplicate1._id });
       expect(duplicateTagsReturn).toHaveLength(1);
       expect(duplicateTagsReturn[0].relatedTag).toEqual(parentoForDuplicateTag.relatedTag);
+    });
+
+    test('duplicate page to the path that exists as an empty page', async() => {
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return [] });
+
+      const resultPage = await crowi.pageService.duplicate(parentForDuplicate2Child, '/parentForDuplicate2', testUser2, false);
+      const duplicatedToPageRevision = await Revision.findOne({ pageId: resultPage._id });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
+      // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
+      // expect(serializePageSecurely).toHaveBeenCalled();
+      expect(resultPage.path).toBe('/newParentDuplicate2');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate2Child.revision._id);
+      expect(resultPage.grant).toEqual(parentForDuplicate2Child.grant);
     });
   });
 
