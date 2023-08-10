@@ -1,12 +1,12 @@
 import React, { FC, useState, useCallback } from 'react';
 
+import type { IUserGroup, IUserGroupHasId } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 

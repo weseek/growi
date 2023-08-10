@@ -1,8 +1,10 @@
 import {
   GrantedGroup,
-  pagePathUtils, pathUtils, pageUtils,
-  PageGrant, PageGrantCanBeOnTree,
+  PageGrant, type PageGrantCanBeOnTree,
 } from '@growi/core';
+import {
+  pagePathUtils, pathUtils, pageUtils,
+} from '@growi/core/dist/utils';
 import { et } from 'date-fns/locale';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';

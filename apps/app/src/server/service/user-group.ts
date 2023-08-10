@@ -1,6 +1,6 @@
+import type { IUser } from '@growi/core';
 import { Model } from 'mongoose';
 
-import { IUser } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroup, { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, includesObjectIds } from '~/server/util/compare-objectId';

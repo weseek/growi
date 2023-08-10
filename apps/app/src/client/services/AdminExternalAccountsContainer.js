@@ -1,4 +1,4 @@
-import { isServer } from '@growi/core';
+import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';

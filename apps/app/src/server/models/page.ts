@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import assert from 'assert';
 import nodePath from 'path';
 
 import {
+  IPage,
   GrantedGroup,
-  GroupType, HasObjectId, pagePathUtils, pathUtils,
+  GroupType, HasObjectId,
 } from '@growi/core';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
+import { isPopulated } from '@growi/core/dist/interfaces';
+import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -14,19 +18,12 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { IPage, IPageHasId, PageGrant } from '~/interfaces/page';
-import { IUserHasId } from '~/interfaces/user';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-
-const { addTrailingSlash, normalizePath } = pathUtils;
-const {
-  isTopPage, hasSlash,
-} = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 /*
@@ -43,6 +40,8 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {
   [x:string]: any // for obsolete methods
+  getLatestRevisionBodyLength(): Promise<number | null | undefined>
+  calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
 }
 
 
@@ -193,7 +192,7 @@ export class PageQueryBuilder {
       return this;
     }
 
-    const pathNormalized = pathUtils.normalizePath(path);
+    const pathNormalized = normalizePath(path);
     const pathWithTrailingSlash = addTrailingSlash(path);
 
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
@@ -234,7 +233,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToListOnlyAncestors(path: string): PageQueryBuilder {
-    const pathNormalized = pathUtils.normalizePath(path);
+    const pathNormalized = normalizePath(path);
     const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
 
     this.query = this.query
@@ -386,6 +385,12 @@ export class PageQueryBuilder {
     this.query = this.query
       .and(condition);
 
+    return this;
+  }
+
+  addConditionForSystemDeletion(): PageQueryBuilder {
+    const condition = generateGrantConditionForSystemDeletion();
+    this.query = this.query.and(condition);
     return this;
   }
 
@@ -955,6 +960,23 @@ export function generateGrantCondition(
 
 schema.statics.generateGrantCondition = generateGrantCondition;
 
+function generateGrantConditionForSystemDeletion(): { $or: any[] } {
+  const grantCondition: AnyObject[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+    { grant: GRANT_RESTRICTED },
+    { grant: GRANT_SPECIFIED },
+    { grant: GRANT_OWNER },
+    { grant: GRANT_USER_GROUP },
+  ];
+
+  return {
+    $or: grantCondition,
+  };
+}
+
+schema.statics.generateGrantConditionForSystemDeletion = generateGrantConditionForSystemDeletion;
+
 // find ancestor page with isEmpty: false. If parameter path is '/', return undefined
 schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {
   if (path === '/') {
@@ -972,6 +994,38 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
+/*
+ * get latest revision body length
+ */
+schema.methods.getLatestRevisionBodyLength = async function(this: PageDocument): Promise<number | null | undefined> {
+  if (!this.isLatestRevision() || this.revision == null) {
+    return null;
+  }
+
+  if (this.latestRevisionBodyLength == null) {
+    await this.calculateAndUpdateLatestRevisionBodyLength();
+  }
+
+  return this.latestRevisionBodyLength;
+};
+
+/*
+ * calculate and update latestRevisionBodyLength
+ */
+schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this: PageDocument): Promise<void> {
+  if (!this.isLatestRevision() || this.revision == null) {
+    logger.error('revision field is required.');
+    return;
+  }
+
+  // eslint-disable-next-line rulesdir/no-populate
+  const populatedPageDocument = await this.populate<PageDocument>('revision', 'body');
+
+  assert(isPopulated(populatedPageDocument.revision));
+
+  this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
+  await this.save();
+};
 
 export type PageCreateOptions = {
   format?: string

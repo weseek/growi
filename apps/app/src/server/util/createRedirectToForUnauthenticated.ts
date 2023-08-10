@@ -1,5 +1,4 @@
-import { USER_STATUS } from '~/interfaces/user';
-import type { IUserStatus } from '~/interfaces/user';
+import { USER_STATUS, type IUserStatus } from '@growi/core';
 
 export const createRedirectToForUnauthenticated = (userStatus: IUserStatus): string | null => {
   switch (userStatus) {

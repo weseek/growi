@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { IPageHasId, pagePathUtils } from '@growi/core';
+import type { IPageHasId, IPageInfoForOperation } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
-import { IPageInfoForOperation } from '~/interfaces/page';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -16,7 +16,7 @@ import TableOfContents from './TableOfContents';
 import styles from './PageSideContents.module.scss';
 
 
-const { isTopPage, isUsersHomePage, isTrashPage } = pagePathUtils;
+const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
 
 
 export type PageSideContentsProps = {
@@ -35,7 +35,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
-  const isUsersHomePagePath = isUsersHomePage(pagePath);
+  const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
 
   return (
@@ -83,7 +83,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
       <div className="d-none d-lg-block">
         <TableOfContents />
-        {isUsersHomePagePath && <ContentLinkButtons author={page?.creator} />}
+        {isUsersHomepagePath && <ContentLinkButtons author={page?.creator} />}
       </div>
     </>
   );

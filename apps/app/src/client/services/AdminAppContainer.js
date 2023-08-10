@@ -1,4 +1,4 @@
-import { isServer } from '@growi/core';
+import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
