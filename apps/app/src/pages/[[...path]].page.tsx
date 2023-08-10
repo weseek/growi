@@ -336,9 +336,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
           </div>
         </header>
 
-        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
         <DisplaySwitcher
           pageView={
             <PageView
