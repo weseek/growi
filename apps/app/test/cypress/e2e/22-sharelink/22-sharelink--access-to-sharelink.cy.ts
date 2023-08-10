@@ -34,7 +34,7 @@ context('Access to sharelink by guest', () => {
       // open form
       cy.waitUntil(() => {
         // do
-        cy.getByTestid('btn-sharelink-toggleform').find('button').click();
+        cy.getByTestid('btn-sharelink-toggleform').click();
         // wait until
         return cy.getByTestid('btn-sharelink-issue').then($elem => $elem.is(':visible'))
       });
