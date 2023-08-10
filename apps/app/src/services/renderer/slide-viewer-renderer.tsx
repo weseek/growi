@@ -1,5 +1,3 @@
-
-
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
@@ -8,7 +6,6 @@ import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
 import breaks from 'remark-breaks';
 import math from 'remark-math';
-import useSWR, { type SWRResponse } from 'swr';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
@@ -25,8 +22,6 @@ import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
 } from '~/services/renderer/renderer';
-import { useRendererConfig } from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
 
 const generateSimpleViewOptions = (
     config: RendererConfig,
@@ -101,7 +96,7 @@ const generateSimpleViewOptions = (
   return options;
 };
 
-const generatePresentationViewOptions = (
+export const generatePresentationViewOptions = (
     config: RendererConfig,
     pagePath: string,
 ): RendererOptions => {
@@ -112,24 +107,4 @@ const generatePresentationViewOptions = (
     verifySanitizePlugin(options, false);
   }
   return options;
-};
-
-export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfig } = useRendererConfig();
-
-  const isAllDataValid = currentPagePath != null && rendererConfig != null;
-
-  return useSWR(
-    isAllDataValid
-      ? ['presentationViewOptions', currentPagePath, rendererConfig]
-      : null,
-    async([, currentPagePath, rendererConfig]) => {
-      return generatePresentationViewOptions(rendererConfig, currentPagePath);
-    },
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
 };
