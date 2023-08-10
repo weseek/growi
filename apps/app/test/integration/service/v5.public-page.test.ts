@@ -135,9 +135,13 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename9 = new mongoose.Types.ObjectId();
     const pageIdForRename10 = new mongoose.Types.ObjectId();
     const pageIdForRename11 = new mongoose.Types.ObjectId();
-    const pageIdForRename12 = new mongoose.Types.ObjectId();
-    const pageIdForRename13 = new mongoose.Types.ObjectId();
-    const pageIdForRename14 = new mongoose.Types.ObjectId();
+
+    const childPageIdForRename1 = new mongoose.Types.ObjectId();
+    const childPageIdForRename2 = new mongoose.Types.ObjectId();
+    const childPageIdForRename3 = new mongoose.Types.ObjectId();
+    const childPageIdForRename4 = new mongoose.Types.ObjectId();
+    const childPageIdForRename5 = new mongoose.Types.ObjectId();
+    const childPageIdForRename7 = new mongoose.Types.ObjectId();
 
     const pageIdForRename16 = new mongoose.Types.ObjectId();
 
@@ -235,7 +239,7 @@ describe('PageService page operations with only public pages', () => {
       },
       {
         _id: pageIdForRename10,
-        path: '/v5_ChildForRename1',
+        path: '/v5_ParentForRename10',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -243,6 +247,23 @@ describe('PageService page operations with only public pages', () => {
       },
       {
         _id: pageIdForRename11,
+        path: '/v5_ParentForRename11',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        _id: childPageIdForRename1,
+        path: '/v5_ChildForRename1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        _id: childPageIdForRename2,
         path: '/v5_ChildForRename2',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -250,7 +271,7 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
-        _id: pageIdForRename12,
+        _id: childPageIdForRename3,
         path: '/v5_ChildForRename3',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -259,7 +280,7 @@ describe('PageService page operations with only public pages', () => {
         updatedAt: new Date('2021'),
       },
       {
-        _id: pageIdForRename13,
+        _id: childPageIdForRename4,
         path: '/v5_ChildForRename4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -267,7 +288,7 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
-        _id: pageIdForRename14,
+        _id: childPageIdForRename5,
         path: '/v5_ChildForRename5',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -275,7 +296,7 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
-        _id: pageIdForRename16,
+        _id: childPageIdForRename7,
         path: '/v5_ChildForRename7',
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
@@ -286,7 +307,7 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdForRename14,
+        parent: childPageIdForRename5,
         updatedAt: new Date('2021'),
       },
       {
@@ -1369,6 +1390,24 @@ describe('PageService page operations with only public pages', () => {
       }
 
       expect(isThrown).toBe(true);
+    });
+    test('Should rename/move to the path that exists as an empty page', async() => {
+      const page = await Page.findOne({ path: '/v5_ParentForRename10' });
+      const pageDistination = await Page.findOne({ path: '/v5_ParentForRename11', isEmpty: true });
+      expect(page).toBeTruthy();
+      expect(pageDistination).toBeTruthy();
+      expect(pageDistination.isEmpty).toBe(true);
+
+      const newPath = 'v5_ParentForRename11';
+      const renamedPage = await renamePage(page, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.isEmpty).toBe(false);
+      expect(renamedPage.parent).toStrictEqual(page._id);
     });
     test('Rename non-empty page path to its descendant non-empty page path', async() => {
       const initialPathForPage1 = '/v5_pageForRename17';
