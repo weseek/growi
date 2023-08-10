@@ -623,7 +623,7 @@ describe('PageService', () => {
       expect(duplicateDescendantsWithStreamSpy).toHaveBeenCalled();
       // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
       // expect(serializePageSecurely).toHaveBeenCalled();
-      expect(resultPageRecursivly.path).toBe('/newParentDuplicateRecursively');
+      expect(resultPageRecursivly.path).toBe('/newParentDuplicateRecursively1');
       expect(resultPageRecursivly.lastUpdateUser._id).toEqual(testUser2._id);
       expect(duplicatedRecursivelyToPageRevision._id).not.toEqual(parentForDuplicate1.revision._id);
       expect(resultPageRecursivly.grant).toEqual(parentForDuplicate1.grant);
