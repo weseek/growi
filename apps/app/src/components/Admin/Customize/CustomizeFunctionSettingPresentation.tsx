@@ -12,7 +12,7 @@ import CustomizeFunctionOption from './CustomizeFunctionOption';
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
-export const CustomizeFunctionSetting = (props: Props): JSX.Element => {
+export const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
