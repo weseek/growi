@@ -1415,7 +1415,7 @@ describe('PageService page operations with only public pages', () => {
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.isEmpty).toBe(false);
-      expect(renamedPage.parent).toStrictEqual(page._id);
+      expect(renamedPage._id).toStrictEqual(page._id);
     });
     test('Rename non-empty page path to its descendant non-empty page path', async() => {
       const initialPathForPage1 = '/v5_pageForRename17';
