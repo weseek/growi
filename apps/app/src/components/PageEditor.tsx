@@ -5,12 +5,8 @@ import React, {
 import EventEmitter from 'events';
 import nodePath from 'path';
 
-
-import {
-  GrantedGroup,
-  GroupType,
-  IPageHasId, pathUtils,
-} from '@growi/core';
+import type { IPageHasId, GroupType } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';

@@ -1,9 +1,6 @@
-import {
-  Schema, Model, Document,
-} from 'mongoose';
+import type { IUserGroup } from '@growi/core';
+import { Schema, Model, Document } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-
-import { IUserGroup } from '~/interfaces/user';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 

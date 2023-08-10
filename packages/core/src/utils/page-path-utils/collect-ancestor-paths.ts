@@ -1,4 +1,4 @@
-import platformPath from 'node:path';
+import platformPath from 'path';
 
 import { isTopPage } from './is-top-page';
 

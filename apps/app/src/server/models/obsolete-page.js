@@ -1,10 +1,8 @@
-import {
-  templateChecker, pagePathUtils, pathUtils, GroupType,
-} from '@growi/core';
+import { PageGrant, GroupType } from '@growi/core';
+import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
-import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 import UserGroup from './user-group';
@@ -292,10 +290,6 @@ export const getPageSchema = (crowi) => {
           return data;
         });
       });
-  };
-
-  pageSchema.statics.getUserPagePath = function(user) {
-    return `/user/${user.username}`;
   };
 
   pageSchema.statics.getDeletedPageName = function(path) {
@@ -667,13 +661,6 @@ export const getPageSchema = (crowi) => {
       grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
     });
 
-  };
-
-  pageSchema.statics.removeByPath = function(path) {
-    if (path == null) {
-      throw new Error('path is required');
-    }
-    return this.findOneAndRemove({ path }).exec();
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {

@@ -1,4 +1,5 @@
-import { ErrorV3, GroupType } from '@growi/core';
+import { GroupType } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import { Router, Request } from 'express';
 import {
   body, param, query, validationResult,

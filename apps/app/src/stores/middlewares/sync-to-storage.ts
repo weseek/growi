@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import { Middleware } from 'swr';
 
 import loggerFactory from '~/utils/logger';

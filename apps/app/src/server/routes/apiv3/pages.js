@@ -1,7 +1,11 @@
 
+import { PageGrant } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
+import { isCreatablePage, isTrashPage } from '@growi/core/dist/utils/page-path-utils';
+import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
+
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -9,16 +13,12 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
-import { ErrorV3 } from '@growi/core';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const { pathUtils, pagePathUtils } = require('@growi/core');
 const express = require('express');
 const { body } = require('express-validator');
 const { query } = require('express-validator');
 const mongoose = require('mongoose');
-
-const { isCreatablePage } = pagePathUtils;
 
 const router = express.Router();
 
@@ -301,7 +301,7 @@ module.exports = (crowi) => {
     let { path } = req.body;
 
     // check whether path starts slash
-    path = pathUtils.addHeadingSlash(path);
+    path = addHeadingSlash(path);
 
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
@@ -315,7 +315,7 @@ module.exports = (crowi) => {
     if (isNoBodyPage) {
       const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
       if (isEnabledAttachTitleHeader) {
-        initialBody += `${pathUtils.attachTitleHeader(path)}\n`;
+        initialBody += `${attachTitleHeader(path)}\n`;
       }
 
       const templateData = await Page.findTemplate(path);
@@ -508,7 +508,7 @@ module.exports = (crowi) => {
   router.put('/rename', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
-    let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
+    let newPagePath = normalizePath(req.body.newPagePath);
 
     const options = {
       isRecursively: req.body.isRecursively,
@@ -527,7 +527,7 @@ module.exports = (crowi) => {
     }
 
     // check whether path starts slash
-    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+    newPagePath = addHeadingSlash(newPagePath);
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
@@ -673,9 +673,6 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
 
-
-    const { isTrashPage } = pagePathUtils;
-
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const page = req.query.page || 1;
@@ -752,7 +749,7 @@ module.exports = (crowi) => {
     async(req, res) => {
       const { pageId, isRecursively } = req.body;
 
-      const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
+      const newPagePath = normalizePath(req.body.pageNameInput);
 
       const isCreatable = isCreatablePage(newPagePath);
       if (!isCreatable) {
@@ -920,7 +917,7 @@ module.exports = (crowi) => {
     const { convertPath } = req.body;
 
     // Convert by path
-    const normalizedPath = pathUtils.normalizePath(convertPath);
+    const normalizedPath = normalizePath(convertPath);
     try {
       await crowi.pageService.normalizeParentByPath(normalizedPath, req.user);
     }

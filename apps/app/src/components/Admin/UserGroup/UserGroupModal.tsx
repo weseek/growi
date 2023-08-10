@@ -2,13 +2,11 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
-import { Ref } from '@growi/core';
+import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   userGroup?: IUserGroupHasId,

@@ -1,6 +1,8 @@
+import { PageGrant } from '@growi/core';
+
 import { UserGroupDocument } from '~/server/models/user-group';
 
-import { PageGrant, IPageGrantData } from './page';
+import { IPageGrantData } from './page';
 
 export type IDataApplicableGroup = {
   applicableGroups?: UserGroupDocument[]

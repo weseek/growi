@@ -1,9 +1,6 @@
-import type { IPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
-import type { IUserSnapshot } from '~/models/serializers/in-app-notification-snapshot/user';
+import type { IUser } from '@growi/core';
 
 import { SupportedTargetModelType, SupportedActionType } from './activity';
-import { IPage } from './page';
-import { IUser } from './user';
 
 export enum InAppNotificationStatuses {
   STATUS_UNREAD = 'UNREAD',

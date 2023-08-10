@@ -1,13 +1,13 @@
 import assert from 'assert';
 
-import { Nullable, HasObjectId } from '@growi/core';
+import type {
+  Nullable, HasObjectId,
+  IDataWithMeta, IPageHasId, IPageInfoForListing, IPageInfoForOperation,
+} from '@growi/core';
 import useSWR, { Arguments, mutate, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
-import {
-  IDataWithMeta, IPageHasId, IPageInfoForListing, IPageInfoForOperation,
-} from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiv3Get } from '../client/util/apiv3-client';

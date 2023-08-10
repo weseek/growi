@@ -15,7 +15,7 @@ const _putUserUISettingsInBulk = (): Promise<AxiosResponse<IUserUISettings>> => 
   return result;
 };
 
-const _putUserUISettingsInBulkDebounced = debounce(1500, false, _putUserUISettingsInBulk);
+const _putUserUISettingsInBulkDebounced = debounce(1500, _putUserUISettingsInBulk);
 
 type ScheduleToPutFunction = (settings: Partial<IUserUISettings>) => Promise<AxiosResponse<IUserUISettings>>;
 const scheduleToPut: ScheduleToPutFunction = (settings: Partial<IUserUISettings>): Promise<AxiosResponse<IUserUISettings>> => {
