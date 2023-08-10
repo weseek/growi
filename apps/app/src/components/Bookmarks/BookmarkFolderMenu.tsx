@@ -195,8 +195,6 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
         persist
         positionFixed
         className='grw-bookmark-folder-menu'
-        // TODO: activate (https://redmine.weseek.co.jp/issues/128468)
-        // modifiers={getCustomModifiers(true)}
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>

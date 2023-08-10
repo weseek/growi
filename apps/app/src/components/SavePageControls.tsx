@@ -104,7 +104,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-        <DropdownMenu right>
+        <DropdownMenu end>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>

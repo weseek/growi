@@ -24,7 +24,7 @@
     "@growi/core": "link:../core"
   },
   "devDependencies": {
-    "reactstrap": "8.10.1"
+    "reactstrap": "^9.2.0"
   },
   "peerDependencies": {
     "next": "^13",
