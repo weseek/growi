@@ -1,4 +1,4 @@
-import { GrantedGroup } from '@growi/core';
+import type { GrantedGroup } from '@growi/core';
 
 export const PageActionType = {
   Create: 'Create',
