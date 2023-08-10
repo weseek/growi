@@ -10,6 +10,7 @@ import './Slides.global.scss';
 
 const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
+// ----------------------------------------------------
 // TODO: to change better slide style
 // https://redmine.weseek.co.jp/issues/125680
 const marp = new Marp({
@@ -31,6 +32,7 @@ const marpSlideTheme = marp.themeSet.add(`
     }
 `);
 marp.themeSet.default = marpSlideTheme;
+// ----------------------------------------------------
 
 type Props = {
   options: PresentationOptions,

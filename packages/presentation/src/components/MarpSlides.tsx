@@ -12,7 +12,7 @@ const marpit = new Marp({
     new Element('div', { class: 'slides' }),
   ],
   slideContainer: [
-    new Element('div', { class: 'slide' }),
+    new Element('div', { class: 'shadow rounded m-2' }),
   ],
   inlineSVG: true,
   emoji: undefined,
