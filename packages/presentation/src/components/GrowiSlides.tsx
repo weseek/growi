@@ -1,4 +1,3 @@
-
 import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
