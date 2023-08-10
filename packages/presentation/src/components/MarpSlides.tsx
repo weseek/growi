@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 import './Slides.global.scss';
 
-export const MARP_CONTAINER_CLASS_NAME = 'marpit';
+const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
 const marpit = new Marp({
   container: [

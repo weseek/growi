@@ -9,7 +9,8 @@ import * as extractSections from '../services/renderer/extract-sections';
 
 import './Slides.global.scss';
 
-export const MARP_CONTAINER_CLASS_NAME = 'marpit';
+const MARP_CONTAINER_CLASS_NAME = 'marpit';
+
 // TODO: to change better slide style
 // https://redmine.weseek.co.jp/issues/125680
 const marp = new Marp({
