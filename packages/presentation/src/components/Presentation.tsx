@@ -57,7 +57,6 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
       deck.on('slidechanged', removeAllHiddenElements);
     }
 
-    setMarp(false);
     if (isEnabledMarp) {
       unified()
         .use(remarkParse)
