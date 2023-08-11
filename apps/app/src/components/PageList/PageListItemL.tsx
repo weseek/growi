@@ -16,7 +16,6 @@ import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
-// import { CustomInput } from 'reactstrap';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
@@ -198,14 +197,13 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
           {/* checkbox */}
           {onCheckboxChanged != null && (
             <div className="d-flex align-items-center justify-content-center">
-              {/* // TODO: replace CustomInput https://redmine.weseek.co.jp/issues/128494 */}
-              {/* <CustomInput
-                type="checkbox"
+              <input
+                type='checkbox'
                 id={`cbSelect-${pageData._id}`}
                 data-testid="cb-select"
-                innerRef={inputRef}
+                ref={inputRef}
                 onChange={(e) => { onCheckboxChanged(e.target.checked, pageData._id) }}
-              /> */}
+              />
             </div>
           )}
 
