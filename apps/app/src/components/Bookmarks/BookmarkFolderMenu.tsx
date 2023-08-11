@@ -191,9 +191,8 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     >
       {children}
       <DropdownMenu
-        right
+        end
         persist
-        positionFixed
         className='grw-bookmark-folder-menu'
       >
         { renderBookmarkMenuItem() }
