@@ -4,9 +4,9 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
 import { Bookmarks } from './Bookmarks';
-import CustomSidebar from './CustomSidebar';
-import PageTree from './PageTree';
-import RecentChanges from './RecentChanges';
+import { CustomSidebar } from './Custom';
+import { PageTree } from './PageTree';
+import { RecentChanges } from './RecentChanges';
 import Tag from './Tag';
 
 export const SidebarContents = memo(() => {

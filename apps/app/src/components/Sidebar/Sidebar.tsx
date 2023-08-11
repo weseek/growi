@@ -19,14 +19,15 @@ import { StickyStretchableScrollerProps } from '../StickyStretchableScroller';
 
 import { NavigationResizeHexagon } from './NavigationResizeHexagon';
 import { SidebarNav } from './SidebarNav';
-import { SidebarSkeleton } from './Skeleton/SidebarSkeleton';
 
 import styles from './Sidebar.module.scss';
 
+
+const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
+
+
 const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('../StickyStretchableScroller')
   .then(mod => mod.StickyStretchableScroller), { ssr: false });
-const SidebarContents = dynamic(() => import('./SidebarContents')
-  .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -128,11 +129,6 @@ export const Sidebar = memo((): JSX.Element => {
       mutateSidebarResizeDisabled(false, false);
     }
   }, [isResizeDisabled, mutateSidebarResizeDisabled]);
-
-  const backdropClickedHandler = useCallback(() => {
-    mutateDrawerOpened(false, false);
-  }, [mutateDrawerOpened]);
-
 
   const setContentWidth = useCallback((newWidth: number) => {
     if (resizableContainer.current == null) {
@@ -350,9 +346,6 @@ export const Sidebar = memo((): JSX.Element => {
         </div>
       </div>
 
-      { isDrawerOpened && (
-        <div className={`${styles['grw-sidebar-backdrop']} modal-backdrop show`} onClick={backdropClickedHandler}></div>
-      ) }
     </>
   );
 

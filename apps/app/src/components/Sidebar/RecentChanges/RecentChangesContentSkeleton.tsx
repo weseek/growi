@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Skeleton } from '~/components/Skeleton';
 
-import styles from '../RecentChanges.module.scss';
+import styles from './RecentChangesSubstance.module.scss';
 
 // TODO: enable skeltonItem https://redmine.weseek.co.jp/issues/128495
 // const SkeletonItem = () => {

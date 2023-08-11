@@ -25,10 +25,10 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
 import Item from './Item';
 import { ItemNode } from './ItemNode';
+import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 
@@ -106,8 +106,8 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { data: rootPageResult, error: error2 } = useSWRxRootPage();
+  const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath, { suspense: true });
+  const { data: rootPageResult, error: error2 } = useSWRxRootPage({ suspense: true });
   const { data: currentPagePath } = useCurrentPagePath();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
