@@ -717,8 +717,8 @@ module.exports = function(crowi) {
       return false;
     }
 
-    const isExist = (await this.count({ username })) > 0;
-    return isExist;
+    const user = await this.exists({ username });
+    return user != null;
   };
 
   userSchema.statics.updateIsInvitationEmailSended = async function(id) {
