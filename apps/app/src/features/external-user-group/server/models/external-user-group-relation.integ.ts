@@ -16,15 +16,18 @@ const User = mongoose.model('User', userSchema);
 
 describe('ExternalUserGroupRelation model', () => {
   let user1;
+  const userId1 = new mongoose.Types.ObjectId();
+
   let user2;
+  const userId2 = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
     user1 = await User.create({
-      name: 'user1', username: 'user1', email: 'user1@example.com',
+      _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
     });
 
     user2 = await User.create({
-      name: 'user2', username: 'user2', email: 'user2@example.com',
+      _id: userId2, name: 'user2', username: 'user2', email: 'user2@example.com',
     });
   });
 
@@ -54,7 +57,7 @@ describe('ExternalUserGroupRelation model', () => {
       const idCombinations = relations.map((relation) => {
         return [relation.relatedGroup, relation.relatedUser];
       });
-      expect(idCombinations).toStrictEqual([[groupId1, user1._id.toString()], [groupId2, user1._id.toString()]]);
+      expect(idCombinations).toStrictEqual([[groupId1, userId1], [groupId2, userId1]]);
     });
   });
 
@@ -89,7 +92,7 @@ describe('ExternalUserGroupRelation model', () => {
 
     it('finds all unique user ids for specified user groups', async() => {
       const userIds = await ExternalUserGroupRelation.findAllUserIdsForUserGroups([groupId1, groupId2, groupId3]);
-      expect(userIds).toStrictEqual([user1._id.toString(), user2._id.toString()]);
+      expect(userIds).toStrictEqual([userId1.toString(), user2._id.toString()]);
     });
   });
 
@@ -105,10 +108,10 @@ describe('ExternalUserGroupRelation model', () => {
 
     it('finds all group ids related to user', async() => {
       const groupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      expect(groupIds).toStrictEqual([groupId1.toString(), groupId2._id.toString()]);
+      expect(groupIds).toStrictEqual([groupId1, groupId2]);
 
       const groupIds2 = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user2);
-      expect(groupIds2).toStrictEqual([groupId3.toString()]);
+      expect(groupIds2).toStrictEqual([groupId3]);
     });
   });
 });
