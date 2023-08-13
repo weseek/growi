@@ -25,7 +25,7 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
 
   findGroupsWithDescendantsByGroupAndUser: (group: UserGroupDocument, user) => Promise<UserGroupDocument[]>,
 
-  countByGroupIdAndUser: (userGroupId: string, userData) => Promise<number>
+  countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
 }
 
 /*
@@ -156,9 +156,9 @@ schema.statics.findAllUserGroupIdsRelatedToUser = async function(user) {
  * @param {User} userData find query param for relatedUser
  * @returns {Promise<number>}
  */
-schema.statics.countByGroupIdAndUser = async function(userGroupId: string, userData): Promise<number> {
+schema.statics.countByGroupIdsAndUser = async function(userGroupIds: ObjectIdLike[], userData): Promise<number> {
   const query = {
-    relatedGroup: userGroupId,
+    relatedGroup: { $in: userGroupIds },
     relatedUser: userData.id,
   };
 

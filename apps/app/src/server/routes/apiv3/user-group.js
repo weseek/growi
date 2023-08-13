@@ -5,6 +5,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
@@ -42,7 +43,6 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
   const {
-    UserGroupRelation,
     User,
     Page,
   } = crowi.models;

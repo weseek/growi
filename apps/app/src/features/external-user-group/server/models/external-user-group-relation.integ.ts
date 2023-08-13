@@ -94,4 +94,29 @@ describe('ExternalUserGroupRelation model', () => {
       expect(userIds).toStrictEqual([userId1.toString(), user2._id.toString()]);
     });
   });
+
+  describe('findAllUserGroupIdsRelatedToUser', () => {
+    const groupId1 = new mongoose.Types.ObjectId();
+    const groupId2 = new mongoose.Types.ObjectId();
+    const groupId3 = new mongoose.Types.ObjectId();
+
+    let user2;
+
+    beforeAll(async() => {
+      user2 = await User.create({
+        name: 'user2', username: 'user2', email: 'user2@example.com',
+      });
+
+      await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
+      await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
+    });
+
+    it('finds all group ids related to user', async() => {
+      const groupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      expect(groupIds).toStrictEqual([groupId1.toString(), groupId2._id.toString()]);
+
+      const groupIds2 = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user2);
+      expect(groupIds2).toStrictEqual([groupId3.toString()]);
+    });
+  });
 });

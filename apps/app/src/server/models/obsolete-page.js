@@ -3,6 +3,7 @@ import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/util
 import escapeStringRegexp from 'escape-string-regexp';
 
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import loggerFactory from '~/utils/logger';
 
 import UserGroup from './user-group';
@@ -14,11 +15,10 @@ import UserGroupRelation from './user-group-relation';
 
 /* eslint-disable no-use-before-define */
 
-const debug = require('debug')('growi:models:page');
-
 const nodePath = require('path');
 
 const differenceInYears = require('date-fns/differenceInYears');
+const debug = require('debug')('growi:models:page');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
@@ -323,10 +323,10 @@ export const getPageSchema = (crowi) => {
   pageSchema.statics.isAccessiblePageByViewer = async function(id, user) {
     const baseQuery = this.count({ _id: id });
 
-    let userGroups = [];
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : [];
 
     const queryBuilder = new this.PageQueryBuilder(baseQuery);
     queryBuilder.addConditionToFilteringByViewer(user, userGroups, true);
@@ -343,10 +343,10 @@ export const getPageSchema = (crowi) => {
   pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups, includeEmpty = false) {
     const baseQuery = this.findOne({ _id: id });
 
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     const queryBuilder = new this.PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
@@ -384,10 +384,10 @@ export const getPageSchema = (crowi) => {
     // pick the longest one
     const baseQuery = this.findOne({ path: { $in: ancestorsPaths } }).sort({ path: -1 });
 
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     const queryBuilder = new this.PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
@@ -511,10 +511,10 @@ export const getPageSchema = (crowi) => {
     const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     return builder.addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink, !hidePagesRestrictedByOwner, !hidePagesRestrictedByGroup);
   }
@@ -529,10 +529,10 @@ export const getPageSchema = (crowi) => {
    */
   async function addConditionToFilteringByViewerToEdit(builder, user) {
     // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     return builder.addConditionToFilteringByViewer(user, userGroups, false, false, false);
   }
