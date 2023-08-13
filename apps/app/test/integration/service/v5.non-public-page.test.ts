@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
 import Tag from '../../../src/server/models/tag';
+import UserGroup from '../../../src/server/models/user-group';
+import UserGroupRelation from '../../../src/server/models/user-group-relation';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with non-public pages', () => {
@@ -20,13 +21,7 @@ describe('PageService page operations with non-public pages', () => {
   let Page;
   let Revision;
   let User;
-  let UserGroup;
-  let UserGroupRelation;
   let PageTagRelation;
-  let Bookmark;
-  let Comment;
-  let ShareLink;
-  let PageRedirect;
   let xssSpy;
 
   let rootPage;
@@ -102,17 +97,9 @@ describe('PageService page operations with non-public pages', () => {
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     User = mongoose.model('User');
-    UserGroup = mongoose.model('UserGroup');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     PageTagRelation = mongoose.model('PageTagRelation');
-    Bookmark = mongoose.model('Bookmark');
-    Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
-    PageRedirect = mongoose.model('PageRedirect');
-    UserGroup = mongoose.model('UserGroup');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
 
     /*
      * Common
@@ -388,7 +375,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename7,
         path: '/np_rename7_destination',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdIsolate },
+        grantedGroups: [{ item: groupIdIsolate }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: pageIdRename5,
@@ -424,7 +411,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDuplicate2,
         path: '/np_duplicate2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         creator: npDummyUser1._id,
         lastUpdateUser: npDummyUser1._id,
         revision: revisionIdDuplicate2,
@@ -434,7 +421,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDuplicate3,
         path: '/np_duplicate2/np_duplicate3',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdB },
+        grantedGroups: [{ item: groupIdB }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         revision: revisionIdDuplicate3,
@@ -531,7 +518,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete2,
         path: '/npdel2_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -541,7 +528,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete3,
         path: '/npdel3_top',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -551,7 +538,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete4,
         path: '/npdel3_top/npdel4_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdB },
+        grantedGroups: [{ item: groupIdB }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete3._id,
@@ -566,7 +553,7 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdel3_top/npdel4_ug/npdel5_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdC },
+        grantedGroups: [{ item: groupIdC }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete4._id,
@@ -589,7 +576,7 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdc2_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -598,7 +585,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDeleteComp1,
         path: '/npdc3_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -607,7 +594,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDeleteComp2,
         path: '/npdc3_ug/npdc4_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdB },
+        grantedGroups: [{ item: groupIdB }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDeleteComp1,
@@ -615,7 +602,7 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdc3_ug/npdc4_ug/npdc5_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdC },
+        grantedGroups: [{ item: groupIdC }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDeleteComp2,
@@ -643,7 +630,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert2,
         path: '/trash/np_revert2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         revision: revisionIdRevert2,
         status: Page.STATUS_DELETED,
       },
@@ -665,7 +652,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert5,
         path: '/trash/np_revert5',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdA },
+        grantedGroups: [{ item: groupIdA }],
         revision: revisionIdRevert5,
         status: Page.STATUS_DELETED,
       },
@@ -673,7 +660,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert6,
         path: '/trash/np_revert5/middle/np_revert6',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: { item: groupIdB },
+        grantedGroups: [{ item: groupIdB }],
         revision: revisionIdRevert6,
         status: Page.STATUS_DELETED,
       },
