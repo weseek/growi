@@ -16,11 +16,15 @@ const User = mongoose.model('User', userSchema);
 
 describe('ExternalUserGroupRelation model', () => {
   let user1;
-  const userId1 = new mongoose.Types.ObjectId();
+  let user2;
 
   beforeAll(async() => {
     user1 = await User.create({
-      _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
+      name: 'user1', username: 'user1', email: 'user1@example.com',
+    });
+
+    user2 = await User.create({
+      name: 'user2', username: 'user2', email: 'user2@example.com',
     });
   });
 
@@ -50,7 +54,7 @@ describe('ExternalUserGroupRelation model', () => {
       const idCombinations = relations.map((relation) => {
         return [relation.relatedGroup, relation.relatedUser];
       });
-      expect(idCombinations).toStrictEqual([[groupId1, userId1], [groupId2, userId1]]);
+      expect(idCombinations).toStrictEqual([[groupId1, user1._id], [groupId2, user1._id]]);
     });
   });
 
@@ -78,20 +82,14 @@ describe('ExternalUserGroupRelation model', () => {
     const groupId2 = new mongoose.Types.ObjectId();
     const groupId3 = new mongoose.Types.ObjectId();
 
-    let user2;
-
     beforeAll(async() => {
-      user2 = await User.create({
-        name: 'user2', username: 'user2', email: 'user2@example.com',
-      });
-
       await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
       await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
     });
 
     it('finds all unique user ids for specified user groups', async() => {
       const userIds = await ExternalUserGroupRelation.findAllUserIdsForUserGroups([groupId1, groupId2, groupId3]);
-      expect(userIds).toStrictEqual([userId1.toString(), user2._id.toString()]);
+      expect(userIds).toStrictEqual([user1._id.toString(), user2._id.toString()]);
     });
   });
 
@@ -100,13 +98,7 @@ describe('ExternalUserGroupRelation model', () => {
     const groupId2 = new mongoose.Types.ObjectId();
     const groupId3 = new mongoose.Types.ObjectId();
 
-    let user2;
-
     beforeAll(async() => {
-      user2 = await User.create({
-        name: 'user2', username: 'user2', email: 'user2@example.com',
-      });
-
       await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
       await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
     });
