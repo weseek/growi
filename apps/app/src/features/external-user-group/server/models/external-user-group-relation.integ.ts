@@ -54,7 +54,7 @@ describe('ExternalUserGroupRelation model', () => {
       const idCombinations = relations.map((relation) => {
         return [relation.relatedGroup, relation.relatedUser];
       });
-      expect(idCombinations).toStrictEqual([[groupId1, user1._id], [groupId2, user1._id]]);
+      expect(idCombinations).toStrictEqual([[groupId1, user1._id.toString()], [groupId2, user1._id.toString()]]);
     });
   });
 
