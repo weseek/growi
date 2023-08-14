@@ -508,7 +508,7 @@ module.exports = (crowi) => {
     const {
       grantedUserGroups: parentGrantedUserGroupIds,
       grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
-    } = divideByType(parentPage.grantedGroup);
+    } = divideByType(parentPage.grantedGroups);
     const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
     const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
     const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {

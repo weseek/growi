@@ -14,6 +14,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
@@ -39,6 +40,7 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
+import { divideByType } from '../util/granted-group';
 
 const debug = require('debug')('growi:services:page');
 
@@ -2430,10 +2432,10 @@ class PageService {
     const MAX_LENGTH = 350;
 
     // aggregation options
-    let userGroups;
-    if (user != null && userGroups == null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
     const viewerCondition = Page.generateGrantCondition(user, userGroups);
     const filterByIds = {
       _id: { $in: pageIds },
@@ -2980,10 +2982,10 @@ class PageService {
     pathAndRegExpsToNormalize.push(...paths);
 
     // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
@@ -3382,10 +3384,10 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const pipeline = this.buildBasePipelineToCreateEmptyPages(paths, onlyMigratedAsExistingPages, andFilter);
-    let userGroups = null;
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
     const grantCondition = Page.generateGrantCondition(user, userGroups);
     pipeline.push({ $match: grantCondition });
 
@@ -3531,13 +3533,15 @@ class PageService {
     pageDocument.status = Page.STATUS_PUBLISHED;
   }
 
-  private async validateAppliedScope(user, grant, grantUserGroupId) {
-    if (grant === PageGrant.GRANT_USER_GROUP && grantUserGroupId == null) {
-      throw new Error('grant userGroupId is not specified');
+  private async validateAppliedScope(user, grant, grantUserGroupIds: GrantedGroup[]) {
+    if (grant === PageGrant.GRANT_USER_GROUP && grantUserGroupIds == null) {
+      throw new Error('grantUserGroupIds is not specified');
     }
 
     if (grant === PageGrant.GRANT_USER_GROUP) {
-      const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantUserGroupIds);
+      const count = await UserGroupRelation.countByGroupIdsAndUser(grantedUserGroupIds, user)
+        + await ExternalUserGroupRelation.countByGroupIdsAndUser(grantedExternalUserGroupIds, user);
 
       if (count === 0) {
         throw new Error('no relations were exist for group and user.');
@@ -3736,7 +3740,7 @@ class PageService {
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     const format = options.format || 'markdown';
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const grantUserGroupIds = options.grantUserGroupIds || null;
     const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
@@ -3762,8 +3766,8 @@ class PageService {
     if (expandContentWidth != null) {
       page.expandContentWidth = expandContentWidth;
     }
-    await this.validateAppliedScope(user, grant, grantUserGroupId);
-    page.applyScope(user, grant, grantUserGroupId);
+    await this.validateAppliedScope(user, grant, grantUserGroupIds);
+    page.applyScope(user, grant, grantUserGroupIds);
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
@@ -4071,16 +4075,16 @@ class PageService {
   }
 
 
-  async updatePageV4(pageData, body, previousBody, user, options: any = {}): Promise<PageDocument> {
+  async updatePageV4(pageData, body, previousBody, user, options: IOptionsForUpdate = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     const grant = options.grant || pageData.grant; // use the previous data if absence
-    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
+    const grantUserGroupIds = options.grantUserGroupIds || pageData.grantUserGroupIds; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
-    await this.validateAppliedScope(user, grant, grantUserGroupId);
-    pageData.applyScope(user, grant, grantUserGroupId);
+    await this.validateAppliedScope(user, grant, grantUserGroupIds);
+    pageData.applyScope(user, grant, grantUserGroupIds);
 
     // update existing page
     let savedPage = await pageData.save();
