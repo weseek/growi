@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next';
 
-import { inputValidator, ValidationTarget } from '~/client/util/input-validator';
+import { ValidationTarget } from '~/client/util/input-validator';
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
 
 

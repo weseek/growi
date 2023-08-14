@@ -39,7 +39,8 @@ const GlobalNotification = (props) => {
       <p className="card well">
         {/* eslint-disable-next-line react/no-danger */}
         <span dangerouslySetInnerHTML={{ __html: t('notification_settings.link_notification_help') }} />
-      </p><div className="row mb-4">
+      </p>
+      <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
           <div className="custom-control custom-checkbox custom-checkbox-success">
             <input
@@ -55,21 +56,23 @@ const GlobalNotification = (props) => {
             </label>
           </div>
         </div>
-      </div><div className="row mb-4">
-            <div className="col-md-8 offset-md-2">
+      </div>
+
+      <div className="row mb-4">
+        <div className="col-md-8 offset-md-2">
           <div className="custom-control custom-checkbox custom-checkbox-success">
-                <input
+            <input
               id="isNotificationForGroupPageEnabled"
               className="custom-control-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
               onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
             />
-                <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
+            <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.group_notification_help') }} />
             </label>
-              </div>
+          </div>
         </div>
       </div>
       <div className="row my-3">
@@ -83,6 +86,7 @@ const GlobalNotification = (props) => {
           </button>
         </div>
       </div>
+
       <h2 className="border-bottom mb-5">{t('notification_settings.notification_list')}
         <button
           className="btn btn-outline-secondary pull-right"
@@ -90,10 +94,8 @@ const GlobalNotification = (props) => {
           onClick={() => router.push('/admin/global-notification/new')}
         >{t('notification_settings.add_notification')}
         </button>
-        {/* <a href="/admin/global-notification/new">
-      <p className="btn btn-outline-secondary pull-right">{t('notification_setting.add_notification')}</p>
-    </a> */}
-      </h2><table className="table table-bordered">
+      </h2>
+      <table className="table table-bordered">
         <thead>
           <tr>
             <th>ON/OFF</th>

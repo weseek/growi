@@ -30,7 +30,7 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { t, userForPasswordResetModal } = this.props;
+    const { userForPasswordResetModal } = this.props;
     try {
       const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
@@ -214,6 +214,7 @@ const PasswordResetModalWrapperFC = (props) => {
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  isMailerSetup: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userForPasswordResetModal: PropTypes.object,

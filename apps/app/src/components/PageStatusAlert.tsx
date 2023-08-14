@@ -78,7 +78,7 @@ export const PageStatusAlert = (): JSX.Element => {
     {t('hackmd.this_page_has_draft')}
   </>,
       btn:
-  <button onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
+  <button type="button" onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
     <i className="fa fa-fw fa-file-text-o mr-1"></i>
     Open HackMD Editor
   </button>,

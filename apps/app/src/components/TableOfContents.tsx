@@ -13,7 +13,7 @@ import styles from './TableOfContents.module.scss';
 
 const { isUserPage: _isUserPage } = pagePathUtils;
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 
 const TableOfContents = (): JSX.Element => {

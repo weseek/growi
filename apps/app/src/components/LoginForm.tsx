@@ -141,8 +141,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <div className="alert alert-danger">
-        {errors.map((err, index) => {
-          return <small key={index} dangerouslySetInnerHTML={{ __html: tWithOpt(err.message, err.args) }}></small>;
+        {errors.map((err) => {
+          // eslint-disable-next-line react/no-danger
+          return <small dangerouslySetInnerHTML={{ __html: tWithOpt(err.message, err.args) }}></small>;
         })}
       </div>
     );
@@ -153,13 +154,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">
-        {errors.map((err, index) => {
-          return (
-            <li key={index} className={index > 0 ? 'mt-1' : ''}>
-              {tWithOpt(err.message, err.args)}
-            </li>
-          );
-        })}
+        {errors.map((err, index) => (
+          <li className={index > 0 ? 'mt-1' : ''}>
+            {tWithOpt(err.message, err.args)}
+          </li>
+        ))}
       </ul>
     );
   }, [tWithOpt]);
@@ -400,13 +399,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {
           registerErrors != null && registerErrors.length > 0 && (
             <p className="alert alert-danger">
-              {registerErrors.map((err, index) => {
-                return (
-                  <span key={index}>
-                    {t(err.message)}<br />
-                  </span>
-                );
-              })}
+              {registerErrors.map(err => (
+                <span>
+                  {t(err.message)}<br />
+                </span>
+              ))}
             </p>
           )
         }
@@ -521,6 +518,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {/* Sign up button (submit) */}
           <div className="input-group justify-content-center my-4">
             <button
+              type="button"
               className="btn btn-fill rounded-0"
               id="register"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}

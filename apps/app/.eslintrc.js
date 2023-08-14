@@ -34,10 +34,22 @@ module.exports = {
   },
   overrides: [
     {
+      // enable the rule specifically for JavaScript files
+      files: ['*.js', '*.jsx'],
+      rules: {
+        // set 'warn' temporarily -- 2023.08.14 Yuki Takei
+        'react/prop-types': 'warn',
+        // set 'warn' temporarily -- 2023.08.14 Yuki Takei
+        'no-unused-vars': ['warn'],
+      },
+    },
+    {
       // enable the rule specifically for TypeScript files
       files: ['*.ts', '*.tsx'],
       rules: {
-        // '@typescript-eslint/explicit-module-boundary-types': ['error'],
+        'no-unused-vars': 'off',
+        // set 'warn' temporarily -- 2023.08.14 Yuki Takei
+        'react/prop-types': 'warn',
         // set 'warn' temporarily -- 2022.07.25 Yuki Takei
         '@typescript-eslint/explicit-module-boundary-types': ['warn'],
       },
