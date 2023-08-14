@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
 
 export const CompleteUserRegistration: FC = () => {
   const { t } = useTranslation();

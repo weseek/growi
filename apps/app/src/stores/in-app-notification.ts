@@ -12,12 +12,11 @@ const logger = loggerFactory('growi:cli:InAppNotification');
 
 type inAppNotificationPaginateResult = PaginateResult<IInAppNotification>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxInAppNotifications = <Data, Error>(
-  limit: number,
-  offset?: number,
-  status?: InAppNotificationStatuses,
-  config?: SWRConfiguration,
+export const useSWRxInAppNotifications = (
+    limit: number,
+    offset?: number,
+    status?: InAppNotificationStatuses,
+    config?: SWRConfiguration,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
     ['/in-app-notification/list', limit, offset, status],
@@ -46,8 +45,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxInAppNotificationStatus = <Data, Error>(
+export const useSWRxInAppNotificationStatus = (
 ): SWRResponse<number, Error> => {
   return useSWR(
     '/in-app-notification/status',

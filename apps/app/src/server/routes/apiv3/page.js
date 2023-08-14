@@ -168,7 +168,7 @@ module.exports = (crowi) => {
   const configManager = crowi.configManager;
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
+  const { Page, GlobalNotificationSetting } = crowi.models;
   const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');

@@ -208,8 +208,6 @@ class UserInviteModal extends React.Component {
 
   async handleSubmit() {
     const { adminUsersContainer } = this.props;
-    // eslint-disable-next-line no-unused-vars
-    const { isCreateUserButtonPushed } = this.state;
 
     this.setState({ isCreateUserButtonPushed: true });
 
