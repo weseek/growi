@@ -38,18 +38,20 @@ const NavbarRight = memo((): JSX.Element => {
     return (
       <>
         {!isReadOnlyUser
-          && <li className="nav-item d-none d-md-block">
-            <button
-              className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
-              type="button"
-              ref={newButtonRef}
-              data-testid="newPageBtn"
-              onClick={() => openCreateModal(currentPagePath || '')}
-            >
-              <i className="icon-pencil mr-2"></i>
-              <span className="d-none d-lg-block">{ t('commons:New') }</span>
-            </button>
-          </li>
+          && (
+            <li className="nav-item d-none d-md-block">
+              <button
+                className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
+                type="button"
+                ref={newButtonRef}
+                data-testid="newPageBtn"
+                onClick={() => openCreateModal(currentPagePath || '')}
+              >
+                <i className="icon-pencil mr-2"></i>
+                <span className="d-none d-lg-block">{ t('commons:New') }</span>
+              </button>
+            </li>
+          )
         }
       </>
     );

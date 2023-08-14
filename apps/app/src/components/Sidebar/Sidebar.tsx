@@ -297,7 +297,7 @@ export const Sidebar = memo((): JSX.Element => {
       <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`} data-testid="grw-sidebar">
         <div className="data-layout-container">
           <div
-            className='navigation transition-enabled'
+            className="navigation transition-enabled"
             onMouseEnter={hoverOnHandler}
             onMouseLeave={hoverOutHandler}
           >

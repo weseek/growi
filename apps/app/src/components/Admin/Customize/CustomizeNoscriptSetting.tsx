@@ -61,13 +61,21 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
             */}
           </div>
 
-          <a className="text-muted"
-            data-toggle="collapse" href="#collapseExampleHtml" role="button" aria-expanded="false" aria-controls="collapseExampleHtml">
+          <a
+            className="text-muted"
+            data-toggle="collapse"
+            href="#collapseExampleHtml"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseExampleHtml"
+          >
             <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleHtml">
-            <PrismAsyncLight style={oneDark} language={'javascript'}
+            <PrismAsyncLight
+              style={oneDark}
+              language="javascript"
             >
               {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
   height="0"

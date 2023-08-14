@@ -63,9 +63,11 @@ const QuestionnaireSettings = (): JSX.Element => {
         </span>
       </p>
 
-      {isLoading && <div className="text-muted text-center mb-5">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
-      </div>}
+      {isLoading && (
+        <div className="text-muted text-center mb-5">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+        </div>
+      )}
 
       {!isLoading && (
         <>
@@ -103,7 +105,7 @@ const QuestionnaireSettings = (): JSX.Element => {
             </div>
           </div>
 
-          <AdminUpdateButtonRow onClick={onSubmitHandler}/>
+          <AdminUpdateButtonRow onClick={onSubmitHandler} />
         </>
       )}
     </div>
