@@ -63,7 +63,7 @@ jobs:
           GITHUB_REF_NAME=${{ github.ref_name }}
           WILDCARD_VERSION=${GITHUB_REF_NAME#dev/}
           # set "release/current" or "release/X.X.x" to BASE_BRANCH
-          BASE_BRANCH=release/${{ github.ref_name == 'master' && 'current' || $WILDCARD_VERSION }}
+          BASE_BRANCH=release/${{ github.ref_name == 'master' && 'current' || '$WILDCARD_VERSION' }}
           echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Create/Update Pull Request
