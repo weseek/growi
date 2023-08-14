@@ -1,6 +1,7 @@
 module.exports = {
   extends: [
     'next/core-web-vitals',
+    'weseek/react',
   ],
   plugins: [
     'regex',
