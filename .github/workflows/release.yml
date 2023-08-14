@@ -63,11 +63,11 @@ jobs:
         commit_message: Release v${{ steps.package-json.outputs.packageVersion }}
         tagging_message: v${{ steps.package-json.outputs.packageVersion }}
 
-    - uses: ncipollo/release-action@v1
+    - uses: softprops/action-gh-release@v1
       with:
         body: ${{ github.event.pull_request.body }}
-        tag: v${{ steps.package-json.outputs.packageVersion }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: v${{ steps.package-json.outputs.packageVersion }}
+        target_commitish: ${{ github.head_ref }}
 
     - name: Delete drafts
       uses: hugo19941994/delete-draft-releases@v1.0.1
