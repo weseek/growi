@@ -166,10 +166,10 @@ const PageRenameModal = (): JSX.Element => {
     }
   }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomepageDebounce]);
 
-  function ppacInputChangeHandler(value) {
+  const ppacInputChangeHandler = useCallback((value: string) => {
     setErrs(null);
     setPageNameInput(value);
-  }
+  }, []);
 
   /**
    * change pageNameInput

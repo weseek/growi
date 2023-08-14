@@ -31,6 +31,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
           {t('footer.bookmarks')}
           <span className="ml-auto pl-2 ">
             <button
+              type="button"
               className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}
               onClick={() => setIsExpanded(!isExpanded)}
             >
