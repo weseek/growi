@@ -68,7 +68,7 @@ jobs:
         uses: bakunyo/git-pr-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_PR_RELEASE_BRANCH_PRODUCTION: release/current
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: release/${{ github.ref_name == 'master' && 'current' || steps.release-version.outputs.RELEASE_VERSION }}
           GIT_PR_RELEASE_BRANCH_STAGING: ${{ github.ref_name }}
           GIT_PR_RELEASE_TEMPLATE: .github/git-pr-release-template.erb
           GIT_PR_RELEASE_TITLE: Release v${{ steps.release-version.outputs.RELEASE_VERSION }}
