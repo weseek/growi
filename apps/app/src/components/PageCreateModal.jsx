@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState, useMemo,
+  useEffect, useState, useMemo, useCallback,
 } from 'react';
 
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
@@ -107,7 +107,7 @@ const PageCreateModal = () => {
    * join path, check if creatable, then redirect
    * @param {string} paths
    */
-  async function redirectToEditor(...paths) {
+  const redirectToEditor = useCallback(async(...paths) => {
     try {
       const editorPath = generateEditorPath(...paths);
       await router.push(editorPath);
@@ -119,7 +119,7 @@ const PageCreateModal = () => {
     catch (err) {
       toastError(err);
     }
-  }
+  }, [closeCreateModal, mutateEditorMode, router]);
 
   /**
    * access today page
@@ -139,9 +139,9 @@ const PageCreateModal = () => {
     redirectToEditor(pageNameInput);
   }
 
-  function ppacSubmitHandler(input) {
+  const ppacSubmitHandler = useCallback((input) => {
     redirectToEditor(input);
-  }
+  }, [redirectToEditor]);
 
   /**
    * access template page
