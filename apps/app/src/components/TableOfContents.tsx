@@ -61,9 +61,7 @@ const TableOfContents = (): JSX.Element => {
           className="revision-toc-content mb-3"
         >
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
-          <ReactMarkdown {...rendererOptions}>
-
-          </ReactMarkdown>
+          <ReactMarkdown {...rendererOptions}>{' '}</ReactMarkdown>
         </div>
       </StickyStretchableScroller>
     </div>
