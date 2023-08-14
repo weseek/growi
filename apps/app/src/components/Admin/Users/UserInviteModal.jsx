@@ -295,6 +295,7 @@ const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
+  isMailerSetup: PropTypes.bool.isRequired,
 };
 
 export default UserInviteModalWrapper;

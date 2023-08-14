@@ -11,8 +11,9 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
 const ArchiveCreateModal = (props) => {
+  const { onClose } = props;
+
   const { t } = useTranslation();
-  const { appContainer } = props;
   const [isCommentDownload, setIsCommentDownload] = useState(false);
   const [isAttachmentFileDownload, setIsAttachmentFileDownload] = useState(false);
   const [isSubordinatedPageDownload, setIsSubordinatedPageDownload] = useState(false);
@@ -32,13 +33,9 @@ const ArchiveCreateModal = (props) => {
     setIsSubordinatedPageDownload(!isSubordinatedPageDownload);
   }
 
-  function closeModalHandler() {
-    if (props.onClose == null) {
-      return;
-    }
-
-    props.onClose();
-  }
+  const closeModalHandler = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
 
   const handleChangeFileType = useCallback(
     (filetype) => {
@@ -232,7 +229,6 @@ const ArchiveCreateModal = (props) => {
 };
 
 ArchiveCreateModal.propTypes = {
-  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   path: PropTypes.string.isRequired,

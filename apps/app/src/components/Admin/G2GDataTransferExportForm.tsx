@@ -122,7 +122,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const WarnForGroups = ({ errors }): JSX.Element => {
+  const WarnForGroups = ({ errors }: { errors: Error[] }): JSX.Element => {
     if (errors.length === 0) {
       return <></>;
     }
@@ -130,8 +130,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <div className="alert alert-warning">
         <ul>
-          {errors.map((error, i) => {
-            return <li key={i}>{error}</li>;
+          {errors.map((error) => {
+            return <li>{error.message}</li>;
           })}
         </ul>
       </div>
