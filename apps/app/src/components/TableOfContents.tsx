@@ -62,7 +62,7 @@ const TableOfContents = (): JSX.Element => {
         >
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
           <ReactMarkdown {...rendererOptions}>
-            {''}
+
           </ReactMarkdown>
         </div>
       </StickyStretchableScroller>

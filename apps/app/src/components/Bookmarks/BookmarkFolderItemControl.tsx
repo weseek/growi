@@ -48,10 +48,10 @@ export const BookmarkFolderItemControl: React.FC<{
           {t('Rename')}
         </DropdownItem>
 
-        <DropdownItem divider/>
+        <DropdownItem divider />
 
         <DropdownItem
-          className='pt-2 grw-page-control-dropdown-item text-danger'
+          className="pt-2 grw-page-control-dropdown-item text-danger"
           onClick={onClickDelete}
         >
           <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>

@@ -48,7 +48,7 @@ const DeleteBookmarkFolderModal: FC = () => {
       <ModalBody>
         <div className="form-group pb-1">
           <label>{ t('bookmark_folder.delete_modal.modal_body_description') }:</label><br />
-          <FolderIcon isOpen={false}/> {deleteBookmarkFolderModalData?.bookmarkFolder?.name}
+          <FolderIcon isOpen={false} /> {deleteBookmarkFolderModalData?.bookmarkFolder?.name}
         </div>
         {t('bookmark_folder.delete_modal.modal_body_alert')}
       </ModalBody>

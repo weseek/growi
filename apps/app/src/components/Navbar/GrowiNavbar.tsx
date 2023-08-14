@@ -49,18 +49,20 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
 
         {!isReadOnlyUser
-          && <li className="nav-item d-none d-md-block">
-            <button
-              className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
-              type="button"
-              ref={newButtonRef}
-              data-testid="newPageBtn"
-              onClick={() => openCreateModal(currentPagePath || '')}
-            >
-              <i className="icon-pencil mr-2"></i>
-              <span className="d-none d-lg-block">{ t('commons:New') }</span>
-            </button>
-          </li>
+          && (
+            <li className="nav-item d-none d-md-block">
+              <button
+                className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
+                type="button"
+                ref={newButtonRef}
+                data-testid="newPageBtn"
+                onClick={() => openCreateModal(currentPagePath || '')}
+              >
+                <i className="icon-pencil mr-2"></i>
+                <span className="d-none d-lg-block">{ t('commons:New') }</span>
+              </button>
+            </li>
+          )
         }
 
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
@@ -131,7 +133,7 @@ const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
   return isDefaultLogo
     ? <GrowiLogo />
     // eslint-disable-next-line @next/next/no-img-element
-    : (<img src='/attachment/brand-logo' alt="custom logo" className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />);
+    : (<img src="/attachment/brand-logo" alt="custom logo" className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />);
 });
 
 GrowiNavbarLogo.displayName = 'GrowiNavbarLogo';

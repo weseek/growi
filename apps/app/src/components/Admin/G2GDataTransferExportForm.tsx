@@ -162,7 +162,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     });
 
     // TODO: エラー対応
-    return <GroupImportItems groupList={collectionNames} groupName='Other' errors={[]} />;
+    return <GroupImportItems groupList={collectionNames} groupName="Other" errors={[]} />;
   };
 
   const configurationModal = useMemo(() => {
@@ -224,9 +224,9 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       </div>
 
       {/* TODO: エラー追加 */}
-      <GroupImportItems groupList={GROUPS_PAGE} groupName='Page' errors={[]} />
-      <GroupImportItems groupList={GROUPS_USER} groupName='User' errors={[]} />
-      <GroupImportItems groupList={GROUPS_CONFIG} groupName='Config' errors={[]} />
+      <GroupImportItems groupList={GROUPS_PAGE} groupName="Page" errors={[]} />
+      <GroupImportItems groupList={GROUPS_USER} groupName="User" errors={[]} />
+      <GroupImportItems groupList={GROUPS_CONFIG} groupName="Config" errors={[]} />
       <OtherImportItems />
 
       {configurationModal}

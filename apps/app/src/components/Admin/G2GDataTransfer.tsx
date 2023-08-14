@@ -217,7 +217,7 @@ const G2GDataTransfer = (): JSX.Element => {
             onChangeGcsBucket={onChangeGcsBucketHandler}
             onChangeGcsUploadNamespace={onChangeGcsUploadNamespaceHandler}
           /> */}
-          <h3 className='mb-1'>{t('export_management.export_archive_data')}</h3>
+          <h3 className="mb-1">{t('export_management.export_archive_data')}</h3>
           <G2GDataTransferExportForm
             allCollectionNames={collections}
             selectedCollections={selectedCollections}
@@ -246,12 +246,12 @@ const G2GDataTransfer = (): JSX.Element => {
       </form>
 
       {isTransferring && (
-        <div className='border rounded p-4'>
+        <div className="border rounded p-4">
           <div>
-            <G2GDataTransferStatusIcon className='mr-2 mb-2' status={g2gProgress.mongo} /> MongoDB
+            <G2GDataTransferStatusIcon className="mr-2 mb-2" status={g2gProgress.mongo} /> MongoDB
           </div>
           <div>
-            <G2GDataTransferStatusIcon className='mr-2' status={g2gProgress.attachments} /> Attachments
+            <G2GDataTransferStatusIcon className="mr-2" status={g2gProgress.attachments} /> Attachments
           </div>
         </div>
       )}

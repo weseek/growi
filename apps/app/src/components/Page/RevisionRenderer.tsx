@@ -21,7 +21,7 @@ const ErrorFallback: React.FC<FallbackProps> = React.memo(({ error, resetErrorBo
     <div role="alert">
       <p>Something went wrong:</p>
       <pre>{error.message}</pre>
-      <button className='btn btn-primary' onClick={resetErrorBoundary}>Reload</button>
+      <button className="btn btn-primary" onClick={resetErrorBoundary}>Reload</button>
     </div>
   );
 });

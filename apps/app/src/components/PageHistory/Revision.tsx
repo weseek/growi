@@ -36,7 +36,8 @@ export const Revision = (props: RevisionProps): JSX.Element => {
 
     return (
       <div className={`${styles['revision-history-main']} ${styles['revision-history-main-nodiff']}
-        revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center`}>
+        revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center`}
+      >
         <div className="picture-container">
           { pic }
         </div>

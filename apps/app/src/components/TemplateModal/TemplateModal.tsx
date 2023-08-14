@@ -175,7 +175,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
   }, [templateModalStatus.isOpened]);
 
   return (
-    <div data-testid='template-modal'>
+    <div data-testid="template-modal">
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         {t('template.modal_label.Select template')}
       </ModalHeader>
@@ -185,7 +185,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           <div className="d-none d-lg-block col-lg-4">
 
             { isLoading && (
-              <div className='h-100 d-flex justify-content-center align-items-center'>
+              <div className="h-100 d-flex justify-content-center align-items-center">
                 <i className="fa fa-2x fa-spinner fa-pulse text-muted mx-auto"></i>
               </div>
             ) }
@@ -208,9 +208,9 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
             </div>
           </div>
           {/* Dropdown */}
-          <div className='d-lg-none col mb-3'>
+          <div className="d-lg-none col mb-3">
             <UncontrolledDropdown>
-              <DropdownToggle caret type="button" outline className='w-100 text-right' disabled={isLoading}>
+              <DropdownToggle caret type="button" outline className="w-100 text-right" disabled={isLoading}>
                 <span className="float-left">
                   { (() => {
                     if (isLoading) {
@@ -240,13 +240,13 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
             </UncontrolledDropdown>
           </div>
           <div className="col-12 col-lg-8">
-            <div className='row mb-2 mb-lg-0'>
+            <div className="row mb-2 mb-lg-0">
               <div className="col-6">
                 <h3>{t('preview')}</h3>
               </div>
               <div className="col-6 d-flex justify-content-end">
                 <UncontrolledDropdown>
-                  <DropdownToggle caret type="button" outline className='float-right' disabled={selectedTemplateSummary == null}>
+                  <DropdownToggle caret type="button" outline className="float-right" disabled={selectedTemplateSummary == null}>
                     <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
@@ -254,7 +254,8 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                       return (
                         <DropdownItem
                           key={locale}
-                          onClick={() => setSelectedTemplateLocale(locale)}>
+                          onClick={() => setSelectedTemplateLocale(locale)}
+                        >
                           <span>{locale}</span>
                         </DropdownItem>
                       );
@@ -263,10 +264,10 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
                 </UncontrolledDropdown>
               </div>
             </div>
-            <div className='card'>
+            <div className="card">
               <div className="card-body" style={{ height: '400px', overflowY: 'auto' }}>
                 { rendererOptions != null && selectedTemplateSummary != null && (
-                  <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplateMarkdown)}/>
+                  <Preview rendererOptions={rendererOptions} markdown={format(selectedTemplateMarkdown)} />
                 ) }
               </div>
             </div>
@@ -281,7 +282,8 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           type="submit"
           className="btn btn-primary mx-1"
           onClick={() => submitHandler(selectedTemplateMarkdown)}
-          disabled={selectedTemplateSummary == null}>
+          disabled={selectedTemplateSummary == null}
+        >
           {t('commons:Insert')}
         </button>
       </ModalFooter>

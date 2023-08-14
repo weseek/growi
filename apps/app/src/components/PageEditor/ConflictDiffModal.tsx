@@ -338,5 +338,5 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
     afterResolvedHandler,
   };
 
-  return <ConflictDiffModalCore {...propsForCore}/>;
+  return <ConflictDiffModalCore {...propsForCore} />;
 };

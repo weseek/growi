@@ -277,7 +277,7 @@ const PageCreateModal = () => {
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
-            <UncontrolledButtonDropdown id="dd-template-type" className='flex-fill text-center'>
+            <UncontrolledButtonDropdown id="dd-template-type" className="flex-fill text-center">
               <DropdownToggle id="template-type" caret>
                 {template == null && t('template.option_label.select')}
                 {template === 'children' && t('template.children.label')}
@@ -299,7 +299,7 @@ const PageCreateModal = () => {
               <button
                 data-testid="grw-btn-edit-page"
                 type="button"
-                className='grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3'
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createTemplatePage}
                 disabled={template == null}
               >

@@ -129,7 +129,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     {isCustomizedLogoUploaded && (
                       <>
                         <p>
-                          <img src='/attachment/brand-logo' className="picture picture-lg " id="settingBrandLogo" width="64" />
+                          <img src="/attachment/brand-logo" className="picture picture-lg " id="settingBrandLogo" width="64" />
                         </p>
                         <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                           { t('admin:customize_settings.delete_logo') }
