@@ -101,17 +101,27 @@ const schema = new Schema<PageDocument, PageModel>({
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroups: [{
-    type: {
-      type: String,
-      enum: Object.values(GroupType),
-      required: true,
-      default: 'UserGroup',
-    },
-    item: {
-      type: ObjectId, refPath: 'grantedGroups.type', required: true, index: true,
-    },
-  }],
+  grantedGroups: {
+    type: [{
+      type: {
+        type: String,
+        enum: Object.values(GroupType),
+        required: true,
+        default: 'UserGroup',
+      },
+      item: {
+        type: ObjectId,
+        refPath: 'grantedGroups.type',
+        required: true,
+        index: true,
+      },
+    }],
+    validate: [function(arr) {
+      if (arr == null) return true;
+      const uniqueItemValues = new Set(arr.map(e => e.item));
+      return arr.length === uniqueItemValues.size;
+    }, 'grantedGroups contains non unique item'],
+  },
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
   liker: [{ type: ObjectId, ref: 'User' }],
