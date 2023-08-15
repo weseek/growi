@@ -100,10 +100,11 @@ describe('PageService page operations with non-public pages', () => {
     return createdPage;
   };
 
+  // normalize for result comparison
   const normalizeGrantedGroups = (grantedGroups: GrantedGroup[]) => {
-    return JSON.parse(JSON.stringify(grantedGroups)).map((group) => {
-      delete group._id;
-      return group;
+    return grantedGroups.map((group) => {
+      const itemId = typeof group.item === 'string' ? group.item : group.item._id;
+      return { item: itemId, type: group.type };
     });
   };
 
@@ -203,7 +204,10 @@ describe('PageService page operations with non-public pages', () => {
       },
     ]);
 
-    // same group structure as user groups for external user groups
+    // Insert ExternalUserGroups with the same group structure as UserGroups
+    // Use to test
+    //   - ExternalUserGroup
+    //   - Case of multiple grantedGroups for Page
     externalGroupIdIsolate = new mongoose.Types.ObjectId();
     externalGroupIdA = new mongoose.Types.ObjectId();
     externalGroupIdB = new mongoose.Types.ObjectId();
@@ -1145,12 +1149,12 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision1).toBeTruthy();
       expect(duplicatedRevision2).toBeTruthy();
       expect(normalizeGrantedGroups(duplicatedPage1.grantedGroups)).toStrictEqual([
-        { item: groupIdA.toString(), type: GroupType.userGroup },
-        { item: externalGroupIdA.toString(), type: GroupType.externalUserGroup },
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
       ]);
       expect(normalizeGrantedGroups(duplicatedPage2.grantedGroups)).toStrictEqual([
-        { item: groupIdB.toString(), type: GroupType.userGroup },
-        { item: externalGroupIdB.toString(), type: GroupType.externalUserGroup },
+        { item: groupIdB, type: GroupType.userGroup },
+        { item: externalGroupIdB, type: GroupType.externalUserGroup },
       ]);
       expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
@@ -1457,8 +1461,8 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_USER_GROUP);
       expect(normalizeGrantedGroups(revertedPage.grantedGroups)).toStrictEqual([
-        { item: groupIdA.toString(), type: GroupType.userGroup },
-        { item: externalGroupIdA.toString(), type: GroupType.externalUserGroup },
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
       ]);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
@@ -1542,12 +1546,12 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
       expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(normalizeGrantedGroups(revertedPage1.grantedGroups)).toStrictEqual([
-        { item: groupIdA.toString(), type: GroupType.userGroup },
-        { item: externalGroupIdA.toString(), type: GroupType.externalUserGroup },
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
       ]);
       expect(normalizeGrantedGroups(revertedPage2.grantedGroups)).toStrictEqual([
-        { item: groupIdB.toString(), type: GroupType.userGroup },
-        { item: externalGroupIdB.toString(), type: GroupType.externalUserGroup },
+        { item: groupIdB, type: GroupType.userGroup },
+        { item: externalGroupIdB, type: GroupType.externalUserGroup },
       ]);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
 
