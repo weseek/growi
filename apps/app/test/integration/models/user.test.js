@@ -73,7 +73,6 @@ describe('User', () => {
         expect(user).toBeInstanceOf(User);
         expect(user.name).toBe('Example for User Test');
       });
-
     });
 
   });
@@ -133,6 +132,22 @@ describe('User', () => {
         let username = null;
         username = User.getUsernameByPath('/the/page/is/not/related/to/user/page');
         expect(username).toBeNull();
+      });
+    });
+
+    describe('Get user exists from user page path', () => {
+      test('found', async() => {
+        const userPagePath = '/user/usertest';
+        const isExist = await User.isExistUserByUserPagePath(userPagePath);
+
+        expect(isExist).toBe(true);
+      });
+
+      test('not found', async() => {
+        const userPagePath = '/user/usertest2';
+        const isExist = await User.isExistUserByUserPagePath(userPagePath);
+
+        expect(isExist).toBe(false);
       });
     });
   });
