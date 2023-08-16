@@ -119,6 +119,7 @@ const CopyDropdown = (props) => {
         </DropdownToggle>
 
         <DropdownMenu
+          strategy='fixed'
           style={{ zIndex: 1016 }} /* zIndex: 1016 // larger than z-index value of grw-subnav-fixed-container in GrowiSubNavigationSwitcher.module.scss */
         >
           <div className="d-flex align-items-center justify-content-between">
