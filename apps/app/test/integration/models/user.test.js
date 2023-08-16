@@ -118,23 +118,6 @@ describe('User', () => {
   });
 
   describe('User Utilities', () => {
-    describe('Get username from path', () => {
-      test('found', () => {
-        let username = null;
-        username = User.getUsernameByPath('/user/sotarok');
-        expect(username).toEqual('sotarok');
-
-        username = User.getUsernameByPath('/user/some.user.name12/'); // with slash
-        expect(username).toEqual('some.user.name12');
-      });
-
-      test('not found', () => {
-        let username = null;
-        username = User.getUsernameByPath('/the/page/is/not/related/to/user/page');
-        expect(username).toBeNull();
-      });
-    });
-
     describe('Get user exists from user page path', () => {
       test('found', async() => {
         const userPagePath = '/user/usertest';
