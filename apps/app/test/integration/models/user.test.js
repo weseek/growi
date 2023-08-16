@@ -144,7 +144,7 @@ describe('User', () => {
       });
 
       test('not found', async() => {
-        const userPagePath = '/user/usertest2';
+        const userPagePath = '/user/usertest-hoge';
         const isExist = await User.isExistUserByUserPagePath(userPagePath);
 
         expect(isExist).toBe(false);
