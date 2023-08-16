@@ -2,6 +2,8 @@ import React, {
   ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef,
 } from 'react';
 
+import { Input } from 'reactstrap';
+
 import { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 
@@ -52,11 +54,11 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
 
   return (
     <div className="d-flex align-items-center">
-      <input
+      <Input
         type="checkbox"
         id="cb-check-all"
         data-testid="cb-select-all"
-        ref={selectAllCheckboxElm}
+        innerRef={selectAllCheckboxElm}
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}
       />
