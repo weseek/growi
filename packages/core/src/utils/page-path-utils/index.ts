@@ -287,5 +287,21 @@ export const generateChildrenRegExp = (path: string): RegExp => {
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
+/**
+ * Get username from user page path
+ * @param path string
+ * @returns string | null
+ */
+export const getUsernameByPath = (path: string): string | null => {
+  let username: string | null = null;
+  const match = path.match(/^\/user\/([^/]+)\/?/);
+  if (match) {
+    username = match[1];
+  }
+
+  return username;
+};
+
+
 export * from './is-top-page';
 export * from './collect-ancestor-paths';

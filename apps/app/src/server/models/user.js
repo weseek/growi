@@ -1,4 +1,6 @@
 /* eslint-disable no-use-before-define */
+import { pagePathUtils } from '@growi/core/dist/utils';
+
 import { i18n } from '^/config/next-i18next.config';
 
 import { generateGravatarSrc } from '~/utils/gravatar';
@@ -711,7 +713,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isExistUserByUserPagePath = async function(path) {
-    const username = this.getUsernameByPath(path);
+    const username = pagePathUtils.getUsernameByPath(path);
 
     if (username == null) {
       return false;
