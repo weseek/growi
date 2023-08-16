@@ -130,18 +130,20 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
   }, [afterResolvedHandler, close, currentPagePath, currentPathname, optionsToSave, pageId, remoteRevisionId, saveOrUpdate, setRemoteLatestPageData]);
 
-  const resizeAndCloseButtons = useMemo(() => (
-    <div className="d-flex flex-nowrap">
-      <ExpandOrContractButton
-        isWindowExpanded={isModalExpanded}
-        expandWindow={() => setIsModalExpanded(true)}
-        contractWindow={() => setIsModalExpanded(false)}
-      />
-      <button type="button" className="close text-white" onClick={close} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  ), [isModalExpanded, close]);
+  // TODO: No longer support custom close icon in bootstrap v5
+  // https://redmine.weseek.co.jp/issues/128470
+  // const resizeAndCloseButtons = useMemo(() => (
+  //   <div className="d-flex flex-nowrap">
+  //     <ExpandOrContractButton
+  //       isWindowExpanded={isModalExpanded}
+  //       expandWindow={() => setIsModalExpanded(true)}
+  //       contractWindow={() => setIsModalExpanded(false)}
+  //     />
+  //     <button type="button" className="close text-white" onClick={close} aria-label="Close">
+  //       <span aria-hidden="true">&times;</span>
+  //     </button>
+  //   </div>
+  // ), [isModalExpanded, close]);
 
   const isOpen = props.isOpen ?? false;
 
@@ -153,7 +155,8 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
       size="xl"
     >
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3" close={resizeAndCloseButtons}>
+      {/* <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3" close={resizeAndCloseButtons}> */}
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3">
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody className="mx-4 my-1">
