@@ -428,19 +428,21 @@ export const HandsontableModal = (): JSX.Element => {
     contextMenu: createCustomizedContextMenu(),
   });
 
-  const closeButton = (
-    <span>
-      {/* change order because of `float: right` by '.close' class */}
-      <button type="button" className="close" onClick={cancel} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <ExpandOrContractButton
-        isWindowExpanded={isWindowExpanded}
-        contractWindow={contractWindow}
-        expandWindow={expandWindow}
-      />
-    </span>
-  );
+  // TODO: No longer support custom close icon in bootstrap v5
+  // https://redmine.weseek.co.jp/issues/128470
+  // const closeButton = (
+  //   <span>
+  //     {/* change order because of `float: right` by '.close' class */}
+  //     <button type="button" className="close" onClick={cancel} aria-label="Close">
+  //       <span aria-hidden="true">&times;</span>
+  //     </button>
+  //     <ExpandOrContractButton
+  //       isWindowExpanded={isWindowExpanded}
+  //       contractWindow={contractWindow}
+  //       expandWindow={expandWindow}
+  //     />
+  //   </span>
+  // );
 
   return (
     <Modal
@@ -453,7 +455,8 @@ export const HandsontableModal = (): JSX.Element => {
       className={`handsontable-modal ${isWindowExpanded && 'grw-modal-expanded'}`}
       onOpened={handleModalOpen}
     >
-      <ModalHeader tag="h4" toggle={cancel} close={closeButton} className="bg-primary text-light">
+      {/* <ModalHeader tag="h4" toggle={cancel} close={closeButton} className="bg-primary text-light"> */}
+      <ModalHeader tag="h4" toggle={cancel} className="bg-primary text-light">
         {t('handsontable_modal.title')}
       </ModalHeader>
       <ModalBody className="p-0 d-flex flex-column">
