@@ -71,20 +71,16 @@ export const PageAccessoriesModal = (): JSX.Element => {
     };
   }, [t, close, isGuestUser, isReadOnlyUser, isSharedUser, isLinkSharingDisabled]);
 
-  // TODO: No longer support custom close icon in bootstrap v5
-  // https://redmine.weseek.co.jp/issues/128470
-  // const buttons = useMemo(() => (
-  //   <div className="d-flex flex-nowrap">
-  //     <ExpandOrContractButton
-  //       isWindowExpanded={isWindowExpanded}
-  //       expandWindow={() => setIsWindowExpanded(true)}
-  //       contractWindow={() => setIsWindowExpanded(false)}
-  //     />
-  //     <button type="button" className="close" onClick={close} aria-label="Close">
-  //       <span aria-hidden="true">&times;</span>
-  //     </button>
-  //   </div>
-  // ), [close, isWindowExpanded]);
+  const buttons = useMemo(() => (
+    <span className='me-3'>
+      <ExpandOrContractButton
+        isWindowExpanded={isWindowExpanded}
+        expandWindow={() => setIsWindowExpanded(true)}
+        contractWindow={() => setIsWindowExpanded(false)}
+      />
+      <button type="button" className="btn btn-close" onClick={close} aria-label="Close"></button>
+    </span>
+  ), [close, isWindowExpanded]);
 
   if (status == null || status.activatedContents == null) {
     return <></>;
@@ -100,8 +96,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
       data-testid="page-accessories-modal"
       className={`grw-page-accessories-modal ${styles['grw-page-accessories-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
-      {/* <ModalHeader className="p-0" toggle={close} close={buttons}> */}
-      <ModalHeader className="p-0" toggle={close}>
+      <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab
           activeTab={status.activatedContents}
           navTabMapping={navTabMapping}

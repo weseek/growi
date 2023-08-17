@@ -131,7 +131,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   }, [afterResolvedHandler, close, currentPagePath, currentPathname, optionsToSave, pageId, remoteRevisionId, saveOrUpdate, setRemoteLatestPageData]);
 
   // TODO: No longer support custom close icon in bootstrap v5
-  // https://redmine.weseek.co.jp/issues/128470
   // const resizeAndCloseButtons = useMemo(() => (
   //   <div className="d-flex flex-nowrap">
   //     <ExpandOrContractButton
