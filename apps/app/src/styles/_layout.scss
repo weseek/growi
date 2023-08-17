@@ -1,9 +1,18 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core/scss/flex-expand';
 
 @use './variables' as var;
 
+.flex-expand-horiz {
+  @extend %flex-expand-horiz;
+}
+
+.flex-expand-vert {
+  @extend %flex-expand-vert;
+}
+
 .dynamic-layout-root {
-  flex-grow: 1;
+  @extend %flex-expand-vert;
 }
 
 .dynamic-layout-root.growi-layout-fluid .grw-container-convertible {

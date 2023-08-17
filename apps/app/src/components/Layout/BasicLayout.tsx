@@ -38,9 +38,11 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <div className="page-wrapper flex-row">
           <Sidebar />
 
-          <div className="flex-expand-vert">
+          <div className="flex-expand-vert">{/* neccessary for nested {children} make expanded */}
             <AlertSiteUrlUndefined />
-            {children}
+            <div className="flex-expand-horiz h-100">{/* neccessary for nested {children} make expanded */}
+              {children}
+            </div>
           </div>
         </div>
 
