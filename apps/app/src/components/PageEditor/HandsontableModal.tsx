@@ -430,15 +430,12 @@ export const HandsontableModal = (): JSX.Element => {
 
   const closeButton = (
     <span>
-      {/* change order because of `float: right` by '.close' class */}
-      <button type="button" className="close" onClick={cancel} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         contractWindow={contractWindow}
         expandWindow={expandWindow}
       />
+      <button type="button" className="btn btn-close" onClick={cancel} aria-label="Close"></button>
     </span>
   );
 

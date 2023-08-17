@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import Popover from 'reactstrap/es/Popover';
-import PopoverBody from 'reactstrap/es/PopoverBody';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import DropdownToggle from 'reactstrap/esm/DropdownToggle';
+import Popover from 'reactstrap/esm/Popover';
+import PopoverBody from 'reactstrap/esm/PopoverBody';
+import UncontrolledTooltip from 'reactstrap/esm/UncontrolledTooltip';
 
 import { useSWRxBookmarkedUsers } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';

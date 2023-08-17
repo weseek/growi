@@ -3,7 +3,6 @@ import React, {
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useEffect,
 } from 'react';
 
-
 import type {
   IPageInfoAll, IPageWithMeta, IPageInfoForListing,
 } from '@growi/core';
@@ -16,7 +15,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
-import { CustomInput } from 'reactstrap';
+import { Input } from 'reactstrap';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
@@ -198,7 +197,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
           {/* checkbox */}
           {onCheckboxChanged != null && (
             <div className="d-flex align-items-center justify-content-center">
-              <CustomInput
+              <Input
                 type="checkbox"
                 id={`cbSelect-${pageData._id}`}
                 data-testid="cb-select"
@@ -260,7 +259,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 && (
                   <div className="ml-auto">
                     <PageItemControl
-                      alignRight
+                      alignEnd
                       pageId={pageData._id}
                       pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                       isEnableActions={isEnableActions}
