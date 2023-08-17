@@ -1,31 +1,15 @@
 import { Marp } from '@marp-team/marp-core';
-import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
 
 import './Slides.global.scss';
 
-const MARP_CONTAINER_CLASS_NAME = 'marpit';
-
-const marpit = new Marp({
-  container: [
-    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
-    new Element('div', { class: 'slides' }),
-  ],
-  slideContainer: [
-    new Element('div', { class: 'shadow rounded m-2' }),
-  ],
-  inlineSVG: true,
-  emoji: undefined,
-  html: false,
-  math: false,
-});
-
 type Props = {
   children?: string,
+  marpit: Marp,
 }
 
 export const MarpSlides = (props: Props): JSX.Element => {
-  const { children } = props;
+  const { children, marpit } = props;
 
   const { html, css } = marpit.render(children ?? '');
   return (
