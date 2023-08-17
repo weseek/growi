@@ -49,6 +49,7 @@ export const RichAttachment: FC<{
     creator,
     createdAt,
     fileSize,
+    fileFormat,
   } = attachment;
 
   // Guard here because attachment properties might be deleted in turn when an attachment is removed
@@ -58,6 +59,7 @@ export const RichAttachment: FC<{
     || creator == null
     || createdAt == null
     || fileSize == null
+    || fileFormat == null
   ) {
     return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
   }
@@ -82,7 +84,7 @@ export const RichAttachment: FC<{
   return (
     <div className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 card">
-        {attachment.fileFormat === 'application/pdf' && (
+        {fileFormat === 'application/pdf' && (
           <div className="custom-shadow">
             <Document file={url} options={options} className='d-flex justify-content-center'>
               <Page pageNumber={1} scale={0.5} />
