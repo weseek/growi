@@ -5,7 +5,6 @@ import React, {
 import {
   type IPageInfoAll, isIPageInfoForOperation,
 } from '@growi/core';
-// import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
