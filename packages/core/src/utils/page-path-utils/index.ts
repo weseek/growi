@@ -294,6 +294,7 @@ export const generateChildrenRegExp = (path: string): RegExp => {
  */
 export const getUsernameByPath = (path: string): string | null => {
   let username: string | null = null;
+  // https://regex101.com/r/qj4SfD/1
   const match = path.match(/^\/user\/([^/]+)\/?/);
   if (match) {
     username = match[1];
