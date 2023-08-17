@@ -65,7 +65,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isForcused, setFocused] = useState(false);
 
-  const { data: searchResult, error: searchError } = useSWRxSearch(
+  const { data: searchResult, error: searchError, isLoading } = useSWRxSearch(
     disableIncrementalSearch ? null : searchKeyword,
     null,
     { limit: 10 },
@@ -220,7 +220,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     );
   }, [disableIncrementalSearch, helpElement, input, isForcused]);
 
-  const isLoading = searchResult !== undefined && searchError == null;
   const isOpenAlways = helpElement != null;
 
   return (
