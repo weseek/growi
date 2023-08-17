@@ -35,7 +35,7 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
@@ -150,6 +150,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
 
   isSlackConfigured: boolean,
   // isMailerSetup: boolean,
@@ -170,6 +171,7 @@ type Props = CommonProps & {
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
   skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 
   grantData?: IPageGrantData,
 
@@ -217,6 +219,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
   useRendererConfig(props.rendererConfig);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
@@ -438,7 +441,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService } = crowi;
+  const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -477,7 +480,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
-    props.skipSSR = await skipSSR(page);
+    const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
@@ -589,6 +593,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
@@ -603,6 +608,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 /**

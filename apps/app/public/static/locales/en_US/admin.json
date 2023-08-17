@@ -3,7 +3,7 @@
     "display_name": "English"
   },
   "last_login": "Last login",
-  "wiki_management_home_page": "Wiki Management Home Page",
+  "wiki_management_homepage": "Wiki Management Homepage",
   "public": "Public",
   "anyone_with_the_link": "Anyone with the link",
   "specified_users": "Specified users",
@@ -45,6 +45,11 @@
     "admin_only": "Admin only",
     "admin_and_author": "Admin and author",
     "anyone": "Anyone",
+    "user_homepage_deletion": {
+      "user_homepage_deletion": "User homepage deletion",
+      "enable_user_homepage_deletion": "Enable user homepage deletion",
+      "when_deleting_a_user_the_user_homepage_is_also_deleted": "When deleting a user, the user homepage is also deleted."
+    },
     "session": "Session",
     "max_age": "Max age (msec)",
     "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
@@ -475,7 +480,13 @@
       "show_all_reply_comments": "Show all reply comments",
       "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted.",
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
-      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
+      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range.",
+      "enable_marp": "Enable Marp ",
+      "enable_marp_desc": "Marp can be used in presentation preview. This option may make you vulnerable to XSS.",
+      "marp_official_site": "The Marp Official Site",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
