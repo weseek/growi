@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { MARP_CONTAINER_CLASS_NAME } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
@@ -25,16 +24,12 @@ export const SlideViewer: React.FC<SlideViewerProps> = React.memo((props: SlideV
   const { data: rendererOptions } = usePresentationViewOptions();
 
   return (
-    <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
-      <div className="slides">
-        <Slides
-          hasMarpFlag={marp === 'marp'}
-          options={{ rendererOptions: rendererOptions as ReactMarkdownOptions }}
-        >
-          {children}
-        </Slides>
-      </div>
-    </div>
+    <Slides
+      hasMarpFlag={marp === 'marp'}
+      options={{ rendererOptions: rendererOptions as ReactMarkdownOptions }}
+    >
+      {children}
+    </Slides>
   );
 });
 

@@ -4,7 +4,7 @@ import Reveal from 'reveal.js';
 
 import type { PresentationOptions } from '../consts';
 
-import { MARP_CONTAINER_CLASS_NAME, Slides } from './Slides';
+import { Slides } from './Slides';
 
 import 'reveal.js/dist/reveal.css';
 import './Presentation.global.scss';
@@ -57,10 +57,8 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   }, [children, revealOptions]);
 
   return (
-    <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
-      <div className="slides">
-        <Slides options={options}>{children}</Slides>
-      </div>
+    <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
+      <Slides options={options}>{children}</Slides>
     </div>
   );
 };

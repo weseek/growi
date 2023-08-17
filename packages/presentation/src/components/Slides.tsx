@@ -8,9 +8,7 @@ import { MarpSlides } from './MarpSlides';
 
 import './Slides.global.scss';
 
-// TODO: to remove MARP_CONTAINER_CLASS_NAME
-// https://redmine.weseek.co.jp/issues/125680
-export const MARP_CONTAINER_CLASS_NAME = 'marpit';
+const MARP_CONTAINER_CLASS_NAME = 'marpit';
 
 const marpit = new Marp({
   container: [
@@ -35,10 +33,15 @@ type Props = {
 export const Slides = (props: Props): JSX.Element => {
   const { options, children, hasMarpFlag } = props;
 
-  if (hasMarpFlag) {
-    return <MarpSlides marpit={marpit}>{children}</MarpSlides>;
-  }
-
-  return <GrowiSlides options={options} marpit={marpit}>{children}</GrowiSlides>;
-
+  return (
+    <div className={`${MARP_CONTAINER_CLASS_NAME}`}>
+      <div className="slides">
+        {
+          hasMarpFlag
+            ? <MarpSlides marpit={marpit}>{children}</MarpSlides>
+            : <GrowiSlides options={options} marpit={marpit}>{children}</GrowiSlides>
+        }
+      </div>
+    </div>
+  );
 };
