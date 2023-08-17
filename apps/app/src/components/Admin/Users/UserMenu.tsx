@@ -99,7 +99,7 @@ const UserMenu = (props: UserMenuProps) => {
         {(user.status === USER_STATUS.INVITED && !isInvitationEmailSended)
         && <i className={`fa fa-circle text-danger grw-usermenu-notification-icon ${styles['grw-usermenu-notification-icon']}`} />}
       </DropdownToggle>
-      <DropdownMenu strategy='fixed'>
+      <DropdownMenu strategy="fixed">
         {renderEditMenu()}
         {user.status !== USER_STATUS.DELETED && renderStatusMenu()}
         {user.status === USER_STATUS.ACTIVE && renderAdminMenu()}

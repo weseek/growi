@@ -23,7 +23,7 @@ export const PageTreeHeader = memo(() => {
 
   return (
     <>
-      <SidebarHeaderReloadButton onClick={() => mutate()}/>
+      <SidebarHeaderReloadButton onClick={() => mutate()} />
     </>
   );
 });

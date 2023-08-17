@@ -71,7 +71,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
   }, [isSharedUser, status, t]);
 
   const buttons = useMemo(() => (
-    <span className='me-3'>
+    <span className="me-3">
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         expandWindow={() => setIsWindowExpanded(true)}

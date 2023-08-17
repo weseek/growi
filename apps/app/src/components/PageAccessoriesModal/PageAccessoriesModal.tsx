@@ -72,7 +72,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
   }, [t, close, isGuestUser, isReadOnlyUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
-    <span className='me-3'>
+    <span className="me-3">
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         expandWindow={() => setIsWindowExpanded(true)}

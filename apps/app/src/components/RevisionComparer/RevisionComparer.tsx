@@ -77,7 +77,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
           >
             <i className="ti ti-clipboard"></i>
           </DropdownToggle>
-          <DropdownMenu strategy='fixed' end >
+          <DropdownMenu strategy="fixed" end>
             {/* Page path URL */}
             <CopyToClipboard text={generateURL(currentPagePath)}>
               <DropdownItem className="px-3">
