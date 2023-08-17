@@ -1,7 +1,6 @@
 import type { IPage } from '@growi/core';
 
 import { useIsContainerFluid } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
 import { useEditorMode } from '~/stores/ui';
 
 export const useEditorModeClassName = (): string => {
@@ -10,17 +9,20 @@ export const useEditorModeClassName = (): string => {
   return `${getClassNamesByEditorMode().join(' ') ?? ''}`;
 };
 
-export const useCurrentGrowiLayoutFluidClassName = (initialPage?: IPage): string => {
-  const { data: currentPage } = useSWRxCurrentPage();
-
+export const useLayoutFluidClassName = (expandContentWidth?: boolean | null): string => {
   const { data: dataIsContainerFluid } = useIsContainerFluid();
 
-  const page = currentPage ?? initialPage;
-  const isContainerFluidEachPage = page == null || !('expandContentWidth' in page)
-    ? null
-    : page.expandContentWidth;
   const isContainerFluidDefault = dataIsContainerFluid;
-  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
+  const isContainerFluid = expandContentWidth ?? isContainerFluidDefault;
 
   return isContainerFluid ? 'growi-layout-fluid' : '';
+};
+
+export const useLayoutFluidClassNameByPage = (initialPage?: IPage): string => {
+  const page = initialPage;
+  const expandContentWidth = page == null || !('expandContentWidth' in page)
+    ? null
+    : page.expandContentWidth;
+
+  return useLayoutFluidClassName(expandContentWidth);
 };

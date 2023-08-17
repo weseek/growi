@@ -10,6 +10,7 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
+import { useLayoutFluidClassName } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
@@ -126,6 +127,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const [isExpandContentWidth, setIsExpandContentWidth] = useState(page.expandContentWidth);
 
+  // TODO: determine className by the 'expandContentWidth' from the updated page
+  const growiLayoutFluidClass = useLayoutFluidClassName(isExpandContentWidth);
+
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -210,7 +214,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       key={page._id}
       data-testid="search-result-content"
       className={`search-result-content ${styles['search-result-content']}
-        dynamic-layout-root
+        dynamic-layout-root ${growiLayoutFluidClass}
         overflow-y-auto`}
     >
       <div className="grw-page-path-text-muted-container">
