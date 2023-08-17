@@ -169,63 +169,61 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     : undefined;
 
   return (
-    <div className="content-main">
-      <div className="search-result-base d-flex" data-testid="search-result-base">
+    <div className="search-result-base flex-grow-1 d-flex overflow-y-auto" data-testid="search-result-base">
 
-        <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
+      <div className="flex-expand-vert border boder-gray search-result-list" id="search-result-list">
 
-          {searchControl}
+        {searchControl}
 
-          <div className="search-result-list-scroll">
+        <div className="overflow-y-scroll">
 
-            {/* Loading */}
-            { pages == null && (
-              <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-                <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          {/* Loading */}
+          { pages == null && (
+            <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
+              <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+            </div>
+          ) }
+
+          {/* Loaded */}
+          { pages != null && (
+            <>
+              <div className="my-3 px-md-4 px-3">
+                {searchResultListHead}
               </div>
-            ) }
 
-            {/* Loaded */}
-            { pages != null && (
-              <>
-                <div className="my-3 px-md-4 px-3">
-                  {searchResultListHead}
+              { pages.length > 0 && (
+                <div className={`page-list ${styles['page-list']} px-md-4`}>
+                  <SearchResultList
+                    ref={searchResultListRef}
+                    pages={pages}
+                    selectedPageId={selectedPageWithMeta?.data._id}
+                    forceHideMenuItems={forceHideMenuItems}
+                    onPageSelected={page => (setSelectedPageWithMeta(page))}
+                    onCheckboxChanged={checkboxChangedHandler}
+                  />
                 </div>
+              ) }
+              <div className="my-4 d-flex justify-content-center">
+                {searchPager}
+              </div>
+            </>
+          ) }
 
-                { pages.length > 0 && (
-                  <div className={`page-list ${styles['page-list']} px-md-4`}>
-                    <SearchResultList
-                      ref={searchResultListRef}
-                      pages={pages}
-                      selectedPageId={selectedPageWithMeta?.data._id}
-                      forceHideMenuItems={forceHideMenuItems}
-                      onPageSelected={page => (setSelectedPageWithMeta(page))}
-                      onCheckboxChanged={checkboxChangedHandler}
-                    />
-                  </div>
-                ) }
-                <div className="my-4 d-flex justify-content-center">
-                  {searchPager}
-                </div>
-              </>
-            ) }
-
-          </div>
-
-        </div>
-
-        <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-          {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
-            <SearchResultContent
-              pageWithMeta={selectedPageWithMeta}
-              highlightKeywords={highlightKeywords}
-              showPageControlDropdown={!(isGuestUser || isReadOnlyUser)}
-              forceHideMenuItems={forceHideMenuItems}
-            />
-          )}
         </div>
 
       </div>
+
+      <div className="flex-expand-vert d-none d-lg-flex search-result-content">
+        {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
+          <SearchResultContent
+            pageWithMeta={selectedPageWithMeta}
+            highlightKeywords={highlightKeywords}
+            showPageControlDropdown={!(isGuestUser || isReadOnlyUser)}
+            forceHideMenuItems={forceHideMenuItems}
+          />
+        )}
+      </div>
+
     </div>
   );
 };

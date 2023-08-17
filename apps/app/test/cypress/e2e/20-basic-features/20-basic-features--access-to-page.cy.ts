@@ -237,7 +237,7 @@ context('Access to Template Editing Mode', () => {
     cy.waitUntilSkeletonDisappear();
 
     // Check if the template is applied
-    cy.get('.content-main').within(() => {
+    cy.getByTestid('search-result-base').within(() => {
       cy.get('.wiki').should('be.visible');
       cy.get('.wiki').children().first().should('have.text', expectedBody);
     })

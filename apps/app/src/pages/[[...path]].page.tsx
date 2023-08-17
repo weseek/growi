@@ -20,7 +20,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
+import { useLayoutFluidClassNameByPage, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -254,7 +254,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(pageWithMeta?.data);
+  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(pageWithMeta?.data);
 
   // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
@@ -329,7 +329,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
         <header className="py-0 position-relative">
           <div id="grw-subnav-container">
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />

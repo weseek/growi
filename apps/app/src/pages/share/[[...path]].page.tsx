@@ -8,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import superjson from 'superjson';
 
-import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
+import { useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -107,7 +107,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
 
 
-  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName(props.shareLinkRelatedPage);
+  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(props.shareLinkRelatedPage);
 
   const pagePath = props.shareLinkRelatedPage?.path ?? '';
 
@@ -119,7 +119,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
 
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
         <header className="py-0 position-relative">
           <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
