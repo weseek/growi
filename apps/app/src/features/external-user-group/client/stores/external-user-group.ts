@@ -16,13 +16,13 @@ export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSetting
   );
 };
 
-type MyExternalUserGroupRelationsResult = {
-  userGroupRelations: IExternalUserGroupRelationHasId[],
+type MyExternalUserGroupsResult = {
+  userGroups: IExternalUserGroupHasId[],
 }
-export const useSWRxMyExternalUserGroupRelations = (shouldFetch: boolean): SWRResponse<IExternalUserGroupRelationHasId[], Error> => {
+export const useSWRxMyExternalUserGroups = (shouldFetch: boolean): SWRResponse<IExternalUserGroupHasId[], Error> => {
   return useSWR(
-    shouldFetch ? '/me/external-user-group-relations' : null,
-    endpoint => apiGet(endpoint).then(result => (result as MyExternalUserGroupRelationsResult).userGroupRelations),
+    shouldFetch ? '/me/external-user-groups' : null,
+    endpoint => apiGet(endpoint).then(result => (result as MyExternalUserGroupsResult).userGroups),
   );
 };
 

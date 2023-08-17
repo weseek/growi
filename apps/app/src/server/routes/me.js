@@ -1,3 +1,5 @@
+import { isPopulated } from '@growi/core';
+
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 
 import UserGroupRelation from '../models/user-group-relation';
@@ -63,41 +65,20 @@ module.exports = function(crowi, app) {
   actions.api = api;
 
   /**
-   * @swagger
-   *
-   *   /me/user-group-relations:
-   *     get:
-   *       tags: [Me, CrowiCompatibles]
-   *       operationId: getUserGroupRelations
-   *       summary: /me/user-group-relations
-   *       description: Get user group relations
-   *       responses:
-   *         200:
-   *           description: Succeeded to get user group relations.
-   *           content:
-   *             application/json:
-   *               schema:
-   *                 properties:
-   *                   ok:
-   *                     $ref: '#/components/schemas/V1Response/properties/ok'
-   *                   userGroupRelations:
-   *                     type: array
-   *                     items:
-   *                       $ref: '#/components/schemas/UserGroupRelation'
-   *         403:
-   *           $ref: '#/components/responses/403'
-   *         500:
-   *           $ref: '#/components/responses/500'
-   */
-  /**
-   * retrieve user-group-relation documents
+   * retrieve user-group documents
    * @param {object} req
    * @param {object} res
    */
-  api.userGroupRelations = function(req, res) {
+  api.userGroups = function(req, res) {
     UserGroupRelation.findAllRelationForUser(req.user)
       .then((userGroupRelations) => {
-        return res.json(ApiResponse.success({ userGroupRelations }));
+        const userGroups = userGroupRelations.map((relation) => {
+          // relation.relatedGroup should be populated
+          return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
+        })
+          // exclude undefined elements
+          .filter(elem => elem != null);
+        return res.json(ApiResponse.success({ userGroups }));
       });
   };
 
@@ -106,10 +87,16 @@ module.exports = function(crowi, app) {
    * @param {object} req
    * @param {object} res
    */
-  api.externalUserGroupRelations = function(req, res) {
+  api.externalUserGroups = function(req, res) {
     ExternalUserGroupRelation.findAllRelationForUser(req.user)
       .then((userGroupRelations) => {
-        return res.json(ApiResponse.success({ userGroupRelations }));
+        const userGroups = userGroupRelations.map((relation) => {
+          // relation.relatedGroup should be populated
+          return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
+        })
+          // exclude undefined elements
+          .filter(elem => elem != null);
+        return res.json(ApiResponse.success({ userGroups }));
       });
   };
 

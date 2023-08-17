@@ -1,6 +1,4 @@
-import {
-  type GrantedGroup, GroupType, isPopulated, type IUserGroupHasId,
-} from '@growi/core';
+import { GroupType } from '@growi/core';
 
 import {
   useSWRxAncestorExternalUserGroups,
@@ -8,12 +6,11 @@ import {
   useSWRxExternalUserGroup,
   useSWRxExternalUserGroupRelationList,
   useSWRxExternalUserGroupRelations,
-  useSWRxMyExternalUserGroupRelations,
+  useSWRxMyExternalUserGroups,
 } from '~/features/external-user-group/client/stores/external-user-group';
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import {
   useSWRxAncestorUserGroups,
-  useSWRxChildUserGroupList, useSWRxMyUserGroupRelations, useSWRxUserGroup, useSWRxUserGroupRelationList, useSWRxUserGroupRelations,
+  useSWRxChildUserGroupList, useSWRxMyUserGroups, useSWRxUserGroup, useSWRxUserGroupRelationList, useSWRxUserGroupRelations,
 } from '~/stores/user-group';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -57,38 +54,26 @@ export const useAncestorUserGroups = (userGroupId: string, isExternalGroup: bool
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useMyUserGroups = (shouldFetch: boolean) => {
-  const { data: myUserGroupRelations, mutate: mutateMyUserGroupRelations } = useSWRxMyUserGroupRelations(shouldFetch);
-  const { data: myExternalUserGroupRelations, mutate: mutateMyExternalUserGroupRelations } = useSWRxMyExternalUserGroupRelations(shouldFetch);
+  const { data: myUserGroups, mutate: mutateMyUserGroups } = useSWRxMyUserGroups(shouldFetch);
+  const { data: myExternalUserGroups, mutate: mutateMyExternalUserGroups } = useSWRxMyExternalUserGroups(shouldFetch);
 
-  const mutate = () => {
-    mutateMyUserGroupRelations();
-    mutateMyExternalUserGroupRelations();
+  const update = () => {
+    mutateMyUserGroups();
+    mutateMyExternalUserGroups();
   };
 
-  if (myUserGroupRelations == null || myExternalUserGroupRelations == null) {
-    return { data: null, mutate };
+  if (myUserGroups == null || myExternalUserGroups == null) {
+    return { data: null, update };
   }
 
-  const myUserGroups = myUserGroupRelations
-    .map((relation) => {
-      // relation.relatedGroup should be populated by server
-      return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
-    })
-    // exclude undefined elements
-    .filter((elem): elem is IUserGroupHasId => elem != null)
+  const myUserGroupsData = myUserGroups
     .map((group) => {
       return {
         item: group,
         type: GroupType.userGroup,
       };
     });
-  const myExternalUserGroups = myExternalUserGroupRelations
-    .map((relation) => {
-    // relation.relatedGroup should be populated by server
-      return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
-    })
-    // exclude undefined elements
-    .filter((elem): elem is IExternalUserGroupHasId => elem != null)
+  const myExternalUserGroupsData = myExternalUserGroups
     .map((group) => {
       return {
         item: group,
@@ -96,7 +81,7 @@ export const useMyUserGroups = (shouldFetch: boolean) => {
       };
     });
 
-  const data = [...myUserGroups, ...myExternalUserGroups];
+  const data = [...myUserGroupsData, ...myExternalUserGroupsData];
 
-  return { data, mutate };
+  return { data, update };
 };

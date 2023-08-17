@@ -62,7 +62,7 @@ schema.statics.removeAllInvalidRelations = function() {
 /**
    * find all user and group relation
    *
-   * @staticfindAllRelationForUser
+   * @static
    * @returns {Promise<UserGroupRelation[]>}
    * @memberof UserGroupRelation
    */
@@ -123,7 +123,7 @@ schema.statics.findAllRelationForUserGroups = function(userGroups) {
  * @returns {Promise<UserGroupRelation[]>}
  * @memberof UserGroupRelation
  */
-schema.statics.findAllRelationForUser = function(user) {
+schema.statics.findAllRelationForUser = function(user): Promise<UserGroupRelationDocument[]> {
   return this
     .find({ relatedUser: user.id })
     .populate('relatedGroup')

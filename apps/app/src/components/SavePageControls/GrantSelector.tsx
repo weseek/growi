@@ -61,12 +61,12 @@ const GrantSelector = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const shouldFetch = isSelectGroupModalShown;
-  const { data: myUserGroups, mutate: mutateMyUserGroups } = useMyUserGroups(shouldFetch);
+  const { data: myUserGroups, update: updateMyUserGroups } = useMyUserGroups(shouldFetch);
 
   const showSelectGroupModal = useCallback(() => {
-    mutateMyUserGroups();
+    updateMyUserGroups();
     setIsSelectGroupModalShown(true);
-  }, [mutateMyUserGroups]);
+  }, [updateMyUserGroups]);
 
   /**
    * change event handler for grant selector

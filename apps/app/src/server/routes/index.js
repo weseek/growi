@@ -123,8 +123,8 @@ module.exports = function(crowi, app) {
 
   apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
 
-  apiV1Router.get('/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
-  apiV1Router.get('/me/external-user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.externalUserGroupRelations);
+  apiV1Router.get('/me/user-groups'  , accessTokenParser , loginRequiredStrictly , me.api.userGroups);
+  apiV1Router.get('/me/external-user-groups'  , accessTokenParser , loginRequiredStrictly , me.api.externalUserGroups);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
