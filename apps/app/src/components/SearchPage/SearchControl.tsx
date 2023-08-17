@@ -71,7 +71,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
   }, [initialSearchConditions.keyword]);
 
   return (
-    <div className="position-sticky sticky-top shadow-sm">
+    <div className="shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchForm

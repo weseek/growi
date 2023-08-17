@@ -73,9 +73,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
 
-      <div id="search-page" className="dynamic-layout-root">
-        <SearchPage />
-      </div>
+      <SearchPage />
     </>
   );
 };

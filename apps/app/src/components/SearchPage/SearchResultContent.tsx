@@ -206,7 +206,13 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const isRenderable = page != null && rendererOptions != null;
 
   return (
-    <div key={page._id} data-testid="search-result-content" className={`search-result-content ${styles['search-result-content']} d-flex flex-column`}>
+    <div
+      key={page._id}
+      data-testid="search-result-content"
+      className={`search-result-content ${styles['search-result-content']}
+        dynamic-layout-root
+        overflow-y-auto`}
+    >
       <div className="grw-page-path-text-muted-container">
         { isRenderable && (
           <GrowiSubNavigation
@@ -218,7 +224,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           />
         ) }
       </div>
-      <div id="search-result-content-body-container" className="search-result-content-body-container" ref={scrollElementRef}>
+      <div
+        id="search-result-content-body-container"
+        ref={scrollElementRef}
+        className="search-result-content-body-container main container-lg grw-container-convertible overflow-y-scroll"
+      >
         { isRenderable && (
           <RevisionLoader
             rendererOptions={rendererOptions}

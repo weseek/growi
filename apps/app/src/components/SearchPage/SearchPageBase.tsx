@@ -169,13 +169,13 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     : undefined;
 
   return (
-    <div className="search-result-base d-flex" data-testid="search-result-base">
+    <div className="search-result-base flex-grow-1 d-flex overflow-y-auto" data-testid="search-result-base">
 
-      <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
+      <div className="flex-expand-vert border boder-gray search-result-list" id="search-result-list">
 
         {searchControl}
 
-        <div className="search-result-list-scroll">
+        <div className="overflow-y-scroll">
 
           {/* Loading */}
           { pages == null && (
@@ -213,7 +213,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
       </div>
 
-      <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
+      <div className="flex-expand-vert d-none d-lg-flex search-result-content">
         {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
           <SearchResultContent
             pageWithMeta={selectedPageWithMeta}

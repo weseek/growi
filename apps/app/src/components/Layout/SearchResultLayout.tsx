@@ -12,9 +12,7 @@ const SearchResultLayout = ({ children }: Props): JSX.Element => {
 
   return (
     <BasicLayout className={`on-search ${commonStyles['on-search']}`}>
-      <div id="main" className="main search-page mt-0">
-        { children }
-      </div>
+      { children }
     </BasicLayout>
   );
 };
