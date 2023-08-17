@@ -702,16 +702,6 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.getUsernameByPath = function(path) {
-    let username = null;
-    const match = path.match(/^\/user\/([^/]+)\/?/);
-    if (match) {
-      username = match[1];
-    }
-
-    return username;
-  };
-
   userSchema.statics.isExistUserByUserPagePath = async function(path) {
     const username = pagePathUtils.getUsernameByPath(path);
 
