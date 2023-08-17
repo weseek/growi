@@ -35,10 +35,10 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
     <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>
 
-        <div className="page-wrapper d-flex d-print-block">
+        <div className="page-wrapper flex-row">
           <Sidebar />
 
-          <div className="flex-fill mw-0">
+          <div className="flex-grow-1">
             <AlertSiteUrlUndefined />
             {children}
           </div>

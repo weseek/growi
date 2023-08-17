@@ -22,10 +22,8 @@ export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
   return (
     <RawLayout className={className}>
 
-      <div className="page-wrapper d-flex d-print-block">
-        <div className="flex-fill mw-0">
-          {children}
-        </div>
+      <div className="page-wrapper">
+        {children}
       </div>
 
       <GrowiNavbarBottom />

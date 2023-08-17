@@ -2,6 +2,10 @@
 
 @use './variables' as var;
 
+.dynamic-layout-root {
+  flex-grow: 1;
+}
+
 .dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
   width: 100%;
   max-width: none;
@@ -25,6 +29,11 @@
 .grw-scrollable-modal-body {
   max-height: calc(100vh - 330px);
   overflow-y: scroll;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 // padding settings for GrowiNavbarBottom
