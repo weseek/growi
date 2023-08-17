@@ -39,7 +39,7 @@ export const RichAttachment: FC<{
   }, [attachment, openDeleteAttachmentModal, remove]);
 
   if (attachment == null) {
-    return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
+    return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
   const {
@@ -61,7 +61,7 @@ export const RichAttachment: FC<{
     || fileSize == null
     || fileFormat == null
   ) {
-    return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
+    return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
   const options = {
@@ -86,33 +86,33 @@ export const RichAttachment: FC<{
       <div className="my-2 card">
         {fileFormat === 'application/pdf' && (
           <div className="custom-shadow">
-            <Document file={url} options={options} className='d-flex justify-content-center'>
+            <Document file={url} options={options} className="d-flex justify-content-center">
               <Page pageNumber={1} scale={0.5} />
             </Document>
           </div>
         )}
         <div className="p-2 card-body d-flex align-items-center">
-          <div className='mr-2 px-0'>
-            <img alt='attachment icon' src='/images/icons/editor/attachment.svg' className="attachment-icon"/>
+          <div className="mr-2 px-0">
+            <img alt="attachment icon" src="/images/icons/editor/attachment.svg" className="attachment-icon" />
           </div>
-          <div className='pl-0'>
+          <div className="pl-0">
             <div>
               <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
               <a className="ml-2 attachment-download" href={downloadPathProxied}>
-                <i className="icon-cloud-download"/>
+                <i className="icon-cloud-download" />
               </a>
               <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash"/>
+                <i className="icon-trash" />
               </a>
             </div>
             <div>
-              <UserPicture user={creator} size="sm"/>
-              <span className='ml-2 text-muted'>
+              <UserPicture user={creator} size="sm" />
+              <span className="ml-2 text-muted">
                 {new Date(createdAt).toLocaleString('en-US')}
               </span>
-              <span className='ml-2 pl-2 border-left text-muted'>{prettyBytes(fileSize)}</span>
+              <span className="ml-2 pl-2 border-left text-muted">{prettyBytes(fileSize)}</span>
             </div>
           </div>
         </div>

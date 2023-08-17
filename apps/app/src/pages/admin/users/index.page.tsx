@@ -15,8 +15,8 @@ import { useCurrentUser, useIsMailerSetup } from '~/stores/context';
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
 const UserManagement = dynamic(() => import('~/components/Admin/UserManagement'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -39,6 +39,9 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
     injectableContainers.push(adminUsersContainer);
   }
 
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
+  }
 
   return (
     <Provider inject={[...injectableContainers]}>

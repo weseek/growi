@@ -22,6 +22,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const SecurityManagement = dynamic(() => import('~/components/Admin/Security/SecurityManagement'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -62,6 +63,10 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
         adminGitHubSecurityContainer,
       );
     }
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
   }
 
   return (

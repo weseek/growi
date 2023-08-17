@@ -46,32 +46,34 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
     />
   );
 
-  return <>
-    <p>
-      <Link
-        href="/admin/users"
-        prefetch={false}
-        className="btn btn-outline-secondary"
-      >
-        <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
-        {t('admin:user_management.back_to_user_management')}
-      </Link>
-    </p>
-    <h2>{t('admin:user_management.external_account_list')}</h2>
-    {(totalAccounts !== 0) ? (
-      <>
-        {pager}
-        <ExternalAccountTable />
-        {pager}
-      </>
-    )
-      : (
+  return (
+    <>
+      <p>
+        <Link
+          href="/admin/users"
+          prefetch={false}
+          className="btn btn-outline-secondary"
+        >
+          <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
+          {t('admin:user_management.back_to_user_management')}
+        </Link>
+      </p>
+      <h2>{t('admin:user_management.external_account_list')}</h2>
+      {(totalAccounts !== 0) ? (
         <>
-          { t('admin:user_management.external_account_none') }
+          {pager}
+          <ExternalAccountTable />
+          {pager}
         </>
       )
-    }
-  </>;
+        : (
+          <>
+            { t('admin:user_management.external_account_none') }
+          </>
+        )
+      }
+    </>
+  );
 };
 
 const ManageExternalAccountWrapper = withUnstatedContainers(ManageExternalAccount, [AdminExternalAccountsContainer]);

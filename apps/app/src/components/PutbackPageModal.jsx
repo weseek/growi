@@ -116,13 +116,13 @@ const PutBackPageModal = () => {
   return (
     <Modal isOpen={isOpened} toggle={closeModalHandler} data-testid="put-back-page-modal">
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
-        <HeaderContent/>
+        <HeaderContent />
       </ModalHeader>
       <ModalBody>
-        <BodyContent/>
+        <BodyContent />
       </ModalBody>
       <ModalFooter>
-        <FooterContent/>
+        <FooterContent />
       </ModalFooter>
     </Modal>
   );

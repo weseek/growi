@@ -1,7 +1,7 @@
 
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { isCreatablePage, isTrashPage } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
@@ -303,6 +303,13 @@ module.exports = (crowi) => {
     // check whether path starts slash
     path = addHeadingSlash(path);
 
+    if (isUserPage(path)) {
+      const isExistUser = await User.isExistUserByUserPagePath(path);
+      if (!isExistUser) {
+        return res.apiv3Err("Unable to create a page under a non-existent user's user page");
+      }
+    }
+
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
@@ -526,10 +533,17 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath}'`, 'invalid_path'), 409);
     }
 
+    if (isUserPage(newPagePath)) {
+      const isExistUser = await User.isExistUserByUserPagePath(newPagePath);
+      if (!isExistUser) {
+        return res.apiv3Err("Unable to rename a page under a non-existent user's user page");
+      }
+    }
+
     // check whether path starts slash
     newPagePath = addHeadingSlash(newPagePath);
 
-    const isExist = await Page.count({ path: newPagePath }) > 0;
+    const isExist = await Page.exists({ path: newPagePath, isEmpty: false });
     if (isExist) {
       // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
@@ -756,8 +770,15 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3('This page path is invalid', 'invalid_path'), 400);
       }
 
+      if (isUserPage(newPagePath)) {
+        const isExistUser = await User.isExistUserByUserPagePath(newPagePath);
+        if (!isExistUser) {
+          return res.apiv3Err("Unable to duplicate a page under a non-existent user's user page");
+        }
+      }
+
       // check page existence
-      const isExist = (await Page.count({ path: newPagePath })) > 0;
+      const isExist = (await Page.exists({ path: newPagePath, isEmpty: false }));
       if (isExist) {
         return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
       }

@@ -29,17 +29,10 @@ jobs:
         uses: myrotvorets/info-from-package-json-action@1.2.0
         id: package-json
 
-      - name: Determine config file
-        id: determine-config-name
-        run: |
-          BRANCH_NAME="${{ github.ref_name }}"
-          BRANCH_NAME_REPLACED=${BRANCH_NAME/\//-}
-          echo "value=release-drafter-$BRANCH_NAME_REPLACED.yml" >> $GITHUB_OUTPUT
-
       - uses: release-drafter/release-drafter@v5
         id: release-drafter
         with:
-          config-name: ${{ steps.determine-config-name.outputs.value }}
+          config-name: release-drafter.yml
           name: v${{ steps.package-json.outputs.packageVersion }}
           tag: v${{ steps.package-json.outputs.packageVersion }}
           version: ${{ steps.package-json.outputs.packageVersion }}
@@ -64,11 +57,20 @@ jobs:
           RELEASE_VERSION=`npx semver -i patch ${{ needs.update-release-draft.outputs.CURRENT_VERSION }}`
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
+      - name: Get base branch
+        id: base-branch
+        run: |
+          GITHUB_REF_NAME=${{ github.ref_name }}
+          WILDCARD_VERSION=${GITHUB_REF_NAME#dev/}
+          # set "release/current" or "release/X.X.x" to BASE_BRANCH
+          BASE_BRANCH=release/${{ github.ref_name == 'master' && 'current' || '$WILDCARD_VERSION' }}
+          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_OUTPUT
+
       - name: Create/Update Pull Request
         uses: bakunyo/git-pr-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_PR_RELEASE_BRANCH_PRODUCTION: release/current
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: ${{ steps.base-branch.outputs.BASE_BRANCH }}
           GIT_PR_RELEASE_BRANCH_STAGING: ${{ github.ref_name }}
           GIT_PR_RELEASE_TEMPLATE: .github/git-pr-release-template.erb
           GIT_PR_RELEASE_TITLE: Release v${{ steps.release-version.outputs.RELEASE_VERSION }}

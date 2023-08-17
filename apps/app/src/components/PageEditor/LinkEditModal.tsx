@@ -262,9 +262,11 @@ export const LinkEditModal = (): JSX.Element => {
                 <Popover trigger="focus" placement="right" isOpen={isPreviewOpen} target="preview-btn" toggle={toggleIsPreviewOpen}>
                   <PopoverBody>
                     {markdown != null && pagePath != null && rendererOptions != null
-                    && <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
-                      <Preview markdown={markdown} pagePath={pagePath} rendererOptions={rendererOptions} />
-                    </div>
+                    && (
+                      <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
+                        <Preview markdown={markdown} pagePath={pagePath} rendererOptions={rendererOptions} />
+                      </div>
+                    )
                     }
                   </PopoverBody>
                 </Popover>
@@ -357,7 +359,7 @@ export const LinkEditModal = (): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter>
-        { previewError && <span className='text-danger'>{previewError}</span>}
+        { previewError && <span className="text-danger">{previewError}</span>}
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>

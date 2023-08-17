@@ -1,7 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
 
-import PropTypes from 'prop-types';
-
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import { toastError } from '~/client/util/toastr';
 import { toArrayIfNot } from '~/utils/array-utils';

@@ -1,12 +1,9 @@
+import path from 'path';
+
 import loggerFactory from '~/utils/logger';
 
 import { AttachmentType } from '../interfaces/attachment';
 
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
-
-// eslint-disable-next-line no-unused-vars
-const path = require('path');
 
 const { addSeconds } = require('date-fns');
 const mongoose = require('mongoose');
@@ -60,6 +57,7 @@ module.exports = function(crowi) {
 
 
   attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const Attachment = this;
 
     const extname = path.extname(originalName);

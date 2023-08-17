@@ -26,7 +26,7 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
           <div className="row justify-content-md-center">
             <div className="col-md-6 mt-5">
               <div className="text-center">
-                <h1><i className="icon-lock-open large"/></h1>
+                <h1><i className="icon-lock-open large" /></h1>
                 <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
 
                 { errorCode == null && (

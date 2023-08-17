@@ -15,6 +15,7 @@ import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const UserGroupDetailPage = dynamic(() => import('~/components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 type Props = CommonProps & {
   isAclEnabled: boolean
@@ -33,6 +34,10 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   const currentUserGroupId = Array.isArray(userGroupId) ? userGroupId[0] : userGroupId;
 
   useIsAclEnabled(props.isAclEnabled);
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
+  }
 
   return (
     <AdminLayout componentTitle={title}>

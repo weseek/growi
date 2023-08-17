@@ -122,7 +122,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const WarnForGroups = ({ errors }): JSX.Element => {
+  const WarnForGroups = ({ errors }: { errors: Error[] }): JSX.Element => {
     if (errors.length === 0) {
       return <></>;
     }
@@ -130,8 +130,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <div className="alert alert-warning">
         <ul>
-          {errors.map((error, i) => {
-            return <li key={i}>{error}</li>;
+          {errors.map((error) => {
+            return <li>{error.message}</li>;
           })}
         </ul>
       </div>
@@ -162,7 +162,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     });
 
     // TODO: エラー対応
-    return <GroupImportItems groupList={collectionNames} groupName='Other' errors={[]} />;
+    return <GroupImportItems groupList={collectionNames} groupName="Other" errors={[]} />;
   };
 
   const configurationModal = useMemo(() => {
@@ -224,9 +224,9 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       </div>
 
       {/* TODO: エラー追加 */}
-      <GroupImportItems groupList={GROUPS_PAGE} groupName='Page' errors={[]} />
-      <GroupImportItems groupList={GROUPS_USER} groupName='User' errors={[]} />
-      <GroupImportItems groupList={GROUPS_CONFIG} groupName='Config' errors={[]} />
+      <GroupImportItems groupList={GROUPS_PAGE} groupName="Page" errors={[]} />
+      <GroupImportItems groupList={GROUPS_USER} groupName="User" errors={[]} />
+      <GroupImportItems groupList={GROUPS_CONFIG} groupName="Config" errors={[]} />
       <OtherImportItems />
 
       {configurationModal}

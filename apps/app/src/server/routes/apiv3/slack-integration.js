@@ -142,7 +142,7 @@ module.exports = (crowi) => {
     // for without proxy
     res.send();
 
-    const { interactionPayload, interactionPayloadAccessor } = req;
+    const { interactionPayloadAccessor } = req;
     const siteUrl = crowi.appService.getSiteUrl();
 
     const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();

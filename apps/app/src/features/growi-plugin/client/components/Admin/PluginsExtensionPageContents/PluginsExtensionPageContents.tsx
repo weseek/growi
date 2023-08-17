@@ -10,7 +10,7 @@ import { PluginInstallerForm } from './PluginInstallerForm';
 
 const Loading = (): JSX.Element => {
   return (
-    <Spinner className='d-flex justify-content-center aligh-items-center'>
+    <Spinner className="d-flex justify-content-center aligh-items-center">
       Loading...
     </Spinner>
   );

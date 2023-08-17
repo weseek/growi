@@ -81,7 +81,8 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
           --font-family-serif: Georgia, 'Times New Roman', Times, serif;
           --font-family-monospace: monospace, ${sourceHanCodeJPSubsetMain.style.fontFamily}, ${sourceHanCodeJPSubsetJis2.style.fontFamily};
         }
-      `}</style>
+      `}
+      </style>
       <SWRConfig value={swrGlobalConfiguration}>
         {getLayout(<Component {...pageProps} />)}
       </SWRConfig>

@@ -13,7 +13,7 @@ import styles from './TableOfContents.module.scss';
 
 const { isUserPage: _isUserPage } = pagePathUtils;
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 
 const TableOfContents = (): JSX.Element => {
@@ -61,9 +61,7 @@ const TableOfContents = (): JSX.Element => {
           className="revision-toc-content mb-3"
         >
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
-          <ReactMarkdown {...rendererOptions}>
-            {''}
-          </ReactMarkdown>
+          <ReactMarkdown {...rendererOptions}>{' '}</ReactMarkdown>
         </div>
       </StickyStretchableScroller>
     </div>

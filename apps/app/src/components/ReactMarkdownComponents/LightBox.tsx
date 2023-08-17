@@ -6,7 +6,7 @@ export const LightBox = (props) => {
   const [toggler, setToggler] = useState(false);
   return (
     <>
-      <img src={props.src} alt={props.alt} onClick={() => setToggler(!toggler)}/>
+      <img {...props.node.properties} onClick={() => setToggler(!toggler)} />
       <FsLightbox
         toggler={toggler}
         sources={[props.src]}
