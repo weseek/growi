@@ -1,0 +1,13 @@
+// ref: https://discuss.codemirror.net/t/how-to-fit-the-codemirror-6-widget-into-a-flex-div/4207/4
+.flex-expand-horiz {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+
+// ref: https://discuss.codemirror.net/t/how-to-fit-the-codemirror-6-widget-into-a-flex-div/4207/4
+.flex-expand-vert {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}

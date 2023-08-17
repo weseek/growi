@@ -38,7 +38,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <div className="page-wrapper flex-row">
           <Sidebar />
 
-          <div className="flex-grow-1">
+          <div className="flex-expand-vert">
             <AlertSiteUrlUndefined />
             {children}
           </div>

@@ -574,7 +574,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-grow-1 d-flex overflow-y-auto ${props.visibility ? '' : 'd-none'}`}>
-      <div className="page-editor-editor-container flex-grow-1 d-flex flex-column" style={{ flexBasis: 0 }}>
+      <div className="page-editor-editor-container flex-expand-vert">
         {/* <Editor
           ref={editorRef}
           value={initialValue}
@@ -589,7 +589,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         /> */}
         <CodeMirrorEditorContainer ref={codeMirrorEditorContainerRef} />
       </div>
-      <div className="page-editor-preview-container flex-grow-1 mw-0 d-none d-lg-flex flex-column" style={{ flexBasis: 0 }}>
+      <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
         <Preview
           ref={previewRef}
           rendererOptions={rendererOptions}

@@ -100,7 +100,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
+      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
           { isDeviceSmallerThanMd && renderDrawerButton() }
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
