@@ -1,19 +1,32 @@
-import React, { useCallback } from 'react';
+import { FC, memo, useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker';
+import pdfWorkerMin from 'pdfjs-dist/build/pdf.worker.min';
 import prettyBytes from 'pretty-bytes';
+import { pdfjs, Document, Page } from 'react-pdf';
 
+// see: https://github.com/wojtekmaj/react-pdf#support-for-annotations
+import 'react-pdf/dist/cjs/Page/AnnotationLayer.css';
+// see: https://github.com/wojtekmaj/react-pdf#support-for-text-layer
+import 'react-pdf/dist/cjs/Page/TextLayer.css';
 import { useSWRxAttachment } from '~/stores/attachment';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 
 import styles from './RichAttachment.module.scss';
 
-export const RichAttachment: React.FC<{
+// see: https://zenn.dev/kin/articles/658b06a3233e60#react-pdf%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A
+const workerPath = process.env.NODE_ENV === 'production'
+  ? pdfWorkerMin
+  : pdfWorker;
+pdfjs.GlobalWorkerOptions.workerSrc = workerPath;
+
+export const RichAttachment: FC<{
   attachmentId: string,
   url: string,
   attachmentName: string
-}> = React.memo(({ attachmentId, url, attachmentName }) => {
+}> = memo(({ attachmentId, url, attachmentName }) => {
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
@@ -49,15 +62,39 @@ export const RichAttachment: React.FC<{
     return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
+  const options = {
+    cMapUrl: '../media/cmaps/',
+    standardFontDataUrl: '../media/standard_fonts/',
+  };
+
+  // TODO: Do not use css hard code, check RichAttachment.scss
+  // https://redmine.weseek.co.jp/issues/128793
+  // TODO: Apply expand icon
+  // https://redmine.weseek.co.jp/issues/128791
+  // TODO: Apply pdf icon
+  // https://redmine.weseek.co.jp/issues/125542
+  // TODO: Apply cursor
+  // https://redmine.weseek.co.jp/issues/128790
+  // TODO: Apply responsive design
+  // https://redmine.weseek.co.jp/issues/128794
+  // TODO: Open pdf preview modal
+  // https://redmine.weseek.co.jp/issues/125417
   return (
     <div className={`${styles.attachment} d-inline-block`}>
-      <div className="my-2 p-2 card">
-        <div className="p-1 card-body d-flex align-items-center">
-          <div className='mr-2 px-0 d-flex align-items-center justify-content-center'>
-            <img src='/images/icons/editor/attachment.svg' className="attachment-icon" alt='attachment icon'/>
+      <div className="my-2 card">
+        {attachment.fileFormat === 'application/pdf' && (
+          <div className="custom-shadow">
+            <Document file={url} options={options} className='d-flex justify-content-center'>
+              <Page pageNumber={1} scale={0.5} />
+            </Document>
+          </div>
+        )}
+        <div className="p-2 card-body d-flex align-items-center">
+          <div className='mr-2 px-0'>
+            <img alt='attachment icon' src='/images/icons/editor/attachment.svg' className="attachment-icon"/>
           </div>
           <div className='pl-0'>
-            <div className='d-inline-block'>
+            <div>
               <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
@@ -68,7 +105,7 @@ export const RichAttachment: React.FC<{
                 <i className="icon-trash"/>
               </a>
             </div>
-            <div className='d-flex align-items-center'>
+            <div>
               <UserPicture user={creator} size="sm"/>
               <span className='ml-2 text-muted'>
                 {new Date(createdAt).toLocaleString('en-US')}
