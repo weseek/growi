@@ -71,9 +71,11 @@ export default class ElasticsearchClient {
     : Promise<IndicesExistsResponse | estypes.IndicesExistsResponse> =>
       this.client instanceof ES7Client ? (await this.client.indices.exists(params)).body as IndicesExistsResponse : this.client.indices.exists(params),
 
-    existsAlias: (params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
-    : Promise<ES7ApiResponse<IndicesExistsAliasResponse> | estypes.IndicesExistsAliasResponse> =>
-      this.client instanceof ES7Client ? this.client.indices.existsAlias(params) : this.client.indices.existsAlias(params),
+    existsAlias: async(params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
+    : Promise<IndicesExistsAliasResponse | estypes.IndicesExistsAliasResponse> =>
+      this.client instanceof ES7Client
+        ? (await this.client.indices.existsAlias(params)).body as IndicesExistsAliasResponse
+        : this.client.indices.existsAlias(params),
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     putAlias: (params: ES7RequestParams.IndicesPutAlias & estypes.IndicesPutAliasRequest) =>
