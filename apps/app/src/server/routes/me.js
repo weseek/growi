@@ -1,3 +1,5 @@
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+
 import UserGroupRelation from '../models/user-group-relation';
 
 /**
@@ -94,6 +96,18 @@ module.exports = function(crowi, app) {
    */
   api.userGroupRelations = function(req, res) {
     UserGroupRelation.findAllRelationForUser(req.user)
+      .then((userGroupRelations) => {
+        return res.json(ApiResponse.success({ userGroupRelations }));
+      });
+  };
+
+  /**
+   * retrieve external-user-group-relation documents
+   * @param {object} req
+   * @param {object} res
+   */
+  api.externalUserGroupRelations = function(req, res) {
+    ExternalUserGroupRelation.findAllRelationForUser(req.user)
       .then((userGroupRelations) => {
         return res.json(ApiResponse.success({ userGroupRelations }));
       });

@@ -2,6 +2,7 @@ import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
 import { ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupRelationListResult } from '~/interfaces/user-group-response';
@@ -12,6 +13,16 @@ export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSetting
     endpoint => apiv3Get(endpoint).then((response) => {
       return response.data;
     }),
+  );
+};
+
+type MyExternalUserGroupRelationsResult = {
+  userGroupRelations: IExternalUserGroupRelationHasId[],
+}
+export const useSWRxMyExternalUserGroupRelations = (shouldFetch: boolean): SWRResponse<IExternalUserGroupRelationHasId[], Error> => {
+  return useSWR(
+    shouldFetch ? '/me/external-user-group-relations' : null,
+    endpoint => apiGet(endpoint).then(result => (result as MyExternalUserGroupRelationsResult).userGroupRelations),
   );
 };
 

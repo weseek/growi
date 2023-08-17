@@ -15,7 +15,6 @@ import {
 type MyUserGroupRelationsResult = {
   userGroupRelations: IUserGroupRelationHasId[],
 }
-
 export const useSWRxMyUserGroupRelations = (shouldFetch: boolean): SWRResponse<IUserGroupRelationHasId[], Error> => {
   return useSWR(
     shouldFetch ? '/me/user-group-relations' : null,

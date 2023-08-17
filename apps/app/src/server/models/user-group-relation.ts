@@ -26,6 +26,8 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
   findGroupsWithDescendantsByGroupAndUser: (group: UserGroupDocument, user) => Promise<UserGroupDocument[]>,
 
   countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
+
+  findAllRelationForUser: (user) => Promise<UserGroupRelationDocument[]>
 }
 
 /*
@@ -60,7 +62,7 @@ schema.statics.removeAllInvalidRelations = function() {
 /**
    * find all user and group relation
    *
-   * @static
+   * @staticfindAllRelationForUser
    * @returns {Promise<UserGroupRelation[]>}
    * @memberof UserGroupRelation
    */
