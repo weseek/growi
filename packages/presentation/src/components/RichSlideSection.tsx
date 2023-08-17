@@ -1,6 +1,4 @@
-
 import React, { ReactNode } from 'react';
-
 
 type RichSlideSectionProps = {
   children: ReactNode,
