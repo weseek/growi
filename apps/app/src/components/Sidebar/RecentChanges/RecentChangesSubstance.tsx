@@ -19,6 +19,7 @@ import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 import styles from './RecentChangesSubstance.module.scss';
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:History');
 
 type PageItemLowerProps = {
@@ -88,9 +89,11 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          {!isSmall && <div className="grw-tag-labels mt-1 mb-2">
-            { tagElements }
-          </div>}
+          {!isSmall && (
+            <div className="grw-tag-labels mt-1 mb-2">
+              { tagElements }
+            </div>
+          )}
           <PageItemLower page={page} />
         </div>
       </div>
@@ -128,7 +131,7 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
 
   return (
     <>
-      <SidebarHeaderReloadButton onClick={() => mutate()}/>
+      <SidebarHeaderReloadButton onClick={() => mutate()} />
       <div className="d-flex align-items-center">
         <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
           <input

@@ -198,7 +198,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
           {onCheckboxChanged != null && (
             <div className="d-flex align-items-center justify-content-center">
               <Input
-                type='checkbox'
+                type="checkbox"
                 id={`cbSelect-${pageData._id}`}
                 data-testid="cb-select"
                 innerRef={inputRef}
@@ -228,7 +228,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link legacyBehavior
+                    <Link
+                      legacyBehavior
                       href={returnPathForURL(pageData.path, pageData._id)}
                       prefetch={false}
                     >
@@ -255,21 +256,23 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
               {/* doropdown icon includes page control buttons */}
               {hasBrowsingRights
-                && <div className="ml-auto">
-                  <PageItemControl
-                    alignEnd
-                    pageId={pageData._id}
-                    pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
-                    isEnableActions={isEnableActions}
-                    isReadOnlyUser={isReadOnlyUser}
-                    forceHideMenuItems={forceHideMenuItems}
-                    onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-                    onClickRenameMenuItem={renameMenuItemClickHandler}
-                    onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                    onClickRevertMenuItem={revertMenuItemClickHandler}
-                  />
-                </div>
+                && (
+                  <div className="ml-auto">
+                    <PageItemControl
+                      alignEnd
+                      pageId={pageData._id}
+                      pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
+                      isEnableActions={isEnableActions}
+                      isReadOnlyUser={isReadOnlyUser}
+                      forceHideMenuItems={forceHideMenuItems}
+                      onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                      onClickRenameMenuItem={renameMenuItemClickHandler}
+                      onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                      onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                      onClickRevertMenuItem={revertMenuItemClickHandler}
+                    />
+                  </div>
+                )
               }
             </div>
             <div className="page-list-snippet py-1">

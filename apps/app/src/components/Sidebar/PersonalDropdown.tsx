@@ -19,9 +19,11 @@ export const PersonalDropdown = (): JSX.Element => {
   const [isQuestionnaireModalOpen, setQuestionnaireModalOpen] = useState(false);
 
   if (currentUser == null) {
-    return <div className="text-muted text-center mb-5">
-      <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
-    </div>;
+    return (
+      <div className="text-muted text-center mb-5">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+      </div>
+    );
   }
 
   const logoutHandler = async() => {
@@ -40,9 +42,12 @@ export const PersonalDropdown = (): JSX.Element => {
         {/* Button */}
         {/* remove .dropdown-toggle for hide caret */}
         {/* See https://stackoverflow.com/a/44577512/13183572 */}
-        <button type="button"
+        <button
+          type="button"
           className="btn btn-primary"
-          data-bs-toggle="dropdown" data-testid="personal-dropdown-button" aria-expanded="false"
+          data-bs-toggle="dropdown"
+          data-testid="personal-dropdown-button"
+          aria-expanded="false"
         >
           <UserPicture user={currentUser} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{currentUser.name}</span>
         </button>
@@ -86,7 +91,8 @@ export const PersonalDropdown = (): JSX.Element => {
             data-testid="grw-proactive-questionnaire-modal-toggle-btn"
             type="button"
             className="dropdown-item"
-            onClick={() => setQuestionnaireModalOpen(true)}>
+            onClick={() => setQuestionnaireModalOpen(true)}
+          >
             <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
           </button>
 

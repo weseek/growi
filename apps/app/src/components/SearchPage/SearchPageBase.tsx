@@ -199,7 +199,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       pages={pages}
                       selectedPageId={selectedPageWithMeta?.data._id}
                       forceHideMenuItems={forceHideMenuItems}
-                      onPageSelected={page => (setSelectedPageWithMeta(page)) }
+                      onPageSelected={page => (setSelectedPageWithMeta(page))}
                       onCheckboxChanged={checkboxChangedHandler}
                     />
                   </div>

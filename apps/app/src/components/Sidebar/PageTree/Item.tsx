@@ -502,7 +502,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             >
               {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
               <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                <i id='option-button-in-page-tree' className="icon-options fa fa-rotate-90 p-1"></i>
+                <i id="option-button-in-page-tree" className="icon-options fa fa-rotate-90 p-1"></i>
               </DropdownToggle>
             </PageItemControl>
           </div>
@@ -512,7 +512,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <NotAvailableForGuest>
             <NotAvailableForReadOnlyUser>
               <button
-                id='page-create-button-in-page-tree'
+                id="page-create-button-in-page-tree"
                 type="button"
                 className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
                 onClick={onClickPlusButton}

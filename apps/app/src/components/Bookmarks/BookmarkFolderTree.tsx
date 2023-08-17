@@ -102,7 +102,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   // };
 
   return (
-    <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`} >
+    <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`}>
       <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
         {bookmarkFolders?.map((bookmarkFolder) => {
           return (

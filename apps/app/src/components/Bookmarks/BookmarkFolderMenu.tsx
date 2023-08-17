@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
-// import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 
@@ -117,7 +116,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
         <DropdownItem
           toggle={false}
           onClick={onUnbookmarkHandler}
-          className={'grw-bookmark-folder-menu-item text-danger'}
+          className="grw-bookmark-folder-menu-item text-danger"
         >
           <i className="fa fa-bookmark"></i>{' '}
           <span className="mx-2">
@@ -160,7 +159,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
                 {folder.children?.map(child => (
                   <div key={child._id}>
                     <div
-                      className='dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0'
+                      className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
                       style={{ paddingLeft: '60px' }}
                       tabIndex={0}
                       role="menuitem"
@@ -187,14 +186,14 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
       isOpen={isOpen}
       onToggle={toggleHandler}
       direction={isBookmarkFolderExists ? 'up' : 'down'}
-      className='grw-bookmark-folder-dropdown'
+      className="grw-bookmark-folder-dropdown"
     >
       {children}
       <DropdownMenu
         end
         persist
-        strategy='fixed'
-        className='grw-bookmark-folder-menu'
+        strategy="fixed"
+        className="grw-bookmark-folder-menu"
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>

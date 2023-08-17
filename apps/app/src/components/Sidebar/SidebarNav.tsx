@@ -133,7 +133,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
         {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
-        <SecondaryItem label="Help" iconName="help" href={ growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org' } isBlank />
+        <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
         <SecondaryItem label="Trash" iconName="delete" href="/trash" />
       </div>
     </div>

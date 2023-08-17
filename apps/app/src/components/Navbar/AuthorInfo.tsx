@@ -39,11 +39,11 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
 
   if (locate === 'footer') {
     try {
-      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm"/> {userLabel}</p>;
+      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
     }
     catch (err) {
       if (err instanceof RangeError) {
-        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm"/> {userLabel}</p>;
+        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm" /> {userLabel}</p>;
       }
       return <></>;
     }
@@ -61,7 +61,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2">
-        <UserPicture user={user} size="sm"/>
+        <UserPicture user={user} size="sm" />
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>

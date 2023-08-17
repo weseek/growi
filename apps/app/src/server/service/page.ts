@@ -375,7 +375,7 @@ class PageService {
 
     const activity = await this.crowi.activityService.createActivity(parameters);
 
-    const isExist = await Page.exists({ path: newPagePath });
+    const isExist = await Page.exists({ path: newPagePath, isEmpty: false });
     if (isExist) {
       throw Error(`Page already exists at ${newPagePath}`);
     }
