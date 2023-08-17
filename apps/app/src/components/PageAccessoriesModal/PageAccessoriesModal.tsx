@@ -72,14 +72,14 @@ export const PageAccessoriesModal = (): JSX.Element => {
   }, [t, close, isGuestUser, isReadOnlyUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
-    <div className='me-3 text-right'>
+    <span className='me-3'>
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         expandWindow={() => setIsWindowExpanded(true)}
         contractWindow={() => setIsWindowExpanded(false)}
       />
       <button type="button" className="btn btn-close" onClick={close} aria-label="Close"></button>
-    </div>
+    </span>
   ), [close, isWindowExpanded]);
 
   if (status == null || status.activatedContents == null) {
