@@ -32,13 +32,12 @@ type Props = {
 export const Slides = (props: Props): JSX.Element => {
   const { options, children, hasMarpFlag } = props;
 
+  if (hasMarpFlag) {
+    return <MarpSlides marpit={marpit}>{children}</MarpSlides>;
+  }
   return (
     <div className={`slides ${MARP_CONTAINER_CLASS_NAME}`}>
-      {
-        hasMarpFlag
-          ? <MarpSlides marpit={marpit}>{children}</MarpSlides>
-          : <GrowiSlides options={options} marpit={marpit}>{children}</GrowiSlides>
-      }
+      <GrowiSlides options={options} marpit={marpit}>{children}</GrowiSlides>
     </div>
   );
 };
