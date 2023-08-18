@@ -21,7 +21,7 @@ export const GrowiSlides = (props: Props): JSX.Element => {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  rendererOptions.remarkPlugins?.push([
+  rendererOptions?.remarkPlugins?.push([
     extractSections.remarkPlugin,
     {
       isDarkMode,

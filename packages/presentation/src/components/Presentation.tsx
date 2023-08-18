@@ -18,6 +18,7 @@ const baseRevealOptions: Reveal.Options = {
   height: 720,
   maxScale: 1.2,
   slideNumber: 'c/t',
+  display: '',
 };
 
 /**
