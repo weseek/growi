@@ -9,6 +9,35 @@ import { visit } from 'unist-util-visit';
 
 const SUPPORTED_ATTRIBUTES = ['children', 'marp'];
 
+const nodeToMakrdown = (node: Node) => {
+  return toMarkdown(node as Root, {
+    extensions: [
+      frontmatterToMarkdown(['yaml']),
+      gfmToMarkdown(),
+    ],
+  });
+};
+
+// Allow node tree to be converted to markdown
+const removeCustomType = (tree: Node) => {
+  // Try toMarkdown() on all Node.
+  visit(tree, (node) => {
+    const tmp = node?.children;
+    node.children = [];
+    try {
+      nodeToMakrdown(node);
+    }
+    catch (err) {
+      // if some Node cannot convert to markdown, change to a convertible type
+      node.type = 'text';
+      node.value = '';
+    }
+    finally {
+      node.children = tmp;
+    }
+  });
+};
+
 const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
   let slide = false;
   let marp = false;
@@ -32,33 +61,9 @@ const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
 
   if (marp || slide) {
 
-    visit(tree, (node) => {
-      const tmp = node?.children;
-      node.children = [];
-      try {
-        toMarkdown(node as Root, {
-          extensions: [
-            frontmatterToMarkdown(['yaml']),
-            gfmToMarkdown(),
-          ],
-        });
-      }
-      catch (err) {
-        node.type = 'text';
-        node.value = '';
-      }
-      finally {
-        node.children = tmp;
-      }
-    });
+    removeCustomType(tree);
 
-    const markdown = toMarkdown(tree as Root, {
-      extensions: [
-        frontmatterToMarkdown(['yaml']),
-        gfmToMarkdown(),
-      ],
-    });
-
+    const markdown = nodeToMakrdown(tree);
 
     const newNode: Node = {
       type: 'root',
@@ -66,7 +71,6 @@ const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
       position: tree.position,
       children: tree.children,
     };
-
 
     const data = newNode.data ?? (newNode.data = {});
     tree.children = [newNode];
