@@ -9,6 +9,35 @@ import { visit } from 'unist-util-visit';
 
 const SUPPORTED_ATTRIBUTES = ['children', 'marp'];
 
+const nodeToMakrdown = (node: Node) => {
+  return toMarkdown(node as Root, {
+    extensions: [
+      frontmatterToMarkdown(['yaml']),
+      gfmToMarkdown(),
+    ],
+  });
+};
+
+// Allow node tree to be converted to markdown
+const removeCustomType = (tree: Node) => {
+  // Try toMarkdown() on all Node.
+  visit(tree, (node) => {
+    const tmp = node?.children;
+    node.children = [];
+    try {
+      nodeToMakrdown(node);
+    }
+    catch (err) {
+      // if some Node cannot convert to markdown, change to a convertible type
+      node.type = 'text';
+      node.value = '';
+    }
+    finally {
+      node.children = tmp;
+    }
+  });
+};
+
 const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
   let slide = false;
   let marp = false;
@@ -32,6 +61,10 @@ const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
 
   if (marp || slide) {
 
+    removeCustomType(tree);
+
+    const markdown = nodeToMakrdown(tree);
+
     const newNode: Node = {
       type: 'root',
       data: {},
@@ -43,15 +76,8 @@ const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
     tree.children = [newNode];
     data.hName = 'slide';
     data.hProperties = {
-      marp: marp ? 'marp' : '',
-      children: toMarkdown(tree as Root, {
-        extensions: [
-          frontmatterToMarkdown(['yaml']),
-          gfmToMarkdown(),
-          // TODO: add new extension remark-growi-directive to markdown
-          // https://redmine.weseek.co.jp/issues/126744
-        ],
-      }),
+      marp: marp ? '' : undefined,
+      children: markdown,
     };
   }
 };
