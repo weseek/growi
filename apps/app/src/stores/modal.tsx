@@ -739,3 +739,48 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
+
+/**
+ * PdfPreviewModal
+ */
+type OptionsType = {
+  cMapUrl: string;
+  standardFontDataUrl: string;
+}
+
+type PdfPreviewModalStatus = {
+  isOpened: boolean,
+  url: string,
+  options: OptionsType
+}
+
+type PdfPreviewModalUtils = {
+  open(url: string, options: OptionsType): void,
+  close(): void,
+}
+
+export const usePdfPreviewModal = (): SWRResponse<PdfPreviewModalStatus, Error> & PdfPreviewModalUtils => {
+  const initialStatus: PdfPreviewModalStatus = useMemo(() => ({
+    isOpened: false,
+    url: '',
+    options: {
+      cMapUrl: '',
+      standardFontDataUrl: '',
+    },
+  }), []);
+  const swrResponse = useStaticSWR<PdfPreviewModalStatus, Error>('pdfPreviewModal', undefined, { fallbackData: initialStatus });
+
+  const open = useCallback((url: string, options: OptionsType) => {
+    swrResponse.mutate({ isOpened: true, url, options });
+  }, [swrResponse]);
+
+  const close = useCallback(() => {
+    swrResponse.mutate(initialStatus);
+  }, [initialStatus, swrResponse]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
+};
