@@ -21,13 +21,15 @@ export const GrowiSlides = (props: Props): JSX.Element => {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  rendererOptions?.remarkPlugins?.push([
-    extractSections.remarkPlugin,
-    {
-      isDarkMode,
-      disableSeparationByHeader,
-    },
-  ]);
+  if (rendererOptions.remarkPlugins != null) {
+    rendererOptions.remarkPlugins.push([
+      extractSections.remarkPlugin,
+      {
+        isDarkMode,
+        disableSeparationByHeader,
+      },
+    ]);
+  }
 
   if (rendererOptions.components != null) {
     rendererOptions.components.section = RichSlideSection;
