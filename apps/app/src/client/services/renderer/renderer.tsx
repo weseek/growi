@@ -66,9 +66,9 @@ export const generateViewOptions = (
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
-    slides.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
+    [slides.remarkPlugin, { isEnabledMarp: config.isEnabledMarp }],
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -262,7 +262,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
-    slides.remarkPlugin,
+    [slides.remarkPlugin, { isEnabledMarp: config.isEnabledMarp }],
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);

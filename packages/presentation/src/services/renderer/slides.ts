@@ -9,7 +9,7 @@ import { visit } from 'unist-util-visit';
 
 const SUPPORTED_ATTRIBUTES = ['children', 'marp'];
 
-const rewriteNode = (tree: Node, node: Node) => {
+const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
   let slide = false;
   let marp = false;
 
@@ -25,6 +25,10 @@ const rewriteNode = (tree: Node, node: Node) => {
       marp = true;
     }
   });
+
+  if (isEnabledMarp === false) {
+    marp = false;
+  }
 
   if (marp || slide) {
 
@@ -74,11 +78,15 @@ const rewriteNode = (tree: Node, node: Node) => {
   }
 };
 
-export const remarkPlugin: Plugin = function() {
+type SlidePluginParams = {
+  isEnabledMarp: boolean,
+}
+
+export const remarkPlugin: Plugin<[SlidePluginParams]> = (options) => {
   return (tree) => {
     visit(tree, (node) => {
       if (node.type === 'yaml' && node.value != null) {
-        rewriteNode(tree, node);
+        rewriteNode(tree, node, options.isEnabledMarp);
       }
     });
   };
