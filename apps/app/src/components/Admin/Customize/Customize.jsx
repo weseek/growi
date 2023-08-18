@@ -60,7 +60,7 @@ function Customize(props) {
         <CustomizeFunctionSetting />
       </div>
       <div className="mb-5">
-        <CustomizeFunctionSettingPresentation />
+        <CutomizeFunctionSettingPresentation />
       </div>
       <div className="mb-5">
         <CustomizeTitle />
