@@ -1,4 +1,4 @@
-import { FC, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
@@ -12,7 +12,7 @@ import 'react-pdf/dist/cjs/Page/AnnotationLayer.css';
 // see: https://github.com/wojtekmaj/react-pdf#support-for-text-layer
 import 'react-pdf/dist/cjs/Page/TextLayer.css';
 import { useSWRxAttachment } from '~/stores/attachment';
-import { useDeleteAttachmentModal } from '~/stores/modal';
+import { useDeleteAttachmentModal, usePdfPreviewModal } from '~/stores/modal';
 
 import styles from './RichAttachment.module.scss';
 
@@ -22,14 +22,26 @@ const workerPath = process.env.NODE_ENV === 'production'
   : pdfWorker;
 pdfjs.GlobalWorkerOptions.workerSrc = workerPath;
 
-export const RichAttachment: FC<{
+const options = {
+  cMapUrl: '../media/cmaps/',
+  standardFontDataUrl: '../media/standard_fonts/',
+};
+
+interface RichAttachmentProps {
   attachmentId: string,
   url: string,
   attachmentName: string
-}> = memo(({ attachmentId, url, attachmentName }) => {
+}
+
+export const RichAttachment = memo(({ attachmentId, url, attachmentName }: RichAttachmentProps) => {
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
+  const { open: openPdfPreviewModal } = usePdfPreviewModal();
+
+  const onClickPdfPreviewHandler = useCallback(() => {
+    openPdfPreviewModal(url, options);
+  }, [openPdfPreviewModal, url]);
 
   const onClickTrashButtonHandler = useCallback(() => {
     if (attachment == null) {
@@ -64,11 +76,6 @@ export const RichAttachment: FC<{
     return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
-  const options = {
-    cMapUrl: '../media/cmaps/',
-    standardFontDataUrl: '../media/standard_fonts/',
-  };
-
   // TODO: Do not use css hard code, check RichAttachment.scss
   // https://redmine.weseek.co.jp/issues/128793
   // TODO: Apply expand icon
@@ -79,13 +86,11 @@ export const RichAttachment: FC<{
   // https://redmine.weseek.co.jp/issues/128790
   // TODO: Apply responsive design
   // https://redmine.weseek.co.jp/issues/128794
-  // TODO: Open pdf preview modal
-  // https://redmine.weseek.co.jp/issues/125417
   return (
     <div className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 card">
         {fileFormat === 'application/pdf' && (
-          <div className="custom-shadow">
+          <div className="custom-shadow" onClick={onClickPdfPreviewHandler}>
             <Document file={url} options={options} className="d-flex justify-content-center">
               <Page pageNumber={1} scale={0.5} />
             </Document>
