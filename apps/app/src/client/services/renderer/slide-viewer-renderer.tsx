@@ -4,7 +4,6 @@ import * as drawio from '@growi/remark-drawio';
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
-import breaks from 'remark-breaks';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
@@ -15,7 +14,6 @@ import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
@@ -23,11 +21,10 @@ import {
   commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
 } from '~/services/renderer/renderer';
 
-const generateSimpleViewOptions = (
+
+export const generatePresentationViewOptions = (
     config: RendererConfig,
     pagePath: string,
-    highlightKeywords?: string | string[],
-    overrideIsEnabledLinebreaks?: boolean,
 ): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
@@ -44,12 +41,6 @@ const generateSimpleViewOptions = (
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
-
-  const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
-
-  if (isEnabledLinebreaks) {
-    remarkPlugins.push(breaks);
-  }
 
   if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
     injectCustomSanitizeOption(config);
@@ -71,7 +62,6 @@ const generateSimpleViewOptions = (
   rehypePlugins.push(
     [lsxGrowiDirective.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     [refsGrowiDirective.rehypePlugin, { pagePath }],
-    [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     rehypeSanitizePlugin,
     katex,
   );
@@ -89,19 +79,6 @@ const generateSimpleViewOptions = (
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
-
-  if (config.isEnabledXssPrevention) {
-    verifySanitizePlugin(options, false);
-  }
-  return options;
-};
-
-export const generatePresentationViewOptions = (
-    config: RendererConfig,
-    pagePath: string,
-): RendererOptions => {
-  // based on simple view options
-  const options = generateSimpleViewOptions(config, pagePath);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
