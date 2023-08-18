@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkParse from 'remark-parse';
-import remarkStringify from 'remark-stringify';
 import Reveal from 'reveal.js';
-import { unified } from 'unified';
 
 import type { PresentationOptions } from '../consts';
+import { parseSlideFrontmatterInMarkdown } from '../services/parse-slide-frontmatter';
 
 import { MARP_CONTAINER_CLASS_NAME, Slides } from './Slides';
 
 import 'reveal.js/dist/reveal.css';
 import './Presentation.global.scss';
+
 
 import styles from './Presentation.module.scss';
 
@@ -44,7 +42,10 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
 
-  const [marp, setMarp] = useState<boolean>(false);
+  let marp = false;
+  if (isEnabledMarp) {
+    [marp] = parseSlideFrontmatterInMarkdown(children);
+  }
 
   useEffect(() => {
     let deck: Reveal.Api;
@@ -57,30 +58,11 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
       deck.on('slidechanged', removeAllHiddenElements);
     }
 
-    if (isEnabledMarp) {
-      unified()
-        .use(remarkParse)
-        .use(remarkStringify)
-        .use(remarkFrontmatter, ['yaml'])
-        .use(() => (obj) => {
-          if (obj.children[0]?.type === 'yaml') {
-            const lines = (obj.children[0]?.value as string).split('\n');
-            lines.forEach((line) => {
-              const [key, value] = line.split(':').map(part => part.trim());
-              if (key === 'marp' && value === 'true') {
-                setMarp(true);
-              }
-            });
-          }
-        })
-        .process(children as string);
-    }
-
     return function cleanup() {
       deck?.off('ready', removeAllHiddenElements);
       deck?.off('slidechanged', removeAllHiddenElements);
     };
-  }, [children, revealOptions, isEnabledMarp, setMarp]);
+  }, [children, revealOptions]);
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
