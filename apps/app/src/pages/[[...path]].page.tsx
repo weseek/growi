@@ -424,8 +424,8 @@ async function applyGrantToPage(props: Props, ancestor: any) {
   const grantedGroups = ancestor.grantedGroups ? {
     grantedGroups: ancestor.grantedGroups.map((group) => {
       return {
-        id: group.id,
-        name: group.name,
+        id: group.item.id,
+        name: group.item.name,
         type: group.type,
       };
     }),

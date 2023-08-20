@@ -101,17 +101,23 @@ const schema = new Schema<PageDocument, PageModel>({
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroups: [{
-    type: {
-      type: String,
-      enum: Object.values(GroupType),
-      required: true,
-      default: 'UserGroup',
-    },
-    item: {
-      type: ObjectId, refPath: 'grantedGroups.type', required: true, index: true,
-    },
-  }],
+  grantedGroups: {
+    type: [{
+      type: {
+        type: String,
+        enum: Object.values(GroupType),
+        required: true,
+        default: 'UserGroup',
+      },
+      item: {
+        type: ObjectId,
+        refPath: 'grantedGroups.type',
+        required: true,
+        index: true,
+      },
+    }],
+    default: [],
+  },
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
   liker: [{ type: ObjectId, ref: 'User' }],
