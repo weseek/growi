@@ -3,11 +3,13 @@ import React, { useEffect } from 'react';
 import Reveal from 'reveal.js';
 
 import type { PresentationOptions } from '../consts';
+import { parseSlideFrontmatterInMarkdown } from '../services/parse-slide-frontmatter';
 
 import { MARP_CONTAINER_CLASS_NAME, Slides } from './Slides';
 
 import 'reveal.js/dist/reveal.css';
 import './Presentation.global.scss';
+
 
 import styles from './Presentation.module.scss';
 
@@ -32,12 +34,18 @@ const removeAllHiddenElements = () => {
 
 export type PresentationProps = {
   options: PresentationOptions,
+  isEnabledMarp: boolean,
   children?: string,
 }
 
 export const Presentation = (props: PresentationProps): JSX.Element => {
-  const { options, children } = props;
+  const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
+
+  let marp = false;
+  if (isEnabledMarp) {
+    [marp] = parseSlideFrontmatterInMarkdown(children);
+  }
 
   useEffect(() => {
     let deck: Reveal.Api;
@@ -59,7 +67,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
       <div className="slides">
-        <Slides options={options}>{children}</Slides>
+        <Slides options={options} hasMarpFlag={marp}>{children}</Slides>
       </div>
     </div>
   );

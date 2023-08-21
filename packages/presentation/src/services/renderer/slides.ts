@@ -7,6 +7,8 @@ import type { Plugin } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
+import { parseSlideFrontmatter } from '../parse-slide-frontmatter';
+
 const SUPPORTED_ATTRIBUTES = ['children', 'marp'];
 
 const nodeToMakrdown = (node: Node) => {
@@ -39,27 +41,10 @@ const removeCustomType = (tree: Node) => {
 };
 
 const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
-  let slide = false;
-  let marp = false;
 
-  const lines = (node.value as string).split('\n');
+  const [marp, slide] = parseSlideFrontmatter(node.value as string);
 
-  lines.forEach((line) => {
-    const [key, value] = line.split(':').map(part => part.trim());
-
-    if (key === 'slide' && value === 'true') {
-      slide = true;
-    }
-    else if (key === 'marp' && value === 'true') {
-      marp = true;
-    }
-  });
-
-  if (isEnabledMarp === false) {
-    marp = false;
-  }
-
-  if (marp || slide) {
+  if ((marp && isEnabledMarp) || slide) {
 
     removeCustomType(tree);
 
