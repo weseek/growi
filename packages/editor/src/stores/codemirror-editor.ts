@@ -3,13 +3,11 @@ import { useMemo } from 'react';
 import { type Extension } from '@codemirror/state';
 import { scrollPastEnd } from '@codemirror/view';
 import {
-  type SWRResponseWithUtils, withUtils,
+  type SWRResponseWithUtils, withUtils, useSWRStatic,
 } from '@growi/core/dist/swr';
 
 import type { UseCodeMirrorEditor, UseCodeMirrorEditorResponse } from '../services';
 import { useCodeMirrorEditor } from '../services';
-
-import { useStaticSWR } from './use-static-swr';
 
 const defaultExtensionsMain: Extension[] = [
   scrollPastEnd(),
@@ -30,7 +28,7 @@ export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRR
 
   const states = useCodeMirrorEditor(props);
 
-  const swrResponse = useStaticSWR('codeMirrorEditorMain', container != null ? states : undefined);
+  const swrResponse = useSWRStatic('codeMirrorEditorMain', container != null ? states : undefined);
 
   return withUtils(swrResponse, {
     // impl something
