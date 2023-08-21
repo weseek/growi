@@ -417,14 +417,14 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 // apply parent page grant fot creating page
 async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroups');
+  await ancestor.populate('grantedGroups.item');
   const grant = {
     grant: ancestor.grant,
   };
   const grantedGroups = ancestor.grantedGroups ? {
     grantedGroups: ancestor.grantedGroups.map((group) => {
       return {
-        id: group.item.id,
+        id: group.item._id,
         name: group.item.name,
         type: group.type,
       };
