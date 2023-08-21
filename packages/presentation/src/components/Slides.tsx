@@ -23,21 +23,37 @@ const marpit = new Marp({
   math: false,
 });
 
+const presentationMarpit = new Marp({
+  container: [
+    new Element('div', { class: `slides ${MARP_CONTAINER_CLASS_NAME}` }),
+  ],
+  slideContainer: [
+    new Element('section', { class: 'm-2' }),
+  ],
+  inlineSVG: true,
+  emoji: undefined,
+  html: false,
+  math: false,
+});
+
 type Props = {
   options: PresentationOptions,
   children?: string,
   hasMarpFlag?: boolean,
+  presentation?: boolean,
 }
 
 export const Slides = (props: Props): JSX.Element => {
-  const { options, children, hasMarpFlag } = props;
+  const {
+    options, children, hasMarpFlag, presentation,
+  } = props;
 
   if (hasMarpFlag) {
-    return <MarpSlides marpit={marpit}>{children}</MarpSlides>;
+    return <MarpSlides marpit={presentation ? presentationMarpit : marpit}>{children}</MarpSlides>;
   }
   return (
     <div className={`slides ${MARP_CONTAINER_CLASS_NAME}`}>
-      <GrowiSlides options={options} marpit={marpit}>{children}</GrowiSlides>
+      <GrowiSlides options={options} marpit={presentation ? presentationMarpit : marpit} presentation={presentation}>{children}</GrowiSlides>
     </div>
   );
 };

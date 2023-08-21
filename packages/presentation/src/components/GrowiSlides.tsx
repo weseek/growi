@@ -5,23 +5,26 @@ import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import type { PresentationOptions } from '../consts';
 import * as extractSections from '../services/renderer/extract-sections';
 
-import { RichSlideSection } from './RichSlideSection';
 
 import './Slides.global.scss';
+import { PresentationRichSlideSection, RichSlideSection } from './RichSlideSection';
 
 type Props = {
   options: PresentationOptions,
   children?: string,
   marpit: Marp,
+  presentation?: boolean,
 }
 
 export const GrowiSlides = (props: Props): JSX.Element => {
-  const { options, children, marpit } = props;
+  const {
+    options, children, marpit, presentation,
+  } = props;
   const {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  if (rendererOptions.remarkPlugins != null) {
+  if (rendererOptions?.remarkPlugins != null) {
     rendererOptions.remarkPlugins.push([
       extractSections.remarkPlugin,
       {
@@ -31,8 +34,8 @@ export const GrowiSlides = (props: Props): JSX.Element => {
     ]);
   }
 
-  if (rendererOptions.components != null) {
-    rendererOptions.components.section = RichSlideSection;
+  if (rendererOptions?.components != null) {
+    rendererOptions.components.section = presentation ? PresentationRichSlideSection : RichSlideSection;
   }
 
   const { css } = marpit.render('', { htmlAsArray: true });

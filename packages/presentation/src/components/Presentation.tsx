@@ -59,7 +59,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
-      <Slides options={options}>{children}</Slides>
+      <Slides options={options} presentation>{children}</Slides>
     </div>
   );
 };
