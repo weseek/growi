@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
 
+import { EditorState } from '@codemirror/state';
+import { basicSetup } from '@uiw/react-codemirror';
+
+import { defaultExtensions } from '../../services/codemirror-editor';
 import { useCodeMirrorEditorMain } from '../../stores';
 
 export const PlaygroundController = (): JSX.Element => {
@@ -7,17 +11,19 @@ export const PlaygroundController = (): JSX.Element => {
   const { data: states } = useCodeMirrorEditorMain();
 
   const initEditorValue = useCallback(() => {
-    if (states == null) {
+    if (states?.view == null) {
       return;
     }
 
-    states.view?.dispatch({
-      changes: {
-        from: 0,
-        to: states.view.state.doc.toString().length,
-        insert: '# Header\n\n- foo\n-bar\n',
-      },
+    const newState = EditorState.create({
+      doc: '# Header\n\n- foo\n-bar\n',
+      extensions: [
+        ...basicSetup(),
+        defaultExtensions,
+      ],
     });
+
+    states.view?.setState(newState);
 
   }, [states]);
 

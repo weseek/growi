@@ -1,12 +1,24 @@
+import type { Extension } from '@codemirror/state';
+import { scrollPastEnd } from '@codemirror/view';
 import type { SWRResponse } from 'swr';
 
 
-import type { UseCodeMirrorEditor, UseCodeMirrorEditorStates } from '../services';
+import type { UseCodeMirrorEditorStates } from '../services';
 import { useCodeMirrorEditor } from '../services';
 
 import { useStaticSWR } from './use-static-swr';
 
-export const useCodeMirrorEditorMain = (props?: UseCodeMirrorEditor): SWRResponse<UseCodeMirrorEditorStates> => {
-  const states = useCodeMirrorEditor(props);
-  return useStaticSWR('codeMirrorEditorMain', props != null ? states : undefined);
+export const defaultExtensionsMain: Extension[] = [
+  scrollPastEnd(),
+];
+
+export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRResponse<UseCodeMirrorEditorStates> => {
+  const states = useCodeMirrorEditor({
+    container,
+    autoFocus: true,
+    extensions: [
+      scrollPastEnd(),
+    ],
+  });
+  return useStaticSWR('codeMirrorEditorMain', container != null ? states : undefined);
 };

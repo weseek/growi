@@ -9,9 +9,7 @@ export const Playground = (): JSX.Element => {
 
   const containerRef = useRef(null);
 
-  useCodeMirrorEditorMain({
-    container: containerRef.current,
-  });
+  useCodeMirrorEditorMain(containerRef.current);
 
   return (
     <>
