@@ -38,7 +38,7 @@ export const GrowiSlides = (props: Props): JSX.Element => {
     rendererOptions.components.section = presentation ? PresentationRichSlideSection : RichSlideSection;
   }
 
-  const { css } = marpit.render('', { htmlAsArray: true });
+  const { css } = marpit.render('');
   return (
     <>
       <Head>
