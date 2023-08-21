@@ -2,6 +2,7 @@ import {
   FC, useCallback, useState,
 } from 'react';
 
+import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
 
 import {
@@ -13,7 +14,6 @@ import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
   BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
 } from '~/interfaces/bookmark-info';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 
@@ -29,7 +29,7 @@ type BookmarkFolderItemProps = {
   isOperable: boolean,
   level: number
   root: string
-  isUserHomePage?: boolean
+  isUserHomepage?: boolean
   onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void
   bookmarkFolderTreeMutation: () => void
 }
@@ -38,7 +38,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
-    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomePage,
+    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomepage,
     onClickDeleteMenuItemHandler, bookmarkFolderTreeMutation,
   } = props;
 
@@ -121,7 +121,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     }
   };
 
-  const isDropable = (item: DragItemDataType, type: string | null| symbol): boolean => {
+  const isDropable = (item: DragItemDataType, type: string | null | symbol): boolean => {
     if (type === DRAG_ITEM_TYPE.FOLDER) {
       if (item.bookmarkFolder.parent === bookmarkFolder._id || item.bookmarkFolder._id === bookmarkFolder._id) {
         return false;
@@ -143,6 +143,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     return true;
   };
 
+
   const renderChildFolder = () => {
     return isOpen && children?.map((childFolder) => {
       return (
@@ -154,7 +155,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
-            isUserHomePage={isUserHomePage}
+            isUserHomepage={isUserHomepage}
             onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
             bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
           />
@@ -256,7 +257,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               </div>
             </>
           )}
-          { isOperable && (
+          {isOperable && (
             <div className="grw-foldertree-control d-flex">
               <BookmarkFolderItemControl
                 onClickRename={onClickRenameHandler}

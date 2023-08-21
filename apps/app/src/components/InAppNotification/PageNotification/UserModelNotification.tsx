@@ -2,7 +2,7 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';

@@ -1,16 +1,15 @@
 import { ReactNode } from 'react';
 
+import type { IUser, IUserHasId } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { IUser, IUserHasId } from '~/interfaces/user';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri,
@@ -66,11 +65,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useShowPageLimitationL(props.showPageLimitationL);
   useIsContainerFluid(props.isContainerFluid);
 
-  const PutbackPageModal = (): JSX.Element => {
-    const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-    return <PutbackPageModal />;
-  };
-
   const title = generateCustomTitle(props, t('search_result.title'));
 
   return (
@@ -82,8 +76,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
       <div id="search-page" className="dynamic-layout-root">
         <SearchPage />
       </div>
-
-      <PutbackPageModal />
     </>
   );
 };
@@ -130,6 +122,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 

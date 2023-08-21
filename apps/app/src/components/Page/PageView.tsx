@@ -2,8 +2,8 @@ import React, {
   useEffect, useMemo, useRef, useState,
 } from 'react';
 
-
-import { type IPagePopulatedToShowRevision, pagePathUtils } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -22,14 +22,11 @@ import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
-import type { UsersHomePageFooterProps } from '../UsersHomePageFooter';
+import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
 import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
-
-
-const { isUsersHomePage } = pagePathUtils;
 
 
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
@@ -38,8 +35,8 @@ const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const PageContentsUtilities = dynamic(() => import('./PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
 const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
-const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../UsersHomePageFooter')
-  .then(mod => mod.UsersHomePageFooter), { ssr: false });
+const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
+  .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
 
 
@@ -70,7 +67,7 @@ export const PageView = (props: Props): JSX.Element => {
 
   const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page?.revision == null;
-  const isUsersHomePagePath = isUsersHomePage(pagePath);
+  const isUsersHomepagePath = isUsersHomepage(pagePath);
 
 
   // ***************************  Auto Scroll  ***************************
@@ -83,7 +80,7 @@ export const PageView = (props: Props): JSX.Element => {
 
     const targetId = hash.slice(1);
 
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(decodeURIComponent(targetId));
     target?.scrollIntoView();
 
   }, [isCommentsLoaded]);
@@ -111,11 +108,16 @@ export const PageView = (props: Props): JSX.Element => {
     ? (
       <>
         <div id="comments-container" ref={commentsContainerRef}>
-          <Comments pageId={page._id} pagePath={pagePath} revision={page.revision} onLoaded={() => setCommentsLoaded(true)} />
+          <Comments
+            pageId={page._id}
+            pagePath={pagePath}
+            revision={page.revision}
+            onLoaded={() => setCommentsLoaded(true)}
+          />
         </div>
-        { (isUsersHomePagePath && page.creator != null) && (
-          <UsersHomePageFooter creatorId={page.creator._id}/>
-        ) }
+        {(isUsersHomepagePath && page.creator != null) && (
+          <UsersHomepageFooter creatorId={page.creator._id} />
+        )}
         <PageContentFooter page={page} />
       </>
     )
@@ -144,15 +146,15 @@ export const PageView = (props: Props): JSX.Element => {
     >
       <PageAlerts />
 
-      { specialContents }
-      { specialContents == null && (
+      {specialContents}
+      {specialContents == null && (
         <>
-          { (isUsersHomePagePath && page?.creator != null) && <UserInfo author={page.creator} /> }
+          {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
           <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
             <Contents />
           </div>
         </>
-      ) }
+      )}
 
     </MainPane>
   );

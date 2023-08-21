@@ -11,7 +11,7 @@
   "Edit": "编辑",
   "Description": "描述",
   "last_login": "上次登录",
-  "wiki_management_home_page": "Wiki管理首页",
+  "wiki_management_homepage": "Wiki管理首页",
   "public": "公共",
   "anyone_with_the_link": "任何人",
   "specified_users": "仅指定用户",
@@ -53,6 +53,11 @@
 		"admin_only": "仅管理员",
 		"admin_and_author": "管理员|作者",
 		"anyone": "任何人",
+    "user_homepage_deletion": {
+      "user_homepage_deletion": "删除用户页面",
+      "enable_user_homepage_deletion": "启用删除用户页面",
+      "when_deleting_a_user_the_user_homepage_is_also_deleted": "当一个用户被删除时，用户页面也会被删除。"
+    },
     "session": "会议",
     "max_age": "有效期间  (msec)",
     "max_age_desc": "指定使用户会话过期的数量(以毫秒为单位)。<br>默认值: 2592000000 (30天)",
@@ -483,7 +488,13 @@
       "show_all_reply_comments": "显示所有回复评论",
       "show_all_reply_comments_desc": "当设置值为“关”时，将忽略最近两个之外的注释。",
       "select_search_scope_children_as_default": "选择“当前分支以下内容”, 作为搜索范围的默认值",
-      "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。"
+      "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。",
+      "enable_marp": "启用 Marp",
+      "enable_marp_desc": "Marp 可在演示视图中使用。该选项可能会使您受到 XSS 的攻击。",
+      "marp_official_site": "参考资料：Marp 官方网站",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "参考资料：GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "自定义标题",
     "custom_title_detail": "您可以自定义<code>&lt；title&gt；</code>标记。<br><code>&123；&123；sitename&&125；&125；</code>将自动替换为应用程序名称，并且<code>&123；&123；page&&125；&125；</code>将替换为页面名称/路径。",

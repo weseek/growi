@@ -53,7 +53,7 @@ describe('QuestionnaireService', () => {
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',
         version: crowi.version,
-        wikiType: 'open',
+        wikiType: 'closed',
       });
     });
 

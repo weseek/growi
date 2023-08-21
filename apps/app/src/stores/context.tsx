@@ -1,5 +1,5 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { SupportedActionType } from '~/interfaces/activity';
@@ -102,6 +102,10 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
+};
+
+export const useIsEnabledMarp = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useContextSWR<boolean, Error>('isEnabledMarp', initialData, { fallbackData: false });
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
@@ -226,6 +230,23 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
     isLoading ? null : ['isReadOnlyUser', isReadOnlyUser, currentUser?._id],
     () => isReadOnlyUser,
     { fallbackData: isReadOnlyUser },
+  );
+};
+
+export const useIsAdmin = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser, isLoading } = useCurrentUser();
+
+  return useSWR(
+    isLoading ? null : ['isAdminUser', currentUser?._id, currentUser?.admin],
+    ([, , isAdmin]) => isAdmin ?? false,
+    {
+      fallbackData: currentUser?.admin ?? false,
+      keepPreviousData: true,
+      // disable all revalidation but revalidateIfStale
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 

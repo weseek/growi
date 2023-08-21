@@ -2,14 +2,15 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
-import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { toastError } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
@@ -85,6 +86,20 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const editorRef = useRef<IEditorMethods>(null);
 
+  const router = useRouter();
+
+  // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
+  const onRouterChangeComplete = useCallback(() => {
+    editorRef.current?.setValue('');
+  }, []);
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', onRouterChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    };
+  }, [onRouterChangeComplete, router.events]);
+
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
   }, []);
@@ -109,6 +124,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, []);
 
   const initializeEditor = useCallback(async() => {
+    const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
+
     setComment('');
     setActiveTab('comment_editor');
     setError(undefined);
@@ -116,11 +133,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     // reset value
     if (editorRef.current == null) { return }
     editorRef.current.setValue('');
-    const editingCommentsNum = await decrementEditingCommentsNum();
-    if (editingCommentsNum === 0) {
+
+    if (editingCommentsNum != null && editingCommentsNum === 0) {
       mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
     }
-  }, [initializeSlackEnabled, mutateIsEnabledUnsavedWarning, decrementEditingCommentsNum]);
+  }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
     // change state to not ready
@@ -183,14 +200,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [postCommentHandler]);
 
   const apiErrorHandler = useCallback((error: Error) => {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+    toastError(error.message);
   }, []);
 
   const uploadHandler = useCallback(async(file) => {
@@ -277,6 +287,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
     const submitButton = (
       <Button
+        data-testid="comment-submit-button"
         outline
         color="primary"
         className="btn btn-outline-primary rounded-pill"

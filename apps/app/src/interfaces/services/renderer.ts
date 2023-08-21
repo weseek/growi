@@ -7,6 +7,7 @@ export type RendererConfig = {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   highlightJsStyleBorder: boolean,
+  isEnabledMarp: boolean,
 
   drawioUri: string,
   plantumlUri: string,

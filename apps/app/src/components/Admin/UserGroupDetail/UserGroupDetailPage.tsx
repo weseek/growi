@@ -2,7 +2,8 @@ import React, {
   useState, useCallback, useEffect, useMemo,
 } from 'react';
 
-import { objectIdUtils } from '@growi/core';
+import type { IUserGroup, IUserGroupHasId } from '@growi/core';
+import { objectIdUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -12,7 +13,6 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
@@ -334,7 +334,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link href="/admin/user-groups" prefetch={false}>
+            <Link href="/admin/user-groups">
               {t('user_group_management.group_list')}
             </Link>
           </li>
@@ -348,7 +348,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                 { ancestorUserGroup._id === currentUserGroupId ? (
                   <span>{ancestorUserGroup.name}</span>
                 ) : (
-                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
+                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>
                     {ancestorUserGroup.name}
                   </Link>
                 ) }

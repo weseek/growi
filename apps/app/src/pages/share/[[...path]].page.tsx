@@ -12,7 +12,7 @@ import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { ShareLinkPageView } from '~/components/ShareLink/ShareLinkPageView';
+import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -20,7 +20,7 @@ import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
-  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid,
+  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
 } from '~/stores/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -41,9 +41,11 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
   skipSSR: boolean,
+  ssrMaxRevisionBodyLength: number,
 };
 
 type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
@@ -91,6 +93,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   useIsContainerFluid(props.isContainerFluid);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
@@ -165,6 +168,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSharedPage: true,
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
@@ -178,6 +182,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
+
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
@@ -234,7 +240,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
     else {
       props.isNotFound = false;
-      props.skipSSR = await skipSSR(shareLink.relatedPage);
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+      props.skipSSR = await skipSSR(shareLink.relatedPage, ssrMaxRevisionBodyLength);
       props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();

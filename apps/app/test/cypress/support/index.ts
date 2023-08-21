@@ -14,6 +14,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+import './assertions'
 import './commands'
 import './screenshot'
 
@@ -39,6 +40,7 @@ declare global {
        collapseSidebar(isCollapsed: boolean, waitUntilSaving?: boolean): Chainable<void>,
        waitUntilSkeletonDisappear(): Chainable<void>,
        waitUntilSpinnerDisappear(): Chainable<void>,
+       appendTextToEditorUntilContains(inputText: string): Chainable<void>
     }
   }
 }

@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { IPageHasId, pagePathUtils } from '@growi/core';
+import type { IPageHasId, IPageInfoForOperation } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
 import { useDescendantsPageListModal } from '~/stores/modal';
+import { useSWRxPageInfo } from '~/stores/page';
 
 import CountBadge from './Common/CountBadge';
 import { ContentLinkButtons } from './ContentLinkButtons';
@@ -14,7 +16,7 @@ import TableOfContents from './TableOfContents';
 import styles from './PageSideContents.module.scss';
 
 
-const { isTopPage, isUsersHomePage, isTrashPage } = pagePathUtils;
+const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
 
 
 export type PageSideContentsProps = {
@@ -29,9 +31,11 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const { page, isSharedUser } = props;
 
+  const { data: pageInfo } = useSWRxPageInfo(page._id);
+
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
-  const isUsersHomePagePath = isUsersHomePage(pagePath);
+  const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
 
   return (
@@ -51,7 +55,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             {t('page_list')}
 
             {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
-            { !isTrash ? <CountBadge count={page?.descendantCount} offset={1} /> : <div className='px-2'></div>}
+            { !isTrash && pageInfo != null
+              ? <CountBadge count={(pageInfo as IPageInfoForOperation).descendantCount} offset={1} />
+              : <div className='px-2'></div>}
           </button>
         )}
       </div>
@@ -67,7 +73,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
               <span>Comments</span>
-              <CountBadge count={page.commentCount} />
+              { pageInfo != null
+                ? <CountBadge count={(pageInfo as IPageInfoForOperation).commentCount} />
+                : <div className='px-2'></div>}
             </button>
           </Link>
         </div>
@@ -75,7 +83,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
       <div className="d-none d-lg-block">
         <TableOfContents />
-        {isUsersHomePagePath && <ContentLinkButtons author={page?.creator} />}
+        {isUsersHomepagePath && <ContentLinkButtons author={page?.creator} />}
       </div>
     </>
   );
