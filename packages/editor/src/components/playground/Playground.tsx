@@ -18,7 +18,7 @@ export const Playground = (): JSX.Element => {
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
         <div className="text-white">GrowiSubNavigation</div>
       </div>
-      <div className="flex-expand-horiz d-flex overflow-y-auto">
+      <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
           <CodeMirrorEditorContainer ref={containerRef} />
         </div>

@@ -4,6 +4,7 @@
   flex-direction: row;
   flex-grow: 1;
   height: 100%;
+  overflow-y: auto;
 }
 
 // ref: https://discuss.codemirror.net/t/how-to-fit-the-codemirror-6-widget-into-a-flex-div/4207/4
@@ -11,4 +12,5 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow-y: auto;
 }

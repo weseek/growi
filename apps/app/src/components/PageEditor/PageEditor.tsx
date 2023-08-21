@@ -573,7 +573,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const isUploadable = isUploadableImage || isUploadableFile;
 
   return (
-    <div data-testid="page-editor" id="page-editor" className={`flex-grow-1 d-flex overflow-y-auto ${props.visibility ? '' : 'd-none'}`}>
+    <div data-testid="page-editor" id="page-editor" className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert">
         {/* <Editor
           ref={editorRef}
