@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -16,6 +16,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('~/components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
@@ -32,6 +33,9 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
     injectableContainers.push(adminMarkDownContainer);
   }
 
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
+  }
 
   return (
     <Provider inject={[...injectableContainers]}>

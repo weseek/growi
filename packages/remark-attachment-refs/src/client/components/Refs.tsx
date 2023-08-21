@@ -33,12 +33,14 @@ const RefsSubstance = React.memo(({
   const { data, error, isLoading } = useSWRxRefs(pagePath, prefix, { depth, regexp }, isImmutable);
   const attachments = data != null ? data : [];
 
-  return <AttachmentList
-    refsContext={refsContext}
-    isLoading={isLoading}
-    error={error}
-    attachments={attachments}
-  />;
+  return (
+    <AttachmentList
+      refsContext={refsContext}
+      isLoading={isLoading}
+      error={error}
+      attachments={attachments}
+    />
+  );
 });
 
 export const Refs = React.memo((props: Props): JSX.Element => {

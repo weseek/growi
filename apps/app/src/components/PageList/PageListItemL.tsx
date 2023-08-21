@@ -4,9 +4,14 @@ import React, {
 } from 'react';
 
 
-import { DevidedPagePath, pathUtils } from '@growi/core';
-import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type {
+  IPageInfoAll, IPageWithMeta, IPageInfoForListing,
+} from '@growi/core';
+import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { pathUtils } from '@growi/core/dist/utils';
+import { UserPicture } from '@growi/ui/dist/components';
+import { PageListMeta } from '@growi/ui/dist/components/PagePath';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -16,9 +21,6 @@ import { CustomInput } from 'reactstrap';
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import {
-  IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
-} from '~/interfaces/page';
 import { IPageSearchMeta, IPageWithSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
@@ -227,7 +229,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link legacyBehavior
+                    <Link
+                      legacyBehavior
                       href={returnPathForURL(pageData.path, pageData._id)}
                       prefetch={false}
                     >
@@ -254,21 +257,23 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
               {/* doropdown icon includes page control buttons */}
               {hasBrowsingRights
-                && <div className="ml-auto">
-                  <PageItemControl
-                    alignRight
-                    pageId={pageData._id}
-                    pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
-                    isEnableActions={isEnableActions}
-                    isReadOnlyUser={isReadOnlyUser}
-                    forceHideMenuItems={forceHideMenuItems}
-                    onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-                    onClickRenameMenuItem={renameMenuItemClickHandler}
-                    onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                    onClickRevertMenuItem={revertMenuItemClickHandler}
-                  />
-                </div>
+                && (
+                  <div className="ml-auto">
+                    <PageItemControl
+                      alignRight
+                      pageId={pageData._id}
+                      pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
+                      isEnableActions={isEnableActions}
+                      isReadOnlyUser={isReadOnlyUser}
+                      forceHideMenuItems={forceHideMenuItems}
+                      onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                      onClickRenameMenuItem={renameMenuItemClickHandler}
+                      onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                      onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                      onClickRevertMenuItem={revertMenuItemClickHandler}
+                    />
+                  </div>
+                )
               }
             </div>
             <div className="page-list-snippet py-1">

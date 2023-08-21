@@ -3,12 +3,13 @@ import React, { ReactNode, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import {
-  isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
-} from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
 } from '@growi/core';
+import {
+  isClient, pagePathUtils, pathUtils,
+} from '@growi/core/dist/utils';
 import ExtensibleCustomError from 'extensible-custom-error';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -124,7 +125,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentPage } = useSWRxCurrentPage();
   return (
     <div data-testid="grw-contextual-sub-nav">
-      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
     </div>
   );
 };
@@ -346,13 +347,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
-          pageView={
+          pageView={(
             <PageView
               pagePath={pagePath}
               initialPage={pageWithMeta?.data}
               rendererConfig={props.rendererConfig}
             />
-          }
+          )}
         />
 
         <PageStatusAlert />

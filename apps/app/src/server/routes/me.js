@@ -51,7 +51,6 @@
 module.exports = function(crowi, app) {
   const models = crowi.models;
   const UserGroupRelation = models.UserGroupRelation;
-  const ExternalAccount = models.ExternalAccount;
   const ApiResponse = require('../util/apiResponse');
 
   // , pluginService = require('../service/plugin')

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 
-import { type IRevisionHasId, pagePathUtils } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 

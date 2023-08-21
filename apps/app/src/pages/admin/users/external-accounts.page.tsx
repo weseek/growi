@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -15,6 +15,7 @@ import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ManageExternalAccount = dynamic(() => import('~/components/Admin/ManageExternalAccount'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminUserManagementPage: NextPage<CommonProps> = (props) => {
@@ -32,6 +33,9 @@ const AdminUserManagementPage: NextPage<CommonProps> = (props) => {
     );
   }
 
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
+  }
 
   return (
     <Provider inject={[...injectableContainers]}>

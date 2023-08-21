@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import {
   SlackbotType, REQUEST_TIMEOUT_FOR_GTOP,
   defaultSupportedSlackEventActions, defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
@@ -17,8 +17,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const axios = require('axios');
 const express = require('express');
-const { body, query, param } = require('express-validator');
-const mongoose = require('mongoose');
+const { body, param } = require('express-validator');
 const urljoin = require('url-join');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration-settings');

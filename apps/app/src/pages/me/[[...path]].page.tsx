@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -72,6 +72,13 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
+      const page = pagesMap[key];
+      if (page == null) {
+        return {
+          title: 'NotFoundPage',
+          component: <h2>{t('commons:not_found_page.page_not_exist')}</h2>,
+        };
+      }
       return pagesMap[key];
     }, pagesMap);
   };
@@ -116,7 +123,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div id="main" className='main'>
+        <div id="main" className="main">
           <div id="content-main" className="content-main container-lg grw-container-convertible">
             {targetPage.component}
           </div>

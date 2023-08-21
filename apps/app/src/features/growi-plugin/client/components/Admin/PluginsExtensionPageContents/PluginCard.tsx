@@ -109,7 +109,7 @@ export const PluginCard = (props: Props): JSX.Element => {
             </h2>
             <p className="card-text text-muted">{desc}</p>
           </div>
-          <div className='col-3'>
+          <div className="col-3">
             <div>
               <PluginCardButton />
             </div>

@@ -1,4 +1,6 @@
-import { PageGrant, IPageGrantData } from './page';
+import { PageGrant } from '@growi/core';
+
+import { IPageGrantData } from './page';
 
 export type IDataApplicableGroup = {
   applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model

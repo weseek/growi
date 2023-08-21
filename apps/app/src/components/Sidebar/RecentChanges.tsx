@@ -2,14 +2,13 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 
-import { DevidedPagePath, isPopulated } from '@growi/core';
-import { FootstampIcon } from '@growi/ui/dist/components/FootstampIcon';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { isPopulated, type IPageHasId } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
@@ -92,9 +91,11 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          {!isSmall && <div className="grw-tag-labels mt-1 mb-2">
-            { tagElements }
-          </div>}
+          {!isSmall && (
+            <div className="grw-tag-labels mt-1 mb-2">
+              { tagElements }
+            </div>
+          )}
           <PageItemLower page={page} />
         </div>
       </div>
@@ -136,7 +137,7 @@ const RecentChanges = (): JSX.Element => {
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
-        <SidebarHeaderReloadButton onClick={() => mutate()}/>
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input

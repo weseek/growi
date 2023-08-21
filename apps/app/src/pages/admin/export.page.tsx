@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -15,6 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArchiveDataPage'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
@@ -28,6 +29,10 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   if (isClient()) {
     const adminAppContainer = new AdminAppContainer();
     injectableContainers.push(adminAppContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
   }
 
   return (

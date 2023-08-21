@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -7,6 +8,13 @@ export default defineConfig({
   plugins: [
     react(),
     dts({ copyDtsFiles: true }),
+    {
+      ...nodeExternals({
+        devDeps: true,
+        builtinsPrefix: 'ignore',
+      }),
+      enforce: 'pre',
+    },
   ],
   build: {
     outDir: 'dist',
@@ -15,21 +23,6 @@ export default defineConfig({
       entry: 'src/index.ts',
       name: 'presentation-libs',
       formats: ['es'],
-    },
-    rollupOptions: {
-      external: [
-        'react', 'react-dom',
-        'next/head',
-        'react-markdown',
-        '@marp-team/marp-core', '@marp-team/marpit',
-        'reveal.js',
-      ],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
     },
   },
 });

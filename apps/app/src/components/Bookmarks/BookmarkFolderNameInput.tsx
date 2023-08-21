@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next';
 
-import { inputValidator, ValidationTarget } from '~/client/util/input-validator';
+import { ValidationTarget } from '~/client/util/input-validator';
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
 
 
@@ -19,7 +19,7 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
   return (
     <div className="flex-fill folder-name-input">
       <ClosableTextInput
-        value={ value }
+        value={value}
         placeholder={t('bookmark_folder.input_placeholder')}
         onClickOutside={onClickOutside}
         onPressEnter={onPressEnter}

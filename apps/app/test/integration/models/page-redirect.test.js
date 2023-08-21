@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-import { IPageRedirect, PageRedirectModel } from '../../../src/server/models/page-redirect';
 import { getInstance } from '../setup-crowi';
 
 describe('PageRedirect', () => {

@@ -3,9 +3,8 @@ import React, {
   KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
-import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
+import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { IFocusable } from '~/client/interfaces/focusable';
@@ -65,7 +64,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isForcused, setFocused] = useState(false);
 
-  const { data: searchResult, error: searchError } = useSWRxSearch(
+  const { data: searchResult, error: searchError, isLoading } = useSWRxSearch(
     disableIncrementalSearch ? null : searchKeyword,
     null,
     { limit: 10 },
@@ -220,7 +219,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     );
   }, [disableIncrementalSearch, helpElement, input, isForcused]);
 
-  const isLoading = searchResult !== undefined && searchError == null;
   const isOpenAlways = helpElement != null;
 
   return (
