@@ -11,6 +11,7 @@ export type UseCodeMirrorEditor = UseCodeMirror;
 
 type UseCodeMirrorEditorUtils = {
   initState: (config?: EditorStateConfig) => void,
+  initDoc: (doc?: string) => void,
 }
 
 export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
@@ -50,6 +51,11 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     view.setState(newState);
   }, [props?.extensions, view]);
 
+  // implement initDoc method
+  const initDoc = useCallback((doc?: string): void => {
+    initState({ doc });
+  }, [initState]);
+
   useEffect(() => {
     if (props?.container != null) {
       setContainer(props.container);
@@ -59,5 +65,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
   return {
     ...codemirror,
     initState,
+    initDoc,
   };
 };

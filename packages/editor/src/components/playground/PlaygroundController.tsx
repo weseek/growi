@@ -6,10 +6,10 @@ export const PlaygroundController = (): JSX.Element => {
 
   const { data } = useCodeMirrorEditorMain();
 
-  const initState = data?.initState;
+  const initDoc = data?.initDoc;
   const initEditorValue = useCallback(() => {
-    initState?.({ doc: '# Header\n\n- foo\n-bar\n' });
-  }, [initState]);
+    initDoc?.('# Header\n\n- foo\n-bar\n');
+  }, [initDoc]);
 
   return (
     <>
