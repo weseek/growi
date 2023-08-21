@@ -478,7 +478,6 @@ module.exports = function(crowi, app) {
         }
       }
 
-
       const isAclEnabled = crowi.aclService.isAclEnabled();
       const grant = isAclEnabled ? Page.GRANT_OWNER : Page.GRANT_PUBLIC;
 
