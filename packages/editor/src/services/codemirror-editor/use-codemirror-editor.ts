@@ -1,40 +1,54 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import type { EditorState, Extension } from '@codemirror/state';
-import type { EditorView } from '@codemirror/view';
+import { EditorState, type EditorStateConfig, type Extension } from '@codemirror/state';
 import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
+import { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
 
 export type UseCodeMirrorEditor = UseCodeMirror;
 
-export type UseCodeMirrorEditorStates = {
-  state: EditorState | undefined;
-  setState: import('react').Dispatch<import('react').SetStateAction<EditorState | undefined>>;
-  view: EditorView | undefined;
-  setView: import('react').Dispatch<import('react').SetStateAction<EditorView | undefined>>;
-  container: HTMLDivElement | undefined;
-  setContainer: import('react').Dispatch<import('react').SetStateAction<HTMLDivElement | undefined>>;
+type UseCodeMirrorEditorUtils = {
+  initState: (config?: EditorStateConfig) => void,
 }
 
-export const defaultExtensions: Extension[] = [
+export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
+
+const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
 ];
 
-export const defaultExtensionsToInit: Extension[] = [
+const defaultExtensionsToInit: Extension[] = [
   ...basicSetup(),
   ...defaultExtensions,
 ];
 
-export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorEditorStates => {
+export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorEditorResponse => {
 
   const codemirror = useCodeMirror({
     extensions: defaultExtensions,
     ...props,
   });
 
-  const { setContainer } = codemirror;
+  const { view, setContainer } = codemirror;
+
+  // implement initState method
+  const initState = useCallback((config?: EditorStateConfig): void => {
+    if (view == null) {
+      return;
+    }
+
+    const newState = EditorState.create({
+      ...config,
+      extensions: [
+        ...defaultExtensionsToInit,
+        ...(props?.extensions ?? []),
+      ],
+    });
+
+    view.setState(newState);
+  }, [props?.extensions, view]);
 
   useEffect(() => {
     if (props?.container != null) {
@@ -42,5 +56,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     }
   }, [props?.container, setContainer]);
 
-  return codemirror;
+  return {
+    ...codemirror,
+    initState,
+  };
 };

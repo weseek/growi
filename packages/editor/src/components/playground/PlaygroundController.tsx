@@ -4,13 +4,12 @@ import { useCodeMirrorEditorMain } from '../../stores';
 
 export const PlaygroundController = (): JSX.Element => {
 
-  const { initDoc } = useCodeMirrorEditorMain();
+  const { data } = useCodeMirrorEditorMain();
 
+  const initState = data?.initState;
   const initEditorValue = useCallback(() => {
-
-    initDoc('# Header\n\n- foo\n-bar\n');
-
-  }, [initDoc]);
+    initState?.({ doc: '# Header\n\n- foo\n-bar\n' });
+  }, [initState]);
 
   return (
     <>
