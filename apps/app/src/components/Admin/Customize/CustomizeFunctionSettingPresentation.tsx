@@ -70,4 +70,4 @@ const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
 };
 const CustomizeFunctionSettingPresentationWrapper = withUnstatedContainers(CustomizeFunctionSettingPresentation, [AdminCustomizeContainer]);
 
-export default CustomizeFunctionSettingPresentation;
+export default CustomizeFunctionSettingPresentationWrapper;
