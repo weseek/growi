@@ -22,7 +22,7 @@ export const SlideViewer: React.FC<SlideViewerProps> = React.memo((props: SlideV
 
   return (
     <Slides
-      hasMarpFlag={marp === 'marp'}
+      hasMarpFlag={marp != null}
       options={{ rendererOptions: rendererOptions as ReactMarkdownOptions }}
     >
       {children}
