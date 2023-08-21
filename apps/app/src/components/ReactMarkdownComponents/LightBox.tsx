@@ -12,6 +12,7 @@ export const LightBox = (props) => {
       <FsLightbox
         toggler={toggler}
         sources={[props.src]}
+        type="image"
       />
     </>
   );
