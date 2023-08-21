@@ -8,7 +8,7 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditorContainer, useCodeMirrorEditor } from '@growi/editor';
+import { CodeMirrorEditorContainer, useCodeMirrorEditorMain } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -116,14 +116,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
-  const { setContainer } = useCodeMirrorEditor({
-    container: codeMirrorEditorContainerRef.current,
-  });
-  useEffect(() => {
-    if (codeMirrorEditorContainerRef.current != null) {
-      setContainer(codeMirrorEditorContainerRef.current);
-    }
-  }, [setContainer]);
+  useCodeMirrorEditorMain(codeMirrorEditorContainerRef.current);
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
