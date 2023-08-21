@@ -8,9 +8,8 @@ import {
 
 import { apiv3Delete } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { usePluginDeleteModal } from '~/stores/modal';
 
-import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
+import { useSWRxAdminPlugins, usePluginDeleteModal } from '../../../stores/admin-plugins';
 
 export const PluginDeleteModal: React.FC = () => {
 

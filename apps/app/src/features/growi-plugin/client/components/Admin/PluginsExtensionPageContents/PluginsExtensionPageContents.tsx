@@ -1,11 +1,10 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { Spinner } from 'reactstrap';
 
-import { usePluginDeleteModal } from '~/stores/modal';
-
-import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
+import { useSWRxAdminPlugins, usePluginDeleteModal } from '../../../stores/admin-plugins';
 
 import { PluginCard } from './PluginCard';
 import { PluginInstallerForm } from './PluginInstallerForm';
@@ -20,6 +19,8 @@ const Loading = (): JSX.Element => {
 
 export const PluginsExtensionPageContents = (): JSX.Element => {
   const { t } = useTranslation('admin');
+  const PluginDeleteModal = dynamic(() => import('./PluginDeleteModal')
+    .then(mod => mod.PluginDeleteModal), { ssr: false });
   const { data, mutate } = useSWRxAdminPlugins();
   const { open: openPluginDeleteModal } = usePluginDeleteModal();
 
@@ -62,6 +63,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
             )}
         </div>
       </div>
+      <PluginDeleteModal />
 
     </div>
   );

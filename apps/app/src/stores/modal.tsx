@@ -13,8 +13,6 @@ import {
 import { IUserGroupHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
-import type { IGrowiPluginHasId } from '../features/growi-plugin/interfaces';
-
 import { useStaticSWR } from './use-static-swr';
 
 const logger = loggerFactory('growi:stores:modal');
@@ -740,50 +738,4 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
       swrResponse.mutate({ isOpened: false });
     },
   });
-};
-
-/*
- * PluginDeleteModal
- */
-type PluginDeleteModalStatus = {
-  isOpen: boolean,
-  id: string,
-  name: string,
-  url: string,
-}
-
-type PluginDeleteModalUtils = {
-  open(plugin: IGrowiPluginHasId): Promise<void>,
-  close(): Promise<void>,
-}
-
-export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
-  const initialStatus: PluginDeleteModalStatus = {
-    isOpen: false,
-    id: '',
-    name: '',
-    url: '',
-  };
-
-  const swrResponse = useStaticSWR<PluginDeleteModalStatus, Error>('pluginDeleteModal', undefined, { fallbackData: initialStatus });
-  const { mutate } = swrResponse;
-
-  const open = async(plugin) => {
-    mutate({
-      isOpen: true,
-      id: plugin._id,
-      name: plugin.meta.name,
-      url: plugin.origin.url,
-    });
-  };
-
-  const close = async() => {
-    mutate(initialStatus);
-  };
-
-  return {
-    ...swrResponse,
-    open,
-    close,
-  };
 };
