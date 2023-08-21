@@ -66,7 +66,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
-      <Slides options={options} hasMarpFlag={marp}>{children}</Slides>
+      <Slides options={options} hasMarpFlag={marp} presentation>{children}</Slides>
     </div>
   );
 };
