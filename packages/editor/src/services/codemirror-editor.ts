@@ -4,7 +4,7 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import type { EditorState, Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
-import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
+import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
 
 export type UseCodeMirrorEditor = UseCodeMirror;
@@ -20,6 +20,11 @@ export type UseCodeMirrorEditorStates = {
 
 export const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
+];
+
+export const defaultExtensionsToInit: Extension[] = [
+  ...basicSetup(),
+  ...defaultExtensions,
 ];
 
 export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorEditorStates => {

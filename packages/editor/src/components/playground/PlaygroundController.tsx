@@ -1,31 +1,16 @@
 import { useCallback } from 'react';
 
-import { EditorState } from '@codemirror/state';
-import { basicSetup } from '@uiw/react-codemirror';
-
-import { defaultExtensions } from '../../services/codemirror-editor';
 import { useCodeMirrorEditorMain } from '../../stores';
 
 export const PlaygroundController = (): JSX.Element => {
 
-  const { data: states } = useCodeMirrorEditorMain();
+  const { initDoc } = useCodeMirrorEditorMain();
 
   const initEditorValue = useCallback(() => {
-    if (states?.view == null) {
-      return;
-    }
 
-    const newState = EditorState.create({
-      doc: '# Header\n\n- foo\n-bar\n',
-      extensions: [
-        ...basicSetup(),
-        defaultExtensions,
-      ],
-    });
+    initDoc('# Header\n\n- foo\n-bar\n');
 
-    states.view?.setState(newState);
-
-  }, [states]);
+  }, [initDoc]);
 
   return (
     <>
