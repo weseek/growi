@@ -80,7 +80,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
               <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
-              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+              <div className="custom-control custom-switch form-check-secondary ml-2">
                 <input
                   id={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}
                   className="custom-control-input"
@@ -134,7 +134,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                     <SunIcon />
                   </IconWithTooltip>
-                  <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+                  <div className="custom-control custom-switch form-check-secondary ml-2">
                     <input
                       id="swUserPreference"
                       className="custom-control-input"
@@ -152,7 +152,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
               </div>
               <div className="form-row">
                 <div className="form-group col-auto">
-                  <div className="custom-control custom-checkbox">
+                  <div className="custom-control form-check">
                     <input
                       id="cbFollowOs"
                       className="custom-control-input"

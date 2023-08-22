@@ -47,7 +47,7 @@
 }
 
 @each $theme-color, $color in $theme-colors {
-  .custom-checkbox-#{$theme-color} {
+  .form-check-#{$theme-color} {
     .custom-control-label::before {
       border-color: $input-border-color;
       transition: 0.3s ease-in-out;

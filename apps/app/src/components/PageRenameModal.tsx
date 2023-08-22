@@ -292,7 +292,7 @@ const PageRenameModal = (): JSX.Element => {
           </button>
         </p>
         <Collapse isOpen={expandOtherOptions}>
-          <div className="custom-control custom-checkbox custom-checkbox-success">
+          <div className="custom-control form-check form-check-success">
             <input
               className="custom-control-input"
               name="create_redirect"
@@ -307,7 +307,7 @@ const PageRenameModal = (): JSX.Element => {
             </label>
           </div>
 
-          <div className="custom-control custom-checkbox custom-checkbox-success">
+          <div className="custom-control form-check form-check-success">
             <input
               className="custom-control-input"
               name="remain_metadata"

@@ -145,7 +145,7 @@ const AppSetting = (props) => {
           {/* {t('admin:app_setting.file_uploading')} */}
         </label>
         <div className="col-md-6">
-          <div className="custom-control custom-checkbox custom-checkbox-info">
+          <div className="custom-control form-check form-check-info">
             <input
               type="checkbox"
               id="cbFileUpload"

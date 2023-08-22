@@ -81,7 +81,7 @@ const UserManagement = (props: UserManagementProps) => {
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
-      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} mr-2`}>
+      <div className={`custom-control form-check form-check-${statusColor} mr-2`}>
         <input
           className="custom-control-input"
           type="checkbox"

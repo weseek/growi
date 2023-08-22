@@ -66,7 +66,7 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt4"
             type="checkbox"
@@ -79,7 +79,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt1"
             type="checkbox"
@@ -95,7 +95,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt2"
             type="checkbox"
@@ -111,7 +111,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt3"
             type="checkbox"
@@ -127,7 +127,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt5"
             type="checkbox"
@@ -140,7 +140,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt6"
             type="checkbox"
@@ -167,7 +167,7 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             id="cbOpt1"
             type="checkbox"

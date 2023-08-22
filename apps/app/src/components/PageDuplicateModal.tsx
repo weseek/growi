@@ -193,7 +193,7 @@ const PageDuplicateModal = (): JSX.Element => {
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning mb-3">
+        <div className="custom-control form-check form-check-warning mb-3">
           <input
             className="custom-control-input"
             name="recursively"
@@ -209,7 +209,7 @@ const PageDuplicateModal = (): JSX.Element => {
 
           <div>
             {isDuplicateRecursively && existingPaths.length !== 0 && (
-              <div className="custom-control custom-checkbox custom-checkbox-warning">
+              <div className="custom-control form-check form-check-warning">
                 <input
                   className="custom-control-input"
                   name="withoutExistRecursively"

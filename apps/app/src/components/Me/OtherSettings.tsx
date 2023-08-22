@@ -53,7 +53,7 @@ const OtherSettings = (): JSX.Element => {
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
           {!isLoadingCurrentUser && (
-            <div className="custom-control custom-switch custom-checkbox-primary">
+            <div className="custom-control custom-switch form-check-primary">
               <span id="grw-questionnaire-settings-toggle-wrapper">
                 <input
                   type="checkbox"

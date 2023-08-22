@@ -47,7 +47,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
 
   function renderForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-warning">
+      <div className="custom-control form-check form-check-warning">
         <input
           className="custom-control-input"
           id="convertRecursively"

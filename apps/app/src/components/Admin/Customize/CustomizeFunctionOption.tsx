@@ -16,7 +16,7 @@ const CustomizeFunctionOption = (props: Props): JSX.Element => {
 
   return (
     <React.Fragment>
-      <div className="custom-control custom-checkbox custom-checkbox-success">
+      <div className="custom-control form-check form-check-success">
         <input
           className="custom-control-input"
           type="checkbox"

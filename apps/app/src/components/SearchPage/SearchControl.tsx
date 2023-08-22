@@ -122,7 +122,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             </div>
             <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
               <div className="border rounded px-2 py-1 mr-3">
-                <div className="custom-control custom-checkbox custom-checkbox-succsess">
+                <div className="custom-control form-check form-check-succsess">
                   <input
                     className="custom-control-input mr-2"
                     type="checkbox"
@@ -136,7 +136,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 </div>
               </div>
               <div className="border rounded px-2 py-1">
-                <div className="custom-control custom-checkbox custom-checkbox-succsess">
+                <div className="custom-control form-check form-check-succsess">
                   <input
                     className="custom-control-input mr-2"
                     type="checkbox"

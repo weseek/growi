@@ -305,7 +305,7 @@ const ManageCommandsProcess = ({
           </div>
         )}
 
-        <div className="custom-control custom-checkbox">
+        <div className="custom-control form-check">
           <div className="row mb-5 d-block">
             {defaultCommandsName.map(keyName => (
               <PermissionSettingForEachPermissionTypeComponent

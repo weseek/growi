@@ -72,7 +72,7 @@ const QuestionnaireSettings = (): JSX.Element => {
       {!isLoading && (
         <>
           <div className="row my-3">
-            <div className="custom-control custom-switch custom-checkbox-info col-md-5 offset-md-5">
+            <div className="custom-control custom-switch form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
                 className="custom-control-input"
@@ -87,7 +87,7 @@ const QuestionnaireSettings = (): JSX.Element => {
           </div>
 
           <div className="row my-4">
-            <div className="custom-control custom-checkbox custom-checkbox-info col-md-5 offset-md-5">
+            <div className="custom-control form-check form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
                 className="custom-control-input"

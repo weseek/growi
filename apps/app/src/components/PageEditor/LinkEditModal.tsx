@@ -301,7 +301,7 @@ export const LinkEditModal = (): JSX.Element => {
           <div className="form-group mb-0 row">
             <label className="col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
-              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+              <div className="custom-control form-check form-check-info custom-control-inline">
                 <input
                   className="custom-control-input"
                   id="relativePath"
@@ -314,7 +314,7 @@ export const LinkEditModal = (): JSX.Element => {
                   {t('link_edit.use_relative_path')}
                 </label>
               </div>
-              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+              <div className="custom-control form-check form-check-info custom-control-inline">
                 <input
                   className="custom-control-input"
                   id="permanentLink"

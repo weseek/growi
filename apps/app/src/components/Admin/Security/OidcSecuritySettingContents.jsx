@@ -50,7 +50,7 @@ class OidcSecurityManagementContents extends React.Component {
 
         <div className="row mb-5 form-group">
           <div className="offset-3 col-6">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="custom-control custom-switch form-check-success">
               <input
                 id="isOidcEnabled"
                 className="custom-control-input"
@@ -387,7 +387,7 @@ class OidcSecurityManagementContents extends React.Component {
 
             <div className="row mb-5 form-group">
               <div className="offset-md-3 col-md-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="custom-control form-check form-check-success">
                   <input
                     id="bindByUserName-oidc"
                     className="custom-control-input"
@@ -409,7 +409,7 @@ class OidcSecurityManagementContents extends React.Component {
 
             <div className="row mb-5 form-group">
               <div className="offset-md-3 col-md-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="custom-control form-check form-check-success">
                   <input
                     id="bindByEmail-oidc"
                     className="custom-control-input"

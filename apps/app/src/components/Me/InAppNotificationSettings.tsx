@@ -74,7 +74,7 @@ const InAppNotificationSettings: FC = () => {
           {subscribeRulesMenuItems.map(rule => (
             <div
               key={rule.name}
-              className="custom-control custom-switch custom-checkbox-success"
+              className="custom-control custom-switch form-check-success"
             >
               <input
                 type="checkbox"

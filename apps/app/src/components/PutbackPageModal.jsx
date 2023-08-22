@@ -75,7 +75,7 @@ const PutBackPageModal = () => {
           <label>{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="custom-control form-check form-check-warning">
           <input
             className="custom-control-input"
             id="cbPutBackRecursively"

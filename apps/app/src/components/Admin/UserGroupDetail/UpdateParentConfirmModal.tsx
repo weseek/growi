@@ -43,7 +43,7 @@ export const UpdateParentConfirmModal: FC = () => {
                 {t('admin:user_group_management.update_parent_confirm_modal.danger_message')}
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-succsess pl-5">
+              <div className="custom-control form-check form-check-succsess pl-5">
                 <input
                   className="custom-control-input"
                   name="forceUpdateParents"

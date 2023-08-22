@@ -220,7 +220,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
       <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
-          <div className="custom-control custom-checkbox">
+          <div className="custom-control form-check">
             <div className="row mb-5 d-block">
               { defaultCommandsName.map((commandName) => {
                 // eslint-disable-next-line max-len
@@ -241,7 +241,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
       <p className="mb-4 font-weight-bold">Events</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
-          <div className="custom-control custom-checkbox">
+          <div className="custom-control form-check">
             <div className="row mb-5 d-block">
               { defaultSupportedSlackEventActions.map(actionName => (
                 <SinglePermissionSettingComponent

@@ -78,7 +78,7 @@ class SlackConfiguration extends React.Component {
 
             <div className="row mb-3">
               <div className="offset-md-3 col-md-6 text-left">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="custom-control form-check form-check-success">
                   <input
                     type="checkbox"
                     className="custom-control-input"

@@ -7,7 +7,7 @@ const TriggerEventCheckBox = (props) => {
   const { t } = props;
 
   return (
-    <div className={`custom-control custom-checkbox custom-checkbox-${props.checkbox}`}>
+    <div className={`custom-control form-check form-check-${props.checkbox}`}>
       <input
         className="custom-control-input"
         type="checkbox"

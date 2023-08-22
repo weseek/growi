@@ -58,7 +58,7 @@ class GitHubSecurityManagementContents extends React.Component {
 
         <div className="form-group row">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="custom-control custom-switch form-check-success">
               <input
                 id="isGitHubEnabled"
                 className="custom-control-input"
@@ -137,7 +137,7 @@ class GitHubSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="custom-control form-check form-check-success">
                   <input
                     id="bindByUserNameGitHub"
                     className="custom-control-input"

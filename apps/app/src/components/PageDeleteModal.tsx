@@ -182,7 +182,7 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteRecursivelyForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-warning">
+      <div className="custom-control form-check form-check-warning">
         <input
           className="custom-control-input"
           id="deleteRecursively"
@@ -201,7 +201,7 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteCompletelyForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-danger">
+      <div className="custom-control form-check form-check-danger">
         <input
           className="custom-control-input"
           name="completely"
