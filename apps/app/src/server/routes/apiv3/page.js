@@ -198,6 +198,8 @@ module.exports = (crowi) => {
       param('pageId').isMongoId().withMessage('pageId is required'),
       body('grant').isInt().withMessage('grant is required'),
       body('grantedGroups').optional().isArray().withMessage('grantedGroups must be an array'),
+      body('grantedGroups.*.type').isString().withMessage('grantedGroups type is required'),
+      body('grantedGroups.*.item').isMongoId().withMessage('grantedGroups item is required'),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -571,7 +573,7 @@ module.exports = (crowi) => {
     try {
       const shouldUseV4Process = false;
       const grantData = { grant, grantedGroups };
-      data = await this.crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
+      data = await crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {
       logger.error('Error occurred while processing calcApplicableGrantData.', err);

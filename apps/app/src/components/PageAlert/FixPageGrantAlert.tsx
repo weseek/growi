@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { PageGrant } from '@growi/core';
+import { GroupType, PageGrant } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -58,7 +58,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroup: selectedGroup?._id,
+        grantedGroups: selectedGroup?._id != null ? [{ item: selectedGroup?._id, type: GroupType.userGroup }] : null,
       });
 
       toastSuccess(t('Successfully updated'));

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
-import type { IUserGroupHasId } from '@growi/core';
+import type { GroupType, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -38,7 +38,7 @@ type Props = {
   grantedGroups?: {
     id: string,
     name: string,
-    type: string,
+    type: GroupType,
   }[]
 
   onUpdateGrant?: (grantData: IPageGrantData) => void,
