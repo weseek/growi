@@ -145,7 +145,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
         </p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
+          <form className="align-items-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
               <div>
                 <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>

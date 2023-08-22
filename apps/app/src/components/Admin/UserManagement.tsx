@@ -165,7 +165,7 @@ const UserManagement = (props: UserManagementProps) => {
           </div>
 
           <div className="offset-md-1 col-md-6 my-2">
-            <div className="form-inline">
+            <div>
               {renderCheckbox('all', 'All', 'secondary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}

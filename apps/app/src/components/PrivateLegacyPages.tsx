@@ -89,7 +89,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
   return (
     <>
-      <div className="form-inline d-flex align-items-center justify-content-between">
+      <div className="d-flex align-items-center justify-content-between">
         <div className="text-nowrap">
           {t('search_result.result_meta')}
           <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>

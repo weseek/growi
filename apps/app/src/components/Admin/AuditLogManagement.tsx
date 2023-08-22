@@ -172,7 +172,7 @@ export const AuditLogManagement: FC = () => {
         <AuditLogSettings />
       ) : (
         <>
-          <div className="form-inline mb-3">
+          <div className="mb-3">
             <SearchUsernameTypeahead
               ref={typeaheadRef}
               onChange={setUsernamesHandler}

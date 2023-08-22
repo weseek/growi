@@ -446,7 +446,7 @@ class ImportForm extends React.Component {
 
     return (
       <>
-        <form className="form-inline">
+        <form>
           <div>
             <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
