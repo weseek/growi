@@ -75,7 +75,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
 
   let badge;
   if (inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
-    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
+    badge = <span className="badge rounded-pill badge-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
   }
   else {
     badge = '';

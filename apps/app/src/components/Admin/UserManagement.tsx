@@ -90,7 +90,7 @@ const UserManagement = (props: UserManagementProps) => {
           onChange={() => clickHandler(status)}
         />
         <label className="custom-control-label" htmlFor={`c_${status}`}>
-          <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
+          <span className={`badge rounded-pill badge-${statusColor} d-inline-block vt mt-1`}>
             {statusLabel}
           </span>
         </label>

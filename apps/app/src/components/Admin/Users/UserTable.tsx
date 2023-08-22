@@ -49,7 +49,7 @@ const UserTable = (props: UserTableProps) => {
     }
 
     return (
-      <span className={`badge badge-pill ${additionalClassName}`}>
+      <span className={`badge rounded-pill ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -153,12 +153,12 @@ const UserTable = (props: UserTableProps) => {
                 <td>
                   {getUserStatusLabel(user.status)}
                   {(user.admin) && (
-                    <span className="badge badge-indigo badge-pill ml-2">
+                    <span className="badge badge-indigo rounded-pill ml-2">
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge badge-light badge-pill ml-2">
+                    <span className="badge badge-light rounded-pill ml-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

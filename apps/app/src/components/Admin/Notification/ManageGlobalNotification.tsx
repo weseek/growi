@@ -237,7 +237,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.CREATE)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.CREATE)}
               >
-                <span className="badge badge-pill badge-success">
+                <span className="badge rounded-pill badge-success">
                   <i className="icon-doc mr-1" /> CREATE
                 </span>
               </TriggerEventCheckBox>
@@ -249,7 +249,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.EDIT)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.EDIT)}
               >
-                <span className="badge badge-pill badge-warning">
+                <span className="badge rounded-pill badge-warning">
                   <i className="icon-pencil mr-1" />EDIT
                 </span>
               </TriggerEventCheckBox>
@@ -261,7 +261,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.MOVE)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.MOVE)}
               >
-                <span className="badge badge-pill badge-pink">
+                <span className="badge rounded-pill badge-pink">
                   <i className="icon-action-redo mr-1" />MOVE
                 </span>
               </TriggerEventCheckBox>
@@ -273,7 +273,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.DELETE)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.DELETE)}
               >
-                <span className="badge badge-pill badge-danger">
+                <span className="badge rounded-pill badge-danger">
                   <i className="icon-fire mr-1" />DELETE
                 </span>
               </TriggerEventCheckBox>
@@ -285,7 +285,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.LIKE)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.LIKE)}
               >
-                <span className="badge badge-pill badge-info">
+                <span className="badge rounded-pill badge-info">
                   <i className="fa fa-heart-o mr-1" />LIKE
                 </span>
               </TriggerEventCheckBox>
@@ -297,7 +297,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.POST)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.POST)}
               >
-                <span className="badge badge-pill badge-secondary">
+                <span className="badge rounded-pill badge-secondary">
                   <i className="icon-bubble mr-1" />POST
                 </span>
               </TriggerEventCheckBox>
