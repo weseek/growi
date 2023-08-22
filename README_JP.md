@@ -36,7 +36,7 @@
 # 機能紹介
 
 - **主な機能**
-  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html)。
+  - マークダウンを使用してページを階層構造で作成することが可能です。 -> [デモサイトで GROWI を体験する](https://docs.growi.org/ja/guide/getting-started/try_growi.html)。
   - [HackMD(CodiMd)](https://hackmd.io/) と連携することで同時多人数編集が可能です。
     - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
