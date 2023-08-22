@@ -245,7 +245,7 @@ export const LinkEditModal = (): JSX.Element => {
         <form className="form-group">
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
-              <div className="input-group-prepend">
+              <div>
                 <span className="input-group-text">{t('link_edit.link')}</span>
               </div>
               <SearchTypeahead
@@ -275,7 +275,7 @@ export const LinkEditModal = (): JSX.Element => {
           </div>
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
-              <div className="input-group-prepend">
+              <div>
                 <span className="input-group-text">{t('link_edit.label')}</span>
               </div>
               <input

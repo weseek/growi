@@ -216,7 +216,7 @@ const PageRenameModal = (): JSX.Element => {
         <div className="form-group">
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
           <div className="input-group">
-            <div className="input-group-prepend">
+            <div className="">
               <span className="input-group-text">{siteUrl}</span>
             </div>
             <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>

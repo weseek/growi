@@ -195,7 +195,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text">
                 <i className="icon-user"></i>
               </span>
@@ -218,7 +218,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text">
                 <i className="icon-lock"></i>
               </span>
@@ -421,7 +421,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
-                <div className="input-group-prepend">
+                <div>
                   <span className="input-group-text">
                     <i className="icon-user"></i>
                   </span>
@@ -441,7 +441,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <span id="help-block-username"></span>
               </p>
               <div className="input-group">
-                <div className="input-group-prepend">
+                <div>
                   <span className="input-group-text">
                     <i className="icon-tag"></i>
                   </span>
@@ -461,7 +461,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )}
 
           <div className="input-group">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text">
                 <i className="icon-envelope"></i>
               </span>
@@ -497,7 +497,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
-                <div className="input-group-prepend">
+                <div>
                   <span className="input-group-text">
                     <i className="icon-lock"></i>
                   </span>

@@ -140,7 +140,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
-          <div className="input-group-prepend mx-1">
+          <div className=" mx-1">
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
             <CustomCopyToClipBoard textToBeCopied={props.tokenPtoG || ''} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
           </div>
@@ -149,7 +149,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
-          <div className="input-group-prepend mx-1">
+          <div className=" mx-1">
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
             <CustomCopyToClipBoard textToBeCopied={props.tokenGtoP || ''} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
           </div>
@@ -184,7 +184,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
             <div className="input-group align-items-center pl-2 mb-3">
-              <div className="input-group-prepend w-75">
+              <div className=" w-75">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
                 <CustomCopyToClipBoard textToBeCopied={props.growiUrl} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
               </div>
@@ -245,7 +245,7 @@ const TestProcess = ({
       <div className="d-flex justify-content-center">
         <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
-            <div className="input-group-prepend">
+            <div className="">
               <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
             </div>
             <input

@@ -87,7 +87,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     };
 
     return (
-      <div className="">
+      <div>
         <button
           type="submit"
           className="btn btn-primary"

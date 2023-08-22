@@ -387,7 +387,7 @@ context('Search current tree with "prefix":', () => {
 
     cy.get('.grw-global-search-container').within(() => {
       cy.get('.dropdown-menu.show').should('be.visible');
-      cy.get('.input-group-prepend.show > div > button:nth-child(2)').click();
+      cy.get('.show > div > button:nth-child(2)').click();
       cy.get('.rbt-input').should('be.focused');
       cy.screenshot(`${ssPrefix}1-search-input-focused`);
     });

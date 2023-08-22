@@ -265,7 +265,7 @@ const G2GDataTransfer = (): JSX.Element => {
           </button>
         </div>
         <div className="col-md-9">
-          <div className="input-group-prepend mx-1">
+          <div className=" mx-1">
             <input className="form-control" type="text" value={transferKey} readOnly />
             <CustomCopyToClipBoard textToBeCopied={transferKey} message="admin:slack_integration.copied_to_clipboard" />
           </div>

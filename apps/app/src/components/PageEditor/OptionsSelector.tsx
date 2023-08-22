@@ -36,7 +36,7 @@ const ThemeSelector = (): JSX.Element => {
 
   return (
     <div className="input-group flex-nowrap">
-      <div className="input-group-prepend">
+      <div>
         <span className="input-group-text" id="igt-theme">Theme</span>
       </div>
       <div className="dropup">
@@ -91,7 +91,7 @@ const KeymapSelector = memo((): JSX.Element => {
 
   return (
     <div className="input-group flex-nowrap">
-      <div className="input-group-prepend">
+      <div>
         <span className="input-group-text" id="igt-keymap">Keymap</span>
       </div>
       <div className="dropup">
@@ -133,7 +133,7 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
 
   return (
     <div className="input-group flex-nowrap">
-      <div className="input-group-prepend">
+      <div>
         <span className="input-group-text" id="igt-indent">Indent</span>
       </div>
       <div className="dropup">

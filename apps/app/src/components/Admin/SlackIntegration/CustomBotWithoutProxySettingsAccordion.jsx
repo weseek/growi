@@ -147,7 +147,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div className="d-flex justify-content-center">
           <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
-              <div className="input-group-prepend">
+              <div className="">
                 <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
               </div>
               <input
