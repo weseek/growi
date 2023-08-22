@@ -23,7 +23,7 @@ const DataTransferForm = (): JSX.Element => {
           </button>
         </div>
         <div className="col-md-12 mt-1">
-          <div className="">
+          <div>
             <input className="form-control" type="text" value={transferKey} readOnly />
             <CustomCopyToClipBoard textToBeCopied={transferKey} message="copied_to_clipboard" />
           </div>

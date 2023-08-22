@@ -18,7 +18,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
 
   return (
     <div className="input-group admin-audit-log">
-      <div className="">
+      <div>
         <span className="input-group-text">
           <i className="fa fa-fw fa-calendar" />
         </span>

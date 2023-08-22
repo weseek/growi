@@ -147,7 +147,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className={`input-group mb-3${hasErrorClass}`}>
-            <div className="">
+            <div>
               <span className="input-group-text"><i className="icon-user" /></span>
             </div>
             <input
@@ -163,7 +163,7 @@ const InstallerForm = memo((): JSX.Element => {
           <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
-            <div className="">
+            <div>
               <span className="input-group-text"><i className="icon-tag" /></span>
             </div>
             <input
@@ -177,7 +177,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <div className="">
+            <div>
               <span className="input-group-text"><i className="icon-envelope" /></span>
             </div>
             <input
@@ -191,7 +191,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <div className="">
+            <div>
               <span className="input-group-text"><i className="icon-lock" /></span>
             </div>
             <input

@@ -30,7 +30,7 @@ const SortControl: FC <Props> = (props: Props) => {
   return (
     <>
       <div className="input-group flex-nowrap">
-        <div className="">
+        <div>
           <div className="input-group-text border text-muted" id="btnGroupAddon">
             {renderOrderIcon()}
           </div>

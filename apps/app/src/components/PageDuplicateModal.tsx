@@ -163,7 +163,7 @@ const PageDuplicateModal = (): JSX.Element => {
         <div className="form-group">
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
-            <div className="">
+            <div>
               <span className="input-group-text">{siteUrl}</span>
             </div>
             <div className="flex-fill">

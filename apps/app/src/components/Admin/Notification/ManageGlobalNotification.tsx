@@ -178,7 +178,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
             ? (
               <>
                 <div className="input-group notify-to-option" id="mail-input">
-                  <div className="">
+                  <div>
                     <span className="input-group-text" id="mail-addon"><i className="ti ti-email" /></span>
                   </div>
                   <input
@@ -206,7 +206,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
             : (
               <>
                 <div className="input-group notify-to-option" id="slack-input">
-                  <div className="">
+                  <div>
                     <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
                   </div>
                   <input

@@ -82,7 +82,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
-          <div className="">
+          <div>
             <span className="input-group-text">
               <i className="icon-envelope"></i>
             </span>
@@ -99,7 +99,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* UserID Form */}
         <div className="input-group" id="input-group-username">
-          <div className="">
+          <div>
             <span className="input-group-text">
               <i className="icon-user"></i>
             </span>
@@ -115,7 +115,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Name Form */}
         <div className="input-group">
-          <div className="">
+          <div>
             <span className="input-group-text">
               <i className="icon-tag"></i>
             </span>
@@ -131,7 +131,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Password Form */}
         <div className="input-group">
-          <div className="">
+          <div>
             <span className="input-group-text">
               <i className="icon-lock"></i>
             </span>

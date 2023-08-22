@@ -245,7 +245,7 @@ const TestProcess = ({
       <div className="d-flex justify-content-center">
         <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
-            <div className="">
+            <div>
               <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
             </div>
             <input
