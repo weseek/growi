@@ -94,17 +94,17 @@ const ProfileImageSettings = (): JSX.Element => {
       <div className="row">
         <div className="col-md-6 col-12 mb-3 mb-md-0">
           <h4>
-            <div className="custom-control custom-radio radio-primary">
+            <div className="form-check custom-radio radio-primary">
               <input
                 type="radio"
                 id="radioGravatar"
-                className="custom-control-input"
+                className="form-check-input"
                 form="formImageType"
                 name="imagetypeForm[isGravatarEnabled]"
                 checked={isGravatarEnabled}
                 onChange={() => setGravatarEnabled(true)}
               />
-              <label className="custom-control-label" htmlFor="radioGravatar">
+              <label className="form-check-label" htmlFor="radioGravatar">
                 <img src={GRAVATAR_DEFAULT} data-vrt-blackout-profile /> Gravatar
               </label>
               <a href="https://gravatar.com/">
@@ -117,17 +117,17 @@ const ProfileImageSettings = (): JSX.Element => {
 
         <div className="col-md-6 col-12">
           <h4>
-            <div className="custom-control custom-radio radio-primary">
+            <div className="form-check custom-radio radio-primary">
               <input
                 type="radio"
                 id="radioUploadPicture"
-                className="custom-control-input"
+                className="form-check-input"
                 form="formImageType"
                 name="imagetypeForm[isGravatarEnabled]"
                 checked={!isGravatarEnabled}
                 onChange={() => setGravatarEnabled(false)}
               />
-              <label className="custom-control-label" htmlFor="radioUploadPicture">
+              <label className="form-check-label" htmlFor="radioUploadPicture">
                 { t('Upload Image') }
               </label>
             </div>

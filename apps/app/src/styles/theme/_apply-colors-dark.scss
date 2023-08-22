@@ -108,7 +108,7 @@
   //     border-color: $border-color-global;
   //   }
 
-  //   label.custom-control-label::before {
+  //   label.form-check-label::before {
   //     background-color: hsl.darken(var(--bgcolor-global),5%);
   //   }
 
@@ -523,7 +523,7 @@
   //       background: var(--bgcolor-global);
   //     }
 
-  //     .custom-control-label {
+  //     .form-check-label {
   //       &::before {
   //         background-color: var(--secondary);
   //         border-color: transparent;
@@ -534,7 +534,7 @@
   //       }
   //     }
 
-  //     .custom-control-input:checked ~ .custom-control-label {
+  //     .form-check-input:checked ~ .form-check-label {
   //       &::before {
   //         background-color: lighten($color-slack, 10%);
   //       }

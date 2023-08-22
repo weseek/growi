@@ -2,84 +2,84 @@
 
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 
-// .form-check .custom-control-label::before {
+// .form-check .form-check-label::before {
 //   border-radius: $border-radius !important;
 // }
 
-// label.custom-control-label {
+// label.form-check-label {
 //   font-weight: normal;
 // }
 
 // .custom-switch.custom-switch-sm {
-//   $custom-control-indicator-size-sm: $custom-control-indicator-size * 0.8;
-//   $custom-switch-width-sm: $custom-control-indicator-size-sm * 1.75;
-//   $custom-control-gutter-sm: $custom-control-gutter * 0.8;
-//   $custom-control-indicator-size-sm: $custom-control-indicator-size * 0.8;
-//   $custom-switch-indicator-size-sm: subtract($custom-control-indicator-size-sm, $custom-control-indicator-border-width * 4);
+//   $form-check-indicator-size-sm: $form-check-indicator-size * 0.8;
+//   $custom-switch-width-sm: $form-check-indicator-size-sm * 1.75;
+//   $form-check-gutter-sm: $form-check-gutter * 0.8;
+//   $form-check-indicator-size-sm: $form-check-indicator-size * 0.8;
+//   $custom-switch-indicator-size-sm: subtract($form-check-indicator-size-sm, $form-check-indicator-border-width * 4);
 
-//   padding-left: $custom-switch-width-sm + $custom-control-gutter-sm;
+//   padding-left: $custom-switch-width-sm + $form-check-gutter-sm;
 
-//   .custom-control-label {
+//   .form-check-label {
 //     &::before {
-//       left: -($custom-switch-width-sm + $custom-control-gutter-sm);
+//       left: -($custom-switch-width-sm + $form-check-gutter-sm);
 //       width: $custom-switch-width-sm;
-//       height: $custom-control-indicator-size-sm;
+//       height: $form-check-indicator-size-sm;
 //     }
 
 //     &::after {
-//       top: add(($font-size-base * $line-height-base - $custom-control-indicator-size) / 2, $custom-control-indicator-border-width * 2);
-//       left: add(-($custom-switch-width-sm + $custom-control-gutter-sm), $custom-control-indicator-border-width * 2);
+//       top: add(($font-size-base * $line-height-base - $form-check-indicator-size) / 2, $form-check-indicator-border-width * 2);
+//       left: add(-($custom-switch-width-sm + $form-check-gutter-sm), $form-check-indicator-border-width * 2);
 //       width: $custom-switch-indicator-size-sm;
 //       height: $custom-switch-indicator-size-sm;
 //     }
 //   }
 
-//   .custom-control-input:checked ~ .custom-control-label {
+//   .form-check-input:checked ~ .form-check-label {
 //     &::after {
-//       transform: translateX($custom-switch-width-sm - $custom-control-indicator-size-sm);
+//       transform: translateX($custom-switch-width-sm - $form-check-indicator-size-sm);
 //     }
 //   }
 // }
 
 // //lg
 // .custom-switch.custom-switch-lg {
-//   $custom-control-indicator-size-lg: $custom-control-indicator-size * 1.5;
-//   $custom-switch-width-lg: $custom-control-indicator-size-lg * 1.75;
-//   $custom-control-gutter-lg: $custom-control-gutter * 1.5;
-//   $custom-control-indicator-size-lg: $custom-control-indicator-size * 1.5;
-//   $custom-switch-indicator-size-lg: subtract($custom-control-indicator-size-lg, $custom-control-indicator-border-width * 4);
+//   $form-check-indicator-size-lg: $form-check-indicator-size * 1.5;
+//   $custom-switch-width-lg: $form-check-indicator-size-lg * 1.75;
+//   $form-check-gutter-lg: $form-check-gutter * 1.5;
+//   $form-check-indicator-size-lg: $form-check-indicator-size * 1.5;
+//   $custom-switch-indicator-size-lg: subtract($form-check-indicator-size-lg, $form-check-indicator-border-width * 4);
 
-//   padding-left: $custom-switch-width-lg + $custom-control-gutter-lg;
+//   padding-left: $custom-switch-width-lg + $form-check-gutter-lg;
 
-//   line-height: $custom-control-indicator-size-lg;
-//   .custom-control-label {
+//   line-height: $form-check-indicator-size-lg;
+//   .form-check-label {
 //     &::before {
-//       top: ($font-size-base * $line-height-base - $custom-control-indicator-size-lg) / 2;
+//       top: ($font-size-base * $line-height-base - $form-check-indicator-size-lg) / 2;
 
-//       left: -($custom-switch-width-lg + $custom-control-gutter-lg);
+//       left: -($custom-switch-width-lg + $form-check-gutter-lg);
 //       width: $custom-switch-width-lg;
-//       height: $custom-control-indicator-size-lg;
-//       border-radius: $custom-control-indicator-size-lg/2;
+//       height: $form-check-indicator-size-lg;
+//       border-radius: $form-check-indicator-size-lg/2;
 //     }
 
 //     &::after {
-//       top: add(($font-size-base * $line-height-base - $custom-control-indicator-size-lg) / 2, $custom-control-indicator-border-width * 2);
-//       left: add(-($custom-switch-width-lg + $custom-control-gutter-lg), $custom-control-indicator-border-width * 2);
+//       top: add(($font-size-base * $line-height-base - $form-check-indicator-size-lg) / 2, $form-check-indicator-border-width * 2);
+//       left: add(-($custom-switch-width-lg + $form-check-gutter-lg), $form-check-indicator-border-width * 2);
 //       width: $custom-switch-indicator-size-lg;
 //       height: $custom-switch-indicator-size-lg;
-//       border-radius: $custom-control-indicator-size-lg/2;
+//       border-radius: $form-check-indicator-size-lg/2;
 //     }
 //   }
 
-//   .custom-control-input:checked ~ .custom-control-label {
+//   .form-check-input:checked ~ .form-check-label {
 //     &::after {
-//       transform: translateX($custom-switch-width-lg - $custom-control-indicator-size-lg);
+//       transform: translateX($custom-switch-width-lg - $form-check-indicator-size-lg);
 //     }
 //   }
 // }
 
 // .custom-switch.custom-switch-slack {
-//   .custom-control-label {
+//   .form-check-label {
 //     &::before {
 //       background-color: $gray-200;
 //       border-color: transparent;

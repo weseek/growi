@@ -66,16 +66,16 @@ class SamlSecurityManagementContents extends React.Component {
 
         <div className="row form-group mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch form-check-success">
+            <div className="form-check custom-switch form-check-success">
               <input
                 id="isSamlEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isSamlEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="custom-control-label" htmlFor="isSamlEnabled">
+              <label className="form-check-label" htmlFor="isSamlEnabled">
                 {t('security_settings.SAML.enable_saml')}
               </label>
             </div>
@@ -392,16 +392,16 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
             <div className="row form-group mb-5">
               <div className="offset-md-3 col-md-6 text-left">
-                <div className="custom-control form-check form-check-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByUserName-SAML"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="bindByUserName-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
@@ -414,16 +414,16 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
             <div className="row form-group mb-5">
               <div className="offset-md-3 col-md-6 text-left">
-                <div className="custom-control form-check form-check-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByEmail-SAML"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="bindByEmail-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

@@ -127,15 +127,15 @@ const CopyDropdown = (props) => {
               { t('copy_to_clipboard.Copy to clipboard') }
             </DropdownItem>
             { !isShareLinkMode && (
-              <div className="px-3 custom-control custom-switch custom-switch-sm">
+              <div className="px-3 form-check custom-switch custom-switch-sm">
                 <input
                   type="checkbox"
                   id={customSwitchForParamsId}
-                  className="custom-control-input"
+                  className="form-check-input"
                   checked={isParamsAppended}
                   onChange={toggleAppendParams}
                 />
-                <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
+                <label className="form-check-label small" htmlFor={customSwitchForParamsId}>Append params</label>
               </div>
             ) }
           </div>

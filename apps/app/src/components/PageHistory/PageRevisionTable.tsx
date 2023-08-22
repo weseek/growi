@@ -157,33 +157,33 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-1">
           {(hasDiff || revisionId === sourceRevision?._id) && (
-            <div className="custom-control custom-radio custom-control-inline mr-0">
+            <div className="form-check custom-radio form-check-inline mr-0">
               <input
                 type="radio"
-                className="custom-control-input"
+                className="form-check-input"
                 id={`compareSource-${revisionId}`}
                 name="compareSource"
                 value={revisionId}
                 checked={revisionId === sourceRevision?._id}
                 onChange={() => onChangeSourceInvoked(revision)}
               />
-              <label className="custom-control-label" htmlFor={`compareSource-${revisionId}`} />
+              <label className="form-check-label" htmlFor={`compareSource-${revisionId}`} />
             </div>
           )}
         </td>
         <td className="col-2">
           {(hasDiff || revisionId === targetRevision?._id) && (
-            <div className="custom-control custom-radio custom-control-inline mr-0">
+            <div className="form-check custom-radio form-check-inline mr-0">
               <input
                 type="radio"
-                className="custom-control-input"
+                className="form-check-input"
                 id={`compareTarget-${revisionId}`}
                 name="compareTarget"
                 value={revisionId}
                 checked={revisionId === targetRevision?._id}
                 onChange={() => onChangeTargetInvoked(revision)}
               />
-              <label className="custom-control-label" htmlFor={`compareTarget-${revisionId}`} />
+              <label className="form-check-label" htmlFor={`compareTarget-${revisionId}`} />
             </div>
           )}
         </td>

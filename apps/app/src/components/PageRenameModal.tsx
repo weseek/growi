@@ -252,29 +252,29 @@ const PageRenameModal = (): JSX.Element => {
 
         { !isV5Compatible(page.meta) && (
           <>
-            <div className="custom-control custom-radio custom-radio-warning">
+            <div className="form-check custom-radio custom-radio-warning">
               <input
-                className="custom-control-input"
+                className="form-check-input"
                 name="withoutExistRecursively"
                 id="cbRenameThisPageOnly"
                 type="radio"
                 checked={!isRenameRecursively}
                 onChange={() => setIsRenameRecursively(!isRenameRecursively)}
               />
-              <label className="custom-control-label" htmlFor="cbRenameThisPageOnly">
+              <label className="form-check-label" htmlFor="cbRenameThisPageOnly">
                 { t('modal_rename.label.Rename this page only') }
               </label>
             </div>
-            <div className="custom-control custom-radio custom-radio-warning mt-1">
+            <div className="form-check custom-radio custom-radio-warning mt-1">
               <input
-                className="custom-control-input"
+                className="form-check-input"
                 name="recursively"
                 id="cbForceRenameRecursively"
                 type="radio"
                 checked={isRenameRecursively}
                 onChange={() => setIsRenameRecursively(!isRenameRecursively)}
               />
-              <label className="custom-control-label" htmlFor="cbForceRenameRecursively">
+              <label className="form-check-label" htmlFor="cbForceRenameRecursively">
                 { t('modal_rename.label.Force rename all child pages') }
                 <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
               </label>
@@ -292,31 +292,31 @@ const PageRenameModal = (): JSX.Element => {
           </button>
         </p>
         <Collapse isOpen={expandOtherOptions}>
-          <div className="custom-control form-check form-check-success">
+          <div className="form-check form-check-success">
             <input
-              className="custom-control-input"
+              className="form-check-input"
               name="create_redirect"
               id="cbRenameRedirect"
               type="checkbox"
               checked={isRenameRedirect}
               onChange={() => setIsRenameRedirect(!isRenameRedirect)}
             />
-            <label className="custom-control-label" htmlFor="cbRenameRedirect">
+            <label className="form-check-label" htmlFor="cbRenameRedirect">
               { t('modal_rename.label.Redirect') }
               <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
             </label>
           </div>
 
-          <div className="custom-control form-check form-check-success">
+          <div className="form-check form-check-success">
             <input
-              className="custom-control-input"
+              className="form-check-input"
               name="remain_metadata"
               id="cbRemainMetadata"
               type="checkbox"
               checked={isRemainMetadata}
               onChange={() => setIsRemainMetadata(!isRemainMetadata)}
             />
-            <label className="custom-control-label" htmlFor="cbRemainMetadata">
+            <label className="form-check-label" htmlFor="cbRemainMetadata">
               { t('modal_rename.label.Do not update metadata') }
               <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
             </label>

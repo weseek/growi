@@ -133,15 +133,15 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
       <div className="d-flex align-items-center">
-        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
+        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check custom-switch ml-1`}>
           <input
             id="recentChangesResize"
-            className="custom-control-input"
+            className="form-check-input"
             type="checkbox"
             checked={isSmall}
             onChange={changeSizeHandler}
           />
-          <label className="custom-control-label" htmlFor="recentChangesResize" />
+          <label className="form-check-label" htmlFor="recentChangesResize" />
         </div>
       </div>
     </>

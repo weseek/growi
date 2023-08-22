@@ -105,16 +105,16 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="col text-left custom-control form-check form-check-info text-left" onChange={this.handleCheckBox}>
+        <div className="col text-left form-check form-check-info text-left" onChange={this.handleCheckBox}>
           <input
             type="checkbox"
             id="sendEmail"
-            className="custom-control-input"
+            className="form-check-input"
             name="sendEmail"
             defaultChecked={this.state.sendEmail}
             disabled={!isMailerSetup}
           />
-          <label className="custom-control-label" htmlFor="sendEmail">
+          <label className="form-check-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
           {isMailerSetup

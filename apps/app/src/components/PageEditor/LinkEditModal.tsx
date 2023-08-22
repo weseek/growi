@@ -301,29 +301,29 @@ export const LinkEditModal = (): JSX.Element => {
           <div className="form-group mb-0 row">
             <label className="col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
-              <div className="custom-control form-check form-check-info custom-control-inline">
+              <div className="form-check form-check-info form-check-inline">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   id="relativePath"
                   type="checkbox"
                   checked={isUseRelativePath}
                   onChange={toggleIsUseRelativePath}
                   disabled={!linkInputValue.startsWith('/') || linkerType === Linker.types.growiLink}
                 />
-                <label className="custom-control-label" htmlFor="relativePath">
+                <label className="form-check-label" htmlFor="relativePath">
                   {t('link_edit.use_relative_path')}
                 </label>
               </div>
-              <div className="custom-control form-check form-check-info custom-control-inline">
+              <div className="form-check form-check-info form-check-inline">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   id="permanentLink"
                   type="checkbox"
                   checked={isUsePermanentLink}
                   onChange={toggleIsUsePamanentLink}
                   disabled={permalink === '' || linkerType === Linker.types.growiLink}
                 />
-                <label className="custom-control-label" htmlFor="permanentLink">
+                <label className="form-check-label" htmlFor="permanentLink">
                   {t('link_edit.use_permanent_link')}
                 </label>
               </div>

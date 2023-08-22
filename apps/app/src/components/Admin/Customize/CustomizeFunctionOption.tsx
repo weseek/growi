@@ -16,15 +16,15 @@ const CustomizeFunctionOption = (props: Props): JSX.Element => {
 
   return (
     <React.Fragment>
-      <div className="custom-control form-check form-check-success">
+      <div className="form-check form-check-success">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           type="checkbox"
           id={optionId}
           checked={isChecked}
           onChange={onChecked}
         />
-        <label className="custom-control-label" htmlFor={optionId}>
+        <label className="form-check-label" htmlFor={optionId}>
           <strong>{label}</strong>
         </label>
       </div>

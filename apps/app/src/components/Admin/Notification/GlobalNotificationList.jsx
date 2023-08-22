@@ -80,15 +80,15 @@ class GlobalNotificationList extends React.Component {
           return (
             <tr key={notification._id}>
               <td className="align-middle td-abs-center">
-                <div className="custom-control custom-switch form-check-success">
+                <div className="form-check custom-switch form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id={notification._id}
                     defaultChecked={notification.isEnabled}
                     onClick={() => this.toggleIsEnabled(notification)}
                   />
-                  <label className="custom-control-label" htmlFor={notification._id} />
+                  <label className="form-check-label" htmlFor={notification._id} />
                 </div>
               </td>
               <td>
