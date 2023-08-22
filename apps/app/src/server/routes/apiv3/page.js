@@ -163,6 +163,7 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
+  const path = require('path');
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const configManager = crowi.configManager;
@@ -585,6 +586,7 @@ module.exports = (crowi) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;
+    let pagePath;
 
     try {
       const Page = crowi.model('Page');
@@ -603,6 +605,7 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
+      pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
       if (page._id.toString() !== revision.pageId.toString()) {
@@ -614,7 +617,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const fileName = revision.id;
+    const fileName = path.basename(pagePath);
     let stream;
 
     try {
