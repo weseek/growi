@@ -69,7 +69,7 @@ const InAppNotificationSettings: FC = () => {
     <>
       <h2 className="border-bottom my-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
 
-      <div className="form-group row">
+      <div className="row">
         <div className="offset-md-3 col-md-6 text-left">
           {subscribeRulesMenuItems.map(rule => (
             <div

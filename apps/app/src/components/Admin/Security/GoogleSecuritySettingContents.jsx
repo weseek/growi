@@ -54,7 +54,7 @@ class GoogleSecurityManagementContents extends React.Component {
           </div>
         )}
 
-        <div className="form-group row">
+        <div className="row">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input

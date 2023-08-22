@@ -209,11 +209,11 @@ const PageRenameModal = (): JSX.Element => {
 
     return (
       <>
-        <div className="form-group">
+        <div>
           <label>{ t('modal_rename.label.Current page name') }</label><br />
           <code>{ path }</code>
         </div>
-        <div className="form-group">
+        <div>
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
           <div className="input-group">
             <div>

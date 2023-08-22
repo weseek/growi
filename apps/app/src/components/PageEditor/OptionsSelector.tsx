@@ -216,7 +216,7 @@ const ConfigurationDropdown = memo((): JSX.Element => {
   }, [editorSettings, t, update]);
 
   return (
-    <div className="my-0 form-group">
+    <div className="my-0">
       <Dropdown
         direction="up"
         className="grw-editor-configuration-dropdown"

@@ -50,7 +50,7 @@ const OtherSettings = (): JSX.Element => {
         </div>
       )}
 
-      <div className="form-group row">
+      <div className="row">
         <div className="offset-md-3 col-md-6 text-left">
           {!isLoadingCurrentUser && (
             <div className="custom-control custom-switch custom-checkbox-primary">

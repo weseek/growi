@@ -88,7 +88,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   }
 
   return (
-    <div className={`grw-global-search ${styles['grw-global-search']} form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
+    <div className={`grw-global-search ${styles['grw-global-search']} mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
       <div className="input-group flex-nowrap">
         <div className={` ${dropup ? 'dropup' : ''}`}>
           <button

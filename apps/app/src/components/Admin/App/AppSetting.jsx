@@ -34,7 +34,7 @@ const AppSetting = (props) => {
 
   return (
     <React.Fragment>
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
         <div className="col-md-6">
           <input
@@ -50,7 +50,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -70,7 +70,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -103,7 +103,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -138,7 +138,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >

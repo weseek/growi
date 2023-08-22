@@ -52,7 +52,7 @@ const PasswordResetExecutionForm: FC = () => {
 
   return (
     <form role="form" onSubmit={changePassword}>
-      <div className="form-group">
+      <div>
         <div className="input-group">
           <input
             name="password"
@@ -63,7 +63,7 @@ const PasswordResetExecutionForm: FC = () => {
           />
         </div>
       </div>
-      <div className="form-group">
+      <div>
         <div className="input-group">
           <input
             name="password"
@@ -77,7 +77,7 @@ const PasswordResetExecutionForm: FC = () => {
           <p className="text-danger mt-2">{t(validationErrorI18n)}</p>
         )}
       </div>
-      <div className="form-group">
+      <div>
         <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value={t('forgot_password.reset_password')} type="submit" />
       </div>
       <Link href="/login" prefetch={false}>

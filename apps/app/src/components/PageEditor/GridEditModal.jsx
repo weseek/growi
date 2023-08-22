@@ -198,8 +198,8 @@ class GridEditModal extends React.Component {
           <div className="row">
             <div className="col-12">
               <h3 className="grw-modal-head">{t('grid_edit.grid_settings')}</h3>
-              <form className="form-group mb-0">
-                <div className="form-group row my-3">
+              <form className="mb-0">
+                <div className="row my-3">
                   <label className="col-sm-3" htmlFor="gridPattern">
                     {t('grid_edit.grid_pattern')}
                   </label>
@@ -219,7 +219,7 @@ class GridEditModal extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
+                <div className="row">
                   <label className="col-sm-3" htmlFor="breakPoint">
                     {t('grid_edit.break_point')}
                   </label>

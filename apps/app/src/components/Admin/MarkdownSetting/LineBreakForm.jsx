@@ -90,7 +90,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
+        <fieldset className="row row-cols-1 row-cols-md-2 mx-3">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>

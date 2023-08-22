@@ -157,10 +157,10 @@ const PageDuplicateModal = (): JSX.Element => {
 
     return (
       <>
-        <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
+        <div><label>{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
-        <div className="form-group">
+        <div>
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
             <div>

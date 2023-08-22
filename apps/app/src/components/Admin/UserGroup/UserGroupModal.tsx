@@ -74,7 +74,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
         </ModalHeader>
 
         <ModalBody>
-          <div className="form-group">
+          <div>
             <label htmlFor="name">
               {t('user_group_management.group_name')}
             </label>
@@ -89,7 +89,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
             />
           </div>
 
-          <div className="form-group">
+          <div>
             <label htmlFor="description">
               {t('Description')}
             </label>
@@ -103,7 +103,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
         </ModalBody>
 
         <ModalFooter>
-          <div className="form-group">
+          <div>
             <button type="submit" className="btn btn-primary">
               {buttonLabel}
             </button>

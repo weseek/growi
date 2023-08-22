@@ -106,11 +106,11 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
       <div className=" p-3">
 
         {/* ExpirationTypeOptions */}
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.expire')}</label>
           <div className="col-md-7">
 
-            <div className="custom-control custom-radio form-group ">
+            <div className="custom-control custom-radio ">
               <input
                 type="radio"
                 className="custom-control-input"
@@ -123,7 +123,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
               <label className="custom-control-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
             </div>
 
-            <div className="custom-control custom-radio  form-group">
+            <div className="custom-control custom-radio ">
               <input
                 type="radio"
                 className="custom-control-input"
@@ -149,7 +149,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
               </label>
             </div>
 
-            <div className="custom-control custom-radio form-group text-nowrap mb-0">
+            <div className="custom-control custom-radio text-nowrap mb-0">
               <input
                 type="radio"
                 className="custom-control-input"
@@ -185,7 +185,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
         </div>
 
         {/* DescriptionForm */}
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.description')}</label>
           <div className="col-md-4">
             <input

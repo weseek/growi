@@ -131,7 +131,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
               <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
             </label>
           </h3>
-          <div className="form-group">
+          <div>
             <input
               className="form-control"
               type="text"
@@ -143,7 +143,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
           </div>
 
           <h3>{t('notification_settings.notify_to')}</h3>
-          <div className="form-group form-inline">
+          <div className="form-inline">
             <div className="custom-control custom-radio">
               <input
                 className="custom-control-input"
@@ -228,7 +228,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
         </div>
 
         <div className="offset-1 col-sm-5">
-          <div className="form-group">
+          <div>
             <h3>{t('notification_settings.trigger_events')}</h3>
             <div className="my-1">
               <TriggerEventCheckBox

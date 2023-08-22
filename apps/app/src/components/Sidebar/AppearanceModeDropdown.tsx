@@ -76,7 +76,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
         <h6 className="dropdown-header">{t(isEditMode ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
         <form className="px-4">
           <div className="form-row justify-content-center">
-            <div className="form-group col-auto mb-0 d-flex align-items-center">
+            <div className="col-auto mb-0 d-flex align-items-center">
               <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
@@ -130,7 +130,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
             <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
             <form className="px-4">
               <div className="form-row justify-content-center">
-                <div className="form-group col-auto d-flex align-items-center">
+                <div className="col-auto d-flex align-items-center">
                   <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                     <SunIcon />
                   </IconWithTooltip>
@@ -151,7 +151,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                 </div>
               </div>
               <div className="form-row">
-                <div className="form-group col-auto">
+                <div className="col-auto">
                   <div className="custom-control custom-checkbox">
                     <input
                       id="cbFollowOs"

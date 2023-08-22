@@ -259,7 +259,7 @@ const PageDeleteModal: FC = () => {
 
     return (
       <>
-        <div className="form-group grw-scrollable-modal-body pb-1">
+        <div className="grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePathsToDelete()}

@@ -125,7 +125,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     return (
       <>
         <ModalBody>
-          <div className="form-group">
+          <div>
             {/* eslint-disable-next-line react/no-danger */}
             <p className="mb-2" dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.need_to_fix_grant') }} />
 

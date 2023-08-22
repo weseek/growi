@@ -242,7 +242,7 @@ export const LinkEditModal = (): JSX.Element => {
     return (
       <>
         <h3 className="grw-modal-head">{t('link_edit.set_link_and_label')}</h3>
-        <form className="form-group">
+        <form>
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
               <div>
@@ -297,8 +297,8 @@ export const LinkEditModal = (): JSX.Element => {
   const renderPathFormatForm = (): JSX.Element => {
     return (
       <div className="card well pt-3">
-        <form className="form-group mb-0">
-          <div className="form-group mb-0 row">
+        <form className="mb-0">
+          <div className="mb-0 row">
             <label className="col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
               <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">

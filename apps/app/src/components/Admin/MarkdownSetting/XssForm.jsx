@@ -45,7 +45,7 @@ class XssForm extends React.Component {
     const rehypeRecommendedAttributes = JSON.stringify(sanitizeDefaultSchema.attributes);
 
     return (
-      <div className="form-group col-12 my-3">
+      <div className="col-12 my-3">
         <div className="row">
 
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
@@ -118,7 +118,7 @@ class XssForm extends React.Component {
     return (
       <React.Fragment>
         <fieldset className="col-12">
-          <div className="form-group">
+          <div>
             <div className="col-8 offset-4 my-3">
               <div className="custom-control custom-switch custom-checkbox-success">
                 <input

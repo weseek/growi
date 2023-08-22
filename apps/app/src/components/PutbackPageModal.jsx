@@ -71,7 +71,7 @@ const PutBackPageModal = () => {
     }
     return (
       <>
-        <div className="form-group">
+        <div>
           <label>{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>

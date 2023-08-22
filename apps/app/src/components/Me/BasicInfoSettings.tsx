@@ -49,7 +49,7 @@ export const BasicInfoSettings = (): JSX.Element => {
   return (
     <>
 
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="userForm[name]" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
         <div className="col-md-6">
           <input
@@ -62,7 +62,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="userForm[email]" className="text-left text-md-right col-md-3 col-form-label">{t('Email')}</label>
         <div className="col-md-6">
           <input
@@ -83,7 +83,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>
         <div className="col-md-6">
           <div className="custom-control custom-radio custom-control-inline">
@@ -111,7 +111,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
           {
@@ -136,7 +136,7 @@ export const BasicInfoSettings = (): JSX.Element => {
           }
         </div>
       </div>
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="userForm[slackMemberId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack Member ID')}</label>
         <div className="col-md-6">
           <input

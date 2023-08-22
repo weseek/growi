@@ -64,7 +64,7 @@ class SamlSecurityManagementContents extends React.Component {
           />
         )}
 
-        <div className="row form-group mb-5">
+        <div className="row mb-5">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
@@ -84,7 +84,7 @@ class SamlSecurityManagementContents extends React.Component {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
+        <div className="row mb-5">
           <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
@@ -390,7 +390,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
-            <div className="row form-group mb-5">
+            <div className="row mb-5">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
@@ -412,7 +412,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </div>
             </div>
 
-            <div className="row form-group mb-5">
+            <div className="row mb-5">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input

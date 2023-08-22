@@ -137,7 +137,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
   return (
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
           <div className=" mx-1">
@@ -146,7 +146,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
           </div>
         </div>
       </div>
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
           <div className=" mx-1">
@@ -268,7 +268,7 @@ const TestProcess = ({
       <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} logsValue={logsValue} />
       <form>
         <div className="row my-3 justify-content-center">
-          <div className="form-group slack-connection-log col-md-4">
+          <div className="slack-connection-log col-md-4">
             <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"

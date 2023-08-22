@@ -84,7 +84,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
         {dropdownItems.map(item => (
           <div key={item.actionCategory}>
             <div className="dropdown-item">
-              <div className="form-group px-2 m-0">
+              <div className="px-2 m-0">
                 <input
                   type="checkbox"
                   className="form-check-input"
@@ -97,7 +97,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
             {
               item.actions.map(action => (
                 <div className="dropdown-item" key={action}>
-                  <div className="form-group px-4 m-0">
+                  <div className="px-4 m-0">
                     <input
                       type="checkbox"
                       className="form-check-input"

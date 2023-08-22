@@ -115,7 +115,7 @@ class UserGroupUserFormByInput extends React.Component {
     const inputProps = { autoComplete: 'off' };
 
     return (
-      <div className="form-group row">
+      <div className="row">
         <div className="col-8 pr-0">
           <AsyncTypeahead
             {...this.props}

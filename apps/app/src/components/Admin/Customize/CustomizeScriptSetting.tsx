@@ -42,7 +42,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="form-group">
+          <div>
             <textarea
               className="form-control"
               name="customizeScript"

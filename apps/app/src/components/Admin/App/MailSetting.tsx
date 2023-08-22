@@ -49,7 +49,7 @@ const MailSetting = (props: Props) => {
       {!adminAppContainer.state.isMailerSetup && (
         <div className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.mailer_is_not_set_up')}</div>
       )}
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label className="col-md-3 col-form-label text-right">{t('admin:app_setting.from_e-mail_address')}</label>
         <div className="col-md-6">
           <input
@@ -62,7 +62,7 @@ const MailSetting = (props: Props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label className="text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.transmission_method')}
         </label>

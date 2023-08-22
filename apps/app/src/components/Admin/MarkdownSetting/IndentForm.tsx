@@ -97,7 +97,7 @@ const IndentForm = (props: Props) => {
 
   return (
     <React.Fragment>
-      <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
+      <fieldset className="row row-cols-1 row-cols-md-2 mx-3">
         {renderIndentSizeOption(props)}
         {renderIndentForceOption(props)}
       </fieldset>
