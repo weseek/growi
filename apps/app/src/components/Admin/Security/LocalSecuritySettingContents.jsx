@@ -64,7 +64,7 @@ class LocalSecuritySettingContents extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="form-check custom-switch form-check-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
                 className="form-check-input"
@@ -165,7 +165,7 @@ class LocalSecuritySettingContents extends React.Component {
             <div className="row">
               <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
-                <div className="form-check custom-switch form-check-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
                     className="form-check-input"
@@ -194,7 +194,7 @@ class LocalSecuritySettingContents extends React.Component {
             <div className="row">
               <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.email_authentication')}</label>
               <div className="col-12 col-md-6">
-                <div className="form-check custom-switch form-check-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
                     className="form-check-input"

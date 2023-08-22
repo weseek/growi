@@ -19,7 +19,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
 
   return (
     <div className="d-flex align-items-center">
-      <div className="my-1 form-check custom-switch">
+      <div className="my-1 form-check form-switch">
         <input
           className="form-check-input"
           id={inputId}

@@ -66,7 +66,7 @@ class SamlSecurityManagementContents extends React.Component {
 
         <div className="row form-group mb-5">
           <div className="col-6 offset-3">
-            <div className="form-check custom-switch form-check-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isSamlEnabled"
                 className="form-check-input"

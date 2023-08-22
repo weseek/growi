@@ -356,7 +356,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="form-check custom-switch form-check-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
                       className="form-check-input"
@@ -373,7 +373,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="form-check custom-switch form-check-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
                       className="form-check-input"
@@ -456,7 +456,7 @@ class SecuritySetting extends React.Component {
         <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
-            <div className="form-check custom-switch form-check-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
                 className="form-check-input"

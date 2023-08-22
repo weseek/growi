@@ -162,7 +162,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         </button>
         { !showCropOption && (
           <div className="mr-auto">
-            <div className="form-check custom-switch ">
+            <div className="form-check form-switch ">
               <input
                 id="cropImageOption"
                 className="form-check-input mr-auto"

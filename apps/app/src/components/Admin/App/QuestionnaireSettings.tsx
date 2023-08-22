@@ -72,7 +72,7 @@ const QuestionnaireSettings = (): JSX.Element => {
       {!isLoading && (
         <>
           <div className="row my-3">
-            <div className="form-check custom-switch form-check-info col-md-5 offset-md-5">
+            <div className="form-check form-switch form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
                 className="form-check-input"

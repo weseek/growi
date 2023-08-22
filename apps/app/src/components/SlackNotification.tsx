@@ -40,7 +40,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
     <div className={`grw-slack-notification ${styles['grw-slack-notification']} w-100`}>
       <div className="grw-input-group-slack-notification input-group extended-setting">
         <label className="input-group-addon">
-          <div className="form-check custom-switch custom-switch-lg custom-switch-slack">
+          <div className="form-check form-switch form-switch-lg form-switch-slack">
             <input
               type="checkbox"
               className="form-check-input border-0"

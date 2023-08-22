@@ -50,7 +50,7 @@ class OidcSecurityManagementContents extends React.Component {
 
         <div className="row mb-5 form-group">
           <div className="offset-3 col-6">
-            <div className="form-check custom-switch form-check-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isOidcEnabled"
                 className="form-check-input"

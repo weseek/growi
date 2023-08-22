@@ -60,7 +60,7 @@ class LdapSecuritySettingContents extends React.Component {
 
         <div className="form-group row">
           <div className="col-6 offset-3">
-            <div className="form-check custom-switch form-check-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isLdapEnabled"
                 className="form-check-input"

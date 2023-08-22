@@ -10,75 +10,75 @@
 //   font-weight: normal;
 // }
 
-// .custom-switch.custom-switch-sm {
+// .form-switch.form-switch-sm {
 //   $form-check-indicator-size-sm: $form-check-indicator-size * 0.8;
-//   $custom-switch-width-sm: $form-check-indicator-size-sm * 1.75;
+//   $form-switch-width-sm: $form-check-indicator-size-sm * 1.75;
 //   $form-check-gutter-sm: $form-check-gutter * 0.8;
 //   $form-check-indicator-size-sm: $form-check-indicator-size * 0.8;
-//   $custom-switch-indicator-size-sm: subtract($form-check-indicator-size-sm, $form-check-indicator-border-width * 4);
+//   $form-switch-indicator-size-sm: subtract($form-check-indicator-size-sm, $form-check-indicator-border-width * 4);
 
-//   padding-left: $custom-switch-width-sm + $form-check-gutter-sm;
+//   padding-left: $form-switch-width-sm + $form-check-gutter-sm;
 
 //   .form-check-label {
 //     &::before {
-//       left: -($custom-switch-width-sm + $form-check-gutter-sm);
-//       width: $custom-switch-width-sm;
+//       left: -($form-switch-width-sm + $form-check-gutter-sm);
+//       width: $form-switch-width-sm;
 //       height: $form-check-indicator-size-sm;
 //     }
 
 //     &::after {
 //       top: add(($font-size-base * $line-height-base - $form-check-indicator-size) / 2, $form-check-indicator-border-width * 2);
-//       left: add(-($custom-switch-width-sm + $form-check-gutter-sm), $form-check-indicator-border-width * 2);
-//       width: $custom-switch-indicator-size-sm;
-//       height: $custom-switch-indicator-size-sm;
+//       left: add(-($form-switch-width-sm + $form-check-gutter-sm), $form-check-indicator-border-width * 2);
+//       width: $form-switch-indicator-size-sm;
+//       height: $form-switch-indicator-size-sm;
 //     }
 //   }
 
 //   .form-check-input:checked ~ .form-check-label {
 //     &::after {
-//       transform: translateX($custom-switch-width-sm - $form-check-indicator-size-sm);
+//       transform: translateX($form-switch-width-sm - $form-check-indicator-size-sm);
 //     }
 //   }
 // }
 
 // //lg
-// .custom-switch.custom-switch-lg {
+// .form-switch.form-switch-lg {
 //   $form-check-indicator-size-lg: $form-check-indicator-size * 1.5;
-//   $custom-switch-width-lg: $form-check-indicator-size-lg * 1.75;
+//   $form-switch-width-lg: $form-check-indicator-size-lg * 1.75;
 //   $form-check-gutter-lg: $form-check-gutter * 1.5;
 //   $form-check-indicator-size-lg: $form-check-indicator-size * 1.5;
-//   $custom-switch-indicator-size-lg: subtract($form-check-indicator-size-lg, $form-check-indicator-border-width * 4);
+//   $form-switch-indicator-size-lg: subtract($form-check-indicator-size-lg, $form-check-indicator-border-width * 4);
 
-//   padding-left: $custom-switch-width-lg + $form-check-gutter-lg;
+//   padding-left: $form-switch-width-lg + $form-check-gutter-lg;
 
 //   line-height: $form-check-indicator-size-lg;
 //   .form-check-label {
 //     &::before {
 //       top: ($font-size-base * $line-height-base - $form-check-indicator-size-lg) / 2;
 
-//       left: -($custom-switch-width-lg + $form-check-gutter-lg);
-//       width: $custom-switch-width-lg;
+//       left: -($form-switch-width-lg + $form-check-gutter-lg);
+//       width: $form-switch-width-lg;
 //       height: $form-check-indicator-size-lg;
 //       border-radius: $form-check-indicator-size-lg/2;
 //     }
 
 //     &::after {
 //       top: add(($font-size-base * $line-height-base - $form-check-indicator-size-lg) / 2, $form-check-indicator-border-width * 2);
-//       left: add(-($custom-switch-width-lg + $form-check-gutter-lg), $form-check-indicator-border-width * 2);
-//       width: $custom-switch-indicator-size-lg;
-//       height: $custom-switch-indicator-size-lg;
+//       left: add(-($form-switch-width-lg + $form-check-gutter-lg), $form-check-indicator-border-width * 2);
+//       width: $form-switch-indicator-size-lg;
+//       height: $form-switch-indicator-size-lg;
 //       border-radius: $form-check-indicator-size-lg/2;
 //     }
 //   }
 
 //   .form-check-input:checked ~ .form-check-label {
 //     &::after {
-//       transform: translateX($custom-switch-width-lg - $form-check-indicator-size-lg);
+//       transform: translateX($form-switch-width-lg - $form-check-indicator-size-lg);
 //     }
 //   }
 // }
 
-// .custom-switch.custom-switch-slack {
+// .form-switch.form-switch-slack {
 //   .form-check-label {
 //     &::before {
 //       background-color: $gray-200;
