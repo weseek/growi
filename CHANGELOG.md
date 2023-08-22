@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.13...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.14...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
+
+### 🐛 Bug Fixes
+
+- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
 
 ## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
 
