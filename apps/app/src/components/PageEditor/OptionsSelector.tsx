@@ -39,7 +39,7 @@ const ThemeSelector = (): JSX.Element => {
       <div className="input-group-prepend">
         <span className="input-group-text" id="igt-theme">Theme</span>
       </div>
-      <div className="input-group-append dropup">
+      <div className="dropup">
         <button
           type="button"
           className="btn btn-outline-secondary dropdown-toggle"
@@ -94,7 +94,7 @@ const KeymapSelector = memo((): JSX.Element => {
       <div className="input-group-prepend">
         <span className="input-group-text" id="igt-keymap">Keymap</span>
       </div>
-      <div className="input-group-append dropup">
+      <div className="dropup">
         <button
           type="button"
           className="btn btn-outline-secondary dropdown-toggle"
@@ -136,7 +136,7 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
       <div className="input-group-prepend">
         <span className="input-group-text" id="igt-indent">Indent</span>
       </div>
-      <div className="input-group-append dropup">
+      <div className="dropup">
         <button
           type="button"
           className="btn btn-outline-secondary dropdown-toggle"

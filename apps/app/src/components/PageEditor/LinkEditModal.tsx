@@ -255,7 +255,7 @@ export const LinkEditModal = (): JSX.Element => {
                 keywordOnInit={linkInputValue}
                 autoFocus
               />
-              <div className="d-none d-sm-block input-group-append">
+              <div className="d-none d-sm-block">
                 <button type="button" id="preview-btn" className={`btn btn-info btn-page-preview ${styles['btn-page-preview']}`}>
                   <PagePreviewIcon />
                 </button>
