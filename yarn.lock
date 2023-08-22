@@ -2495,13 +2495,13 @@
     xdg-basedir "^4.0.0"
 
 "@growi/core@link:packages/core":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     bson-objectid "^2.0.4"
     escape-string-regexp "^4.0.0"
 
 "@growi/hackmd@link:packages/hackmd":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
 
 "@growi/pluginkit@link:packages/pluginkit":
   version "0.1.0"
@@ -2510,18 +2510,18 @@
     extensible-custom-error "^0.0.7"
 
 "@growi/presentation@link:packages/presentation":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
 
 "@growi/preset-templates@link:packages/preset-templates":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
 
 "@growi/preset-themes@link:packages/preset-themes":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
 
 "@growi/remark-attachment-refs@link:packages/remark-attachment-refs":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
     "@growi/remark-growi-directive" "link:packages/remark-growi-directive"
@@ -2530,12 +2530,12 @@
     universal-bunyan "^0.9.2"
 
 "@growi/remark-drawio@link:packages/remark-drawio":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     pako "^2.1.0"
 
 "@growi/remark-growi-directive@link:packages/remark-growi-directive":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     "@types/mdast" "^3.0.0"
     "@types/unist" "^2.0.0"
@@ -2552,7 +2552,7 @@
     uvu "^0.5.0"
 
 "@growi/remark-lsx@link:packages/remark-lsx":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
     "@growi/remark-growi-directive" "link:packages/remark-growi-directive"
@@ -2563,7 +2563,7 @@
     swr "^2.0.3"
 
 "@growi/slack@link:packages/slack":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     "@slack/oauth" "^2.0.1"
     axios "^0.24.0"
@@ -2576,7 +2576,7 @@
     url-join "^4.0.0"
 
 "@growi/ui@link:packages/ui":
-  version "6.1.14-RC.0"
+  version "6.1.15-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
 

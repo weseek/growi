@@ -1,6 +1,6 @@
 {
   "name": "@growi/slack",
-  "version": "6.1.14-RC.0",
+  "version": "6.1.15-RC.0",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
