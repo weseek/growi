@@ -201,7 +201,7 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteCompletelyForm() {
     return (
-      <div className="form-check custom-checkbox-danger">
+      <div className="form-check form-check-danger">
         <input
           className="form-check-input"
           name="completely"

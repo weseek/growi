@@ -120,7 +120,7 @@ class XssForm extends React.Component {
         <fieldset className="col-12">
           <div className="form-group">
             <div className="col-8 offset-4 my-3">
-              <div className="form-check form-switch custom-checkbox-success">
+              <div className="form-check form-switch form-check-success">
                 <input
                   type="checkbox"
                   className="form-check-input"

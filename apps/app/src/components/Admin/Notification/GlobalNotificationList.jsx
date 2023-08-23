@@ -80,7 +80,7 @@ class GlobalNotificationList extends React.Component {
           return (
             <tr key={notification._id}>
               <td className="align-middle td-abs-center">
-                <div className="form-check form-switch custom-checkbox-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
                     className="form-check-input"

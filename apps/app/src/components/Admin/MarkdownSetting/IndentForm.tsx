@@ -74,7 +74,7 @@ const IndentForm = (props: Props) => {
 
     return (
       <div className="col">
-        <div className="form-check custom-checkbox-success">
+        <div className="form-check form-check-success">
           <input
             type="checkbox"
             className="form-check-input"
