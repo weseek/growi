@@ -24,19 +24,18 @@ export const GrowiSlides = (props: Props): JSX.Element => {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  if (rendererOptions?.remarkPlugins != null) {
-    rendererOptions.remarkPlugins.push([
-      extractSections.remarkPlugin,
-      {
-        isDarkMode,
-        disableSeparationByHeader,
-      },
-    ]);
+  if (rendererOptions == null || rendererOptions.remarkPlugins == null || rendererOptions.components == null) {
+    return <></>;
   }
 
-  if (rendererOptions?.components != null) {
-    rendererOptions.components.section = presentation ? PresentationRichSlideSection : RichSlideSection;
-  }
+  rendererOptions.remarkPlugins.push([
+    extractSections.remarkPlugin,
+    {
+      isDarkMode,
+      disableSeparationByHeader,
+    },
+  ]);
+  rendererOptions.components.section = presentation ? PresentationRichSlideSection : RichSlideSection;
 
   const marpit = presentation ? presentationMarpit : slideMarpit;
   const { css } = marpit.render('');
