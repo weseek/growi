@@ -303,6 +303,10 @@ module.exports = (crowi) => {
     // check whether path starts slash
     path = addHeadingSlash(path);
 
+    if (!isCreatablePage(path)) {
+      return res.apiv3Err(`Could not use the path '${path}'`);
+    }
+
     if (isUserPage(path)) {
       const isExistUser = await User.isExistUserByUserPagePath(path);
       if (!isExistUser) {
