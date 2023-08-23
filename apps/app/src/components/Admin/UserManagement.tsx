@@ -169,7 +169,7 @@ const UserManagement = (props: UserManagementProps) => {
               {renderCheckbox('all', 'All', 'secondary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}
-              {renderCheckbox('suspended', 'Suspended', 'warning')}
+              {renderCheckbox('suspended', 'Suspended', 'warning text-dark')}
               {renderCheckbox('invited', 'Invited', 'pink')}
             </div>
             <div>
