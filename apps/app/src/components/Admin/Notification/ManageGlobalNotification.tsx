@@ -249,7 +249,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.EDIT)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.EDIT)}
               >
-                <span className="badge rounded-pill bg-warning">
+                <span className="badge rounded-pill bg-warning text-dark">
                   <i className="icon-pencil mr-1" />EDIT
                 </span>
               </TriggerEventCheckBox>

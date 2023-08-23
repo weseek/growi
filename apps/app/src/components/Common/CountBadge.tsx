@@ -10,7 +10,7 @@ const CountBadge: FC<CountProps> = (props:CountProps) => {
 
 
   return (
-    <span className="grw-count-badge px-2 badge rounded-pill bg-light">
+    <span className="grw-count-badge px-2 badge rounded-pill bg-light text-dark">
       { count == null && <span className="text-muted">―</span> }
       { count != null && count + offset }
     </span>

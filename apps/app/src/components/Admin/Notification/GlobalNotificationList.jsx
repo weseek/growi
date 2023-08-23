@@ -102,7 +102,7 @@ class GlobalNotificationList extends React.Component {
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageEdit') && (
-                    <li className="list-inline-item badge rounded-pill bg-warning">
+                    <li className="list-inline-item badge rounded-pill bg-warning text-dark">
                       <i className="icon-pencil"></i> EDIT
                     </li>
                   )}

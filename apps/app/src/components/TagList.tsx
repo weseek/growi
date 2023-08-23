@@ -44,7 +44,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
           prefetch={false}
         >
           <div className="text-truncate list-tag-name">{tag.name}</div>
-          <div className="ml-4 my-auto py-1 px-2 list-tag-count badge bg-primary text-white">{tag.count}</div>
+          <div className="ml-4 my-auto py-1 px-2 list-tag-count badge bg-primary">{tag.count}</div>
         </Link>
       );
     });

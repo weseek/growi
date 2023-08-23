@@ -47,7 +47,7 @@ class StatusTable extends React.PureComponent {
 
     return isNormalized
       ? <span className="badge rounded-pill bg-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-      : <span className="badge rounded-pill bg-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+      : <span className="badge rounded-pill bg-warning text-dark">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
   }
 
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {

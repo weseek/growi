@@ -35,7 +35,7 @@ const UserTable = (props: UserTableProps) => {
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'bg-warning';
+        additionalClassName = 'bg-warning text-dark';
         text = 'Suspended';
         break;
       case 4:
@@ -158,7 +158,7 @@ const UserTable = (props: UserTableProps) => {
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge bg-light rounded-pill ml-2">
+                    <span className="badge bg-light text-dark rounded-pill ml-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

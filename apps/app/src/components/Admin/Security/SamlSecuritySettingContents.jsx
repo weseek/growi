@@ -80,7 +80,7 @@ class SamlSecurityManagementContents extends React.Component {
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
-              && <div className="badge bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
