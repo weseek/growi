@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 class StatusTable extends React.PureComponent {
 
   renderPreInitializedLabel() {
-    return <span className="badge rounded-pill badge-default">――</span>;
+    return <span className="badge rounded-pill bg-default">――</span>;
   }
 
   renderConnectionStatusLabels() {
@@ -23,7 +23,7 @@ class StatusTable extends React.PureComponent {
     let connectionStatusLabel = null;
     if (!isConfigured) {
       connectionStatusLabel = (
-        <span className="badge rounded-pill badge-default">
+        <span className="badge rounded-pill bg-default">
           { t('full_text_search_management.connection_status_label_unconfigured') }
         </span>
       );
