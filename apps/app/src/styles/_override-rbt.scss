@@ -9,8 +9,10 @@
   }
 }
 
+// TODO: check padding when upgrade react-bootstrap-typeahead v6
+// https://redmine.weseek.co.jp/issues/129103
 .rbt-input-wrapper {
-  .close.rbt-close {
+  .btn-close.rbt-close {
     // default bootstrap .close has padding 0
     padding: 3px 7px;
   }
