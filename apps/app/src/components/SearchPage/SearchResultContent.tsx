@@ -213,9 +213,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     <div
       key={page._id}
       data-testid="search-result-content"
-      className={`search-result-content ${styles['search-result-content']}
-        dynamic-layout-root ${growiLayoutFluidClass}
-        overflow-y-auto`}
+      className={`dynamic-layout-root ${growiLayoutFluidClass} search-result-content ${styles['search-result-content']}`}
     >
       <div className="grw-page-path-text-muted-container">
         { isRenderable && (
