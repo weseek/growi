@@ -22,24 +22,24 @@ const UserTable = (props: UserTableProps) => {
   const { adminUsersContainer } = props;
 
   const getUserStatusLabel = (userStatus: number) => {
-    let additionalClassName = 'badge-info';
+    let additionalClassName = 'bg-info';
     let text = 'Approval Pending';
 
     switch (userStatus) {
       case 1:
-        additionalClassName = 'badge-info';
+        additionalClassName = 'bg-info';
         text = 'Approval Pending';
         break;
       case 2:
-        additionalClassName = 'badge-success';
+        additionalClassName = 'bg-success';
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'badge-warning';
+        additionalClassName = 'bg-warning';
         text = 'Suspended';
         break;
       case 4:
-        additionalClassName = 'badge-danger';
+        additionalClassName = 'bg-danger';
         text = 'Deleted';
         break;
       case 5:
@@ -158,7 +158,7 @@ const UserTable = (props: UserTableProps) => {
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge badge-light rounded-pill ml-2">
+                    <span className="badge bg-light rounded-pill ml-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

@@ -84,8 +84,8 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <td><strong>{ea.user.username}</strong></td>
                 <td>
                   {ea.user.password
-                    ? (<span className="badge badge-info">{t('user_management.set')}</span>)
-                    : (<span className="badge badge-warning">{t('user_management.unset')}</span>)
+                    ? (<span className="badge bg-info">{t('user_management.set')}</span>)
+                    : (<span className="badge bg-warning">{t('user_management.unset')}</span>)
                   }
                 </td>
                 <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>

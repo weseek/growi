@@ -31,7 +31,7 @@ const Badge = ({ isEnabled }) => {
   const { t } = useTranslation('admin');
 
   return isEnabled
-    ? <span className="badge badge-success">{t('external_notification.enabled')}</span>
+    ? <span className="badge bg-success">{t('external_notification.enabled')}</span>
     : <span className="badge bg-primary">{t('external_notification.disabled')}</span>;
 };
 

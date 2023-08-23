@@ -17,7 +17,7 @@ class StatusTable extends React.PureComponent {
     } = this.props;
 
     const errorOccuredLabel = isErrorOccuredOnSearchService
-      ? <span className="badge rounded-pill badge-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
+      ? <span className="badge rounded-pill bg-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
       : null;
 
     let connectionStatusLabel = null;
@@ -31,8 +31,8 @@ class StatusTable extends React.PureComponent {
     else {
       connectionStatusLabel = isConnected
         // eslint-disable-next-line max-len
-        ? <span data-testid="connection-status-badge-connected" className="badge rounded-pill badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="badge rounded-pill badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+        ? <span data-testid="connection-status-badge-connected" className="badge rounded-pill bg-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge rounded-pill bg-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
     }
 
     return (
@@ -46,8 +46,8 @@ class StatusTable extends React.PureComponent {
     const { t, isNormalized } = this.props;
 
     return isNormalized
-      ? <span className="badge rounded-pill badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-      : <span className="badge rounded-pill badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+      ? <span className="badge rounded-pill bg-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+      : <span className="badge rounded-pill bg-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
   }
 
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
