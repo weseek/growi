@@ -1,4 +1,4 @@
-import { isUserPage } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
@@ -470,6 +470,10 @@ module.exports = function(crowi, app) {
     let page;
     if (pageId == null) {
       logger.debug('Create page before file upload');
+
+      if (!isCreatablePage(pagePath)) {
+        return res.json(ApiResponse.error(`Could not use the path '${pagePath}'`));
+      }
 
       if (isUserPage(pagePath)) {
         const isExistUser = await User.isExistUserByUserPagePath(pagePath);
