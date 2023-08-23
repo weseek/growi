@@ -7,11 +7,6 @@ const debug = require('debug')('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
-
-  const models = crowi.models;
-  const UserGroupRelation = models.UserGroupRelation;
-  const GlobalNotificationSetting = models.GlobalNotificationSetting;
-
   const {
     configManager,
     aclService,

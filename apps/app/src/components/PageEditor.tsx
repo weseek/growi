@@ -5,7 +5,6 @@ import React, {
 import EventEmitter from 'events';
 import nodePath from 'path';
 
-
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import detectIndent from 'detect-indent';
@@ -180,13 +179,15 @@ const PageEditor = React.memo((): JSX.Element => {
     if (grantData == null) {
       return;
     }
+    const grantedGroups = grantData.grantedGroups?.map((group) => {
+      return { item: group.id, type: group.type };
+    });
     const optionsToSave = {
       isSlackEnabled: isSlackEnabled ?? false,
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
       pageTags: pageTags ?? [],
-      grantUserGroupId: grantData.grantedGroup?.id,
-      grantUserGroupName: grantData.grantedGroup?.name,
+      grantUserGroupIds: grantedGroups,
     };
     return optionsToSave;
   }, [grantData, isSlackEnabled, pageTags]);

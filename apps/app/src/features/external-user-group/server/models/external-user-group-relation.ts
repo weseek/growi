@@ -21,7 +21,7 @@ export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupR
 
   findGroupsWithDescendantsByGroupAndUser: (group: ExternalUserGroupDocument, user) => Promise<ExternalUserGroupDocument[]>,
 
-  countByGroupIdAndUser: (userGroupId: string, userData) => Promise<number>
+  countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
 }
 
 const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>({
@@ -41,8 +41,10 @@ schema.statics.removeAllInvalidRelations = UserGroupRelation.removeAllInvalidRel
 
 schema.statics.findGroupsWithDescendantsByGroupAndUser = UserGroupRelation.findGroupsWithDescendantsByGroupAndUser;
 
-schema.statics.countByGroupIdAndUser = UserGroupRelation.countByGroupIdAndUser;
+schema.statics.countByGroupIdsAndUser = UserGroupRelation.countByGroupIdsAndUser;
 
 schema.statics.findAllUserIdsForUserGroups = UserGroupRelation.findAllUserIdsForUserGroups;
+
+schema.statics.findAllUserGroupIdsRelatedToUser = UserGroupRelation.findAllUserGroupIdsRelatedToUser;
 
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);

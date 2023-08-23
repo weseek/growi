@@ -18,6 +18,7 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
@@ -100,17 +101,23 @@ const schema = new Schema<PageDocument, PageModel>({
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroups: [{
-    type: {
-      type: String,
-      enum: Object.values(GroupType),
-      required: true,
-      default: 'UserGroup',
-    },
-    item: {
-      type: ObjectId, refPath: 'grantedGroups.type', required: true, index: true,
-    },
-  }],
+  grantedGroups: {
+    type: [{
+      type: {
+        type: String,
+        enum: Object.values(GroupType),
+        required: true,
+        default: 'UserGroup',
+      },
+      item: {
+        type: ObjectId,
+        refPath: 'grantedGroups.type',
+        required: true,
+        index: true,
+      },
+    }],
+    default: [],
+  },
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
   liker: [{ type: ObjectId, ref: 'User' }],
@@ -319,10 +326,10 @@ export class PageQueryBuilder {
 
   async addConditionForParentNormalization(user): Promise<PageQueryBuilder> {
     // determine UserGroup condition
-    let userGroups;
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     const grantConditions: any[] = [
       { grant: null },
@@ -370,10 +377,10 @@ export class PageQueryBuilder {
 
   // add viewer condition to PageQueryBuilder instance
   async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink);
     return this;

@@ -1,8 +1,11 @@
+import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+
 
 import { SupportedAction } from '~/interfaces/activity';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
@@ -40,7 +43,6 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
   const {
-    UserGroupRelation,
     User,
     Page,
   } = crowi.models;
@@ -432,8 +434,13 @@ module.exports = (crowi) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
+    const transferGroupInfo = transferToUserGroupId != null ? {
+      item: transferToUserGroupId,
+      type: GroupType.userGroup,
+    } : undefined;
+
     try {
-      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
+      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferGroupInfo);
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -812,7 +819,11 @@ module.exports = (crowi) => {
     try {
       const { docs, totalDocs } = await Page.paginate({
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: { $in: [id] },
+        grantedGroups: {
+          $elemMatch: {
+            item: id,
+          },
+        },
       }, {
         offset,
         limit,

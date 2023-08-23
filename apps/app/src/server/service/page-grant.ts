@@ -344,7 +344,10 @@ class PageGrantService {
 
     if (includeNotMigratedPages) {
       // Add grantCondition for not normalized pages
-      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      const userGroups = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ];
       const grantCondition = Page.generateGrantCondition(user, userGroups);
       const conditionForNotNormalizedPages = {
         $and: [
@@ -539,10 +542,10 @@ class PageGrantService {
       const applicableGroups = [...applicableUserGroups, ...applicableExternalUserGroups];
 
       const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
-        return UserGroupRelation.countByGroupIdAndUser(group._id, user);
+        return UserGroupRelation.countByGroupIdsAndUser([group._id], user);
       }))).some(count => count > 0);
       const isUserExistInExternalUserGroup = (await Promise.all(targetExternalUserGroups.map((group) => {
-        return ExternalUserGroupRelation.countByGroupIdAndUser(group._id, user);
+        return ExternalUserGroupRelation.countByGroupIdsAndUser([group._id], user);
       }))).some(count => count > 0);
       const isUserExistInGroup = isUserExistInUserGroup || isUserExistInExternalUserGroup;
 
@@ -563,7 +566,10 @@ class PageGrantService {
    * @returns {Promise<boolean>}
    */
   async canOverwriteDescendants(targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
-    const relatedGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(operator);
+    const relatedGroupIds = [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(operator)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(operator)),
+    ];
     const operatorGrantInfo = {
       userId: operator._id,
       userGroupIds: new Set<ObjectIdLike>(relatedGroupIds),
