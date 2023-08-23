@@ -37,7 +37,7 @@ export const AuditLogSettings: FC = () => {
 
       <h4 className="mt-4">
         {t('admin:audit_log_management.available_action_list')}
-        <span className="badge rounded-pill badge-secondary ml-2">
+        <span className="badge rounded-pill bg-primary ml-2">
           {`${availableActions.length} / ${AllSupportedActions.length}`}
         </span>
         <a

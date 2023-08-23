@@ -32,13 +32,13 @@ const Badge = ({ isEnabled }) => {
 
   return isEnabled
     ? <span className="badge badge-success">{t('external_notification.enabled')}</span>
-    : <span className="badge badge-secondary">{t('external_notification.disabled')}</span>;
+    : <span className="badge bg-primary">{t('external_notification.disabled')}</span>;
 };
 
 const SkeletonListItem = () => (
   <li className="list-group-item">
     <h4 className="mb-2">
-      <span className="badge badge-secondary">――</span>
+      <span className="badge bg-primary">――</span>
       <span className="ml-2">...</span>
     </h4>
   </li>

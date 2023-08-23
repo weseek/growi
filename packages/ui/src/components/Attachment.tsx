@@ -36,7 +36,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
       </a>
     )
     : '';
-  const fileType = <span className="attachment-filetype badge rounded-pill badge-secondary">{attachment.fileFormat}</span>;
+  const fileType = <span className="attachment-filetype badge rounded-pill bg-primary">{attachment.fileFormat}</span>;
   const fileInUse = (inUse) ? <span className="attachment-in-use badge rounded-pill badge-info">In Use</span> : '';
 
   return (

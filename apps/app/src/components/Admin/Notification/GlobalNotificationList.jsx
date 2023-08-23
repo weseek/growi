@@ -122,7 +122,7 @@ class GlobalNotificationList extends React.Component {
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (
-                    <li className="list-inline-item badge rounded-pill badge-secondary">
+                    <li className="list-inline-item badge rounded-pill bg-primary">
                       <i className="icon-fw icon-bubble"></i> POST
                     </li>
                   )}

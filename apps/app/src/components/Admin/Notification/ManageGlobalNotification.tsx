@@ -297,7 +297,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.POST)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.POST)}
               >
-                <span className="badge rounded-pill badge-secondary">
+                <span className="badge rounded-pill bg-primary">
                   <i className="icon-bubble mr-1" />POST
                 </span>
               </TriggerEventCheckBox>

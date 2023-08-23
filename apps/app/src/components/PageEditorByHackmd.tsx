@@ -385,7 +385,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
                 {t('hackmd.based_on_revision')}&nbsp;
                 { pageData != null && (
                   <Link href={urljoin(returnPathForURL(pageData.path, pageData._id), `?revisionId=${revisionIdHackmdSynced}`)} prefetch={false}>
-                    <span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span>
+                    <span className="badge bg-primary">{revisionIdHackmdSynced?.substr(-8)}</span>
                   </Link>
                 )}
                 <div className="text-center mt-3">
