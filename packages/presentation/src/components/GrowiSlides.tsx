@@ -1,67 +1,54 @@
-import { Marp } from '@marp-team/marp-core';
-import { Element } from '@marp-team/marpit';
 import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
+import { MARP_CONTAINER_CLASS_NAME, presentationMarpit, slideMarpit } from '../services/growi-marpit';
 import * as extractSections from '../services/renderer/extract-sections';
 
+
 import './Slides.global.scss';
+import { PresentationRichSlideSection, RichSlideSection } from './RichSlideSection';
 
-const MARP_CONTAINER_CLASS_NAME = 'marpit';
-
-// ----------------------------------------------------
-// TODO: to change better slide style
-// https://redmine.weseek.co.jp/issues/125680
-const marp = new Marp({
-  container: [
-    new Element('div', { class: MARP_CONTAINER_CLASS_NAME }),
-    new Element('div', { class: 'slides' }),
-  ],
-  inlineSVG: false,
-  emoji: undefined,
-  html: false,
-  math: false,
-});
-const marpSlideTheme = marp.themeSet.add(`
-    /*!
-     * @theme slide_preview
-     */
-    section {
-      max-width: 90%;
-    }
-`);
-marp.themeSet.default = marpSlideTheme;
-// ----------------------------------------------------
 
 type Props = {
   options: PresentationOptions,
   children?: string,
+  presentation?: boolean,
 }
 
 export const GrowiSlides = (props: Props): JSX.Element => {
-  const { options, children } = props;
+  const {
+    options, children, presentation,
+  } = props;
   const {
     rendererOptions, isDarkMode, disableSeparationByHeader,
   } = options;
 
-  rendererOptions.remarkPlugins?.push([
+  if (rendererOptions == null || rendererOptions.remarkPlugins == null || rendererOptions.components == null) {
+    return <></>;
+  }
+
+  rendererOptions.remarkPlugins.push([
     extractSections.remarkPlugin,
     {
       isDarkMode,
       disableSeparationByHeader,
     },
   ]);
+  rendererOptions.components.section = presentation ? PresentationRichSlideSection : RichSlideSection;
 
-  const { css } = marp.render('', { htmlAsArray: true });
+  const marpit = presentation ? presentationMarpit : slideMarpit;
+  const { css } = marpit.render('');
   return (
     <>
       <Head>
         <style>{css}</style>
       </Head>
-      <ReactMarkdown {...rendererOptions}>
-        { children ?? '## No Contents' }
-      </ReactMarkdown>
+      <div className={`slides ${MARP_CONTAINER_CLASS_NAME}`}>
+        <ReactMarkdown {...rendererOptions}>
+          { children ?? '## No Contents' }
+        </ReactMarkdown>
+      </div>
     </>
   );
 

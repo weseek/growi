@@ -5,11 +5,10 @@ import Reveal from 'reveal.js';
 import type { PresentationOptions } from '../consts';
 import { parseSlideFrontmatterInMarkdown } from '../services/parse-slide-frontmatter';
 
-import { MARP_CONTAINER_CLASS_NAME, Slides } from './Slides';
+import { Slides } from './Slides';
 
 import 'reveal.js/dist/reveal.css';
 import './Presentation.global.scss';
-
 
 import styles from './Presentation.module.scss';
 
@@ -20,6 +19,7 @@ const baseRevealOptions: Reveal.Options = {
   height: 720,
   maxScale: 1.2,
   slideNumber: 'c/t',
+  display: '',
 };
 
 /**
@@ -65,10 +65,8 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   }, [children, revealOptions]);
 
   return (
-    <div className={`grw-presentation ${styles['grw-presentation']} reveal ${MARP_CONTAINER_CLASS_NAME}`}>
-      <div className="slides">
-        <Slides options={options} hasMarpFlag={marp}>{children}</Slides>
-      </div>
+    <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
+      <Slides options={options} hasMarpFlag={marp} presentation>{children}</Slides>
     </div>
   );
 };
