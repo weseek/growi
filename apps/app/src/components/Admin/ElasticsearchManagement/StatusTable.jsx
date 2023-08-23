@@ -22,7 +22,11 @@ class StatusTable extends React.PureComponent {
 
     let connectionStatusLabel = null;
     if (!isConfigured) {
-      connectionStatusLabel = <span className="badge rounded-pill badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+      connectionStatusLabel = (
+        <span className="badge rounded-pill badge-default">
+          { t('full_text_search_management.connection_status_label_unconfigured') }
+        </span>
+      );
     }
     else {
       connectionStatusLabel = isConnected
@@ -51,7 +55,7 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`badge-${indexName}-${aliasName}`} className="badge rounded-pill badge-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="badge rounded-pill bg-primary mr-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );
