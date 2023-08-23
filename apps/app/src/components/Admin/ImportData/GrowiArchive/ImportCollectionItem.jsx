@@ -81,7 +81,7 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="form-check form-check-info my-0">
+      <div className="form-check custom-checkbox-info my-0">
         <input
           type="checkbox"
           id={collectionName}

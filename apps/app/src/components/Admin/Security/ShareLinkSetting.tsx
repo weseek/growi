@@ -116,7 +116,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
       <h4>{t('security_settings.share_link_rights')}</h4>
       <div className="row mb-5">
         <div className="col-6 offset-3">
-          <div className="form-check form-switch form-check-success">
+          <div className="form-check form-switch custom-checkbox-success">
             <input
               type="checkbox"
               className="form-check-input"

@@ -42,7 +42,7 @@ const GlobalNotification = (props) => {
       </p>
       <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
-          <div className="form-check form-check-success">
+          <div className="form-check custom-checkbox-success">
             <input
               id="isNotificationForOwnerPageEnabled"
               className="form-check-input"
@@ -60,7 +60,7 @@ const GlobalNotification = (props) => {
 
       <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
-          <div className="form-check form-check-success">
+          <div className="form-check custom-checkbox-success">
             <input
               id="isNotificationForGroupPageEnabled"
               className="form-check-input"

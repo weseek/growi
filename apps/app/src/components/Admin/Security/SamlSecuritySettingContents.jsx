@@ -66,7 +66,7 @@ class SamlSecurityManagementContents extends React.Component {
 
         <div className="row form-group mb-5">
           <div className="col-6 offset-3">
-            <div className="form-check form-switch form-check-success">
+            <div className="form-check form-switch custom-checkbox-success">
               <input
                 id="isSamlEnabled"
                 className="form-check-input"
@@ -392,7 +392,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
             <div className="row form-group mb-5">
               <div className="offset-md-3 col-md-6 text-left">
-                <div className="form-check form-check-success">
+                <div className="form-check custom-checkbox-success">
                   <input
                     id="bindByUserName-SAML"
                     className="form-check-input"
@@ -414,7 +414,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
             <div className="row form-group mb-5">
               <div className="offset-md-3 col-md-6 text-left">
-                <div className="form-check form-check-success">
+                <div className="form-check custom-checkbox-success">
                   <input
                     id="bindByEmail-SAML"
                     className="form-check-input"

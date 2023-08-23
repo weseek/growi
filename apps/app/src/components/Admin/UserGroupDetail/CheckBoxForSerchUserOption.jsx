@@ -9,7 +9,7 @@ class CheckBoxForSerchUserOption extends React.Component {
   render() {
     const { t, option } = this.props;
     return (
-      <div className="form-check form-check-info" key={`isAlso${option}Searched`}>
+      <div className="form-check custom-checkbox-info" key={`isAlso${option}Searched`}>
         <input
           type="checkbox"
           id={`isAlso${option}Searched`}

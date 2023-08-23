@@ -107,7 +107,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
   }, [selectedCollections, t]);
 
   const renderCheckboxes = useCallback((collectionNames, color?) => {
-    const checkboxColor = color ? `form-check-${color}` : 'form-check-info';
+    const checkboxColor = color ? `form-check-${color}` : 'custom-checkbox-info';
 
     return (
       <div className={`form-check ${checkboxColor}`}>

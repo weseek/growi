@@ -56,7 +56,7 @@ class GoogleSecurityManagementContents extends React.Component {
 
         <div className="form-group row">
           <div className="col-6 offset-3">
-            <div className="form-check form-switch form-check-success">
+            <div className="form-check form-switch custom-checkbox-success">
               <input
                 id="isGoogleEnabled"
                 className="form-check-input"
@@ -135,7 +135,7 @@ class GoogleSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6">
-                <div className="form-check form-check-success">
+                <div className="form-check custom-checkbox-success">
                   <input
                     id="bindByUserNameGoogle"
                     className="form-check-input"
