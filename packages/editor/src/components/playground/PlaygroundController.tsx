@@ -29,15 +29,23 @@ export const InitEditorValueRow = (): JSX.Element => {
 };
 
 type SetCursorRowFormData = {
-  lineNumber: number;
+  lineNumber: number | string;
 };
 
 export const SetCursorRow = (): JSX.Element => {
 
-  // const { data } = useCodeMirrorEditorMain();
+  const { data } = useCodeMirrorEditorMain();
+  const { register, handleSubmit } = useForm<SetCursorRowFormData>({
+    defaultValues: {
+      lineNumber: 1,
+    },
+  });
 
-  const { register, handleSubmit } = useForm<SetCursorRowFormData>();
-  const onSubmit = handleSubmit(data => console.log(data));
+  const setCursor = data?.setCursor;
+  const onSubmit = handleSubmit((submitData) => {
+    const lineNumber = Number(submitData.lineNumber) || 1;
+    setCursor?.(lineNumber);
+  });
 
   return (
     <form className="row mt-3" onSubmit={onSubmit}>
@@ -45,6 +53,7 @@ export const SetCursorRow = (): JSX.Element => {
         <div className="input-group">
           <input
             {...register('lineNumber')}
+            type="number"
             className="form-control"
             placeholder="Input line number"
             aria-label="line number"
