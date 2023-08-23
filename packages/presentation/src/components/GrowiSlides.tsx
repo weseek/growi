@@ -1,24 +1,24 @@
-import { Marp } from '@marp-team/marp-core';
 import Head from 'next/head';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import type { PresentationOptions } from '../consts';
+import { MARP_CONTAINER_CLASS_NAME, presentationMarpit, slideMarpit } from '../services/growi-marpit';
 import * as extractSections from '../services/renderer/extract-sections';
 
 
 import './Slides.global.scss';
 import { PresentationRichSlideSection, RichSlideSection } from './RichSlideSection';
 
+
 type Props = {
   options: PresentationOptions,
   children?: string,
-  marpit: Marp,
   presentation?: boolean,
 }
 
 export const GrowiSlides = (props: Props): JSX.Element => {
   const {
-    options, children, marpit, presentation,
+    options, children, presentation,
   } = props;
   const {
     rendererOptions, isDarkMode, disableSeparationByHeader,
@@ -38,15 +38,18 @@ export const GrowiSlides = (props: Props): JSX.Element => {
     rendererOptions.components.section = presentation ? PresentationRichSlideSection : RichSlideSection;
   }
 
+  const marpit = presentation ? presentationMarpit : slideMarpit;
   const { css } = marpit.render('');
   return (
     <>
       <Head>
         <style>{css}</style>
       </Head>
-      <ReactMarkdown {...rendererOptions}>
-        { children ?? '## No Contents' }
-      </ReactMarkdown>
+      <div className={`slides ${MARP_CONTAINER_CLASS_NAME}`}>
+        <ReactMarkdown {...rendererOptions}>
+          { children ?? '## No Contents' }
+        </ReactMarkdown>
+      </div>
     </>
   );
 

@@ -1,16 +1,17 @@
-import { Marp } from '@marp-team/marp-core';
 import Head from 'next/head';
 
 import './Slides.global.scss';
+import { presentationMarpit, slideMarpit } from '../services/growi-marpit';
 
 type Props = {
   children?: string,
-  marpit: Marp,
+  presentation?: boolean,
 }
 
 export const MarpSlides = (props: Props): JSX.Element => {
-  const { children, marpit } = props;
+  const { children, presentation } = props;
 
+  const marpit = presentation ? presentationMarpit : slideMarpit;
   const { html, css } = marpit.render(children ?? '');
   return (
     <>
