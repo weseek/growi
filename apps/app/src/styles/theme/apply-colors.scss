@@ -340,7 +340,7 @@ ul.pagination {
     .modal-title {
       color: $color-modal-header;
     }
-    .close {
+    .btn-close {
       color: $color-modal-header;
       opacity: 0.5;
 
@@ -361,7 +361,7 @@ ul.pagination {
 
 .grw-page-accessories-modal,.grw-descendants-page-list-modal {
   .modal-header {
-    .close {
+    .btn-close {
       color: #{hsl.contrast(var(--bgcolor-global))};
     }
   }
