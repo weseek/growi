@@ -22,34 +22,34 @@ const UserTable = (props: UserTableProps) => {
   const { adminUsersContainer } = props;
 
   const getUserStatusLabel = (userStatus: number) => {
-    let additionalClassName = 'badge-info';
+    let additionalClassName = 'bg-info';
     let text = 'Approval Pending';
 
     switch (userStatus) {
       case 1:
-        additionalClassName = 'badge-info';
+        additionalClassName = 'bg-info';
         text = 'Approval Pending';
         break;
       case 2:
-        additionalClassName = 'badge-success';
+        additionalClassName = 'bg-success';
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'badge-warning';
+        additionalClassName = 'bg-warning text-dark';
         text = 'Suspended';
         break;
       case 4:
-        additionalClassName = 'badge-danger';
+        additionalClassName = 'bg-danger';
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'badge-pink';
+        additionalClassName = 'bg-pink';
         text = 'Invited';
         break;
     }
 
     return (
-      <span className={`badge badge-pill ${additionalClassName}`}>
+      <span className={`badge rounded-pill ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -153,12 +153,12 @@ const UserTable = (props: UserTableProps) => {
                 <td>
                   {getUserStatusLabel(user.status)}
                   {(user.admin) && (
-                    <span className="badge badge-indigo badge-pill ml-2">
+                    <span className="badge bg-indigo rounded-pill ml-2">
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge badge-light badge-pill ml-2">
+                    <span className="badge bg-light text-dark rounded-pill ml-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 class StatusTable extends React.PureComponent {
 
   renderPreInitializedLabel() {
-    return <span className="badge badge-pill badge-default">――</span>;
+    return <span className="badge rounded-pill bg-default">――</span>;
   }
 
   renderConnectionStatusLabels() {
@@ -17,18 +17,22 @@ class StatusTable extends React.PureComponent {
     } = this.props;
 
     const errorOccuredLabel = isErrorOccuredOnSearchService
-      ? <span className="badge badge-pill badge-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
+      ? <span className="badge rounded-pill bg-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
       : null;
 
     let connectionStatusLabel = null;
     if (!isConfigured) {
-      connectionStatusLabel = <span className="badge badge-pill badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+      connectionStatusLabel = (
+        <span className="badge rounded-pill bg-default">
+          { t('full_text_search_management.connection_status_label_unconfigured') }
+        </span>
+      );
     }
     else {
       connectionStatusLabel = isConnected
         // eslint-disable-next-line max-len
-        ? <span data-testid="connection-status-badge-connected" className="badge badge-pill badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="badge badge-pill badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+        ? <span data-testid="connection-status-badge-connected" className="badge rounded-pill bg-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge rounded-pill bg-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
     }
 
     return (
@@ -42,8 +46,8 @@ class StatusTable extends React.PureComponent {
     const { t, isNormalized } = this.props;
 
     return isNormalized
-      ? <span className="badge badge-pill badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-      : <span className="badge badge-pill badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+      ? <span className="badge rounded-pill bg-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+      : <span className="badge rounded-pill bg-warning text-dark">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
   }
 
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
@@ -51,7 +55,7 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`badge-${indexName}-${aliasName}`} className="badge badge-pill badge-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="badge rounded-pill bg-primary mr-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );

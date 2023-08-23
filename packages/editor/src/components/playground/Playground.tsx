@@ -20,7 +20,7 @@ export const Playground = (): JSX.Element => {
         <div className="flex-expand-vert">
           <CodeMirrorEditorContainer ref={containerRef} />
         </div>
-        <div className="flex-expand-vert d-none d-lg-flex bg-light border-start border-dark-subtle p-3">
+        <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <PlaygroundController />
         </div>
       </div>

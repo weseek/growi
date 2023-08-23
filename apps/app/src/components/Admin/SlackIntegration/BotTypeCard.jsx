@@ -54,7 +54,7 @@ const BotTypeCard = (props) => {
           {/*  A recommended badge is shown on official bot card, supplementary names are shown on Custom bot cards   */}
           { isBotTypeOfficial
             ? (
-              <span className="badge badge-info mr-2">
+              <span className="badge bg-info mr-2">
                 {t('admin:slack_integration.selecting_bot_types.recommended')}
               </span>
             ) : (

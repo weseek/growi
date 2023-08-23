@@ -70,13 +70,13 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
   // top check
   let topLabel;
   if (isTopPage(page.path)) {
-    topLabel = <span className={`badge badge-info ${shouldSpaceOutIcon ? 'mr-2' : ''} top-label`}>TOP</span>;
+    topLabel = <span className={`badge bg-info ${shouldSpaceOutIcon ? 'mr-2' : ''} top-label`}>TOP</span>;
   }
 
   // template check
   let templateLabel;
   if (checkTemplatePath(page.path)) {
-    templateLabel = <span className={`badge badge-info ${shouldSpaceOutIcon ? 'mr-2' : ''}`}>TMPL</span>;
+    templateLabel = <span className={`badge bg-info ${shouldSpaceOutIcon ? 'mr-2' : ''}`}>TMPL</span>;
   }
 
   let commentCount;
