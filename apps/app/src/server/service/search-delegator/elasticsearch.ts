@@ -893,7 +893,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           bool: {
             must: [
               { term: { grant: GRANT_USER_GROUP } },
-              { terms: { granted_group: userGroupIds } },
+              { terms: { granted_groups: userGroupIds } },
             ],
           },
         },
