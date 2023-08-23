@@ -1,0 +1,23 @@
+{
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["@growi/core#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "dev": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
+    "lint": {
+      "dependsOn": ["@growi/core#dev"]
+    },
+    "serve": {
+      "dependsOn": ["@growi/core#dev"],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
