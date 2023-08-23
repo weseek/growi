@@ -261,7 +261,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={triggerEvents.has(TriggerEventType.MOVE)}
                 onChange={() => onChangeTriggerEvents(TriggerEventType.MOVE)}
               >
-                <span className="badge rounded-pill badge-pink">
+                <span className="badge rounded-pill bg-pink">
                   <i className="icon-action-redo mr-1" />MOVE
                 </span>
               </TriggerEventCheckBox>

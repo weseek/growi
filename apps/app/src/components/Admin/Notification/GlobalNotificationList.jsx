@@ -107,7 +107,7 @@ class GlobalNotificationList extends React.Component {
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageMove') && (
-                    <li className="list-inline-item badge rounded-pill badge-pink">
+                    <li className="list-inline-item badge rounded-pill bg-pink">
                       <i className="icon-action-redo"></i> MOVE
                     </li>
                   )}

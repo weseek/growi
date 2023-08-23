@@ -43,7 +43,7 @@ const UserTable = (props: UserTableProps) => {
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'badge-pink';
+        additionalClassName = 'bg-pink';
         text = 'Invited';
         break;
     }
@@ -153,7 +153,7 @@ const UserTable = (props: UserTableProps) => {
                 <td>
                   {getUserStatusLabel(user.status)}
                   {(user.admin) && (
-                    <span className="badge badge-indigo rounded-pill ml-2">
+                    <span className="badge bg-indigo rounded-pill ml-2">
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
