@@ -63,7 +63,7 @@ const MailSetting = (props: Props) => {
       </div>
 
       <div className="row form-group mb-5">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.transmission_method')}
         </label>
         <div className="col-md-6 py-2">

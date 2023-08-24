@@ -477,7 +477,7 @@ class SecuritySetting extends React.Component {
 
         <h4>{t('security_settings.session')}</h4>
         <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>
+          <label className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>
           <div className="col-md-6">
             <input
               className="form-control col-md-3"

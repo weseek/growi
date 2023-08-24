@@ -68,7 +68,7 @@ class OidcSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5 form-group">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
+          <label className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -95,7 +95,7 @@ class OidcSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcProviderName" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.providerName')}</label>
+              <label htmlFor="oidcProviderName" className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.providerName')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -108,7 +108,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcIssuerHost" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.issuerHost')}</label>
+              <label htmlFor="oidcIssuerHost" className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.issuerHost')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -124,7 +124,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcClientId" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.clientID')}</label>
+              <label htmlFor="oidcClientId" className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.clientID')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -140,7 +140,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcClientSecret" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.client_secret')}</label>
+              <label htmlFor="oidcClientSecret" className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.client_secret')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -156,7 +156,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcAuthorizationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+              <label htmlFor="oidcAuthorizationEndpoint" className="text-start text-md-right col-md-3 col-form-label">
                 {t('security_settings.authorization_endpoint')}
               </label>
               <div className="col-md-6">
@@ -174,7 +174,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcTokenEndpoint" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.token_endpoint')}</label>
+              <label htmlFor="oidcTokenEndpoint" className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.token_endpoint')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -190,7 +190,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcRevocationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+              <label htmlFor="oidcRevocationEndpoint" className="text-start text-md-right col-md-3 col-form-label">
                 {t('security_settings.revocation_endpoint')}
               </label>
               <div className="col-md-6">
@@ -208,7 +208,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcIntrospectionEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+              <label htmlFor="oidcIntrospectionEndpoint" className="text-start text-md-right col-md-3 col-form-label">
                 {t('security_settings.introspection_endpoint')}
               </label>
               <div className="col-md-6">
@@ -226,7 +226,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcUserInfoEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+              <label htmlFor="oidcUserInfoEndpoint" className="text-start text-md-right col-md-3 col-form-label">
                 {t('security_settings.userinfo_endpoint')}
               </label>
               <div className="col-md-6">
@@ -244,7 +244,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcEndSessionEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+              <label htmlFor="oidcEndSessionEndpoint" className="text-start text-md-right col-md-3 col-form-label">
                 {t('security_settings.end_session_endpoint')}
               </label>
               <div className="col-md-6">
@@ -262,7 +262,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcRegistrationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
+              <label htmlFor="oidcRegistrationEndpoint" className="text-start text-md-right col-md-3 col-form-label">
                 {t('security_settings.registration_endpoint')}
               </label>
               <div className="col-md-6">
@@ -280,7 +280,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcJWKSUri" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.jwks_uri')}</label>
+              <label htmlFor="oidcJWKSUri" className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.jwks_uri')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -300,7 +300,7 @@ class OidcSecurityManagementContents extends React.Component {
             </h3>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcAttrMapId" className="text-left text-md-right col-md-3 col-form-label">Identifier</label>
+              <label htmlFor="oidcAttrMapId" className="text-start text-md-right col-md-3 col-form-label">Identifier</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -316,7 +316,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcAttrMapUserName" className="text-left text-md-right col-md-3 col-form-label">{t('username')}</label>
+              <label htmlFor="oidcAttrMapUserName" className="text-start text-md-right col-md-3 col-form-label">{t('username')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -332,7 +332,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcAttrMapName" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
+              <label htmlFor="oidcAttrMapName" className="text-start text-md-right col-md-3 col-form-label">{t('Name')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -348,7 +348,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcAttrMapEmail" className="text-left text-md-right col-md-3 col-form-label">{t('Email')}</label>
+              <label htmlFor="oidcAttrMapEmail" className="text-start text-md-right col-md-3 col-form-label">{t('Email')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -364,7 +364,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
+              <label className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"

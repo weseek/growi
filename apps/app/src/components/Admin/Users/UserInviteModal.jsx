@@ -105,7 +105,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="col text-left custom-control custom-checkbox custom-checkbox-info text-left" onChange={this.handleCheckBox}>
+        <div className="col text-start custom-control custom-checkbox custom-checkbox-info text-start" onChange={this.handleCheckBox}>
           <input
             type="checkbox"
             id="sendEmail"
@@ -151,7 +151,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="me-3 text-left" style={{ flex: 1 }}>
+        <label className="me-3 text-start" style={{ flex: 1 }}>
           <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
           <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>

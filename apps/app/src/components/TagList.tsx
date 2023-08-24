@@ -56,7 +56,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
 
   return (
     <>
-      <ul className="list-group text-left mb-5">
+      <ul className="list-group text-start mb-5">
         {generateTagList(tagData)}
       </ul>
       {isPaginationShown

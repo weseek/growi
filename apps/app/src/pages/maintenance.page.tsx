@@ -42,7 +42,7 @@ const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
               <h1 className="text-center">{ t('maintenance_mode.maintenance_mode') }</h1>
               <h3>{ t('maintenance_mode.growi_is_under_maintenance') }</h3>
               <hr />
-              <div className="text-left">
+              <div className="text-start">
                 {props.currentUser?.admin
               && (
                 <p>

@@ -76,7 +76,7 @@ class GitHubSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
+          <label className="col-12 col-md-3 text-start text-md-right py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"
@@ -136,7 +136,7 @@ class GitHubSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-3 col-6 text-start">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserNameGitHub"

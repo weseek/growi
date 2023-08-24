@@ -34,7 +34,7 @@ const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHel
 
   return (
     <table className={`${styles['grw-search-table']} table grw-search-table search-help m-0`}>
-      <caption className="text-left text-primary p-2">
+      <caption className="text-start text-primary p-2">
         <h5 className="h6"><i className="icon-magnifier pe-2 mb-2" />{ t('search_help.title') }</h5>
       </caption>
       <tbody>

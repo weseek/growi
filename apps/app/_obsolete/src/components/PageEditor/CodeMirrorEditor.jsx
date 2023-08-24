@@ -760,7 +760,7 @@ class CodeMirrorEditor extends AbstractEditor {
     const { emojiSearchText } = this.state;
     return this.state.isEmojiPickerShown
       ? (
-        <div className="text-left">
+        <div className="text-start">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
               onClose={() => this.setState({ isEmojiPickerShown: false })}

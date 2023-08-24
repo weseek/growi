@@ -35,7 +35,7 @@ const AppSetting = (props) => {
   return (
     <React.Fragment>
       <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
+        <label className="text-start text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -52,7 +52,7 @@ const AppSetting = (props) => {
 
       <div className="row form-group mb-5">
         <label
-          className="text-left text-md-right col-md-3 col-form-label"
+          className="text-start text-md-right col-md-3 col-form-label"
         >
           {t('admin:app_setting.confidential_name')}
         </label>
@@ -72,7 +72,7 @@ const AppSetting = (props) => {
 
       <div className="row form-group mb-5">
         <label
-          className="text-left text-md-right col-md-3 col-form-label"
+          className="text-start text-md-right col-md-3 col-form-label"
         >
           {t('admin:app_setting.default_language')}
         </label>
@@ -105,7 +105,7 @@ const AppSetting = (props) => {
 
       <div className="row form-group mb-5">
         <label
-          className="text-left text-md-right col-md-3 col-form-label"
+          className="text-start text-md-right col-md-3 col-form-label"
         >
           {t('admin:app_setting.default_mail_visibility')}
         </label>
@@ -140,7 +140,7 @@ const AppSetting = (props) => {
 
       <div className="row form-group mb-5">
         <label
-          className="text-left text-md-right col-md-3 col-form-label"
+          className="text-start text-md-right col-md-3 col-form-label"
         >
           {/* {t('admin:app_setting.file_uploading')} */}
         </label>
