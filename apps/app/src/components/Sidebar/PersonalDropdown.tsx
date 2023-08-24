@@ -67,7 +67,7 @@ export const PersonalDropdown = (): JSX.Element => {
               <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{currentUser.email}</span>
             </div>
 
-            <div className="btn-group btn-block mt-2" role="group">
+            <div className="btn-group mt-2" role="group">
               <Link
                 href={pagePathUtils.userHomepagePath(currentUser)}
                 className="btn btn-sm btn-outline-secondary col"

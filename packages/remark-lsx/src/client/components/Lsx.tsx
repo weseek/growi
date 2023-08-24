@@ -111,7 +111,7 @@ const LsxSubstance = React.memo(({
         <div className="col-12 col-sm-8 d-flex flex-column align-items-center lsx-load-more-container">
           <button
             type="button"
-            className="btn btn btn-block btn-outline-secondary btn-load-more"
+            className="btn btn btn-outline-secondary btn-load-more"
             onClick={() => setSize(size => size + 1)}
           >
             Load more<br />

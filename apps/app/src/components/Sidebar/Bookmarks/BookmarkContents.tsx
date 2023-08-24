@@ -42,7 +42,7 @@ export const BookmarkContents = (): JSX.Element => {
       <div className="col-8 mb-2 ">
         <button
           type="button"
-          className="btn btn-block btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
+          className="btn btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
           onClick={onClickNewBookmarkFolder}
         >
           <FolderPlusIcon />
