@@ -135,7 +135,7 @@ export const AdminNavigation = (): JSX.Element => {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span className="float-left">
+          <span className="float-start">
             {/* eslint-disable no-multi-spaces */}
             {pathname === '/admin'                  && <MenuLabel menu="home" />}
             {isActiveMenu('/app')                   && <MenuLabel menu="app" />}

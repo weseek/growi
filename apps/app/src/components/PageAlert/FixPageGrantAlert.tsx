@@ -181,7 +181,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     data-toggle="dropdown"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
                   >
-                    <span className="float-left ml-2">
+                    <span className="float-start ml-2">
                       {
                         selectedGroup == null
                           ? t('fix_page_grant.modal.select_group_default_text')

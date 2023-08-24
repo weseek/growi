@@ -211,7 +211,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           <div className="d-lg-none col mb-3">
             <UncontrolledDropdown>
               <DropdownToggle caret type="button" outline className="w-100 text-right" disabled={isLoading}>
-                <span className="float-left">
+                <span className="float-start">
                   { (() => {
                     if (isLoading) {
                       return 'Loading..';
@@ -246,8 +246,8 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
               </div>
               <div className="col-6 d-flex justify-content-end">
                 <UncontrolledDropdown>
-                  <DropdownToggle caret type="button" outline className="float-right" disabled={selectedTemplateSummary == null}>
-                    <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
+                  <DropdownToggle caret type="button" outline className="float-end" disabled={selectedTemplateSummary == null}>
+                    <span className="float-start">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     { selectedTemplateLocales != null && Array.from(selectedTemplateLocales).map((locale) => {

@@ -196,7 +196,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="true"
         >
-          <span className="float-left">
+          <span className="float-start">
             {t(getDeleteConfigValueForT(currentState))}
           </span>
         </button>
@@ -407,7 +407,7 @@ class SecuritySetting extends React.Component {
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                <span className="float-left">
+                <span className="float-start">
                   {currentRestrictGuestMode === 'Deny' && t('security_settings.guest_mode.deny')}
                   {currentRestrictGuestMode === 'Readonly' && t('security_settings.guest_mode.readonly')}
                 </span>

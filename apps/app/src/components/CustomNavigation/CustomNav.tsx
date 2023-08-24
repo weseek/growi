@@ -57,7 +57,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span className="float-left">
+        <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
         </span>
       </button>

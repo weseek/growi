@@ -93,7 +93,7 @@ const SinglePermissionSettingComponent = ({
             aria-haspopup="true"
             aria-expanded="true"
           >
-            <span className="float-left">
+            <span className="float-start">
               {permission === true && t('admin:slack_integration.accordion.allow_all')}
               {permission === false && t('admin:slack_integration.accordion.deny_all')}
               {Array.isArray(permission) && t('admin:slack_integration.accordion.allow_specified')}

@@ -112,7 +112,7 @@ const InstallerForm = memo((): JSX.Element => {
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                <span className="float-left">
+                <span className="float-start">
                   {t('meta.display_name')}
                 </span>
               </button>

@@ -101,7 +101,7 @@ const PermissionSettingForEachPermissionTypeComponent = ({
             aria-haspopup="true"
             aria-expanded="true"
           >
-            <span className="float-left">
+            <span className="float-start">
               {currentPermissionType === PermissionTypes.ALLOW_ALL
               && t('admin:slack_integration.accordion.allow_all')}
               {currentPermissionType === PermissionTypes.DENY_ALL
