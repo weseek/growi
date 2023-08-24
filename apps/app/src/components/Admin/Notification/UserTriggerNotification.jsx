@@ -115,7 +115,7 @@ class UserTriggerNotification extends React.Component {
                     <span className="input-group-text"><i className="fa fa-hashtag" /></span>
                   </div>
                   <input
-                    className="form-control form-inline"
+                    className="form-control"
                     type="text"
                     name="channel"
                     value={this.state.channel}
