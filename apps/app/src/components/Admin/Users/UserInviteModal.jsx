@@ -105,7 +105,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="col text-left form-check form-check-info text-left" onChange={this.handleCheckBox}>
+        <div className="col text-left form-check form-check-info" onChange={this.handleCheckBox}>
           <input
             type="checkbox"
             id="sendEmail"
