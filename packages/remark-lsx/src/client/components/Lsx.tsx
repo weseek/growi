@@ -115,7 +115,7 @@ const LsxSubstance = React.memo(({
             onClick={() => setSize(size => size + 1)}
           >
             Load more<br />
-            <span className="text-muted small left-items-label">({leftItemsNum} pages left)</span>
+            <span className="text-muted small start-items-label">({leftItemsNum} pages left)</span>
           </button>
         </div>
       </div>
