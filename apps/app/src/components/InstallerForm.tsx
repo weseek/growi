@@ -105,7 +105,7 @@ const InstallerForm = memo((): JSX.Element => {
               </div>
               <button
                 type="button"
-                className="btn btn-secondary dropdown-toggle form-control text-right rounded-right"
+                className="btn btn-secondary dropdown-toggle form-control text-right rounded-end"
                 id="dropdownLanguage"
                 data-testid="dropdownLanguage"
                 data-toggle="dropdown"

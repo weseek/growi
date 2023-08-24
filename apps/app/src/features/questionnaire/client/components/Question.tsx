@@ -25,7 +25,7 @@ const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => 
           <label className="btn btn-outline-primary active mr-4 rounded">
             <input type="radio" name={`${inputNamePrefix + question._id}`} id={`${question._id}-noAnswer`} value="0" defaultChecked /> -
           </label>
-          <label className="btn btn-outline-primary rounded-left">
+          <label className="btn btn-outline-primary rounded-start">
             <input type="radio" name={`${inputNamePrefix + question._id}`} id={`${question._id}-option1`} value="1" /> 1
           </label>
           <label className="btn btn-outline-primary">

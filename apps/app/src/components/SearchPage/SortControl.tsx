@@ -35,7 +35,7 @@ const SortControl: FC <Props> = (props: Props) => {
             {renderOrderIcon()}
           </div>
         </div>
-        <div className="border rounded-right">
+        <div className="border rounded-end">
           <button
             type="button"
             className="btn dropdown-toggle py-1"
