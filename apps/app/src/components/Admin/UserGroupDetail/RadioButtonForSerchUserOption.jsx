@@ -9,7 +9,7 @@ const RadioButtonForSerchUserOption = (props) => {
   const { searchType } = props;
   const { t } = useTranslation();
   return (
-    <div className="form-check custom-radio form-check-inline" key={`${searchType}Match`}>
+    <div className="form-check form-check-inline" key={`${searchType}Match`}>
       <input
         type="radio"
         id={`${searchType}Match`}

@@ -69,7 +69,7 @@ const MailSetting = (props: Props) => {
         <div className="col-md-6 py-2">
           {transmissionMethods.map((method) => {
             return (
-              <div key={method} className="form-check custom-radio form-check-inline">
+              <div key={method} className="form-check form-check-inline">
                 <input
                   type="radio"
                   className="form-check-input"

@@ -157,7 +157,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-1">
           {(hasDiff || revisionId === sourceRevision?._id) && (
-            <div className="form-check custom-radio form-check-inline mr-0">
+            <div className="form-check form-check-inline mr-0">
               <input
                 type="radio"
                 className="form-check-input"
@@ -173,7 +173,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-2">
           {(hasDiff || revisionId === targetRevision?._id) && (
-            <div className="form-check custom-radio form-check-inline mr-0">
+            <div className="form-check form-check-inline mr-0">
               <input
                 type="radio"
                 className="form-check-input"

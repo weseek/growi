@@ -49,7 +49,7 @@ class XssForm extends React.Component {
         <div className="row">
 
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
-            <div className="form-check custom-radio">
+            <div className="form-check">
               <input
                 type="radio"
                 className="form-check-input"
@@ -91,7 +91,7 @@ class XssForm extends React.Component {
           </div>
 
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
-            <div className="form-check custom-radio">
+            <div className="form-check">
               <input
                 type="radio"
                 className="form-check-input"

@@ -144,7 +144,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
 
           <h3>{t('notification_settings.notify_to')}</h3>
           <div className="form-group form-inline">
-            <div className="form-check custom-radio">
+            <div className="form-check">
               <input
                 className="form-check-input"
                 type="radio"
@@ -158,7 +158,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 <p className="font-weight-bold">Email</p>
               </label>
             </div>
-            <div className="form-check custom-radio ml-2">
+            <div className="form-check ml-2">
               <input
                 className="form-check-input"
                 type="radio"

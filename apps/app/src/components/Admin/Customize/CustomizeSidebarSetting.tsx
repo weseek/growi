@@ -73,7 +73,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
           </Card>
 
           <div className="px-3">
-            <div className="form-check custom-radio my-3">
+            <div className="form-check my-3">
               <input
                 type="radio"
                 id="is-open"
@@ -87,7 +87,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
-            <div className="form-check custom-radio my-3">
+            <div className="form-check my-3">
               <input
                 type="radio"
                 id="is-closed"

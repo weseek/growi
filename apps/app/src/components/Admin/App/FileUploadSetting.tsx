@@ -45,7 +45,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         <div className="col-md-6 py-2">
           {fileUploadTypes.map((type) => {
             return (
-              <div key={type} className="form-check custom-radio form-check-inline">
+              <div key={type} className="form-check form-check-inline">
                 <input
                   type="radio"
                   className="form-check-input"

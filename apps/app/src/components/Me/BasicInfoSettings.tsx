@@ -86,7 +86,7 @@ export const BasicInfoSettings = (): JSX.Element => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>
         <div className="col-md-6">
-          <div className="form-check custom-radio form-check-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radioEmailShow"
@@ -97,7 +97,7 @@ export const BasicInfoSettings = (): JSX.Element => {
             />
             <label className="form-check-label" htmlFor="radioEmailShow">{t('Show')}</label>
           </div>
-          <div className="form-check custom-radio form-check-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radioEmailHide"
@@ -120,7 +120,7 @@ export const BasicInfoSettings = (): JSX.Element => {
               const fixedT = i18n.getFixedT(locale);
 
               return (
-                <div key={locale} className="form-check custom-radio form-check-inline">
+                <div key={locale} className="form-check form-check-inline">
                   <input
                     type="radio"
                     id={`radioLang${locale}`}

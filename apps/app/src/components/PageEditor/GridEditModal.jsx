@@ -92,7 +92,7 @@ class GridEditModal extends React.Component {
     const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
-        <div key={responsiveSizeForMap[0]} className="form-check custom-radio form-check-inline">
+        <div key={responsiveSizeForMap[0]} className="form-check form-check-inline">
           <input
             type="radio"
             className="form-check-input"

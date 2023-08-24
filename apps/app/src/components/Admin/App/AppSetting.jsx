@@ -83,7 +83,7 @@ const AppSetting = (props) => {
               const fixedT = i18n.getFixedT(locale, 'admin');
 
               return (
-                <div key={locale} className="form-check custom-radio form-check-inline">
+                <div key={locale} className="form-check form-check-inline">
                   <input
                     type="radio"
                     id={`radioLang${locale}`}
@@ -111,7 +111,7 @@ const AppSetting = (props) => {
         </label>
         <div className="col-md-6 py-2">
 
-          <div className="form-check custom-radio form-check-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radio-email-show"
@@ -123,7 +123,7 @@ const AppSetting = (props) => {
             <label className="form-check-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
           </div>
 
-          <div className="form-check custom-radio form-check-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radio-email-hide"

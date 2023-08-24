@@ -252,7 +252,7 @@ const PageRenameModal = (): JSX.Element => {
 
         { !isV5Compatible(page.meta) && (
           <>
-            <div className="form-check custom-radio custom-radio-warning">
+            <div className="form-check form-check-warning">
               <input
                 className="form-check-input"
                 name="withoutExistRecursively"
@@ -265,7 +265,7 @@ const PageRenameModal = (): JSX.Element => {
                 { t('modal_rename.label.Rename this page only') }
               </label>
             </div>
-            <div className="form-check custom-radio custom-radio-warning mt-1">
+            <div className="form-check form-check-warning mt-1">
               <input
                 className="form-check-input"
                 name="recursively"

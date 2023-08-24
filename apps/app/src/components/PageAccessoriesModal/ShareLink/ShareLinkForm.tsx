@@ -110,7 +110,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
           <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.expire')}</label>
           <div className="col-md-7">
 
-            <div className="form-check custom-radio form-group ">
+            <div className="form-check form-group ">
               <input
                 type="radio"
                 className="form-check-input"
@@ -123,7 +123,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
               <label className="form-check-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
             </div>
 
-            <div className="form-check custom-radio  form-group">
+            <div className="form-check  form-group">
               <input
                 type="radio"
                 className="form-check-input"
@@ -149,7 +149,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
               </label>
             </div>
 
-            <div className="form-check custom-radio form-group text-nowrap mb-0">
+            <div className="form-check form-group text-nowrap mb-0">
               <input
                 type="radio"
                 className="form-check-input"

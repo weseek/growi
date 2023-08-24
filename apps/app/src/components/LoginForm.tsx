@@ -209,7 +209,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               name="usernameForLogin"
             />
             {isLdapStrategySetup && (
-              <div>
+              <div className="input-group-append">
                 <small className="input-group-text text-success">
                   <i className="icon-fw icon-check"></i> LDAP
                 </small>

@@ -133,7 +133,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
             {renderGrantDataLabel()}
 
             <div className="ml-2">
-              <div className="form-check custom-radio mb-3">
+              <div className="form-check mb-3">
                 <input
                   className="form-check-input"
                   name="grantRestricted"
@@ -147,7 +147,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   { t('fix_page_grant.modal.radio_btn.restrected') }
                 </label>
               </div>
-              <div className="form-check custom-radio mb-3">
+              <div className="form-check mb-3">
                 <input
                   className="form-check-input"
                   name="grantUser"
@@ -161,7 +161,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   { t('fix_page_grant.modal.radio_btn.only_me') }
                 </label>
               </div>
-              <div className="form-check custom-radio d-flex mb-3">
+              <div className="form-check d-flex mb-3">
                 <input
                   className="form-check-input"
                   name="grantUserGroup"

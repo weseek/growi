@@ -13,7 +13,7 @@ export const TemplateTab = (props: Props): JSX.Element => {
   const { template, onChangeHandler } = props;
 
   return (
-    <div key={template.name} className="form-check custom-radio">
+    <div key={template.name} className="form-check">
       <input
         type="radio"
         className="form-check-input"

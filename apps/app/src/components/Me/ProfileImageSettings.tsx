@@ -94,7 +94,7 @@ const ProfileImageSettings = (): JSX.Element => {
       <div className="row">
         <div className="col-md-6 col-12 mb-3 mb-md-0">
           <h4>
-            <div className="form-check custom-radio radio-primary">
+            <div className="form-check radio-primary">
               <input
                 type="radio"
                 id="radioGravatar"
@@ -117,7 +117,7 @@ const ProfileImageSettings = (): JSX.Element => {
 
         <div className="col-md-6 col-12">
           <h4>
-            <div className="form-check custom-radio radio-primary">
+            <div className="form-check radio-primary">
               <input
                 type="radio"
                 id="radioUploadPicture"
