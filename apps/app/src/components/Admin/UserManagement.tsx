@@ -89,7 +89,7 @@ const UserManagement = (props: UserManagementProps) => {
           checked={adminUsersContainer.isSelected(status)}
           onChange={() => clickHandler(status)}
         />
-        <label className="form-check-label" htmlFor={`c_${status}`}>
+        <label className="form-label form-check-label" htmlFor={`c_${status}`}>
           <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
             {statusLabel}
           </span>
@@ -165,7 +165,7 @@ const UserManagement = (props: UserManagementProps) => {
           </div>
 
           <div className="offset-md-1 col-md-6 my-2">
-            <div className="form-inline">
+            <div>
               {renderCheckbox('all', 'All', 'secondary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}

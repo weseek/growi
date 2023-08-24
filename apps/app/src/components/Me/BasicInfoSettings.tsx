@@ -49,7 +49,7 @@ export const BasicInfoSettings = (): JSX.Element => {
   return (
     <>
 
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="userForm[name]" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
         <div className="col-md-6">
           <input
@@ -62,7 +62,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="userForm[email]" className="text-left text-md-right col-md-3 col-form-label">{t('Email')}</label>
         <div className="col-md-6">
           <input
@@ -83,7 +83,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>
         <div className="col-md-6">
           <div className="form-check form-check-inline">
@@ -95,7 +95,7 @@ export const BasicInfoSettings = (): JSX.Element => {
               checked={personalSettingsInfo?.isEmailPublished === true}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: true })}
             />
-            <label className="form-check-label" htmlFor="radioEmailShow">{t('Show')}</label>
+            <label className="form-label form-check-label" htmlFor="radioEmailShow">{t('Show')}</label>
           </div>
           <div className="form-check form-check-inline">
             <input
@@ -106,12 +106,12 @@ export const BasicInfoSettings = (): JSX.Element => {
               checked={personalSettingsInfo?.isEmailPublished === false}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: false })}
             />
-            <label className="form-check-label" htmlFor="radioEmailHide">{t('Hide')}</label>
+            <label className="form-label form-check-label" htmlFor="radioEmailHide">{t('Hide')}</label>
           </div>
         </div>
       </div>
 
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
           {
@@ -129,14 +129,14 @@ export const BasicInfoSettings = (): JSX.Element => {
                     checked={personalSettingsInfo?.lang === locale}
                     onChange={() => changePersonalSettingsHandler({ lang: locale })}
                   />
-                  <label className="form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
+                  <label className="form-label form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
                 </div>
               );
             })
           }
         </div>
       </div>
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="userForm[slackMemberId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack Member ID')}</label>
         <div className="col-md-6">
           <input

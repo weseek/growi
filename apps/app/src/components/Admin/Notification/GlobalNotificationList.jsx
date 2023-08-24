@@ -88,7 +88,7 @@ class GlobalNotificationList extends React.Component {
                     defaultChecked={notification.isEnabled}
                     onClick={() => this.toggleIsEnabled(notification)}
                   />
-                  <label className="form-check-label" htmlFor={notification._id} />
+                  <label className="form-label form-check-label" htmlFor={notification._id} />
                 </div>
               </td>
               <td>

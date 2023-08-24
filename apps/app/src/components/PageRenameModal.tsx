@@ -209,14 +209,14 @@ const PageRenameModal = (): JSX.Element => {
 
     return (
       <>
-        <div className="form-group">
-          <label>{ t('modal_rename.label.Current page name') }</label><br />
+        <div>
+          <label className="form-label">{ t('modal_rename.label.Current page name') }</label><br />
           <code>{ path }</code>
         </div>
-        <div className="form-group">
-          <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
+        <div>
+          <label htmlFor="newPageName" className="form-label">{ t('modal_rename.label.New page name') }</label><br />
           <div className="input-group">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text">{siteUrl}</span>
             </div>
             <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
@@ -261,7 +261,7 @@ const PageRenameModal = (): JSX.Element => {
                 checked={!isRenameRecursively}
                 onChange={() => setIsRenameRecursively(!isRenameRecursively)}
               />
-              <label className="form-check-label" htmlFor="cbRenameThisPageOnly">
+              <label className="form-label form-check-label" htmlFor="cbRenameThisPageOnly">
                 { t('modal_rename.label.Rename this page only') }
               </label>
             </div>
@@ -274,7 +274,7 @@ const PageRenameModal = (): JSX.Element => {
                 checked={isRenameRecursively}
                 onChange={() => setIsRenameRecursively(!isRenameRecursively)}
               />
-              <label className="form-check-label" htmlFor="cbForceRenameRecursively">
+              <label className="form-label form-check-label" htmlFor="cbForceRenameRecursively">
                 { t('modal_rename.label.Force rename all child pages') }
                 <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
               </label>
@@ -301,7 +301,7 @@ const PageRenameModal = (): JSX.Element => {
               checked={isRenameRedirect}
               onChange={() => setIsRenameRedirect(!isRenameRedirect)}
             />
-            <label className="form-check-label" htmlFor="cbRenameRedirect">
+            <label className="form-label form-check-label" htmlFor="cbRenameRedirect">
               { t('modal_rename.label.Redirect') }
               <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
             </label>
@@ -316,7 +316,7 @@ const PageRenameModal = (): JSX.Element => {
               checked={isRemainMetadata}
               onChange={() => setIsRemainMetadata(!isRemainMetadata)}
             />
-            <label className="form-check-label" htmlFor="cbRemainMetadata">
+            <label className="form-label form-check-label" htmlFor="cbRemainMetadata">
               { t('modal_rename.label.Do not update metadata') }
               <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
             </label>

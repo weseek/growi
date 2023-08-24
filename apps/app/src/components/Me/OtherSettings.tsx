@@ -50,7 +50,7 @@ const OtherSettings = (): JSX.Element => {
         </div>
       )}
 
-      <div className="form-group row">
+      <div className="row">
         <div className="offset-md-3 col-md-6 text-left">
           {!isLoadingCurrentUser && (
             <div className="form-check form-switch form-check-primary">
@@ -63,7 +63,7 @@ const OtherSettings = (): JSX.Element => {
                   onChange={onChangeIsQuestionnaireEnabledHandler}
                   disabled={!growiIsQuestionnaireEnabled}
                 />
-                <label className="form-check-label" htmlFor="isQuestionnaireEnabled">
+                <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
                   {t('questionnaire.enable_questionnaire')}
                 </label>
               </span>

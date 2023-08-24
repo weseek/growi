@@ -65,7 +65,7 @@ class SlackConfiguration extends React.Component {
             <h2 className="border-bottom mb-5">{t('notification_settings.slack_incoming_configuration')}</h2>
 
             <div className="row mb-3">
-              <label className="col-md-3 text-left text-md-right">Webhook URL</label>
+              <label className="form-label col-md-3 text-left text-md-right">Webhook URL</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -86,7 +86,7 @@ class SlackConfiguration extends React.Component {
                     checked={adminSlackIntegrationLegacyContainer.state.isIncomingWebhookPrioritized || false}
                     onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
                   />
-                  <label className="form-check-label" htmlFor="cbPrioritizeIWH">
+                  <label className="form-label form-check-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_settings.prioritize_webhook')}
                   </label>
                 </div>
@@ -117,7 +117,7 @@ class SlackConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="col-md-3 text-left text-md-right">OAuth access token</label>
+                <label className="form-label col-md-3 text-left text-md-right">OAuth access token</label>
                 <div className="col-md-6">
                   <input
                     className="form-control"

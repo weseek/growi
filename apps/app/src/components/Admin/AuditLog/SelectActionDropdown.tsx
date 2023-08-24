@@ -84,20 +84,20 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
         {dropdownItems.map(item => (
           <div key={item.actionCategory}>
             <div className="dropdown-item">
-              <div className="form-group px-2 m-0">
+              <div className="px-2 m-0">
                 <input
                   type="checkbox"
                   className="form-check-input"
                   defaultChecked
                   onChange={(e) => { multipleActionCheckboxChangedHandler(item.actions, e.target.checked) }}
                 />
-                <label className="form-check-label">{t(`admin:audit_log_action_category.${item.actionCategory}`)}</label>
+                <label className="form-label form-check-label">{t(`admin:audit_log_action_category.${item.actionCategory}`)}</label>
               </div>
             </div>
             {
               item.actions.map(action => (
                 <div className="dropdown-item" key={action}>
-                  <div className="form-group px-4 m-0">
+                  <div className="px-4 m-0">
                     <input
                       type="checkbox"
                       className="form-check-input"

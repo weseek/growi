@@ -16,7 +16,7 @@ const SmtpSetting = (props: Props) => {
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
 
-        <div className="row form-group">
+        <div className="row">
           <label className="text-left text-md-right col-md-3 col-form-label">
             Access key ID
           </label>
@@ -32,7 +32,7 @@ const SmtpSetting = (props: Props) => {
           </div>
         </div>
 
-        <div className="row form-group">
+        <div className="row">
           <label className="text-left text-md-right col-md-3 col-form-label">
             Secret access key
           </label>

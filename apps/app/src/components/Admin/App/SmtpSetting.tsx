@@ -19,7 +19,7 @@ const SmtpSetting = (props: Props) => {
   return (
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
-        <div className="row form-group">
+        <div className="row">
           <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.host')}
           </label>
@@ -33,7 +33,7 @@ const SmtpSetting = (props: Props) => {
           </div>
         </div>
 
-        <div className="row form-group">
+        <div className="row">
           <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.port')}
           </label>
@@ -46,7 +46,7 @@ const SmtpSetting = (props: Props) => {
           </div>
         </div>
 
-        <div className="row form-group">
+        <div className="row">
           <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.user')}
           </label>
@@ -60,7 +60,7 @@ const SmtpSetting = (props: Props) => {
           </div>
         </div>
 
-        <div className="row form-group">
+        <div className="row">
           <label className="text-left text-md-right col-md-3 col-form-label">
             {t('Password')}
           </label>

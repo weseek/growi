@@ -63,14 +63,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
         {
           userGroup?.createdAt != null && (
-            <div className="form-group row">
+            <div className="row">
               <p className="col-md-2 col-form-label">{t('Created')}</p>
               <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
             </div>
           )
         }
 
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('user_group_management.group_name')}
           </label>
@@ -87,7 +87,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="description" className="col-md-2 col-form-label">
             {t('Description')}
           </label>
@@ -96,7 +96,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="parent" className="col-md-2 col-form-label">
             {t('user_group_management.parent_group')}
           </label>
@@ -143,7 +143,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <div className="offset-md-2 col-md-10">
             <button type="submit" className="btn btn-primary">
               {submitButtonLabel}

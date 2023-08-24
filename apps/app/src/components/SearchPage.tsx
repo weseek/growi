@@ -57,7 +57,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   }
 
   return (
-    <div className="form-inline d-flex align-items-center justify-content-between">
+    <div className="d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
         <span className="search-result-keyword ml-2">{`${searchingKeyword}`}</span>
@@ -68,8 +68,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         ) }
       </div>
       <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
-        <div className="input-group-prepend">
-          <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+        <div>
+          <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
         </div>
         <select
           defaultValue={pagingSize}

@@ -57,7 +57,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
             setIsRecursively(e.target.checked);
           }}
         />
-        <label className="form-check-label" htmlFor="convertRecursively">
+        <label className="form-label form-check-label" htmlFor="convertRecursively">
           { t('private_legacy_pages.modal.convert_recursively_label') }
           <p className="form-text text-muted mt-0"> { t('private_legacy_pages.modal.convert_recursively_desc') }</p>
         </label>
@@ -78,7 +78,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
         { t('private_legacy_pages.modal.title') }
       </ModalHeader>
       <ModalBody>
-        <div className="form-group grw-scrollable-modal-body pb-1">
+        <div className="grw-scrollable-modal-body pb-1">
           <label>{ t('private_legacy_pages.modal.converting_pages') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}

@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 type Props = {
@@ -32,7 +33,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
             }
           }}
         />
-        <label className="form-check-label" htmlFor={inputId}>
+        <label className="form-label form-check-label" htmlFor={inputId}>
           Primary
         </label>
       </div>

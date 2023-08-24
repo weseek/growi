@@ -24,7 +24,7 @@ const CustomizeFunctionOption = (props: Props): JSX.Element => {
           checked={isChecked}
           onChange={onChecked}
         />
-        <label className="form-check-label" htmlFor={optionId}>
+        <label className="form-label form-check-label" htmlFor={optionId}>
           <strong>{label}</strong>
         </label>
       </div>

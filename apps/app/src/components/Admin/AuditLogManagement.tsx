@@ -172,7 +172,7 @@ export const AuditLogManagement: FC = () => {
         <AuditLogSettings />
       ) : (
         <>
-          <div className="form-inline mb-3">
+          <div className="mb-3">
             <SearchUsernameTypeahead
               ref={typeaheadRef}
               onChange={setUsernamesHandler}
@@ -224,7 +224,7 @@ export const AuditLogManagement: FC = () => {
             />
 
             <div className="admin-audit-log ml-3">
-              <label htmlFor="jumpPageInput" className="mr-1 text-secondary">Jump To Page</label>
+              <label htmlFor="jumpPageInput" className="form-label mr-1 text-secondary">Jump To Page</label>
               <input
                 id="jumpPageInput"
                 type="text"

@@ -53,7 +53,7 @@ const SiteUrlSetting = (props: Props) => {
         </div>
       ) }
 
-      <div className="row form-group">
+      <div className="row">
         <div className="col-md-9 offset-md-3">
           <table className="table settings-table">
             <colgroup>

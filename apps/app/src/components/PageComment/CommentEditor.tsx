@@ -335,7 +335,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
             {isSlackConfigured && isSlackEnabled != null
               && (
-                <div className="form-inline align-self-center mr-md-2">
+                <div className="align-self-center mr-md-2">
                   <SlackNotification
                     isSlackEnabled={isSlackEnabled}
                     slackChannels={slackChannels}

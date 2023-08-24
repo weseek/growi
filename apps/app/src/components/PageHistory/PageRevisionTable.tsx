@@ -167,7 +167,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
                 checked={revisionId === sourceRevision?._id}
                 onChange={() => onChangeSourceInvoked(revision)}
               />
-              <label className="form-check-label" htmlFor={`compareSource-${revisionId}`} />
+              <label className="form-label form-check-label" htmlFor={`compareSource-${revisionId}`} />
             </div>
           )}
         </td>
@@ -183,7 +183,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
                 checked={revisionId === targetRevision?._id}
                 onChange={() => onChangeTargetInvoked(revision)}
               />
-              <label className="form-check-label" htmlFor={`compareTarget-${revisionId}`} />
+              <label className="form-label form-check-label" htmlFor={`compareTarget-${revisionId}`} />
             </div>
           )}
         </td>

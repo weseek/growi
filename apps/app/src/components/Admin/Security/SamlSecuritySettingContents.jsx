@@ -64,7 +64,7 @@ class SamlSecurityManagementContents extends React.Component {
           />
         )}
 
-        <div className="row form-group mb-5">
+        <div className="row mb-5">
           <div className="col-6 offset-3">
             <div className="form-check form-switch form-check-success">
               <input
@@ -75,7 +75,7 @@ class SamlSecurityManagementContents extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="form-check-label" htmlFor="isSamlEnabled">
+              <label className="form-label form-check-label" htmlFor="isSamlEnabled">
                 {t('security_settings.SAML.enable_saml')}
               </label>
             </div>
@@ -84,7 +84,7 @@ class SamlSecurityManagementContents extends React.Component {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
+        <div className="row mb-5">
           <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
@@ -390,7 +390,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
-            <div className="row form-group mb-5">
+            <div className="row mb-5">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="form-check form-check-success">
                   <input
@@ -401,7 +401,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="form-check-label"
+                    className="form-label form-check-label"
                     htmlFor="bindByUserName-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
@@ -412,7 +412,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </div>
             </div>
 
-            <div className="row form-group mb-5">
+            <div className="row mb-5">
               <div className="offset-md-3 col-md-6 text-left">
                 <div className="form-check form-check-success">
                   <input
@@ -423,7 +423,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="form-check-label"
+                    className="form-label form-check-label"
                     htmlFor="bindByEmail-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

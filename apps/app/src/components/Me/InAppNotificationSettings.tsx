@@ -69,7 +69,7 @@ const InAppNotificationSettings: FC = () => {
     <>
       <h2 className="border-bottom my-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
 
-      <div className="form-group row">
+      <div className="row">
         <div className="offset-md-3 col-md-6 text-left">
           {subscribeRulesMenuItems.map(rule => (
             <div
@@ -83,7 +83,7 @@ const InAppNotificationSettings: FC = () => {
                 checked={isCheckedRule(rule.name, subscribeRules)}
                 onChange={e => ruleCheckboxHandler(rule.name, e.target.checked)}
               />
-              <label className="form-check-label" htmlFor={rule.name}>
+              <label className="form-label form-check-label" htmlFor={rule.name}>
                 <strong>{rule.name}</strong>
               </label>
               <p className="form-text text-muted small">

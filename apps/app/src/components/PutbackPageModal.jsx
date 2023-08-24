@@ -71,8 +71,8 @@ const PutBackPageModal = () => {
     }
     return (
       <>
-        <div className="form-group">
-          <label>{t('modal_putback.label.Put Back Page')}:</label><br />
+        <div>
+          <label className="form-label">{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>
         <div className="form-check form-check-warning">
@@ -83,7 +83,7 @@ const PutBackPageModal = () => {
             checked={isPutbackRecursively}
             onChange={changeIsPutbackRecursivelyHandler}
           />
-          <label htmlFor="cbPutBackRecursively" className="form-check-label">
+          <label htmlFor="cbPutBackRecursively" className="form-label form-check-label">
             { t('modal_putback.label.recursively') }
           </label>
           <p className="form-text text-muted mt-0">

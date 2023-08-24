@@ -34,7 +34,7 @@ const AppSetting = (props) => {
 
   return (
     <React.Fragment>
-      <div className="form-group row">
+      <div className="row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
         <div className="col-md-6">
           <input
@@ -50,7 +50,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -70,7 +70,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -95,7 +95,7 @@ const AppSetting = (props) => {
                       adminAppContainer.changeGlobalLang(e.target.value);
                     }}
                   />
-                  <label className="form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                  <label className="form-label form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
                 </div>
               );
             })
@@ -103,7 +103,7 @@ const AppSetting = (props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -120,7 +120,7 @@ const AppSetting = (props) => {
               checked={adminAppContainer.state.isEmailPublishedForNewUser === true}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(true) }}
             />
-            <label className="form-check-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
+            <label className="form-label form-check-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
           </div>
 
           <div className="form-check form-check-inline">
@@ -132,13 +132,13 @@ const AppSetting = (props) => {
               checked={adminAppContainer.state.isEmailPublishedForNewUser === false}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(false) }}
             />
-            <label className="form-check-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
+            <label className="form-label form-check-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
           </div>
 
         </div>
       </div>
 
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label
           className="text-left text-md-right col-md-3 col-form-label"
         >
@@ -157,7 +157,7 @@ const AppSetting = (props) => {
               }}
             />
             <label
-              className="form-check-label"
+              className="form-label form-check-label"
               htmlFor="cbFileUpload"
             >
               {t('admin:app_setting.enable_files_except_image')}

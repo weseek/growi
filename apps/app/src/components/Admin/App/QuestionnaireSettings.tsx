@@ -80,7 +80,7 @@ const QuestionnaireSettings = (): JSX.Element => {
                 checked={isQuestionnaireEnabled}
                 onChange={onChangeIsQuestionnaireEnabledHandler}
               />
-              <label className="form-check-label" htmlFor="isQuestionnaireEnabled">
+              <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
                 {t('app_setting.enable_questionnaire')}
               </label>
             </div>
@@ -96,7 +96,7 @@ const QuestionnaireSettings = (): JSX.Element => {
                 onChange={onChangeisAppSiteUrlHashedHandler}
                 disabled={!isQuestionnaireEnabled}
               />
-              <label className="form-check-label" htmlFor="isAppSiteUrlHashed">
+              <label className="form-label form-check-label" htmlFor="isAppSiteUrlHashed">
                 {t('app_setting.anonymize_app_site_url')}
               </label>
               <p className="form-text text-muted small">

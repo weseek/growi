@@ -110,7 +110,7 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
 
   return (
     <div className="input-group mr-2">
-      <div className="input-group-prepend">
+      <div>
         <span className="input-group-text">
           <i className="icon-people" />
         </span>

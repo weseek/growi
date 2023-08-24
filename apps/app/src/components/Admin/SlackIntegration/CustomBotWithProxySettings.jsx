@@ -107,7 +107,7 @@ const CustomBotWithProxySettings = (props) => {
             connectionStatuses={connectionStatuses}
           />
 
-          <div className="form-group row my-4">
+          <div className="row my-4">
             <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
             <div className="col-md-6 mt-3">
               <input

@@ -75,8 +75,8 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
       <>
         <h6 className="dropdown-header">{t(isEditMode ? 'personal_dropdown.sidebar_mode_editor' : 'personal_dropdown.sidebar_mode')}</h6>
         <form className="px-4">
-          <div className="form-row justify-content-center">
-            <div className="form-group col-auto mb-0 d-flex align-items-center">
+          <div className="justify-content-center">
+            <div className="col-auto mb-0 d-flex align-items-center">
               <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
@@ -88,7 +88,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   checked={isEditMode ? !isPreferDrawerModeOnEdit : !isPreferDrawerMode}
                   onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked, isEditMode)}
                 />
-                <label className="form-check-label" htmlFor={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
+                <label className="form-label form-check-label" htmlFor={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
               </div>
               <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-dock' : 'iwt-sidebar-dock'} label="Dock" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDockIcon />
@@ -129,8 +129,8 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
             {dropdownDivider}
             <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
             <form className="px-4">
-              <div className="form-row justify-content-center">
-                <div className="form-group col-auto d-flex align-items-center">
+              <div className="justify-content-center">
+                <div className="col-auto d-flex align-items-center">
                   <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                     <SunIcon />
                   </IconWithTooltip>
@@ -143,15 +143,15 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                       disabled={useOsSettings}
                       onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
                     />
-                    <label className="form-check-label" htmlFor="swUserPreference"></label>
+                    <label className="form-label form-check-label" htmlFor="swUserPreference"></label>
                   </div>
                   <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                     <MoonIcon />
                   </IconWithTooltip>
                 </div>
               </div>
-              <div className="form-row">
-                <div className="form-group col-auto">
+              <div>
+                <div className="col-auto">
                   <div className="form-check">
                     <input
                       id="cbFollowOs"
@@ -160,7 +160,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                       checked={useOsSettings}
                       onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                     />
-                    <label className="form-check-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
+                    <label className="form-label form-check-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
                   </div>
                 </div>
               </div>

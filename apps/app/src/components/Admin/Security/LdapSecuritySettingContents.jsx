@@ -58,7 +58,7 @@ class LdapSecuritySettingContents extends React.Component {
           LDAP
         </h2>
 
-        <div className="form-group row">
+        <div className="row">
           <div className="col-6 offset-3">
             <div className="form-check form-switch form-check-success">
               <input
@@ -68,7 +68,7 @@ class LdapSecuritySettingContents extends React.Component {
                 checked={isLdapEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsLdapEnabled() }}
               />
-              <label className="form-check-label" htmlFor="isLdapEnabled">
+              <label className="form-label form-check-label" htmlFor="isLdapEnabled">
                 {t('security_settings.ldap.enable_ldap')}
               </label>
             </div>
@@ -83,7 +83,7 @@ class LdapSecuritySettingContents extends React.Component {
 
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
-            <div className="form-group row">
+            <div className="row">
               <label htmlFor="serverUrl" className="text-left text-md-right col-md-3 col-form-label">
                 Server URL
               </label>
@@ -106,8 +106,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_settings.ldap.bind_mode')}</strong>
               </label>
               <div className="col-md-6">
@@ -136,8 +136,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong>Bind DN</strong>
               </label>
               <div className="col-md-6">
@@ -171,7 +171,7 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
+            <div className="row">
               <div htmlFor="bindDNPassword" className="text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_settings.ldap.bind_DN_password')}</strong>
               </div>
@@ -202,8 +202,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_settings.ldap.search_filter')}</strong>
               </label>
               <div className="col-md-6">
@@ -238,8 +238,8 @@ class LdapSecuritySettingContents extends React.Component {
               Attribute Mapping ({t('security_settings.optional')})
             </h3>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapUsername">{t('username')}</strong>
               </label>
               <div className="col-md-6">
@@ -258,7 +258,7 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
+            <div className="row">
               <div className="offset-md-3 col-md-6">
                 <div className="form-check form-check-success">
                   <input
@@ -282,8 +282,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapMail">{t('Email')}</strong>
               </label>
               <div className="col-md-6">
@@ -303,8 +303,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapName">{t('Name')}</strong>
               </label>
               <div className="col-md-6">
@@ -328,8 +328,8 @@ class LdapSecuritySettingContents extends React.Component {
               {t('security_settings.ldap.group_search_filter')} ({t('security_settings.optional')})
             </h3>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="groupSearchBase">{t('security_settings.ldap.group_search_base_DN')}</strong>
               </label>
               <div className="col-md-6">
@@ -350,8 +350,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="groupSearchFilter">{t('security_settings.ldap.group_search_filter')}</strong>
               </label>
               <div className="col-md-6">
@@ -381,8 +381,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="groupDnProperty">{t('security_settings.ldap.group_search_user_DN_property')}</strong>
               </label>
               <div className="col-md-6">

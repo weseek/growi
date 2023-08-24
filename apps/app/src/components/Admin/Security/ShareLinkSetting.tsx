@@ -124,7 +124,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
               checked={!disableLinkSharing}
               onChange={() => switchDisableLinkSharing()}
             />
-            <label className="form-check-label" htmlFor="disableLinkSharing">
+            <label className="form-label form-check-label" htmlFor="disableLinkSharing">
               {t('security_settings.enable_link_sharing')}
             </label>
           </div>

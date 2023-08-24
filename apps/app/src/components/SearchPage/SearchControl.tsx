@@ -130,7 +130,10 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     defaultChecked={includeUserPages}
                     onChange={e => setIncludeUserPages(e.target.checked)}
                   />
-                  <label className="form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
+                  <label
+                    className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight"
+                    htmlFor="flexCheckDefault"
+                  >
                     {t('Include Subordinated Target Page', { target: '/user' })}
                   </label>
                 </div>
@@ -145,8 +148,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     onChange={e => setIncludeTrashPages(e.target.checked)}
                   />
                   <label
-                    className="form-check-label
-                  d-flex align-items-center text-secondary with-no-font-weight"
+                    className="form-label form-check-label d-flex align-items-center text-secondary with-no-font-weight"
                     htmlFor="flexCheckChecked"
                   >
                     {t('Include Subordinated Target Page', { target: '/trash' })}

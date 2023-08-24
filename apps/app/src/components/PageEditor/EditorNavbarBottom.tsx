@@ -101,11 +101,11 @@ const EditorNavbarBottom = (): JSX.Element => {
       )
       }
       <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
-        <form className="form-inline">
+        <form>
           { isDeviceSmallerThanMd && renderDrawerButton() }
           { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
-        <form className="form-inline flex-nowrap ml-auto">
+        <form className="flex-nowrap ml-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
           {isSlackConfigured && (isDeviceSmallerThanMd ? (
@@ -141,7 +141,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         <Collapse isOpen={isExpanded}>
           <div className="px-2"> {/* set padding for border-top */}
             <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
-              <form className="form-inline ml-auto">
+              <form className="ml-auto">
                 <OptionsSelector />
               </form>
             </div>

@@ -32,7 +32,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
   return (
     <>
 
-      <div className="row form-group my-3">
+      <div className="row my-3">
         <label className="text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.file_delivery_method')}
         </label>

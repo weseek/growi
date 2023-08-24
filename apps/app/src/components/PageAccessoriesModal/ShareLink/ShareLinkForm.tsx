@@ -106,11 +106,11 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
       <div className=" p-3">
 
         {/* ExpirationTypeOptions */}
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.expire')}</label>
           <div className="col-md-7">
 
-            <div className="form-check form-group ">
+            <div className="form-check">
               <input
                 type="radio"
                 className="form-check-input"
@@ -120,10 +120,10 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                 checked={expirationType === ExpirationType.UNLIMITED}
                 onChange={() => { handleChangeExpirationType(ExpirationType.UNLIMITED) }}
               />
-              <label className="form-check-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
+              <label className="form-label form-check-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
             </div>
 
-            <div className="form-check  form-group">
+            <div className="form-check">
               <input
                 type="radio"
                 className="form-check-input"
@@ -133,7 +133,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                 onChange={() => { handleChangeExpirationType(ExpirationType.NUMBER_OF_DAYS) }}
                 name="expirationType"
               />
-              <label className="form-check-label" htmlFor="customRadio2">
+              <label className="form-label form-check-label" htmlFor="customRadio2">
                 <div className="row align-items-center m-0">
                   <input
                     type="number"
@@ -149,7 +149,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
               </label>
             </div>
 
-            <div className="form-check form-group text-nowrap mb-0">
+            <div className="form-check text-nowrap mb-0">
               <input
                 type="radio"
                 className="form-check-input"
@@ -159,7 +159,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                 checked={expirationType === ExpirationType.CUSTOM}
                 onChange={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}
               />
-              <label className="form-check-label" htmlFor="customRadio3">
+              <label className="form-label form-check-label" htmlFor="customRadio3">
                 {t('share_links.Custom')}
               </label>
               <div className="d-inline-flex flex-wrap">
@@ -185,7 +185,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
         </div>
 
         {/* DescriptionForm */}
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.description')}</label>
           <div className="col-md-4">
             <input

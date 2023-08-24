@@ -74,7 +74,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
-          <label htmlFor="cbOpt4" className="form-check-label">
+          <label htmlFor="cbOpt4" className="form-label form-check-label">
             {t(`${translationBase}.overwrite_author.label`)}
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
@@ -87,7 +87,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.makePublicForGrant2 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant2: !option.makePublicForGrant2 })}
           />
-          <label htmlFor="cbOpt1" className="form-check-label">
+          <label htmlFor="cbOpt1" className="form-label form-check-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Anyone with the link') })}
             <p
               className="form-text text-muted mt-0"
@@ -103,7 +103,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.makePublicForGrant4 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
-          <label htmlFor="cbOpt2" className="form-check-label">
+          <label htmlFor="cbOpt2" className="form-label form-check-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Only me') })}
             <p
               className="form-text text-muted mt-0"
@@ -119,7 +119,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.makePublicForGrant5 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant5: !option.makePublicForGrant5 })}
           />
-          <label htmlFor="cbOpt3" className="form-check-label">
+          <label htmlFor="cbOpt3" className="form-label form-check-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Only inside the group') })}
             <p
               className="form-text text-muted mt-0"
@@ -135,7 +135,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.initPageMetadatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initPageMetadatas: !option.initPageMetadatas })}
           />
-          <label htmlFor="cbOpt5" className="form-check-label">
+          <label htmlFor="cbOpt5" className="form-label form-check-label">
             {t(`${translationBase}.initialize_meta_datas.label`)}
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
@@ -148,7 +148,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.initHackmdDatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initHackmdDatas: !option.initHackmdDatas })}
           />
-          <label htmlFor="cbOpt6" className="form-check-label">
+          <label htmlFor="cbOpt6" className="form-label form-check-label">
             {t(`${translationBase}.initialize_hackmd_related_datas.label`)}
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
           </label>
@@ -175,7 +175,7 @@ class ImportCollectionConfigurationModal extends React.Component {
             checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
-          <label htmlFor="cbOpt1" className="form-check-label">
+          <label htmlFor="cbOpt1" className="form-label form-check-label">
             {t(`${translationBase}.overwrite_author.label`)}
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
