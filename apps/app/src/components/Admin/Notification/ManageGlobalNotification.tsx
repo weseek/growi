@@ -143,7 +143,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
           </div>
 
           <h3>{t('notification_settings.notify_to')}</h3>
-          <div className="form-group">
+          <div>
             <div className="form-check">
               <input
                 className="form-check-input"
