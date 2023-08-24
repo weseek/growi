@@ -12,6 +12,7 @@ export type UseCodeMirrorEditor = UseCodeMirror;
 type UseCodeMirrorEditorUtils = {
   initState: (config?: EditorStateConfig) => void,
   initDoc: (doc?: string) => void,
+  getDoc: () => string | undefined,
   focus: () => void,
   setCaretLine: (lineNumber?: number) => void,
 }
@@ -58,6 +59,11 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     initState({ doc });
   }, [initState]);
 
+  // implement getDoc method
+  const getDoc = useCallback((): string | undefined => {
+    return view?.state.doc.toString();
+  }, [view]);
+
   // implement focus method
   const focus = useCallback((): void => {
     view?.focus();
@@ -90,6 +96,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     ...codemirror,
     initState,
     initDoc,
+    getDoc,
     focus,
     setCaretLine,
   };

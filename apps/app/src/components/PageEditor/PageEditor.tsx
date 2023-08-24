@@ -116,7 +116,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
   const { data: codemirrorEditor } = useCodeMirrorEditorMain(codeMirrorEditorContainerRef.current);
-  const { initDoc, focus: focusToEditor, setCaretLine } = codemirrorEditor ?? {};
+  const {
+    initDoc, getDoc, focus: focusToEditor, setCaretLine,
+  } = codemirrorEditor ?? {};
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -221,10 +223,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateWaitingSaveProcessing(true);
 
       const { page } = await saveOrUpdate(
-        // TODO: get contents from the custom hook
-        // refs: https://redmine.weseek.co.jp/issues/128973
-        // markdownToSave.current,
-        '',
+        getDoc?.() ?? '',
         { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
         options,
       );
@@ -250,6 +249,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
   }, [
+    getDoc,
     currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
     currentPagePath, currentRevisionId,
     mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
@@ -301,12 +301,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
    * @param {any} file
    */
   const uploadHandler = useCallback(async(file) => {
-    // TODO: implement
-    // refs: https://redmine.weseek.co.jp/issues/126528
-    // if (editorRef.current == null) {
-    //   return;
-    // }
-
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let res: any = await apiGet('/attachments.limit', {
@@ -326,11 +320,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       if (pageId != null) {
         formData.append('page_id', pageId);
       }
-      // TODO: get contents from the custom hook
-      // refs: https://redmine.weseek.co.jp/issues/128973
-      // if (pageId == null && markdownToSave.current != null) {
-      //   formData.append('page_body', markdownToSave.current);
-      // }
+      if (pageId == null) {
+        formData.append('page_body', getDoc?.() ?? '');
+      }
 
       res = await apiPostForm('/attachments.add', formData);
       const attachment = res.attachment;
