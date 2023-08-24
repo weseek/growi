@@ -147,7 +147,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       useDragMode={isOperable}
     >
       <li
-        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
+        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 me-auto d-flex align-items-center"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
         style={{ paddingLeft }}
@@ -179,7 +179,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler} />
               : undefined}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>

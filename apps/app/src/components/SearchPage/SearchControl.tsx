@@ -84,7 +84,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
 
         {/* sort option: show when screen is larger than lg */}
         {isEnableSort && (
-          <div className="mr-4 d-lg-flex d-none">
+          <div className="me-4 d-lg-flex d-none">
             <SortControl
               sort={sort}
               order={order}
@@ -100,7 +100,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         </div>
         {/* sort option: show when screen is smaller than lg */}
         {isEnableSort && (
-          <div className="mr-md-4 mr-2 d-flex d-lg-none ms-auto">
+          <div className="me-md-4 me-2 d-flex d-lg-none ms-auto">
             <SortControl
               sort={sort}
               order={order}
@@ -121,10 +121,10 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
               </button>
             </div>
             <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
-              <div className="border rounded px-2 py-1 mr-3">
+              <div className="border rounded px-2 py-1 me-3">
                 <div className="custom-control custom-checkbox custom-checkbox-succsess">
                   <input
-                    className="custom-control-input mr-2"
+                    className="custom-control-input me-2"
                     type="checkbox"
                     id="flexCheckDefault"
                     defaultChecked={includeUserPages}
@@ -138,7 +138,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
               <div className="border rounded px-2 py-1">
                 <div className="custom-control custom-checkbox custom-checkbox-succsess">
                   <input
-                    className="custom-control-input mr-2"
+                    className="custom-control-input me-2"
                     type="checkbox"
                     id="flexCheckChecked"
                     checked={includeTrashPages}

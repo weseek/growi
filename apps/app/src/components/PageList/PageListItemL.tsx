@@ -220,7 +220,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
-              <span className="mr-2 d-none d-md-block">
+              <span className="me-2 d-none d-md-block">
                 <UserPicture user={pageData.lastUpdateUser} size="md" />
               </span>
               {/* page title */}

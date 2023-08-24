@@ -213,7 +213,7 @@ const InstallerForm = memo((): JSX.Element => {
               disabled={isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
+              <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
               <span className="btn-label-text">{ t('Create') }</span>
             </button>
           </div>

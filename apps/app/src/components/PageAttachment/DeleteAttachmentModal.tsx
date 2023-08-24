@@ -108,7 +108,7 @@ export const DeleteAttachmentModal: React.FC = () => {
         {attachmentFileFormat}
       </ModalBody>
       <ModalFooter>
-        <div className="mr-3 d-inline-block">
+        <div className="me-3 d-inline-block">
           {deletingIndicator}
         </div>
         <Button

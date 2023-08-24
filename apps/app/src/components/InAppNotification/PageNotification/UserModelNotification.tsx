@@ -32,7 +32,7 @@ const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
       <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg}
       </div>
-      <i className={`${actionIcon} mr-2`} />
+      <i className={`${actionIcon} me-2`} />
       <FormattedDistanceDate
         id={notification._id}
         date={notification.createdAt}

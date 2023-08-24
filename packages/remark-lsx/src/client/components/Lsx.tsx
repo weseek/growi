@@ -71,7 +71,7 @@ const LsxSubstance = React.memo(({
     return (
       <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
         <small>
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-spinner fa-pulse me-1"></i>
           {lsxContext.toString()}
         </small>
       </div>

@@ -34,10 +34,10 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
   return (
     <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
       <div className="d-flex">
-        <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-        <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-        <div className="icon-bubble mr-1 d-inline-block"></div>
-        <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+        <div className="footstamp-icon me-1 d-inline-block"><FootstampIcon /></div>
+        <div className="me-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+        <div className="icon-bubble me-1 d-inline-block"></div>
+        <div className="me-2 grw-list-counts d-inline-block">{page.commentCount}</div>
       </div>
       <div className="grw-formatted-distance-date small mt-auto" data-vrt-blackout-datetime>
         <FormattedDistanceDate id={page._id} date={page.updatedAt} />
@@ -71,7 +71,7 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
       <Link
         key={tag.name}
         href={`/_search?q=tag:${tag.name}`}
-        className="grw-tag-label badge bg-primary mr-2 small"
+        className="grw-tag-label badge bg-primary me-2 small"
         prefetch={false}
       >
         {tag.name}

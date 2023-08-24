@@ -46,7 +46,7 @@ const OtherSettings = (): JSX.Element => {
 
       {isLoadingCurrentUser && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
         </div>
       )}
 

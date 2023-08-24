@@ -285,7 +285,7 @@ const PageDeleteModal: FC = () => {
           onClick={deleteButtonHandler}
           data-testid="delete-page-button"
         >
-          <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <i className={`me-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </>

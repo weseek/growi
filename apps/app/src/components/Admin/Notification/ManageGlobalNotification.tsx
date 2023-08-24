@@ -238,7 +238,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.CREATE)}
               >
                 <span className="badge rounded-pill bg-success">
-                  <i className="icon-doc mr-1" /> CREATE
+                  <i className="icon-doc me-1" /> CREATE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -250,7 +250,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.EDIT)}
               >
                 <span className="badge rounded-pill bg-warning text-dark">
-                  <i className="icon-pencil mr-1" />EDIT
+                  <i className="icon-pencil me-1" />EDIT
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -262,7 +262,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.MOVE)}
               >
                 <span className="badge rounded-pill bg-pink">
-                  <i className="icon-action-redo mr-1" />MOVE
+                  <i className="icon-action-redo me-1" />MOVE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -274,7 +274,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.DELETE)}
               >
                 <span className="badge rounded-pill bg-danger">
-                  <i className="icon-fire mr-1" />DELETE
+                  <i className="icon-fire me-1" />DELETE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -286,7 +286,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.LIKE)}
               >
                 <span className="badge rounded-pill bg-info">
-                  <i className="fa fa-heart-o mr-1" />LIKE
+                  <i className="fa fa-heart-o me-1" />LIKE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -298,7 +298,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.POST)}
               >
                 <span className="badge rounded-pill bg-primary">
-                  <i className="icon-bubble mr-1" />POST
+                  <i className="icon-bubble me-1" />POST
                 </span>
               </TriggerEventCheckBox>
             </div>

@@ -89,7 +89,7 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
         </div>
       </Collapse>
       <div className="d-flex justify-content-end">
-        <Button color="secondary mr-2" onClick={onCancel}>{t('cancel')}</Button>
+        <Button color="secondary me-2" onClick={onCancel}>{t('cancel')}</Button>
         <Button color="primary" onClick={importButtonHandler}>{t('import')}</Button>
       </div>
     </form>

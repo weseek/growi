@@ -152,8 +152,8 @@ export const AuditLogManagement: FC = () => {
       <button type="button" className="btn btn-outline-secondary mb-4" onClick={() => setIsSettingPage(!isSettingPage)}>
         {
           isSettingPage
-            ? <><i className="fa fa-hand-o-left mr-1" />{t('admin:audit_log_management.return')}</>
-            : <><i className="fa icon-settings mr-1" />{t('admin:audit_log_management.settings')}</>
+            ? <><i className="fa fa-hand-o-left me-1" />{t('admin:audit_log_management.return')}</>
+            : <><i className="fa icon-settings me-1" />{t('admin:audit_log_management.settings')}</>
         }
       </button>
 
@@ -205,7 +205,7 @@ export const AuditLogManagement: FC = () => {
           { isLoading
             ? (
               <div className="text-muted text-center mb-5">
-                <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+                <i className="fa fa-2x fa-spinner fa-pulse me-1" />
               </div>
             )
             : (
@@ -224,7 +224,7 @@ export const AuditLogManagement: FC = () => {
             />
 
             <div className="admin-audit-log ms-3">
-              <label htmlFor="jumpPageInput" className="mr-1 text-secondary">Jump To Page</label>
+              <label htmlFor="jumpPageInput" className="me-1 text-secondary">Jump To Page</label>
               <input
                 id="jumpPageInput"
                 type="text"

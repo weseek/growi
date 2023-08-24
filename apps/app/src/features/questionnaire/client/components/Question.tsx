@@ -22,7 +22,7 @@ const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => 
       </div>
       <div className="col-6 d-flex align-items-center pl-0">
         <div className="btn-group btn-group-toggle flex-fill grw-questionnaire-btn-group" data-toggle="buttons">
-          <label className="btn btn-outline-primary active mr-4 rounded">
+          <label className="btn btn-outline-primary active me-4 rounded">
             <input type="radio" name={`${inputNamePrefix + question._id}`} id={`${question._id}-noAnswer`} value="0" defaultChecked /> -
           </label>
           <label className="btn btn-outline-primary rounded-start">

@@ -32,7 +32,7 @@ const RecentlyCreatedLinkButton = React.memo(() => {
         type="button"
         className="btn btn-outline-secondary btn-sm px-3"
       >
-        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created mr-2`}><RecentlyCreatedIcon /></i>
+        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created me-2`}><RecentlyCreatedIcon /></i>
         <span>Recently Created</span>
       </button>
     </ScrollLink>

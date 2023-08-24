@@ -157,7 +157,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-1">
           {(hasDiff || revisionId === sourceRevision?._id) && (
-            <div className="custom-control custom-radio custom-control-inline mr-0">
+            <div className="custom-control custom-radio custom-control-inline me-0">
               <input
                 type="radio"
                 className="custom-control-input"
@@ -173,7 +173,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-2">
           {(hasDiff || revisionId === targetRevision?._id) && (
-            <div className="custom-control custom-radio custom-control-inline mr-0">
+            <div className="custom-control custom-radio custom-control-inline me-0">
               <input
                 type="radio"
                 className="custom-control-input"

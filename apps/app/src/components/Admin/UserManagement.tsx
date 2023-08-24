@@ -81,7 +81,7 @@ const UserManagement = (props: UserManagementProps) => {
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
-      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} mr-2`}>
+      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} me-2`}>
         <input
           className="custom-control-input"
           type="checkbox"
@@ -128,7 +128,7 @@ const UserManagement = (props: UserManagementProps) => {
           className="btn btn-outline-secondary ms-2"
           role="button"
         >
-          <i className="icon-user-follow mr-1" aria-hidden="true"></i>
+          <i className="icon-user-follow me-1" aria-hidden="true"></i>
           {t('admin:user_management.external_account')}
         </Link>
       </p>
@@ -138,7 +138,7 @@ const UserManagement = (props: UserManagementProps) => {
 
         <div className="row d-flex justify-content-start align-items-center my-2">
           <div className="col-md-3 d-flex align-items-center my-2">
-            <i className="icon-magnifier mr-1"></i>
+            <i className="icon-magnifier me-1"></i>
             <span className={`search-typeahead ${styles['search-typeahead']}`}>
               <input
                 className="w-100"
@@ -183,7 +183,7 @@ const UserManagement = (props: UserManagementProps) => {
               className="btn btn-outline-secondary btn-sm"
               onClick={resetButtonClickHandler}
             >
-              <span className="icon-refresh mr-1"></span>
+              <span className="icon-refresh me-1"></span>
               {t('commons:Reset')}
             </button>
           </div>

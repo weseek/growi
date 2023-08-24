@@ -747,7 +747,7 @@ class CodeMirrorEditor extends AbstractEditor {
             </div>
           )
           : (
-            <div className="mr-4 mb-2">
+            <div className="me-4 mb-2">
               {cheatsheetModalButton}
             </div>
           )

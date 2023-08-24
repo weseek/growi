@@ -149,7 +149,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
             <div className="eff"></div>
-            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
+            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
             <span className="btn-label-text">{t('Create')}</span>
           </button>
         </div>

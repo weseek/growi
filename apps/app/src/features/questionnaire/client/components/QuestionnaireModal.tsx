@@ -149,7 +149,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
 
             {currentUser?.admin && (
               <a href="/admin/app#questionnaire-settings">
-                <i className="material-icons mr-1">admin_panel_settings</i>
+                <i className="material-icons me-1">admin_panel_settings</i>
               </a>
             )}
             {currentUser != null && (

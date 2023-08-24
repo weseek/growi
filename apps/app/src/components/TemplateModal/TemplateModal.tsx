@@ -74,7 +74,7 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
-        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+        <span key={locale} className="badge border rounded-pill text-muted me-1">{locale}</span>
       ))}
     </a>
   );
@@ -103,7 +103,7 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
-        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+        <span key={locale} className="badge border rounded-pill text-muted me-1">{locale}</span>
       ))}
     </DropdownItem>
   );

@@ -67,7 +67,7 @@ const PasswordResetRequestForm: FC = () => {
         </>
       )}
       <Link href="/login" prefetch={false}>
-        <i className="icon-login mr-1" />{t('forgot_password.return_to_login')}
+        <i className="icon-login me-1" />{t('forgot_password.return_to_login')}
       </Link>
     </form>
   );

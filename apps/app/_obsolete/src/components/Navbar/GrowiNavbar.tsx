@@ -47,7 +47,7 @@ const NavbarRight = memo((): JSX.Element => {
                 data-testid="newPageBtn"
                 onClick={() => openCreateModal(currentPagePath || '')}
               >
-                <i className="icon-pencil mr-2"></i>
+                <i className="icon-pencil me-2"></i>
                 <span className="d-none d-lg-block">{ t('commons:New') }</span>
               </button>
             </li>

@@ -49,7 +49,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-          <i id="recent-created-icon" className="mr-1"><RecentlyCreatedIcon /></i>
+          <i id="recent-created-icon" className="me-1"><RecentlyCreatedIcon /></i>
           {t('footer.recently_created')}
         </h2>
         <div id="user-created-list" className={`page-list ${styles['page-list']}`}>

@@ -71,11 +71,11 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
   return (
     <div className={`toast ${isOpen ? 'show' : 'hide'}`}>
       <div className="toast-header bg-primary">
-        <strong className="mr-auto text-light">{questionnaireOrderShortTitle}</strong>
+        <strong className="me-auto text-light">{questionnaireOrderShortTitle}</strong>
         <button type="button" className="ms-2 mb-1 btn-close" onClick={closeBtnClickHandler} aria-label="Close"></button>
       </div>
       <div className="toast-body bg-light text-dark d-flex justify-content-end">
-        <button type="button" className="btn btn-secondary mr-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
+        <button type="button" className="btn btn-secondary me-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
         <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.deny')}</button>
       </div>
     </div>

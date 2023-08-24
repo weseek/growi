@@ -80,7 +80,7 @@ const KeymapSelector = memo((): JSX.Element => {
       { (Object.keys(KEYMAP_LABEL_MAP) as KeyMapMode[]).map((keymapMode) => {
         const keymapLabel = KEYMAP_LABEL_MAP[keymapMode];
         const icon = (keymapMode !== 'default')
-          ? <img src={`/images/icons/${keymapMode}.png`} width="16px" className="mr-2"></img>
+          ? <img src={`/images/icons/${keymapMode}.png`} width="16px" className="me-2"></img>
           : null;
         return <button key={keymapMode} className="dropdown-item" type="button" onClick={() => update({ keymapMode })}>{icon}{keymapLabel}</button>;
       }) }

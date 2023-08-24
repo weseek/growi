@@ -110,7 +110,7 @@ const EditorNavbarBottom = (): JSX.Element => {
           {/* Button or the normal Slack banner */}
           {isSlackConfigured && (isDeviceSmallerThanMd ? (
             <Button
-              className="grw-btn-slack border mr-2"
+              className="grw-btn-slack border me-2"
               onClick={() => (setSlackExpanded(!isSlackExpanded))}
             >
               <div className="grw-slack-logo">
@@ -119,7 +119,7 @@ const EditorNavbarBottom = (): JSX.Element => {
               </div>
             </Button>
           ) : (
-            <div className="mr-2">
+            <div className="me-2">
               {isSlackEnabled != null
               && (
                 <SlackNotification

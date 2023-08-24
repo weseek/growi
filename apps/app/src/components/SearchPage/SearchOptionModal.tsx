@@ -51,10 +51,10 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
       </ModalHeader>
       <ModalBody>
         <div className="d-flex p-2">
-          <div className="border border-gray mr-3">
+          <div className="border border-gray me-3">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
               <input
-                className="mr-2"
+                className="me-2"
                 type="checkbox"
                 onChange={e => includeUserPagesChangeHandler(e.target.checked)}
                 checked={includeUserPages}
@@ -65,7 +65,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
           <div className="border border-gray">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
               <input
-                className="mr-2"
+                className="me-2"
                 type="checkbox"
                 onChange={e => includeTrashPagesChangeHandler(e.target.checked)}
                 checked={includeTrashPages}

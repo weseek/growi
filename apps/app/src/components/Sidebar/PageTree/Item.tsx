@@ -463,7 +463,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <>
               {shouldShowAttentionIcon && (
                 <>
-                  <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+                  <i id="path-recovery" className="fa fa-warning me-2 text-warning"></i>
                   <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
                     {t('tooltip.operation.attention.rename')}
                   </UncontrolledTooltip>
@@ -501,7 +501,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               operationProcessData={page.processData}
             >
               {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
                 <i id="option-button-in-page-tree" className="icon-options fa fa-rotate-90 p-1"></i>
               </DropdownToggle>
             </PageItemControl>
@@ -551,7 +551,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             />
             {isCreating && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
-                <i className="fa fa-spinner fa-pulse mr-1"></i>
+                <i className="fa fa-spinner fa-pulse me-1"></i>
               </div>
             )}
           </div>

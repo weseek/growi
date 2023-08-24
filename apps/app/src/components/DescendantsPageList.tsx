@@ -86,7 +86,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
         </div>
       </div>
     );

@@ -53,7 +53,7 @@ export const RichAttachment: React.FC<{
     <div className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 p-2 card">
         <div className="p-1 card-body d-flex align-items-center">
-          <div className="mr-2 px-0 d-flex align-items-center justify-content-center">
+          <div className="me-2 px-0 d-flex align-items-center justify-content-center">
             <img src="/images/icons/editor/attachment.svg" className="attachment-icon" alt="attachment icon" />
           </div>
           <div className="pl-0">

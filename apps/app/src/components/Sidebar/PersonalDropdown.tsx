@@ -21,7 +21,7 @@ export const PersonalDropdown = (): JSX.Element => {
   if (currentUser == null) {
     return (
       <div className="text-muted text-center mb-5">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+        <i className="fa fa-2x fa-spinner fa-pulse me-1" />
       </div>
     );
   }

@@ -72,7 +72,7 @@ class PasswordResetModal extends React.Component {
           <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
         ) : (
           <>
-            <p className="mr-2">To:</p>
+            <p className="me-2">To:</p>
             <div>
               <p className="mb-0">{userForPasswordResetModal.username}</p>
               <p className="mb-0">{userForPasswordResetModal.email}</p>

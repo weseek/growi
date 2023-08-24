@@ -243,7 +243,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
+                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-login'} />
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -525,7 +525,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} />
+                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} />
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>

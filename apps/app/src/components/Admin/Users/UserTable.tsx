@@ -70,7 +70,7 @@ const UserTable = (props: UserTableProps) => {
             <th style={{ width: '100px' }}>#</th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('user_management.status')}
                 </div>
                 <SortIcons
@@ -82,7 +82,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   <code>username</code>
                 </div>
                 <SortIcons
@@ -94,7 +94,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('Name')}
                 </div>
                 <SortIcons
@@ -106,7 +106,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('Email')}
                 </div>
                 <SortIcons
@@ -118,7 +118,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th style={{ width: '100px' }}>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('Created')}
                 </div>
                 <SortIcons
@@ -130,7 +130,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th style={{ width: '150px' }}>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('last_login')}
                 </div>
                 <SortIcons

@@ -44,7 +44,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
       <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
-      <i className={`${actionIcon} mr-2`} />
+      <i className={`${actionIcon} me-2`} />
       <FormattedDistanceDate
         id={notification._id}
         date={notification.createdAt}

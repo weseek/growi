@@ -61,7 +61,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   if (migrationStatus == null) {
     return (
       <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
       </div>
     );
   }
