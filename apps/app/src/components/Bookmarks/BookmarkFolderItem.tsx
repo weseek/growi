@@ -222,7 +222,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         isDropable={isDropable}
       >
         <li
-          className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
+          className="list-group-item list-group-item-action border-0 py-0 pe-3 d-flex align-items-center"
           onClick={loadChildFolder}
           style={{ paddingLeft }}
         >

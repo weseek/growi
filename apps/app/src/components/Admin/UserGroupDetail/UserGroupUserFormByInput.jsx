@@ -116,7 +116,7 @@ class UserGroupUserFormByInput extends React.Component {
 
     return (
       <div className="form-group row">
-        <div className="col-8 pr-0">
+        <div className="col-8 pe-0">
           <AsyncTypeahead
             {...this.props}
             id="name-typeahead-asynctypeahead"

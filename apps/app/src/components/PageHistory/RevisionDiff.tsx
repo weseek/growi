@@ -50,10 +50,10 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   return (
     <div className={`${styles['revision-diff-container']}`}>
       <div className="comparison-header">
-        <div className="container pt-1 pr-0">
+        <div className="container pt-1 pe-0">
           <div className="row">
             <div className="col comparison-source-wrapper pt-1 px-0">
-              <span className="comparison-source pr-3">{t('page_history.comparing_source')}</span><UserDate dateTime={previousRevision.createdAt} />
+              <span className="comparison-source pe-3">{t('page_history.comparing_source')}</span><UserDate dateTime={previousRevision.createdAt} />
               <Link
                 href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${previousRevision._id}`)}
                 className="ms-3"
@@ -64,7 +64,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
               </Link>
             </div>
             <div className="col comparison-target-wrapper pt-1">
-              <span className="comparison-target pr-3">{t('page_history.comparing_target')}</span><UserDate dateTime={currentRevision.createdAt} />
+              <span className="comparison-target pe-3">{t('page_history.comparing_target')}</span><UserDate dateTime={currentRevision.createdAt} />
               <Link
                 href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${currentRevision._id}`)}
                 className="ms-3"

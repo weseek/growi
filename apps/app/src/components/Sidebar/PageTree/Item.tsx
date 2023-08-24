@@ -428,7 +428,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     >
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
+        className={`list-group-item list-group-item-action border-0 py-0 pe-3 d-flex align-items-center
         ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
       >
