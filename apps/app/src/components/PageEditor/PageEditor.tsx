@@ -512,6 +512,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     };
   }, [saveAndReturnToViewHandler]);
 
+  // set handler to save with shortcut key
+  useEffect(() => {
+    // TODO impl
+    return function cleanup() {
+    };
+  }, []);
+
   // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
