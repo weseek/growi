@@ -217,7 +217,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
 
   return (
     <div className="py-4 px-5">
-      <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
+      <p className="mb-4 fw-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           <div className="custom-control custom-checkbox">
@@ -238,7 +238,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
           </div>
         </div>
       </div>
-      <p className="mb-4 font-weight-bold">Events</p>
+      <p className="mb-4 fw-bold">Events</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           <div className="custom-control custom-checkbox">

@@ -59,7 +59,7 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.RECOMMENDED }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption1">
-                <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
+                <p className="fw-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
                 <div className="mt-4">
                   <div className="d-flex justify-content-between">
                     {t('markdown_settings.xss_options.tag_names')}
@@ -101,7 +101,7 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
-                <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
+                <p className="fw-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
                 <WhitelistInput customizable />
               </label>
             </div>

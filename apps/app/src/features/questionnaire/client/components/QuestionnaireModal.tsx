@@ -44,7 +44,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       }
       toastSuccess(
         <>
-          <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
+          <div className="fw-bold">{t('questionnaire.thank_you_for_answering')}</div>
           <div className="pt-2">{t('questionnaire.additional_feedback')}</div>
         </>,
         {
@@ -130,10 +130,10 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
             </div>
             <div className="container">
               <div className="row mt-4">
-                <div className="col-md-2 offset-md-5 font-weight-bold text-end align-items-center p-0">{t('questionnaire.no_answer')}</div>
+                <div className="col-md-2 offset-md-5 fw-bold text-end align-items-center p-0">{t('questionnaire.no_answer')}</div>
                 <div className="col-md-5 d-flex justify-content-between align-items-center">
-                  <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
-                  <span className="font-weight-bold">{t('questionnaire.agree')}</span>
+                  <span className="fw-bold">{t('questionnaire.disagree')}</span>
+                  <span className="fw-bold">{t('questionnaire.agree')}</span>
                 </div>
               </div>
               {questionnaireOrder.questions?.map((question) => {

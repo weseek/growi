@@ -70,7 +70,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   );
 
   return (
-    <div className="card border-0 rounded-lg shadow overflow-hidden">
+    <div className="card border-0 rounded-3 shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
         title={<><span className="me-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
@@ -160,7 +160,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             </div>
             <button
               type="submit"
-              className="btn btn-info mx-3 font-weight-bold"
+              className="btn btn-info mx-3 fw-bold"
               disabled={testChannel.trim().length === 0}
             >Test
             </button>
@@ -174,7 +174,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <div className="form-group slack-connection-log col-md-4">
               <label className="mb-1"><p className="border-info slack-connection-log-title ps-2 m-0">Logs</p></label>
               <textarea
-                className="form-control card border-info slack-connection-log-body rounded-lg"
+                className="form-control card border-info slack-connection-log-body rounded-3"
                 rows="5"
                 value={logsValue}
                 readOnly

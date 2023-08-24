@@ -163,10 +163,10 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         && (
           <div className="row">
             <div className="col-12 text-center mt-2 mb-4">
-              <h2 className="font-weight-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
+              <h2 className="fw-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
             </div>
             <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
+              <h3 className="fw-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
                   <UserPicture user={request.user} size="lg" noLink noTooltip />
@@ -178,7 +178,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
             </div>
             <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
+              <h3 className="fw-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
                   <UserPicture user={origin.user} size="lg" noLink noTooltip />
@@ -190,7 +190,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
             </div>
             <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
+              <h3 className="fw-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
                   <UserPicture user={latest.user} size="lg" noLink noTooltip />
@@ -249,7 +249,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
             </div>
             <div className="col-12">
               <div className="border border-dark">
-                <h3 className="font-weight-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+                <h3 className="fw-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
                 <UncontrolledCodeMirror
                   ref={uncontrolledRef}
                   value={resolvedRevision}

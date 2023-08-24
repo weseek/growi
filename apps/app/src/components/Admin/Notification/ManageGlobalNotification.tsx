@@ -155,7 +155,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => { setNotifyType(NotifyType.Email) }}
               />
               <label className="custom-control-label" htmlFor="mail">
-                <p className="font-weight-bold">Email</p>
+                <p className="fw-bold">Email</p>
               </label>
             </div>
             <div className="custom-control custom-radio ms-2">
@@ -169,7 +169,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => { setNotifyType(NotifyType.SLACK) }}
               />
               <label className="custom-control-label" htmlFor="slack">
-                <p className="font-weight-bold">Slack</p>
+                <p className="fw-bold">Slack</p>
               </label>
             </div>
           </div>

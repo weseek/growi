@@ -136,7 +136,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
 
   return (
     <div className="py-4 px-5">
-      <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
+      <p className="fw-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
       <div className="form-group row">
         <label className="text-start text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
@@ -165,7 +165,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
           { t('admin:slack_integration.access_token_settings.regenerate') }
         </button>
       </div>
-      <p className="font-weight-bold mt-5">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
+      <p className="fw-bold mt-5">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
       <div className="d-flex flex-column align-items-center">
         <ol className="p-0">
           <li>
@@ -258,7 +258,7 @@ const TestProcess = ({
           </div>
           <button
             type="submit"
-            className="btn btn-info mx-3 font-weight-bold"
+            className="btn btn-info mx-3 fw-bold"
             disabled={testChannel.trim() === ''}
           >
             Test
@@ -271,7 +271,7 @@ const TestProcess = ({
           <div className="form-group slack-connection-log col-md-4">
             <label className="mb-1"><p className="border-info slack-connection-log-title ps-2 m-0">Logs</p></label>
             <textarea
-              className="form-control card border-info slack-connection-log-body rounded-lg"
+              className="form-control card border-info slack-connection-log-body rounded-3"
               rows="5"
               value={logsValue}
               readOnly
@@ -382,7 +382,7 @@ const WithProxyAccordions = (props) => {
 
   return (
     <div
-      className="card border-0 rounded-lg shadow overflow-hidden"
+      className="card border-0 rounded-3 shadow overflow-hidden"
     >
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
         return (
