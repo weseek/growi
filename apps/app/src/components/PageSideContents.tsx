@@ -45,7 +45,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
         {!isSharedUser && (
           <button
             type="button"
-            className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+            className="btn btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
             onClick={() => openDescendantPageListModal(pagePath)}
             data-testid="pageListButton"
           >
@@ -68,7 +68,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
           <Link to="page-comments" offset={-120}>
             <button
               type="button"
-              className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+              className="btn btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
               data-testid="page-comment-button"
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
