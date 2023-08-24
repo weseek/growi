@@ -1,5 +1,14 @@
 // override react-bootstrap-typeahead styles
 // see: https://github.com/ericgio/react-bootstrap-typeahead
+.form-group:not(.has-error) {
+  .rbt-input.form-control {
+    // focus
+    &.focus {
+      border-color: inherit;
+    }
+  }
+}
+
 .rbt-input-wrapper {
   .close.rbt-close {
     // default bootstrap .close has padding 0
@@ -12,3 +21,10 @@
   display: none;
 }
 
+// seamless border for .input-group-prepend
+.input-group-prepend + div {
+  .rbt .rbt-input-main {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
