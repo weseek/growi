@@ -29,7 +29,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
         <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
           {t('footer.bookmarks')}
-          <span className="ml-auto pl-2 ">
+          <span className="ms-auto pl-2 ">
             <button
               type="button"
               className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}

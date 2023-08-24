@@ -171,7 +171,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                 <div>
                   <UserPicture user={request.user} size="lg" noLink noTooltip />
                 </div>
-                <div className="ml-3 text-muted">
+                <div className="ms-3 text-muted">
                   <p className="my-0">updated by {request.user.username}</p>
                   <p className="my-0">{request.createdAt}</p>
                 </div>
@@ -183,7 +183,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                 <div>
                   <UserPicture user={origin.user} size="lg" noLink noTooltip />
                 </div>
-                <div className="ml-3 text-muted">
+                <div className="ms-3 text-muted">
                   <p className="my-0">updated by {origin.user.username}</p>
                   <p className="my-0">{origin.createdAt}</p>
                 </div>
@@ -195,7 +195,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                 <div>
                   <UserPicture user={latest.user} size="lg" noLink noTooltip />
                 </div>
-                <div className="ml-3 text-muted">
+                <div className="ms-3 text-muted">
                   <p className="my-0">updated by {latest.user.username}</p>
                   <p className="my-0">{latest.createdAt}</p>
                 </div>
@@ -272,7 +272,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         </button>
         <button
           type="button"
-          className="btn btn-primary ml-3"
+          className="btn btn-primary ms-3"
           onClick={onResolveConflict}
           disabled={!isRevisionselected}
         >

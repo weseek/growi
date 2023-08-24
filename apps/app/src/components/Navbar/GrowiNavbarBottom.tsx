@@ -60,7 +60,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
               </li>
             )
           }
-          <li className="nav-item ml-auto">
+          <li className="nav-item ms-auto">
             <a
               role="button"
               className="nav-link btn-lg"

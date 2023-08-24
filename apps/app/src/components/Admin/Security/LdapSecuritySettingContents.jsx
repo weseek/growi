@@ -412,7 +412,7 @@ class LdapSecuritySettingContents extends React.Component {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-outline-secondary ml-2"
+                  className="btn btn-outline-secondary ms-2"
                   onClick={this.openLdapAuthTestModal}
                 >{t('security_settings.ldap.test_config')}
                 </button>

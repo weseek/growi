@@ -56,7 +56,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
               <span className="comparison-source pr-3">{t('page_history.comparing_source')}</span><UserDate dateTime={previousRevision.createdAt} />
               <Link
                 href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${previousRevision._id}`)}
-                className="ml-3"
+                className="ms-3"
                 onClick={onClose}
                 prefetch={false}
               >
@@ -67,7 +67,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
               <span className="comparison-target pr-3">{t('page_history.comparing_target')}</span><UserDate dateTime={currentRevision.createdAt} />
               <Link
                 href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${currentRevision._id}`)}
-                className="ml-3"
+                className="ms-3"
                 onClick={onClose}
                 prefetch={false}
               >

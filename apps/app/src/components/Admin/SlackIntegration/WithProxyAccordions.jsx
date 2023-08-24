@@ -25,7 +25,7 @@ const BotCreateProcess = () => {
     <div className="my-5 d-flex flex-column align-items-center">
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
         {t('admin:slack_integration.accordion.create_bot')}
-        <i className="fa fa-external-link ml-2" aria-hidden="true" />
+        <i className="fa fa-external-link ms-2" aria-hidden="true" />
       </button>
       <a
         href={t('admin:slack_integration.docs_url.custom_bot_with_proxy_setting')}
@@ -35,7 +35,7 @@ const BotCreateProcess = () => {
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-            <i className="fa fa-external-link ml-2" aria-hidden="true" />
+            <i className="fa fa-external-link ms-2" aria-hidden="true" />
           </small>
         </p>
       </a>
@@ -49,7 +49,7 @@ const BotInstallProcessForOfficialBot = () => {
     <div className="my-5 d-flex flex-column align-items-center">
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://slackbot-proxy.growi.org/', '_blank')}>
         {t('admin:slack_integration.accordion.install_now')}
-        <i className="fa fa-external-link ml-2" aria-hidden="true" />
+        <i className="fa fa-external-link ms-2" aria-hidden="true" />
       </button>
       <a
         href={t('admin:slack_integration.docs_url.official_bot_setting')}
@@ -59,7 +59,7 @@ const BotInstallProcessForOfficialBot = () => {
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_install')}
-            <i className="fa fa-external-link ml-2" aria-hidden="true" />
+            <i className="fa fa-external-link ms-2" aria-hidden="true" />
           </small>
         </p>
       </a>
@@ -170,14 +170,14 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
         <ol className="p-0">
           <li>
             <p
-              className="ml-2"
+              className="ms-2"
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_growi_register_on_slack') }}
             />
           </li>
           <li>
             <p
-              className="ml-2"
+              className="ms-2"
               // TODO: Add dynamic link
               // TODO: Add logo
               // eslint-disable-next-line react/no-danger
@@ -193,7 +193,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
           </li>
           <li>
             <p
-              className="ml-2"
+              className="ms-2"
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
             />
@@ -391,7 +391,7 @@ const WithProxyAccordions = (props) => {
               <>
                 <span className="mr-2">{key}</span>
                 {t(`admin:slack_integration.accordion.${value.title}`)}
-                {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}
+                {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}
               </>
             )}
             key={key}

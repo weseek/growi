@@ -210,7 +210,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
           <MenuItem key={pageWithMeta.data._id} option={pageWithMeta} position={index}>
             <span>
               <UserPicture user={pageWithMeta.data.lastUpdateUser} size="sm" noLink />
-              <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
+              <span className="ms-1 mr-2 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
               <PageListMeta page={pageWithMeta.data} />
             </span>
           </MenuItem>

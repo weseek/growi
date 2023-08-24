@@ -67,7 +67,7 @@ class PasswordResetModal extends React.Component {
     const { t, isMailerSetup, userForPasswordResetModal } = this.props;
 
     return (
-      <div className="d-flex col text-left ml-1 pl-0">
+      <div className="d-flex col text-left ms-1 pl-0">
         {!isMailerSetup ? (
           <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
         ) : (

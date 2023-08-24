@@ -17,7 +17,7 @@ class StatusTable extends React.PureComponent {
     } = this.props;
 
     const errorOccuredLabel = isErrorOccuredOnSearchService
-      ? <span className="badge rounded-pill bg-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
+      ? <span className="badge rounded-pill bg-danger ms-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
       : null;
 
     let connectionStatusLabel = null;
@@ -68,7 +68,7 @@ class StatusTable extends React.PureComponent {
           <a role="button" className="text-nowrap mr-2" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
             <i className="fa fa-fw fa-database"></i> {indexName}
           </a>
-          <span className="ml-md-3">{aliasLabels}</span>
+          <span className="ms-md-3">{aliasLabels}</span>
         </div>
         <div id={collapseId} className="collapse">
           <div className="card-body">

@@ -153,12 +153,12 @@ const UserTable = (props: UserTableProps) => {
                 <td>
                   {getUserStatusLabel(user.status)}
                   {(user.admin) && (
-                    <span className="badge bg-indigo rounded-pill ml-2">
+                    <span className="badge bg-indigo rounded-pill ms-2">
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge bg-light text-dark rounded-pill ml-2">
+                    <span className="badge bg-light text-dark rounded-pill ms-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

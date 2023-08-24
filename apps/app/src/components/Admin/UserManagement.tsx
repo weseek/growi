@@ -125,7 +125,7 @@ const UserManagement = (props: UserManagementProps) => {
         <InviteUserControl />
         <Link
           href="/admin/users/external-accounts"
-          className="btn btn-outline-secondary ml-2"
+          className="btn btn-outline-secondary ms-2"
           role="button"
         >
           <i className="icon-user-follow mr-1" aria-hidden="true"></i>

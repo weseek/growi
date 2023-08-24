@@ -94,7 +94,7 @@ const CustomBotWithProxySettings = (props) => {
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}
         <a href={t('admin:slack_integration.docs_url.custom_bot_with_proxy')} target="_blank" rel="noopener noreferrer">
           <i
-            className="fa fa-external-link btn-link ml-2"
+            className="fa fa-external-link btn-link ms-2"
             aria-hidden="true"
           />
         </a>

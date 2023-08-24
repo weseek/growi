@@ -501,7 +501,7 @@ export const HandsontableModal = (): JSX.Element => {
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
         <button type="button" className="btn btn-danger" onClick={reset}>{t('commons:Reset')}</button>
-        <div className="ml-auto">
+        <div className="ms-auto">
           <button type="button" className="mr-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
           <button type="button" className="btn btn-primary" onClick={save}>{t('handsontable_modal.done')}</button>
         </div>

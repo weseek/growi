@@ -100,7 +100,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         </div>
         {/* sort option: show when screen is smaller than lg */}
         {isEnableSort && (
-          <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
+          <div className="mr-md-4 mr-2 d-flex d-lg-none ms-auto">
             <SortControl
               sort={sort}
               order={order}
@@ -120,7 +120,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 <i className="icon-equalizer"></i>
               </button>
             </div>
-            <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
+            <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
               <div className="border rounded px-2 py-1 mr-3">
                 <div className="custom-control custom-checkbox custom-checkbox-succsess">
                   <input

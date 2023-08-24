@@ -1,8 +1,8 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 class CheckBoxForSerchUserOption extends React.Component {
 
@@ -17,7 +17,7 @@ class CheckBoxForSerchUserOption extends React.Component {
           checked={this.props.checked}
           onChange={this.props.onChange}
         />
-        <label className="text-capitalize custom-control-label ml-3" htmlFor={`isAlso${option}Searched`}>
+        <label className="text-capitalize custom-control-label ms-3" htmlFor={`isAlso${option}Searched`}>
           {t('admin:user_group_management.add_modal.enable_option', { option })}
         </label>
       </div>

@@ -162,7 +162,7 @@ export const AuditLogManagement: FC = () => {
           {isSettingPage ? t('audit_log_management.audit_log_settings') : t('audit_log_management.audit_log')}
         </span>
         { !isSettingPage && (
-          <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
+          <button type="button" className="btn btn-sm ms-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
             <i className="icon icon-reload"></i>
           </button>
         )}
@@ -197,7 +197,7 @@ export const AuditLogManagement: FC = () => {
           </div>
 
           <p
-            className="ml-2"
+            className="ms-2"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: activityCounter }}
           />
@@ -223,7 +223,7 @@ export const AuditLogManagement: FC = () => {
               size="sm"
             />
 
-            <div className="admin-audit-log ml-3">
+            <div className="admin-audit-log ms-3">
               <label htmlFor="jumpPageInput" className="mr-1 text-secondary">Jump To Page</label>
               <input
                 id="jumpPageInput"

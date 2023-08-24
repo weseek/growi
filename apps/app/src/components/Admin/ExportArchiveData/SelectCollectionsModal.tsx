@@ -124,7 +124,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
                   checked={selectedCollections.has(collectionName)}
                   onChange={toggleCheckbox}
                 />
-                <label className="text-capitalize custom-control-label ml-3" htmlFor={collectionName}>
+                <label className="text-capitalize custom-control-label ms-3" htmlFor={collectionName}>
                   {collectionName}
                 </label>
               </div>

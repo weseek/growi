@@ -250,14 +250,14 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex py-0 px-1 ml-2 text-nowrap">
+              <div className="d-none d-md-flex py-0 px-1 ms-2 text-nowrap">
                 <PageListMeta page={pageData} likerCount={likerCount} bookmarkCount={bookmarkCount} shouldSpaceOutIcon />
               </div>
 
               {/* doropdown icon includes page control buttons */}
               {hasBrowsingRights
                 && (
-                  <div className="ml-auto">
+                  <div className="ms-auto">
                     <PageItemControl
                       alignEnd
                       pageId={pageData._id}

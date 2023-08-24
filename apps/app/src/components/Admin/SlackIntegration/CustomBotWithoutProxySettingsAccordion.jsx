@@ -78,7 +78,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div className="my-5 d-flex flex-column align-items-center">
           <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
             {t('admin:slack_integration.accordion.create_bot')}
-            <i className="fa fa-external-link ml-2" aria-hidden="true" />
+            <i className="fa fa-external-link ms-2" aria-hidden="true" />
           </button>
           <a
             href={t('admin:slack_integration.docs_url.custom_bot_without_proxy_setting')}
@@ -88,7 +88,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <p className="text-center mt-1">
               <small>
                 {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-                <i className="fa fa-external-link ml-2" aria-hidden="true" />
+                <i className="fa fa-external-link ms-2" aria-hidden="true" />
               </small>
             </p>
           </a>
@@ -115,7 +115,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ms-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           onUpdatedSecretToken={props.onUpdatedSecretToken}
@@ -138,7 +138,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">⑤</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">⑤</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <p className="text-center text-warning">

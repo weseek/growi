@@ -37,7 +37,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
         </label>
       </div>
       <button
-        className="btn btn-outline-danger ml-3"
+        className="btn btn-outline-danger ms-3"
         type="button"
         onClick={() => {
           if (onDeleteButtonClicked != null) {

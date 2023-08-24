@@ -158,7 +158,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 <p className="font-weight-bold">Email</p>
               </label>
             </div>
-            <div className="custom-control custom-radio ml-2">
+            <div className="custom-control custom-radio ms-2">
               <input
                 className="custom-control-input"
                 type="radio"

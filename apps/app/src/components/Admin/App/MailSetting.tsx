@@ -96,7 +96,7 @@ const MailSetting = (props: Props) => {
             { t('Update') }
           </button>
           {adminAppContainer.state.transmissionMethod === 'smtp' && (
-            <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
+            <button type="button" className="btn btn-secondary ms-4" onClick={sendTestEmailHandler}>
               {t('admin:app_setting.send_test_email')}
             </button>
           )}

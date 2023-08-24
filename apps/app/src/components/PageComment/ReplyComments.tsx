@@ -40,7 +40,7 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const renderReply = (reply: ICommentHasId) => {
     return (
-      <div key={reply._id} className={`${styles['page-comment-reply']} ml-4 ml-sm-5 mr-3`}>
+      <div key={reply._id} className={`${styles['page-comment-reply']} ms-4 ms-sm-5 mr-3`}>
         <Comment
           rendererOptions={rendererOptions}
           comment={reply}

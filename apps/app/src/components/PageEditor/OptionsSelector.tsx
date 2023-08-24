@@ -258,17 +258,17 @@ export const OptionsSelector = (): JSX.Element => {
         <span>
           <ThemeSelector />
         </span>
-        <span className="d-none d-sm-block ml-2 ml-sm-4">
+        <span className="d-none d-sm-block ms-2 ms-sm-4">
           <KeymapSelector />
         </span>
-        <span className="ml-2 ml-sm-4">
+        <span className="ms-2 ms-sm-4">
           <IndentSizeSelector
             isIndentSizeForced={isIndentSizeForced}
             selectedIndentSize={currentIndentSize}
             onChange={newValue => mutateCurrentIndentSize(newValue)}
           />
         </span>
-        <span className="ml-2 ml-sm-4">
+        <span className="ms-2 ms-sm-4">
           <ConfigurationDropdown />
         </span>
       </div>

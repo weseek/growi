@@ -49,7 +49,7 @@ export const PersonalDropdown = (): JSX.Element => {
           data-testid="personal-dropdown-button"
           aria-expanded="false"
         >
-          <UserPicture user={currentUser} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{currentUser.name}</span>
+          <UserPicture user={currentUser} noLink noTooltip /><span className="ms-1 d-none d-lg-inline-block">&nbsp;{currentUser.name}</span>
         </button>
 
         {/* Menu */}

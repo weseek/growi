@@ -48,7 +48,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
             </th>
             <th style={{ width: '200px' }}>
               <div className="d-flex align-items-center">
-                {t('user_management.related_username')}<code className="ml-2">username</code>
+                {t('user_management.related_username')}<code className="ms-2">username</code>
               </div>
             </th>
             <th style={{ width: '100px' }}>

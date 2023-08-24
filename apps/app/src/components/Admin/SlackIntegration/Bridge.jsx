@@ -24,7 +24,7 @@ const BridgeCore = (props) => {
         <p className={`${withProxy ? 'mt-0' : 'mt-2'}`}>
           <i className={iconClass} />
           <small
-            className="ml-2 d-none d-lg-inline"
+            className="ms-2 d-none d-lg-inline"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: description }}
           />

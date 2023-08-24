@@ -173,7 +173,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                 </>
               ) }
-              <span className="ml-2">
+              <span className="ms-2">
                 <Link
                   id={`page-comment-revision-${commentId}`}
                   href={urljoin(returnPathForURL(pagePath, pageId), revHref)}

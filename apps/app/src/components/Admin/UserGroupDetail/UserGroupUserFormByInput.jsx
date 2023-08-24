@@ -98,9 +98,9 @@ class UserGroupUserFormByInput extends React.Component {
     return (
       <>
         <UserPicture user={user} size="sm" noLink noTooltip />
-        <strong className="ml-2">{user.username}</strong>
-        {isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
-        {isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+        <strong className="ms-2">{user.username}</strong>
+        {isAlsoNameSearched && <span className="ms-2">{user.name}</span>}
+        {isAlsoMailSearched && <span className="ms-2">{user.email}</span>}
       </>
     );
   }

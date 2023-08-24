@@ -236,7 +236,7 @@ class GridEditModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
-          <div className="ml-auto">
+          <div className="ms-auto">
             <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>
               Cancel
             </button>

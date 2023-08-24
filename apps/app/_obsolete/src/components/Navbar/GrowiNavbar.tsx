@@ -125,7 +125,7 @@ export const GrowiNavbar = (props: Props): JSX.Element => {
       </div>
 
       {/* Navbar Right  */}
-      <ul className="navbar-nav ml-auto">
+      <ul className="navbar-nav ms-auto">
         <NavbarRight />
         <Confidential confidential={confidential} />
       </ul>

@@ -61,19 +61,19 @@ export const RichAttachment: React.FC<{
               <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
-              <a className="ml-2 attachment-download" href={downloadPathProxied}>
+              <a className="ms-2 attachment-download" href={downloadPathProxied}>
                 <i className="icon-cloud-download" />
               </a>
-              <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
+              <a className="ms-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
                 <i className="icon-trash" />
               </a>
             </div>
             <div className="d-flex align-items-center">
               <UserPicture user={creator} size="sm" />
-              <span className="ml-2 text-muted">
+              <span className="ms-2 text-muted">
                 {new Date(createdAt).toLocaleString('en-US')}
               </span>
-              <span className="ml-2 pl-2 border-start text-muted">{prettyBytes(fileSize)}</span>
+              <span className="ms-2 pl-2 border-start text-muted">{prettyBytes(fileSize)}</span>
             </div>
           </div>
         </div>

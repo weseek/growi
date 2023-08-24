@@ -92,12 +92,12 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
       <div className="form-inline d-flex align-items-center justify-content-between">
         <div className="text-nowrap">
           {t('search_result.result_meta')}
-          <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
+          <span className="ms-3">{`${leftNum}-${rightNum}`} / {total}</span>
           { took != null && (
-            <span className="ml-3 text-muted">({took}ms)</span>
+            <span className="ms-3 text-muted">({took}ms)</span>
           ) }
         </div>
-        <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
+        <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
           <div className="input-group-prepend">
             <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
           </div>

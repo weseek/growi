@@ -39,7 +39,7 @@ const SkeletonListItem = () => (
   <li className="list-group-item">
     <h4 className="mb-2">
       <span className="badge bg-primary">――</span>
-      <span className="ml-2">...</span>
+      <span className="ms-2">...</span>
     </h4>
   </li>
 );
@@ -54,7 +54,7 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
     <li data-testid="slack-integration-list-item" className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration" className="ml-2">{t('slack_integration.slack_integration')}</a>
+        <a href="/admin/slack-integration" className="ms-2">{t('slack_integration.slack_integration')}</a>
       </h4>
       { isCautionVisible && (
         <ul className="mt-2 pl-4">
@@ -74,7 +74,7 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
     <li className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration-legacy" className="ml-2">{t('slack_integration_legacy.slack_integration_legacy')}</a>
+        <a href="/admin/slack-integration-legacy" className="ms-2">{t('slack_integration_legacy.slack_integration_legacy')}</a>
       </h4>
       { isEnabled && (
         <ul className="mt-2 pl-4">

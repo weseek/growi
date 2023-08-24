@@ -133,7 +133,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
               onClose={onClose}
             />
             {hasDiff && (
-              <div className="ml-md-3 mt-auto">
+              <div className="ms-md-3 mt-auto">
                 <div className="btn-group">
                   <button
                     type="button"
