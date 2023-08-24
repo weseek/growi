@@ -479,7 +479,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           <div className="card-header p-1">
                             <h2 className="mb-0">
                               <button
-                                className="btn btn-link btn-block text-left"
+                                className="btn btn-link text-left"
                                 type="button"
                                 onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
                                 aria-expanded="true"
