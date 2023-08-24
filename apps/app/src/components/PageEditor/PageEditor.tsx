@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
 import EventEmitter from 'events';
@@ -116,7 +116,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
   const { data: codemirrorEditor } = useCodeMirrorEditorMain(codeMirrorEditorContainerRef.current);
-  const { initDoc } = codemirrorEditor ?? {};
+  const { initDoc, focus: focusToEditor, setCaretLine } = codemirrorEditor ?? {};
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -492,21 +492,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // initial caret line
   useEffect(() => {
-    // TODO: implement
-    // refs: https://redmine.weseek.co.jp/issues/126516
-    // if (editorRef.current != null) {
-    //   editorRef.current.setCaretLine(0);
-    // }
-  }, []);
+    setCaretLine?.();
+  }, [setCaretLine]);
 
   // set handler to set caret line
   useEffect(() => {
     const handler = (line) => {
-      // TODO: implement
-      // refs: https://redmine.weseek.co.jp/issues/126516
-      // if (editorRef.current != null) {
-      //   editorRef.current.setCaretLine(line);
-      // }
+      setCaretLine?.(line);
+
       if (previewRef.current != null) {
         scrollSyncHelper.scrollPreview(previewRef.current, line);
       }
@@ -516,7 +509,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     return function cleanup() {
       globalEmitter.removeListener('setCaretLine', handler);
     };
-  }, []);
+  }, [setCaretLine]);
 
   // set handler to save and return to View
   useEffect(() => {
@@ -528,13 +521,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [saveAndReturnToViewHandler]);
 
   // set handler to focus
-  useEffect(() => {
-    // TODO: implement
-    // refs: https://redmine.weseek.co.jp/issues/126516
-    // if (editorRef.current != null && editorMode === EditorMode.Editor) {
-    //   editorRef.current.forceToFocus();
-    // }
-  }, [editorMode]);
+  useLayoutEffect(() => {
+    if (editorMode === EditorMode.Editor) {
+      focusToEditor?.();
+    }
+  }, [editorMode, focusToEditor]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
@@ -556,11 +547,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
   const onRouterChangeComplete = useCallback(() => {
     initDoc?.(initialValue);
-
-    // TODO: implement
-    // refs: https://redmine.weseek.co.jp/issues/126516
-    // editorRef.current?.setCaretLine(0);
-  }, [initDoc, initialValue]);
+    setCaretLine?.();
+  }, [initDoc, initialValue, setCaretLine]);
 
   useEffect(() => {
     router.events.on('routeChangeComplete', onRouterChangeComplete);

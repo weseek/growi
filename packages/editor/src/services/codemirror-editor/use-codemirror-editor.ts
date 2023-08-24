@@ -12,7 +12,8 @@ export type UseCodeMirrorEditor = UseCodeMirror;
 type UseCodeMirrorEditorUtils = {
   initState: (config?: EditorStateConfig) => void,
   initDoc: (doc?: string) => void,
-  setCursor: (lineNumber?: number) => void,
+  focus: () => void,
+  setCaretLine: (lineNumber?: number) => void,
 }
 
 export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
@@ -57,8 +58,13 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     initState({ doc });
   }, [initState]);
 
-  // implement setCursor method
-  const setCursor = useCallback((lineNumber?: number): void => {
+  // implement focus method
+  const focus = useCallback((): void => {
+    view?.focus();
+  }, [view]);
+
+  // implement setCaretLine method
+  const setCaretLine = useCallback((lineNumber?: number): void => {
     if (view == null) {
       return;
     }
@@ -72,7 +78,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     });
     // focus
     view.focus();
-
   }, [view]);
 
   useEffect(() => {
@@ -85,6 +90,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     ...codemirror,
     initState,
     initDoc,
-    setCursor,
+    focus,
+    setCaretLine,
   };
 };

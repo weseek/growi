@@ -28,23 +28,23 @@ export const InitEditorValueRow = (): JSX.Element => {
   );
 };
 
-type SetCursorRowFormData = {
+type SetCaretLineRowFormData = {
   lineNumber: number | string;
 };
 
-export const SetCursorRow = (): JSX.Element => {
+export const SetCaretLineRow = (): JSX.Element => {
 
   const { data } = useCodeMirrorEditorMain();
-  const { register, handleSubmit } = useForm<SetCursorRowFormData>({
+  const { register, handleSubmit } = useForm<SetCaretLineRowFormData>({
     defaultValues: {
       lineNumber: 1,
     },
   });
 
-  const setCursor = data?.setCursor;
+  const setCaretLine = data?.setCaretLine;
   const onSubmit = handleSubmit((submitData) => {
     const lineNumber = Number(submitData.lineNumber) || 1;
-    setCursor?.(lineNumber);
+    setCaretLine?.(lineNumber);
   });
 
   return (
@@ -71,7 +71,7 @@ export const PlaygroundController = (): JSX.Element => {
   return (
     <div className="container">
       <InitEditorValueRow />
-      <SetCursorRow />
+      <SetCaretLineRow />
     </div>
   );
 };
