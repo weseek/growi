@@ -1,4 +1,4 @@
-import type { IPageHasId, Nullable } from '@growi/core';
+import type { GroupType, IPageHasId, Nullable } from '@growi/core';
 
 import type { IPageOperationProcessData } from './page-operation';
 
@@ -13,7 +13,7 @@ export type IPageGrantData = {
   grantedGroups?: {
     id: string,
     name: string,
-    type: string,
+    type: GroupType,
   }[]
 }
 

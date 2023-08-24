@@ -43,7 +43,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
     const currentMarkdown = currentPage.revision.body;
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
 
-    const grantUserGroupIds = currentPage.grantedGroups?.map((g) => {
+    const grantUserGroupIds = currentPage.grantedGroups.map((g) => {
       return {
         type: g.type,
         item: g.item._id,

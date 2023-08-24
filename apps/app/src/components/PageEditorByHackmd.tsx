@@ -4,7 +4,6 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { GroupType } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -100,7 +99,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       return;
     }
     const grantedGroups = grantData.grantedGroups?.map((group) => {
-      return { item: group.id, type: group.type as GroupType };
+      return { item: group.id, type: group.type };
     });
     const optionsToSave = {
       isSlackEnabled: isSlackEnabled ?? false,

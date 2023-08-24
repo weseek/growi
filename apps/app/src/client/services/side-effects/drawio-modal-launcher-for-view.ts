@@ -44,7 +44,7 @@ export const useDrawioModalLauncherForView = (opts?: {
     const currentMarkdown = currentPage.revision.body;
     const newMarkdown = mdu.replaceDrawioInMarkdown(drawioMxFile, currentMarkdown, bol, eol);
 
-    const grantUserGroupIds = currentPage.grantedGroups?.map((g) => {
+    const grantUserGroupIds = currentPage.grantedGroups.map((g) => {
       return {
         type: g.type,
         item: g.item._id,

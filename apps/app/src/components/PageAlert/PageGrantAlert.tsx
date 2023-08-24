@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isPopulated } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -33,7 +34,7 @@ export const PageGrantAlert = (): JSX.Element => {
         return (
           <>
             <i className="icon-fw icon-organization"></i><strong>{
-              typeof pageData.grantedGroups[0].item !== 'string' && pageData.grantedGroups[0].item.name
+              isPopulated(pageData.grantedGroups[0].item) && pageData.grantedGroups[0].item.name
             }</strong>
           </>
         );

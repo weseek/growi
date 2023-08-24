@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
-import type { GrantedGroup } from '@growi/core';
+import { isPopulated } from '@growi/core';
+import type { GroupType, GrantedGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -36,7 +37,7 @@ type Props = {
   grantedGroups?: {
     id: string,
     name: string,
-    type: string,
+    type: GroupType,
   }[]
 
   onUpdateGrant?: (grantData: IPageGrantData) => void,
@@ -84,7 +85,7 @@ const GrantSelector = (props: Props): JSX.Element => {
   }, [onUpdateGrant, showSelectGroupModal]);
 
   const groupListItemClickHandler = useCallback((grantGroup: GrantedGroup) => {
-    if (onUpdateGrant != null && typeof grantGroup.item !== 'string') {
+    if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
       onUpdateGrant({ grant: 5, grantedGroups: [{ id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type }] });
     }
 
