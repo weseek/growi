@@ -34,8 +34,9 @@ class QuestionnaireService {
     const appSiteUrlHashed = hasher.digest('hex');
 
     // Get the oldest user who probably installed this GROWI.
-    const users = await User.find({ createdAt: { $ne: null } }).limit(1).sort({ createdAt: 1 });
-    const installedAtByOldestUser = users[0].createdAt;
+    // Model.findOne() get models oldest id document.
+    const user = await User.findOne();
+    const installedAtByOldestUser = user ? user.createdAt : null;
 
     const appInstalledConfig = await mongoose.model('Config').findOne({ key: 'app:installed' });
     const installedAt = appInstalledConfig.createdAt != null ? appInstalledConfig.createdAt : installedAtByOldestUser;
