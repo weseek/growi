@@ -73,7 +73,7 @@ export const RichAttachment: React.FC<{
               <span className="ml-2 text-muted">
                 {new Date(createdAt).toLocaleString('en-US')}
               </span>
-              <span className="ml-2 pl-2 border-left text-muted">{prettyBytes(fileSize)}</span>
+              <span className="ml-2 pl-2 border-start text-muted">{prettyBytes(fileSize)}</span>
             </div>
           </div>
         </div>
