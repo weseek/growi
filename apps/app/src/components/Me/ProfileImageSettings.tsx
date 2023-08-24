@@ -104,7 +104,7 @@ const ProfileImageSettings = (): JSX.Element => {
                 checked={isGravatarEnabled}
                 onChange={() => setGravatarEnabled(true)}
               />
-              <label className="custom-control-label" htmlFor="radioGravatar">
+              <label className="form-label custom-control-label" htmlFor="radioGravatar">
                 <img src={GRAVATAR_DEFAULT} data-vrt-blackout-profile /> Gravatar
               </label>
               <a href="https://gravatar.com/">
@@ -127,7 +127,7 @@ const ProfileImageSettings = (): JSX.Element => {
                 checked={!isGravatarEnabled}
                 onChange={() => setGravatarEnabled(false)}
               />
-              <label className="custom-control-label" htmlFor="radioUploadPicture">
+              <label className="form-label custom-control-label" htmlFor="radioUploadPicture">
                 { t('Upload Image') }
               </label>
             </div>

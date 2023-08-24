@@ -92,7 +92,7 @@ export default class ImportCollectionItem extends React.Component {
           disabled={isImporting}
           onChange={this.changeHandler}
         />
-        <label className="text-capitalize custom-control-label" htmlFor={collectionName}>
+        <label className="form-label text-capitalize custom-control-label" htmlFor={collectionName}>
           {collectionName}
         </label>
       </div>

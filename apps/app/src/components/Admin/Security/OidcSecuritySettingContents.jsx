@@ -58,7 +58,7 @@ class OidcSecurityManagementContents extends React.Component {
                 checked={adminGeneralSecurityContainer.state.isOidcEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsOidcEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="isOidcEnabled">
+              <label className="form-label custom-control-label" htmlFor="isOidcEnabled">
                 {t('security_settings.OAuth.enable_oidc')}
               </label>
             </div>
@@ -364,7 +364,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
+              <label className="form-label text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -396,7 +396,7 @@ class OidcSecurityManagementContents extends React.Component {
                     onChange={() => { adminOidcSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-label custom-control-label"
                     htmlFor="bindByUserName-oidc"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
@@ -418,7 +418,7 @@ class OidcSecurityManagementContents extends React.Component {
                     onChange={() => { adminOidcSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-label custom-control-label"
                     htmlFor="bindByEmail-oidc"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

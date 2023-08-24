@@ -32,7 +32,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
             }
           }}
         />
-        <label className="custom-control-label" htmlFor={inputId}>
+        <label className="form-label custom-control-label" htmlFor={inputId}>
           Primary
         </label>
       </div>

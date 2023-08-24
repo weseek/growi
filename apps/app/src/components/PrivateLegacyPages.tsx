@@ -99,7 +99,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         </div>
         <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
           <div>
-            <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+            <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
           </div>
           <select
             defaultValue={pagingSize}
@@ -167,7 +167,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
             id="understoodCheckbox"
             onChange={e => setChecked(e.target.checked)}
           />
-          <label className="form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
+          <label className="form-label form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
         </div>
         <button
           type="button"

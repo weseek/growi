@@ -75,7 +75,7 @@ class SamlSecurityManagementContents extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="custom-control-label" htmlFor="isSamlEnabled">
+              <label className="form-label custom-control-label" htmlFor="isSamlEnabled">
                 {t('security_settings.SAML.enable_saml')}
               </label>
             </div>
@@ -401,7 +401,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-label custom-control-label"
                     htmlFor="bindByUserName-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
@@ -423,7 +423,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-label custom-control-label"
                     htmlFor="bindByEmail-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

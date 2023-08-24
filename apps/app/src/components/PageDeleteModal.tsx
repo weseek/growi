@@ -191,7 +191,7 @@ const PageDeleteModal: FC = () => {
           onChange={changeIsDeleteRecursivelyHandler}
           // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
-        <label className="custom-control-label" htmlFor="deleteRecursively">
+        <label className="form-label custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
           <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
@@ -211,7 +211,7 @@ const PageDeleteModal: FC = () => {
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        <label className="custom-control-label" htmlFor="deleteCompletely">
+        <label className="form-label custom-control-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
         </label>
@@ -260,7 +260,7 @@ const PageDeleteModal: FC = () => {
     return (
       <>
         <div className="grw-scrollable-modal-body pb-1">
-          <label>{ t('modal_delete.deleting_page') }:</label><br />
+          <label className="form-label">{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePathsToDelete()}
         </div>

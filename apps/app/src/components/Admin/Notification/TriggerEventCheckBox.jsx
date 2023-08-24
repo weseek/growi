@@ -15,7 +15,7 @@ const TriggerEventCheckBox = (props) => {
         checked={props.checked}
         onChange={props.onChange}
       />
-      <label className="custom-control-label" htmlFor={`trigger-event-${props.event}`}>
+      <label className="form-label custom-control-label" htmlFor={`trigger-event-${props.event}`}>
         {props.children}{' '}
         {t(`notification_settings.event_${props.event}`)}
       </label>

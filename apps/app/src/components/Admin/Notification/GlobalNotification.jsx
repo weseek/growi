@@ -50,7 +50,7 @@ const GlobalNotification = (props) => {
               checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
               onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
             />
-            <label className="custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
+            <label className="form-label custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.just_me_notification_help') }} />
             </label>
@@ -68,7 +68,7 @@ const GlobalNotification = (props) => {
               checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
               onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
             />
-            <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
+            <label className="form-label custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.group_notification_help') }} />
             </label>

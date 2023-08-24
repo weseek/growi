@@ -269,7 +269,7 @@ const TestProcess = ({
       <form>
         <div className="row my-3 justify-content-center">
           <div className="slack-connection-log col-md-4">
-            <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
+            <label className="form-label mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"

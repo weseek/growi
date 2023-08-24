@@ -67,7 +67,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label>{t('admin:user_management.invite_modal.emails')}</label>
+        <label className="form-label">{t('admin:user_management.invite_modal.emails')}</label>
         <p>
           {t('admin:user_management.invite_modal.description1')}
           <br />
@@ -114,7 +114,7 @@ class UserInviteModal extends React.Component {
             defaultChecked={this.state.sendEmail}
             disabled={!isMailerSetup}
           />
-          <label className="custom-control-label" htmlFor="sendEmail">
+          <label className="form-label custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
           {isMailerSetup
@@ -151,7 +151,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left" style={{ flex: 1 }}>
+        <label className="form-label mr-3 text-left" style={{ flex: 1 }}>
           <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
           <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>

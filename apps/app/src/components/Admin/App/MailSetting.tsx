@@ -63,7 +63,7 @@ const MailSetting = (props: Props) => {
       </div>
 
       <div className="row mb-5">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="form-label text-left text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.transmission_method')}
         </label>
         <div className="col-md-6 py-2">
@@ -80,7 +80,12 @@ const MailSetting = (props: Props) => {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
                 />
-                <label className="custom-control-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
+                <label
+                  className="form-label custom-control-label"
+                  htmlFor={`transmission-method-radio-${method}`}
+                >
+                  {t(`admin:app_setting.${method}_label`)}
+                </label>
               </div>
             );
           })}

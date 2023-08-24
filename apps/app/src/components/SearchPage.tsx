@@ -69,7 +69,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
       </div>
       <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
         <div>
-          <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+          <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
         </div>
         <select
           defaultValue={pagingSize}

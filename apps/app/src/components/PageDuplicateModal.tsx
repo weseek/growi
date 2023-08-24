@@ -157,11 +157,11 @@ const PageDuplicateModal = (): JSX.Element => {
 
     return (
       <>
-        <div><label>{t('modal_duplicate.label.Current page name')}</label><br />
+        <div><label className="form-label">{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
         <div>
-          <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
+          <label className="form-label" htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
             <div>
               <span className="input-group-text">{siteUrl}</span>
@@ -202,7 +202,7 @@ const PageDuplicateModal = (): JSX.Element => {
             checked={isDuplicateRecursively}
             onChange={changeIsDuplicateRecursivelyHandler}
           />
-          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+          <label className="form-label custom-control-label" htmlFor="cbDuplicateRecursively">
             { t('modal_duplicate.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
@@ -218,7 +218,7 @@ const PageDuplicateModal = (): JSX.Element => {
                   checked={isDuplicateRecursivelyWithoutExistPath}
                   onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
                 />
-                <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+                <label className="form-label custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
                   { t('modal_duplicate.label.Duplicate without exist path') }
                 </label>
               </div>

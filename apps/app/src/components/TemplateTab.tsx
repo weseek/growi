@@ -22,7 +22,7 @@ export const TemplateTab = (props: Props): JSX.Element => {
         // checked={this.state.linkerType === template.value}
         onChange={onChangeHandler}
       />
-      <label className="custom-control-label" htmlFor="string">
+      <label className="form-label custom-control-label" htmlFor="string">
         {template.name}
       </label>
     </div>

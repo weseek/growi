@@ -57,7 +57,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
             setIsRecursively(e.target.checked);
           }}
         />
-        <label className="custom-control-label" htmlFor="convertRecursively">
+        <label className="form-label custom-control-label" htmlFor="convertRecursively">
           { t('private_legacy_pages.modal.convert_recursively_label') }
           <p className="form-text text-muted mt-0"> { t('private_legacy_pages.modal.convert_recursively_desc') }</p>
         </label>

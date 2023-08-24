@@ -64,7 +64,7 @@ class GoogleSecurityManagementContents extends React.Component {
                 checked={adminGeneralSecurityContainer.state.isGoogleEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="isGoogleEnabled">
+              <label className="form-label custom-control-label" htmlFor="isGoogleEnabled">
                 {t('security_settings.OAuth.Google.enable_google')}
               </label>
             </div>
@@ -74,7 +74,7 @@ class GoogleSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
+          <label className="form-label col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"
@@ -102,7 +102,7 @@ class GoogleSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientId" className="col-3 text-right py-2">{t('security_settings.clientID')}</label>
+              <label htmlFor="googleClientId" className="col-3 text-right py-2 form-label">{t('security_settings.clientID')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -118,7 +118,7 @@ class GoogleSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientSecret" className="col-3 text-right py-2">{t('security_settings.client_secret')}</label>
+              <label htmlFor="googleClientSecret" className="col-3 text-right py-2 form-label">{t('security_settings.client_secret')}</label>
               <div className="col-6">
                 <input
                   className="form-control"

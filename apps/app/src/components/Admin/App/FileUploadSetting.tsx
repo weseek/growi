@@ -55,7 +55,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
                   disabled={props.isFixedFileUploadByEnvVar}
                   onChange={(e) => { props?.onChangeFileUploadType(e, type) }}
                 />
-                <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
+                <label className="form-label custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
               </div>
             );
           })}

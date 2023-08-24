@@ -63,7 +63,7 @@ const OtherSettings = (): JSX.Element => {
                   onChange={onChangeIsQuestionnaireEnabledHandler}
                   disabled={!growiIsQuestionnaireEnabled}
                 />
-                <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
+                <label className="form-label custom-control-label" htmlFor="isQuestionnaireEnabled">
                   {t('questionnaire.enable_questionnaire')}
                 </label>
               </span>

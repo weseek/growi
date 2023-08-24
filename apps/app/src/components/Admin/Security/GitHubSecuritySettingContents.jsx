@@ -66,7 +66,7 @@ class GitHubSecurityManagementContents extends React.Component {
                 checked={adminGeneralSecurityContainer.state.isGitHubEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="isGitHubEnabled">
+              <label className="form-label custom-control-label" htmlFor="isGitHubEnabled">
                 {t('security_settings.OAuth.GitHub.enable_github')}
               </label>
             </div>
@@ -76,7 +76,7 @@ class GitHubSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
+          <label className="form-label col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"
@@ -104,7 +104,7 @@ class GitHubSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientId" className="col-3 text-right py-2">{t('security_settings.clientID')}</label>
+              <label htmlFor="githubClientId" className="col-3 text-right py-2 form-label">{t('security_settings.clientID')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -120,7 +120,7 @@ class GitHubSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientSecret" className="col-3 text-right py-2">{t('security_settings.client_secret')}</label>
+              <label htmlFor="githubClientSecret" className="col-3 text-right py-2 form-label">{t('security_settings.client_secret')}</label>
               <div className="col-6">
                 <input
                   className="form-control"

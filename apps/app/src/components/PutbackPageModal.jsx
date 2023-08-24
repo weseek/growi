@@ -72,7 +72,7 @@ const PutBackPageModal = () => {
     return (
       <>
         <div>
-          <label>{t('modal_putback.label.Put Back Page')}:</label><br />
+          <label className="form-label">{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -83,7 +83,7 @@ const PutBackPageModal = () => {
             checked={isPutbackRecursively}
             onChange={changeIsPutbackRecursivelyHandler}
           />
-          <label htmlFor="cbPutBackRecursively" className="custom-control-label">
+          <label htmlFor="cbPutBackRecursively" className="custom-control-label form-label">
             { t('modal_putback.label.recursively') }
           </label>
           <p className="form-text text-muted mt-0">

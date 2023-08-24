@@ -135,7 +135,7 @@ const CopyDropdown = (props) => {
                   checked={isParamsAppended}
                   onChange={toggleAppendParams}
                 />
-                <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
+                <label className="form-label custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
               </div>
             ) }
           </div>

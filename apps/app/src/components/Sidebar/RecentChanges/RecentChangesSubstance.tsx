@@ -141,7 +141,7 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
             checked={isSmall}
             onChange={changeSizeHandler}
           />
-          <label className="custom-control-label" htmlFor="recentChangesResize" />
+          <label className="form-label custom-control-label" htmlFor="recentChangesResize" />
         </div>
       </div>
     </>

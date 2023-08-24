@@ -66,7 +66,7 @@ const EmptyTrashModal: FC = () => {
       </ModalHeader>
       <ModalBody>
         <div className="grw-scrollable-modal-body pb-1">
-          <label>{ t('modal_delete.deleting_page') }:</label><br />
+          <label className="form-label">{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePaths()}
         </div>

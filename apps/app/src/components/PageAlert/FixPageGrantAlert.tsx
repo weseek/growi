@@ -143,7 +143,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
                 />
-                <label className="custom-control-label" htmlFor="grantRestricted">
+                <label className="form-label custom-control-label" htmlFor="grantRestricted">
                   { t('fix_page_grant.modal.radio_btn.restrected') }
                 </label>
               </div>
@@ -157,7 +157,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_OWNER}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
                 />
-                <label className="custom-control-label" htmlFor="grantUser">
+                <label className="form-label custom-control-label" htmlFor="grantUser">
                   { t('fix_page_grant.modal.radio_btn.only_me') }
                 </label>
               </div>
@@ -171,7 +171,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_USER_GROUP}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_USER_GROUP)}
                 />
-                <label className="custom-control-label" htmlFor="grantUserGroup">
+                <label className="form-label custom-control-label" htmlFor="grantUserGroup">
                   { t('fix_page_grant.modal.radio_btn.grant_group') }
                 </label>
                 <div className="dropdown ml-2">

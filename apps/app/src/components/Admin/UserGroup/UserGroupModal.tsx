@@ -75,7 +75,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
 
         <ModalBody>
           <div>
-            <label htmlFor="name">
+            <label htmlFor="name" className="form-label">
               {t('user_group_management.group_name')}
             </label>
             <input
@@ -90,7 +90,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
           </div>
 
           <div>
-            <label htmlFor="description">
+            <label htmlFor="description" className="form-label">
               {t('Description')}
             </label>
             <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />

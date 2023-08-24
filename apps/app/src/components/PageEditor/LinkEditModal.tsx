@@ -299,7 +299,7 @@ export const LinkEditModal = (): JSX.Element => {
       <div className="card well pt-3">
         <form className="mb-0">
           <div className="mb-0 row">
-            <label className="col-sm-3">{t('link_edit.path_format')}</label>
+            <label className="form-label col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
               <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
                 <input
@@ -310,7 +310,7 @@ export const LinkEditModal = (): JSX.Element => {
                   onChange={toggleIsUseRelativePath}
                   disabled={!linkInputValue.startsWith('/') || linkerType === Linker.types.growiLink}
                 />
-                <label className="custom-control-label" htmlFor="relativePath">
+                <label className="form-label custom-control-label" htmlFor="relativePath">
                   {t('link_edit.use_relative_path')}
                 </label>
               </div>
@@ -323,7 +323,7 @@ export const LinkEditModal = (): JSX.Element => {
                   onChange={toggleIsUsePamanentLink}
                   disabled={permalink === '' || linkerType === Linker.types.growiLink}
                 />
-                <label className="custom-control-label" htmlFor="permanentLink">
+                <label className="form-label custom-control-label" htmlFor="permanentLink">
                   {t('link_edit.use_permanent_link')}
                 </label>
               </div>

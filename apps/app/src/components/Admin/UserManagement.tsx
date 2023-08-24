@@ -89,7 +89,7 @@ const UserManagement = (props: UserManagementProps) => {
           checked={adminUsersContainer.isSelected(status)}
           onChange={() => clickHandler(status)}
         />
-        <label className="custom-control-label" htmlFor={`c_${status}`}>
+        <label className="form-label custom-control-label" htmlFor={`c_${status}`}>
           <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
             {statusLabel}
           </span>

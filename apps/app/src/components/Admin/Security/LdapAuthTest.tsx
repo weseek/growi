@@ -116,7 +116,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
       </div>
 
       <div>
-        <label><h5>Logs</h5></label>
+        <label className="form-label"><h5>Logs</h5></label>
         <textarea id="taLogs" className="col form-control" rows={4} value={logs} readOnly />
       </div>
 

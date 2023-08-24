@@ -83,7 +83,7 @@ const InAppNotificationSettings: FC = () => {
                 checked={isCheckedRule(rule.name, subscribeRules)}
                 onChange={e => ruleCheckboxHandler(rule.name, e.target.checked)}
               />
-              <label className="custom-control-label" htmlFor={rule.name}>
+              <label className="form-label custom-control-label" htmlFor={rule.name}>
                 <strong>{rule.name}</strong>
               </label>
               <p className="form-text text-muted small">

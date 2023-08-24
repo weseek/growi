@@ -95,7 +95,7 @@ export const BasicInfoSettings = (): JSX.Element => {
               checked={personalSettingsInfo?.isEmailPublished === true}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: true })}
             />
-            <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
+            <label className="form-label custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
           </div>
           <div className="custom-control custom-radio custom-control-inline">
             <input
@@ -106,7 +106,7 @@ export const BasicInfoSettings = (): JSX.Element => {
               checked={personalSettingsInfo?.isEmailPublished === false}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: false })}
             />
-            <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
+            <label className="form-label custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ export const BasicInfoSettings = (): JSX.Element => {
                     checked={personalSettingsInfo?.lang === locale}
                     onChange={() => changePersonalSettingsHandler({ lang: locale })}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
+                  <label className="form-label custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
                 </div>
               );
             })

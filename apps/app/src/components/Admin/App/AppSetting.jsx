@@ -95,7 +95,7 @@ const AppSetting = (props) => {
                       adminAppContainer.changeGlobalLang(e.target.value);
                     }}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                  <label className="form-label custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
                 </div>
               );
             })
@@ -120,7 +120,7 @@ const AppSetting = (props) => {
               checked={adminAppContainer.state.isEmailPublishedForNewUser === true}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(true) }}
             />
-            <label className="custom-control-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
+            <label className="form-label custom-control-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
           </div>
 
           <div className="custom-control custom-radio custom-control-inline">
@@ -132,7 +132,7 @@ const AppSetting = (props) => {
               checked={adminAppContainer.state.isEmailPublishedForNewUser === false}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(false) }}
             />
-            <label className="custom-control-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
+            <label className="form-label custom-control-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
           </div>
 
         </div>
@@ -157,7 +157,7 @@ const AppSetting = (props) => {
               }}
             />
             <label
-              className="custom-control-label"
+              className="custom-control-label form-label"
               htmlFor="cbFileUpload"
             >
               {t('admin:app_setting.enable_files_except_image')}

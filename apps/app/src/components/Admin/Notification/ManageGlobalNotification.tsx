@@ -126,7 +126,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
 
         <div className="col-sm-4">
           <h3>
-            <label htmlFor="triggerPath">{t('notification_settings.trigger_path')}
+            <label htmlFor="triggerPath" className="form-label">{t('notification_settings.trigger_path')}
               {/* eslint-disable-next-line react/no-danger */}
               <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
             </label>
@@ -154,7 +154,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={notifyType === NotifyType.Email}
                 onChange={() => { setNotifyType(NotifyType.Email) }}
               />
-              <label className="custom-control-label" htmlFor="mail">
+              <label className="form-label custom-control-label" htmlFor="mail">
                 <p className="font-weight-bold">Email</p>
               </label>
             </div>
@@ -168,7 +168,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={notifyType === NotifyType.SLACK}
                 onChange={() => { setNotifyType(NotifyType.SLACK) }}
               />
-              <label className="custom-control-label" htmlFor="slack">
+              <label className="form-label custom-control-label" htmlFor="slack">
                 <p className="font-weight-bold">Slack</p>
               </label>
             </div>

@@ -73,7 +73,7 @@ class LocalSecuritySettingContents extends React.Component {
                 onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
                 disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="custom-control-label" htmlFor="isLocalEnabled">
+              <label className="form-label custom-control-label" htmlFor="isLocalEnabled">
                 {t('security_settings.Local.enable_local')}
               </label>
             </div>
@@ -173,7 +173,7 @@ class LocalSecuritySettingContents extends React.Component {
                     checked={isPasswordResetEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
-                  <label className="custom-control-label" htmlFor="isPasswordResetEnabled">
+                  <label className="form-label custom-control-label" htmlFor="isPasswordResetEnabled">
                     {t('security_settings.Local.enable_password_reset_by_users')}
                   </label>
                 </div>
@@ -202,7 +202,7 @@ class LocalSecuritySettingContents extends React.Component {
                     checked={isEmailAuthenticationEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsEmailAuthenticationEnabled()}
                   />
-                  <label className="custom-control-label" htmlFor="isEmailAuthenticationEnabled">
+                  <label className="form-label custom-control-label" htmlFor="isEmailAuthenticationEnabled">
                     {t('security_settings.Local.enable_email_authentication')}
                   </label>
                 </div>

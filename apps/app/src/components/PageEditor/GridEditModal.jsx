@@ -101,7 +101,7 @@ class GridEditModal extends React.Component {
             checked={this.state.responsiveSize === responsiveSizeForMap[0]}
             onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
           />
-          <label className="custom-control-label" htmlFor={responsiveSizeForMap[1].displayText}>
+          <label className="form-label custom-control-label" htmlFor={responsiveSizeForMap[1].displayText}>
             {t(responsiveSizeForMap[1].displayText)}
           </label>
         </div>
@@ -200,7 +200,7 @@ class GridEditModal extends React.Component {
               <h3 className="grw-modal-head">{t('grid_edit.grid_settings')}</h3>
               <form className="mb-0">
                 <div className="row my-3">
-                  <label className="col-sm-3" htmlFor="gridPattern">
+                  <label className="form-label col-sm-3" htmlFor="gridPattern">
                     {t('grid_edit.grid_pattern')}
                   </label>
                   <div className="col-sm-9">
@@ -220,7 +220,7 @@ class GridEditModal extends React.Component {
                   </div>
                 </div>
                 <div className="row">
-                  <label className="col-sm-3" htmlFor="breakPoint">
+                  <label className="form-label col-sm-3" htmlFor="breakPoint">
                     {t('grid_edit.break_point')}
                   </label>
                   <div className="col-sm-9">

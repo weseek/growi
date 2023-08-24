@@ -83,7 +83,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
-              <label className="custom-control-label" htmlFor="is-open">
+              <label className="form-label custom-control-label" htmlFor="is-open">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
@@ -97,7 +97,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
-              <label className="custom-control-label" htmlFor="is-closed">
+              <label className="form-label custom-control-label" htmlFor="is-closed">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}
               </label>
             </div>

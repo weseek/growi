@@ -88,7 +88,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   checked={isEditMode ? !isPreferDrawerModeOnEdit : !isPreferDrawerMode}
                   onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked, isEditMode)}
                 />
-                <label className="custom-control-label" htmlFor={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
+                <label className="form-label custom-control-label" htmlFor={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}></label>
               </div>
               <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-dock' : 'iwt-sidebar-dock'} label="Dock" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDockIcon />
@@ -143,7 +143,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                       disabled={useOsSettings}
                       onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
                     />
-                    <label className="custom-control-label" htmlFor="swUserPreference"></label>
+                    <label className="form-label custom-control-label" htmlFor="swUserPreference"></label>
                   </div>
                   <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                     <MoonIcon />
@@ -160,7 +160,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                       checked={useOsSettings}
                       onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                     />
-                    <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
+                    <label className="form-label custom-control-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
                   </div>
                 </div>
               </div>

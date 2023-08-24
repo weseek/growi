@@ -51,7 +51,7 @@ class LineBreakForm extends React.Component {
             checked={isEnabledLinebreaks}
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
           />
-          <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
+          <label className="form-label custom-control-label" htmlFor="isEnabledLinebreaks">
             {t('markdown_settings.lineBreak_options.enable_lineBreak') }
           </label>
         </div>
@@ -76,7 +76,7 @@ class LineBreakForm extends React.Component {
             checked={isEnabledLinebreaksInComments}
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
           />
-          <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
+          <label className="form-label custom-control-label" htmlFor="isEnabledLinebreaksInComments">
             {t('markdown_settings.lineBreak_options.enable_lineBreak_for_comment') }
           </label>
         </div>

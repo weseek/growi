@@ -41,7 +41,7 @@ const IndentForm = (props: Props) => {
     return (
       <div className="col">
         <div>
-          <label htmlFor="adminPreferredIndentSize">{t('markdown_settings.indent_options.indentSize')}</label>
+          <label htmlFor="adminPreferredIndentSize" className="form-label">{t('markdown_settings.indent_options.indentSize')}</label>
           <UncontrolledDropdown id="adminPreferredIndentSize">
             <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-right">
               <span className="float-left">
@@ -84,7 +84,7 @@ const IndentForm = (props: Props) => {
               adminMarkDownContainer.setState({ isIndentSizeForced: !isIndentSizeForced });
             }}
           />
-          <label className="custom-control-label" htmlFor="isIndentSizeForced">
+          <label className="form-label custom-control-label" htmlFor="isIndentSizeForced">
             {t('markdown_settings.indent_options.disallow_indent_change')}
           </label>
         </div>

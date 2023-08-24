@@ -364,7 +364,7 @@ class SecuritySetting extends React.Component {
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
-                    <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                    <label className="form-label custom-control-label" htmlFor="isShowRestrictedByOwner">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -381,7 +381,7 @@ class SecuritySetting extends React.Component {
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
-                    <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                    <label className="form-label custom-control-label" htmlFor="isShowRestrictedByGroup">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -464,7 +464,7 @@ class SecuritySetting extends React.Component {
                 checked={adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomepageDeletionEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
+              <label className="form-label custom-control-label" htmlFor="is-user-page-deletion-enabled">
                 {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>

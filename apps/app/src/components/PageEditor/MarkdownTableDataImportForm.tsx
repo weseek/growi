@@ -53,7 +53,7 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
   return (
     <form className="data-import-form">
       <div>
-        <label htmlFor="data-import-form-type-select">{t('select_data_format')}</label>
+        <label htmlFor="data-import-form-type-select" className="form-label">{t('select_data_format')}</label>
         <select
           id="data-import-form-type-select"
           className="form-control"
@@ -67,7 +67,7 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
         </select>
       </div>
       <div>
-        <label htmlFor="data-import-form-type-textarea">{t('import_data')}</label>
+        <label htmlFor="data-import-form-type-textarea" className="form-label">{t('import_data')}</label>
         <textarea
           id="data-import-form-type-textarea"
           className="form-control"
@@ -78,7 +78,7 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
       </div>
       <Collapse isOpen={parserErrorMessage != null}>
         <div>
-          <label htmlFor="data-import-form-type-textarea-alert">{t('parse_error')}</label>
+          <label htmlFor="data-import-form-type-textarea-alert" className="form-label">{t('parse_error')}</label>
           <textarea
             id="data-import-form-type-textarea-alert"
             className="form-control"
