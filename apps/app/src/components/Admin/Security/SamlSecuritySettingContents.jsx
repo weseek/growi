@@ -474,6 +474,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
                         </a>.
                       </p>
+                      {/* TODO: use new accordion component */}
+                      {/* https://redmine.weseek.co.jp/issues/129222 */}
                       <div className="accordion" id="accordionExample">
                         <div className="card">
                           <div className="card-header p-1">
