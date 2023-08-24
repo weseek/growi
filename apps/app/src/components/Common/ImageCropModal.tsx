@@ -170,11 +170,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
                 checked={isCropImage}
                 onChange={() => { setIsCropImage(!isCropImage) }}
               />
-<<<<<<< HEAD
-              <label className="form-label custom-control-label" htmlFor="cropImageOption">
-=======
-              <label className="form-check-label" htmlFor="cropImageOption">
->>>>>>> supprt/correspond-with-forms-breaking-changes
+              <label className="form-label form-check-label" htmlFor="cropImageOption">
                 { t('crop_image_modal.image_crop') }
               </label>
             </div>
