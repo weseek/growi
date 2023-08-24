@@ -64,16 +64,16 @@ class LocalSecuritySettingContents extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="isLocalEnabled"
                 checked={isLocalEnabled}
                 onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
                 disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="form-label custom-control-label" htmlFor="isLocalEnabled">
+              <label className="form-label form-check-label" htmlFor="isLocalEnabled">
                 {t('security_settings.Local.enable_local')}
               </label>
             </div>
@@ -165,15 +165,15 @@ class LocalSecuritySettingContents extends React.Component {
             <div className="row">
               <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="isPasswordResetEnabled"
                     checked={isPasswordResetEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
-                  <label className="form-label custom-control-label" htmlFor="isPasswordResetEnabled">
+                  <label className="form-label form-check-label" htmlFor="isPasswordResetEnabled">
                     {t('security_settings.Local.enable_password_reset_by_users')}
                   </label>
                 </div>
@@ -194,15 +194,15 @@ class LocalSecuritySettingContents extends React.Component {
             <div className="row">
               <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.email_authentication')}</label>
               <div className="col-12 col-md-6">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="isEmailAuthenticationEnabled"
                     checked={isEmailAuthenticationEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsEmailAuthenticationEnabled()}
                   />
-                  <label className="form-label custom-control-label" htmlFor="isEmailAuthenticationEnabled">
+                  <label className="form-label form-check-label" htmlFor="isEmailAuthenticationEnabled">
                     {t('security_settings.Local.enable_email_authentication')}
                   </label>
                 </div>

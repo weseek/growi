@@ -1,12 +1,36 @@
-import type { SWRResponse } from 'swr';
+import { useMemo } from 'react';
 
+import { type Extension } from '@codemirror/state';
+import { scrollPastEnd } from '@codemirror/view';
+import {
+  type SWRResponseWithUtils, withUtils, useSWRStatic,
+} from '@growi/core/dist/swr';
 
-import type { UseCodeMirrorEditor, UseCodeMirrorEditorStates } from '../services';
+import type { UseCodeMirrorEditor, UseCodeMirrorEditorResponse } from '../services';
 import { useCodeMirrorEditor } from '../services';
 
-import { useStaticSWR } from './use-static-swr';
+const defaultExtensionsMain: Extension[] = [
+  scrollPastEnd(),
+];
 
-export const useCodeMirrorEditorMain = (props?: UseCodeMirrorEditor): SWRResponse<UseCodeMirrorEditorStates> => {
+type MainEditorUtils = {
+  // impl something
+};
+
+export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRResponseWithUtils<MainEditorUtils, UseCodeMirrorEditorResponse> => {
+  const props = useMemo<UseCodeMirrorEditor>(() => {
+    return {
+      container,
+      autoFocus: true,
+      extensions: defaultExtensionsMain,
+    };
+  }, [container]);
+
   const states = useCodeMirrorEditor(props);
-  return useStaticSWR('codeMirrorEditorMain', props != null ? states : undefined);
+
+  const swrResponse = useSWRStatic('codeMirrorEditorMain', container != null ? states : undefined);
+
+  return withUtils(swrResponse, {
+    // impl something
+  });
 };

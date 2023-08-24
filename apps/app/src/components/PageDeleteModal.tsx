@@ -182,16 +182,16 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteRecursivelyForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-warning">
+      <div className="form-check form-check-warning">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           id="deleteRecursively"
           type="checkbox"
           checked={isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
           // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
-        <label className="form-label custom-control-label" htmlFor="deleteRecursively">
+        <label className="form-label form-check-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
           <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
@@ -201,9 +201,9 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteCompletelyForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-danger">
+      <div className="form-check form-check-danger">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           name="completely"
           id="deleteCompletely"
           type="checkbox"
@@ -211,7 +211,7 @@ const PageDeleteModal: FC = () => {
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        <label className="form-label custom-control-label" htmlFor="deleteCompletely">
+        <label className="form-label form-check-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
         </label>

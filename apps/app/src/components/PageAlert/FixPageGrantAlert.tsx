@@ -133,9 +133,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
             {renderGrantDataLabel()}
 
             <div className="ml-2">
-              <div className="custom-control custom-radio mb-3">
+              <div className="form-check mb-3">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="grantRestricted"
                   id="grantRestricted"
                   type="radio"
@@ -143,13 +143,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
                 />
-                <label className="form-label custom-control-label" htmlFor="grantRestricted">
+                <label className="form-label form-check-label" htmlFor="grantRestricted">
                   { t('fix_page_grant.modal.radio_btn.restrected') }
                 </label>
               </div>
-              <div className="custom-control custom-radio mb-3">
+              <div className="form-check mb-3">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="grantUser"
                   id="grantUser"
                   type="radio"
@@ -157,13 +157,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_OWNER}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
                 />
-                <label className="form-label custom-control-label" htmlFor="grantUser">
+                <label className="form-label form-check-label" htmlFor="grantUser">
                   { t('fix_page_grant.modal.radio_btn.only_me') }
                 </label>
               </div>
-              <div className="custom-control custom-radio d-flex mb-3">
+              <div className="form-check d-flex mb-3">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="grantUserGroup"
                   id="grantUserGroup"
                   type="radio"
@@ -171,7 +171,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_USER_GROUP}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_USER_GROUP)}
                 />
-                <label className="form-label custom-control-label" htmlFor="grantUserGroup">
+                <label className="form-label form-check-label" htmlFor="grantUserGroup">
                   { t('fix_page_grant.modal.radio_btn.grant_group') }
                 </label>
                 <div className="dropdown ml-2">

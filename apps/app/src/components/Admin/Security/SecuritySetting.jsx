@@ -356,15 +356,15 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="custom-control custom-switch custom-checkbox-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
-                      className="custom-control-input"
+                      className="form-check-input"
                       id="isShowRestrictedByOwner"
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
-                    <label className="form-label custom-control-label" htmlFor="isShowRestrictedByOwner">
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByOwner">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -373,15 +373,15 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="custom-control custom-switch custom-checkbox-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
-                      className="custom-control-input"
+                      className="form-check-input"
                       id="isShowRestrictedByGroup"
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
-                    <label className="form-label custom-control-label" htmlFor="isShowRestrictedByGroup">
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByGroup">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -456,15 +456,15 @@ class SecuritySetting extends React.Component {
         <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="is-user-page-deletion-enabled"
                 checked={adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomepageDeletionEnabled() }}
               />
-              <label className="form-label custom-control-label" htmlFor="is-user-page-deletion-enabled">
+              <label className="form-label form-check-label" htmlFor="is-user-page-deletion-enabled">
                 {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>

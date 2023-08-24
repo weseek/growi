@@ -72,31 +72,31 @@ const QuestionnaireSettings = (): JSX.Element => {
       {!isLoading && (
         <>
           <div className="row my-3">
-            <div className="custom-control custom-switch custom-checkbox-info col-md-5 offset-md-5">
+            <div className="form-check form-switch form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="isQuestionnaireEnabled"
                 checked={isQuestionnaireEnabled}
                 onChange={onChangeIsQuestionnaireEnabledHandler}
               />
-              <label className="form-label custom-control-label" htmlFor="isQuestionnaireEnabled">
+              <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
                 {t('app_setting.enable_questionnaire')}
               </label>
             </div>
           </div>
 
           <div className="row my-4">
-            <div className="custom-control custom-checkbox custom-checkbox-info col-md-5 offset-md-5">
+            <div className="form-check form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="isAppSiteUrlHashed"
                 checked={isAppSiteUrlHashed}
                 onChange={onChangeisAppSiteUrlHashedHandler}
                 disabled={!isQuestionnaireEnabled}
               />
-              <label className="form-label custom-control-label" htmlFor="isAppSiteUrlHashed">
+              <label className="form-label form-check-label" htmlFor="isAppSiteUrlHashed">
                 {t('app_setting.anonymize_app_site_url')}
               </label>
               <p className="form-text text-muted small">

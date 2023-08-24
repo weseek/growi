@@ -74,17 +74,17 @@ const IndentForm = (props: Props) => {
 
     return (
       <div className="col">
-        <div className="custom-control custom-checkbox custom-checkbox-success">
+        <div className="form-check form-check-success">
           <input
             type="checkbox"
-            className="custom-control-input"
+            className="form-check-input"
             id="isIndentSizeForced"
             checked={isIndentSizeForced || false}
             onChange={() => {
               adminMarkDownContainer.setState({ isIndentSizeForced: !isIndentSizeForced });
             }}
           />
-          <label className="form-label custom-control-label" htmlFor="isIndentSizeForced">
+          <label className="form-label form-check-label" htmlFor="isIndentSizeForced">
             {t('markdown_settings.indent_options.disallow_indent_change')}
           </label>
         </div>

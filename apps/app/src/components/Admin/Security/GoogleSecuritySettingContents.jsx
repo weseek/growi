@@ -56,15 +56,15 @@ class GoogleSecurityManagementContents extends React.Component {
 
         <div className="row">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isGoogleEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGoogleEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
-              <label className="form-label custom-control-label" htmlFor="isGoogleEnabled">
+              <label className="form-label form-check-label" htmlFor="isGoogleEnabled">
                 {t('security_settings.OAuth.Google.enable_google')}
               </label>
             </div>
@@ -135,16 +135,16 @@ class GoogleSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByUserNameGoogle"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminGoogleSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="bindByUserNameGoogle"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

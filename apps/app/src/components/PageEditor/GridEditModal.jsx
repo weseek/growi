@@ -92,16 +92,16 @@ class GridEditModal extends React.Component {
     const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
-        <div key={responsiveSizeForMap[0]} className="custom-control custom-radio custom-control-inline">
+        <div key={responsiveSizeForMap[0]} className="form-check form-check-inline">
           <input
             type="radio"
-            className="custom-control-input"
+            className="form-check-input"
             id={responsiveSizeForMap[1].displayText}
             value={responsiveSizeForMap[1].displayText}
             checked={this.state.responsiveSize === responsiveSizeForMap[0]}
             onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
           />
-          <label className="form-label custom-control-label" htmlFor={responsiveSizeForMap[1].displayText}>
+          <label className="form-label form-check-label" htmlFor={responsiveSizeForMap[1].displayText}>
             {t(responsiveSizeForMap[1].displayText)}
           </label>
         </div>

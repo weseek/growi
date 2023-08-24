@@ -58,15 +58,15 @@ class GitHubSecurityManagementContents extends React.Component {
 
         <div className="row">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isGitHubEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGitHubEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
-              <label className="form-label custom-control-label" htmlFor="isGitHubEnabled">
+              <label className="form-label form-check-label" htmlFor="isGitHubEnabled">
                 {t('security_settings.OAuth.GitHub.enable_github')}
               </label>
             </div>
@@ -137,16 +137,16 @@ class GitHubSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByUserNameGitHub"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminGitHubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminGitHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="bindByUserNameGitHub"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

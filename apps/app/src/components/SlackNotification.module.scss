@@ -2,7 +2,7 @@
 
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 .grw-slack-notification :global {
-  // $input-height-slack: bs.$custom-control-indicator-size * 1.5;
+  // $input-height-slack: bs.$form-check-indicator-size * 1.5;
   // border-color: bs.$gray-200;
 
   // border-style: solid;
@@ -34,7 +34,7 @@
   //   }
   // }
 
-  // .custom-control-label {
+  // .form-check-label {
   //   &::before {
   //     border: transparent;
   //   }

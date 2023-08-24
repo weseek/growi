@@ -403,7 +403,7 @@
       background: white;
     }
 
-    .custom-control-label {
+    .form-check-label {
       &::before {
         background-color: $gray-200;
         border-color: transparent;
@@ -413,7 +413,7 @@
         background-image: url(/images/icons/slack/slack-logo-off.svg);
       }
     }
-    .custom-control-input:checked ~ .custom-control-label {
+    .form-check-input:checked ~ .form-check-label {
       &::before {
         background-color: lighten($color-slack, 60%);
       }

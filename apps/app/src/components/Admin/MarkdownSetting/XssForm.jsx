@@ -49,16 +49,16 @@ class XssForm extends React.Component {
         <div className="row">
 
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
-            <div className="custom-control custom-radio">
+            <div className="form-check">
               <input
                 type="radio"
-                className="custom-control-input"
+                className="form-check-input"
                 id="xssOption1"
                 name="XssOption"
                 checked={xssOption === RehypeSanitizeOption.RECOMMENDED}
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.RECOMMENDED }) }}
               />
-              <label className="form-label custom-control-label w-100" htmlFor="xssOption1">
+              <label className="form-label form-check-label w-100" htmlFor="xssOption1">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
                 <div className="mt-4">
                   <div className="d-flex justify-content-between">
@@ -91,16 +91,16 @@ class XssForm extends React.Component {
           </div>
 
           <div className="col-md-6 col-sm-12 align-self-start mb-4">
-            <div className="custom-control custom-radio">
+            <div className="form-check">
               <input
                 type="radio"
-                className="custom-control-input"
+                className="form-check-input"
                 id="xssOption2"
                 name="XssOption"
                 checked={xssOption === RehypeSanitizeOption.CUSTOM}
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
               />
-              <label className="form-label custom-control-label w-100" htmlFor="xssOption2">
+              <label className="form-label form-check-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
                 <WhitelistInput customizable />
               </label>
@@ -120,16 +120,16 @@ class XssForm extends React.Component {
         <fieldset className="col-12">
           <div>
             <div className="col-8 offset-4 my-3">
-              <div className="custom-control custom-switch custom-checkbox-success">
+              <div className="form-check form-switch form-check-success">
                 <input
                   type="checkbox"
-                  className="custom-control-input"
+                  className="form-check-input"
                   id="XssEnable"
                   name="isEnabledXss"
                   checked={isEnabledXss}
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
-                <label className="form-label custom-control-label w-100" htmlFor="XssEnable">
+                <label className="form-label form-check-label w-100" htmlFor="XssEnable">
                   {t('markdown_settings.xss_options.enable_xss_prevention')}
                 </label>
               </div>

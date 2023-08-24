@@ -69,10 +69,10 @@ const MailSetting = (props: Props) => {
         <div className="col-md-6 py-2">
           {transmissionMethods.map((method) => {
             return (
-              <div key={method} className="custom-control custom-radio custom-control-inline">
+              <div key={method} className="form-check form-check-inline">
                 <input
                   type="radio"
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="transmission-method"
                   id={`transmission-method-radio-${method}`}
                   checked={adminAppContainer.state.transmissionMethod === method}
@@ -80,12 +80,7 @@ const MailSetting = (props: Props) => {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
                 />
-                <label
-                  className="form-label custom-control-label"
-                  htmlFor={`transmission-method-radio-${method}`}
-                >
-                  {t(`admin:app_setting.${method}_label`)}
-                </label>
+                <label className="form-label form-check-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
               </div>
             );
           })}

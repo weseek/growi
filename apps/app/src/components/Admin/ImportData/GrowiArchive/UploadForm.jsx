@@ -68,7 +68,6 @@ class UploadForm extends React.Component {
               <input
                 type="file"
                 name="file"
-                className="form-control-file"
                 accept=".zip"
                 ref={this.inputRef}
                 onChange={this.changeFileName}

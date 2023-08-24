@@ -9,16 +9,14 @@ export const Playground = (): JSX.Element => {
 
   const containerRef = useRef(null);
 
-  useCodeMirrorEditorMain({
-    container: containerRef.current,
-  });
+  useCodeMirrorEditorMain(containerRef.current);
 
   return (
     <>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
         <div className="text-white">GrowiSubNavigation</div>
       </div>
-      <div className="flex-grow-1 d-flex overflow-y-auto">
+      <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
           <CodeMirrorEditorContainer ref={containerRef} />
         </div>

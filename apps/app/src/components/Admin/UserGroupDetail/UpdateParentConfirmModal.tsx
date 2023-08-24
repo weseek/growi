@@ -43,16 +43,16 @@ export const UpdateParentConfirmModal: FC = () => {
                 {t('admin:user_group_management.update_parent_confirm_modal.danger_message')}
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-succsess pl-5">
+              <div className="form-check form-check-succsess pl-5">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="forceUpdateParents"
                   id="forceUpdateParents"
                   type="checkbox"
                   checked={isForceUpdate}
                   onChange={() => setForceUpdate(!isForceUpdate)}
                 />
-                <label className="form-label custom-control-label" htmlFor="forceUpdateParents">
+                <label className="form-label form-check-label" htmlFor="forceUpdateParents">
                   {t('admin:user_group_management.update_parent_confirm_modal.force_update_parents_label')}
                   <p className="form-text text-muted mt-0">{t('admin:user_group_management.update_parent_confirm_modal.force_update_parents_description')}</p>
                 </label>

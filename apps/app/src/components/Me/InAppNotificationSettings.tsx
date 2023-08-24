@@ -74,16 +74,16 @@ const InAppNotificationSettings: FC = () => {
           {subscribeRulesMenuItems.map(rule => (
             <div
               key={rule.name}
-              className="custom-control custom-switch custom-checkbox-success"
+              className="form-check form-switch form-check-success"
             >
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id={rule.name}
                 checked={isCheckedRule(rule.name, subscribeRules)}
                 onChange={e => ruleCheckboxHandler(rule.name, e.target.checked)}
               />
-              <label className="form-label custom-control-label" htmlFor={rule.name}>
+              <label className="form-label form-check-label" htmlFor={rule.name}>
                 <strong>{rule.name}</strong>
               </label>
               <p className="form-text text-muted small">

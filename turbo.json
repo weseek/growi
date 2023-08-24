@@ -19,6 +19,11 @@
       "cache": false
     },
 
+    "@growi/editor#build": {
+      "dependsOn": ["@growi/core#build"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "@growi/pluginkit#build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
@@ -68,6 +73,11 @@
       "outputMode": "new-only"
     },
 
+    "@growi/editor#dev": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputs": ["dist/**"],
+      "outputMode": "new-only"
+    },
     "@growi/pluginkit#dev": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
@@ -144,6 +154,9 @@
       "persistent": true
     },
 
+    "@growi/editor#lint": {
+      "dependsOn": ["@growi/core#dev"]
+    },
     "@growi/pluginkit#lint": {
       "dependsOn": ["@growi/core#dev"]
     },

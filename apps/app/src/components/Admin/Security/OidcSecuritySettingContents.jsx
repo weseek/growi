@@ -50,15 +50,15 @@ class OidcSecurityManagementContents extends React.Component {
 
         <div className="row mb-5">
           <div className="offset-3 col-6">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isOidcEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isOidcEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsOidcEnabled() }}
               />
-              <label className="form-label custom-control-label" htmlFor="isOidcEnabled">
+              <label className="form-label form-check-label" htmlFor="isOidcEnabled">
                 {t('security_settings.OAuth.enable_oidc')}
               </label>
             </div>
@@ -387,16 +387,16 @@ class OidcSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-md-3 col-md-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByUserName-oidc"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminOidcSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
                     onChange={() => { adminOidcSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="form-label custom-control-label"
+                    className="form-label form-check-label"
                     htmlFor="bindByUserName-oidc"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
@@ -409,16 +409,16 @@ class OidcSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-md-3 col-md-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByEmail-oidc"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminOidcSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminOidcSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="form-label custom-control-label"
+                    className="form-label form-check-label"
                     htmlFor="bindByEmail-oidc"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />

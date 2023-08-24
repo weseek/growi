@@ -13,16 +13,16 @@ export const TemplateTab = (props: Props): JSX.Element => {
   const { template, onChangeHandler } = props;
 
   return (
-    <div key={template.name} className="custom-control custom-radio">
+    <div key={template.name} className="form-check">
       <input
         type="radio"
-        className="custom-control-input"
+        className="form-check-input"
         id="string"
         value={template.value}
         // checked={this.state.linkerType === template.value}
         onChange={onChangeHandler}
       />
-      <label className="form-label custom-control-label" htmlFor="string">
+      <label className="form-label form-check-label" htmlFor="string">
         {template.name}
       </label>
     </div>

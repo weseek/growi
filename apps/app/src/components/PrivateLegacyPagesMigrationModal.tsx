@@ -47,9 +47,9 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
 
   function renderForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-warning">
+      <div className="form-check form-check-warning">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           id="convertRecursively"
           type="checkbox"
           checked={isRecursively}
@@ -57,7 +57,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
             setIsRecursively(e.target.checked);
           }}
         />
-        <label className="form-label custom-control-label" htmlFor="convertRecursively">
+        <label className="form-label form-check-label" htmlFor="convertRecursively">
           { t('private_legacy_pages.modal.convert_recursively_label') }
           <p className="form-text text-muted mt-0"> { t('private_legacy_pages.modal.convert_recursively_desc') }</p>
         </label>

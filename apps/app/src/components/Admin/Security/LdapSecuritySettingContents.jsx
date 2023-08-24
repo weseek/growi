@@ -60,15 +60,15 @@ class LdapSecuritySettingContents extends React.Component {
 
         <div className="row">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isLdapEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={isLdapEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsLdapEnabled() }}
               />
-              <label className="form-label custom-control-label" htmlFor="isLdapEnabled">
+              <label className="form-label form-check-label" htmlFor="isLdapEnabled">
                 {t('security_settings.ldap.enable_ldap')}
               </label>
             </div>
@@ -260,16 +260,16 @@ class LdapSecuritySettingContents extends React.Component {
 
             <div className="row">
               <div className="offset-md-3 col-md-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="isSameUsernameTreatedAsIdenticalUser"
                     checked={adminLdapSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
                     onChange={() => { adminLdapSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="isSameUsernameTreatedAsIdenticalUser"
                     // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
