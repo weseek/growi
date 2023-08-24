@@ -57,7 +57,7 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
         <a href="/admin/slack-integration" className="ms-2">{t('slack_integration.slack_integration')}</a>
       </h4>
       { isCautionVisible && (
-        <ul className="mt-2 pl-4">
+        <ul className="mt-2 ps-4">
           {/* eslint-disable-next-line react/no-danger */}
           <li dangerouslySetInnerHTML={{ __html: t('external_notification.caution_enabled') }} />
         </ul>
@@ -77,7 +77,7 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
         <a href="/admin/slack-integration-legacy" className="ms-2">{t('slack_integration_legacy.slack_integration_legacy')}</a>
       </h4>
       { isEnabled && (
-        <ul className="mt-2 pl-4">
+        <ul className="mt-2 ps-4">
           <li>
             {/* eslint-disable-next-line react/no-danger */}
             <span className="text-danger" dangerouslySetInnerHTML={{ __html: t('slack_integration_legacy.alert_deplicated') }}></span>

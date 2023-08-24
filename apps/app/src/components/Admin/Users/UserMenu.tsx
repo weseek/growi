@@ -80,7 +80,7 @@ const UserMenu = (props: UserMenuProps) => {
   const renderAdminMenu = useCallback(() => {
     return (
       <>
-        <li className="dropdown-divider pl-0"></li>
+        <li className="dropdown-divider ps-0"></li>
         <li className="dropdown-header">{t('user_management.user_table.administrator_menu')}</li>
         <li>
           {user.admin ? <RevokeAdminMenuItem user={user} /> : <GrantAdminButton user={user} />}

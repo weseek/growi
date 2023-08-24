@@ -261,7 +261,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+      <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
           <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
           {t('fix_page_grant.alert.description')}

@@ -597,7 +597,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </ReactCardFlip>
           </div>
         </div>
-        <a href="https://growi.org" className="link-growi-org pl-3">
+        <a href="https://growi.org" className="link-growi-org ps-3">
           <span className="growi">GROWI</span>.<span className="org">org</span>
         </a>
       </div>

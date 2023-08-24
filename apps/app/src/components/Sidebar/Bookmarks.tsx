@@ -17,7 +17,7 @@ export const Bookmarks = () : JSX.Element => {
         <h3 className="mb-0">{t('Bookmarks')}</h3>
       </div>
       {isGuestUser ? (
-        <h4 className="pl-3">
+        <h4 className="ps-3">
           { t('Not available for guest') }
         </h4>
       ) : (

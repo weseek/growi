@@ -136,7 +136,7 @@ class UserGroupUserFormByInput extends React.Component {
             clearButton
           />
         </div>
-        <div className="col-2 pl-0">
+        <div className="col-2 ps-0">
           <button
             type="button"
             className="btn btn-success"

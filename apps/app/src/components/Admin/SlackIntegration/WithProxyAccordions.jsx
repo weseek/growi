@@ -183,7 +183,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
-            <div className="input-group align-items-center pl-2 mb-3">
+            <div className="input-group align-items-center ps-2 mb-3">
               <div className="input-group-prepend w-75">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
                 <CustomCopyToClipBoard textToBeCopied={props.growiUrl} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
@@ -269,7 +269,7 @@ const TestProcess = ({
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
-            <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
+            <label className="mb-1"><p className="border-info slack-connection-log-title ps-2 m-0">Logs</p></label>
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"

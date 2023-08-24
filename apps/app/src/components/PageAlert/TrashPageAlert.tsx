@@ -112,7 +112,7 @@ export const TrashPageAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
+      <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           <br />

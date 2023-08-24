@@ -338,7 +338,7 @@ const PrivateLegacyPages = (): JSX.Element => {
 
   const renderOpenModalButton = useCallback(() => {
     return (
-      <div className="d-flex pl-md-2">
+      <div className="d-flex ps-md-2">
         <button type="button" className="btn btn-light" onClick={() => openConvertModalHandler()}>
           {t('private_legacy_pages.input_path_to_convert')}
         </button>
@@ -351,7 +351,7 @@ const PrivateLegacyPages = (): JSX.Element => {
 
     return (
       <div className="search-control d-flex align-items-center">
-        <div className="d-flex pl-md-2">
+        <div className="d-flex ps-md-2">
           <OperateAllControl
             ref={selectAllControlRef}
             isCheckboxDisabled={isCheckboxDisabled}
