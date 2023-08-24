@@ -83,17 +83,17 @@ const CustomizeLogoSetting = (): JSX.Element => {
             <div className="row">
               <div className="col-md-6 col-12 mb-3 mb-md-0">
                 <h4>
-                  <div className="custom-control custom-radio radio-primary">
+                  <div className="form-check radio-primary">
                     <input
                       type="radio"
                       id="radioDefaultLogo"
-                      className="custom-control-input"
+                      className="form-check-input"
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={isDefaultLogoSelected}
                       onChange={() => { setIsDefaultLogoSelected(true) }}
                     />
-                    <label className="custom-control-label" htmlFor="radioDefaultLogo">
+                    <label className="form-check-label" htmlFor="radioDefaultLogo">
                       {t('admin:customize_settings.default_logo')}
                     </label>
                   </div>
@@ -102,17 +102,17 @@ const CustomizeLogoSetting = (): JSX.Element => {
               </div>
               <div className="col-md-6 col-12">
                 <h4>
-                  <div className="custom-control custom-radio radio-primary">
+                  <div className="form-check radio-primary">
                     <input
                       type="radio"
                       id="radioUploadLogo"
-                      className="custom-control-input"
+                      className="form-check-input"
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={!isDefaultLogoSelected}
                       onChange={() => { setIsDefaultLogoSelected(false) }}
                     />
-                    <label className="custom-control-label" htmlFor="radioUploadLogo">
+                    <label className="form-check-label" htmlFor="radioUploadLogo">
                       { t('admin:customize_settings.upload_logo') }
                     </label>
                   </div>

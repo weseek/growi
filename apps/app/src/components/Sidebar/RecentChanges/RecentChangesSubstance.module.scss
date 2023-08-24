@@ -5,12 +5,12 @@
   line-height: normal;
   transform: translateY(-2px);
 
-  .custom-control-label::before {
+  .form-check-label::before {
     padding-left: 19px;
     content: 'L';
   }
 
-  .custom-control-input:checked + .custom-control-label::before {
+  .form-check-input:checked + .form-check-label::before {
     padding-left: 5px;
     content: 'S';
   }

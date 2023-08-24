@@ -86,27 +86,27 @@ export const BasicInfoSettings = (): JSX.Element => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>
         <div className="col-md-6">
-          <div className="custom-control custom-radio custom-control-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radioEmailShow"
-              className="custom-control-input"
+              className="form-check-input"
               name="userForm[isEmailPublished]"
               checked={personalSettingsInfo?.isEmailPublished === true}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: true })}
             />
-            <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
+            <label className="form-check-label" htmlFor="radioEmailShow">{t('Show')}</label>
           </div>
-          <div className="custom-control custom-radio custom-control-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radioEmailHide"
-              className="custom-control-input"
+              className="form-check-input"
               name="userForm[isEmailPublished]"
               checked={personalSettingsInfo?.isEmailPublished === false}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: false })}
             />
-            <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
+            <label className="form-check-label" htmlFor="radioEmailHide">{t('Hide')}</label>
           </div>
         </div>
       </div>
@@ -120,16 +120,16 @@ export const BasicInfoSettings = (): JSX.Element => {
               const fixedT = i18n.getFixedT(locale);
 
               return (
-                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                <div key={locale} className="form-check form-check-inline">
                   <input
                     type="radio"
                     id={`radioLang${locale}`}
-                    className="custom-control-input"
+                    className="form-check-input"
                     name="userForm[lang]"
                     checked={personalSettingsInfo?.lang === locale}
                     onChange={() => changePersonalSettingsHandler({ lang: locale })}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
+                  <label className="form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
                 </div>
               );
             })

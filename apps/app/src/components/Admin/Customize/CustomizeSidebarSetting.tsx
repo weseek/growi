@@ -73,31 +73,31 @@ const CustomizeSidebarsetting = (): JSX.Element => {
           </Card>
 
           <div className="px-3">
-            <div className="custom-control custom-radio my-3">
+            <div className="form-check my-3">
               <input
                 type="radio"
                 id="is-open"
-                className="custom-control-input"
+                className="form-check-input"
                 name="mailVisibility"
                 checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === false}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
-              <label className="custom-control-label" htmlFor="is-open">
+              <label className="form-check-label" htmlFor="is-open">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
-            <div className="custom-control custom-radio my-3">
+            <div className="form-check my-3">
               <input
                 type="radio"
                 id="is-closed"
-                className="custom-control-input"
+                className="form-check-input"
                 name="mailVisibility"
                 checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === true}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
-              <label className="custom-control-label" htmlFor="is-closed">
+              <label className="form-check-label" htmlFor="is-closed">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}
               </label>
             </div>

@@ -83,11 +83,11 @@ const AppSetting = (props) => {
               const fixedT = i18n.getFixedT(locale, 'admin');
 
               return (
-                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                <div key={locale} className="form-check form-check-inline">
                   <input
                     type="radio"
                     id={`radioLang${locale}`}
-                    className="custom-control-input"
+                    className="form-check-input"
                     name="globalLang"
                     value={locale}
                     checked={adminAppContainer.state.globalLang === locale}
@@ -95,7 +95,7 @@ const AppSetting = (props) => {
                       adminAppContainer.changeGlobalLang(e.target.value);
                     }}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                  <label className="form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
                 </div>
               );
             })
@@ -111,28 +111,28 @@ const AppSetting = (props) => {
         </label>
         <div className="col-md-6 py-2">
 
-          <div className="custom-control custom-radio custom-control-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radio-email-show"
-              className="custom-control-input"
+              className="form-check-input"
               name="mailVisibility"
               checked={adminAppContainer.state.isEmailPublishedForNewUser === true}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(true) }}
             />
-            <label className="custom-control-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
+            <label className="form-check-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
           </div>
 
-          <div className="custom-control custom-radio custom-control-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radio-email-hide"
-              className="custom-control-input"
+              className="form-check-input"
               name="mailVisibility"
               checked={adminAppContainer.state.isEmailPublishedForNewUser === false}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(false) }}
             />
-            <label className="custom-control-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
+            <label className="form-check-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
           </div>
 
         </div>
@@ -145,11 +145,11 @@ const AppSetting = (props) => {
           {/* {t('admin:app_setting.file_uploading')} */}
         </label>
         <div className="col-md-6">
-          <div className="custom-control custom-checkbox custom-checkbox-info">
+          <div className="form-check form-check-info">
             <input
               type="checkbox"
               id="cbFileUpload"
-              className="custom-control-input"
+              className="form-check-input"
               name="fileUpload"
               checked={adminAppContainer.state.fileUpload}
               onChange={(e) => {
@@ -157,7 +157,7 @@ const AppSetting = (props) => {
               }}
             />
             <label
-              className="custom-control-label"
+              className="form-check-label"
               htmlFor="cbFileUpload"
             >
               {t('admin:app_setting.enable_files_except_image')}

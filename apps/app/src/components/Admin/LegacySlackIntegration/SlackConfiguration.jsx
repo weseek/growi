@@ -78,15 +78,15 @@ class SlackConfiguration extends React.Component {
 
             <div className="row mb-3">
               <div className="offset-md-3 col-md-6 text-left">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="cbPrioritizeIWH"
                     checked={adminSlackIntegrationLegacyContainer.state.isIncomingWebhookPrioritized || false}
                     onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
                   />
-                  <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
+                  <label className="form-check-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_settings.prioritize_webhook')}
                   </label>
                 </div>

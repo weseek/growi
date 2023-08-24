@@ -42,15 +42,15 @@ const GlobalNotification = (props) => {
       </p>
       <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
-          <div className="custom-control custom-checkbox custom-checkbox-success">
+          <div className="form-check form-check-success">
             <input
               id="isNotificationForOwnerPageEnabled"
-              className="custom-control-input"
+              className="form-check-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
               onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
             />
-            <label className="custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
+            <label className="form-check-label" htmlFor="isNotificationForOwnerPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.just_me_notification_help') }} />
             </label>
@@ -60,15 +60,15 @@ const GlobalNotification = (props) => {
 
       <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
-          <div className="custom-control custom-checkbox custom-checkbox-success">
+          <div className="form-check form-check-success">
             <input
               id="isNotificationForGroupPageEnabled"
-              className="custom-control-input"
+              className="form-check-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
               onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
             />
-            <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
+            <label className="form-check-label" htmlFor="isNotificationForGroupPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.group_notification_help') }} />
             </label>

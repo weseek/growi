@@ -73,7 +73,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         </div>
         <select
           defaultValue={pagingSize}
-          className="custom-select"
+          className="form-select"
           id="inputGroupSelect01"
           onChange={e => onPagingSizeChanged(Number(e.target.value))}
         >
