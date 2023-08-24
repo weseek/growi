@@ -31,8 +31,11 @@ const defaultExtensionsToInit: Extension[] = [
 export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorEditorResponse => {
 
   const codemirror = useCodeMirror({
-    extensions: defaultExtensions,
     ...props,
+    extensions: [
+      ...defaultExtensions,
+      ...(props?.extensions ?? []),
+    ],
   });
 
   const { view, setContainer } = codemirror;
