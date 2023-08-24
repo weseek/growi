@@ -210,7 +210,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           {/* Dropdown */}
           <div className="d-lg-none col mb-3">
             <UncontrolledDropdown>
-              <DropdownToggle caret type="button" outline className="w-100 text-right" disabled={isLoading}>
+              <DropdownToggle caret type="button" outline className="w-100 text-end" disabled={isLoading}>
                 <span className="float-start">
                   { (() => {
                     if (isLoading) {

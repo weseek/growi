@@ -51,7 +51,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
   return (
     <div className="grw-custom-nav-dropdown btn-group btn-block">
       <button
-        className="btn btn-outline-primary btn-lg btn-block dropdown-toggle text-right"
+        className="btn btn-outline-primary btn-lg btn-block dropdown-toggle text-end"
         type="button"
         data-toggle="dropdown"
         aria-haspopup="true"

@@ -273,7 +273,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
-    const errorMessage = <span className="text-danger text-right me-2">{error}</span>;
+    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
       <Button
         outline

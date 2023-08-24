@@ -102,7 +102,7 @@ class GoogleSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientId" className="col-3 text-right py-2">{t('security_settings.clientID')}</label>
+              <label htmlFor="googleClientId" className="col-3 text-end py-2">{t('security_settings.clientID')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -118,7 +118,7 @@ class GoogleSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientSecret" className="col-3 text-right py-2">{t('security_settings.client_secret')}</label>
+              <label htmlFor="googleClientSecret" className="col-3 text-end py-2">{t('security_settings.client_secret')}</label>
               <div className="col-6">
                 <input
                   className="form-control"

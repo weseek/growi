@@ -739,7 +739,7 @@ class CodeMirrorEditor extends AbstractEditor {
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
         { this.state.isSimpleCheatsheetShown
           ? (
-            <div className="text-right">
+            <div className="text-end">
               {cheatsheetModalButton}
               <div className="mb-2 d-none d-md-block">
                 <SimpleCheatsheet />

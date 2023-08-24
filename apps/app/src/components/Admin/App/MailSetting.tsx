@@ -50,7 +50,7 @@ const MailSetting = (props: Props) => {
         <div className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.mailer_is_not_set_up')}</div>
       )}
       <div className="row form-group mb-5">
-        <label className="col-md-3 col-form-label text-right">{t('admin:app_setting.from_e-mail_address')}</label>
+        <label className="col-md-3 col-form-label text-end">{t('admin:app_setting.from_e-mail_address')}</label>
         <div className="col-md-6">
           <input
             className="form-control"

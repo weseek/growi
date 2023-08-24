@@ -100,7 +100,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
                 <>
                   { bookmarkedUsers.length > 0
                     ? (
-                      <div className="px-2 text-right user-list-content text-truncate text-muted">
+                      <div className="px-2 text-end user-list-content text-truncate text-muted">
                         <UserPictureList users={bookmarkedUsers} />
                       </div>
                     )

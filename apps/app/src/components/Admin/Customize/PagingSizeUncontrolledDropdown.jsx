@@ -23,7 +23,7 @@ const PagingSizeUncontrolledDropdown = (props) => {
             <label>{props.label}</label>
           </div>
           <UncontrolledDropdown>
-            <DropdownToggle className="text-right col-6" caret>
+            <DropdownToggle className="text-end col-6" caret>
               <span className="float-start">{props.toggleLabel}</span>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu" role="menu">

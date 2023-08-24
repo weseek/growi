@@ -94,7 +94,7 @@ const PermissionSettingForEachPermissionTypeComponent = ({
         </p>
         <div className="col dropdown">
           <button
-            className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+            className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"

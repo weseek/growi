@@ -127,7 +127,7 @@ export const AdminNavigation = (): JSX.Element => {
       {/* Dropdown */}
       <div className="dropdown d-block d-lg-none mb-5">
         <button
-          className="btn btn-outline-primary btn-lg dropdown-toggle col-12 text-right"
+          className="btn btn-outline-primary btn-lg dropdown-toggle col-12 text-end"
           type="button"
           id="dropdown-admin-navigation"
           data-display="static"
