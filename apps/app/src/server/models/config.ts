@@ -11,6 +11,7 @@ export interface Config {
   ns: string;
   key: string;
   value: string;
+  createdAt: Date;
 }
 
 /*

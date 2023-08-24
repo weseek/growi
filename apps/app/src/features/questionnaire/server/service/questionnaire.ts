@@ -2,9 +2,10 @@ import crypto from 'crypto';
 import * as os from 'node:os';
 
 import type { IUserHasId } from '@growi/core';
-import mongoose from 'mongoose';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+// eslint-disable-next-line import/no-named-as-default
+import Config from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
 
 import {
@@ -38,8 +39,8 @@ class QuestionnaireService {
     const user = await User.findOne();
     const installedAtByOldestUser = user ? user.createdAt : null;
 
-    const appInstalledConfig = await mongoose.model('Config').findOne({ key: 'app:installed' });
-    const installedAt = appInstalledConfig.createdAt != null ? appInstalledConfig.createdAt : installedAtByOldestUser;
+    const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
+    const installedAt = appInstalledConfig != null && appInstalledConfig.createdAt != null ? appInstalledConfig.createdAt : installedAtByOldestUser;
 
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
