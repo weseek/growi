@@ -7,7 +7,8 @@ export const MARP_CONTAINER_CLASS_NAME = 'marpit';
 // https://github.com/marp-team/marp-vscode/blob/d9af184ed12b65bb28c0f328e250955d548ac1d1/src/plugins/line-number.ts
 const sourceMapIgnoredTypesForElements = ['inline', 'marpit_slide_open'];
 const lineNumber = (md) => {
-  const { marpitSlideContainersOpen } = md.renderer.rules;
+
+  const { marpit_slide_containers_open: marpitSlideContainersOpen } = md.renderer.rules;
 
   // Enable line sync by per slides
   md.renderer.rules.marpit_slide_containers_open = (tks, i, opts, env, slf) => {
