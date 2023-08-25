@@ -220,7 +220,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           && (
             <span className="overlay-content">
               <div className="speeding-wheel d-inline-block"></div>
-              <span className="sr-only">Uploading...</span>
+              <span className="visually-hidden">Uploading...</span>
             </span>
           )
         }
