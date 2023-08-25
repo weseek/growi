@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+
 import PropTypes from 'prop-types';
 
-import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useIsEditable } from '~/stores/context';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 const EditPage = (props) => {
   const { data: isEditable } = useIsEditable();

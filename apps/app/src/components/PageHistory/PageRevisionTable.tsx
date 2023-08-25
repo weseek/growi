@@ -224,7 +224,8 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
           currentPageId={currentPageId}
           currentPagePath={currentPagePath}
           onClose={onClose}
-        />)
+        />
+      )
       }
     </>
   );

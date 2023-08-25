@@ -32,9 +32,11 @@ export const PageRedirectedAlert = React.memo((): JSX.Element => {
   }
 
   if (isUnlinked) {
-    return (<div className="alert alert-info d-edit-none py-3 px-4">
-      <strong>{ t('Unlinked') }: </strong> { t('page_page.notice.unlinked') }
-    </div>);
+    return (
+      <div className="alert alert-info d-edit-none py-3 px-4">
+        <strong>{ t('Unlinked') }: </strong> { t('page_page.notice.unlinked') }
+      </div>
+    );
   }
 
   return (

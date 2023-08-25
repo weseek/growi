@@ -86,7 +86,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
           shouldDangerouslySetInnerHTML
             // eslint-disable-next-line react/no-danger
             ? <a className="page-segment" dangerouslySetInnerHTML={{ __html: linkedPagePathByHtml.pathName }}></a>
-            : <a className="page-segment" >{linkedPagePath.pathName}</a>
+            : <a className="page-segment">{linkedPagePath.pathName}</a>
         }
       </Link>
 

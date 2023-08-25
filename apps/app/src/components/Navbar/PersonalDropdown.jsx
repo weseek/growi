@@ -24,9 +24,11 @@ const PersonalDropdown = () => {
   useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   if (currentUser == null) {
-    return <div className="text-muted text-center mb-5">
-      <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
-    </div>;
+    return (
+      <div className="text-muted text-center mb-5">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+      </div>
+    );
   }
 
   const logoutHandler = async() => {
@@ -87,7 +89,8 @@ const PersonalDropdown = () => {
           data-testid="grw-proactive-questionnaire-modal-toggle-btn"
           type="button"
           className="dropdown-item"
-          onClick={() => setQuestionnaireModalOpen(true)}>
+          onClick={() => setQuestionnaireModalOpen(true)}
+        >
           <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
         </button>
 

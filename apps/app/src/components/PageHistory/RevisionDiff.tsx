@@ -49,7 +49,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
 
   return (
     <div className={`${styles['revision-diff-container']}`}>
-      <div className='comparison-header'>
+      <div className="comparison-header">
         <div className="container pt-1 pr-0">
           <div className="row">
             <div className="col comparison-source-wrapper pt-1 px-0">
