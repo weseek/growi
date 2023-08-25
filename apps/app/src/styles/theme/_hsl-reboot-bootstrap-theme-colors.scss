@@ -96,11 +96,11 @@ $hsl-colors: (
 }
 
 @each $color, $value in $hsl-colors {
-  .badge-#{$color} {
+  .bg-#{$color} {
     @include hsl-badge.badge-variant($value);
   }
 
-  a.badge-#{$color}  {
+  a.bg-#{$color}  {
     @include hsl-badge.badge-variant($value);
   }
 }

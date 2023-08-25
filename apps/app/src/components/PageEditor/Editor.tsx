@@ -340,7 +340,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           && (
             <button
               type="button"
-              className="btn btn-outline-secondary btn-block btn-open-dropzone"
+              className="btn btn-outline-secondary btn-open-dropzone"
               onClick={addAttachmentHandler}
             >
               <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;

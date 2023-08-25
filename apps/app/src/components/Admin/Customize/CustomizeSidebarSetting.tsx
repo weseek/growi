@@ -42,25 +42,29 @@ const CustomizeSidebarsetting = (): JSX.Element => {
           </Card>
 
           <div className="d-flex justify-content-around mt-5">
-            <div id="layoutOptions" className="card-deck">
-              <div
-                className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsSidebarDrawerMode(true)}
-                role="button"
-              >
-                <img src={drawerIconFileName} />
-                <div className="card-body text-center">
-                  Drawer Mode
+            <div id="layoutOptions" className="row row-cols-2">
+              <div className="col">
+                <div
+                  className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
+                  onClick={() => setIsSidebarDrawerMode(true)}
+                  role="button"
+                >
+                  <img src={drawerIconFileName} />
+                  <div className="card-body text-center">
+                    Drawer Mode
+                  </div>
                 </div>
               </div>
-              <div
-                className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsSidebarDrawerMode(false)}
-                role="button"
-              >
-                <img src={dockIconFileName} />
-                <div className="card-body  text-center">
-                  Dock Mode
+              <div className="col">
+                <div
+                  className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
+                  onClick={() => setIsSidebarDrawerMode(false)}
+                  role="button"
+                >
+                  <img src={dockIconFileName} />
+                  <div className="card-body  text-center">
+                    Dock Mode
+                  </div>
                 </div>
               </div>
             </div>

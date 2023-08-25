@@ -93,7 +93,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
             <form className="px-5" onSubmit={submitHandler}>
               <div className="row mt-5">
                 <label className="col-sm-5 col-form-label" htmlFor="satisfaction">
-                  <span className="badge badge-primary mr-2">{t('questionnaire_modal.required')}</span>{t('questionnaire_modal.satisfaction_with_growi')}
+                  <span className="badge bg-primary mr-2">{t('questionnaire_modal.required')}</span>{t('questionnaire_modal.satisfaction_with_growi')}
                 </label>
                 <select className="col-sm-7 form-control" name="satisfaction" id="satisfaction" required>
                   <option value="">▼ {t('Select')}</option>
@@ -130,7 +130,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
               </div>
               <div className="row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="commentText">
-                  <span className="badge badge-primary mr-2">{t('questionnaire_modal.required')}</span>{t('questionnaire_modal.comment_on_growi')}
+                  <span className="badge bg-primary mr-2">{t('questionnaire_modal.required')}</span>{t('questionnaire_modal.comment_on_growi')}
                 </label>
                 <textarea className="col-sm-7 form-control" name="commentText" id="commentText" rows={5} required />
               </div>

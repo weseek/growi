@@ -92,10 +92,10 @@
 }
 
 @each $color, $value in $theme-colors {
-  .badge-#{$color} {
+  .bg-#{$color} {
     @include badge-variant($value);
   }
-  a.badge-#{$color} {
+  a.bg-#{$color} {
     @include badge-variant($value);
   }
 }

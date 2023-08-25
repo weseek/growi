@@ -90,7 +90,7 @@ const UserManagement = (props: UserManagementProps) => {
           onChange={() => clickHandler(status)}
         />
         <label className="form-label form-check-label" htmlFor={`c_${status}`}>
-          <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
+          <span className={`badge rounded-pill bg-${statusColor} d-inline-block vt mt-1`}>
             {statusLabel}
           </span>
         </label>
@@ -169,7 +169,7 @@ const UserManagement = (props: UserManagementProps) => {
               {renderCheckbox('all', 'All', 'secondary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}
-              {renderCheckbox('suspended', 'Suspended', 'warning')}
+              {renderCheckbox('suspended', 'Suspended', 'warning text-dark')}
               {renderCheckbox('invited', 'Invited', 'pink')}
             </div>
             <div>

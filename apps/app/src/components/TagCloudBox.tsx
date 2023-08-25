@@ -33,7 +33,7 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
       <Link
         key={tag.name}
         href={`${url.pathname}${url.search}`}
-        className="grw-tag-label badge badge-secondary mr-2"
+        className="grw-tag-label badge bg-primary mr-2"
         prefetch={false}
       >
         {tagNameFormat}

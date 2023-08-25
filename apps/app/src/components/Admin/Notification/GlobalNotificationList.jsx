@@ -97,32 +97,32 @@ class GlobalNotificationList extends React.Component {
               <td>
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
-                    <li className="list-inline-item badge badge-pill badge-success">
+                    <li className="list-inline-item badge rounded-pill bg-success">
                       <i className="icon-doc"></i> CREATE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageEdit') && (
-                    <li className="list-inline-item badge badge-pill badge-warning">
+                    <li className="list-inline-item badge rounded-pill bg-warning text-dark">
                       <i className="icon-pencil"></i> EDIT
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageMove') && (
-                    <li className="list-inline-item badge badge-pill badge-pink">
+                    <li className="list-inline-item badge rounded-pill bg-pink">
                       <i className="icon-action-redo"></i> MOVE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageDelete') && (
-                    <li className="list-inline-item badge badge-pill badge-danger">
+                    <li className="list-inline-item badge rounded-pill bg-danger">
                       <i className="icon-fire"></i> DELETE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
-                    <li className="list-inline-item badge badge-pill badge-info">
+                    <li className="list-inline-item badge rounded-pill bg-info">
                       <i className="fa fa-heart-o"></i> LIKE
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (
-                    <li className="list-inline-item badge badge-pill badge-secondary">
+                    <li className="list-inline-item badge rounded-pill bg-primary">
                       <i className="icon-fw icon-bubble"></i> POST
                     </li>
                   )}

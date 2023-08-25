@@ -64,7 +64,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
         <div className="ml-2">
           <div className="revision-history-author mb-1">
             <strong><Username user={author}></Username></strong>
-            { isLatestRevision && <span className="badge badge-info ml-2">Latest</span> }
+            { isLatestRevision && <span className="badge bg-info ml-2">Latest</span> }
           </div>
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />

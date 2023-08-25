@@ -95,7 +95,7 @@ export const PageStatusAlert = (): JSX.Element => {
       : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
 
     return {
-      additionalClasses: ['bg-warning'],
+      additionalClasses: ['bg-warning text-dark'],
       label:
   <>
     <i className="icon-fw icon-bulb"></i>

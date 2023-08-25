@@ -80,7 +80,7 @@ class SamlSecurityManagementContents extends React.Component {
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
-              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -474,12 +474,14 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
                         </a>.
                       </p>
+                      {/* TODO: use new accordion component */}
+                      {/* https://redmine.weseek.co.jp/issues/129222 */}
                       <div className="accordion" id="accordionExample">
                         <div className="card">
                           <div className="card-header p-1">
                             <h2 className="mb-0">
                               <button
-                                className="btn btn-link btn-block text-left"
+                                className="btn btn-link text-left"
                                 type="button"
                                 onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
                                 aria-expanded="true"
