@@ -7,6 +7,7 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 // eslint-disable-next-line import/no-named-as-default
 import Config from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
+import loggerFactory from '~/utils/logger';
 
 import {
   GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
@@ -16,6 +17,9 @@ import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
+
+
+const logger = loggerFactory('growi:service:questionnaire');
 
 class QuestionnaireService {
 
@@ -35,8 +39,10 @@ class QuestionnaireService {
     const appSiteUrlHashed = hasher.digest('hex');
 
     // Get the oldest user who probably installed this GROWI.
-    // Model.findOne() get models oldest id document.
-    const user = await User.findOne();
+    // https://mongoosejs.com/docs/6.x/docs/api.html#model_Model-findOne
+    // https://stackoverflow.com/questions/13443069/mongoose-findone-with-sorting
+    const user = await User.findOne().sort({ createdAt: 1 });
+    logger.debug(user);
     const installedAtByOldestUser = user ? user.createdAt : null;
 
     const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
