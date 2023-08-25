@@ -450,7 +450,7 @@ class OidcSecurityManagementContents extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true" />
-            <a href="#collapseHelpForOidcOauth" data-toggle="collapse"> {t('security_settings.OAuth.how_to.oidc')}</a>
+            <a href="#collapseHelpForOidcOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.oidc')}</a>
           </h4>
           <ol id="collapseHelpForOidcOauth" className="collapse">
             <li>{t('security_settings.OAuth.OIDC.register_1')}</li>

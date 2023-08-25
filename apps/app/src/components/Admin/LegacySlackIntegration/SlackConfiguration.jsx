@@ -141,7 +141,7 @@ class SlackConfiguration extends React.Component {
 
         <h3>
           <i className="icon-question" aria-hidden="true"></i>{' '}
-          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_settings.how_to.header')}</a>
+          <a href="#collapseHelpForIwh" data-bs-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse">

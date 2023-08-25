@@ -63,7 +63,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
 
           <a
             className="text-muted"
-            data-toggle="collapse"
+            data-bs-toggle="collapse"
             href="#collapseExampleHtml"
             role="button"
             aria-expanded="false"
