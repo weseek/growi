@@ -125,47 +125,49 @@ export const ExternalGroupManagement: FC = () => {
     };
   }, []);
 
-  return <>
-    <h2 className="border-bottom">{t('external_user_group.management')}</h2>
-    <UserGroupTable
-      headerLabel={t('admin:user_group_management.group_list')}
-      userGroups={externalUserGroups}
-      childUserGroups={childExternalUserGroups}
-      isAclEnabled={isAclEnabled ?? false}
-      onEdit={showUpdateModal}
-      onDelete={showDeleteModal}
-      userGroupRelations={externalUserGroupRelations}
-      isExternalGroup
-    />
+  return (
+    <>
+      <h2 className="border-bottom">{t('external_user_group.management')}</h2>
+      <UserGroupTable
+        headerLabel={t('admin:user_group_management.group_list')}
+        userGroups={externalUserGroups}
+        childUserGroups={childExternalUserGroups}
+        isAclEnabled={isAclEnabled ?? false}
+        onEdit={showUpdateModal}
+        onDelete={showDeleteModal}
+        userGroupRelations={externalUserGroupRelations}
+        isExternalGroup
+      />
 
-    <UserGroupModal
-      userGroup={selectedExternalUserGroup}
-      buttonLabel={t('Update')}
-      onClickSubmit={updateExternalUserGroup}
-      isShow={isUpdateModalShown}
-      onHide={hideUpdateModal}
-      isExternalGroup
-    />
+      <UserGroupModal
+        userGroup={selectedExternalUserGroup}
+        buttonLabel={t('Update')}
+        onClickSubmit={updateExternalUserGroup}
+        isShow={isUpdateModalShown}
+        onHide={hideUpdateModal}
+        isExternalGroup
+      />
 
-    <UserGroupDeleteModal
-      userGroups={externalUserGroups}
-      deleteUserGroup={selectedExternalUserGroup}
-      onDelete={deleteExternalUserGroupById}
-      isShow={isDeleteModalShown}
-      onHide={hideDeleteModal}
-    />
+      <UserGroupDeleteModal
+        userGroups={externalUserGroups}
+        deleteUserGroup={selectedExternalUserGroup}
+        onDelete={deleteExternalUserGroupById}
+        isShow={isDeleteModalShown}
+        onHide={hideDeleteModal}
+      />
 
-    <CustomNav
-      activeTab={activeTab}
-      navTabMapping={navTabMapping}
-      onNavSelected={switchActiveTab}
-      hideBorderBottom
-      breakpointToSwitchDropdownDown="md"
-    />
-    <TabContent activeTab={activeTab} className="p-5">
-      <TabPane tabId="ldap">
-        {activeComponents.has('ldap') && <LdapGroupManagement />}
-      </TabPane>
-    </TabContent>
-  </>;
+      <CustomNav
+        activeTab={activeTab}
+        navTabMapping={navTabMapping}
+        onNavSelected={switchActiveTab}
+        hideBorderBottom
+        breakpointToSwitchDropdownDown="md"
+      />
+      <TabContent activeTab={activeTab} className="p-5">
+        <TabPane tabId="ldap">
+          {activeComponents.has('ldap') && <LdapGroupManagement />}
+        </TabPane>
+      </TabContent>
+    </>
+  );
 };

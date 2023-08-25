@@ -3,7 +3,9 @@ import { reshapeContentsBody } from '@growi/slack/dist/utils/reshape-contents-bo
 
 import loggerFactory from '~/utils/logger';
 
+// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:CreatePageService');
+
 const { pathUtils } = require('@growi/core/dist/utils');
 const mongoose = require('mongoose');
 

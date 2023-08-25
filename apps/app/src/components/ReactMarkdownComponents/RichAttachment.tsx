@@ -26,7 +26,7 @@ export const RichAttachment: React.FC<{
   }, [attachment, openDeleteAttachmentModal, remove]);
 
   if (attachment == null) {
-    return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
+    return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
   const {
@@ -46,34 +46,34 @@ export const RichAttachment: React.FC<{
     || createdAt == null
     || fileSize == null
   ) {
-    return <span className='text-muted'>{t('rich_attachment.attachment_not_be_found')}</span>;
+    return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
   return (
     <div className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 p-2 card">
         <div className="p-1 card-body d-flex align-items-center">
-          <div className='mr-2 px-0 d-flex align-items-center justify-content-center'>
-            <img src='/images/icons/editor/attachment.svg' className="attachment-icon" alt='attachment icon'/>
+          <div className="mr-2 px-0 d-flex align-items-center justify-content-center">
+            <img src="/images/icons/editor/attachment.svg" className="attachment-icon" alt="attachment icon" />
           </div>
-          <div className='pl-0'>
-            <div className='d-inline-block'>
+          <div className="pl-0">
+            <div className="d-inline-block">
               <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
               <a className="ml-2 attachment-download" href={downloadPathProxied}>
-                <i className="icon-cloud-download"/>
+                <i className="icon-cloud-download" />
               </a>
               <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash"/>
+                <i className="icon-trash" />
               </a>
             </div>
-            <div className='d-flex align-items-center'>
-              <UserPicture user={creator} size="sm"/>
-              <span className='ml-2 text-muted'>
+            <div className="d-flex align-items-center">
+              <UserPicture user={creator} size="sm" />
+              <span className="ml-2 text-muted">
                 {new Date(createdAt).toLocaleString('en-US')}
               </span>
-              <span className='ml-2 pl-2 border-left text-muted'>{prettyBytes(fileSize)}</span>
+              <span className="ml-2 pl-2 border-left text-muted">{prettyBytes(fileSize)}</span>
             </div>
           </div>
         </div>

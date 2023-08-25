@@ -29,18 +29,23 @@ const QuestionnaireModalManager = ():JSX.Element => {
     });
   }, [currentUser]);
 
-  return <>
-    {questionnaireOrders?.map((questionnaireOrder) => {
-      return <QuestionnaireModal
-        questionnaireOrder={questionnaireOrder}
-        key={questionnaireOrder._id} />;
-    })}
-    <div className={styles['grw-questionnaire-toasts']}>
-      {questionnaireOrdersToShow(questionnaireOrders)?.map((questionnaireOrder) => {
-        return <QuestionnaireToast questionnaireOrder={questionnaireOrder} key={questionnaireOrder._id}/>;
+  return (
+    <>
+      {questionnaireOrders?.map((questionnaireOrder) => {
+        return (
+          <QuestionnaireModal
+            questionnaireOrder={questionnaireOrder}
+            key={questionnaireOrder._id}
+          />
+        );
       })}
-    </div>
-  </>;
+      <div className={styles['grw-questionnaire-toasts']}>
+        {questionnaireOrdersToShow(questionnaireOrders)?.map((questionnaireOrder) => {
+          return <QuestionnaireToast questionnaireOrder={questionnaireOrder} key={questionnaireOrder._id} />;
+        })}
+      </div>
+    </>
+  );
 };
 
 export default QuestionnaireModalManager;

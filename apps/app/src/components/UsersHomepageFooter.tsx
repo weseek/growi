@@ -31,11 +31,12 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
           {t('footer.bookmarks')}
           <span className="ml-auto pl-2 ">
             <button
+              type="button"
               className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}
               onClick={() => setIsExpanded(!isExpanded)}
             >
               { isExpanded
-                ? <ExpandIcon/>
+                ? <ExpandIcon />
                 : <CompressIcon />
               }
             </button>
@@ -43,7 +44,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
         </h2>
         {/* TODO: In bookmark folders v1, the button to create a new folder does not exist. The button should be included in the bookmark component. */}
         <div className={`${isExpanded ? `${styles['grw-bookarks-contents-expanded']}` : `${styles['grw-bookarks-contents-compressed']}`}`}>
-          <BookmarkFolderTree isUserHomepage={true} isOperable={isOperable} userId={creatorId} />
+          <BookmarkFolderTree isUserHomepage isOperable={isOperable} userId={creatorId} />
         </div>
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">

@@ -28,7 +28,7 @@ const AdminLayout = ({
   return (
     <RawLayout>
       <div className={`admin-page ${styles['admin-page']}`}>
-        <GrowiNavbar isGlobalSearchHidden={true} />
+        <GrowiNavbar isGlobalSearchHidden />
 
         <header className="py-0 container-fluid">
           <h1 className="title px-3">{componentTitle}</h1>

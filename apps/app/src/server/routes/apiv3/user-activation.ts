@@ -50,7 +50,7 @@ export const validateCompleteRegistration = (req, res, next) => {
 };
 
 async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url) {
-  const promises = admins.map((admin) => {
+  admins.map((admin) => {
     return mailService.send({
       to: admin.email,
       subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,

@@ -43,7 +43,6 @@ module.exports = function(crowi, app) {
   const loginPassport = require('./login-passport')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
-  const user = require('./user')(crowi, app);
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
