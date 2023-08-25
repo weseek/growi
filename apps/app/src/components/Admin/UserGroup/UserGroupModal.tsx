@@ -96,11 +96,13 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
               {t('Description')}
             </label>
             <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
-            {isExternalGroup && <p className="form-text text-muted">
-              <small>
-                {t('external_user_group.description_form_detail')}
-              </small>
-            </p>}
+            {isExternalGroup && (
+              <p className="form-text text-muted">
+                <small>
+                  {t('external_user_group.description_form_detail')}
+                </small>
+              </p>
+            )}
           </div>
 
           {/* TODO 90732: Add a drop-down to show selectable parents */}

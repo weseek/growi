@@ -68,9 +68,11 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
       <fieldset>
         <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
         {isExternalGroup
-        && <div className='mb-3'>
-          <small className="text-muted">{t('external_user_group.only_description_edit_allowed')}</small>
-        </div>}
+        && (
+          <div className="mb-3">
+            <small className="text-muted">{t('external_user_group.only_description_edit_allowed')}</small>
+          </div>
+        )}
         {
           userGroup?.createdAt != null && (
             <div className="form-group row">
