@@ -1,8 +1,23 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.12](https://github.com/weseek/growi/compare/v6.1.11...v6.1.12) - 2023-08-14
+
+### 🐛 Bug Fixes
+
+- fix: Consider an empty page when renaming and duplicating (v6.1.x) (#7980) @yuki-takei
+- fix: Do not work image tag properties (#7977) @jam411
+
+## [v6.1.11](https://github.com/weseek/growi/compare/v6.1.10...v6.1.11) - 2023-08-07
+
+### 🐛 Bug Fixes
+
+- fix: Admin page permission when the user transit with next-routing (#7908) @WNomunomu
+- fix: Transitioning to a non-existent page under "/me" results in a 500 error (#7946) @miya
+- fix: Auto-scroll search result content 2 (#7943) @yuki-takei
 
 ## [v6.1.10](https://github.com/weseek/growi/compare/v6.1.9...v6.1.10) - 2023-08-01
 

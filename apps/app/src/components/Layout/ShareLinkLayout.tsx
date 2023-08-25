@@ -25,7 +25,7 @@ export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
 
   return (
     <RawLayout className={className}>
-      <GrowiNavbar isGlobalSearchHidden={true} />
+      <GrowiNavbar isGlobalSearchHidden />
 
       <div className="page-wrapper d-flex d-print-block">
         <div className="flex-fill mw-0">

@@ -10,6 +10,7 @@ import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:named-query');
 
 export interface NamedQueryDocument extends INamedQuery, Document {}

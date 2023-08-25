@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - dev/7.*.x
       - dev/6.*.x
     paths:
       - .github/workflows/ci-app-prod.yml
@@ -19,6 +20,7 @@ on:
   pull_request:
     branches:
       - master
+      - dev/7.*.x
       - dev/6.*.x
     types: [opened, reopened, synchronize]
     paths:
