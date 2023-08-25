@@ -457,13 +457,13 @@ export const HandsontableModal = (): JSX.Element => {
         <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
           <button
             type="button"
-            className="mr-4 data-import-button btn btn-secondary"
+            className="me-4 data-import-button btn btn-secondary"
             data-toggle="collapse"
             data-target="#collapseDataImport"
             aria-expanded={isDataImportAreaExpanded}
             onClick={toggleDataImportArea}
           >
-            <span className="mr-3">{t('handsontable_modal.data_import')}</span>
+            <span className="me-3">{t('handsontable_modal.data_import')}</span>
             <i className={isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
           </button>
           <div role="group" className="btn-group">
@@ -501,8 +501,8 @@ export const HandsontableModal = (): JSX.Element => {
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
         <button type="button" className="btn btn-danger" onClick={reset}>{t('commons:Reset')}</button>
-        <div className="ml-auto">
-          <button type="button" className="mr-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
+        <div className="ms-auto">
+          <button type="button" className="me-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
           <button type="button" className="btn btn-primary" onClick={save}>{t('handsontable_modal.done')}</button>
         </div>
       </ModalFooter>

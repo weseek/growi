@@ -739,7 +739,7 @@ class CodeMirrorEditor extends AbstractEditor {
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
         { this.state.isSimpleCheatsheetShown
           ? (
-            <div className="text-right">
+            <div className="text-end">
               {cheatsheetModalButton}
               <div className="mb-2 d-none d-md-block">
                 <SimpleCheatsheet />
@@ -747,7 +747,7 @@ class CodeMirrorEditor extends AbstractEditor {
             </div>
           )
           : (
-            <div className="mr-4 mb-2">
+            <div className="me-4 mb-2">
               {cheatsheetModalButton}
             </div>
           )
@@ -760,7 +760,7 @@ class CodeMirrorEditor extends AbstractEditor {
     const { emojiSearchText } = this.state;
     return this.state.isEmojiPickerShown
       ? (
-        <div className="text-left">
+        <div className="text-start">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
               onClose={() => this.setState({ isEmojiPickerShown: false })}

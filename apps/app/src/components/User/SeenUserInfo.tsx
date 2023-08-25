@@ -28,14 +28,14 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
   return (
     <div className={`grw-seen-user-info ${styles['grw-seen-user-info']}`}>
       <button type="button" id="btn-seen-user" className="shadow-none btn btn-seen-user border-0">
-        <span className="mr-1 footstamp-icon">
+        <span className="me-1 footstamp-icon">
           <FootstampIcon />
         </span>
         <span className="seen-user-count">{sumOfSeenUsers || seenUsers.length}</span>
       </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
         <PopoverBody className="user-list-popover">
-          <div className="px-2 text-right user-list-content text-truncate text-muted">
+          <div className="px-2 text-end user-list-content text-truncate text-muted">
             <UserPictureList users={seenUsers} />
           </div>
         </PopoverBody>

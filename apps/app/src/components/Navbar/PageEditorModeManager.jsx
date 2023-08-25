@@ -30,7 +30,7 @@ const PageEditorModeButtonWrapper = React.memo(({
       data-testid={`${targetMode}-button`}
     >
       <span className="d-flex flex-column flex-md-row justify-content-center">
-        <span className="grw-page-editor-mode-manager-icon mr-md-1">{icon}</span>
+        <span className="grw-page-editor-mode-manager-icon me-md-1">{icon}</span>
         <span className="grw-page-editor-mode-manager-label">{label}</span>
       </span>
     </button>

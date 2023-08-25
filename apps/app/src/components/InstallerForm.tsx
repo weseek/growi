@@ -105,14 +105,14 @@ const InstallerForm = memo((): JSX.Element => {
               </div>
               <button
                 type="button"
-                className="btn btn-secondary dropdown-toggle form-control text-right rounded-right"
+                className="btn btn-secondary dropdown-toggle form-control text-end rounded-end"
                 id="dropdownLanguage"
                 data-testid="dropdownLanguage"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                <span className="float-left">
+                <span className="float-start">
                   {t('meta.display_name')}
                 </span>
               </button>
@@ -213,7 +213,7 @@ const InstallerForm = memo((): JSX.Element => {
               disabled={isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
+              <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
               <span className="btn-label-text">{ t('Create') }</span>
             </button>
           </div>

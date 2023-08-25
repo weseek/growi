@@ -67,7 +67,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
       <div className="d-flex">
         <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
         <Dropdown
-          className="grw-copy-dropdown align-self-center ml-auto"
+          className="grw-copy-dropdown align-self-center ms-auto"
           isOpen={dropdownOpen}
           toggle={() => toggleDropdown()}
         >

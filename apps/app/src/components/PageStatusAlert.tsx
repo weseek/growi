@@ -63,7 +63,7 @@ export const PageStatusAlert = (): JSX.Element => {
   </>,
       btn:
   <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
-    <i className="fa fa-fw fa-file-text-o mr-1"></i>
+    <i className="fa fa-fw fa-file-text-o me-1"></i>
     Open HackMD Editor
   </a>,
     };
@@ -79,7 +79,7 @@ export const PageStatusAlert = (): JSX.Element => {
   </>,
       btn:
   <button type="button" onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
-    <i className="fa fa-fw fa-file-text-o mr-1"></i>
+    <i className="fa fa-fw fa-file-text-o me-1"></i>
     Open HackMD Editor
   </button>,
     };
@@ -103,8 +103,8 @@ export const PageStatusAlert = (): JSX.Element => {
   </>,
       btn:
   <>
-    <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white mr-4">
-      <i className="icon-fw icon-reload mr-1"></i>
+    <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white me-4">
+      <i className="icon-fw icon-reload me-1"></i>
       {t('Load latest')}
     </button>
     { isConflict && (
@@ -113,7 +113,7 @@ export const PageStatusAlert = (): JSX.Element => {
         onClick={onClickResolveConflict}
         className="btn btn-outline-white"
       >
-        <i className="fa fa-fw fa-file-text-o mr-1"></i>
+        <i className="fa fa-fw fa-file-text-o me-1"></i>
         {t('modal_resolve_conflict.resolve_conflict')}
       </button>
     )}

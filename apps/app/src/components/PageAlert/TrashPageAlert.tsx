@@ -86,7 +86,7 @@ export const TrashPageAlert = (): JSX.Element => {
       <>
         <button
           type="button"
-          className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
+          className="btn btn-info rounded-pill btn-sm ms-auto me-2"
           onClick={openPutbackPageModalHandler}
           data-toggle="modal"
           data-testid="put-back-button"
@@ -112,12 +112,12 @@ export const TrashPageAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
+      <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           <br />
           <UserPicture user={deleteUser} />
-          <span className="ml-2">
+          <span className="ms-2">
             Deleted by {deleteUser?.name} at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
           </span>
         </div>

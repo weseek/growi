@@ -236,8 +236,8 @@ class GridEditModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
-          <div className="ml-auto">
-            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>
+          <div className="ms-auto">
+            <button type="button" className="me-2 btn btn-secondary" onClick={this.cancel}>
               Cancel
             </button>
             <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>

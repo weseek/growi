@@ -175,7 +175,7 @@ const PageCreateModal = () => {
                 </form>
                 <span className="page-today-suffix">/{now}/</span>
               </div>
-              <form className="mt-1 mt-lg-0 ml-lg-2 w-100" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+              <form className="mt-1 mt-lg-0 ms-lg-2 w-100" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
                 <input
                   type="text"
                   className="page-today-input2 form-control w-100"
@@ -191,7 +191,7 @@ const PageCreateModal = () => {
               <button
                 type="button"
                 data-testid="btn-create-memo"
-                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
                 onClick={createTodayPage}
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
@@ -244,7 +244,7 @@ const PageCreateModal = () => {
               <button
                 type="button"
                 data-testid="btn-create-page-under-below"
-                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
                 onClick={createInputPage}
                 disabled={isMatchedWithUserHomepagePath}
               >
@@ -299,7 +299,7 @@ const PageCreateModal = () => {
               <button
                 data-testid="grw-btn-edit-page"
                 type="button"
-                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
                 onClick={createTemplatePage}
                 disabled={template == null}
               >

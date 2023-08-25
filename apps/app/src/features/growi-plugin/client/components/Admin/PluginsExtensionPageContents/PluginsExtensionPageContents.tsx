@@ -34,7 +34,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">
             {t('plugins.plugin_card')}
-            <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
+            <button type="button" className="btn btn-sm ms-auto grw-btn-reload" onClick={() => mutate()}>
               <i className="icon icon-reload"></i>
             </button>
           </h2>

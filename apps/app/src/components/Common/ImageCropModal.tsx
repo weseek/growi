@@ -157,15 +157,15 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         }
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" disabled={!isCropImage} onClick={reset}>
+        <button type="button" className="btn btn-outline-danger rounded-pill me-auto" disabled={!isCropImage} onClick={reset}>
           {t('commons:Reset')}
         </button>
         { !showCropOption && (
-          <div className="mr-auto">
+          <div className="me-auto">
             <div className="custom-control custom-switch ">
               <input
                 id="cropImageOption"
-                className="custom-control-input mr-auto"
+                className="custom-control-input me-auto"
                 type="checkbox"
                 checked={isCropImage}
                 onChange={() => { setIsCropImage(!isCropImage) }}
@@ -177,7 +177,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
           </div>
         )
         }
-        <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalCloseHandler}>
+        <button type="button" className="btn btn-outline-secondary rounded-pill me-2" onClick={onModalCloseHandler}>
           {t('crop_image_modal.cancel')}
         </button>
         <button type="button" className="btn btn-outline-primary rounded-pill" onClick={processAndSaveImage}>

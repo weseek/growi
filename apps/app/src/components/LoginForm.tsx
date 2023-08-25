@@ -243,7 +243,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
+                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-login'} />
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -282,7 +282,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </span>
           <span className="btn-label-text">{t('Sign in')}</span>
         </button>
-        <div className="small text-right">by {auth} Account</div>
+        <div className="small text-end">by {auth} Account</div>
       </div>
     );
   }, [handleLoginWithExternalAuth, t]);
@@ -525,7 +525,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} />
+                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} />
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -535,7 +535,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <div className="border-bottom"></div>
 
         <div className="row">
-          <div className="text-right col-12 mt-2 py-2">
+          <div className="text-end col-12 mt-2 py-2">
             <a
               href="#login"
               id="login"
@@ -569,7 +569,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-right mb-2">
+                  <div className="text-end mb-2">
                     <a href="/forgot-password" className="d-block link-switch">
                       <i className="icon-key"></i> {t('forgot_password.forgot_password')}
                     </a>
@@ -577,7 +577,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="text-right mb-2">
+                  <div className="text-end mb-2">
                     <a
                       href="#register"
                       id="register"
@@ -597,7 +597,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </ReactCardFlip>
           </div>
         </div>
-        <a href="https://growi.org" className="link-growi-org pl-3">
+        <a href="https://growi.org" className="link-growi-org ps-3">
           <span className="growi">GROWI</span>.<span className="org">org</span>
         </a>
       </div>

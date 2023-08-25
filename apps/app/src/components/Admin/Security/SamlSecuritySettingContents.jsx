@@ -85,7 +85,7 @@ class SamlSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
+          <label className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -391,7 +391,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </h3>
 
             <div className="row form-group mb-5">
-              <div className="offset-md-3 col-md-6 text-left">
+              <div className="offset-md-3 col-md-6 text-start">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserName-SAML"
@@ -413,7 +413,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </div>
 
             <div className="row form-group mb-5">
-              <div className="offset-md-3 col-md-6 text-left">
+              <div className="offset-md-3 col-md-6 text-start">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByEmail-SAML"
@@ -481,7 +481,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           <div className="card-header p-1">
                             <h2 className="mb-0">
                               <button
-                                className="btn btn-link text-left"
+                                className="btn btn-link text-start"
                                 type="button"
                                 onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
                                 aria-expanded="true"

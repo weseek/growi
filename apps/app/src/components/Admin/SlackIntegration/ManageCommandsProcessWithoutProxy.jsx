@@ -86,14 +86,14 @@ const SinglePermissionSettingComponent = ({
         <p className="col my-auto text-capitalize align-middle">{commandName}</p>
         <div className="col dropdown">
           <button
-            className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+            className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
           >
-            <span className="float-left">
+            <span className="float-start">
               {permission === true && t('admin:slack_integration.accordion.allow_all')}
               {permission === false && t('admin:slack_integration.accordion.deny_all')}
               {Array.isArray(permission) && t('admin:slack_integration.accordion.allow_specified')}
@@ -217,7 +217,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
 
   return (
     <div className="py-4 px-5">
-      <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
+      <p className="mb-4 fw-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           <div className="custom-control custom-checkbox">
@@ -238,7 +238,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
           </div>
         </div>
       </div>
-      <p className="mb-4 font-weight-bold">Events</p>
+      <p className="mb-4 fw-bold">Events</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           <div className="custom-control custom-checkbox">

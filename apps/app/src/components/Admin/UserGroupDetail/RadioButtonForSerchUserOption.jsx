@@ -1,8 +1,8 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 const RadioButtonForSerchUserOption = (props) => {
 
@@ -17,7 +17,7 @@ const RadioButtonForSerchUserOption = (props) => {
         checked={props.checked}
         onChange={props.onChange}
       />
-      <label className="text-capitalize custom-control-label ml-3" htmlFor={`${searchType}Match`}>
+      <label className="text-capitalize custom-control-label ms-3" htmlFor={`${searchType}Match`}>
         {t(`admin:user_group_management.add_modal.${searchType}_match`)}
       </label>
     </div>

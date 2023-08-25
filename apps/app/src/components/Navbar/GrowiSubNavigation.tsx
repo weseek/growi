@@ -60,9 +60,9 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
       ${compactModeClasses}`}
     >
       {/* Left side */}
-      <div className="d-flex grw-subnav-left-side">
+      <div className="d-flex grw-subnav-start-side">
         { (showDrawerToggler && isDrawerMode) && (
-          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'mr-2 pr-2' : 'border-right mr-4 pr-4'}`}>
+          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'me-2 pe-2' : 'border-end me-4 pe-4'}`}>
             <DrawerToggler />
           </div>
         ) }

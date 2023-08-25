@@ -165,7 +165,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
               <div className="d-inline-flex flex-wrap">
                 <input
                   type="date"
-                  className="ml-3 mb-2"
+                  className="ms-3 mb-2"
                   name="customExpirationDate"
                   value={format(customExpirationDate, 'yyyy-MM-dd')}
                   onFocus={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}
@@ -173,7 +173,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                 />
                 <input
                   type="time"
-                  className="ml-3 mb-2"
+                  className="ms-3 mb-2"
                   name="customExpiration"
                   value={format(customExpirationTime, 'HH:mm')}
                   onFocus={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}

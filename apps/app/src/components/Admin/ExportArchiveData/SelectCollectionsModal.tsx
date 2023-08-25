@@ -124,7 +124,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
                   checked={selectedCollections.has(collectionName)}
                   onChange={toggleCheckbox}
                 />
-                <label className="text-capitalize custom-control-label ml-3" htmlFor={collectionName}>
+                <label className="text-capitalize custom-control-label ms-3" htmlFor={collectionName}>
                   {collectionName}
                 </label>
               </div>
@@ -165,10 +165,10 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
         <ModalBody>
           <div className="row">
             <div className="col-sm-12">
-              <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={checkAll}>
+              <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={checkAll}>
                 <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
               </button>
-              <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={uncheckAll}>
+              <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
                 <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
               </button>
             </div>

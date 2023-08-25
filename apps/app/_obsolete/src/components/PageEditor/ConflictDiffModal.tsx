@@ -163,39 +163,39 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         && (
           <div className="row">
             <div className="col-12 text-center mt-2 mb-4">
-              <h2 className="font-weight-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
+              <h2 className="fw-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
             </div>
             <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
+              <h3 className="fw-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
                   <UserPicture user={request.user} size="lg" noLink noTooltip />
                 </div>
-                <div className="ml-3 text-muted">
+                <div className="ms-3 text-muted">
                   <p className="my-0">updated by {request.user.username}</p>
                   <p className="my-0">{request.createdAt}</p>
                 </div>
               </div>
             </div>
             <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
+              <h3 className="fw-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
                   <UserPicture user={origin.user} size="lg" noLink noTooltip />
                 </div>
-                <div className="ml-3 text-muted">
+                <div className="ms-3 text-muted">
                   <p className="my-0">updated by {origin.user.username}</p>
                   <p className="my-0">{origin.createdAt}</p>
                 </div>
               </div>
             </div>
             <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
+              <h3 className="fw-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
                   <UserPicture user={latest.user} size="lg" noLink noTooltip />
                 </div>
-                <div className="ml-3 text-muted">
+                <div className="ms-3 text-muted">
                   <p className="my-0">updated by {latest.user.username}</p>
                   <p className="my-0">{latest.createdAt}</p>
                 </div>
@@ -249,7 +249,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
             </div>
             <div className="col-12">
               <div className="border border-dark">
-                <h3 className="font-weight-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+                <h3 className="fw-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
                 <UncontrolledCodeMirror
                   ref={uncontrolledRef}
                   value={resolvedRevision}
@@ -272,7 +272,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         </button>
         <button
           type="button"
-          className="btn btn-primary ml-3"
+          className="btn btn-primary ms-3"
           onClick={onResolveConflict}
           disabled={!isRevisionselected}
         >

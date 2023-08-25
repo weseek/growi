@@ -166,8 +166,8 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         <span
           className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
             ? 'grw-unopend-notification'
-            : 'ml-2'
-          } rounded-circle mr-3`}
+            : 'ms-2'
+          } rounded-circle me-3`}
         >
         </span>
         {renderActionUserPictures()}

@@ -232,7 +232,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const renderNavbar = () => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
-        <ul className="pl-2 nav nav-navbar">
+        <ul className="ps-2 nav nav-navbar">
           { navBarItems.map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;

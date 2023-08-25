@@ -28,7 +28,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
     <>
       {tags.map((tag) => {
         return (
-          <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge bg-primary mr-2">
+          <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge bg-primary me-2">
             {tag}
           </a>
         );
@@ -41,7 +41,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
               onClick={openEditorHandler}
             >
               { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-              <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`} />
+              <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
             </a>
           </div>
         </NotAvailableForReadOnlyUser>

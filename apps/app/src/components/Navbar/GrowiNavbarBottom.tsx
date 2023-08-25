@@ -37,7 +37,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
       <div className={`navbar navbar-expand navbar-dark bg-primary px-0 ${additionalClasses.join(' ')}`}>
 
         <ul className="navbar-nav w-100">
-          <li className="nav-item mr-auto">
+          <li className="nav-item me-auto">
             <a
               role="button"
               className="nav-link btn-lg"
@@ -60,7 +60,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
               </li>
             )
           }
-          <li className="nav-item ml-auto">
+          <li className="nav-item ms-auto">
             <a
               role="button"
               className="nav-link btn-lg"

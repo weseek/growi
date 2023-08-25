@@ -21,7 +21,7 @@ const ReconnectControls = (props: Props): JSX.Element => {
         onClick={() => { props.onReconnectingRequested() }}
         disabled={!isEnabled}
       >
-        { isProcessing && <i className="fa fa-spinner fa-pulse mr-2"></i> }
+        { isProcessing && <i className="fa fa-spinner fa-pulse me-2"></i> }
         { t('full_text_search_management.reconnect_button') }
       </button>
 

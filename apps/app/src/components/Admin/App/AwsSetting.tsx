@@ -22,7 +22,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
     <>
 
       <div className="row form-group my-3">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.file_delivery_method')}
         </label>
 
@@ -66,7 +66,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row form-group">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.region')}
         </label>
         <div className="col-md-6">
@@ -82,7 +82,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row form-group">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.custom_endpoint')}
         </label>
         <div className="col-md-6">
@@ -100,7 +100,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row form-group">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.bucket_name')}
         </label>
         <div className="col-md-6">
@@ -117,7 +117,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row form-group">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           Access key ID
         </label>
         <div className="col-md-6">
@@ -133,7 +133,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row form-group">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           Secret access key
         </label>
         <div className="col-md-6">

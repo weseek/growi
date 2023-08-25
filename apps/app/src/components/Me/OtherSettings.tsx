@@ -46,12 +46,12 @@ const OtherSettings = (): JSX.Element => {
 
       {isLoadingCurrentUser && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
         </div>
       )}
 
       <div className="form-group row">
-        <div className="offset-md-3 col-md-6 text-left">
+        <div className="offset-md-3 col-md-6 text-start">
           {!isLoadingCurrentUser && (
             <div className="custom-control custom-switch custom-checkbox-primary">
               <span id="grw-questionnaire-settings-toggle-wrapper">

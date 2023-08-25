@@ -9,9 +9,9 @@ import { Collapse } from 'reactstrap';
 const Accordion = (props) => {
   const [isOpen, setIsOpen] = useState(props.isOpenDefault);
   return (
-    <div className="card border-0 rounded-lg mb-0">
+    <div className="card border-0 rounded-3 mb-0">
       <div
-        className="card-header font-weight-normal py-3 d-flex justify-content-between"
+        className="card-header fw-normal py-3 d-flex justify-content-between"
         role="button"
         onClick={() => setIsOpen(prevState => !prevState)}
       >

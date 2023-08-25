@@ -18,13 +18,13 @@ const PagingSizeUncontrolledDropdown = (props) => {
   return (
     <React.Fragment>
       <div className="form-group row">
-        <div className="offset-md-3 col-md-6 text-left">
+        <div className="offset-md-3 col-md-6 text-start">
           <div className="my-0 w-100">
             <label>{props.label}</label>
           </div>
           <UncontrolledDropdown>
-            <DropdownToggle className="text-right col-6" caret>
-              <span className="float-left">{props.toggleLabel}</span>
+            <DropdownToggle className="text-end col-6" caret>
+              <span className="float-start">{props.toggleLabel}</span>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu" role="menu">
               {props.dropdownItemSize.map((num) => {
