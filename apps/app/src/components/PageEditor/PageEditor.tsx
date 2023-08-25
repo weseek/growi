@@ -5,7 +5,8 @@ import React, {
 import EventEmitter from 'events';
 import nodePath from 'path';
 
-
+import { Compartment } from '@codemirror/state';
+import { keymap } from '@codemirror/view';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { CodeMirrorEditorContainer, useCodeMirrorEditorMain } from '@growi/editor';
@@ -117,7 +118,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { data: codemirrorEditor } = useCodeMirrorEditorMain(codeMirrorEditorContainerRef.current);
   const {
-    initDoc, getDoc, focus: focusToEditor, setCaretLine,
+    appendExtension,
+    initDoc, getDoc,
+    focus: focusToEditor, setCaretLine,
   } = codemirrorEditor ?? {};
 
   const { data: rendererOptions } = usePreviewOptions();
@@ -256,10 +259,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   ]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
-    if (editorMode !== EditorMode.Editor) {
-      return;
-    }
-
     const page = await save(opts);
     if (page == null) {
       return;
@@ -272,13 +271,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       updateStateAfterSave?.();
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+  }, [save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    if (editorMode !== EditorMode.Editor) {
-      return;
-    }
-
     const page = await save();
     if (page == null) {
       return;
@@ -293,7 +288,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     toastSuccess(t('toaster.save_succeeded'));
     mutateEditorMode(EditorMode.Editor);
 
-  }, [editorMode, isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
+  }, [isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
   /**
@@ -514,10 +509,22 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to save with shortcut key
   useEffect(() => {
-    // TODO impl
-    return function cleanup() {
-    };
-  }, []);
+    const compartment = new Compartment();
+    const extension = keymap.of([
+      {
+        key: 'Mod-s',
+        preventDefault: true,
+        run: () => {
+          saveWithShortcut();
+          return false;
+        },
+      },
+    ]);
+
+    const cleanupFunction = appendExtension?.(extension, compartment);
+
+    return cleanupFunction;
+  }, [appendExtension, saveWithShortcut]);
 
   // set handler to focus
   useLayoutEffect(() => {

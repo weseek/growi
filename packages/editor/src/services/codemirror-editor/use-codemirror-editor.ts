@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import {
-  EditorState, StateEffect, type EditorStateConfig, type Extension,
+  EditorState, StateEffect, type EditorStateConfig, type Extension, Compartment,
 } from '@codemirror/state';
 import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
@@ -14,13 +14,15 @@ export type UseCodeMirrorEditor = UseCodeMirror;
 type UseCodeMirrorEditorUtils = {
   initState: (config?: EditorStateConfig) => void,
   initDoc: (doc?: string) => void,
-  appendExtension: (extension: Extension) => void,
+  appendExtension: (extension: Extension, compartment?: Compartment) => CleanupFunction | undefined,
   getDoc: () => string | undefined,
   focus: () => void,
   setCaretLine: (lineNumber?: number) => void,
 }
 
 export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
+
+type CleanupFunction = () => void;
 
 const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -66,10 +68,23 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
   }, [initState]);
 
   // implement appendExtension method
-  const appendExtension = useCallback((extension: Extension): void => {
+  const appendExtension = useCallback((extension: Extension, compartment?: Compartment): CleanupFunction | undefined => {
     view?.dispatch({
-      effects: StateEffect.appendConfig.of(extension),
+      effects: StateEffect.appendConfig.of(
+        compartment != null
+          ? compartment.of(extension)
+          : extension,
+      ),
     });
+
+    return compartment != null
+      // return cleanup function
+      ? () => {
+        view?.dispatch({
+          effects: compartment?.reconfigure([]),
+        });
+      }
+      : undefined;
   }, [view]);
 
   // implement getDoc method
