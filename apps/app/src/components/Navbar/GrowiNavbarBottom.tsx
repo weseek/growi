@@ -53,7 +53,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
                   role="button"
                   className="nav-link btn-lg"
                   data-target="#grw-global-search-collapse"
-                  data-toggle="collapse"
+                  data-bs-toggle="collapse"
                 >
                   <i className="icon-magnifier"></i>
                 </a>

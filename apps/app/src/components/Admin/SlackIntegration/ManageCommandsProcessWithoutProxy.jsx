@@ -89,7 +89,7 @@ const SinglePermissionSettingComponent = ({
             className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
             type="button"
             id="dropdownMenuButton"
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
           >

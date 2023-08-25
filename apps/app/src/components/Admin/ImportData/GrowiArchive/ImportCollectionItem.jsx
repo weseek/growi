@@ -118,7 +118,7 @@ export default class ImportCollectionItem extends React.Component {
             type="button"
             id="ddmMode"
             disabled={isImporting}
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
           >

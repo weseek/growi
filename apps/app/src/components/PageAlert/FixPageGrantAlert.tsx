@@ -178,7 +178,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   <button
                     type="button"
                     className="btn btn-secondary dropdown-toggle text-end w-100 border-0 shadow-none"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
                   >
                     <span className="float-start ms-2">

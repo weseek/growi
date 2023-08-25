@@ -43,7 +43,7 @@ const ThemeSelector = (): JSX.Element => {
         <button
           type="button"
           className="btn btn-outline-secondary dropdown-toggle"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
           aria-describedby="igt-theme"
@@ -98,7 +98,7 @@ const KeymapSelector = memo((): JSX.Element => {
         <button
           type="button"
           className="btn btn-outline-secondary dropdown-toggle"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
           aria-describedby="igt-keymap"
@@ -140,7 +140,7 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
         <button
           type="button"
           className="btn btn-outline-secondary dropdown-toggle"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
           aria-describedby="igt-indent"

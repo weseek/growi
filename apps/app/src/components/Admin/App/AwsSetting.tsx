@@ -32,7 +32,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
               className="btn btn-outline-secondary dropdown-toggle"
               type="button"
               id="ddS3ReferenceFileWithRelayMode"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="true"
             >

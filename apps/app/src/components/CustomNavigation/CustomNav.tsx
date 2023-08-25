@@ -53,7 +53,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
       <button
         className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
         type="button"
-        data-toggle="dropdown"
+        data-bs-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
       >

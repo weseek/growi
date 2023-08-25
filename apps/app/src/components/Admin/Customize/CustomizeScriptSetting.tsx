@@ -60,7 +60,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
 
           <a
             className="text-muted"
-            data-toggle="collapse"
+            data-bs-toggle="collapse"
             href="#collapseExampleScript"
             role="button"
             aria-expanded="false"

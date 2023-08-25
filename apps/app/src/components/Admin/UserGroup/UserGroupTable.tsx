@@ -189,7 +189,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
                           type="button"
                           id={`admin-group-menu-button-${group._id}`}
                           className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                          data-toggle="dropdown"
+                          data-bs-toggle="dropdown"
                         >
                           <i className="icon-settings"></i>
                         </button>

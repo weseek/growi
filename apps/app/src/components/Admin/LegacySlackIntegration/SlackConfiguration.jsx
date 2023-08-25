@@ -45,7 +45,7 @@ class SlackConfiguration extends React.Component {
                 className="btn btn-secondary dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton"
-                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
@@ -109,7 +109,7 @@ class SlackConfiguration extends React.Component {
                 <br />
                 <a
                   href="#slack-incoming-webhooks"
-                  data-toggle="tab"
+                  data-bs-toggle="tab"
                   onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
                 >
                   {t('notification_settings.use_instead')}
@@ -141,7 +141,7 @@ class SlackConfiguration extends React.Component {
 
         <h3>
           <i className="icon-question" aria-hidden="true"></i>{' '}
-          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_settings.how_to.header')}</a>
+          <a href="#collapseHelpForIwh" data-bs-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse">

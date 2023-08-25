@@ -43,7 +43,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
               className="btn btn-outline-secondary dropdown-toggle"
               type="button"
               id="ddGcsReferenceFileWithRelayMode"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="true"
             >
