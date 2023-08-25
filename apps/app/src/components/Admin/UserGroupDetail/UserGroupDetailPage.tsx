@@ -365,7 +365,8 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
                   <Link href={{
                     pathname: `/admin/user-group-detail/${ancestorUserGroup._id}`,
                     query: { isExternalGroup: 'true' },
-                  }}>
+                  }}
+                  >
                     {ancestorUserGroup.name}
                   </Link>
                 ) }
@@ -408,11 +409,13 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       />
 
       <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
-      {!isExternalGroup && <UserGroupDropdown
-        selectableUserGroups={selectableChildUserGroups}
-        onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
-        onClickCreateUserGroupButton={showCreateModal}
-      />}
+      {!isExternalGroup && (
+        <UserGroupDropdown
+          selectableUserGroups={selectableChildUserGroups}
+          onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
+          onClickCreateUserGroupButton={showCreateModal}
+        />
+      )}
 
       <UserGroupModal
         userGroup={selectedUserGroup}
