@@ -33,9 +33,11 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 5) {
         return (
           <>
-            <i className="icon-fw icon-organization"></i><strong>{
+            <i className="icon-fw icon-organization"></i>
+            <strong>{
               isPopulated(pageData.grantedGroups[0].item) && pageData.grantedGroups[0].item.name
-            }</strong>
+            }
+            </strong>
           </>
         );
       }
