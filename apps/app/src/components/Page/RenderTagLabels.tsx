@@ -41,7 +41,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
               onClick={openEditorHandler}
             >
               { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-              <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
+              <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`} />
             </a>
           </div>
         </NotAvailableForReadOnlyUser>

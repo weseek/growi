@@ -5,9 +5,9 @@ import { respond, deleteOriginal } from '@growi/slack/dist/utils/response-url';
 
 import loggerFactory from '~/utils/logger';
 
+// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 
-const axios = require('axios');
 const { parse, format } = require('date-fns');
 
 const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');

@@ -339,11 +339,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         return (
           <>
             {!isReadOnlyUser
-              && <CreateTemplateMenuItems
-                onClickTemplateMenuItem={templateMenuItemClickHandler}
-              />
+              && (
+                <CreateTemplateMenuItems
+                  onClickTemplateMenuItem={templateMenuItemClickHandler}
+                />
+              )
             }
-          </>);
+          </>
+        );
       }
       return (
         <>
@@ -352,11 +355,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             revisionId={revisionId}
             isLinkSharingDisabled={isLinkSharingDisabled}
           />
-          {!isReadOnlyUser && <>
-            <DropdownItem divider />
-            <CreateTemplateMenuItems
-              onClickTemplateMenuItem={templateMenuItemClickHandler}
-            /></>
+          {!isReadOnlyUser && (
+            <>
+              <DropdownItem divider />
+              <CreateTemplateMenuItems
+                onClickTemplateMenuItem={templateMenuItemClickHandler}
+              />
+            </>
+          )
           }
         </>
       );

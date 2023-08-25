@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { ColorScheme } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { getForcedColorScheme } from '@growi/core/dist/utils';

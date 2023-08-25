@@ -59,9 +59,9 @@ export const CustomizeTitle: FC = () => {
 
         {/* TODO i18n */}
         <div className="form-text text-muted col-12">
-            Default Value: <code>&#123;&#123;pagename&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
+          Default Value: <code>&#123;&#123;pagename&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
           <br />
-            Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
+          Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
         </div>
         <div className="form-group col-12">
           <input

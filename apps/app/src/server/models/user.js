@@ -1,4 +1,6 @@
 /* eslint-disable no-use-before-define */
+import { pagePathUtils } from '@growi/core/dist/utils';
+
 import { i18n } from '^/config/next-i18next.config';
 
 import { generateGravatarSrc } from '~/utils/gravatar';
@@ -700,14 +702,15 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.getUsernameByPath = function(path) {
-    let username = null;
-    const match = path.match(/^\/user\/([^/]+)\/?/);
-    if (match) {
-      username = match[1];
+  userSchema.statics.isExistUserByUserPagePath = async function(path) {
+    const username = pagePathUtils.getUsernameByPath(path);
+
+    if (username == null) {
+      return false;
     }
 
-    return username;
+    const user = await this.exists({ username });
+    return user != null;
   };
 
   userSchema.statics.updateIsInvitationEmailSended = async function(id) {

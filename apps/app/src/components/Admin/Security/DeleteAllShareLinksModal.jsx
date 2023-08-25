@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
@@ -7,29 +7,16 @@ import {
 } from 'reactstrap';
 
 const DeleteAllShareLinksModal = React.memo((props) => {
-  const { t } = props;
+  const { t, onClickDeleteButton, onClose } = props;
 
-  function closeModal() {
-    if (props.onClose == null) {
-      return;
-    }
+  const deleteAllLinkHandler = useCallback(() => {
+    onClickDeleteButton?.();
+    onClose?.();
+  }, [onClickDeleteButton, onClose]);
 
-    props.onClose();
-  }
-
-  function deleteAllLinkHandler() {
-    if (props.onClickDeleteButton == null) {
-      return;
-    }
-
-    props.onClickDeleteButton();
-
-    closeModal();
-  }
-
-  function closeButtonHandler() {
-    closeModal();
-  }
+  const closeButtonHandler = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
 
   return (
     <Modal isOpen={props.isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">

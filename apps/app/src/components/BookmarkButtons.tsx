@@ -64,12 +64,18 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
 
       <BookmarkFolderMenu
-        isOpen={isBookmarkFolderMenuOpen} pageId={pageId} isBookmarked={isBookmarked ?? false}
+        isOpen={isBookmarkFolderMenuOpen}
+        pageId={pageId}
+        isBookmarked={isBookmarked ?? false}
         onToggle={toggleBookmarkFolderMenuHandler}
         onUnbookmark={unbookmarkHandler}
       >
-        <DropdownToggle id='bookmark-dropdown-btn' color="transparent" className={`shadow-none btn btn-bookmark border-0
-          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
+        <DropdownToggle
+          id="bookmark-dropdown-btn"
+          color="transparent"
+          className={`shadow-none btn btn-bookmark border-0
+          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+        >
           <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
         </DropdownToggle>
       </BookmarkFolderMenu>

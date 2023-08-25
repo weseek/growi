@@ -29,6 +29,7 @@ import * as xsvToTable from './remark-plugins/xsv-to-table';
 // import EasyGrid from './PreProcessor/EasyGrid';
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:services:renderer');
 
 
@@ -125,7 +126,7 @@ export const generateSSRViewOptions = (
 ): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
-  const { remarkPlugins, rehypePlugins, components } = options;
+  const { remarkPlugins, rehypePlugins } = options;
 
   // add remark plugins
   remarkPlugins.push(
