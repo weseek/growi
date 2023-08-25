@@ -1,3 +1,5 @@
+import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
@@ -134,6 +136,7 @@ const ApiResponse = require('../util/apiResponse');
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
@@ -467,6 +470,17 @@ module.exports = function(crowi, app) {
     let page;
     if (pageId == null) {
       logger.debug('Create page before file upload');
+
+      if (!isCreatablePage(pagePath)) {
+        return res.json(ApiResponse.error(`Could not use the path '${pagePath}'`));
+      }
+
+      if (isUserPage(pagePath)) {
+        const isExistUser = await User.isExistUserByUserPagePath(pagePath);
+        if (!isExistUser) {
+          return res.json(ApiResponse.error("Unable to create a page under a non-existent user's user page"));
+        }
+      }
 
       const isAclEnabled = crowi.aclService.isAclEnabled();
       const grant = isAclEnabled ? Page.GRANT_OWNER : Page.GRANT_PUBLIC;

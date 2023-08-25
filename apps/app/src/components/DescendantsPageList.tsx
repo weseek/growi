@@ -82,10 +82,6 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     }
   }, [onPagePutBacked, t]);
 
-  function setPageNumber(selectedPageNumber) {
-    setActivePage(selectedPageNumber);
-  }
-
   if (pagingResult == null) {
     return (
       <div className="wiki">
@@ -113,7 +109,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
         <div className="my-4">
           <PaginationWrapper
             activePage={activePage}
-            changePage={setPageNumber}
+            changePage={selectedPageNumber => setActivePage(selectedPageNumber)}
             totalItemsCount={pagingResult.totalCount}
             pagingLimit={pagingResult.limit}
             align="center"

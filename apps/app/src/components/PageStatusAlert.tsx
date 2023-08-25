@@ -57,15 +57,15 @@ export const PageStatusAlert = (): JSX.Element => {
     return {
       additionalClasses: ['bg-success', 'd-hackmd-none'],
       label:
-        <>
-          <i className="icon-fw icon-people"></i>
-          {t('hackmd.someone_editing')}
-        </>,
+  <>
+    <i className="icon-fw icon-people"></i>
+    {t('hackmd.someone_editing')}
+  </>,
       btn:
-        <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
-          <i className="fa fa-fw fa-file-text-o mr-1"></i>
-          Open HackMD Editor
-        </a>,
+  <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
+    <i className="fa fa-fw fa-file-text-o mr-1"></i>
+    Open HackMD Editor
+  </a>,
     };
   }, [t]);
 
@@ -73,15 +73,15 @@ export const PageStatusAlert = (): JSX.Element => {
     return {
       additionalClasses: ['bg-success', 'd-hackmd-none'],
       label:
-        <>
-          <i className="icon-fw icon-pencil"></i>
-          {t('hackmd.this_page_has_draft')}
-        </>,
+  <>
+    <i className="icon-fw icon-pencil"></i>
+    {t('hackmd.this_page_has_draft')}
+  </>,
       btn:
-        <button onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
-          <i className="fa fa-fw fa-file-text-o mr-1"></i>
-          Open HackMD Editor
-        </button>,
+  <button type="button" onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
+    <i className="fa fa-fw fa-file-text-o mr-1"></i>
+    Open HackMD Editor
+  </button>,
     };
   }, [mutateEditorMode, t]);
 
@@ -97,27 +97,27 @@ export const PageStatusAlert = (): JSX.Element => {
     return {
       additionalClasses: ['bg-warning'],
       label:
-        <>
-          <i className="icon-fw icon-bulb"></i>
-          {label1}
-        </>,
+  <>
+    <i className="icon-fw icon-bulb"></i>
+    {label1}
+  </>,
       btn:
-        <>
-          <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white mr-4">
-            <i className="icon-fw icon-reload mr-1"></i>
-            {t('Load latest')}
-          </button>
-          { isConflict && (
-            <button
-              type="button"
-              onClick={onClickResolveConflict}
-              className="btn btn-outline-white"
-            >
-              <i className="fa fa-fw fa-file-text-o mr-1"></i>
-              {t('modal_resolve_conflict.resolve_conflict')}
-            </button>
-          )}
-        </>,
+  <>
+    <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white mr-4">
+      <i className="icon-fw icon-reload mr-1"></i>
+      {t('Load latest')}
+    </button>
+    { isConflict && (
+      <button
+        type="button"
+        onClick={onClickResolveConflict}
+        className="btn btn-outline-white"
+      >
+        <i className="fa fa-fw fa-file-text-o mr-1"></i>
+        {t('modal_resolve_conflict.resolve_conflict')}
+      </button>
+    )}
+  </>,
     };
   }, [remoteRevisionLastUpdateUser, isConflict, t, onClickResolveConflict, refreshPage]);
 

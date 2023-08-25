@@ -833,7 +833,6 @@ module.exports = function(crowi, app) {
     };
 
     let page;
-    let descendantPages;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {

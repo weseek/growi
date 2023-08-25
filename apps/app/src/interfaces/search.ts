@@ -21,6 +21,13 @@ export type ISearchResultMeta = {
   },
 }
 
+export type ISearchResultData = {
+  _id: string
+  _score: number
+  _source: any
+  _highlight: any
+}
+
 export type ISearchResult<T> = ISearchResultMeta & {
   data: T[],
 }

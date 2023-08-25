@@ -57,7 +57,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
             { !isTrash && pageInfo != null
               ? <CountBadge count={(pageInfo as IPageInfoForOperation).descendantCount} offset={1} />
-              : <div className='px-2'></div>}
+              : <div className="px-2"></div>}
           </button>
         )}
       </div>
@@ -65,7 +65,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       {/* Comments */}
       {!isTopPagePath && (
         <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-          <Link to={'page-comments'} offset={-120}>
+          <Link to="page-comments" offset={-120}>
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
@@ -75,7 +75,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
               <span>Comments</span>
               { pageInfo != null
                 ? <CountBadge count={(pageInfo as IPageInfoForOperation).commentCount} />
-                : <div className='px-2'></div>}
+                : <div className="px-2"></div>}
             </button>
           </Link>
         </div>
