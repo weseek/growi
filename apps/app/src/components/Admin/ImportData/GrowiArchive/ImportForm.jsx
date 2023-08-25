@@ -446,13 +446,13 @@ class ImportForm extends React.Component {
 
     return (
       <>
-        <form>
-          <div>
+        <form className="row">
+          <div className="col-auto">
             <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
             </button>
           </div>
-          <div>
+          <div className="col-auto">
             <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.uncheckAll}>
               <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
             </button>
