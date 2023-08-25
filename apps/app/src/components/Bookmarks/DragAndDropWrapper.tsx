@@ -66,7 +66,7 @@ export const DragAndDropWrapper = (props: DragAndDropWrapperProps): JSX.Element 
   };
 
   return (
-    <div ref={c => getRef(c)} className={`grw-drag-drop-container ${isOver ? 'grw-accept-drop-item' : ''}` }>
+    <div ref={c => getRef(c)} className={`grw-drag-drop-container ${isOver ? 'grw-accept-drop-item' : ''}`}>
       {children}
     </div>
   );

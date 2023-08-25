@@ -8,8 +8,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
-const { formatDistanceStrict } = require('date-fns');
-
 const PAGINGLIMIT = 7;
 
 

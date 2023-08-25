@@ -91,9 +91,11 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          {!isSmall && <div className="grw-tag-labels mt-1 mb-2">
-            { tagElements }
-          </div>}
+          {!isSmall && (
+            <div className="grw-tag-labels mt-1 mb-2">
+              { tagElements }
+            </div>
+          )}
           <PageItemLower page={page} />
         </div>
       </div>
@@ -135,7 +137,7 @@ const RecentChanges = (): JSX.Element => {
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
-        <SidebarHeaderReloadButton onClick={() => mutate()}/>
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input

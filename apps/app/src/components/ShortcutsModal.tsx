@@ -64,7 +64,7 @@ const ShortcutsModal = (): JSX.Element => {
                     {/* eslint-disable-next-line react/no-danger */}
                     <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Show Contributors') }} />:
                   </th>
-                  <td className='text-nowrap'>
+                  <td className="text-nowrap">
                     <a href="{ t('modal_shortcuts.global.konami_code_url') }" target="_blank">
                       {t('modal_shortcuts.global.Konami Code')}
                     </a>
@@ -80,7 +80,7 @@ const ShortcutsModal = (): JSX.Element => {
                 </tr>
                 <tr>
                   <th>{t('modal_shortcuts.global.MirrorMode')}:</th>
-                  <td className='text-nowrap'>
+                  <td className="text-nowrap">
                     <a href="{ t('modal_shortcuts.global.konami_code_url') }" target="_blank">
                       {t('modal_shortcuts.global.Konami Code')}
                     </a>

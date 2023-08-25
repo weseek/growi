@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState, useMemo,
+  useEffect, useState, useMemo, useCallback,
 } from 'react';
 
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
@@ -107,7 +107,7 @@ const PageCreateModal = () => {
    * join path, check if creatable, then redirect
    * @param {string} paths
    */
-  async function redirectToEditor(...paths) {
+  const redirectToEditor = useCallback(async(...paths) => {
     try {
       const editorPath = generateEditorPath(...paths);
       await router.push(editorPath);
@@ -119,7 +119,7 @@ const PageCreateModal = () => {
     catch (err) {
       toastError(err);
     }
-  }
+  }, [closeCreateModal, mutateEditorMode, router]);
 
   /**
    * access today page
@@ -139,9 +139,9 @@ const PageCreateModal = () => {
     redirectToEditor(pageNameInput);
   }
 
-  function ppacSubmitHandler(input) {
+  const ppacSubmitHandler = useCallback((input) => {
     redirectToEditor(input);
-  }
+  }, [redirectToEditor]);
 
   /**
    * access template page
@@ -277,7 +277,7 @@ const PageCreateModal = () => {
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
-            <UncontrolledButtonDropdown id="dd-template-type" className='flex-fill text-center'>
+            <UncontrolledButtonDropdown id="dd-template-type" className="flex-fill text-center">
               <DropdownToggle id="template-type" caret>
                 {template == null && t('template.option_label.select')}
                 {template === 'children' && t('template.children.label')}
@@ -299,7 +299,7 @@ const PageCreateModal = () => {
               <button
                 data-testid="grw-btn-edit-page"
                 type="button"
-                className='grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3'
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createTemplatePage}
                 disabled={template == null}
               >

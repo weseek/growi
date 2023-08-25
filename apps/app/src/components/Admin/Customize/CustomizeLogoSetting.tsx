@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -25,10 +25,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogoSelected, setIsDefaultLogoSelected] = useState<boolean>(isDefaultLogo ?? true);
   const [retrieveError, setRetrieveError] = useState<any>();
-
-  const currentLogo = useMemo(() => {
-    return isDefaultLogo ? DEFAULT_LOGO : CUSTOMIZED_LOGO;
-  }, [isDefaultLogo]);
 
   const onSelectFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null && e.target.files.length > 0) {
@@ -129,7 +125,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     {isCustomizedLogoUploaded && (
                       <>
                         <p>
-                          <img src='/attachment/brand-logo' className="picture picture-lg " id="settingBrandLogo" width="64" />
+                          <img src={CUSTOMIZED_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" />
                         </p>
                         <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                           { t('admin:customize_settings.delete_logo') }

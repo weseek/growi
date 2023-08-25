@@ -18,7 +18,6 @@ const TIME_TO_ADD_SEC = 10;
 
 const logger = loggerFactory('growi:models:page-operation');
 
-type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*

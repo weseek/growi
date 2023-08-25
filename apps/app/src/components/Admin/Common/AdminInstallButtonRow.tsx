@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 type Props = {
   onClick: () => void,
   disabled: boolean,
@@ -9,8 +7,6 @@ type Props = {
 }
 
 export const AdminInstallButtonRow = (props: Props): JSX.Element => {
-  // TODO: const { t } = useTranslation('admin');
-
   return (
     <div className="row my-3">
       <div className="mx-auto">

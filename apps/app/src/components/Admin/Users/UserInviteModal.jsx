@@ -208,8 +208,6 @@ class UserInviteModal extends React.Component {
 
   async handleSubmit() {
     const { adminUsersContainer } = this.props;
-    // eslint-disable-next-line no-unused-vars
-    const { isCreateUserButtonPushed } = this.state;
 
     this.setState({ isCreateUserButtonPushed: true });
 
@@ -295,6 +293,7 @@ const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
+  isMailerSetup: PropTypes.bool.isRequired,
 };
 
 export default UserInviteModalWrapper;

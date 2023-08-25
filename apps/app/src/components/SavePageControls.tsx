@@ -91,7 +91,8 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
       <UncontrolledButtonDropdown direction="up">
         <Button
-          id="caret" data-testid="save-page-btn"
+          id="caret"
+          data-testid="save-page-btn"
           color="primary"
           className="btn-submit"
           onClick={save}
