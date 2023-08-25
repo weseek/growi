@@ -131,7 +131,7 @@ export const AdminNavigation = (): JSX.Element => {
           type="button"
           id="dropdown-admin-navigation"
           data-display="static"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
         >

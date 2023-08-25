@@ -192,7 +192,7 @@ class SecuritySetting extends React.Component {
           className="btn btn-outline-secondary dropdown-toggle text-end"
           type="button"
           id="dropdownMenuButton"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="true"
         >
@@ -403,7 +403,7 @@ class SecuritySetting extends React.Component {
                             col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
-                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
