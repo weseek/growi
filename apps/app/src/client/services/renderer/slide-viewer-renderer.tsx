@@ -14,6 +14,7 @@ import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
@@ -55,6 +56,7 @@ export const generatePresentationViewOptions = (
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
+      addLineNumberAttribute.sanitizeOption,
     )]
     : () => {};
 
@@ -63,6 +65,7 @@ export const generatePresentationViewOptions = (
     [lsxGrowiDirective.rehypePlugin, { pagePath, isSharedPage: config.isSharedPage }],
     [refsGrowiDirective.rehypePlugin, { pagePath }],
     rehypeSanitizePlugin,
+    addLineNumberAttribute.rehypePlugin,
     katex,
   );
 
