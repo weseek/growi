@@ -119,12 +119,12 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
-        {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
-        {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
-        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
         {/* eslint-enable max-len */}
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
+        {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
+        {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
+        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
