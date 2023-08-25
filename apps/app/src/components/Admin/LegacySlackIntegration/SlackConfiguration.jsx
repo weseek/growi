@@ -109,7 +109,7 @@ class SlackConfiguration extends React.Component {
                 <br />
                 <a
                   href="#slack-incoming-webhooks"
-                  data-toggle="tab"
+                  data-bs-toggle="tab"
                   onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
                 >
                   {t('notification_settings.use_instead')}

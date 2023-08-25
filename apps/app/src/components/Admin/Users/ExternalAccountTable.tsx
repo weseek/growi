@@ -57,7 +57,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <span
                   role="button"
                   className="text-muted mx-2"
-                  data-toggle="popper"
+                  data-bs-toggle="popper"
                   data-placement="top"
                   data-trigger="hover"
                   data-html="true"

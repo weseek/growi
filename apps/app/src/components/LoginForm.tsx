@@ -310,7 +310,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <button
             type="button"
             className="btn btn-secondary btn-external-auth-tab btn-sm rounded-0 mb-3"
-            data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
+            data-bs-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-target="#external-auth"
             aria-expanded="false"
             aria-controls="external-auth"
