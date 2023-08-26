@@ -20,6 +20,4 @@
   "githubPullRequests.ignoredPullRequestBranches": [
     "master"
   ],
-  "debug.allowBreakpointsEverywhere": true,
-  "debug.autoExpandLazyVariables": false
 }

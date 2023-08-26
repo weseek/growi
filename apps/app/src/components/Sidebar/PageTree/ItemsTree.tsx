@@ -28,10 +28,8 @@ import loggerFactory from '~/utils/logger';
 
 import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
-import Item from './Item';
 import { ItemNode } from './ItemNode';
 import { PageTreeItem } from './PageTreeItem';
-import SimpleItem from './SimpleItem';
 
 import styles from './ItemsTree.module.scss';
 
@@ -271,8 +269,6 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   else if (targetAndAncestorsData != null) {
     initialItemNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
   }
-
-  // const PageTreeItem = CreatePageTreeItem();
 
   if (initialItemNode != null) {
     return (

@@ -8,9 +8,7 @@ import {
   pathUtils, pagePathUtils, Nullable,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ConnectDragSource, useDrag, useDrop } from 'react-dnd';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
@@ -21,14 +19,13 @@ import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import {
-  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
+  IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRMUTxPageInfo } from '~/stores/page';
-import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
+import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
-import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
@@ -36,8 +33,6 @@ import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
 import { ItemNode } from './ItemNode';
-
-const logger = loggerFactory('growi:cli:Item');
 
 
 interface ItemProps {
@@ -51,10 +46,8 @@ interface ItemProps {
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
   itemRef?
   itemClass?: React.FunctionComponent<ItemProps>
-  mainClassName?
+  mainClassName?: string
 }
-
-// interface Item {}
 
 // Utility to mark target
 const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
@@ -112,7 +105,6 @@ const SimpleItem: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-  const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
@@ -333,8 +325,6 @@ const SimpleItem: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteMenuItem,
   };
 
-  console.log(mainClassName);
-
   return (
     <div
       id={`pagetree-item-${page._id}`}
@@ -450,7 +440,6 @@ const SimpleItem: FC<ItemProps> = (props: ItemProps) => {
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
-            {/* itemClassに応じて、ここで生成するコンポーネントを変更する */}
             {
               <ItemClassFixed itemNode={node} {...commonProps} />
             }
