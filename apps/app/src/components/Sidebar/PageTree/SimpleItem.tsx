@@ -98,6 +98,7 @@ const SimpleItem: FC<ItemProps> = (props: ItemProps) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    itemRef, itemClass, mainClassName,
   } = props;
 
   const { page, children } = itemNode;
@@ -309,11 +310,7 @@ const SimpleItem: FC<ItemProps> = (props: ItemProps) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
-
-  const itemRef = props.itemRef;
-  const ItemClass = props.itemClass;
-  const ItemClassFixed = ItemClass ?? SimpleItem;
-  const mainClassName = props.mainClassName;
+  const ItemClassFixed = itemClass ?? SimpleItem;
 
   const commonProps = {
     isEnableActions,
