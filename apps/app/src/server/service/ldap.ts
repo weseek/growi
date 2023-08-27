@@ -27,31 +27,15 @@ class LdapService {
 
   password?: string; // Necessary when bind type is user bind
 
+  client: ldap.Client;
+
+  searchBase: string;
+
   constructor(username?: string, password?: string) {
+    const serverUrl = configManager?.getConfig('crowi', 'security:passport-ldap:serverUrl');
+
     this.username = username;
     this.password = password;
-  }
-
-  /**
-   * Execute search on LDAP server and return result
-   * @param {string} filter Search filter
-   * @param {string} base Base DN to execute search on
-   * @returns {SearchEntry[]} Search result. Default scope is set to 'sub'.
-   */
-  search(filter?: string, base?: string, scope: 'sub' | 'base' | 'one' = 'sub'): Promise<SearchResultEntry[]> {
-    const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
-
-    if (!isLdapEnabled) {
-      const notEnabledMessage = 'LDAP is not enabled';
-      logger.error(notEnabledMessage);
-      throw new Error(notEnabledMessage);
-    }
-
-    // get configurations
-    const isUserBind = configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
-    const serverUrl = configManager?.getConfig('crowi', 'security:passport-ldap:serverUrl');
-    const bindDN = configManager?.getConfig('crowi', 'security:passport-ldap:bindDN');
-    const bindCredentials = configManager?.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
 
     // parse serverUrl
     // see: https://regex101.com/r/0tuYBB/1
@@ -62,7 +46,25 @@ class LdapService {
       throw new Error(urlInvalidMessage);
     }
     const url = match[1];
-    const searchBase = match[2] || '';
+    this.searchBase = match[2] || '';
+
+    this.client = ldap.createClient({
+      url,
+    });
+  }
+
+  bind(): Promise<void> {
+    const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    if (!isLdapEnabled) {
+      const notEnabledMessage = 'LDAP is not enabled';
+      logger.error(notEnabledMessage);
+      throw new Error(notEnabledMessage);
+    }
+
+    // get configurations
+    const isUserBind = configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
+    const bindDN = configManager?.getConfig('crowi', 'security:passport-ldap:bindDN');
+    const bindCredentials = configManager?.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
 
     // user bind
     const fixedBindDN = (isUserBind)
@@ -70,20 +72,29 @@ class LdapService {
       : bindDN;
     const fixedBindCredentials = (isUserBind) ? this.password : bindCredentials;
 
-    const client = ldap.createClient({
-      url,
-    });
-
-    const searchResults: SearchResultEntry[] = [];
-
-    return new Promise((resolve, reject) => {
-      client.bind(fixedBindDN, fixedBindCredentials, (err) => {
+    return new Promise<void>((resolve, reject) => {
+      this.client.bind(fixedBindDN, fixedBindCredentials, (err) => {
         if (err != null) {
           reject(err);
         }
+        resolve();
       });
+    });
+  }
 
-      client.search(base || searchBase, { scope, filter }, (err, res) => {
+  /**
+   * Execute search on LDAP server and return result
+   * @param {string} filter Search filter
+   * @param {string} base Base DN to execute search on
+   * @returns {SearchEntry[]} Search result. Default scope is set to 'sub'.
+   */
+  search(filter?: string, base?: string, scope: 'sub' | 'base' | 'one' = 'sub'): Promise<SearchResultEntry[]> {
+    const searchResults: SearchResultEntry[] = [];
+
+    return new Promise((resolve, reject) => {
+      this.client.search(base || this.searchBase, {
+        scope, filter, paged: true, sizeLimit: 200,
+      }, (err, res) => {
         if (err != null) {
           reject(err);
         }
