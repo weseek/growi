@@ -94,6 +94,8 @@
   //     background-color: hsl.lighten(var(--bgcolor-global),5%);
   //   }
 
+  // TODO: .input-group-prepend dropped in bootstrap v5
+  // https://redmine.weseek.co.jp/issues/128307
   //   .input-group > .input-group-prepend > .input-group-text {
   //     color: theme-color('light');
   //     background-color: theme-color('secondary');
