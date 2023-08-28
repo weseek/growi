@@ -16,17 +16,23 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
     'external-user-group:ldap:groupDescriptionAttribute': 'description',
     'external-user-group:ldap:groupMembershipAttributeType': 'DN',
     'external-user-group:ldap:groupSearchBase': 'ou=groups,dc=example,dc=org',
+    'security:passport-ldap:serverUrl': 'ldap://openldap:1389/dc=example,dc=org',
   };
 
   jest.mock('../../../src/server/service/ldap');
+  const mockBind = jest.spyOn(LdapService.prototype, 'bind');
   const mockLdapSearch = jest.spyOn(LdapService.prototype, 'search');
 
   beforeAll(async() => {
     crowi = await getInstance();
+    await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+
     const passportService = new PassportService(crowi);
     ldapGroupSyncService = new LdapUserGroupSyncService(passportService);
 
-    await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+    mockBind.mockImplementation(() => {
+      return Promise.resolve();
+    });
   });
 
   describe('When there is no circular reference in group tree', () => {
