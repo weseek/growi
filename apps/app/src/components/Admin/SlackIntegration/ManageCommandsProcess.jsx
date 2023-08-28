@@ -94,14 +94,14 @@ const PermissionSettingForEachPermissionTypeComponent = ({
         </p>
         <div className="col dropdown">
           <button
-            className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+            className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
             type="button"
             id="dropdownMenuButton"
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
           >
-            <span className="float-left">
+            <span className="float-start">
               {currentPermissionType === PermissionTypes.ALLOW_ALL
               && t('admin:slack_integration.accordion.allow_all')}
               {currentPermissionType === PermissionTypes.DENY_ALL
@@ -299,7 +299,7 @@ const ManageCommandsProcess = ({
         {(title || description) && (
           <div className="row">
             <div className="col-md-7 offset-md-2">
-              { title && <p className="font-weight-bold mb-1">{title}</p> }
+              { title && <p className="fw-bold mb-1">{title}</p> }
               { description && <p className="text-muted">{description}</p> }
             </div>
           </div>
@@ -362,7 +362,7 @@ const ManageCommandsProcess = ({
 
   return (
     <div className="py-4 px-5">
-      <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
+      <p className="mb-4 fw-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           {Object.values(CommandUsageTypes).map(commandUsageType => (
@@ -376,7 +376,7 @@ const ManageCommandsProcess = ({
         </div>
       </div>
 
-      <p className="mb-4 font-weight-bold">Events</p>
+      <p className="mb-4 fw-bold">Events</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           {Object.values(EventTypes).map(EventType => (

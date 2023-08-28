@@ -103,7 +103,7 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   return (
     <li className={`page-list-li ${styles['page-list-li']}`}>
       <small>{iconElement}</small> {pagePathElement}
-      <span className="ml-2">{pageListMetaElement}</span>
+      <span className="ms-2">{pageListMetaElement}</span>
       {childrenElements}
     </li>
   );

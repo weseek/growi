@@ -29,7 +29,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
         <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
           {t('footer.bookmarks')}
-          <span className="ml-auto pl-2 ">
+          <span className="ms-auto ps-2 ">
             <button
               type="button"
               className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}
@@ -49,7 +49,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-          <i id="recent-created-icon" className="mr-1"><RecentlyCreatedIcon /></i>
+          <i id="recent-created-icon" className="me-1"><RecentlyCreatedIcon /></i>
           {t('footer.recently_created')}
         </h2>
         <div id="user-created-list" className={`page-list ${styles['page-list']}`}>

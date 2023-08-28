@@ -105,7 +105,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="col text-left form-check form-check-info" onChange={this.handleCheckBox}>
+        <div className="col text-start form-check form-check-info" onChange={this.handleCheckBox}>
           <input
             type="checkbox"
             id="sendEmail"
@@ -127,7 +127,7 @@ class UserInviteModal extends React.Component {
         <div>
           <button
             type="button"
-            className="btn btn-outline-secondary mr-2"
+            className="btn btn-outline-secondary me-2"
             onClick={this.onToggleModal}
           >
             {t('Cancel')}
@@ -151,7 +151,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="form-label mr-3 text-left" style={{ flex: 1 }}>
+        <label className="form-label me-3 text-start" style={{ flex: 1 }}>
           <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
           <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>
@@ -175,7 +175,7 @@ class UserInviteModal extends React.Component {
             <div className="my-1" key={user.email}>
               <CopyToClipboard text={copyText} onCopy={this.showToaster}>
                 <li className="btn btn-outline-secondary">
-                  Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
+                  Email: <strong className="me-3">{user.email}</strong> Password: <strong>{user.password}</strong>
                 </li>
               </CopyToClipboard>
             </div>

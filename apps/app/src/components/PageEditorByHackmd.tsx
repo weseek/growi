@@ -359,7 +359,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       content = (
         <div className="text-center">
           <p className="hackmd-status-label">
-            <i className="fa fa-file-text mr-2" />
+            <i className="fa fa-file-text me-2" />
             { t('hackmd.used_for_not_found') }
           </p>
           {/* eslint-disable-next-line react/no-danger */}

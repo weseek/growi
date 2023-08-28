@@ -188,7 +188,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalHeader>
       <ModalBody>
         <div>
-          <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
+          <span className="fw-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
         </div>
         <div className="text-danger mt-3">
           {t('admin:user_group_management.delete_modal.desc')}

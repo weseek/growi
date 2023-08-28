@@ -76,8 +76,8 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   }, [onChangeMultipleAction]);
 
   return (
-    <div className="btn-group mr-2 admin-audit-log">
-      <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+    <div className="btn-group me-2 admin-audit-log">
+      <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
         <i className="fa fa-fw fa-bolt" />{t('admin:audit_log_management.action')}
       </button>
       <ul className="dropdown-menu select-action-dropdown" aria-labelledby="dropdownMenuButton">

@@ -33,7 +33,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
     <>
 
       <div className="row my-3">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.file_delivery_method')}
         </label>
 
@@ -43,7 +43,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
               className="btn btn-outline-secondary dropdown-toggle"
               type="button"
               id="ddGcsReferenceFileWithRelayMode"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="true"
             >

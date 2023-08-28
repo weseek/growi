@@ -29,7 +29,7 @@ export const UserGroupDropdown: FC<Props> = (props: Props) => {
   return (
     <>
       <div className="dropdown">
-        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
           {t('admin:user_group_management.add_child_group')}
         </button>
 

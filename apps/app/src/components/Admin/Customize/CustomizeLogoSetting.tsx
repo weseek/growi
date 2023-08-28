@@ -118,7 +118,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                   </div>
                 </h4>
                 <div className="row mb-3">
-                  <label className="col-sm-4 col-12 col-form-label text-left">
+                  <label className="col-sm-4 col-12 col-form-label text-start">
                     { t('admin:customize_settings.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
@@ -135,7 +135,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                   </div>
                 </div>
                 <div className="row">
-                  <label className="col-sm-4 col-12 col-form-label text-left">
+                  <label className="col-sm-4 col-12 col-form-label text-start">
                     { t('admin:customize_settings.upload_new_logo') }
                   </label>
                   <div className="col-sm-8 col-12">

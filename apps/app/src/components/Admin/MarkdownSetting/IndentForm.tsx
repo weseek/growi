@@ -43,8 +43,8 @@ const IndentForm = (props: Props) => {
         <div>
           <label htmlFor="adminPreferredIndentSize" className="form-label">{t('markdown_settings.indent_options.indentSize')}</label>
           <UncontrolledDropdown id="adminPreferredIndentSize">
-            <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-right">
-              <span className="float-left">
+            <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-end">
+              <span className="float-start">
                 {adminPreferredIndentSize || 4}
               </span>
             </DropdownToggle>

@@ -20,12 +20,12 @@ const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => 
           {questionText}
         </span>
       </div>
-      <div className="col-6 d-flex align-items-center pl-0">
+      <div className="col-6 d-flex align-items-center ps-0">
         <div className="btn-group flex-fill grw-questionnaire-btn-group">
           <label className="form-label btn btn-outline-primary active mr-4 rounded">
             <input type="radio" name={`${inputNamePrefix + question._id}`} id={`${question._id}-noAnswer`} value="0" defaultChecked /> -
           </label>
-          <label className="form-label btn btn-outline-primary rounded-left">
+          <label className="form-label btn btn-outline-primary rounded-start">
             <input type="radio" name={`${inputNamePrefix + question._id}`} id={`${question._id}-option1`} value="1" /> 1
           </label>
           <label className="form-label btn btn-outline-primary">

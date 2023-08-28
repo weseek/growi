@@ -118,12 +118,12 @@ export default class ImportCollectionItem extends React.Component {
             type="button"
             id="ddmMode"
             disabled={isImporting}
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
           >
             {this.renderModeLabel(option.mode)}
-            <span className="caret ml-2"></span>
+            <span className="caret ms-2"></span>
           </button>
           <ul className="dropdown-menu" aria-labelledby="ddmMode">
             { modes.map((mode) => {
@@ -147,7 +147,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm p-1 ml-2"
+        className="btn btn-outline-secondary btn-sm p-1 ms-2"
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >

@@ -50,7 +50,7 @@ const MailSetting = (props: Props) => {
         <div className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.mailer_is_not_set_up')}</div>
       )}
       <div className="row mb-5">
-        <label className="col-md-3 col-form-label text-right">{t('admin:app_setting.from_e-mail_address')}</label>
+        <label className="col-md-3 col-form-label text-end">{t('admin:app_setting.from_e-mail_address')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -63,7 +63,7 @@ const MailSetting = (props: Props) => {
       </div>
 
       <div className="row mb-5">
-        <label className="form-label text-left text-md-right col-md-3 col-form-label">
+        <label className="form-label text-start text-md-right col-md-3 col-form-label">
           {t('admin:app_setting.transmission_method')}
         </label>
         <div className="col-md-6 py-2">
@@ -96,7 +96,7 @@ const MailSetting = (props: Props) => {
             { t('Update') }
           </button>
           {adminAppContainer.state.transmissionMethod === 'smtp' && (
-            <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
+            <button type="button" className="btn btn-secondary ms-4" onClick={sendTestEmailHandler}>
               {t('admin:app_setting.send_test_email')}
             </button>
           )}

@@ -17,7 +17,7 @@ const SmtpSetting = (props: Props) => {
       <div id="mail-smtp" className="tab-pane active mt-5">
 
         <div className="row">
-          <label className="text-left text-md-right col-md-3 col-form-label">
+          <label className="text-start text-md-right col-md-3 col-form-label">
             Access key ID
           </label>
           <div className="col-md-6">
@@ -33,7 +33,7 @@ const SmtpSetting = (props: Props) => {
         </div>
 
         <div className="row">
-          <label className="text-left text-md-right col-md-3 col-form-label">
+          <label className="text-start text-md-right col-md-3 col-form-label">
             Secret access key
           </label>
           <div className="col-md-6">

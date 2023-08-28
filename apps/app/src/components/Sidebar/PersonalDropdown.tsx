@@ -21,7 +21,7 @@ export const PersonalDropdown = (): JSX.Element => {
   if (currentUser == null) {
     return (
       <div className="text-muted text-center mb-5">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+        <i className="fa fa-2x fa-spinner fa-pulse me-1" />
       </div>
     );
   }
@@ -49,7 +49,7 @@ export const PersonalDropdown = (): JSX.Element => {
           data-testid="personal-dropdown-button"
           aria-expanded="false"
         >
-          <UserPicture user={currentUser} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{currentUser.name}</span>
+          <UserPicture user={currentUser} noLink noTooltip /><span className="ms-1 d-none d-lg-inline-block">&nbsp;{currentUser.name}</span>
         </button>
 
         {/* Menu */}

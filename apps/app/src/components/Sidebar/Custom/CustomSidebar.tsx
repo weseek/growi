@@ -21,7 +21,7 @@ export const CustomSidebar = (): JSX.Element => {
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">
           {t('CustomSidebar')}
-          { !isLoading && <Link href="/Sidebar#edit" className="h6 ml-2"><i className="icon-pencil"></i></Link> }
+          { !isLoading && <Link href="/Sidebar#edit" className="h6 ms-2"><i className="icon-pencil"></i></Link> }
         </h3>
         { !isLoading && <SidebarHeaderReloadButton onClick={() => mutate()} /> }
       </div>

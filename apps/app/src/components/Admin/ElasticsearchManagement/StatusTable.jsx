@@ -17,7 +17,7 @@ class StatusTable extends React.PureComponent {
     } = this.props;
 
     const errorOccuredLabel = isErrorOccuredOnSearchService
-      ? <span className="badge rounded-pill bg-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
+      ? <span className="badge rounded-pill bg-danger ms-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
       : null;
 
     let connectionStatusLabel = null;
@@ -55,7 +55,7 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`badge-${indexName}-${aliasName}`} className="badge rounded-pill bg-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="badge rounded-pill bg-primary me-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );
@@ -65,10 +65,10 @@ class StatusTable extends React.PureComponent {
       <div className="card">
         <div className="card-header">
 
-          <a role="button" className="text-nowrap mr-2" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
+          <a role="button" className="text-nowrap me-2" data-bs-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
             <i className="fa fa-fw fa-database"></i> {indexName}
           </a>
-          <span className="ml-md-3">{aliasLabels}</span>
+          <span className="ms-md-3">{aliasLabels}</span>
         </div>
         <div id={collapseId} className="collapse">
           <div className="card-body">

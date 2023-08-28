@@ -60,14 +60,14 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
     <div className="d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
-        <span className="search-result-keyword ml-2">{`${searchingKeyword}`}</span>
-        <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
+        <span className="search-result-keyword ms-2">{`${searchingKeyword}`}</span>
+        <span className="ms-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
           // blackout 70px rectangle in VRT
-          <span data-vrt-blackout className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
+          <span data-vrt-blackout className="ms-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
         ) }
       </div>
-      <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
+      <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
         <div>
           <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
         </div>
