@@ -31,13 +31,13 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
     crowi = await getInstance();
     await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
 
-    const passportService = new PassportService(crowi);
-    ldapGroupSyncService = new LdapUserGroupSyncService(passportService);
-
     mockBind.mockImplementation(() => {
       return Promise.resolve();
     });
     mockLdapCreateClient.mockImplementation(() => { return {} as Client });
+
+    const passportService = new PassportService(crowi);
+    ldapGroupSyncService = new LdapUserGroupSyncService(passportService);
   });
 
   describe('When there is no circular reference in group tree', () => {
