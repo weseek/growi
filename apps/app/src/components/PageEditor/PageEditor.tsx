@@ -116,7 +116,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
   const { data: codemirrorEditor } = useCodeMirrorEditorMain(codeMirrorEditorContainerRef.current);
-  const { initDoc, focus: focusToEditor, setCaretLine } = codemirrorEditor ?? {};
+  const { initDoc, focus: focusToEditor, setCaretLine, setIndentSize } = codemirrorEditor ?? {};
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -526,6 +526,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       focusToEditor?.();
     }
   }, [editorMode, focusToEditor]);
+
+  // Set indent size by current indent
+  useEffect(() => {
+    setIndentSize(currentIndentSize);
+  }, [setIndentSize, currentIndentSize]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
