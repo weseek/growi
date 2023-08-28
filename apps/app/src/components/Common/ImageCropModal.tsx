@@ -162,15 +162,15 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         </button>
         { !showCropOption && (
           <div className="me-auto">
-            <div className="custom-control custom-switch ">
+            <div className="form-check form-switch">
               <input
                 id="cropImageOption"
-                className="custom-control-input me-auto"
+                className="form-check-input me-auto"
                 type="checkbox"
                 checked={isCropImage}
                 onChange={() => { setIsCropImage(!isCropImage) }}
               />
-              <label className="custom-control-label" htmlFor="cropImageOption">
+              <label className="form-label form-check-label" htmlFor="cropImageOption">
                 { t('crop_image_modal.image_crop') }
               </label>
             </div>

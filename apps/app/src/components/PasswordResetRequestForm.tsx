@@ -43,7 +43,7 @@ const PasswordResetRequestForm: FC = () => {
           <h1><i className="icon-lock large"></i></h1>
           <h1 className="text-center">{ t('forgot_password.forgot_password') }</h1>
           <h3>{t('forgot_password.password_reset_request_desc')}</h3>
-          <div className="form-group">
+          <div>
             <div className="input-group">
               <input
                 name="email"
@@ -55,7 +55,7 @@ const PasswordResetRequestForm: FC = () => {
               />
             </div>
           </div>
-          <div className="form-group">
+          <div>
             <button
               className="btn btn-lg btn-primary"
               type="submit"

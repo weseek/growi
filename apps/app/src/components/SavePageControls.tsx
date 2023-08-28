@@ -74,7 +74,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
   return (
-    <div className="d-flex align-items-center form-inline flex-nowrap">
+    <div className="d-flex align-items-center flex-nowrap">
 
       {isAclEnabled
         && (

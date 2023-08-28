@@ -91,7 +91,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
               <p>{t('questionnaire_modal.strive_to_improve_services')}</p>
             </div>
             <form className="px-5" onSubmit={submitHandler}>
-              <div className="form-group row mt-5">
+              <div className="row mt-5">
                 <label className="col-sm-5 col-form-label" htmlFor="satisfaction">
                   <span className="badge bg-primary me-2">{t('questionnaire_modal.required')}</span>{t('questionnaire_modal.satisfaction_with_growi')}
                 </label>
@@ -104,7 +104,7 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
                   <option>5</option>
                 </select>
               </div>
-              <div className="form-group row mt-3">
+              <div className="row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="lengthOfExperience">{t('questionnaire_modal.history_of_growi_usage')}</label>
                 <select
                   name="lengthOfExperience"
@@ -120,15 +120,15 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
                   <option>{t('questionnaire_modal.length_of_experience.less_than_one_month')}</option>
                 </select>
               </div>
-              <div className="form-group row mt-3">
+              <div className="row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="occupation">{t('questionnaire_modal.occupation')}</label>
                 <input className="col-sm-7 form-control" type="text" name="occupation" id="occupation" />
               </div>
-              <div className="form-group row mt-3">
+              <div className="row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="position">{t('questionnaire_modal.position')}</label>
                 <input className="col-sm-7 form-control" type="text" name="position" id="position" />
               </div>
-              <div className="form-group row mt-3">
+              <div className="row mt-3">
                 <label className="col-sm-5 col-form-label" htmlFor="commentText">
                   <span className="badge bg-primary me-2">{t('questionnaire_modal.required')}</span>{t('questionnaire_modal.comment_on_growi')}
                 </label>

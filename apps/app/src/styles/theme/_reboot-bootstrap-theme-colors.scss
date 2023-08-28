@@ -47,24 +47,24 @@
 }
 
 @each $theme-color, $color in $theme-colors {
-  .custom-checkbox-#{$theme-color} {
-    .custom-control-label::before {
+  .form-check-#{$theme-color} {
+    .form-check-label::before {
       border-color: $input-border-color;
       transition: 0.3s ease-in-out;
     }
-    .custom-control-input:checked + .custom-control-label::before {
+    .form-check-input:checked + .form-check-label::before {
       background-color: $color;
       border-color: $color;
     }
-    .custom-control-input:checked + .custom-control-label::after {
+    .form-check-input:checked + .form-check-label::after {
       color: var(--bgcolor-global);
     }
-    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+    .form-check-input:not(:disabled):active ~ .form-check-label::before {
       color: var(--bgcolor-global);
       background-color: $color;
       border-color: $color;
     }
-    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+    .form-check-input:focus:not(:checked) ~ .form-check-label::before {
       color: var(--bgcolor-global);
       background-color: var(--bgcolor-global);
       border-color: $input-focus-border-color;

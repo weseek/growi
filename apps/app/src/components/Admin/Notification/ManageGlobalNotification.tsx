@@ -126,12 +126,12 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
 
         <div className="col-sm-4">
           <h3>
-            <label htmlFor="triggerPath">{t('notification_settings.trigger_path')}
+            <label htmlFor="triggerPath" className="form-label">{t('notification_settings.trigger_path')}
               {/* eslint-disable-next-line react/no-danger */}
               <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
             </label>
           </h3>
-          <div className="form-group">
+          <div>
             <input
               className="form-control"
               type="text"
@@ -143,10 +143,10 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
           </div>
 
           <h3>{t('notification_settings.notify_to')}</h3>
-          <div className="form-group form-inline">
-            <div className="custom-control custom-radio">
+          <div>
+            <div className="form-check">
               <input
-                className="custom-control-input"
+                className="form-check-input"
                 type="radio"
                 id="mail"
                 name="notifyType"
@@ -154,13 +154,13 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={notifyType === NotifyType.Email}
                 onChange={() => { setNotifyType(NotifyType.Email) }}
               />
-              <label className="custom-control-label" htmlFor="mail">
+              <label className="form-label form-check-label" htmlFor="mail">
                 <p className="fw-bold">Email</p>
               </label>
             </div>
-            <div className="custom-control custom-radio ms-2">
+            <div className="form-check ms-2">
               <input
-                className="custom-control-input"
+                className="form-check-input"
                 type="radio"
                 id="slack"
                 name="notifyType"
@@ -168,7 +168,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 checked={notifyType === NotifyType.SLACK}
                 onChange={() => { setNotifyType(NotifyType.SLACK) }}
               />
-              <label className="custom-control-label" htmlFor="slack">
+              <label className="form-label form-check-label" htmlFor="slack">
                 <p className="fw-bold">Slack</p>
               </label>
             </div>
@@ -178,7 +178,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
             ? (
               <>
                 <div className="input-group notify-to-option" id="mail-input">
-                  <div className="input-group-prepend">
+                  <div>
                     <span className="input-group-text" id="mail-addon"><i className="ti ti-email" /></span>
                   </div>
                   <input
@@ -206,7 +206,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
             : (
               <>
                 <div className="input-group notify-to-option" id="slack-input">
-                  <div className="input-group-prepend">
+                  <div>
                     <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
                   </div>
                   <input
@@ -228,7 +228,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
         </div>
 
         <div className="offset-1 col-sm-5">
-          <div className="form-group">
+          <div>
             <h3>{t('notification_settings.trigger_events')}</h3>
             <div className="my-1">
               <TriggerEventCheckBox

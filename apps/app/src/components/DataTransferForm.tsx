@@ -16,14 +16,14 @@ const DataTransferForm = (): JSX.Element => {
         <strong>{ t('g2g_data_transfer.transfer_data_to_this_growi')}</strong>
       </p>
 
-      <div className="form-group row mt-3">
+      <div className="row mt-3">
         <div className="col-md-12">
           <button type="button" className="btn btn-primary w-100" onClick={generateTransferKey}>
             {t('g2g_data_transfer.publish_transfer_key')}
           </button>
         </div>
         <div className="col-md-12 mt-1">
-          <div className="input-group-prepend">
+          <div>
             <input className="form-control" type="text" value={transferKey} readOnly />
             <CustomCopyToClipBoard textToBeCopied={transferKey} message="copied_to_clipboard" />
           </div>

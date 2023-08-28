@@ -252,7 +252,7 @@ class SecuritySetting extends React.Component {
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
-        <div className="col-md-3 text-md-right">
+        <div className="col-md-3 text-md-end">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
             <strong>{t('security_settings.page_delete')}</strong>
           )}
@@ -356,15 +356,15 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="custom-control custom-switch custom-checkbox-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
-                      className="custom-control-input"
+                      className="form-check-input"
                       id="isShowRestrictedByOwner"
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
-                    <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByOwner">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -373,15 +373,15 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="custom-control custom-switch custom-checkbox-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
-                      className="custom-control-input"
+                      className="form-check-input"
                       id="isShowRestrictedByGroup"
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
-                    <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByGroup">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -393,7 +393,7 @@ class SecuritySetting extends React.Component {
 
         <h4>{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
-          <div className="col-md-3 text-md-right py-2">
+          <div className="col-md-3 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
           </div>
           <div className="col-md-9">
@@ -456,15 +456,15 @@ class SecuritySetting extends React.Component {
         <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="is-user-page-deletion-enabled"
                 checked={adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomepageDeletionEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
+              <label className="form-label form-check-label" htmlFor="is-user-page-deletion-enabled">
                 {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>
@@ -476,8 +476,8 @@ class SecuritySetting extends React.Component {
         </div>
 
         <h4>{t('security_settings.session')}</h4>
-        <div className="form-group row">
-          <label className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>
+        <div className="row">
+          <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.max_age')}</label>
           <div className="col-md-6">
             <input
               className="form-control col-md-3"
@@ -499,7 +499,7 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="text-center text-md-left offset-md-3 col-md-5">
+          <div className="text-center text-md-start offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
               {t('Update')}
             </button>
