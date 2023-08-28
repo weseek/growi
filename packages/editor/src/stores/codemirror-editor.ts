@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { scrollPastEnd } from '@codemirror/view';
@@ -15,6 +15,7 @@ const defaultExtensionsMain: Extension[] = [
 
 type MainEditorUtils = {
   // impl something
+  setIndentSize: (indentSize?: number) => void,
 };
 
 export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRResponseWithUtils<MainEditorUtils, UseCodeMirrorEditorResponse> => {
@@ -30,7 +31,13 @@ export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRR
 
   const swrResponse = useSWRStatic('codeMirrorEditorMain', container != null ? states : undefined);
 
+  // implement setIndentSize method
+  const setIndentSize = useCallback((indentSize?: number): void => {
+
+  }, []);
+
   return withUtils(swrResponse, {
     // impl something
+    setIndentSize,
   });
 };
