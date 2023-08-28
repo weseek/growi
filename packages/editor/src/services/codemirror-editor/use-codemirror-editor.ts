@@ -2,7 +2,9 @@ import { useCallback, useEffect } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { EditorState, type EditorStateConfig, type Extension } from '@codemirror/state';
+import {
+  EditorState, StateEffect, type EditorStateConfig, type Extension, Compartment,
+} from '@codemirror/state';
 import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
 import { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
@@ -12,11 +14,15 @@ export type UseCodeMirrorEditor = UseCodeMirror;
 type UseCodeMirrorEditorUtils = {
   initState: (config?: EditorStateConfig) => void,
   initDoc: (doc?: string) => void,
+  appendExtension: (extension: Extension, compartment?: Compartment) => CleanupFunction | undefined,
+  getDoc: () => string | undefined,
   focus: () => void,
   setCaretLine: (lineNumber?: number) => void,
 }
 
 export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
+
+type CleanupFunction = () => void;
 
 const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -30,8 +36,11 @@ const defaultExtensionsToInit: Extension[] = [
 export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorEditorResponse => {
 
   const codemirror = useCodeMirror({
-    extensions: defaultExtensions,
     ...props,
+    extensions: [
+      ...defaultExtensions,
+      ...(props?.extensions ?? []),
+    ],
   });
 
   const { view, setContainer } = codemirror;
@@ -57,6 +66,31 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
   const initDoc = useCallback((doc?: string): void => {
     initState({ doc });
   }, [initState]);
+
+  // implement appendExtension method
+  const appendExtension = useCallback((extension: Extension, compartment?: Compartment): CleanupFunction | undefined => {
+    view?.dispatch({
+      effects: StateEffect.appendConfig.of(
+        compartment != null
+          ? compartment.of(extension)
+          : extension,
+      ),
+    });
+
+    return compartment != null
+      // return cleanup function
+      ? () => {
+        view?.dispatch({
+          effects: compartment?.reconfigure([]),
+        });
+      }
+      : undefined;
+  }, [view]);
+
+  // implement getDoc method
+  const getDoc = useCallback((): string | undefined => {
+    return view?.state.doc.toString();
+  }, [view]);
 
   // implement focus method
   const focus = useCallback((): void => {
@@ -90,6 +124,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     ...codemirror,
     initState,
     initDoc,
+    appendExtension,
+    getDoc,
     focus,
     setCaretLine,
   };
