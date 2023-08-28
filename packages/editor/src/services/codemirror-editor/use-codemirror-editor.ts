@@ -1,8 +1,10 @@
 import { useCallback, useEffect } from 'react';
 
+import { indentWithTab } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { EditorState, type EditorStateConfig, type Extension } from '@codemirror/state';
+import { keymap } from '@codemirror/view';
 import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
 import { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
@@ -20,6 +22,7 @@ export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMir
 
 const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
+  keymap.of([indentWithTab]),
 ];
 
 const defaultExtensionsToInit: Extension[] = [
