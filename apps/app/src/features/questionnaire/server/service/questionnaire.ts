@@ -41,7 +41,7 @@ class QuestionnaireService {
     // Get the oldest user who probably installed this GROWI.
     // https://mongoosejs.com/docs/6.x/docs/api.html#model_Model-findOne
     // https://stackoverflow.com/questions/13443069/mongoose-findone-with-sorting
-    const user = await User.findOne().sort({ createdAt: 1 });
+    const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
     logger.debug(user);
     const installedAtByOldestUser = user ? user.createdAt : null;
 
