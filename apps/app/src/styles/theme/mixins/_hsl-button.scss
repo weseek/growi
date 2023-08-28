@@ -23,10 +23,10 @@
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
     // @if $enable-shadows {
-    //   @include box-shadow($btn-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5));
+    //   @include box-shadow($btn-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-contrast($background), $border, 15%), .5));
     // } @else {
     //   // Avoid using mixin so we can pass custom focus shadow properly
-    //   box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5);
+    //   box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-contrast($background), $border, 15%), .5);
     // }
   }
 
@@ -56,16 +56,16 @@
 
   //   &:focus {
   //     // @if $enable-shadows and $btn-active-box-shadow != none {
-  //     //   @include box-shadow($btn-active-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5));
+  //     //   @include box-shadow($btn-active-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-contrast($background), $border, 15%), .5));
   //     // } @else {
   //     //   // Avoid using mixin so we can pass custom focus shadow properly
-  //     //   box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5);
+  //     //   box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-contrast($background), $border, 15%), .5);
   //     // }
   //   }
   // }
 }
 
-// @mixin button-outline-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+// @mixin button-outline-variant($color, $color-hover: color-contrast($color), $active-background: $color, $active-border: $color) {
 @mixin button-outline-variant($color, $color-hover: hsl.contrast($color), $active-background: $color, $active-border: $color) {
   color: $color;
   border-color: $color;
