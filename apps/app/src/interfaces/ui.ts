@@ -6,6 +6,7 @@ export const SidebarContentsType = {
   TREE: 'tree',
   TAG: 'tag',
   BOOKMARKS: 'bookmarks',
+  TRASH: 'TRASH',
 } as const;
 export const AllSidebarContentsType = Object.values(SidebarContentsType);
 export type SidebarContentsType = typeof SidebarContentsType[keyof typeof SidebarContentsType];

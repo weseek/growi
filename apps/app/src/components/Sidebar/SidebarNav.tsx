@@ -119,22 +119,18 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
-        {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
-        {/* eslint-enable max-len */}
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
-        {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
-        {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
         <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
+        <PrimaryItem contents={SidebarContentsType.TRASH} label="Trash" iconName="delete" />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         <PersonalDropdown />
         <InAppNotificationDropdown />
 
-        {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
         {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
         <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
-        <SecondaryItem label="Trash" iconName="delete" href="/trash" />
+        {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
       </div>
     </div>
   );
