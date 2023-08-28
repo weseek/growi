@@ -529,7 +529,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // Set indent size by current indent
   useEffect(() => {
-    setIndentSize(currentIndentSize);
+    setIndentSize?.(currentIndentSize);
   }, [setIndentSize, currentIndentSize]);
 
   // Detect indent size from contents (only when users are allowed to change it)
