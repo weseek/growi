@@ -44,7 +44,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
           </Card>
 
 
-          <div className="form-group row">
+          <div className="row">
             <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isEnabledAttachTitleHeader"
@@ -88,7 +88,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
             onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}
           />
 
-          <div className="form-group row">
+          <div className="row">
             <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isEnabledStaleNotification"
@@ -103,7 +103,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
             </div>
           </div>
 
-          <div className="form-group row">
+          <div className="row">
             <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isAllReplyShown"
@@ -118,7 +118,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
             </div>
           </div>
 
-          <div className="form-group row">
+          <div className="row">
             <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isSearchScopeChildrenAsDefault"

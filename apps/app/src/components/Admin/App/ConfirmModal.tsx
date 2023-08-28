@@ -30,7 +30,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
   };
 
   return (
-    <Modal isOpen={props.isModalOpen} toggle={onCancel} className="">
+    <Modal isOpen={props.isModalOpen} toggle={onCancel}>
       <ModalHeader tag="h4" toggle={onCancel} className="bg-danger">
         <i className="icon-fw icon-question" />
         {t('Warning')}

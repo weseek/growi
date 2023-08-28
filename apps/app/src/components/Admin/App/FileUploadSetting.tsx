@@ -37,25 +37,25 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         </span>
       </p>
 
-      <div className="row form-group mb-3">
-        <label className="text-start text-md-right col-md-3 col-form-label">
+      <div className="row mb-3">
+        <label className="text-start text-md-end col-md-3 col-form-label">
           {t('admin:app_setting.file_upload_method')}
         </label>
 
         <div className="col-md-6 py-2">
           {fileUploadTypes.map((type) => {
             return (
-              <div key={type} className="custom-control custom-radio custom-control-inline">
+              <div key={type} className="form-check form-check-inline">
                 <input
                   type="radio"
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="file-upload-type"
                   id={`file-upload-type-radio-${type}`}
                   checked={props.fileUploadType === type}
                   disabled={props.isFixedFileUploadByEnvVar}
                   onChange={(e) => { props?.onChangeFileUploadType(e, type) }}
                 />
-                <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
+                <label className="form-label form-check-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
               </div>
             );
           })}

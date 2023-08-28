@@ -76,7 +76,7 @@
   //     */
   //   input.form-control,
   //   select.form-control,
-  //   select.custom-select,
+  //   select.form-select,
   //   textarea.form-control {
   //     color: var(--color-global);
   //     background-color: hsl.darken(var(--bgcolor-global), 5%);
@@ -94,6 +94,8 @@
   //     background-color: hsl.lighten(var(--bgcolor-global),5%);
   //   }
 
+  // TODO: .input-group-prepend dropped in bootstrap v5
+  // https://redmine.weseek.co.jp/issues/128307
   //   .input-group > .input-group-prepend > .input-group-text {
   //     color: theme-color('light');
   //     background-color: theme-color('secondary');
@@ -108,7 +110,7 @@
   //     border-color: $border-color-global;
   //   }
 
-  //   label.custom-control-label::before {
+  //   label.form-check-label::before {
   //     background-color: hsl.darken(var(--bgcolor-global),5%);
   //   }
 
@@ -526,7 +528,7 @@
   //       background: var(--bgcolor-global);
   //     }
 
-  //     .custom-control-label {
+  //     .form-check-label {
   //       &::before {
   //         background-color: var(--secondary);
   //         border-color: transparent;
@@ -537,7 +539,7 @@
   //       }
   //     }
 
-  //     .custom-control-input:checked ~ .custom-control-label {
+  //     .form-check-input:checked ~ .form-check-label {
   //       &::before {
   //         background-color: lighten($color-slack, 10%);
   //       }

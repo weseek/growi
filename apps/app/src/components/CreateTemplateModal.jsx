@@ -47,8 +47,8 @@ const CreateTemplateModal = (props) => {
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <label className="mb-4">
+        <div>
+          <label className="form-label mb-4">
             <code>{parentPath}</code><br />
             { t('template.modal_label.Create template under') }
           </label>
