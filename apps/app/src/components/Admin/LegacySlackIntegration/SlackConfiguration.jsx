@@ -65,7 +65,7 @@ class SlackConfiguration extends React.Component {
             <h2 className="border-bottom mb-5">{t('notification_settings.slack_incoming_configuration')}</h2>
 
             <div className="row mb-3">
-              <label className="form-label col-md-3 text-start text-md-right">Webhook URL</label>
+              <label className="form-label col-md-3 text-start text-md-end">Webhook URL</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -117,7 +117,7 @@ class SlackConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="form-label col-md-3 text-start text-md-right">OAuth access token</label>
+                <label className="form-label col-md-3 text-start text-md-end">OAuth access token</label>
                 <div className="col-md-6">
                   <input
                     className="form-control"

@@ -38,7 +38,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
       </p>
 
       <div className="row mb-3">
-        <label className="text-start text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-end col-md-3 col-form-label">
           {t('admin:app_setting.file_upload_method')}
         </label>
 

@@ -85,7 +85,7 @@ class SamlSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="text-start text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
+          <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
               className="form-control"

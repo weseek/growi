@@ -74,7 +74,7 @@ class GoogleSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="form-label col-12 col-md-3 text-start text-md-right py-2">{t('security_settings.callback_URL')}</label>
+          <label className="form-label col-12 col-md-3 text-start text-md-end py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"

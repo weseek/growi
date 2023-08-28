@@ -50,7 +50,7 @@ export const BasicInfoSettings = (): JSX.Element => {
     <>
 
       <div className="row">
-        <label htmlFor="userForm[name]" className="text-start text-md-right col-md-3 col-form-label">{t('Name')}</label>
+        <label htmlFor="userForm[name]" className="text-start text-md-end col-md-3 col-form-label">{t('Name')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -63,7 +63,7 @@ export const BasicInfoSettings = (): JSX.Element => {
       </div>
 
       <div className="row">
-        <label htmlFor="userForm[email]" className="text-start text-md-right col-md-3 col-form-label">{t('Email')}</label>
+        <label htmlFor="userForm[email]" className="text-start text-md-end col-md-3 col-form-label">{t('Email')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -84,7 +84,7 @@ export const BasicInfoSettings = (): JSX.Element => {
       </div>
 
       <div className="row">
-        <label className="text-start text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('Disclose E-mail')}</label>
         <div className="col-md-6">
           <div className="form-check form-check-inline">
             <input
@@ -112,7 +112,7 @@ export const BasicInfoSettings = (): JSX.Element => {
       </div>
 
       <div className="row">
-        <label className="text-start text-md-right col-md-3 col-form-label">{t('Language')}</label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
           {
             i18nConfig.locales.map((locale) => {
@@ -137,7 +137,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
       <div className="row">
-        <label htmlFor="userForm[slackMemberId]" className="text-start text-md-right col-md-3 col-form-label">{t('Slack Member ID')}</label>
+        <label htmlFor="userForm[slackMemberId]" className="text-start text-md-end col-md-3 col-form-label">{t('Slack Member ID')}</label>
         <div className="col-md-6">
           <input
             className="form-control"

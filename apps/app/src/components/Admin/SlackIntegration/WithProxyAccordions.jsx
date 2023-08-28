@@ -138,7 +138,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
     <div className="py-4 px-5">
       <p className="fw-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
       <div className="row">
-        <label className="text-start text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
+        <label className="text-start text-md-end col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
           <div className=" mx-1">
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
@@ -147,7 +147,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
         </div>
       </div>
       <div className="row">
-        <label className="text-start text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
+        <label className="text-start text-md-end col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
           <div className=" mx-1">
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
