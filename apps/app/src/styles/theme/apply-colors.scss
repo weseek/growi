@@ -66,6 +66,7 @@ code:not([class^='language-']) {
 //
 
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+// theme-color-level() dropped in bootstrap v5
 // Alert link
 // @each $color, $value in $theme-colors {
 //   .alert.alert-#{$color} {
@@ -90,6 +91,7 @@ code:not([class^='language-']) {
 }
 
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+// form-control-focus() dropped in bootstrap v5
 // Form
 // .form-control {
 //   @include form-control-focus();
