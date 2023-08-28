@@ -66,6 +66,31 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   );
 };
 
+type PrimaryLinkItemProps = {
+  label: string,
+  iconName: string
+  href: string,
+}
+
+const PrimaryLinkItem: FC<PrimaryLinkItemProps> = (props: PrimaryLinkItemProps) => {
+  const {
+    href, label, iconName,
+  } = props;
+
+  const labelForTestId = label.toLowerCase().replace(' ', '-');
+
+  return (
+    <a
+      type="button"
+      href={href}
+      data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
+      className="d-block btn btn-primary"
+    >
+      <i className="material-icons">{iconName}</i>
+    </a>
+  );
+};
+
 type SecondaryItemProps = {
   label: string,
   href: string,
@@ -121,7 +146,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
-        <PrimaryItem contents={SidebarContentsType.TRASH} label="Trash" iconName="delete" />
+        <PrimaryLinkItem label="Trash" iconName="delete" href="/trash" />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
