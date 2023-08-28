@@ -15,7 +15,7 @@ const logger = loggerFactory('growi:service:ldap-user-sync-service');
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:
 // O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
-const TREES_BATCH_SIZE = 30;
+const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
 class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
