@@ -53,6 +53,10 @@ class LdapService {
     });
   }
 
+  /**
+   * Bind to LDAP server.
+   * This method is declared independently, so multiple operations can be requested to the LDAP server with a single bind.
+   */
   bind(): Promise<void> {
     const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
@@ -84,6 +88,7 @@ class LdapService {
 
   /**
    * Execute search on LDAP server and return result
+   * Execution of bind() is necessary before search
    * @param {string} filter Search filter
    * @param {string} base Base DN to execute search on
    * @returns {SearchEntry[]} Search result. Default scope is set to 'sub'.
