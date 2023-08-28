@@ -35,6 +35,10 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
     });
   });
 
+  afterAll(async() => {
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'security:passport-ldap:serverUrl': undefined }, true);
+  });
+
   describe('When there is no circular reference in group tree', () => {
     it('creates ExternalUserGroupTrees', async() => {
       // mock search on LDAP server
