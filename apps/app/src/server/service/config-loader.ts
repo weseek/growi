@@ -614,7 +614,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns: 'crowi',
     key: 'app:auditLogEnabled',
     type: ValueType.BOOLEAN,
-    default: false,
+    default: true,
   },
   ACTIVITY_EXPIRATION_SECONDS: {
     ns: 'crowi',

@@ -17,22 +17,22 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
   const placeholder = `${format(date, dateFormat)} - ${format(addDays(date, 1), dateFormat)}`;
 
   return (
-    <div className="input-group admin-audit-log">
-      <div>
+    <div className="col-12">
+      <div className="input-group admin-audit-log">
         <span className="input-group-text">
           <i className="fa fa-fw fa-calendar" />
         </span>
+        <input
+          ref={ref}
+          type="text"
+          value={props?.value}
+          onFocus={props?.onFocus}
+          onChange={props?.onChange}
+          placeholder={placeholder}
+          className="form-control date-range-picker"
+          aria-describedby="basic-addon1"
+        />
       </div>
-      <input
-        ref={ref}
-        type="text"
-        value={props?.value}
-        onFocus={props?.onFocus}
-        onChange={props?.onChange}
-        placeholder={placeholder}
-        className="form-control date-range-picker"
-        aria-describedby="basic-addon1"
-      />
     </div>
   );
 });

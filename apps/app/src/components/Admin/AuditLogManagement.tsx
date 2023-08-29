@@ -172,7 +172,7 @@ export const AuditLogManagement: FC = () => {
         <AuditLogSettings />
       ) : (
         <>
-          <div className="mb-3">
+          <div className="mb-3 row row-cols-lg-auto g-3 align-items-center">
             <SearchUsernameTypeahead
               ref={typeaheadRef}
               onChange={setUsernamesHandler}
@@ -191,7 +191,7 @@ export const AuditLogManagement: FC = () => {
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
 
-            <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
+            <button type="button" className="btn btn-link col-12" onClick={clearButtonPushedHandler}>
               {t('admin:audit_log_management.clear')}
             </button>
           </div>
