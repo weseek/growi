@@ -140,7 +140,6 @@ export const SidebarNav: FC<Props> = (props: Props) => {
       </div>
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
-        {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
