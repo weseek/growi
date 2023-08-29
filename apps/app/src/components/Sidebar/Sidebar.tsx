@@ -302,7 +302,7 @@ export const Sidebar = memo((): JSX.Element => {
         {/* Brand Logo  */}
         <div className="p-2 w-100 d-flex navbar-brand">
           <div className="grw-logo-and-app-title flex-grow-1 d-flex align-items-center gap-2">
-            {showContents && (
+            {!isCollapsed && (
               <>
                 <Link href="/" className="grw-logo d-inline-block">
                   <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
