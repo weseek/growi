@@ -2,23 +2,23 @@ import { useCallback, useMemo } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import {
-  StateEffect, type Extension, Compartment, Transaction,
-} from '@codemirror/state';
+import { type Extension } from '@codemirror/state';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
-import type { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
+import type { UseCodeMirrorEditorStates } from '../interfaces/react-codemirror';
+
+import { AppendExtension, useAppendExtension } from './utils/append-extension';
+import { useInitDoc, type InitDoc } from './utils/init-doc';
 
 type UseCodeMirrorEditorUtils = {
-  initDoc: (doc?: string) => void,
-  appendExtension: (extension: Extension, compartment?: Compartment) => CleanupFunction | undefined,
+  initDoc: InitDoc,
+  appendExtension: AppendExtension,
   getDoc: () => string | undefined,
   focus: () => void,
   setCaretLine: (lineNumber?: number) => void,
 }
 export type UseCodeMirrorEditor = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
 
-type CleanupFunction = () => void;
 
 const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -40,34 +40,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
 
   const { view } = codemirror;
 
-  // implement initDoc method
-  const initDoc = useCallback((doc?: string): void => {
-    view?.dispatch({
-      changes: {
-        from: 0,
-        to: view.state.doc.length,
-        insert: doc,
-      },
-      annotations: Transaction.addToHistory.of(false),
-    });
-  }, [view]);
-
-  // implement appendExtension method
-  const appendExtension = useCallback((extension: Extension): CleanupFunction | undefined => {
-    const compartment = new Compartment();
-    view?.dispatch({
-      effects: StateEffect.appendConfig.of(
-        compartment.of(extension),
-      ),
-    });
-
-    // return cleanup function
-    return () => {
-      view?.dispatch({
-        effects: compartment?.reconfigure([]),
-      });
-    };
-  }, [view]);
+  const initDoc = useInitDoc(view);
+  const appendExtension = useAppendExtension(view);
 
   // implement getDoc method
   const getDoc = useCallback((): string | undefined => {
