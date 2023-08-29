@@ -627,7 +627,7 @@ class PageGrantService {
       const childrenOrItselfUserGroups = (await Promise.all(grantedUserGroupIds.map((groupId) => {
         return UserGroup.findGroupsWithDescendantsById(groupId);
       }))).flat();
-      const childrenOrItselfExternalUserGroups = (await Promise.all(externalUserGroupUserIds.map((groupId) => {
+      const childrenOrItselfExternalUserGroups = (await Promise.all(grantedExternalUserGroupIds.map((groupId) => {
         return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
       }))).flat();
       const childrenOrItselfGroups = [...childrenOrItselfUserGroups, ...childrenOrItselfExternalUserGroups];

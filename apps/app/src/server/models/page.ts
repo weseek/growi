@@ -116,6 +116,11 @@ const schema = new Schema<PageDocument, PageModel>({
         index: true,
       },
     }],
+    validate: [function(arr) {
+      if (arr == null) return true;
+      const uniqueItemValues = new Set(arr.map(e => e.item));
+      return arr.length === uniqueItemValues.size;
+    }, 'grantedGroups contains non unique item'],
     default: [],
   },
   creator: { type: ObjectId, ref: 'User', index: true },
