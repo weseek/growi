@@ -55,7 +55,7 @@
 		"anyone": "任何人",
     "user_homepage_deletion": {
       "user_homepage_deletion": "删除用户页面",
-      "enable_user_homepage_deletion": "在删除用户时完全删除用户主页",
+      "enable_user_homepage_deletion": "用户删除时，完全删除用户主页",
       "desc": "删除用户时，用户主页及其下属页面也会被完全删除。"
     },
     "session": "会议",
