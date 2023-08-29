@@ -1,3 +1,16 @@
+// TODO: .form-group dropped in bootstrap v5
+// https://redmine.weseek.co.jp/issues/129103
+// override react-bootstrap-typeahead styles
+// see: https://github.com/ericgio/react-bootstrap-typeahead
+.form-group:not(.has-error) {
+  .rbt-input.form-control {
+    // focus
+    &.focus {
+      border-color: inherit;
+    }
+  }
+}
+
 // TODO: check padding when upgrade react-bootstrap-typeahead v6
 // .close to .btn-close in bootstrap v5
 // https://redmine.weseek.co.jp/issues/129103

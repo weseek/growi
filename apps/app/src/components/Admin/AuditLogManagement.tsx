@@ -191,7 +191,7 @@ export const AuditLogManagement: FC = () => {
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
 
-            <button type="button" className="btn btn-link col-12" onClick={clearButtonPushedHandler}>
+            <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
               {t('admin:audit_log_management.clear')}
             </button>
           </div>

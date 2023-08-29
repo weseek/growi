@@ -76,48 +76,50 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   }, [onChangeMultipleAction]);
 
   return (
-    <div className="btn-group me-2 admin-audit-log col-12">
-      <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-        <i className="fa fa-fw fa-bolt" />{t('admin:audit_log_management.action')}
-      </button>
-      <ul className="dropdown-menu select-action-dropdown" aria-labelledby="dropdownMenuButton">
-        {dropdownItems.map(item => (
-          <div key={item.actionCategory}>
-            <div className="dropdown-item">
-              <div className="px-2 m-0">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  defaultChecked
-                  onChange={(e) => { multipleActionCheckboxChangedHandler(item.actions, e.target.checked) }}
-                />
-                <label className="form-label form-check-label">{t(`admin:audit_log_action_category.${item.actionCategory}`)}</label>
-              </div>
-            </div>
-            {
-              item.actions.map(action => (
-                <div className="dropdown-item" key={action}>
-                  <div className="px-4 m-0">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id={`checkbox${action}`}
-                      onChange={() => { actionCheckboxChangedHandler(action) }}
-                      checked={actionMap.get(action)}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor={`checkbox${action}`}
-                    >
-                      {t(`admin:audit_log_action.${action}`)}
-                    </label>
-                  </div>
+    <div className="col-12">
+      <div className="btn-group me-2 admin-audit-log">
+        <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+          <i className="fa fa-fw fa-bolt" />{t('admin:audit_log_management.action')}
+        </button>
+        <ul className="dropdown-menu select-action-dropdown" aria-labelledby="dropdownMenuButton">
+          {dropdownItems.map(item => (
+            <div key={item.actionCategory}>
+              <div className="dropdown-item">
+                <div className="px-2 m-0">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    defaultChecked
+                    onChange={(e) => { multipleActionCheckboxChangedHandler(item.actions, e.target.checked) }}
+                  />
+                  <label className="form-label form-check-label">{t(`admin:audit_log_action_category.${item.actionCategory}`)}</label>
                 </div>
-              ))
-            }
-          </div>
-        ))}
-      </ul>
+              </div>
+              {
+                item.actions.map(action => (
+                  <div className="dropdown-item" key={action}>
+                    <div className="px-4 m-0">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={`checkbox${action}`}
+                        onChange={() => { actionCheckboxChangedHandler(action) }}
+                        checked={actionMap.get(action)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`checkbox${action}`}
+                      >
+                        {t(`admin:audit_log_action.${action}`)}
+                      </label>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
