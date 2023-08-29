@@ -35,7 +35,7 @@ import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
 
-interface ItemProps {
+export type SimpleItemProps = {
   isEnableActions: boolean
   isReadOnlyUser: boolean
   itemNode: ItemNode
@@ -45,9 +45,9 @@ interface ItemProps {
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
   itemRef?
-  itemClass?: React.FunctionComponent<ItemProps>
+  itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
-}
+};
 
 // Utility to mark target
 const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
@@ -91,7 +91,7 @@ const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element
 };
 
 
-const SimpleItem: FC<ItemProps> = (props: ItemProps) => {
+const SimpleItem: FC<SimpleItemProps> = (props: SimpleItemProps) => {
   const { t } = useTranslation();
   const router = useRouter();
 

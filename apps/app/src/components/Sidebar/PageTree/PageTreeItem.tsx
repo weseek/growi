@@ -10,31 +10,21 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastWarning, toastError } from '~/client/util/toastr';
-import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
+import { IPageHasId } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 
 import { ItemNode } from './ItemNode';
-import SimpleItem from './SimpleItem';
-
+import SimpleItem, { SimpleItemProps } from './SimpleItem';
 
 const logger = loggerFactory('growi:cli:Item');
 
-interface ItemProps {
-  key
-  isEnableActions: boolean
-  isReadOnlyUser: boolean
-  itemNode: ItemNode
-  targetPathOrId?: Nullable<string>
-  isOpen?: boolean
-  onRenamed?(fromPath: string | undefined, toPath: string): void
-  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
-}
+type Optional = 'itemRef' | 'itemClass' | 'mainClassName';
 
-export const PageTreeItem: FC<ItemProps> = (props: ItemProps) => {
+type PageTreeItemProps = Omit<SimpleItemProps, Optional> & {key};
+
+export const PageTreeItem: FC<PageTreeItemProps> = (props: PageTreeItemProps) => {
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
     const pageTitle = nodePath.basename(droppedPagePath);
     return nodePath.join(newParentPagePath, pageTitle);
