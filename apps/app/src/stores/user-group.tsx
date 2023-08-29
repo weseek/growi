@@ -5,7 +5,6 @@ import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import {
   IUserGroupRelationHasIdPopulatedUser,
@@ -20,7 +19,7 @@ type MyUserGroupsResult = {
 export const useSWRxMyUserGroups = (shouldFetch: boolean): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWR(
     shouldFetch ? '/me/user-groups' : null,
-    endpoint => apiGet(endpoint).then(result => (result as MyUserGroupsResult).userGroups),
+    endpoint => apiv3Get(endpoint).then(result => (result.data as MyUserGroupsResult).userGroups),
   );
 };
 

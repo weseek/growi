@@ -41,7 +41,6 @@ module.exports = function(crowi, app) {
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
-  const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
@@ -121,9 +120,6 @@ module.exports = function(crowi, app) {
   const apiV1Router = express.Router();
 
   apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
-
-  apiV1Router.get('/me/user-groups'  , accessTokenParser , loginRequiredStrictly , me.api.userGroups);
-  apiV1Router.get('/me/external-user-groups'  , accessTokenParser , loginRequiredStrictly , me.api.externalUserGroups);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
