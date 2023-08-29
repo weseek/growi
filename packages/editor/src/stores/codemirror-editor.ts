@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { scrollPastEnd } from '@codemirror/view';
-import {
-  type SWRResponseWithUtils, withUtils, useSWRStatic,
-} from '@growi/core/dist/swr';
-import type { UseCodeMirror } from '@uiw/react-codemirror';
+import { useSWRStatic } from '@growi/core/dist/swr';
+import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
+import type { SWRResponse } from 'swr';
 
 import type { UseCodeMirrorEditor } from '../services';
 import { useCodeMirrorEditor } from '../services';
@@ -14,24 +13,19 @@ const defaultExtensionsMain: Extension[] = [
   scrollPastEnd(),
 ];
 
-type MainEditorUtils = {
-  // impl something
-};
-
-export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRResponseWithUtils<MainEditorUtils, UseCodeMirrorEditor> => {
-  const props = useMemo<UseCodeMirror>(() => {
+export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props?: ReactCodeMirrorProps): SWRResponse<UseCodeMirrorEditor> => {
+  const mergedProps = useMemo<UseCodeMirror>(() => {
     return {
+      ...props,
       container,
-      autoFocus: true,
-      extensions: defaultExtensionsMain,
+      extensions: [
+        ...(props?.extensions ?? []),
+        ...defaultExtensionsMain,
+      ],
     };
-  }, [container]);
+  }, [container, props]);
 
-  const states = useCodeMirrorEditor(props);
+  const states = useCodeMirrorEditor(mergedProps);
 
-  const swrResponse = useSWRStatic('codeMirrorEditorMain', container != null ? states : undefined);
-
-  return withUtils(swrResponse, {
-    // impl something
-  });
+  return useSWRStatic('codeMirrorEditorMain', props != null ? states : undefined);
 };

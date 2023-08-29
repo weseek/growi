@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
 
 import { EditorView } from '@codemirror/view';
+import { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
 
 import { CodeMirrorEditorContainer } from '..';
 import { useCodeMirrorEditorMain } from '../../stores';
@@ -14,21 +17,12 @@ export const Playground = (): JSX.Element => {
 
   const containerRef = useRef(null);
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorMain(containerRef.current);
-
-  // set handler to save with shortcut key
-  useEffect(() => {
-    const extension = EditorView.updateListener.of((update) => {
-      if (update.docChanged) {
-        const doc = update.view.state.doc.toString();
-        setMarkdownToPreview(doc);
-      }
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtension?.(extension);
-
-    return cleanupFunction;
-  }, [codeMirrorEditor]);
+  const props = useMemo<ReactCodeMirrorProps>(() => {
+    return {
+      onChange: setMarkdownToPreview,
+    };
+  }, []);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorMain(containerRef.current, props);
 
   return (
     <>
