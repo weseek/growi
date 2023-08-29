@@ -1,16 +1,15 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import {
-  EditorState, StateEffect, type EditorStateConfig, type Extension, Compartment,
+  StateEffect, type Extension, Compartment, Transaction,
 } from '@codemirror/state';
-import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
+import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
 import type { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
 
 type UseCodeMirrorEditorUtils = {
-  initState: (config?: EditorStateConfig) => void,
   initDoc: (doc?: string) => void,
   appendExtension: (extension: Extension, compartment?: Compartment) => CleanupFunction | undefined,
   getDoc: () => string | undefined,
@@ -25,44 +24,33 @@ const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
 ];
 
-const defaultExtensionsToInit: Extension[] = [
-  ...basicSetup(),
-  ...defaultExtensions,
-];
-
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
 
-  const codemirror = useCodeMirror({
-    ...props,
-    extensions: [
-      ...defaultExtensions,
-      ...(props?.extensions ?? []),
-    ],
-  });
+  const mergedProps = useMemo<UseCodeMirror>(() => {
+    return {
+      ...props,
+      extensions: [
+        ...defaultExtensions,
+        ...(props?.extensions ?? []),
+      ],
+    };
+  }, [props]);
+
+  const codemirror = useCodeMirror(mergedProps);
 
   const { view } = codemirror;
 
-  // implement initState method
-  const initState = useCallback((config?: EditorStateConfig): void => {
-    if (view == null) {
-      return;
-    }
-
-    const newState = EditorState.create({
-      ...config,
-      extensions: [
-        ...defaultExtensionsToInit,
-        ...(props?.extensions ?? []),
-      ],
-    });
-
-    view.setState(newState);
-  }, [props?.extensions, view]);
-
   // implement initDoc method
   const initDoc = useCallback((doc?: string): void => {
-    initState({ doc });
-  }, [initState]);
+    view?.dispatch({
+      changes: {
+        from: 0,
+        to: view.state.doc.length,
+        insert: doc,
+      },
+      annotations: Transaction.addToHistory.of(false),
+    });
+  }, [view]);
 
   // implement appendExtension method
   const appendExtension = useCallback((extension: Extension, compartment?: Compartment): CleanupFunction | undefined => {
@@ -113,7 +101,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
 
   return {
     ...codemirror,
-    initState,
     initDoc,
     appendExtension,
     getDoc,
