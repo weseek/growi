@@ -60,7 +60,7 @@ const PutBackPageModal = () => {
     }
     return (
       <>
-        <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
+        <i className="icon-action-undo me-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </>
     );
   };
@@ -102,7 +102,7 @@ const PutBackPageModal = () => {
       <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler} data-testid="put-back-execution-button">
-          <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
+          <i className="icon-action-undo me-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
       </>
     );

@@ -17,7 +17,7 @@ const RadioButtonForSerchUserOption = (props) => {
         checked={props.checked}
         onChange={props.onChange}
       />
-      <label className="form-label text-capitalize form-check-label ml-3" htmlFor={`${searchType}Match`}>
+      <label className="form-label text-capitalize form-check-label ms-3" htmlFor={`${searchType}Match`}>
         {t(`admin:user_group_management.add_modal.${searchType}_match`)}
       </label>
     </div>

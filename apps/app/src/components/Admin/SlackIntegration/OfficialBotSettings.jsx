@@ -78,7 +78,7 @@ const OfficialBotSettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
         <a href={t('admin:slack_integration.docs_url.official_bot')} target="_blank" rel="noopener noreferrer">
           <i
-            className="fa fa-external-link btn-link ml-2"
+            className="fa fa-external-link btn-link ms-2"
             aria-hidden="true"
             onClick={() => window.open(`${t('admin:slack_integration.docs_url.official_bot')}`, '_blank')}
           />

@@ -94,7 +94,7 @@ const CustomBotWithProxySettings = (props) => {
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}
         <a href={t('admin:slack_integration.docs_url.custom_bot_with_proxy')} target="_blank" rel="noopener noreferrer">
           <i
-            className="fa fa-external-link btn-link ml-2"
+            className="fa fa-external-link btn-link ms-2"
             aria-hidden="true"
           />
         </a>
@@ -108,7 +108,7 @@ const CustomBotWithProxySettings = (props) => {
           />
 
           <div className="row my-4">
-            <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
+            <label className="text-start text-md-end col-md-3 col-form-label mt-3">Proxy URL</label>
             <div className="col-md-6 mt-3">
               <input
                 className="form-control"
@@ -118,7 +118,7 @@ const CustomBotWithProxySettings = (props) => {
                 onChange={(e) => { setNewProxyServerUri(e.target.value) }}
               />
             </div>
-            <div className="col-md-2 mt-3 text-center text-md-left">
+            <div className="col-md-2 mt-3 text-center text-md-start">
               <button type="button" className="btn btn-primary" onClick={updateProxyUri}>{ t('Update') }</button>
             </div>
           </div>

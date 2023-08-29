@@ -48,7 +48,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
             </th>
             <th style={{ width: '200px' }}>
               <div className="d-flex align-items-center">
-                {t('user_management.related_username')}<code className="ml-2">username</code>
+                {t('user_management.related_username')}<code className="ms-2">username</code>
               </div>
             </th>
             <th style={{ width: '100px' }}>
@@ -57,7 +57,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <span
                   role="button"
                   className="text-muted mx-2"
-                  data-toggle="popper"
+                  data-bs-toggle="popper"
                   data-placement="top"
                   data-trigger="hover"
                   data-html="true"
@@ -91,7 +91,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>
                 <td>
                   <div className="btn-group admin-user-menu">
-                    <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+                    <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                       <i className="icon-settings"></i> <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">

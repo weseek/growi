@@ -80,7 +80,7 @@ const EmptyTrashModal: FC = () => {
           className="btn btn-danger"
           onClick={emptyTrashButtonHandler}
         >
-          <i className="mr-1 icon-fire" aria-hidden="true"></i>
+          <i className="me-1 icon-fire" aria-hidden="true"></i>
           {t('modal_empty.empty_the_trash_button')}
         </button>
       </ModalFooter>

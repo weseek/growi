@@ -38,7 +38,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
       </p>
 
       <div className="row mb-3">
-        <label className="text-left text-md-right col-md-3 col-form-label">
+        <label className="text-start text-md-end col-md-3 col-form-label">
           {t('admin:app_setting.file_upload_method')}
         </label>
 
@@ -61,7 +61,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
           })}
         </div>
         {props.isFixedFileUploadByEnvVar && (
-          <p className="alert alert-warning mt-2 text-left offset-3 col-6">
+          <p className="alert alert-warning mt-2 text-start offset-3 col-6">
             <i className="icon-exclamation icon-fw">
             </i><b>FIXED</b><br />
             {/* eslint-disable-next-line react/no-danger */}

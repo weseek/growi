@@ -38,7 +38,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
         </label>
       </div>
       <button
-        className="btn btn-outline-danger ml-3"
+        className="btn btn-outline-danger ms-3"
         type="button"
         onClick={() => {
           if (onDeleteButtonClicked != null) {
@@ -46,7 +46,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
           }
         }}
       >
-        <i className="icon-trash mr-1" />
+        <i className="icon-trash me-1" />
         {t('admin:slack_integration.delete')}
       </button>
     </div>

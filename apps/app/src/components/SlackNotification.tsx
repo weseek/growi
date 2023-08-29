@@ -52,7 +52,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
           </div>
         </label>
         <input
-          className="grw-form-control-slack-notification form-control align-top pl-0"
+          className="grw-form-control-slack-notification form-control align-top ps-0"
           id={idForSlackPopover}
           type="text"
           value={slackChannels}

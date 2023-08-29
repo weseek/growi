@@ -94,6 +94,9 @@
   //     background-color: hsl.lighten(var(--bgcolor-global),5%);
   //   }
 
+  // TODO: theme-color() dropped in bootstrap v5
+  // TODO: .input-group-prepend dropped in bootstrap v5
+  // https://redmine.weseek.co.jp/issues/128307
   //   .input-group > .input-group-prepend > .input-group-text {
   //     color: theme-color('light');
   //     background-color: theme-color('secondary');
@@ -466,6 +469,9 @@
   //     .popover-body {
   //       color: inherit;
   //     }
+
+  // TODO: Check renamed .arrow to .popover-arrow
+  // see: https://getbootstrap.com/docs/5.2/migration/#popovers
 
   //     &.bs-popover-top .arrow {
   //       &::before {

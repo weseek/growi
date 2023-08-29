@@ -78,7 +78,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
       {isAclEnabled
         && (
-          <div className="mr-2">
+          <div className="me-2">
             <GrantSelector
               grant={grant}
               disabled={isGrantSelectorDisabledPage}
@@ -100,7 +100,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           disabled={isWaitingSaveProcessing}
         >
           {isWaitingSaveProcessing && (
-            <i className="fa fa-spinner fa-pulse mr-1"></i>
+            <i className="fa fa-spinner fa-pulse me-1"></i>
           )}
           {labelSubmitButton}
         </Button>

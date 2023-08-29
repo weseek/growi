@@ -45,7 +45,7 @@ export const PluginInstallerForm = (): JSX.Element => {
   return (
     <form role="form" onSubmit={submitHandler}>
       <div className="row">
-        <label className="text-left text-md-right col-md-3 col-form-label">{t('plugins.form.label_url')}</label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('plugins.form.label_url')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -58,7 +58,7 @@ export const PluginInstallerForm = (): JSX.Element => {
         </div>
       </div>
       <div className="row">
-        <label className="text-left text-md-right col-md-3 col-form-label">{t('plugins.form.label_branch')}</label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('plugins.form.label_branch')}</label>
         <div className="col-md-6">
           <input
             className="form-control col-md-3"

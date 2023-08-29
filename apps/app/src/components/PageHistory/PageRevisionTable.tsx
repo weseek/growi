@@ -133,7 +133,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
               onClose={onClose}
             />
             {hasDiff && (
-              <div className="ml-md-3 mt-auto">
+              <div className="ms-md-3 mt-auto">
                 <div className="btn-group">
                   <button
                     type="button"
@@ -157,7 +157,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-1">
           {(hasDiff || revisionId === sourceRevision?._id) && (
-            <div className="form-check form-check-inline mr-0">
+            <div className="form-check form-check-inline me-0">
               <input
                 type="radio"
                 className="form-check-input"
@@ -173,7 +173,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-2">
           {(hasDiff || revisionId === targetRevision?._id) && (
-            <div className="form-check form-check-inline mr-0">
+            <div className="form-check form-check-inline me-0">
               <input
                 type="radio"
                 className="form-check-input"

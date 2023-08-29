@@ -54,7 +54,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                     type="button"
                     id={`admin-group-menu-button-${relatedUser._id}`}
                     className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                   >
                     <i className="icon-settings"></i>
                   </button>

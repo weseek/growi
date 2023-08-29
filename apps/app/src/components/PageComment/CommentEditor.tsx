@@ -273,7 +273,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
-    const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
+    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
       <Button
         outline
@@ -335,7 +335,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
             {isSlackConfigured && isSlackEnabled != null
               && (
-                <div className="align-self-center mr-md-2">
+                <div className="align-self-center me-md-2">
                   <SlackNotification
                     isSlackEnabled={isSlackEnabled}
                     slackChannels={slackChannels}
@@ -347,13 +347,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               )
             }
             <div className="d-none d-sm-block">
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
           <div className="d-block d-sm-none mt-2">
             <div className="d-flex justify-content-end">
               {error && errorMessage}
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
         </div>

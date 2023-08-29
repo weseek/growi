@@ -88,7 +88,7 @@ class LocalSecuritySettingContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row">
-              <div className="col-12 col-md-3 text-left text-md-right py-2">
+              <div className="col-12 col-md-3 text-start text-md-end py-2">
                 <strong>{t('security_settings.register_limitation')}</strong>
               </div>
               <div className="col-12 col-md-6">
@@ -97,7 +97,7 @@ class LocalSecuritySettingContents extends React.Component {
                     className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="true"
                   >
@@ -139,7 +139,7 @@ class LocalSecuritySettingContents extends React.Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-12 col-md-3 text-left text-md-right">
+              <div className="col-12 col-md-3 text-start text-md-end">
                 <strong dangerouslySetInnerHTML={{ __html: t('security_settings.The whitelist of registration permission E-mail address') }} />
               </div>
               <div className="col-12 col-md-6">
@@ -163,7 +163,7 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
+              <label className="col-12 col-md-3 text-start text-md-end  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
                 <div className="form-check form-switch form-check-success">
                   <input
@@ -192,7 +192,7 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.email_authentication')}</label>
+              <label className="col-12 col-md-3 text-start text-md-end  col-form-label">{t('security_settings.Local.email_authentication')}</label>
               <div className="col-12 col-md-6">
                 <div className="form-check form-switch form-check-success">
                   <input

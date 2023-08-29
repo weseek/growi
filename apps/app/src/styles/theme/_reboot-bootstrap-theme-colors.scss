@@ -72,24 +72,26 @@
   }
 }
 
-@each $color, $value in $theme-colors {
-  .alert-#{$color} {
-    @include alert-variant(
-      theme-color-level($color, $alert-bg-level),
-      theme-color-level($color, $alert-border-level),
-      theme-color-level($color, $alert-color-level)
-    );
-  }
-  // Alert link
-  :root, .wiki {
-    .alert.alert-#{$color} {
-      a,
-      a:hover {
-        color: theme-color-level($color, $alert-color-level - 2);
-      }
-    }
-  }
-}
+// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+// theme-color-level() dropped in bootstrap v5
+// @each $color, $value in $theme-colors {
+//   .alert-#{$color} {
+//     @include alert-variant(
+//       theme-color-level($color, $alert-bg-level),
+//       theme-color-level($color, $alert-border-level),
+//       theme-color-level($color, $alert-color-level)
+//     );
+//   }
+//   // Alert link
+//   :root, .wiki {
+//     .alert.alert-#{$color} {
+//       a,
+//       a:hover {
+//         color: theme-color-level($color, $alert-color-level - 2);
+//       }
+//     }
+//   }
+// }
 
 @each $color, $value in $theme-colors {
   .bg-#{$color} {

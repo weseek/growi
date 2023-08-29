@@ -232,7 +232,7 @@ const PageDeleteModal: FC = () => {
       return pages.map(page => (
         <p key={page.data._id} className="mb-1">
           <code>{ page.data.path }</code>
-          { page.meta?.isDeletable != null && !page.meta.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
+          { page.meta?.isDeletable != null && !page.meta.isDeletable && <span className="ms-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
         </p>
       ));
     }
@@ -285,7 +285,7 @@ const PageDeleteModal: FC = () => {
           onClick={deleteButtonHandler}
           data-testid="delete-page-button"
         >
-          <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <i className={`me-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </>

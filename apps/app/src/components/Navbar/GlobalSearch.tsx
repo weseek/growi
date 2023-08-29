@@ -94,7 +94,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
           <button
             className="btn btn-secondary dropdown-toggle py-0"
             type="button"
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             data-testid="select-search-scope"
           >

@@ -34,7 +34,7 @@ export const UpdateParentConfirmModal: FC = () => {
           <>
             <ModalBody>
               <div className="mb-2">
-                <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{targetGroup.name}&quot;
+                <span className="fw-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{targetGroup.name}&quot;
                 <hr />
                 {t('admin:user_group_management.update_parent_confirm_modal.caution_change_parent', { groupName: targetGroup.name })}
               </div>
@@ -43,7 +43,7 @@ export const UpdateParentConfirmModal: FC = () => {
                 {t('admin:user_group_management.update_parent_confirm_modal.danger_message')}
               </div>
 
-              <div className="form-check form-check-succsess pl-5">
+              <div className="form-check form-check-succsess ps-5">
                 <input
                   className="form-check-input"
                   name="forceUpdateParents"

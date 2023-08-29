@@ -45,7 +45,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
 
 
           <div className="row">
-            <div className="offset-md-3 col-md-6 text-left">
+            <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isEnabledAttachTitleHeader"
                 label={t('admin:customize_settings.function_options.attach_title_header')}
@@ -89,7 +89,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
           />
 
           <div className="row">
-            <div className="offset-md-3 col-md-6 text-left">
+            <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isEnabledStaleNotification"
                 label={t('admin:customize_settings.function_options.stale_notification')}
@@ -104,7 +104,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
           </div>
 
           <div className="row">
-            <div className="offset-md-3 col-md-6 text-left">
+            <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isAllReplyShown"
                 label={t('admin:customize_settings.function_options.show_all_reply_comments')}
@@ -119,7 +119,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
           </div>
 
           <div className="row">
-            <div className="offset-md-3 col-md-6 text-left">
+            <div className="offset-md-3 col-md-6 text-start">
               <CustomizeFunctionOption
                 optionId="isSearchScopeChildrenAsDefault"
                 label={t('admin:customize_settings.function_options.select_search_scope_children_as_default')}

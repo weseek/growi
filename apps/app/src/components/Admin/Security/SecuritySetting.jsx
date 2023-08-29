@@ -189,14 +189,14 @@ class SecuritySetting extends React.Component {
     return (
       <div className="dropdown">
         <button
-          className="btn btn-outline-secondary dropdown-toggle text-right"
+          className="btn btn-outline-secondary dropdown-toggle text-end"
           type="button"
           id="dropdownMenuButton"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="true"
         >
-          <span className="float-left">
+          <span className="float-start">
             {t(getDeleteConfigValueForT(currentState))}
           </span>
         </button>
@@ -252,7 +252,7 @@ class SecuritySetting extends React.Component {
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
-        <div className="col-md-3 text-md-right">
+        <div className="col-md-3 text-md-end">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
             <strong>{t('security_settings.page_delete')}</strong>
           )}
@@ -393,21 +393,21 @@ class SecuritySetting extends React.Component {
 
         <h4>{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
-          <div className="col-md-3 text-md-right py-2">
+          <div className="col-md-3 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
           </div>
           <div className="col-md-9">
             <div className="dropdown">
               <button
-                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
+                className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
-                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                <span className="float-left">
+                <span className="float-start">
                   {currentRestrictGuestMode === 'Deny' && t('security_settings.guest_mode.deny')}
                   {currentRestrictGuestMode === 'Readonly' && t('security_settings.guest_mode.readonly')}
                 </span>
@@ -477,7 +477,7 @@ class SecuritySetting extends React.Component {
 
         <h4>{t('security_settings.session')}</h4>
         <div className="row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>
+          <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.max_age')}</label>
           <div className="col-md-6">
             <input
               className="form-control col-md-3"
@@ -499,7 +499,7 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="text-center text-md-left offset-md-3 col-md-5">
+          <div className="text-center text-md-start offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
               {t('Update')}
             </button>

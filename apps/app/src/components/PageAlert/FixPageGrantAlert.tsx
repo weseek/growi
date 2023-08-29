@@ -132,7 +132,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
             {/* grant data label */}
             {renderGrantDataLabel()}
 
-            <div className="ml-2">
+            <div className="ms-2">
               <div className="form-check mb-3">
                 <input
                   className="form-check-input"
@@ -174,14 +174,14 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                 <label className="form-label form-check-label" htmlFor="grantUserGroup">
                   { t('fix_page_grant.modal.radio_btn.grant_group') }
                 </label>
-                <div className="dropdown ml-2">
+                <div className="dropdown ms-2">
                   <button
                     type="button"
-                    className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
-                    data-toggle="dropdown"
+                    className="btn btn-secondary dropdown-toggle text-end w-100 border-0 shadow-none"
+                    data-bs-toggle="dropdown"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
                   >
-                    <span className="float-left ml-2">
+                    <span className="float-start ms-2">
                       {
                         selectedGroup == null
                           ? t('fix_page_grant.modal.select_group_default_text')
@@ -261,9 +261,9 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+      <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <i className="icon-fw icon-exclamation ml-1" aria-hidden="true" />
+          <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">

@@ -730,7 +730,7 @@
       "description1":"Temporarily issue new users by email addresses.",
       "description2":"A temporary password will be generated for the first login.",
       "invite_thru_email": "Send invitation email",
-      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
+      "mail_setting_link":"<i class='icon-settings me-2'></i><a href='/admin/app'>Email settings</a>",
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",

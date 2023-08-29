@@ -51,7 +51,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
               onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <span className="form-text text-muted text-right">
+            <span className="form-text text-muted text-end">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
               {t('admin:customize_settings.ctrl_space')}
             </span>
@@ -60,7 +60,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
 
           <a
             className="text-muted"
-            data-toggle="collapse"
+            data-bs-toggle="collapse"
             href="#collapseExampleScript"
             role="button"
             aria-expanded="false"

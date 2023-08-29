@@ -53,7 +53,7 @@ const QuestionnaireSettings = (): JSX.Element => {
         <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">
-            <span className="text-info mr-2"><i className="icon-info icon-fw"></i>{t('app_setting.about_data_sent')}</span>
+            <span className="text-info me-2"><i className="icon-info icon-fw"></i>{t('app_setting.about_data_sent')}</span>
             <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
               {t('app_setting.learn_more')} <i className="icon-share-alt"></i>
             </a>
@@ -65,7 +65,7 @@ const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoading && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
         </div>
       )}
 

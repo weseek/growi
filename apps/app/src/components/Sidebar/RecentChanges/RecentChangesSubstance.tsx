@@ -34,10 +34,10 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
   return (
     <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
       <div className="d-flex">
-        <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-        <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-        <div className="icon-bubble mr-1 d-inline-block"></div>
-        <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+        <div className="footstamp-icon me-1 d-inline-block"><FootstampIcon /></div>
+        <div className="me-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+        <div className="icon-bubble me-1 d-inline-block"></div>
+        <div className="me-2 grw-list-counts d-inline-block">{page.commentCount}</div>
       </div>
       <div className="grw-formatted-distance-date small mt-auto" data-vrt-blackout-datetime>
         <FormattedDistanceDate id={page._id} date={page.updatedAt} />
@@ -59,7 +59,7 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span><i className="icon-lock ml-2" /></span>;
+    locked = <span><i className="icon-lock ms-2" /></span>;
   }
 
   const tags = page.tags;
@@ -71,7 +71,7 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
       <Link
         key={tag.name}
         href={`/_search?q=tag:${tag.name}`}
-        className="grw-tag-label badge bg-primary mr-2 small"
+        className="grw-tag-label badge bg-primary me-2 small"
         prefetch={false}
       >
         {tag.name}
@@ -83,7 +83,7 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
     <li className={`list-group-item ${styles['list-group-item']} ${isSmall ? 'py-2' : 'py-3'} px-0`}>
       <div className="d-flex w-100">
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
-        <div className="flex-grow-1 ml-2">
+        <div className="flex-grow-1 ms-2">
           { !dPagePath.isRoot && <FormerLink /> }
           <h5 className={isSmall ? 'my-0 text-truncate' : 'my-2'}>
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
@@ -133,7 +133,7 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
       <div className="d-flex align-items-center">
-        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check form-switch ml-1`}>
+        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check form-switch ms-1`}>
           <input
             id="recentChangesResize"
             className="form-check-input"

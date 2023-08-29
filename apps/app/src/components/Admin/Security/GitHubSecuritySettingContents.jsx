@@ -76,7 +76,7 @@ class GitHubSecurityManagementContents extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="form-label col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
+          <label className="form-label col-12 col-md-3 text-start text-md-end py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"
@@ -104,7 +104,7 @@ class GitHubSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientId" className="col-3 text-right py-2 form-label">{t('security_settings.clientID')}</label>
+              <label htmlFor="githubClientId" className="col-3 text-end py-2 form-label">{t('security_settings.clientID')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -120,7 +120,7 @@ class GitHubSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientSecret" className="col-3 text-right py-2 form-label">{t('security_settings.client_secret')}</label>
+              <label htmlFor="githubClientSecret" className="col-3 text-end py-2 form-label">{t('security_settings.client_secret')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -136,7 +136,7 @@ class GitHubSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-3 col-6 text-start">
                 <div className="form-check form-check-success">
                   <input
                     id="bindByUserNameGitHub"
@@ -173,7 +173,7 @@ class GitHubSecurityManagementContents extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForGitHubOauth" data-toggle="collapse"> {t('security_settings.OAuth.how_to.github')}</a>
+            <a href="#collapseHelpForGitHubOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.github')}</a>
           </h4>
           <ol id="collapseHelpForGitHubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}

@@ -80,7 +80,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
               <IconWithTooltip id={isEditMode ? 'iwt-sidebar-editor-drawer' : 'iwt-sidebar-drawer'} label="Drawer" additionalClasses="grw-sidebar-mode-icon">
                 <SidebarDrawerIcon />
               </IconWithTooltip>
-              <div className="form-check form-switch form-check-secondary ml-2">
+              <div className="form-check form-switch form-check-secondary ms-2">
                 <input
                   id={isEditMode ? 'swSidebarModeOnEditor' : 'swSidebarMode'}
                   className="form-check-input"
@@ -134,7 +134,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                   <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
                     <SunIcon />
                   </IconWithTooltip>
-                  <div className="form-check form-switch form-check-secondary ml-2">
+                  <div className="form-check form-switch form-check-secondary ms-2">
                     <input
                       id="swUserPreference"
                       className="form-check-input"
