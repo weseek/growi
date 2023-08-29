@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ReactDOM from 'react-dom/client';
+import { ToastContainer } from 'react-toastify';
 
 import { Playground } from './components/playground';
 
@@ -13,5 +14,6 @@ const rootElem = document.getElementById('root');
 ReactDOM.createRoot(rootElem!).render(
   <React.StrictMode>
     <Playground />
+    <ToastContainer />
   </React.StrictMode>,
 );
