@@ -47,8 +47,8 @@
     "anyone": "Anyone",
     "user_homepage_deletion": {
       "user_homepage_deletion": "User homepage deletion",
-      "enable_user_homepage_deletion": "Enable user homepage deletion",
-      "when_deleting_a_user_the_user_homepage_is_also_deleted": "When deleting a user, the user homepage is also deleted."
+      "enable_user_homepage_deletion": "Complete deletion of user homepage, when user deletion",
+      "desc": "When deleting a user, the user homepage and its sub pages are also completely deleted."
     },
     "session": "Session",
     "max_age": "Max age (msec)",
