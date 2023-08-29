@@ -11,8 +11,8 @@ const DrawerToggler = (props: Props): JSX.Element => {
   const { data: isOpened, mutate } = useDrawerOpened();
 
   const iconClass = props.iconClass ?? isOpened
-    ? 'icon-arrow-left'
-    : 'icon-arrow-right';
+    ? 'icon-control-start' //    Icon shape of [|<].
+    : 'icon-control-forward'; // Icon shape of [>>].
 
   return (
     <button
