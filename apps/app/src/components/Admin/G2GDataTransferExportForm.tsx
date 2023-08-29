@@ -199,13 +199,13 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
 
   return (
     <>
-      <form className="mt-3 row">
-        <div className="col-auto">
+      <form className="mt-3 row row-cols-lg-auto g-3 align-items-center">
+        <div className="col-12">
           <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={checkAll}>
             <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
           </button>
         </div>
-        <div>
+        <div className="col-12">
           <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
             <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
           </button>
