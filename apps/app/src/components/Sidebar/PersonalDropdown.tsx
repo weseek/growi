@@ -54,7 +54,7 @@ export const PersonalDropdown = (): JSX.Element => {
 
         {/* Menu */}
         <div className="dropdown-menu" data-testid="personal-dropdown-menu">
-
+          {/* TODO: PersonalDropDown ドロップダウン の見た目をある悌夫正常化 */}
           <div className="px-4 pt-3 pb-2 text-center">
             <UserPicture user={currentUser} size="lg" noLink noTooltip />
 
