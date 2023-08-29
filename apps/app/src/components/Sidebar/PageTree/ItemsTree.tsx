@@ -28,8 +28,8 @@ import loggerFactory from '~/utils/logger';
 
 import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
-import Item from './Item';
 import { ItemNode } from './ItemNode';
+import { PageTreeItem } from './PageTreeItem';
 
 import styles from './ItemsTree.module.scss';
 
@@ -273,7 +273,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   if (initialItemNode != null) {
     return (
       <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
-        <Item
+        <PageTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}

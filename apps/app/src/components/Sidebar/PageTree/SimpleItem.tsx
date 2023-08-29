@@ -8,9 +8,7 @@ import {
   pathUtils, pagePathUtils, Nullable,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useDrag, useDrop } from 'react-dnd';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
@@ -21,14 +19,13 @@ import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import {
-  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
+  IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRMUTxPageInfo } from '~/stores/page';
-import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
+import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
-import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
@@ -38,10 +35,7 @@ import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
 
-const logger = loggerFactory('growi:cli:Item');
-
-
-interface ItemProps {
+export type SimpleItemProps = {
   isEnableActions: boolean
   isReadOnlyUser: boolean
   itemNode: ItemNode
@@ -50,7 +44,10 @@ interface ItemProps {
   onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
-}
+  itemRef?
+  itemClass?: React.FunctionComponent<SimpleItemProps>
+  mainClassName?: string
+};
 
 // Utility to mark target
 const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
@@ -75,10 +72,6 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
  * @param newParentPagePath
  * @returns
  */
-const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
-  const pageTitle = nodePath.basename(droppedPagePath);
-  return nodePath.join(newParentPagePath, pageTitle);
-};
 
 /**
  * Return whether the fromPage could be moved under the newParentPage
@@ -87,17 +80,6 @@ const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string
  * @param printLog
  * @returns
  */
-const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPageHasId>, printLog = false): boolean => {
-  if (fromPage == null || newParentPage == null || fromPage.path == null || newParentPage.path == null) {
-    if (printLog) {
-      logger.warn('Any of page, page.path or droppedPage.path is null');
-    }
-    return false;
-  }
-
-  const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
-  return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
-};
 
 // Component wrapper to make a child element not draggable
 // https://github.com/react-dnd/react-dnd/issues/335
@@ -109,13 +91,14 @@ const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element
 };
 
 
-const Item: FC<ItemProps> = (props: ItemProps) => {
+const SimpleItem: FC<SimpleItemProps> = (props: SimpleItemProps) => {
   const { t } = useTranslation();
   const router = useRouter();
 
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    itemRef, itemClass, mainClassName,
   } = props;
 
   const { page, children } = itemNode;
@@ -123,7 +106,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-  const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
@@ -139,112 +121,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
   const hasDescendants = descendantCount > 0 || isChildrenLoaded;
-
-  // to re-show hidden item when useDrag end() callback
-  const displayDroppedItemByPageId = useCallback((pageId) => {
-    const target = document.getElementById(`pagetree-item-${pageId}`);
-    if (target == null) {
-      return;
-    }
-
-    // wait 500ms to avoid removing before d-none is set by useDrag end() callback
-    setTimeout(() => {
-      target.classList.remove('d-none');
-    }, 500);
-  }, []);
-
-  const [, drag] = useDrag({
-    type: 'PAGE_TREE',
-    item: { page },
-    canDrag: () => {
-      if (page.path == null) {
-        return false;
-      }
-      return !pagePathUtils.isUsersProtectedPages(page.path);
-    },
-    end: (item, monitor) => {
-      // in order to set d-none to dropped Item
-      const dropResult = monitor.getDropResult();
-      if (dropResult != null) {
-        setShouldHide(true);
-      }
-    },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-      canDrag: monitor.canDrag(),
-    }),
-  });
-
-  const pageItemDropHandler = async(item: ItemNode) => {
-    const { page: droppedPage } = item;
-
-    if (!isDroppable(droppedPage, page, true)) {
-      return;
-    }
-
-    if (droppedPage.path == null || page.path == null) {
-      return;
-    }
-
-    const newPagePath = getNewPathAfterMoved(droppedPage.path, page.path);
-
-    try {
-      await apiv3Put('/pages/rename', {
-        pageId: droppedPage._id,
-        revisionId: droppedPage.revision,
-        newPagePath,
-        isRenameRedirect: false,
-        updateMetadata: true,
-      });
-
-      await mutatePageTree();
-      await mutateChildren();
-
-      if (onRenamed != null) {
-        onRenamed(page.path, newPagePath);
-      }
-
-      // force open
-      setIsOpen(true);
-    }
-    catch (err) {
-      // display the dropped item
-      displayDroppedItemByPageId(droppedPage._id);
-
-      if (err.code === 'operation__blocked') {
-        toastWarning(t('pagetree.you_cannot_move_this_page_now'));
-      }
-      else {
-        toastError(t('pagetree.something_went_wrong_with_moving_page'));
-      }
-    }
-  };
-
-  const [{ isOver }, drop] = useDrop<ItemNode, Promise<void>, { isOver: boolean }>(
-    () => ({
-      accept: 'PAGE_TREE',
-      drop: pageItemDropHandler,
-      hover: (item, monitor) => {
-        // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
-        if (monitor.isOver()) {
-          setTimeout(() => {
-            if (monitor.isOver()) {
-              setIsOpen(true);
-            }
-          }, 600);
-        }
-      },
-      canDrop: (item) => {
-        const { page: droppedPage } = item;
-        return isDroppable(droppedPage, page);
-      },
-      collect: monitor => ({
-        isOver: monitor.isOver(),
-      }),
-    }),
-    [page],
-  );
-
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
@@ -434,15 +310,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
+  const ItemClassFixed = itemClass ?? SimpleItem;
+
+  const commonProps = {
+    isEnableActions,
+    isReadOnlyUser,
+    isOpen: false,
+    targetPathOrId,
+    onRenamed,
+    onClickDuplicateMenuItem,
+    onClickDeleteMenuItem,
+  };
+
   return (
     <div
       id={`pagetree-item-${page._id}`}
       data-testid="grw-pagetree-item-container"
-      className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
-    ${shouldHide ? 'd-none' : ''}`}
+      className={`grw-pagetree-item-container ${mainClassName}`}
     >
       <li
-        ref={(c) => { drag(c); drop(c) }}
+        ref={itemRef}
         className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
         ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
@@ -550,16 +437,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
-            <Item
-              isEnableActions={isEnableActions}
-              isReadOnlyUser={isReadOnlyUser}
-              itemNode={node}
-              isOpen={false}
-              targetPathOrId={targetPathOrId}
-              onRenamed={onRenamed}
-              onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-              onClickDeleteMenuItem={onClickDeleteMenuItem}
-            />
+            {
+              <ItemClassFixed itemNode={node} {...commonProps} />
+            }
             {isCreating && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
                 <i className="fa fa-spinner fa-pulse mr-1"></i>
@@ -573,4 +453,4 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 };
 
-export default Item;
+export default SimpleItem;
