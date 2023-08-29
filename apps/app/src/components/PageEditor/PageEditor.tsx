@@ -150,13 +150,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
 
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
-  const setMarkdownPreviewWithDebounce = debounce(100, throttle(150, (value: string) => {
+  const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
-  }));
-  const mutateIsEnabledUnsavedWarningWithDebounce = debounce(600, throttle(900, (value: string) => {
+  })), []);
+  const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
     // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(value !== codeMirrorEditor?.getDoc());
-  }));
+    mutateIsEnabledUnsavedWarning(value !== initialValue);
+  })), [initialValue, mutateIsEnabledUnsavedWarning]);
 
   const useCodeMirrorEditorMainProps = useMemo<ReactCodeMirrorProps>(() => {
     return {
@@ -524,9 +524,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     return cleanupFunction;
 
-  // TODO: remove markdownToPreview from deps
-  // https://redmine.weseek.co.jp/issues/129532
-  }, [codeMirrorEditor, markdownToPreview, saveWithShortcut]);
+  }, [codeMirrorEditor, saveWithShortcut]);
 
   // set handler to focus
   useLayoutEffect(() => {
