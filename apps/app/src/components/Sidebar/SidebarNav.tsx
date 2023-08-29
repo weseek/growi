@@ -66,31 +66,6 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   );
 };
 
-type PrimaryLinkItemProps = {
-  label: string,
-  href: string,
-  iconName: string
-}
-
-const PrimaryLinkItem: FC<PrimaryLinkItemProps> = (props: PrimaryLinkItemProps) => {
-  const {
-    label, href, iconName,
-  } = props;
-
-  const labelForTestId = label.toLowerCase().replace(' ', '-');
-
-  return (
-    <a
-      type="button"
-      href={href}
-      data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
-      className="d-block btn btn-primary"
-    >
-      <i className="material-icons">{iconName}</i>
-    </a>
-  );
-};
-
 type SecondaryItemProps = {
   label: string,
   href: string,
@@ -145,10 +120,10 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
-        <PrimaryLinkItem label="Trash" href="/trash" iconName="delete" />
+        <SecondaryItem label="Trash" href="/trash" iconName="delete" />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
-        {/* TODO: この設定はマイページの Settings 内に集約される予定のため、ここからは消す */}
+        {/* TODO: This setting will be consolidated in "Settings" on My Page, so delete it from here. */}
         {/* <AppearanceModeDropdown isAuthenticated={isAuthenticated} /> */}
         <PersonalDropdown />
         <InAppNotificationDropdown />
