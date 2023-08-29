@@ -1,9 +1,9 @@
-import type { IUser } from '@growi/core';
+import type { IUser, GrantedGroup } from '@growi/core';
 import { Model } from 'mongoose';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroup, { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
-import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
+import { excludeTestIdsFromTargetIds, includesObjectIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
 import UserGroupRelation, { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
@@ -78,7 +78,7 @@ class UserGroupService {
 
     // throw if parent was in self and its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-    if (isIncludesObjectId(descendantsWithTarget.map(d => d._id), parent._id)) {
+    if (includesObjectIds(descendantsWithTarget.map(d => d._id), [parent._id])) {
       throw Error('It is not allowed to choose parent from descendant groups.');
     }
 
@@ -114,7 +114,7 @@ class UserGroupService {
   }
 
   async removeCompletelyByRootGroupId(
-      deleteRootGroupId, action, transferToUserGroupId, user,
+      deleteRootGroupId, action, user, transferToUserGroup?: GrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
       userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
   ) {
@@ -126,8 +126,7 @@ class UserGroupService {
     const groupsToDelete = await userGroupModel.findGroupsWithDescendantsRecursively([rootGroup]);
 
     // 1. update page & remove all groups
-    // TODO: update pageService logic to handle external user groups (https://redmine.weseek.co.jp/issues/124385)
-    await this.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user);
+    await this.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup, user);
     // 2. remove all groups
     const deletedGroups = await userGroupModel.deleteMany({ _id: { $in: groupsToDelete.map(g => g._id) } });
     // 3. remove all relations

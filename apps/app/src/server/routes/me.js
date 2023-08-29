@@ -1,3 +1,5 @@
+import UserGroupRelation from '../models/user-group-relation';
+
 /**
  * @swagger
  *
@@ -49,8 +51,6 @@
  */
 
 module.exports = function(crowi, app) {
-  const models = crowi.models;
-  const UserGroupRelation = models.UserGroupRelation;
   const ApiResponse = require('../util/apiResponse');
 
   // , pluginService = require('../service/plugin')

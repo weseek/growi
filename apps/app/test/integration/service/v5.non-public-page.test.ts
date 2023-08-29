@@ -1,8 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { advanceTo } from 'jest-date-mock';
+import { GroupType, type GrantedGroup } from '@growi/core';
 import mongoose from 'mongoose';
 
+import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
+import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
 import Tag from '../../../src/server/models/tag';
+import UserGroup from '../../../src/server/models/user-group';
+import UserGroupRelation from '../../../src/server/models/user-group-relation';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with non-public pages', () => {
@@ -16,17 +21,15 @@ describe('PageService page operations with non-public pages', () => {
   let groupIdA;
   let groupIdB;
   let groupIdC;
+  let externalGroupIdIsolate;
+  let externalGroupIdA;
+  let externalGroupIdB;
+  let externalGroupIdC;
   let crowi;
   let Page;
   let Revision;
   let User;
-  let UserGroup;
-  let UserGroupRelation;
   let PageTagRelation;
-  let Bookmark;
-  let Comment;
-  let ShareLink;
-  let PageRedirect;
   let xssSpy;
 
   let rootPage;
@@ -97,22 +100,22 @@ describe('PageService page operations with non-public pages', () => {
     return createdPage;
   };
 
+  // normalize for result comparison
+  const normalizeGrantedGroups = (grantedGroups: GrantedGroup[]) => {
+    return grantedGroups.map((group) => {
+      const itemId = typeof group.item === 'string' ? group.item : group.item._id;
+      return { item: itemId, type: group.type };
+    });
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     User = mongoose.model('User');
-    UserGroup = mongoose.model('UserGroup');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     PageTagRelation = mongoose.model('PageTagRelation');
-    Bookmark = mongoose.model('Bookmark');
-    Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
-    PageRedirect = mongoose.model('PageRedirect');
-    UserGroup = mongoose.model('UserGroup');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
 
     /*
      * Common
@@ -196,6 +199,86 @@ describe('PageService page operations with non-public pages', () => {
       },
       {
         relatedGroup: groupIdC,
+        relatedUser: npUserId3,
+        createdAt: new Date(),
+      },
+    ]);
+
+    // Insert ExternalUserGroups with the same group structure as UserGroups
+    // Use to test
+    //   - ExternalUserGroup
+    //   - Case of multiple grantedGroups for Page
+    externalGroupIdIsolate = new mongoose.Types.ObjectId();
+    externalGroupIdA = new mongoose.Types.ObjectId();
+    externalGroupIdB = new mongoose.Types.ObjectId();
+    externalGroupIdC = new mongoose.Types.ObjectId();
+    await ExternalUserGroup.insertMany([
+      {
+        _id: externalGroupIdIsolate,
+        name: 'np_externalGroupIsolate',
+        externalId: 'np_externalGroupIsolate',
+        provider: ExternalGroupProviderType.ldap,
+      },
+      {
+        _id: externalGroupIdA,
+        name: 'np_externalGroupA',
+        externalId: 'np_externalGroupA',
+        provider: ExternalGroupProviderType.ldap,
+      },
+      {
+        _id: externalGroupIdB,
+        name: 'np_externalGroupB',
+        externalId: 'np_externalGroupB',
+        parent: externalGroupIdA,
+        provider: ExternalGroupProviderType.ldap,
+      },
+      {
+        _id: externalGroupIdC,
+        name: 'np_externalGroupC',
+        externalId: 'np_externalGroupC',
+        parent: externalGroupIdB,
+        provider: ExternalGroupProviderType.ldap,
+      },
+    ]);
+
+    await ExternalUserGroupRelation.insertMany([
+      {
+        relatedGroup: externalGroupIdIsolate,
+        relatedUser: npUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdIsolate,
+        relatedUser: npUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdA,
+        relatedUser: npUserId1,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdA,
+        relatedUser: npUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdA,
+        relatedUser: npUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdB,
+        relatedUser: npUserId2,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdB,
+        relatedUser: npUserId3,
+        createdAt: new Date(),
+      },
+      {
+        relatedGroup: externalGroupIdC,
         relatedUser: npUserId3,
         createdAt: new Date(),
       },
@@ -343,7 +426,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename2,
         path: '/np_rename2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: rootPage._id,
@@ -352,7 +435,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename3,
         path: '/np_rename2/np_rename3',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdC,
+        grantedGroups: [{ item: groupIdC, type: GroupType.userGroup }, { item: externalGroupIdC, type: GroupType.externalUserGroup }],
         creator: npDummyUser3._id,
         lastUpdateUser: npDummyUser3._id,
         parent: pageIdRename2._id,
@@ -361,7 +444,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename4,
         path: '/np_rename4_destination',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdIsolate,
+        grantedGroups: [{ item: groupIdIsolate, type: GroupType.userGroup }, { item: externalGroupIdIsolate, type: GroupType.externalUserGroup }],
         creator: npDummyUser3._id,
         lastUpdateUser: npDummyUser3._id,
         parent: rootPage._id,
@@ -370,7 +453,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename5,
         path: '/np_rename5',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: rootPage._id,
@@ -379,7 +462,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename6,
         path: '/np_rename5/np_rename6',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: pageIdRename5,
@@ -388,7 +471,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename7,
         path: '/np_rename7_destination',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdIsolate,
+        grantedGroups: [{ item: groupIdIsolate, type: GroupType.userGroup }, { item: externalGroupIdIsolate, type: GroupType.externalUserGroup }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: pageIdRename5,
@@ -424,7 +507,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDuplicate2,
         path: '/np_duplicate2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         creator: npDummyUser1._id,
         lastUpdateUser: npDummyUser1._id,
         revision: revisionIdDuplicate2,
@@ -434,7 +517,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDuplicate3,
         path: '/np_duplicate2/np_duplicate3',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         revision: revisionIdDuplicate3,
@@ -531,7 +614,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete2,
         path: '/npdel2_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -541,7 +624,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete3,
         path: '/npdel3_top',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -551,7 +634,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete4,
         path: '/npdel3_top/npdel4_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete3._id,
@@ -566,7 +649,7 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdel3_top/npdel4_ug/npdel5_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdC,
+        grantedGroups: [{ item: groupIdC, type: GroupType.userGroup }, { item: externalGroupIdC, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete4._id,
@@ -589,7 +672,7 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdc2_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -598,7 +681,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDeleteComp1,
         path: '/npdc3_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -607,7 +690,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDeleteComp2,
         path: '/npdc3_ug/npdc4_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDeleteComp1,
@@ -615,7 +698,7 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdc3_ug/npdc4_ug/npdc5_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdC,
+        grantedGroups: [{ item: groupIdC, type: GroupType.userGroup }, { item: externalGroupIdC, type: GroupType.externalUserGroup }],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDeleteComp2,
@@ -643,7 +726,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert2,
         path: '/trash/np_revert2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         revision: revisionIdRevert2,
         status: Page.STATUS_DELETED,
       },
@@ -665,7 +748,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert5,
         path: '/trash/np_revert5',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
         revision: revisionIdRevert5,
         status: Page.STATUS_DELETED,
       },
@@ -673,7 +756,7 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert6,
         path: '/trash/np_revert5/middle/np_revert6',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
         revision: revisionIdRevert6,
         status: Page.STATUS_DELETED,
       },
@@ -897,8 +980,8 @@ describe('PageService page operations with non-public pages', () => {
       const _path2 = '/np_rename2';
       const _path3 = '/np_rename2/np_rename3';
       const _propertiesD = { grant: Page.GRANT_PUBLIC };
-      const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
-      const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC };
+      const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } };
+      const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdC } } };
       const _pageD = await Page.findOne({ path: _pathD, ..._propertiesD });
       const _page2 = await Page.findOne({ path: _path2, ..._properties2 });
       const _page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2._id });
@@ -926,17 +1009,17 @@ describe('PageService page operations with non-public pages', () => {
       expect(page3Renamed).toBeTruthy();
       expect(page2Renamed.parent).toStrictEqual(_pageD._id);
       expect(page3Renamed.parent).toStrictEqual(page2Renamed._id);
-      expect(page2Renamed.grantedGroup).toStrictEqual(_page2.grantedGroup);
-      expect(page3Renamed.grantedGroup).toStrictEqual(_page3.grantedGroup);
+      expect(normalizeGrantedGroups(page2Renamed.grantedGroups)).toStrictEqual(normalizeGrantedGroups(_page2.grantedGroups));
+      expect(normalizeGrantedGroups(page3Renamed.grantedGroups)).toStrictEqual(normalizeGrantedGroups(_page3.grantedGroups));
       expect(xssSpy).toHaveBeenCalled();
     });
     test('Should throw with NOT grant normalized pages', async() => {
       const _pathD = '/np_rename4_destination';
       const _path2 = '/np_rename5';
       const _path3 = '/np_rename5/np_rename6';
-      const _propertiesD = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate };
-      const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
-      const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB };
+      const _propertiesD = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdIsolate } } };
+      const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } };
+      const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } };
       const _pageD = await Page.findOne({ path: _pathD, ..._propertiesD });// isolate
       const _page2 = await Page.findOne({ path: _path2, ..._properties2 });// groupIdB
       const _page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2 });// groupIdB
@@ -971,7 +1054,7 @@ describe('PageService page operations with non-public pages', () => {
       const _pathD = '/np_rename7_destination';
       const _path2 = '/np_rename8';
       const _path3 = '/np_rename8/np_rename9';
-      const _pageD = await Page.findOne({ path: _pathD, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdIsolate });
+      const _pageD = await Page.findOne({ path: _pathD, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdIsolate } } });
       const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED });
       const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_RESTRICTED });
       expect(_pageD).toBeTruthy();
@@ -1042,9 +1125,9 @@ describe('PageService page operations with non-public pages', () => {
     test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
       const _path1 = '/np_duplicate2';
       const _path2 = '/np_duplicate2/np_duplicate3';
-      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroup: groupIdA })
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroups: { $elemMatch: { item: groupIdA } } })
         .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
-      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroup: groupIdB })
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroups: { $elemMatch: { item: groupIdB } } })
         .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
       const _revision1 = _page1.revision;
       const _revision2 = _page2.revision;
@@ -1065,8 +1148,14 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedPage2).toBeTruthy();
       expect(duplicatedRevision1).toBeTruthy();
       expect(duplicatedRevision2).toBeTruthy();
-      expect(duplicatedPage1.grantedGroup).toStrictEqual(groupIdA._id);
-      expect(duplicatedPage2.grantedGroup).toStrictEqual(groupIdB._id);
+      expect(normalizeGrantedGroups(duplicatedPage1.grantedGroups)).toStrictEqual([
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
+      ]);
+      expect(normalizeGrantedGroups(duplicatedPage2.grantedGroups)).toStrictEqual([
+        { item: groupIdB, type: GroupType.userGroup },
+        { item: externalGroupIdB, type: GroupType.externalUserGroup },
+      ]);
       expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision1.body).toBe(_revision1.body);
@@ -1156,7 +1245,7 @@ describe('PageService page operations with non-public pages', () => {
     describe('Delete single page with grant USER_GROUP', () => {
       test('should be able to delete', async() => {
         const _path = '/npdel2_ug';
-        const _page1 = await Page.findOne({ path: _path, grantedGroup: groupIdA });
+        const _page1 = await Page.findOne({ path: _path, grantedGroups: { $elemMatch: { item: groupIdA } } });
         expect(_page1).toBeTruthy();
 
         const isRecursively = false;
@@ -1165,8 +1254,8 @@ describe('PageService page operations with non-public pages', () => {
           endpoint: '/_api/v3/pages/rename',
         });
 
-        const pageN = await Page.findOne({ path: _path, grantedGroup: groupIdA });
-        const page1 = await Page.findOne({ path: `/trash${_path}`, grantedGroup: groupIdA });
+        const pageN = await Page.findOne({ path: _path, grantedGroups: { $elemMatch: { item: groupIdA } } });
+        const page1 = await Page.findOne({ path: `/trash${_path}`, grantedGroups: { $elemMatch: { item: groupIdA } } });
         expect(pageN).toBeNull();
         expect(page1).toBeTruthy();
         expect(page1.status).toBe(Page.STATUS_DELETED);
@@ -1179,9 +1268,9 @@ describe('PageService page operations with non-public pages', () => {
         const _pathT = '/npdel3_top';
         const _path1 = '/npdel3_top/npdel4_ug';
         const _path2 = '/npdel3_top/npdel4_ug/npdel5_ug';
-        const _pageT = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A
-        const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B
-        const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // C
+        const _pageT = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } }); // A
+        const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } }); // B
+        const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdC } } }); // C
         const _pageR = await Page.findOne({ path: _path1, grant: Page.GRANT_RESTRICTED }); // Restricted
         expect(_pageT).toBeTruthy();
         expect(_page1).toBeTruthy();
@@ -1194,12 +1283,12 @@ describe('PageService page operations with non-public pages', () => {
           endpoint: '/_api/v3/pages/rename',
         });
 
-        const pageTNotExist = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A should not exist
-        const page1NotExist = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B should not exist
-        const page2NotExist = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // C should not exist
-        const pageT = await Page.findOne({ path: `/trash${_pathT}`, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A
-        const page1 = await Page.findOne({ path: `/trash${_path1}`, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B
-        const page2 = await Page.findOne({ path: `/trash${_path2}`, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC }); // C
+        const pageTNotExist = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } }); // A should not exist
+        const page1NotExist = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } }); // B should not exist
+        const page2NotExist = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdC } } }); // C should not exist
+        const pageT = await Page.findOne({ path: `/trash${_pathT}`, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } }); // A
+        const page1 = await Page.findOne({ path: `/trash${_path1}`, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } }); // B
+        const page2 = await Page.findOne({ path: `/trash${_path2}`, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdC } } }); // C
         const pageR = await Page.findOne({ path: _path1, grant: Page.GRANT_RESTRICTED }); // Restricted
         expect(page1NotExist).toBeNull();
         expect(pageTNotExist).toBeNull();
@@ -1256,7 +1345,7 @@ describe('PageService page operations with non-public pages', () => {
     describe('Delete single page with grant USER_GROUP', () => {
       test('should be able to delete completely', async() => {
         const _path = '/npdc2_ug';
-        const _page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        const _page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } });
         expect(_page).toBeTruthy();
 
         await deleteCompletely(_page, npDummyUser1, {}, false, false, {
@@ -1264,7 +1353,7 @@ describe('PageService page operations with non-public pages', () => {
           endpoint: '/_api/v3/pages/rename',
         });
 
-        const page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
+        const page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } });
         expect(page).toBeNull();
       });
     });
@@ -1273,9 +1362,9 @@ describe('PageService page operations with non-public pages', () => {
         const _path1 = '/npdc3_ug';
         const _path2 = '/npdc3_ug/npdc4_ug';
         const _path3 = '/npdc3_ug/npdc4_ug/npdc5_ug';
-        const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-        const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
-        const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC });
+        const _page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } });
+        const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } });
+        const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdC } } });
         const _page4 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED });
         expect(_page1).toBeTruthy();
         expect(_page2).toBeTruthy();
@@ -1287,9 +1376,9 @@ describe('PageService page operations with non-public pages', () => {
           endpoint: '/_api/v3/pages/rename',
         });
 
-        const page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
-        const page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
-        const page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdC });
+        const page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } });
+        const page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } });
+        const page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdC } } });
         const page4 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED });
 
         expect(page1).toBeNull();
@@ -1371,7 +1460,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_USER_GROUP);
-      expect(revertedPage.grantedGroup).toStrictEqual(groupIdA);
+      expect(normalizeGrantedGroups(revertedPage.grantedGroups)).toStrictEqual([
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
+      ]);
       expect(pageTagRelation.isPageTrashed).toBe(false);
     });
     test(`revert multiple pages: only target page should be reverted.
@@ -1417,8 +1509,8 @@ describe('PageService page operations with non-public pages', () => {
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
       const beforeRevertPath3 = '/trash/np_revert5/middle';
-      const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grantedGroup: groupIdA });
-      const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grantedGroup: groupIdB });
+      const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grantedGroups: { $elemMatch: { item: groupIdA } } });
+      const trashedPage2 = await Page.findOne({ path: beforeRevertPath2, status: Page.STATUS_DELETED, grantedGroups: { $elemMatch: { item: groupIdB } } });
       const nonExistantPage3 = await Page.findOne({ path: beforeRevertPath3 }); // not exist
       const revision1 = await Revision.findOne({ pageId: trashedPage1._id });
       const revision2 = await Revision.findOne({ pageId: trashedPage2._id });
@@ -1453,8 +1545,14 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage1.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
       expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
-      expect(revertedPage1.grantedGroup).toStrictEqual(groupIdA);
-      expect(revertedPage2.grantedGroup).toStrictEqual(groupIdB);
+      expect(normalizeGrantedGroups(revertedPage1.grantedGroups)).toStrictEqual([
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
+      ]);
+      expect(normalizeGrantedGroups(revertedPage2.grantedGroups)).toStrictEqual([
+        { item: groupIdB, type: GroupType.userGroup },
+        { item: externalGroupIdB, type: GroupType.externalUserGroup },
+      ]);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
 
     });

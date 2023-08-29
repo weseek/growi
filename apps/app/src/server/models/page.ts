@@ -3,7 +3,11 @@
 import assert from 'assert';
 import nodePath from 'path';
 
-import type { IPage, HasObjectId } from '@growi/core';
+import {
+  type IPage,
+  type GrantedGroup,
+  GroupType, type HasObjectId,
+} from '@growi/core';
 import { isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -14,12 +18,14 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
+import UserGroupRelation from './user-group-relation';
 
 const logger = loggerFactory('growi:models:page');
 /*
@@ -95,7 +101,28 @@ const schema = new Schema<PageDocument, PageModel>({
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
+  grantedGroups: {
+    type: [{
+      type: {
+        type: String,
+        enum: Object.values(GroupType),
+        required: true,
+        default: 'UserGroup',
+      },
+      item: {
+        type: ObjectId,
+        refPath: 'grantedGroups.type',
+        required: true,
+        index: true,
+      },
+    }],
+    validate: [function(arr) {
+      if (arr == null) return true;
+      const uniqueItemValues = new Set(arr.map(e => e.item));
+      return arr.length === uniqueItemValues.size;
+    }, 'grantedGroups contains non unique item'],
+    default: [],
+  },
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
   liker: [{ type: ObjectId, ref: 'User' }],
@@ -304,11 +331,10 @@ export class PageQueryBuilder {
 
   async addConditionForParentNormalization(user): Promise<PageQueryBuilder> {
     // determine UserGroup condition
-    let userGroups;
-    if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     const grantConditions: any[] = [
       { grant: null },
@@ -323,7 +349,10 @@ export class PageQueryBuilder {
 
     if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
-        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+        {
+          grant: GRANT_USER_GROUP,
+          grantedGroups: { $elemMatch: { item: { $in: userGroups } } },
+        },
       );
     }
 
@@ -353,11 +382,10 @@ export class PageQueryBuilder {
 
   // add viewer condition to PageQueryBuilder instance
   async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      const UserGroupRelation: any = mongoose.model('UserGroupRelation');
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink);
     return this;
@@ -935,7 +963,10 @@ export function generateGrantCondition(
   }
   else if (userGroups != null && userGroups.length > 0) {
     grantConditions.push(
-      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+      {
+        grant: GRANT_USER_GROUP,
+        grantedGroups: { $elemMatch: { item: { $in: userGroups } } },
+      },
     );
   }
 
@@ -1015,7 +1046,7 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
 
 export type PageCreateOptions = {
   format?: string
-  grantUserGroupId?: ObjectIdLike
+  grantUserGroupIds?: GrantedGroup[],
   grant?: number
   overwriteScopesOfDescendants?: boolean
 }

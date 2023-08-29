@@ -366,16 +366,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       });
     }
 
-    let grantedGroupId = null;
-    if (page.grantedGroup != null) {
-      const groupId = (page.grantedGroup._id == null) ? page.grantedGroup : page.grantedGroup._id;
-      grantedGroupId = groupId.toString();
+    let grantedGroupIds = null;
+    if (page.grantedGroups != null) {
+      grantedGroupIds = page.grantedGroups.map((group) => {
+        const groupId = (group.item._id == null) ? group.item : group.item._id;
+        return groupId.toString();
+      });
     }
 
     return {
       grant: page.grant,
       granted_users: grantedUserIds,
-      granted_group: grantedGroupId,
+      granted_groups: grantedGroupIds,
     };
   }
 
@@ -882,7 +884,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           bool: {
             must: [
               { term: { grant: GRANT_USER_GROUP } },
-              { terms: { granted_group: userGroupIds } },
+              { terms: { granted_groups: userGroupIds } },
             ],
           },
         },

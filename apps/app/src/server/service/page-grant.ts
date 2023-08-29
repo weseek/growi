@@ -1,28 +1,34 @@
 import {
+  type GrantedGroup,
   PageGrant, type PageGrantCanBeOnTree,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
 } from '@growi/core/dist/utils';
+import { et } from 'date-fns/locale';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
-import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { includesObjectIds, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import UserGroupRelation from '../models/user-group-relation';
+import { divideByType } from '../util/granted-group';
 
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-type ObjectIdLike = mongoose.Types.ObjectId | string;
-
 type ComparableTarget = {
   grant: number,
   grantedUserIds?: ObjectIdLike[],
-  grantedGroupId?: ObjectIdLike,
+  grantedGroupIds?: GrantedGroup[],
   applicableUserIds?: ObjectIdLike[],
   applicableGroupIds?: ObjectIdLike[],
 };
@@ -37,7 +43,7 @@ type ComparableAncestor = {
 type ComparableDescendants = {
   isPublicExist: boolean,
   grantedUserIds: ObjectIdLike[],
-  grantedGroupIds: ObjectIdLike[],
+  grantedGroupIds: GrantedGroup[],
 };
 
 /**
@@ -52,7 +58,6 @@ type UpdateGrantInfo = {
 } | {
   grant: typeof PageGrant.GRANT_USER_GROUP,
   grantedUserGroupInfo: {
-    groupId: ObjectIdLike,
     userIds: Set<ObjectIdLike>,
     childrenOrItselfGroupIds: Set<ObjectIdLike>,
   },
@@ -84,13 +89,13 @@ class PageGrantService {
   private validateComparableTarget(comparable: ComparableTarget) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const { grant, grantedUserIds, grantedGroupId } = comparable;
+    const { grant, grantedUserIds, grantedGroupIds } = comparable;
 
     if (grant === Page.GRANT_OWNER && (grantedUserIds == null || grantedUserIds.length !== 1)) {
       throw Error('grantedUserIds must not be null and must have 1 length');
     }
-    if (grant === Page.GRANT_USER_GROUP && grantedGroupId == null) {
-      throw Error('grantedGroupId is not specified');
+    if (grant === Page.GRANT_USER_GROUP && grantedGroupIds == null) {
+      throw Error('grantedGroupIds is not specified');
     }
   }
 
@@ -139,17 +144,17 @@ class PageGrantService {
           throw Error('grantedUserIds must have one user');
         }
 
-        if (!isIncludesObjectId(ancestor.applicableUserIds, target.grantedUserIds[0])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
+        if (!includesObjectIds(ancestor.applicableUserIds, [target.grantedUserIds[0]])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
           return false;
         }
       }
 
       if (target.grant === Page.GRANT_USER_GROUP) {
-        if (target.grantedGroupId == null) {
-          throw Error('grantedGroupId must not be null');
+        if (target.grantedGroupIds == null || target.grantedGroupIds.length === 0) {
+          throw Error('grantedGroupId must not be empty');
         }
-
-        if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
+        const targetGrantedGroupStrIds = target.grantedGroupIds.map(e => (typeof e.item === 'string' ? e.item : e.item._id));
+        if (!includesObjectIds(ancestor.applicableGroupIds, targetGrantedGroupStrIds)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
       }
@@ -194,7 +199,7 @@ class PageGrantService {
         return false;
       }
 
-      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(descendants.grantedGroupIds, target.applicableGroupIds);
+      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(descendants.grantedGroupIds.map(g => g.item), target.applicableGroupIds);
       const shouldNotExistUserIds = excludeTestIdsFromTargetIds(descendants.grantedUserIds, target.applicableUserIds);
       if (shouldNotExistGroupIds.length !== 0 || shouldNotExistUserIds.length !== 0) {
         return false;
@@ -209,32 +214,43 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupId: ObjectIdLike | undefined, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: GrantedGroup[] | undefined, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
       const Page = mongoose.model('Page') as unknown as PageModel;
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
       let applicableUserIds: ObjectIdLike[] | undefined;
       let applicableGroupIds: ObjectIdLike[] | undefined;
 
       if (grant === Page.GRANT_USER_GROUP) {
-        const targetUserGroup = await UserGroup.findOne({ _id: grantedGroupId });
-        if (targetUserGroup == null) {
+        if (grantedGroupIds == null || grantedGroupIds.length === 0) {
+          throw Error('Target user group is not given');
+        }
+
+        const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroupIds);
+        const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
+        const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
+        if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
           throw Error('Target user group does not exist');
         }
 
-        const relatedUsers = await UserGroupRelation.find({ relatedGroup: targetUserGroup._id });
-        applicableUserIds = relatedUsers.map(u => u.relatedUser);
+        const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
+        const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map(g => g._id) } });
+        applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser as ObjectIdLike)));
 
-        const applicableGroups = grantedGroupId != null ? await UserGroup.findGroupsWithDescendantsById(grantedGroupId) : null;
-        applicableGroupIds = applicableGroups?.map(g => g._id) || null;
+        const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
+          return UserGroup.findGroupsWithDescendantsById(group._id);
+        }))).flat();
+        const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
+          return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
+        }))).flat();
+        applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
       }
 
       return {
         grant,
         grantedUserIds,
-        grantedGroupId,
+        grantedGroupIds,
         applicableUserIds,
         applicableGroupIds,
       };
@@ -243,7 +259,7 @@ class PageGrantService {
     return {
       grant,
       grantedUserIds,
-      grantedGroupId,
+      grantedGroupIds,
     };
   }
 
@@ -255,7 +271,6 @@ class PageGrantService {
   private async generateComparableAncestor(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableAncestor> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     let applicableUserIds: ObjectIdLike[] | undefined;
     let applicableGroupIds: ObjectIdLike[] | undefined;
@@ -279,10 +294,20 @@ class PageGrantService {
 
     if (testAncestor.grant === Page.GRANT_USER_GROUP) {
       // make a set of all users
-      const grantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
-      const grantedGroups = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
-      applicableGroupIds = grantedGroups.map(g => g._id);
-      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectIdLike[];
+      const { grantedUserGroups, grantedExternalUserGroups } = divideByType(testAncestor.grantedGroups);
+
+      const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: grantedUserGroups } }, { _id: 0, relatedUser: 1 });
+      const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: grantedExternalUserGroups } }, { _id: 0, relatedUser: 1 });
+      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(r => r.relatedUser as ObjectIdLike)));
+
+      const applicableUserGroups = (await Promise.all(grantedUserGroups.map((groupId) => {
+        return UserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      const applicableExternalUserGroups = (await Promise.all(grantedExternalUserGroups.map((groupId) => {
+        return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
+
     }
 
     return {
@@ -300,7 +325,6 @@ class PageGrantService {
    */
   private async generateComparableDescendants(targetPath: string, user, includeNotMigratedPages = false): Promise<ComparableDescendants> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     // Build conditions
     const $match: {$or: any} = {
@@ -320,7 +344,10 @@ class PageGrantService {
 
     if (includeNotMigratedPages) {
       // Add grantCondition for not normalized pages
-      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      const userGroups = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ];
       const grantCondition = Page.generateGrantCondition(user, userGroups);
       const conditionForNotNormalizedPages = {
         $and: [
@@ -343,19 +370,26 @@ class PageGrantService {
           _id: 0,
           grant: 1,
           grantedUsers: 1,
-          grantedGroup: 1,
+          grantedGroups: 1,
+        },
+      },
+      {
+        $unwind: { // preprocess for creating groups set
+          path: '$grantedGroups',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $unwind: { // preprocess for creating users set
+          path: '$grantedUsersSet',
+          preserveNullAndEmptyArrays: true,
         },
       },
       { // remove duplicates from pipeline
         $group: {
           _id: '$grant',
-          grantedGroupSet: { $addToSet: '$grantedGroup' },
+          grantedGroupsSet: { $addToSet: '$grantedGroups' },
           grantedUsersSet: { $addToSet: '$grantedUsers' },
-        },
-      },
-      { // flatten granted user set
-        $unwind: {
-          path: '$grantedUsersSet',
         },
       },
     ]);
@@ -367,7 +401,7 @@ class PageGrantService {
     const grantedUserIds: ObjectIdLike[] = grantOwnerResult?.grantedUsersSet ?? [];
     // GRANT_USER_GROUP group
     const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
-    const grantedGroupIds = grantUserGroupResult?.grantedGroupSet ?? [];
+    const grantedGroupIds = grantUserGroupResult?.grantedGroupsSet ?? [];
 
     return {
       isPublicExist,
@@ -385,7 +419,7 @@ class PageGrantService {
    */
   async isGrantNormalized(
       // eslint-disable-next-line max-len
-      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false, includeNotMigratedPages = false,
+      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupIds?: GrantedGroup[], shouldCheckDescendants = false, includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
@@ -394,11 +428,11 @@ class PageGrantService {
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
     if (!shouldCheckDescendants) { // checking the parent is enough
-      const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, false);
+      const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, false);
       return this.processValidation(comparableTarget, comparableAncestor);
     }
 
-    const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, true);
+    const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, true);
     const comparableDescendants = await this.generateComparableDescendants(targetPath, user, includeNotMigratedPages);
 
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
@@ -423,7 +457,7 @@ class PageGrantService {
 
     for await (const page of pages) {
       const {
-        path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+        path, grant, grantedUsers: grantedUserIds, grantedGroups: grantedGroupIds,
       } = page;
 
       if (!pageUtils.isPageNormalized(page)) {
@@ -431,7 +465,7 @@ class PageGrantService {
         continue;
       }
 
-      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
+      if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
       }
       else {
@@ -444,7 +478,6 @@ class PageGrantService {
 
   async calcApplicableGrantData(page, user): Promise<IRecordApplicableGrant> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     // -- Public only if top page
     const isOnlyPublicApplicable = isTopPage(page.path);
@@ -475,7 +508,7 @@ class PageGrantService {
     }
 
     const {
-      grant, grantedUsers, grantedGroup,
+      grant, grantedUsers, grantedGroups,
     } = parent;
 
     if (grant === PageGrant.GRANT_PUBLIC) {
@@ -493,14 +526,28 @@ class PageGrantService {
       }
     }
     else if (grant === PageGrant.GRANT_USER_GROUP) {
-      const group = await UserGroup.findById(grantedGroup);
-      if (group == null) {
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroups);
+      const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
+      const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
+      if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
         throw Error('Group not found to calculate grant data.');
       }
 
-      const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
+        return UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      }))).flat();
+      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
+        return ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      }))).flat();
+      const applicableGroups = [...applicableUserGroups, ...applicableExternalUserGroups];
 
-      const isUserExistInGroup = await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
+      const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
+        return UserGroupRelation.countByGroupIdsAndUser([group._id], user);
+      }))).some(count => count > 0);
+      const isUserExistInExternalUserGroup = (await Promise.all(targetExternalUserGroups.map((group) => {
+        return ExternalUserGroupRelation.countByGroupIdsAndUser([group._id], user);
+      }))).some(count => count > 0);
+      const isUserExistInGroup = isUserExistInUserGroup || isUserExistInExternalUserGroup;
 
       if (isUserExistInGroup) {
         data[PageGrant.GRANT_OWNER] = null;
@@ -519,9 +566,10 @@ class PageGrantService {
    * @returns {Promise<boolean>}
    */
   async canOverwriteDescendants(targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
-    const UserGroupRelationModel = mongoose.model('UserGroupRelation') as any; // TODO: TypeScriptize model
-
-    const relatedGroupIds = await UserGroupRelationModel.findAllUserGroupIdsRelatedToUser(operator);
+    const relatedGroupIds = [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(operator)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(operator)),
+    ];
     const operatorGrantInfo = {
       userId: operator._id,
       userGroupIds: new Set<ObjectIdLike>(relatedGroupIds),
@@ -542,13 +590,17 @@ class PageGrantService {
     const descendantPagesGrantInfo = {
       grantSet,
       grantedUserIds: new Set(comparableDescendants.grantedUserIds), // all only me users of descendant pages
-      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds), // all user groups of descendant pages
+      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds.map((g) => {
+        return typeof g.item === 'string' ? g.item : g.item._id;
+      })), // all user groups of descendant pages
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
   }
 
-  async generateUpdateGrantInfoToOverwriteDescendants(operator, updateGrant: PageGrantCanBeOnTree, grantUserGroupId?: ObjectIdLike): Promise<UpdateGrantInfo> {
+  async generateUpdateGrantInfoToOverwriteDescendants(
+      operator, updateGrant: PageGrantCanBeOnTree, grantGroupIds?: GrantedGroup[],
+  ): Promise<UpdateGrantInfo> {
     let updateGrantInfo: UpdateGrantInfo | null = null;
 
     if (updateGrant === PageGrant.GRANT_PUBLIC) {
@@ -563,18 +615,27 @@ class PageGrantService {
       };
     }
     else if (updateGrant === PageGrant.GRANT_USER_GROUP) {
-      if (grantUserGroupId == null) {
-        throw Error('The parameter `grantUserGroupId` is required.');
+      if (grantGroupIds == null) {
+        throw Error('The parameter `grantGroupIds` is required.');
       }
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-      const userIds = await UserGroupRelation.findAllUserIdsForUserGroup(grantUserGroupId);
-      const childrenOrItselfGroups = await UserGroup.findGroupsWithDescendantsById(grantUserGroupId);
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantGroupIds);
+
+      const userGroupUserIds = await UserGroupRelation.findAllUserIdsForUserGroups(grantedUserGroupIds);
+      const externalUserGroupUserIds = await ExternalUserGroupRelation.findAllUserIdsForUserGroups(grantedExternalUserGroupIds);
+      const userIds = [...userGroupUserIds, ...externalUserGroupUserIds];
+
+      const childrenOrItselfUserGroups = (await Promise.all(grantedUserGroupIds.map((groupId) => {
+        return UserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      const childrenOrItselfExternalUserGroups = (await Promise.all(grantedExternalUserGroupIds.map((groupId) => {
+        return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
+      }))).flat();
+      const childrenOrItselfGroups = [...childrenOrItselfUserGroups, ...childrenOrItselfExternalUserGroups];
       const childrenOrItselfGroupIds = childrenOrItselfGroups.map(d => d._id);
 
       updateGrantInfo = {
         grant: PageGrant.GRANT_USER_GROUP,
         grantedUserGroupInfo: {
-          groupId: grantUserGroupId,
           userIds: new Set<ObjectIdLike>(userIds),
           childrenOrItselfGroupIds: new Set<ObjectIdLike>(childrenOrItselfGroupIds),
         },
@@ -591,7 +652,7 @@ class PageGrantService {
   private calcIsAllDescendantsGrantedByOperator(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_OWNER)) {
       const isNonApplicableOwnerExist = descendantPagesGrantInfo.grantedUserIds.size >= 2
-        || !isIncludesObjectId([...descendantPagesGrantInfo.grantedUserIds], operatorGrantInfo.userId);
+        || !includesObjectIds([...descendantPagesGrantInfo.grantedUserIds], [operatorGrantInfo.userId]);
       if (isNonApplicableOwnerExist) {
         return false;
       }
@@ -601,7 +662,6 @@ class PageGrantService {
       const isNonApplicableGroupExist = excludeTestIdsFromTargetIds(
         [...descendantPagesGrantInfo.grantedUserGroupIds], [...operatorGrantInfo.userGroupIds],
       ).length > 0;
-
       if (isNonApplicableGroupExist) {
         return false;
       }
@@ -639,7 +699,6 @@ class PageGrantService {
       const isUpdateGroupUsersIncludeAllDescendantsOwners = excludeTestIdsFromTargetIds(
         [...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.userIds],
       ).length === 0; // b.
-
       return isAllDescendantGroupsChildrenOrItselfOfUpdateGroup && isUpdateGroupUsersIncludeAllDescendantsOwners;
     }
 

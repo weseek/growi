@@ -1,4 +1,4 @@
-import { PageGrant } from '@growi/core';
+import { PageGrant, type GrantedGroup } from '@growi/core';
 
 import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 
@@ -9,7 +9,7 @@ export type IPageForResuming = {
   parent?: ObjectIdLike,
   grant?: number,
   grantedUsers?: ObjectIdLike[],
-  grantedGroup?: ObjectIdLike,
+  grantedGroups: GrantedGroup[],
   descendantCount: number,
   status?: number,
   revision?: ObjectIdLike,
@@ -23,14 +23,14 @@ export type IUserForResuming = {
 
 export type IOptionsForUpdate = {
   grant?: PageGrant,
-  grantUserGroupId?: ObjectIdLike,
+  grantUserGroupIds?: GrantedGroup[],
   isSyncRevisionToHackmd?: boolean,
   overwriteScopesOfDescendants?: boolean,
 };
 
 export type IOptionsForCreate = {
   format?: string,
-  grantUserGroupId?: ObjectIdLike,
+  grantUserGroupIds?: GrantedGroup[],
   grant?: PageGrant,
   overwriteScopesOfDescendants?: boolean,
   isSynchronously?: boolean,

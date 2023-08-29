@@ -1,6 +1,8 @@
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import UserGroupRelation from '../models/user-group-relation';
 import { isSearchError } from '../models/vo/search-error';
 
 
@@ -127,11 +129,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('SearchService is not reachable.'));
     }
 
-    let userGroups = [];
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     const searchOpts = {
       ...paginateOpts, type, sort, order,

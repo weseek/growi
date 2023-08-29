@@ -1,8 +1,13 @@
-import { PageGrant } from '@growi/core';
+import { PageGrant, GroupType } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import loggerFactory from '~/utils/logger';
+
+import UserGroup from './user-group';
+import UserGroupRelation from './user-group-relation';
 
 
 // disable no-return-await for model functions
@@ -10,11 +15,10 @@ import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
 
-const debug = require('debug')('growi:models:page');
-
 const nodePath = require('path');
 
 const differenceInYears = require('date-fns/differenceInYears');
+const debug = require('debug')('growi:models:page');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
@@ -69,12 +73,12 @@ export const extractToAncestorsPaths = (pagePath) => {
 export const populateDataToShowRevision = (page, userPublicFields, shouldExcludeBody = false) => {
   return page
     .populate([
-      { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
-      { path: 'creator', model: 'User', select: userPublicFields },
-      { path: 'deleteUser', model: 'User', select: userPublicFields },
-      { path: 'grantedGroup', model: 'UserGroup' },
-      { path: 'revision', model: 'Revision', select: shouldExcludeBody ? '-body' : undefined, populate: {
-        path: 'author', model: 'User', select: userPublicFields,
+      { path: 'lastUpdateUser', select: userPublicFields },
+      { path: 'creator', select: userPublicFields },
+      { path: 'deleteUser', select: userPublicFields },
+      { path: 'grantedGroups.item' },
+      { path: 'revision', select: shouldExcludeBody ? '-body' : undefined, populate: {
+        path: 'author', select: userPublicFields,
       } },
     ]);
 };
@@ -249,10 +253,10 @@ export const getPageSchema = (crowi) => {
     return this.populate('revision');
   };
 
-  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupIds) {
     // Reset
     this.grantedUsers = [];
-    this.grantedGroup = null;
+    this.grantedGroups = [];
 
     this.grant = grant || GRANT_PUBLIC;
 
@@ -261,7 +265,7 @@ export const getPageSchema = (crowi) => {
     }
 
     if (grant === GRANT_USER_GROUP) {
-      this.grantedGroup = grantUserGroupId;
+      this.grantedGroups = grantUserGroupIds;
     }
   };
 
@@ -319,12 +323,10 @@ export const getPageSchema = (crowi) => {
   pageSchema.statics.isAccessiblePageByViewer = async function(id, user) {
     const baseQuery = this.count({ _id: id });
 
-    let userGroups = [];
-    if (user != null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : [];
 
     const queryBuilder = new this.PageQueryBuilder(baseQuery);
     queryBuilder.addConditionToFilteringByViewer(user, userGroups, true);
@@ -341,12 +343,10 @@ export const getPageSchema = (crowi) => {
   pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups, includeEmpty = false) {
     const baseQuery = this.findOne({ _id: id });
 
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     const queryBuilder = new this.PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
@@ -384,12 +384,10 @@ export const getPageSchema = (crowi) => {
     // pick the longest one
     const baseQuery = this.findOne({ path: { $in: ancestorsPaths } }).sort({ path: -1 });
 
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     const queryBuilder = new this.PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
@@ -513,11 +511,10 @@ export const getPageSchema = (crowi) => {
     const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     return builder.addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink, !hidePagesRestrictedByOwner, !hidePagesRestrictedByGroup);
   }
@@ -531,14 +528,11 @@ export const getPageSchema = (crowi) => {
    * @param {boolean} showAnyoneKnowsLink
    */
   async function addConditionToFilteringByViewerToEdit(builder, user) {
-    validateCrowi();
-
     // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     return builder.addConditionToFilteringByViewer(user, userGroups, false, false, false);
   }
@@ -663,7 +657,7 @@ export const getPageSchema = (crowi) => {
 
     await builder.query.updateMany({}, {
       grant,
-      grantedGroup: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroup : null,
+      grantedGroups: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroups : null,
       grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
     });
 
@@ -682,7 +676,7 @@ export const getPageSchema = (crowi) => {
         updateOne: {
           filter: { _id: page._id },
           update: {
-            grantedGroup: null,
+            grantedGroups: null,
             grant: this.GRANT_PUBLIC,
           },
         },
@@ -691,14 +685,19 @@ export const getPageSchema = (crowi) => {
     await this.bulkWrite(operationsToPublicize);
   };
 
-  pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroupId) {
-    const UserGroup = mongoose.model('UserGroup');
+  /**
+   * transfer pages grant to specified user group
+   * @param {Page[]} pages
+   * @param {GrantedGroup} transferToUserGroup
+   */
+  pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroup) {
+    const userGroupModel = transferToUserGroup.type === GroupType.userGroup ? UserGroup : ExternalUserGroup;
 
-    if ((await UserGroup.count({ _id: transferToUserGroupId })) === 0) {
-      throw Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
+    if ((await userGroupModel.count({ _id: transferToUserGroup.item })) === 0) {
+      throw Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroup.item);
     }
 
-    await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroup: transferToUserGroupId });
+    await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroups: [transferToUserGroup] });
   };
 
   /**

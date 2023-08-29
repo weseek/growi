@@ -5,7 +5,6 @@ const logger = loggerFactory('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
-
   const {
     configManager,
     exportService,

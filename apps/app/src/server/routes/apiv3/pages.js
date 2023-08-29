@@ -295,7 +295,7 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
+      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
 
     let { path } = req.body;
@@ -317,7 +317,7 @@ module.exports = (crowi) => {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupId = grantUserGroupId;
+      options.grantUserGroupIds = grantUserGroupIds;
     }
 
     const isNoBodyPage = body === undefined;

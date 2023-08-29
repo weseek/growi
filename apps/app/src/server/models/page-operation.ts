@@ -1,3 +1,4 @@
+import { GroupType } from '@growi/core';
 import { addSeconds } from 'date-fns';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
@@ -58,7 +59,17 @@ const pageSchemaForResuming = new Schema<IPageForResuming>({
   status: { type: String },
   grant: { type: Number },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup' },
+  grantedGroups: [{
+    type: {
+      type: String,
+      enum: Object.values(GroupType),
+      required: true,
+      default: 'UserGroup',
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true,
+    },
+  }],
   creator: { type: ObjectId, ref: 'User' },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
 });
@@ -72,7 +83,17 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   updateMetadata: { type: Boolean },
   prevDescendantCount: { type: Number },
   grant: { type: Number },
-  grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
+  grantUserGroupIds: [{
+    type: {
+      type: String,
+      enum: Object.values(GroupType),
+      required: true,
+      default: 'UserGroup',
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true,
+    },
+  }],
   format: { type: String },
   isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },

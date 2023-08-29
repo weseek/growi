@@ -1,5 +1,6 @@
 import { Schema, Model, Document } from 'mongoose';
 
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
@@ -15,6 +16,12 @@ export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupR
   PAGE_ITEMS: 50,
 
   removeAllByUserGroups: (groupsToDelete: ExternalUserGroupDocument[]) => Promise<any>,
+
+  findAllUserIdsForUserGroups: (userGroupIds: ObjectIdLike[]) => Promise<string[]>,
+
+  findGroupsWithDescendantsByGroupAndUser: (group: ExternalUserGroupDocument, user) => Promise<ExternalUserGroupDocument[]>,
+
+  countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
 }
 
 const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>({
@@ -31,5 +38,13 @@ schema.statics.removeAllByUserGroups = UserGroupRelation.removeAllByUserGroups;
 schema.statics.findAllRelation = UserGroupRelation.findAllRelation;
 
 schema.statics.removeAllInvalidRelations = UserGroupRelation.removeAllInvalidRelations;
+
+schema.statics.findGroupsWithDescendantsByGroupAndUser = UserGroupRelation.findGroupsWithDescendantsByGroupAndUser;
+
+schema.statics.countByGroupIdsAndUser = UserGroupRelation.countByGroupIdsAndUser;
+
+schema.statics.findAllUserIdsForUserGroups = UserGroupRelation.findAllUserIdsForUserGroups;
+
+schema.statics.findAllUserGroupIdsRelatedToUser = UserGroupRelation.findAllUserGroupIdsRelatedToUser;
 
 export default getOrCreateModel<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>('ExternalUserGroupRelation', schema);
