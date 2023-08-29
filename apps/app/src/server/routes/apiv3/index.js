@@ -118,7 +118,7 @@ module.exports = (crowi, app) => {
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
 
-  router.get('/me', require('./me')(crowi));
+  router.use('/me', require('./me')(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };
