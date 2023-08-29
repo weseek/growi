@@ -104,38 +104,6 @@ module.exports = async(phase, { defaultConfig }) => {
             };
           }),
         );
-
-        // setup for react-pdf
-        // see: https://github.com/wojtekmaj/react-pdf#support-for-non-latin-characters
-        const CopyWebpackPlugin = require('copy-webpack-plugin');
-        const cMapsDir = path.join(path.dirname(require.resolve('pdfjs-dist/package.json')), 'cmaps');
-        const standardFontsDir = path.join(path.dirname(require.resolve('pdfjs-dist/package.json')), 'standard_fonts');
-        config.plugins.push(
-          new CopyWebpackPlugin({
-            patterns: [
-              {
-                from: cMapsDir,
-                to: 'static/media/cmaps/',
-              },
-              {
-                from: standardFontsDir,
-                to: 'static/media/standard_fonts/',
-              },
-            ],
-          }),
-        );
-        // see: https://zenn.dev/kin/articles/658b06a3233e60#react-pdf%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A
-        config.module.rules.unshift({
-          test: /pdf\.worker\.(min\.)?js/,
-          use: [{
-            loader: 'file-loader',
-            options: {
-              name: '[contenthash].[ext]',
-              publicPath: '_next/static/chunks',
-              outputPath: 'static/chunks',
-            },
-          }],
-        });
       }
 
       // extract sourcemap
