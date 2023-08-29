@@ -53,23 +53,20 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   }, [view]);
 
   // implement appendExtension method
-  const appendExtension = useCallback((extension: Extension, compartment?: Compartment): CleanupFunction | undefined => {
+  const appendExtension = useCallback((extension: Extension): CleanupFunction | undefined => {
+    const compartment = new Compartment();
     view?.dispatch({
       effects: StateEffect.appendConfig.of(
-        compartment != null
-          ? compartment.of(extension)
-          : extension,
+        compartment.of(extension),
       ),
     });
 
-    return compartment != null
-      // return cleanup function
-      ? () => {
-        view?.dispatch({
-          effects: compartment?.reconfigure([]),
-        });
-      }
-      : undefined;
+    // return cleanup function
+    return () => {
+      view?.dispatch({
+        effects: compartment?.reconfigure([]),
+      });
+    };
   }, [view]);
 
   // implement getDoc method

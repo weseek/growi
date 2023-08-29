@@ -2,8 +2,9 @@ import {
   useEffect, useMemo, useRef, useState,
 } from 'react';
 
-import { EditorView } from '@codemirror/view';
-import { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
+import { keymap } from '@codemirror/view';
+import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import { toast } from 'react-toastify';
 
 import { CodeMirrorEditorContainer } from '..';
 import { useCodeMirrorEditorMain } from '../../stores';
@@ -23,6 +24,26 @@ export const Playground = (): JSX.Element => {
     };
   }, []);
   const { data: codeMirrorEditor } = useCodeMirrorEditorMain(containerRef.current, props);
+
+  // set handler to save with shortcut key
+  useEffect(() => {
+    const extension = keymap.of([
+      {
+        key: 'Mod-s',
+        preventDefault: true,
+        run: () => {
+          // eslint-disable-next-line no-console
+          console.log({ doc: codeMirrorEditor?.getDoc() });
+          toast.success('Saved.', { autoClose: 2000 });
+          return true;
+        },
+      },
+    ]);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtension?.(extension);
+
+    return cleanupFunction;
+  }, [codeMirrorEditor]);
 
   return (
     <>
