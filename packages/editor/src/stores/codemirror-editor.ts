@@ -5,8 +5,9 @@ import { scrollPastEnd } from '@codemirror/view';
 import {
   type SWRResponseWithUtils, withUtils, useSWRStatic,
 } from '@growi/core/dist/swr';
+import type { UseCodeMirror } from '@uiw/react-codemirror';
 
-import type { UseCodeMirrorEditor, UseCodeMirrorEditorResponse } from '../services';
+import type { UseCodeMirrorEditor } from '../services';
 import { useCodeMirrorEditor } from '../services';
 
 const defaultExtensionsMain: Extension[] = [
@@ -17,8 +18,8 @@ type MainEditorUtils = {
   // impl something
 };
 
-export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRResponseWithUtils<MainEditorUtils, UseCodeMirrorEditorResponse> => {
-  const props = useMemo<UseCodeMirrorEditor>(() => {
+export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null): SWRResponseWithUtils<MainEditorUtils, UseCodeMirrorEditor> => {
+  const props = useMemo<UseCodeMirror>(() => {
     return {
       container,
       autoFocus: true,

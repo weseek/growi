@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -7,9 +7,7 @@ import {
 } from '@codemirror/state';
 import { basicSetup, useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
-import { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
-
-export type UseCodeMirrorEditor = UseCodeMirror;
+import type { UseCodeMirrorEditorStates } from './interfaces/react-codemirror';
 
 type UseCodeMirrorEditorUtils = {
   initState: (config?: EditorStateConfig) => void,
@@ -19,8 +17,7 @@ type UseCodeMirrorEditorUtils = {
   focus: () => void,
   setCaretLine: (lineNumber?: number) => void,
 }
-
-export type UseCodeMirrorEditorResponse = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
+export type UseCodeMirrorEditor = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
 
 type CleanupFunction = () => void;
 
@@ -33,7 +30,7 @@ const defaultExtensionsToInit: Extension[] = [
   ...defaultExtensions,
 ];
 
-export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorEditorResponse => {
+export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
 
   const codemirror = useCodeMirror({
     ...props,
@@ -43,7 +40,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     ],
   });
 
-  const { view, setContainer } = codemirror;
+  const { view } = codemirror;
 
   // implement initState method
   const initState = useCallback((config?: EditorStateConfig): void => {
@@ -113,12 +110,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirrorEditor): UseCodeMirrorE
     // focus
     view.focus();
   }, [view]);
-
-  useEffect(() => {
-    if (props?.container != null) {
-      setContainer(props.container);
-    }
-  }, [props?.container, setContainer]);
 
   return {
     ...codemirror,
