@@ -68,13 +68,13 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
 
 type PrimaryLinkItemProps = {
   label: string,
-  iconName: string
   href: string,
+  iconName: string
 }
 
 const PrimaryLinkItem: FC<PrimaryLinkItemProps> = (props: PrimaryLinkItemProps) => {
   const {
-    href, label, iconName,
+    label, href, iconName,
   } = props;
 
   const labelForTestId = label.toLowerCase().replace(' ', '-');
@@ -146,14 +146,13 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
-        <PrimaryLinkItem label="Trash" iconName="delete" href="/trash" />
+        <PrimaryLinkItem label="Trash" href="/trash" iconName="delete" />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
-        <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        {/* TODO: この設定はマイページの Settings 内に集約される予定のため、ここからは消す */}
+        {/* <AppearanceModeDropdown isAuthenticated={isAuthenticated} /> */}
         <PersonalDropdown />
         <InAppNotificationDropdown />
-
-        {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
         <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
       </div>
