@@ -117,17 +117,6 @@
 
     .grw-taglabels-container {
       margin-bottom: 0;
-
-      // TODO: .form-inline dropped in bootstrap v5
-      // https://redmine.weseek.co.jp/issues/128307
-      // To scroll tags horizontally
-      // .grw-tag-labels.form-inline {
-      //   flex-flow: row nowrap;
-      //   width: 100%;
-      //   overflow-x: auto;
-      //   overflow-y: hidden;
-      //   scrollbar-width: thin;
-      // }
     }
   }
 
