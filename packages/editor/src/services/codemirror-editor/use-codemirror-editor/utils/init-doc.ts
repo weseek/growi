@@ -7,18 +7,15 @@ export type InitDoc = (doc?: string) => void;
 
 export const useInitDoc = (view?: EditorView): InitDoc => {
 
-  const { dispatch } = view ?? {};
-  const docLength = view?.state.doc.length;
-
   return useCallback((doc) => {
-    dispatch?.({
+    view?.dispatch({
       changes: {
         from: 0,
-        to: docLength,
+        to: view?.state.doc.length,
         insert: doc,
       },
       annotations: Transaction.addToHistory.of(false),
     });
-  }, [docLength, dispatch]);
+  }, [view]);
 
 };

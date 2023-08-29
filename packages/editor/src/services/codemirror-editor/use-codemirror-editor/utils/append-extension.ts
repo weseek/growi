@@ -8,11 +8,9 @@ export type AppendExtension = (extension: Extension) => CleanupFunction | undefi
 
 export const useAppendExtension = (view?: EditorView): AppendExtension => {
 
-  const { dispatch } = view ?? {};
-
   return useCallback((extension) => {
     const compartment = new Compartment();
-    dispatch?.({
+    view?.dispatch({
       effects: StateEffect.appendConfig.of(
         compartment.of(extension),
       ),
@@ -20,10 +18,10 @@ export const useAppendExtension = (view?: EditorView): AppendExtension => {
 
     // return cleanup function
     return () => {
-      dispatch?.({
+      view?.dispatch({
         effects: compartment.reconfigure([]),
       });
     };
-  }, [dispatch]);
+  }, [view]);
 
 };

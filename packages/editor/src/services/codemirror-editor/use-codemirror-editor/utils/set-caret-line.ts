@@ -6,16 +6,15 @@ export type SetCaretLine = (lineNumber?: number) => void;
 
 export const useSetCaretLine = (view?: EditorView): SetCaretLine => {
 
-  const dispatch = view?.dispatch;
-  const doc = view?.state.doc;
-
   return useCallback((lineNumber) => {
-    if (dispatch == null || doc == null) {
+    const doc = view?.state.doc;
+
+    if (doc == null) {
       return;
     }
 
     const posOfLineEnd = doc.line(lineNumber ?? 1).to;
-    dispatch({
+    view?.dispatch({
       selection: {
         anchor: posOfLineEnd,
         head: posOfLineEnd,
@@ -23,9 +22,6 @@ export const useSetCaretLine = (view?: EditorView): SetCaretLine => {
     });
     // focus
     view?.focus();
-
-    // compromise to put the view into deps
-    //   in order to ignore "TypeError: this is undefined" caused by invoking focus()
-  }, [dispatch, doc, view]);
+  }, [view]);
 
 };
