@@ -10,7 +10,7 @@ export const useInitDoc = (view?: EditorView): InitDoc => {
   const { dispatch } = view ?? {};
   const docLength = view?.state.doc.length;
 
-  return useCallback((doc?: string): void => {
+  return useCallback((doc) => {
     dispatch?.({
       changes: {
         from: 0,

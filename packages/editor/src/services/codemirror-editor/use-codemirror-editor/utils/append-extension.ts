@@ -10,7 +10,7 @@ export const useAppendExtension = (view?: EditorView): AppendExtension => {
 
   const { dispatch } = view ?? {};
 
-  return useCallback((extension: Extension): CleanupFunction | undefined => {
+  return useCallback((extension) => {
     const compartment = new Compartment();
     dispatch?.({
       effects: StateEffect.appendConfig.of(

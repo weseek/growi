@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -8,14 +8,17 @@ import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import type { UseCodeMirrorEditorStates } from '../interfaces/react-codemirror';
 
 import { AppendExtension, useAppendExtension } from './utils/append-extension';
+import { useFocus, type Focus } from './utils/focus';
+import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
+import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 type UseCodeMirrorEditorUtils = {
   initDoc: InitDoc,
   appendExtension: AppendExtension,
-  getDoc: () => string | undefined,
-  focus: () => void,
-  setCaretLine: (lineNumber?: number) => void,
+  getDoc: GetDoc,
+  focus: Focus,
+  setCaretLine: SetCaretLine,
 }
 export type UseCodeMirrorEditor = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
 
@@ -42,33 +45,9 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
 
   const initDoc = useInitDoc(view);
   const appendExtension = useAppendExtension(view);
-
-  // implement getDoc method
-  const getDoc = useCallback((): string | undefined => {
-    return view?.state.doc.toString();
-  }, [view]);
-
-  // implement focus method
-  const focus = useCallback((): void => {
-    view?.focus();
-  }, [view]);
-
-  // implement setCaretLine method
-  const setCaretLine = useCallback((lineNumber?: number): void => {
-    if (view == null) {
-      return;
-    }
-
-    const posOfLineEnd = view.state.doc.line(lineNumber ?? 1).to;
-    view.dispatch({
-      selection: {
-        anchor: posOfLineEnd,
-        head: posOfLineEnd,
-      },
-    });
-    // focus
-    view.focus();
-  }, [view]);
+  const getDoc = useGetDoc(view);
+  const focus = useFocus(view);
+  const setCaretLine = useSetCaretLine(view);
 
   return {
     ...codemirror,
