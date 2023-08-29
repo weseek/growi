@@ -3,8 +3,10 @@ import React, {
 } from 'react';
 
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { useIsDefaultLogo, useAppTitle } from '~/stores/context';
 import {
   useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
@@ -18,6 +20,7 @@ import DrawerToggler from '../Navbar/DrawerToggler';
 import { StickyStretchableScrollerProps } from '../StickyStretchableScroller';
 
 import { NavigationResizeHexagon } from './NavigationResizeHexagon';
+import { SidebarBrandLogo } from './SidebarBrandLogo';
 import { SidebarNav } from './SidebarNav';
 
 import styles from './Sidebar.module.scss';
@@ -99,6 +102,8 @@ export const Sidebar = memo((): JSX.Element => {
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
+  const { data: isDefaultLogo } = useIsDefaultLogo();
+  const { data: appTitle } = useAppTitle();
 
   const { scheduleToPut } = useUserUISettings();
 
@@ -287,7 +292,6 @@ export const Sidebar = memo((): JSX.Element => {
 
   const showContents = isDrawerMode || isHover || !isCollapsed;
 
-
   // css styles
   const grwSidebarClass = `grw-sidebar ${styles['grw-sidebar']}`;
   const sidebarModeClass = `${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'}`;
@@ -295,6 +299,20 @@ export const Sidebar = memo((): JSX.Element => {
   return (
     <>
       <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`} data-testid="grw-sidebar">
+        {/* Brand Logo  */}
+        <div className="w-100 d-flex navbar-brand">
+          <div className="grw-logo-and-app-title flex-grow-1">
+            <Link href="/" className="grw-logo d-inline-block">
+              <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
+            </Link>
+            {showContents && (
+              <div className="grw-app-title d-none d-md-block text-nowrap">
+                {appTitle}
+              </div>
+            )}
+          </div>
+          <DrawerToggler />
+        </div>
         <div className="data-layout-container">
           <div
             className="navigation transition-enabled"

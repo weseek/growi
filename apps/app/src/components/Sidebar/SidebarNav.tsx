@@ -8,13 +8,9 @@ import Link from 'next/link';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
 import {
-  useIsAdmin, useGrowiCloudUri, useIsDefaultLogo, useIsGuestUser,
+  useIsAdmin, useGrowiCloudUri, useIsGuestUser,
 } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
-
-import DrawerToggler from '../Navbar/DrawerToggler';
-
-import { SidebarBrandLogo } from './SidebarBrandLogo';
 
 import styles from './SidebarNav.module.scss';
 
@@ -98,7 +94,6 @@ export const SidebarNav: FC<Props> = (props: Props) => {
   const { data: isAdmin } = useIsAdmin();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { data: isDefaultLogo } = useIsDefaultLogo();
 
   const { onItemSelected } = props;
 
@@ -106,13 +101,6 @@ export const SidebarNav: FC<Props> = (props: Props) => {
 
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
-      {/* Brand Logo  */}
-      <div className="navbar-brand">
-        <Link href="/" className="grw-logo d-block">
-          <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
-        </Link>
-        <DrawerToggler />
-      </div>
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         {/* eslint-disable max-len */}
