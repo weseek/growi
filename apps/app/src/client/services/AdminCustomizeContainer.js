@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
@@ -154,7 +155,7 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch isEnabledMarp
    */
-  switchIsEnabledMarp() {
+  switchIsEnabledMarp(inputValue) {
     this.setState({ isEnabledMarp: !this.state.isEnabledMarp });
   }
 
@@ -194,6 +195,43 @@ export default class AdminCustomizeContainer extends Container {
   async updateCustomizeFunction() {
     try {
       const response = await apiv3Put('/customize-setting/function', {
+        isEnabledTimeline: this.state.isEnabledTimeline,
+        isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+        pageLimitationS: this.state.pageLimitationS,
+        pageLimitationM: this.state.pageLimitationM,
+        pageLimitationL: this.state.pageLimitationL,
+        pageLimitationXL: this.state.pageLimitationXL,
+        isEnabledStaleNotification: this.state.isEnabledStaleNotification,
+        isAllReplyShown: this.state.isAllReplyShown,
+        isSearchScopeChildrenAsDefault: this.state.isSearchScopeChildrenAsDefault,
+        isEnabledMarp: this.state.isEnabledMarp,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        isEnabledTimeline: customizedParams.isEnabledTimeline,
+        isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
+        pageLimitationS: customizedParams.pageLimitationS,
+        pageLimitationM: customizedParams.pageLimitationM,
+        pageLimitationL: customizedParams.pageLimitationL,
+        pageLimitationXL: customizedParams.pageLimitationXL,
+        isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
+        isAllReplyShown: customizedParams.isAllReplyShown,
+        isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
+        isEnabledMarp: customizedParams.state.isEnabledMarp,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
+  }
+  /**
+   * Update function
+   * @memberOf AdminCustomizeContainer
+   */
+  async updateCustomizePresentation() {
+    try {
+      const response = await apiv3Put('/customize-setting/presentation', {
         isEnabledTimeline: this.state.isEnabledTimeline,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageLimitationS: this.state.pageLimitationS,
