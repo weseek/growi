@@ -42,10 +42,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
 
-  let marp = false;
-  if (isEnabledMarp) {
-    [marp] = parseSlideFrontmatterInMarkdown(children);
-  }
+  const marp = isEnabledMarp && parseSlideFrontmatterInMarkdown(children)[0];
 
   useEffect(() => {
     let deck: Reveal.Api;
