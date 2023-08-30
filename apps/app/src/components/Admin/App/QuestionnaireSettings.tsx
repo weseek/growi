@@ -49,7 +49,7 @@ const QuestionnaireSettings = (): JSX.Element => {
 
   return (
     <div id="questionnaire-settings" className="mb-5">
-      <p className="card well">
+      <p className="card bg-light">
         <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">

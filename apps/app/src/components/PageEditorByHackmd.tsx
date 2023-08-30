@@ -504,7 +504,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
           <div className="bg-box p-5 text-center">
             <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> {t('hackmd.integration_failed')}</h2>
             <h4>{errorMessage}</h4>
-            <p className="card well text-danger">
+            <p className="card bg-light text-danger">
               {errorReason}
             </p>
             {/* eslint-disable-next-line react/no-danger */}

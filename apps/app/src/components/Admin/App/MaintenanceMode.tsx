@@ -54,7 +54,7 @@ export const MaintenanceMode: FC = () => {
         onConfirm={onConfirmHandler}
         onCancel={() => closeModal()}
       />
-      <p className="card well">
+      <p className="card bg-light">
         {t('admin:maintenance_mode.description')}
         <br />
         <br />

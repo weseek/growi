@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
 /**
@@ -35,7 +36,7 @@ class ErrorBoundary extends React.Component {
           <div className="card-header">Error occured in {firstStack}</div>
           <div className="card-body">
             <h5>{error && error.toString()}</h5>
-            <details className="card well small mb-0" style={{ whiteSpace: 'pre-wrap' }}>
+            <details className="card bg-light small mb-0" style={{ whiteSpace: 'pre-wrap' }}>
               {errorInfo.componentStack}
             </details>
           </div>

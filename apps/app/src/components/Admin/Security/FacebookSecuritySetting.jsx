@@ -18,7 +18,7 @@ class FacebookSecurityManagement extends React.Component {
           Facebook OAuth { t('admin:security_settings.configuration') }
         </h2>
 
-        <p className="well">(TBD)</p>
+        <p className="card bg-light">(TBD)</p>
       </>
     );
   }

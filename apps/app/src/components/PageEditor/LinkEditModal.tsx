@@ -296,7 +296,7 @@ export const LinkEditModal = (): JSX.Element => {
 
   const renderPathFormatForm = (): JSX.Element => {
     return (
-      <div className="card well pt-3">
+      <div className="card bg-light pt-3">
         <form className="mb-0">
           <div className="mb-0 row">
             <label className="form-label col-sm-3">{t('link_edit.path_format')}</label>

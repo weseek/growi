@@ -212,7 +212,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         </div>
       </form>
 
-      <div className="card well small my-4">
+      <div className="card bg-light small my-4">
         <ul>
           <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
           <ul>
