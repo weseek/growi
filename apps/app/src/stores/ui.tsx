@@ -181,7 +181,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
   const { cache, mutate } = useSWRConfig();
 
   useEffect(() => {
-    if (isClient()) {
+    if (key != null) {
       const mdOrAvobeHandler = function(this: MediaQueryList): void {
         // sm -> md: matches will be true
         // md -> sm: matches will be false
@@ -209,7 +209,7 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   const { cache, mutate } = useSWRConfig();
 
   useEffect(() => {
-    if (isClient()) {
+    if (key != null) {
       const lgOrAvobeHandler = function(this: MediaQueryList): void {
         // md -> lg: matches will be true
         // lg -> md: matches will be false
