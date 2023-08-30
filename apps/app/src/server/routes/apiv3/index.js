@@ -116,6 +116,7 @@ module.exports = (crowi, app) => {
   router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
+  router.use('./workflow', require('./workflow')(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };
