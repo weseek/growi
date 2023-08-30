@@ -66,6 +66,6 @@ const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
     </React.Fragment>
   );
 };
-const CustomizePresentationSettingWrapper = withUnstatedContainers(CustomizeSettingPresentation, [AdminCustomizeContainer]);
+const CustomizePresentationSettingWrapper = withUnstatedContainers(CustomizeFunctionSettingPresentation, [AdminCustomizeContainer]);
 
 export default CustomizePresentationSettingWrapper;
