@@ -101,7 +101,7 @@ class SlackConfiguration extends React.Component {
             <React.Fragment>
               <h2 className="border-bottom mb-5">{t('notification_settings.slack_app_configuration')}</h2>
 
-              <div className="card bg-light">
+              <div className="card bg-light shadow-inset">
                 <span className="text-danger"><i className="icon-fw icon-exclamation"></i>NOT RECOMMENDED</span>
                 <br />
                 {/* eslint-disable-next-line react/no-danger */}

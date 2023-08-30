@@ -34,7 +34,7 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_css')}</h2>
 
-          <Card className="card bg-light my-3">
+          <Card className="card bg-light shadow-inset my-3">
             <CardBody className="px-0 py-2">
               { t('admin:customize_settings.write_css') }<br />
               { t('admin:customize_settings.reflect_change') }

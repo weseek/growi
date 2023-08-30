@@ -280,7 +280,7 @@ class SecuritySetting extends React.Component {
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
-                      <p className="card bg-light">
+                      <p className="card bg-light shadow-inset">
                         <span className="text-warning">
                           <i className="icon-info"></i>
                           {/* eslint-disable-next-line react/no-danger */}
@@ -490,7 +490,7 @@ class SecuritySetting extends React.Component {
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
-            <p className="card bg-light">
+            <p className="card bg-light shadow-inset">
               <span className="text-warning">
                 <i className="icon-info"></i> {t('security_settings.max_age_caution')}
               </span>

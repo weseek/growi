@@ -204,7 +204,7 @@ class SamlSecurityManagementContents extends React.Component {
                     <div>
                       <small>
                         e.g.
-                        <pre className="card bg-light">{`-----BEGIN CERTIFICATE-----
+                        <pre className="card bg-light shadow-inset">{`-----BEGIN CERTIFICATE-----
 MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
 UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
 ...
