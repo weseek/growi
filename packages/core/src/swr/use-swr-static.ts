@@ -23,12 +23,14 @@ export function useSWRStatic<Data, Error>(
   const { cache } = useSWRConfig();
   const swrResponse = useSWRImmutable(key, null, {
     ...configuration,
-    fallbackData: configuration?.fallbackData ?? cache.get(key)?.data,
+    fallbackData: configuration?.fallbackData ?? (
+      key != null ? cache.get(key?.toString())?.data : undefined
+    ),
   });
 
   // write data to cache directly
-  if (data !== undefined) {
-    cache.set(key, { ...cache.get(key), data });
+  if (key != null && data !== undefined) {
+    cache.set(key.toString(), { ...cache.get(key.toString()), data });
   }
 
   return swrResponse;
