@@ -558,7 +558,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     return cleanupFunction;
 
-  }, [codeMirrorEditor, saveWithShortcut, currentIndentSize]);
+  }, [codeMirrorEditor, currentIndentSize]);
 
 
   // when transitioning to a different page, if the initialValue is the same,
