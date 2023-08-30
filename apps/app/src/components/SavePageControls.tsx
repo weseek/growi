@@ -18,7 +18,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import GrantSelector from './SavePageControls/GrantSelector';
+import { GrantSelector } from './SavePageControls/GrantSelector';
 
 
 declare global {

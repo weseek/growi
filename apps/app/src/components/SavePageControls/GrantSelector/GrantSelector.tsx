@@ -10,9 +10,10 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { useMyUserGroups } from '~/client/services/user-group';
 import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
+
+import { useMyUserGroups } from './use-my-user-groups';
 
 const AVAILABLE_GRANTS = [
   {
@@ -46,7 +47,7 @@ type Props = {
 /**
  * Page grant select component
  */
-const GrantSelector = (props: Props): JSX.Element => {
+export const GrantSelector = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -215,7 +216,4 @@ const GrantSelector = (props: Props): JSX.Element => {
       ) }
     </>
   );
-
 };
-
-export default GrantSelector;
