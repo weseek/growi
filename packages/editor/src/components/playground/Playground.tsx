@@ -25,6 +25,10 @@ export const Playground = (): JSX.Element => {
   }, []);
   const { data: codeMirrorEditor } = useCodeMirrorEditorMain(containerRef.current, props);
 
+  useEffect(() => {
+    codeMirrorEditor?.initDoc('# header\n');
+  }, [codeMirrorEditor]);
+
   // set handler to save with shortcut key
   useEffect(() => {
     const extension = keymap.of([

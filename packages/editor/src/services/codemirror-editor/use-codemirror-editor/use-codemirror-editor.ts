@@ -35,8 +35,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     return {
       ...props,
       extensions: [
-        ...defaultExtensions,
         ...(props?.extensions ?? []),
+        ...defaultExtensions,
       ],
     };
   }, [props]);

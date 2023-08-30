@@ -10,7 +10,11 @@ import type { UseCodeMirrorEditor } from '../services';
 import { useCodeMirrorEditor } from '../services';
 
 
-export const isDeepEquals = <T extends object>(obj1: T, obj2: T): boolean => {
+const isValid = (u: UseCodeMirrorEditor) => {
+  return u.state != null && u.view != null;
+};
+
+const isDeepEquals = <T extends object>(obj1: T, obj2: T): boolean => {
   const typedKeys = Object.keys(obj1) as (keyof typeof obj1)[];
   return typedKeys.every(key => obj1[key] === obj2[key]);
 };
@@ -22,7 +26,7 @@ const defaultExtensionsMain: Extension[] = [
 
 export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props?: ReactCodeMirrorProps): SWRResponse<UseCodeMirrorEditor> => {
   const ref = useRef<UseCodeMirrorEditor>();
-  const prevData = ref.current;
+  const currentData = ref.current;
 
   const mergedProps = useMemo<UseCodeMirror>(() => {
     return {
@@ -37,10 +41,9 @@ export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props
 
   const newData = useCodeMirrorEditor(mergedProps);
 
-  const shouldUpdate = prevData == null || (
-    container != null
-    && newData.state != null && newData.view != null
-    && !isDeepEquals(prevData, newData)
+  const shouldUpdate = props != null && (
+    currentData == null
+    || (isValid(newData) && !isDeepEquals(currentData, newData))
   );
 
   if (shouldUpdate) {
