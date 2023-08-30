@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { type Extension } from '@codemirror/state';
+import { EditorState, type Extension } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
-
-import type { UseCodeMirrorEditorStates } from '../interfaces/react-codemirror';
 
 import { AppendExtension, useAppendExtension } from './utils/append-extension';
 import { useFocus, type Focus } from './utils/focus';
@@ -20,7 +19,10 @@ type UseCodeMirrorEditorUtils = {
   focus: Focus,
   setCaretLine: SetCaretLine,
 }
-export type UseCodeMirrorEditor = UseCodeMirrorEditorStates & UseCodeMirrorEditorUtils;
+export type UseCodeMirrorEditor = {
+  state: EditorState | undefined;
+  view: EditorView | undefined;
+} & UseCodeMirrorEditorUtils;
 
 
 const defaultExtensions: Extension[] = [
@@ -39,9 +41,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     };
   }, [props]);
 
-  const codemirror = useCodeMirror(mergedProps);
-
-  const { view } = codemirror;
+  const { state, view } = useCodeMirror(mergedProps);
 
   const initDoc = useInitDoc(view);
   const appendExtension = useAppendExtension(view);
@@ -50,7 +50,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const setCaretLine = useSetCaretLine(view);
 
   return {
-    ...codemirror,
+    state,
+    view,
     initDoc,
     appendExtension,
     getDoc,
