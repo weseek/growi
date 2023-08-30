@@ -49,10 +49,7 @@ export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> &
     }
 
     const newData = { ...swrResponse.data, currentTheme: theme };
-    // The updateFn should be a promise or asynchronous function to handle the remote mutation
-    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await swrResponse.mutate(new Promise(r => setTimeout(() => r(newData), 10)), { optimisticData: () => newData });
+    swrResponse.mutate(newData, { optimisticData: newData });
   };
 
   return Object.assign(
