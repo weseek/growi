@@ -16,13 +16,12 @@ import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
-const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
+const CustomizePresentationSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
   const onClickSubmit = useCallback(async() => {
-
     try {
       await adminCustomizeContainer.updateCustomizePresentation();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.Presentation'), ns: 'commons' }));
@@ -66,6 +65,6 @@ const CustomizeFunctionSettingPresentation = (props: Props): JSX.Element => {
     </React.Fragment>
   );
 };
-const CustomizePresentationSettingWrapper = withUnstatedContainers(CustomizeFunctionSettingPresentation, [AdminCustomizeContainer]);
+const CustomizePresentationSettingWrapper = withUnstatedContainers(CustomizePresentationSetting, [AdminCustomizeContainer]);
 
 export default CustomizePresentationSettingWrapper;
