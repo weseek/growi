@@ -12,10 +12,10 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
-import CutomizeFunctionSettingPresentation from './CustomizeFunctionSettingPresentation';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeLogoSetting from './CustomizeLogoSetting';
 import CustomizeNoscriptSetting from './CustomizeNoscriptSetting';
+import CustomizePresentationSetting from './CustomizePresentationSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
@@ -60,7 +60,7 @@ function Customize(props) {
         <CustomizeFunctionSetting />
       </div>
       <div className="mb-5">
-        <CutomizeFunctionSettingPresentation />
+        <CustomizePresentationSetting />
       </div>
       <div className="mb-5">
         <CustomizeTitle />
