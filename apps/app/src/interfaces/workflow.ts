@@ -37,7 +37,7 @@ export type IWorkflow = {
   comment: string,
   pageId: string,
   status: IWorkflowStatus,
-  tasks: IWorkflowTask,
+  tasks: IWorkflowTask[],
 }
 
 export type IWorkflowHasId = IWorkflow & HasObjectId
