@@ -216,7 +216,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
-        isEnabledMarp: customizedParams.state.isEnabledMarp,
+        isEnabledMarp: customizedParams.isEnabledMarp,
       });
     }
     catch (err) {

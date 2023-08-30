@@ -60,4 +60,4 @@ export const presentationMarpit = new Marp({
   emoji: undefined,
   html: false,
   math: false,
-}).use(lineNumber);
+});
