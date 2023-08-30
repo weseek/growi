@@ -491,8 +491,8 @@
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
 
     },
-    "presentation": "プレゼンテーション",
-    "presentation_options": {
+    "presentation_options":{
+    "presentation_options":"プレゼンテーション",
       "enable_marp": "Marp を有効化する",
       "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
       "marp_official_site": "参考：Marp 公式サイト",
@@ -519,7 +519,7 @@
     "current_logo": "現在のロゴ",
     "upload_new_logo": "新しいロゴをアップロードする",
     "delete_logo": "ロゴを削除"
-  },
+   },
   "importer_management": {
     "import_data": "データインポート",
     "article": "記事",
