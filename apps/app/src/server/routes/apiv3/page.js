@@ -618,6 +618,7 @@ module.exports = (crowi) => {
     }
 
     const fileName = path.basename(pagePath);
+    const sanitizedFileName = fileName.replace(/[\\/:;"*?<>,-」ˆ|]/g, '_');
     let stream;
 
     try {
@@ -629,7 +630,7 @@ module.exports = (crowi) => {
     }
 
     res.set({
-      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+      'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(sanitizedFileName)}.${format}`,
     });
 
     const parameters = {
