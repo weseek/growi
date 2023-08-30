@@ -5,6 +5,7 @@ import React, {
 import EventEmitter from 'events';
 import nodePath from 'path';
 
+import { indentUnit } from '@codemirror/language';
 import { keymap } from '@codemirror/view';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
@@ -548,6 +549,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
+
+  // Change indentUnit size
+  useEffect(() => {
+    const extension = indentUnit.of(' '.repeat(currentIndentSize ?? 4));
+
+    const cleanupFunction = codeMirrorEditor?.appendExtension(extension);
+
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, saveWithShortcut, currentIndentSize]);
+
 
   // when transitioning to a different page, if the initialValue is the same,
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
