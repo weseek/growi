@@ -13,13 +13,10 @@ import {
 } from '~/interfaces/user-group-response';
 
 
-type MyUserGroupsResult = {
-  userGroups: IUserGroupHasId[],
-}
 export const useSWRxMyUserGroups = (shouldFetch: boolean): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWR(
     shouldFetch ? '/me/user-groups' : null,
-    endpoint => apiv3Get(endpoint).then(result => (result.data as MyUserGroupsResult).userGroups),
+    endpoint => apiv3Get<UserGroupListResult>(endpoint).then(result => result.data.userGroups),
   );
 };
 

@@ -9,8 +9,8 @@ export type UserGroupResult = {
   userGroup: IUserGroupHasId,
 }
 
-export type UserGroupListResult = {
-  userGroups: IUserGroupHasId[],
+export type UserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {
+  userGroups: TUSERGROUP[],
 };
 
 export type ChildUserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {

@@ -4,7 +4,9 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
-import { ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupRelationListResult } from '~/interfaces/user-group-response';
+import {
+  ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupListResult, UserGroupRelationListResult,
+} from '~/interfaces/user-group-response';
 
 export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSettings, Error> => {
   return useSWR(
@@ -15,13 +17,10 @@ export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSetting
   );
 };
 
-type MyExternalUserGroupsResult = {
-  userGroups: IExternalUserGroupHasId[],
-}
 export const useSWRxMyExternalUserGroups = (shouldFetch: boolean): SWRResponse<IExternalUserGroupHasId[], Error> => {
   return useSWR(
     shouldFetch ? '/me/external-user-groups' : null,
-    endpoint => apiv3Get(endpoint).then(result => (result.data as MyExternalUserGroupsResult).userGroups),
+    endpoint => apiv3Get<UserGroupListResult<IExternalUserGroupHasId>>(endpoint).then(result => result.data.userGroups),
   );
 };
 
