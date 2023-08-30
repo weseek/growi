@@ -1,6 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { indentUnit } from '@codemirror/language';
 import { type Extension } from '@codemirror/state';
 import { scrollPastEnd } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
