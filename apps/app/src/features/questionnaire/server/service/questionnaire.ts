@@ -4,7 +4,10 @@ import * as os from 'node:os';
 import type { IUserHasId } from '@growi/core';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+// eslint-disable-next-line import/no-named-as-default
+import Config from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
+import loggerFactory from '~/utils/logger';
 
 import {
   GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
@@ -14,6 +17,9 @@ import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
+
+
+const logger = loggerFactory('growi:service:questionnaire');
 
 class QuestionnaireService {
 
@@ -31,6 +37,16 @@ class QuestionnaireService {
     const hasher = crypto.createHash('sha256');
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
+
+    // Get the oldest user who probably installed this GROWI.
+    // https://mongoosejs.com/docs/6.x/docs/api.html#model_Model-findOne
+    // https://stackoverflow.com/questions/13443069/mongoose-findone-with-sorting
+    const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
+    logger.debug(user);
+    const installedAtByOldestUser = user ? user.createdAt : null;
+
+    const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
+    const installedAt = appInstalledConfig != null && appInstalledConfig.createdAt != null ? appInstalledConfig.createdAt : installedAtByOldestUser;
 
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await User.countActiveUsers();
@@ -61,6 +77,8 @@ class QuestionnaireService {
       },
       appSiteUrl: this.crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
       appSiteUrlHashed,
+      installedAt,
+      installedAtByOldestUser,
       type,
       currentUsersCount,
       currentActiveUsersCount,
