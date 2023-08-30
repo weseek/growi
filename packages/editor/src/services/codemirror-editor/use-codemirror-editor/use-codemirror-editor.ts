@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 
+import { indentWithTab } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { type Extension } from '@codemirror/state';
+import { keymap } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 
 import type { UseCodeMirrorEditorStates } from '../interfaces/react-codemirror';
@@ -25,6 +27,7 @@ export type UseCodeMirrorEditor = UseCodeMirrorEditorStates & UseCodeMirrorEdito
 
 const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
+  keymap.of([indentWithTab]),
 ];
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
