@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
+import { indentWithTab } from '@codemirror/commands';
 import { type Extension } from '@codemirror/state';
-import { scrollPastEnd } from '@codemirror/view';
+import { scrollPastEnd, keymap } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
 import type { SWRResponse } from 'swr';
@@ -11,6 +12,7 @@ import { useCodeMirrorEditor } from '../services';
 
 const defaultExtensionsMain: Extension[] = [
   scrollPastEnd(),
+  keymap.of([indentWithTab]),
 ];
 
 export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props?: ReactCodeMirrorProps): SWRResponse<UseCodeMirrorEditor> => {
