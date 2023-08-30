@@ -194,7 +194,7 @@
     "string-width": "=4.2.2",
     "superjson": "^1.9.1",
     "swagger-jsdoc": "^6.1.0",
-    "swr": "^2.0.3",
+    "swr": "^2.2.2",
     "throttle-debounce": "^5.0.0",
     "uglifycss": "^0.0.29",
     "universal-bunyan": "^0.9.2",

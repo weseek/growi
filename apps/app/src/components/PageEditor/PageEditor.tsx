@@ -132,6 +132,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // for https://redmine.weseek.co.jp/issues/125923
   const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
 
+  const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
     if (!isNotFound) {
       return editingMarkdown ?? '';
@@ -145,9 +146,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (templateBodyData != null) {
       initialValue += `${templateBodyData}\n`;
     }
+
     return initialValue;
 
   }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
+
+  useEffect(() => {
+    // set to ref
+    initialValueRef.current = initialValue;
+  }, [initialValue]);
+
 
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
@@ -155,8 +163,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   })), []);
   const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
     // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(value !== initialValue);
-  })), [initialValue, mutateIsEnabledUnsavedWarning]);
+    mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
+  })), [mutateIsEnabledUnsavedWarning]);
 
   const useCodeMirrorEditorMainProps = useMemo<ReactCodeMirrorProps>(() => {
     return {
@@ -471,7 +479,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (initialValue == null) {
       return;
     }
-    // markdownToSave.current = initialValue;
     codeMirrorEditor?.initDoc(initialValue);
     setMarkdownToPreview(initialValue);
     mutateIsEnabledUnsavedWarning(false);

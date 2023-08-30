@@ -165,10 +165,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
       res = await updatePage(pageId, revisionId, markdown, options);
     }
 
-    // The updateFn should be a promise or asynchronous function to handle the remote mutation
-    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+    mutateIsEnabledUnsavedWarning(false);
 
     return res;
   }, [mutateIsEnabledUnsavedWarning]);
