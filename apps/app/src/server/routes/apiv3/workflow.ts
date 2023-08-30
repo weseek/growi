@@ -14,6 +14,30 @@ const router = express.Router();
 type RequestWithUser = Request & { user?: IUserHasId }
 
 
+/**
+ * @swagger
+ *  tags:
+ *    name: Workflow
+ */
+
+
+// TODO: Write properties
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Workflow:
+ *        description: Workflow
+ *        type: object
+ *        properties:
+ *
+ *      WorkflowTask:
+ *        description: WorkflowTask
+ *        type: object
+ *        properties:
+ */
+
 module.exports = (crowi: Crowi): Router => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
@@ -36,7 +60,30 @@ module.exports = (crowi: Crowi): Router => {
   };
 
 
-  // description: workflowId を受け取り、対象の workflow document を返却する
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /workflow/{workflowId}:
+   *      get:
+   *        tags: [Workflow]
+   *        summary: Get workflow data from workflowId
+   *
+   *        parameters:
+   *          - name: workflowId
+   *            in: path
+   *            description: id of workflow data to be retrieved
+   *            type: string
+   *            required: true
+   *
+   *        responses:
+   *          200:
+   *            description: Workflow data
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Workflow'
+   */
   router.get('/:workflowId', accessTokenParser, loginRequired, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { workflowId } = req.params;
 
@@ -44,7 +91,34 @@ module.exports = (crowi: Crowi): Router => {
   });
 
 
-  // description: pageId を受け取り、対象ページに付随する workflow document を配列で返却する
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /workflow/list/{pageId}:
+   *      get:
+   *        tags: [Workflow]
+   *        summary: Get workflow list data from pageId
+   *
+   *        parameters:
+   *          - name: pageId
+   *            in: path
+   *            description: pageId to rterieve a list of workflows
+   *            type: string
+   *            required: true
+   *
+   *        responses:
+   *          200:
+   *            description: Workflow list data
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    workflows:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Workflow'
+   */
   router.get('/list/:pageId', accessTokenParser, loginRequired, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
 
@@ -52,7 +126,45 @@ module.exports = (crowi: Crowi): Router => {
   });
 
 
-  // description: Workflow.status が "inprogress" な Workflow document を作成, 作成された Workflow document を返却する
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /workflow/create:
+   *      post:
+   *        tags: [Workflow]
+   *        summary: Create Workflow
+   *
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                pageId:
+   *                  description: pageId for Workflow creation
+   *                  type: string
+   *                workflowName:
+   *                  description: workflow name
+   *                  type: string
+   *                workflowComment:
+   *                  description: workflow comment
+   *                  type: string
+   *                workflowTasks:
+   *                  descriotion: workflow tasks
+   *                  type: array
+   *                  items:
+   *                    $ref: '#/components/schemas/WorkflowTask'
+   *
+   *      responses:
+   *        200:
+   *          description: Workflow data
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/Workflow'
+   */
   router.post('/create', accessTokenParser, loginRequired, validator.createWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const {
       pageId,
@@ -66,7 +178,39 @@ module.exports = (crowi: Crowi): Router => {
   });
 
 
-  // description: workflowId と workflowTasks を受け取り、対象 workflow document の workflow.tasks の更新を行う
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /workflow/update:
+   *      post:
+   *        tags: [Workflow]
+   *        summary: Update Workflow
+   *
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                workflowId:
+   *                  description: WorkflowId to be updated
+   *                  type: string
+   *                workflowTasks:
+   *                  descriotion: workflow tasks
+   *                  type: array
+   *                  items:
+   *                    $ref: '#/components/schemas/WorkflowTask'
+   *
+   *      responses:
+   *        200:
+   *          description: Workflow data
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/Workflow'
+   */
   router.post('/update', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { workflowId, workflowTasks } = req.body;
 
@@ -74,14 +218,40 @@ module.exports = (crowi: Crowi): Router => {
   });
 
 
-  // description: approver のアクション ("approve", "remand" など) を行うためのエンドポイント。workflowId を受け取り、対象の workflow 内の自身の approver.status を更新する
-  // eslint-disable-next-line max-len
-  router.post('/action', accessTokenParser, loginRequired, validator.updateWorkflowAction, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
-    const { workflowId, workflowApproverStatus } = req.body;
-    const { user } = req;
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /workflow/action:
+   *      post:
+   *        tags: [Workflow]
+   *        summary: Update WorkflowApprover status
+   *
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                workflowId:
+   *                  description: WorkflowId to be updated
+   *                  type: string
+   *                workflowApproverStatus:
+   *                  description: WorkflowApprover status
+   *                  type: string
+   *
+   *      responses:
+   *        200:
+   *          description: Succeeded to update approver status
+   */
+  router.post('/action', accessTokenParser, loginRequired, validator.updateWorkflowAction, apiV3FormValidator,
+    async(req: RequestWithUser, res: ApiV3Response) => {
+      const { workflowId, workflowApproverStatus } = req.body;
+      const { user } = req;
 
-    return res.apiv3();
-  });
+      return res.apiv3();
+    });
 
   return router;
 };
