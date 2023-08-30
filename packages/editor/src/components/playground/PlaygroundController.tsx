@@ -69,7 +69,7 @@ export const SetCaretLineRow = (): JSX.Element => {
 
 export const PlaygroundController = (): JSX.Element => {
   return (
-    <div className="container">
+    <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
     </div>
