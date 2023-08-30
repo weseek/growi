@@ -32,8 +32,8 @@ type RequestWithUser = Request & { user?: IUserHasId }
  *        type: object
  *        properties:
  *
- *      WorkflowGroup:
- *        description: WorkflowGroup
+ *      workflowApproverGroup:
+ *        description: workflowApproverGroup
  *        type: object
  *        properties:
  */
@@ -47,11 +47,11 @@ module.exports = (crowi: Crowi): Router => {
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('workflowName').isString().withMessage('workflowName is required'),
       body('workflowComment').isString().withMessage('workflowComment is required'),
-      body('workflowGroups').isArray().withMessage('workflowGroups is required'),
+      body('workflowApproverGroups').isArray().withMessage('workflowApproverGroups is required'),
     ],
     updateWorkflow: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
-      body('workflowGroups').isArray().withMessage('workflowGroups is required'),
+      body('workflowApproverGroups').isArray().withMessage('workflowApproverGroups is required'),
     ],
     updateWorkflowAction: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -151,11 +151,11 @@ module.exports = (crowi: Crowi): Router => {
    *                workflowComment:
    *                  description: workflow comment
    *                  type: string
-   *                workflowGroups:
+   *                workflowApproverGroups:
    *                  descriotion: workflow Groups
    *                  type: array
    *                  items:
-   *                    $ref: '#/components/schemas/WorkflowGroup'
+   *                    $ref: '#/components/schemas/workflowApproverGroup'
    *
    *      responses:
    *        200:
@@ -170,7 +170,7 @@ module.exports = (crowi: Crowi): Router => {
       pageId,
       workflowName,
       workflowComment,
-      workflowGroups,
+      workflowApproverGroups,
     } = req.body;
     const { user } = req;
 
@@ -197,11 +197,11 @@ module.exports = (crowi: Crowi): Router => {
    *                workflowId:
    *                  description: WorkflowId to be updated
    *                  type: string
-   *                workflowGroups:
-   *                  descriotion: workflow workflowGroups
+   *                workflowApproverGroups:
+   *                  descriotion: workflow workflowApproverGroups
    *                  type: array
    *                  items:
-   *                    $ref: '#/components/schemas/WorkflowGroup'
+   *                    $ref: '#/components/schemas/workflowApproverGroup'
    *
    *      responses:
    *        200:
@@ -212,7 +212,7 @@ module.exports = (crowi: Crowi): Router => {
    *                $ref: '#/components/schemas/Workflow'
    */
   router.post('/update', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
-    const { workflowId, workflowGroups } = req.body;
+    const { workflowId, workflowApproverGroups } = req.body;
 
     return res.apiv3();
   });
