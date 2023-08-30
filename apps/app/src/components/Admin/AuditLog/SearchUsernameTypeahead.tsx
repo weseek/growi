@@ -109,27 +109,25 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
   }));
 
   return (
-    <div className="col-12">
-      <div className="input-group me-2">
-        <span className="input-group-text">
-          <i className="icon-people" />
-        </span>
-        <AsyncTypeahead
-          ref={typeaheadRef}
-          id="search-username-typeahead-asynctypeahead"
-          multiple
-          delay={400}
-          minLength={0}
-          placeholder={t('admin:audit_log_management.username')}
-          caseSensitive={false}
-          isLoading={isLoading}
-          options={allUser}
-          onSearch={searchHandler}
-          onChange={changeHandler}
-          renderMenu={renderMenu}
-          labelKey={(option: UserDataType) => `${option.username}`}
-        />
-      </div>
+    <div className="input-group me-2">
+      <span className="input-group-text">
+        <i className="icon-people" />
+      </span>
+      <AsyncTypeahead
+        ref={typeaheadRef}
+        id="search-username-typeahead-asynctypeahead"
+        multiple
+        delay={400}
+        minLength={0}
+        placeholder={t('admin:audit_log_management.username')}
+        caseSensitive={false}
+        isLoading={isLoading}
+        options={allUser}
+        onSearch={searchHandler}
+        onChange={changeHandler}
+        renderMenu={renderMenu}
+        labelKey={(option: UserDataType) => `${option.username}`}
+      />
     </div>
   );
 });

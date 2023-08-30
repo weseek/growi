@@ -172,11 +172,13 @@ export const AuditLogManagement: FC = () => {
         <AuditLogSettings />
       ) : (
         <>
-          <div className="mb-3 row row-cols-lg-auto g-3 align-items-center">
-            <SearchUsernameTypeahead
-              ref={typeaheadRef}
-              onChange={setUsernamesHandler}
-            />
+          <div className="mb-3 row row-cols-lg-auto g-3">
+            <div className="col-12">
+              <SearchUsernameTypeahead
+                ref={typeaheadRef}
+                onChange={setUsernamesHandler}
+              />
+            </div>
 
             <DateRangePicker
               startDate={startDate}
