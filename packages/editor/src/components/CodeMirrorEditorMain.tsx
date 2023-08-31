@@ -9,7 +9,7 @@ import { useCodeMirrorEditorIsolated } from '../stores';
 import { CodeMirrorEditor } from '.';
 
 
-const defaultExtensions: Extension[] = [
+const additionalExtensions: Extension[] = [
   scrollPastEnd(),
 ];
 
@@ -26,9 +26,9 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  // set handler to save with shortcut key
+  // setup additional extensions
   useEffect(() => {
-    return codeMirrorEditor?.appendExtensions?.(defaultExtensions);
+    return codeMirrorEditor?.appendExtensions?.(additionalExtensions);
   }, [codeMirrorEditor]);
 
   // set handler to save with shortcut key
