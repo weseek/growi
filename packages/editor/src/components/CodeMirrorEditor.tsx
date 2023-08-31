@@ -18,12 +18,14 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 
 
 type Props = {
+  editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
   onSave?: () => void,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
+    editorKey,
     onSave, onChange,
   } = props;
 
@@ -34,7 +36,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       onChange,
     };
   }, [onChange]);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN, containerRef.current, cmProps);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   // set handler to save with shortcut key
   useEffect(() => {

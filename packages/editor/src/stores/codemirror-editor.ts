@@ -26,7 +26,7 @@ const defaultExtensionsMain: Extension[] = [
 ];
 
 export const useCodeMirrorEditorIsolated = (
-    key?: string, container?: HTMLDivElement | null, props?: ReactCodeMirrorProps,
+    key: string | null, container?: HTMLDivElement | null, props?: ReactCodeMirrorProps,
 ): SWRResponse<UseCodeMirrorEditor> => {
 
   const ref = useRef<UseCodeMirrorEditor>();

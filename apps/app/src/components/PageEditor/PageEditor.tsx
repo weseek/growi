@@ -8,7 +8,7 @@ import nodePath from 'path';
 import { keymap } from '@codemirror/view';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditor, useCodeMirrorEditorMain } from '@growi/editor';
+import { CodeMirrorEditor, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -171,7 +171,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
 
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorMain();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
 
   const checkIsConflict = useCallback((data) => {
@@ -590,6 +590,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onSave={saveWithShortcut}
         /> */}
         <CodeMirrorEditor
+          editorKey={GlobalCodeMirrorEditorKey.MAIN}
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
         />
