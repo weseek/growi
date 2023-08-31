@@ -31,7 +31,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {
     return {
-      doc: '',
       onChange,
     };
   }, [onChange]);
