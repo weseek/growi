@@ -24,10 +24,14 @@ const defaultExtensionsMain: Extension[] = [
   scrollPastEnd(),
 ];
 
-export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props?: ReactCodeMirrorProps): SWRResponse<UseCodeMirrorEditor> => {
+export const useCodeMirrorEditorIsolated = (
+    key?: string, container?: HTMLDivElement | null, props?: ReactCodeMirrorProps,
+): SWRResponse<UseCodeMirrorEditor> => {
+
   const ref = useRef<UseCodeMirrorEditor>();
   const currentData = ref.current;
 
+  const swrKey = key != null ? `codeMirrorEditor_${key}` : null;
   const mergedProps = useMemo<UseCodeMirror>(() => {
     return {
       ...props,
@@ -41,7 +45,7 @@ export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props
 
   const newData = useCodeMirrorEditor(mergedProps);
 
-  const shouldUpdate = props != null && (
+  const shouldUpdate = swrKey != null && container != null && props != null && (
     currentData == null
     || (isValid(newData) && !isDeepEquals(currentData, newData))
   );
@@ -52,5 +56,5 @@ export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props
     console.info('Initializing codemirror for main');
   }
 
-  return useSWRStatic('codeMirrorEditorMain', shouldUpdate ? newData : undefined);
+  return useSWRStatic(swrKey, shouldUpdate ? newData : undefined);
 };

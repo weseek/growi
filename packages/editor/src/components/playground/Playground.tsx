@@ -5,7 +5,8 @@ import {
 import { toast } from 'react-toastify';
 
 import { CodeMirrorEditor } from '..';
-import { useCodeMirrorEditorMain } from '../../stores';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { PlaygroundController } from './PlaygroundController';
 import { Preview } from './Preview';
@@ -14,7 +15,7 @@ export const Playground = (): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState('');
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorMain();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const initialValue = '# header\n';
 

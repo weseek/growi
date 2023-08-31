@@ -5,7 +5,8 @@ import {
 import { keymap } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { useCodeMirrorEditorMain } from '../stores';
+import { GlobalCodeMirrorEditorKey } from '../consts';
+import { useCodeMirrorEditorIsolated } from '../stores';
 
 import style from './CodeMirrorEditor.module.scss';
 
@@ -34,7 +35,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       onChange,
     };
   }, [onChange]);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorMain(containerRef.current, cmProps);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN, containerRef.current, cmProps);
 
   // set handler to save with shortcut key
   useEffect(() => {
