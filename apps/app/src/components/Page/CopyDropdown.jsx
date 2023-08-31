@@ -19,7 +19,7 @@ const { encodeSpaces } = pagePathUtils;
 const DropdownItemContents = ({ title, contents }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
-    <div className="card bg-light shadow-inset mb-1 p-2">{contents}</div>
+    <div className="card bg-light shadow-inset card-font mb-1 p-2">{contents}</div>
   </>
 );
 /* eslint-enable react/prop-types */
