@@ -1,6 +1,7 @@
 import { configManager } from '~/server/service/config-manager';
 import LdapService, { SearchResultEntry } from '~/server/service/ldap';
 import PassportService from '~/server/service/passport';
+import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import {
@@ -8,6 +9,8 @@ import {
 } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
+
+const logger = loggerFactory('growi:service:ldap-user-sync-service');
 
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:
@@ -37,9 +40,11 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
     let groupEntries: SearchResultEntry[];
     try {
+      await this.ldapService.bind();
       groupEntries = await this.ldapService.searchGroupDir();
     }
     catch (e) {
+      logger.error(e.message);
       throw Error('external_user_group.ldap.group_search_failed');
     }
 
@@ -123,6 +128,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
       userEntries = await getUserEntries();
     }
     catch (e) {
+      logger.error(e.message);
       throw Error('external_user_group.ldap.user_search_failed');
     }
 

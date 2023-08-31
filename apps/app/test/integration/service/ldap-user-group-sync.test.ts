@@ -1,8 +1,11 @@
+import ldap, { Client } from 'ldapjs';
+
 import LdapUserGroupSyncService from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
 import { configManager } from '../../../src/server/service/config-manager';
 import LdapService from '../../../src/server/service/ldap';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
+
 
 describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   let crowi;
@@ -16,17 +19,25 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
     'external-user-group:ldap:groupDescriptionAttribute': 'description',
     'external-user-group:ldap:groupMembershipAttributeType': 'DN',
     'external-user-group:ldap:groupSearchBase': 'ou=groups,dc=example,dc=org',
+    'security:passport-ldap:serverUrl': 'ldap://openldap:1389/dc=example,dc=org',
   };
 
   jest.mock('../../../src/server/service/ldap');
+  const mockBind = jest.spyOn(LdapService.prototype, 'bind');
   const mockLdapSearch = jest.spyOn(LdapService.prototype, 'search');
+  const mockLdapCreateClient = jest.spyOn(ldap, 'createClient');
 
   beforeAll(async() => {
     crowi = await getInstance();
+    await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+
+    mockBind.mockImplementation(() => {
+      return Promise.resolve();
+    });
+    mockLdapCreateClient.mockImplementation(() => { return {} as Client });
+
     const passportService = new PassportService(crowi);
     ldapGroupSyncService = new LdapUserGroupSyncService(passportService);
-
-    await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
   });
 
   describe('When there is no circular reference in group tree', () => {
