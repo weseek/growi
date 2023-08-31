@@ -172,30 +172,36 @@ export const AuditLogManagement: FC = () => {
         <AuditLogSettings />
       ) : (
         <>
-          <div className="mb-3 row row-cols-lg-auto g-3">
-            <div className="col-12">
+          <div className="row mb-3 g-3">
+            <div className="col-auto">
               <SearchUsernameTypeahead
                 ref={typeaheadRef}
                 onChange={setUsernamesHandler}
               />
             </div>
 
-            <DateRangePicker
-              startDate={startDate}
-              endDate={endDate}
-              onChange={datePickerChangedHandler}
-            />
+            <div className="col-auto">
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onChange={datePickerChangedHandler}
+              />
+            </div>
 
-            <SelectActionDropdown
-              actionMap={actionMap}
-              availableActions={auditLogAvailableActionsData || []}
-              onChangeAction={actionCheckboxChangedHandler}
-              onChangeMultipleAction={multipleActionCheckboxChangedHandler}
-            />
+            <div className="col-auto">
+              <SelectActionDropdown
+                actionMap={actionMap}
+                availableActions={auditLogAvailableActionsData || []}
+                onChangeAction={actionCheckboxChangedHandler}
+                onChangeMultipleAction={multipleActionCheckboxChangedHandler}
+              />
+            </div>
 
-            <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
-              {t('admin:audit_log_management.clear')}
-            </button>
+            <div className="col-auto">
+              <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
+                {t('admin:audit_log_management.clear')}
+              </button>
+            </div>
           </div>
 
           <p
