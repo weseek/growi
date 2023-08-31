@@ -5,6 +5,7 @@ import { scrollPastEnd } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
 import type { SWRResponse } from 'swr';
+import deepmerge from 'ts-deepmerge';
 
 import type { UseCodeMirrorEditor } from '../services';
 import { useCodeMirrorEditor } from '../services';
@@ -33,14 +34,13 @@ export const useCodeMirrorEditorIsolated = (
 
   const swrKey = key != null ? `codeMirrorEditor_${key}` : null;
   const mergedProps = useMemo<UseCodeMirror>(() => {
-    return {
-      ...props,
-      container,
-      extensions: [
-        ...(props?.extensions ?? []),
-        ...defaultExtensionsMain,
-      ],
-    };
+    return deepmerge(
+      props ?? {},
+      {
+        container,
+        extensions: defaultExtensionsMain,
+      },
+    );
   }, [container, props]);
 
   const newData = useCodeMirrorEditor(mergedProps);

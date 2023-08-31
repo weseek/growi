@@ -5,6 +5,7 @@ import { languages } from '@codemirror/language-data';
 import { EditorState, type Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
+import deepmerge from 'ts-deepmerge';
 
 import { AppendExtension, useAppendExtension } from './utils/append-extension';
 import { useFocus, type Focus } from './utils/focus';
@@ -32,13 +33,10 @@ const defaultExtensions: Extension[] = [
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
 
   const mergedProps = useMemo<UseCodeMirror>(() => {
-    return {
-      ...props,
-      extensions: [
-        ...(props?.extensions ?? []),
-        ...defaultExtensions,
-      ],
-    };
+    return deepmerge(
+      props ?? {},
+      { extensions: defaultExtensions },
+    );
   }, [props]);
 
   const { state, view } = useCodeMirror(mergedProps);
