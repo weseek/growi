@@ -1,7 +1,5 @@
 import { useMemo, useRef } from 'react';
 
-import { type Extension } from '@codemirror/state';
-import { scrollPastEnd } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
 import type { SWRResponse } from 'swr';
@@ -21,10 +19,6 @@ const isDeepEquals = <T extends object>(obj1: T, obj2: T): boolean => {
 };
 
 
-const defaultExtensionsMain: Extension[] = [
-  scrollPastEnd(),
-];
-
 export const useCodeMirrorEditorIsolated = (
     key: string | null, container?: HTMLDivElement | null, props?: ReactCodeMirrorProps,
 ): SWRResponse<UseCodeMirrorEditor> => {
@@ -38,7 +32,6 @@ export const useCodeMirrorEditorIsolated = (
       props ?? {},
       {
         container,
-        extensions: defaultExtensionsMain,
       },
     );
   }, [container, props]);

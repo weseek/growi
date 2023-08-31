@@ -3,17 +3,23 @@ import { useCallback } from 'react';
 import { Compartment, Extension, StateEffect } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
-type CleanupFunction = () => void;
-export type AppendExtension = (extension: Extension) => CleanupFunction | undefined;
+type CleanupFunctions = () => void;
+export type AppendExtensions = (extensions: Extension | Extension[]) => CleanupFunctions | undefined;
 
-export const useAppendExtension = (view?: EditorView): AppendExtension => {
+export const useAppendExtensions = (view?: EditorView): AppendExtensions => {
 
-  return useCallback((extension) => {
+  return useCallback((args) => {
+    const extensions = Array.isArray(args)
+      ? args
+      : [args];
+
     const compartment = new Compartment();
     view?.dispatch({
-      effects: StateEffect.appendConfig.of(
-        compartment.of(extension),
-      ),
+      effects: extensions.map((extension) => {
+        return StateEffect.appendConfig.of(
+          compartment.of(extension),
+        );
+      }),
     });
 
     // return cleanup function

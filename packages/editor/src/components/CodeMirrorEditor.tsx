@@ -1,8 +1,7 @@
 import {
-  forwardRef, useEffect, useMemo, useRef,
+  forwardRef, useMemo, useRef,
 } from 'react';
 
-import { keymap } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
@@ -20,13 +19,12 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
-  onSave?: () => void,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
-    onSave, onChange,
+    onChange,
   } = props;
 
   const containerRef = useRef(null);
@@ -36,32 +34,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       onChange,
     };
   }, [onChange]);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
-
-  // set handler to save with shortcut key
-  useEffect(() => {
-    if (onSave == null) {
-      return;
-    }
-
-    const extension = keymap.of([
-      {
-        key: 'Mod-s',
-        preventDefault: true,
-        run: () => {
-          const doc = codeMirrorEditor?.getDoc();
-          if (doc != null) {
-            onSave();
-          }
-          return true;
-        },
-      },
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtension?.(extension);
-
-    return cleanupFunction;
-  }, [codeMirrorEditor, onSave]);
+  useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   return <CodeMirrorEditorContainer ref={containerRef} />;
 };

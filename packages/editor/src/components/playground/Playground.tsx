@@ -4,9 +4,9 @@ import {
 
 import { toast } from 'react-toastify';
 
-import { CodeMirrorEditor } from '..';
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
+import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
 import { PlaygroundController } from './PlaygroundController';
 import { Preview } from './Preview';
@@ -44,8 +44,7 @@ export const Playground = (): JSX.Element => {
       </div>
       <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
-          <CodeMirrorEditor
-            editorKey={GlobalCodeMirrorEditorKey.MAIN}
+          <CodeMirrorEditorMain
             onSave={saveHandler}
             onChange={setMarkdownToPreview}
           />
