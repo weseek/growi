@@ -1,9 +1,10 @@
-import type { IPageHasId, IUserGroupHasId, IUserGroupRelationHasId } from '@growi/core';
+import type {
+  IPageHasId, IUserGroupHasId, IUserGroupRelationHasId,
+} from '@growi/core';
 import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import {
   IUserGroupRelationHasIdPopulatedUser,
@@ -12,14 +13,10 @@ import {
 } from '~/interfaces/user-group-response';
 
 
-type MyUserGroupRelationsResult = {
-  userGroupRelations: IUserGroupRelationHasId[],
-}
-
-export const useSWRxMyUserGroupRelations = (shouldFetch: boolean): SWRResponse<IUserGroupRelationHasId[], Error> => {
+export const useSWRxMyUserGroups = (shouldFetch: boolean): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWR(
-    shouldFetch ? '/me/user-group-relations' : null,
-    endpoint => apiGet(endpoint).then(result => (result as MyUserGroupRelationsResult).userGroupRelations),
+    shouldFetch ? '/me/user-groups' : null,
+    endpoint => apiv3Get<UserGroupListResult>(endpoint).then(result => result.data.userGroups),
   );
 };
 

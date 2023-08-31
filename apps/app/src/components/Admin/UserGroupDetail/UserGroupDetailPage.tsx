@@ -10,10 +10,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import {
-  useAncestorUserGroups,
-  useChildUserGroupList, useUserGroup, useUserGroupRelationList, useUserGroupRelations,
-} from '~/client/services/user-group';
-import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -24,6 +20,11 @@ import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
 import loggerFactory from '~/utils/logger';
+
+import {
+  useAncestorUserGroups,
+  useChildUserGroupList, useUserGroup, useUserGroupRelationList, useUserGroupRelations,
+} from './use-user-group-resource';
 
 import styles from './UserGroupDetailPage.module.scss';
 

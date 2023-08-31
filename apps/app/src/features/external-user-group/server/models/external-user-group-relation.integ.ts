@@ -21,6 +21,10 @@ describe('ExternalUserGroupRelation model', () => {
   let user2;
   const userId2 = new mongoose.Types.ObjectId();
 
+  const groupId1 = new mongoose.Types.ObjectId();
+  const groupId2 = new mongoose.Types.ObjectId();
+  const groupId3 = new mongoose.Types.ObjectId();
+
   beforeAll(async() => {
     user1 = await User.create({
       _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
@@ -29,28 +33,25 @@ describe('ExternalUserGroupRelation model', () => {
     user2 = await User.create({
       _id: userId2, name: 'user2', username: 'user2', email: 'user2@example.com',
     });
+
+    await ExternalUserGroup.insertMany([
+      {
+        _id: groupId1, name: 'test group 1', externalId: 'testExternalId', provider: 'testProvider',
+      },
+      {
+        _id: groupId2, name: 'test group 2', externalId: 'testExternalId2', provider: 'testProvider',
+      },
+      {
+        _id: groupId3, name: 'test group 3', externalId: 'testExternalId3', provider: 'testProvider',
+      },
+    ]);
   });
 
   afterEach(async() => {
-    await ExternalUserGroup.deleteMany();
     await ExternalUserGroupRelation.deleteMany();
   });
 
   describe('createRelations', () => {
-    const groupId1 = new mongoose.Types.ObjectId();
-    const groupId2 = new mongoose.Types.ObjectId();
-
-    beforeAll(async() => {
-      await ExternalUserGroup.insertMany([
-        {
-          _id: groupId1, name: 'test group 1', externalId: 'testExternalId', provider: 'testProvider',
-        },
-        {
-          _id: groupId2, name: 'test group 2', externalId: 'testExternalId2', provider: 'testProvider',
-        },
-      ]);
-    });
-
     it('creates relation for user', async() => {
       await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
       const relations = await ExternalUserGroupRelation.find();
@@ -62,11 +63,10 @@ describe('ExternalUserGroupRelation model', () => {
   });
 
   describe('removeAllInvalidRelations', () => {
-    const groupId1 = new mongoose.Types.ObjectId();
-    const groupId2 = new mongoose.Types.ObjectId();
-
     beforeAll(async() => {
-      await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
+      const nonExistentGroupId1 = new mongoose.Types.ObjectId();
+      const nonExistentGroupId2 = new mongoose.Types.ObjectId();
+      await ExternalUserGroupRelation.createRelations([nonExistentGroupId1, nonExistentGroupId2], user1);
     });
 
     it('removes invalid relations', async() => {
@@ -81,10 +81,6 @@ describe('ExternalUserGroupRelation model', () => {
   });
 
   describe('findAllUserIdsForUserGroups', () => {
-    const groupId1 = new mongoose.Types.ObjectId();
-    const groupId2 = new mongoose.Types.ObjectId();
-    const groupId3 = new mongoose.Types.ObjectId();
-
     beforeAll(async() => {
       await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
       await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
@@ -97,10 +93,6 @@ describe('ExternalUserGroupRelation model', () => {
   });
 
   describe('findAllUserGroupIdsRelatedToUser', () => {
-    const groupId1 = new mongoose.Types.ObjectId();
-    const groupId2 = new mongoose.Types.ObjectId();
-    const groupId3 = new mongoose.Types.ObjectId();
-
     beforeAll(async() => {
       await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
       await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
@@ -112,6 +104,27 @@ describe('ExternalUserGroupRelation model', () => {
 
       const groupIds2 = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user2);
       expect(groupIds2).toStrictEqual([groupId3]);
+    });
+  });
+
+  describe('findAllRelationForUser', () => {
+    beforeAll(async() => {
+      await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
+      await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
+    });
+
+    it('finds all relations for user with group populated', async() => {
+      const relations = await ExternalUserGroupRelation.findAllRelationForUser(user1);
+      const populatedGroupIds = relations.map((relation) => {
+        return typeof relation.relatedGroup !== 'string' ? relation.relatedGroup._id : null;
+      });
+      expect(populatedGroupIds).toStrictEqual([groupId1, groupId2]);
+
+      const relations2 = await ExternalUserGroupRelation.findAllRelationForUser(user2);
+      const populatedGroupIds2 = relations2.map((relation) => {
+        return typeof relation.relatedGroup !== 'string' ? relation.relatedGroup._id : null;
+      });
+      expect(populatedGroupIds2).toStrictEqual([groupId3]);
     });
   });
 });

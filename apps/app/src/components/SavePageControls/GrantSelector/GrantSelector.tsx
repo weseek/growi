@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
-import type { GroupType, IUserGroupHasId } from '@growi/core';
+import type { GroupType, GrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -12,8 +12,8 @@ import {
 
 import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
 
+import { useMyUserGroups } from './use-my-user-groups';
 
 const AVAILABLE_GRANTS = [
   {
@@ -47,7 +47,7 @@ type Props = {
 /**
  * Page grant select component
  */
-const GrantSelector = (props: Props): JSX.Element => {
+export const GrantSelector = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -63,12 +63,12 @@ const GrantSelector = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const shouldFetch = isSelectGroupModalShown;
-  const { data: myUserGroupRelations, mutate: mutateMyUserGroupRelations } = useSWRxMyUserGroupRelations(shouldFetch);
+  const { data: myUserGroups, update: updateMyUserGroups } = useMyUserGroups(shouldFetch);
 
   const showSelectGroupModal = useCallback(() => {
-    mutateMyUserGroupRelations();
+    updateMyUserGroups();
     setIsSelectGroupModalShown(true);
-  }, [mutateMyUserGroupRelations]);
+  }, [updateMyUserGroups]);
 
   /**
    * change event handler for grant selector
@@ -85,9 +85,9 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
   }, [onUpdateGrant, showSelectGroupModal]);
 
-  const groupListItemClickHandler = useCallback((grantGroup: IUserGroupHasId) => {
-    if (onUpdateGrant != null) {
-      onUpdateGrant({ grant: 5, grantedGroups: [{ id: grantGroup._id, name: grantGroup.name, type: 'UserGroup' }] });
+  const groupListItemClickHandler = useCallback((grantGroup: GrantedGroup) => {
+    if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
+      onUpdateGrant({ grant: 5, grantedGroups: [{ id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type }] });
     }
 
     // hide modal
@@ -161,7 +161,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     // show spinner
-    if (myUserGroupRelations == null) {
+    if (myUserGroups == null) {
       return (
         <div className="my-3 text-center">
           <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
@@ -169,16 +169,7 @@ const GrantSelector = (props: Props): JSX.Element => {
       );
     }
 
-    // extract IUserGroupHasId
-    const userRelatedGroups: IUserGroupHasId[] = myUserGroupRelations
-      .map((relation) => {
-        // relation.relatedGroup should be populated by server
-        return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
-      })
-      // exclude undefined elements
-      .filter((elem): elem is IUserGroupHasId => elem != null);
-
-    if (userRelatedGroups.length === 0) {
+    if (myUserGroups.length === 0) {
       return (
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
@@ -191,10 +182,10 @@ const GrantSelector = (props: Props): JSX.Element => {
 
     return (
       <div className="list-group">
-        { userRelatedGroups.map((group) => {
+        { myUserGroups.map((group) => {
           return (
-            <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
-              <h5>{group.name}</h5>
+            <button key={group.item._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
+              <h5>{group.item.name}</h5>
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
@@ -202,7 +193,7 @@ const GrantSelector = (props: Props): JSX.Element => {
       </div>
     );
 
-  }, [currentUser?.admin, groupListItemClickHandler, myUserGroupRelations, shouldFetch, t]);
+  }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t]);
 
   return (
     <>
@@ -225,7 +216,4 @@ const GrantSelector = (props: Props): JSX.Element => {
       ) }
     </>
   );
-
 };
-
-export default GrantSelector;
