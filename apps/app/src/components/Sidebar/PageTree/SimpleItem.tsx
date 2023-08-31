@@ -47,6 +47,7 @@ export type SimpleItemProps = {
   itemRef?
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
+  customComponent?
 };
 
 // Utility to mark target
@@ -86,10 +87,57 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 type NotDraggableProps = {
   children: ReactNode,
 };
-const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
+export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
   return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
 };
 
+export const ToolOfSimpleItem = (props) => {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { getDescCount } = usePageTreeDescCountMap();
+
+  const page = props.page;
+  const pageName = nodePath.basename(page.path ?? '') || '/';
+
+  const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
+
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+  const pageTreeItemClickHandler = (e) => {
+    e.preventDefault();
+
+    if (page.path == null || page._id == null) {
+      return;
+    }
+
+    const link = pathUtils.returnPathForURL(page.path, page._id);
+
+    router.push(link);
+  };
+
+  return (
+    <>
+      {shouldShowAttentionIcon && (
+        <>
+          <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+          <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
+            {t('tooltip.operation.attention.rename')}
+          </UncontrolledTooltip>
+        </>
+      )}
+      {page != null && page.path != null && page._id != null && (
+        <div className="grw-pagetree-title-anchor flex-grow-1">
+          <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+        </div>
+      )}
+      {descendantCount > 0 && (
+        <div className="grw-pagetree-count-wrapper">
+          <CountBadge count={descendantCount} />
+        </div>
+      )}
+    </>
+  );
+};
 
 const SimpleItem: FC<SimpleItemProps> = (props: SimpleItemProps) => {
   const { t } = useTranslation();
@@ -322,6 +370,33 @@ const SimpleItem: FC<SimpleItemProps> = (props: SimpleItemProps) => {
     onClickDeleteMenuItem,
   };
 
+  const CustomComponent = props.customComponent;
+
+  // const ToolOfSimpleItem = () => {
+  //   return (
+  //     <>
+  //       {shouldShowAttentionIcon && (
+  //         <>
+  //           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+  //           <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
+  //             {t('tooltip.operation.attention.rename')}
+  //           </UncontrolledTooltip>
+  //         </>
+  //       )}
+  //       {page != null && page.path != null && page._id != null && (
+  //         <div className="grw-pagetree-title-anchor flex-grow-1">
+  //           <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+  //         </div>
+  //       )}
+  //       {descendantCount > 0 && (
+  //         <div className="grw-pagetree-count-wrapper">
+  //           <CountBadge count={descendantCount} />
+  //         </div>
+  //       )}
+  //     </>
+  //   );
+  // };
+
   return (
     <div
       id={`pagetree-item-${page._id}`}
@@ -347,64 +422,17 @@ const SimpleItem: FC<SimpleItemProps> = (props: SimpleItemProps) => {
             </button>
           )}
         </div>
-        {isRenameInputShown
-          ? (
-            <div className="flex-fill">
-              <NotDraggableForClosableTextInput>
-                <ClosableTextInput
-                  value={nodePath.basename(page.path ?? '')}
-                  placeholder={t('Input page name')}
-                  onClickOutside={() => { setRenameInputShown(false) }}
-                  onPressEnter={onPressEnterForRenameHandler}
-                  validationTarget={ValidationTarget.PAGE}
-                />
-              </NotDraggableForClosableTextInput>
-            </div>
-          )
-          : (
-            <>
-              {shouldShowAttentionIcon && (
-                <>
-                  <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
-                  <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
-                    {t('tooltip.operation.attention.rename')}
-                  </UncontrolledTooltip>
-                </>
-              )}
-              {page != null && page.path != null && page._id != null && (
-                <div className="grw-pagetree-title-anchor flex-grow-1">
-                  <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
-                </div>
-              )}
-            </>
-          )}
-        {descendantCount > 0 && !isRenameInputShown && (
-          <div className="grw-pagetree-count-wrapper">
-            <CountBadge count={descendantCount} />
-          </div>
+
+        {CustomComponent ?? (
+          <ToolOfSimpleItem
+            page={page}
+            onRenamed={onRenamed}
+            onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+            onClickDeleteMenuItem={onClickDeleteMenuItem}
+            isEnableActions={isEnableActions}
+            isReadOnlyUser={isReadOnlyUser}
+          />
         )}
-        <NotAvailableForGuest>
-          <div className="grw-pagetree-control d-flex">
-            <PageItemControl
-              pageId={page._id}
-              isEnableActions={isEnableActions}
-              isReadOnlyUser={isReadOnlyUser}
-              onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-              onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-              onClickRenameMenuItem={renameMenuItemClickHandler}
-              onClickDeleteMenuItem={deleteMenuItemClickHandler}
-              onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-              isInstantRename
-              // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-              operationProcessData={page.processData}
-            >
-              {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                <i id='option-button-in-page-tree' className="icon-options fa fa-rotate-90 p-1"></i>
-              </DropdownToggle>
-            </PageItemControl>
-          </div>
-        </NotAvailableForGuest>
 
         {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
           <NotAvailableForGuest>
