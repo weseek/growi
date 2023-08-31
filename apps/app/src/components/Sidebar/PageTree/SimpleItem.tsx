@@ -17,7 +17,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageForItem } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -41,7 +41,7 @@ export type SimpleItemProps = {
   itemRef?
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
-  customComponent?
+  customComponent?: React.FunctionComponent<SimpleItemToolProps>
 };
 
 // Utility to mark target
@@ -85,11 +85,10 @@ export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.
   return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
 };
 
-type SimpleItemToolProps = {
-  page,
-};
+type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
+type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
 
-export const SimpleItemTool: FC<SimpleItemToolProps> = (props: SimpleItemToolProps) => {
+export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { getDescCount } = usePageTreeDescCountMap();
@@ -138,7 +137,7 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props: SimpleItemToolPro
   );
 };
 
-const SimpleItem: FC<SimpleItemProps> = (props: SimpleItemProps) => {
+const SimpleItem: FC<SimpleItemProps> = (props) => {
   const { t } = useTranslation();
 
   const {

@@ -16,8 +16,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
-  IPageHasId,
-  IPageInfoAll, IPageToDeleteWithMeta,
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta, IPageForItem,
 } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
@@ -36,9 +35,9 @@ type PageTreeItemPropsOptional = 'itemRef' | 'itemClass' | 'mainClassName';
 type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional> & {key};
 
 type EllipsisPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-type EllipsisProps = Omit<SimpleItemProps, EllipsisPropsOptional> & {page};
+type EllipsisProps = Omit<SimpleItemProps, EllipsisPropsOptional> & {page: IPageForItem};
 
-const Ellipsis: FC<EllipsisProps> = (props: EllipsisProps) => {
+const Ellipsis: FC<EllipsisProps> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const { t } = useTranslation();
 
@@ -152,7 +151,7 @@ const Ellipsis: FC<EllipsisProps> = (props: EllipsisProps) => {
           </NotDraggableForClosableTextInput>
         </div>
       ) : (
-        <SimpleItemTool page={page}/>
+        <SimpleItemTool page={page} isEnableActions={false} isReadOnlyUser={false}/>
       )}
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">
@@ -180,7 +179,7 @@ const Ellipsis: FC<EllipsisProps> = (props: EllipsisProps) => {
   );
 };
 
-export const PageTreeItem: FC<PageTreeItemProps> = (props: PageTreeItemProps) => {
+export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
     const pageTitle = nodePath.basename(droppedPagePath);
     return nodePath.join(newParentPagePath, pageTitle);
