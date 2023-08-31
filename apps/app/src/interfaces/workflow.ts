@@ -34,7 +34,7 @@ type IWorkflowApprover = {
 
 type IWorkflowApproverGroup = {
   approvalType: IWorkflowApprovalType
-  approveres: (IWorkflowApprover | IWorkflowApproverGroup)[],
+  approvers: (IWorkflowApprover | IWorkflowApproverGroup)[],
 };
 
 export type IWorkflow = {
