@@ -47,11 +47,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const focus = useFocus(view);
   const setCaretLine = useSetCaretLine(view);
 
-  // workaround to fix the doc initialization not working issue -- 2023.08.31 Yuki Takei
-  useEffect(() => {
-    initDoc(' ');
-  }, [initDoc]);
-
   return {
     state,
     view,
