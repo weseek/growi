@@ -5,8 +5,9 @@ import { languages } from '@codemirror/language-data';
 import { EditorState, type Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
+import deepmerge from 'ts-deepmerge';
 
-import { AppendExtension, useAppendExtension } from './utils/append-extension';
+import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
@@ -14,7 +15,7 @@ import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 type UseCodeMirrorEditorUtils = {
   initDoc: InitDoc,
-  appendExtension: AppendExtension,
+  appendExtensions: AppendExtensions,
   getDoc: GetDoc,
   focus: Focus,
   setCaretLine: SetCaretLine,
@@ -32,19 +33,16 @@ const defaultExtensions: Extension[] = [
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
 
   const mergedProps = useMemo<UseCodeMirror>(() => {
-    return {
-      ...props,
-      extensions: [
-        ...(props?.extensions ?? []),
-        ...defaultExtensions,
-      ],
-    };
+    return deepmerge(
+      props ?? {},
+      { extensions: defaultExtensions },
+    );
   }, [props]);
 
   const { state, view } = useCodeMirror(mergedProps);
 
   const initDoc = useInitDoc(view);
-  const appendExtension = useAppendExtension(view);
+  const appendExtensions = useAppendExtensions(view);
   const getDoc = useGetDoc(view);
   const focus = useFocus(view);
   const setCaretLine = useSetCaretLine(view);
@@ -53,7 +51,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     state,
     view,
     initDoc,
-    appendExtension,
+    appendExtensions,
     getDoc,
     focus,
     setCaretLine,
