@@ -103,7 +103,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
     const html = t('admin:export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
-    return <div className="card bg-light shadow-inset" dangerouslySetInnerHTML={{ __html: html }}></div>;
+    return <div className="card custom-card" dangerouslySetInnerHTML={{ __html: html }}></div>;
   }, [selectedCollections, t]);
 
   const renderCheckboxes = useCallback((collectionNames, color?) => {

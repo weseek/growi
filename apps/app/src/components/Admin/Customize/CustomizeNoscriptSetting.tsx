@@ -36,7 +36,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_noscript')}</h2>
 
-          <Card className="card bg-light shadow-inset my-3">
+          <Card className="card custom-card my-3">
             <CardBody className="px-0 py-2">
               <span
                 // eslint-disable-next-line react/no-danger

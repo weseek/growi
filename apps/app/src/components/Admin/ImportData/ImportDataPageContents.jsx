@@ -57,7 +57,7 @@ class ImportDataPageContents extends React.Component {
               </tbody>
             </table>
 
-            <div className="card bg-light shadow-inset mb-0 small">
+            <div className="card custom-card mb-0 small">
               <ul>
                 <li>{t('importer_management.page_skip')}</li>
               </ul>
@@ -163,7 +163,7 @@ class ImportDataPageContents extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="card bg-light shadow-inset mb-0 small">
+            <div className="card custom-card mb-0 small">
               <ul>
                 <li>{t('importer_management.page_skip')}</li>
               </ul>

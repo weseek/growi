@@ -400,7 +400,10 @@ ul.pagination {
 /*
  * cards
  */
-.card.shadow-inset {
+.card.custom-card {
+  color: var(--color-global);
+  background-color: var(--bgcolor-card);
+  border-color: var(--light);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 

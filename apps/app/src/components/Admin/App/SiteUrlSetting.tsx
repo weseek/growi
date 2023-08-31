@@ -35,7 +35,7 @@ const SiteUrlSetting = (props: Props) => {
 
   return (
     <React.Fragment>
-      <p className="card bg-light shadow-inset">{t('site_url.desc')}</p>
+      <p className="card custom-card">{t('site_url.desc')}</p>
       {!adminAppContainer.state.isSetSiteUrl
           && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('site_url.warn')}</p>)}
 

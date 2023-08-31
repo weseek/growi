@@ -27,7 +27,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
 
   return (
     <>
-      <p className="card bg-light shadow-inset my-3">
+      <p className="card custom-card my-3">
         {t('admin:app_setting.file_upload')}
         <br />
         <br />
