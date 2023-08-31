@@ -157,7 +157,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
-    console.log({ value });
     setMarkdownToPreview(value);
   })), []);
   const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
