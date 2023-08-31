@@ -65,7 +65,7 @@ abstract class ExternalUserGroupSyncService {
    * 2. For every element in node.userInfos, call getMemberUser and create an ExternalUserGroupRelation with ExternalUserGroup if it does not have one
    * 3. Retrun ExternalUserGroup
    * @param {string} node Node of external group tree
-   * @param {string} parentId Parent group id (id in GROWI) of the group we wan't to create/update
+   * @param {string} parentId Parent group id (id in GROWI) of the group we want to create/update
    * @returns {Promise<IExternalUserGroupHasId>} ExternalUserGroup that was created/updated
   */
   async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {

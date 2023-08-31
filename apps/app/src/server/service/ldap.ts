@@ -97,6 +97,11 @@ class LdapService {
     const searchResults: SearchResultEntry[] = [];
 
     return new Promise((resolve, reject) => {
+      // reject on client connection error (occures when not binded or host is not found)
+      this.client.on('error', (err) => {
+        reject(err);
+      });
+
       this.client.search(base || this.searchBase, {
         scope, filter, paged: true, sizeLimit: 200,
       }, (err, res) => {
