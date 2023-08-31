@@ -28,15 +28,17 @@ import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
 import { ItemNode } from './ItemNode';
-import SimpleItem, { SimpleItemProps, NotDraggableForClosableTextInput, ToolOfSimpleItem } from './SimpleItem';
+import SimpleItem, { SimpleItemProps, NotDraggableForClosableTextInput, SimpleItemTool } from './SimpleItem';
 
 const logger = loggerFactory('growi:cli:Item');
 
-type Optional = 'itemRef' | 'itemClass' | 'mainClassName';
+type PageTreeItemPropsOptional = 'itemRef' | 'itemClass' | 'mainClassName';
+type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional> & {key};
 
-type PageTreeItemProps = Omit<SimpleItemProps, Optional> & {key};
+type EllipsisPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
+type EllipsisProps = Omit<SimpleItemProps, EllipsisPropsOptional> & {page};
 
-const Ellipsis = (props) => {
+const Ellipsis: FC<EllipsisProps> = (props: EllipsisProps) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const { t } = useTranslation();
 
@@ -150,7 +152,7 @@ const Ellipsis = (props) => {
           </NotDraggableForClosableTextInput>
         </div>
       ) : (
-        <ToolOfSimpleItem page={page}/>
+        <SimpleItemTool page={page}/>
       )}
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">
@@ -199,8 +201,7 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props: PageTreeItemProps) =>
   const { t } = useTranslation();
 
   const {
-    itemNode, isOpen: _isOpen = false, onRenamed, onClickDuplicateMenuItem,
-    onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    itemNode, isOpen: _isOpen = false, onRenamed,
   } = props;
 
   const { page } = itemNode;
