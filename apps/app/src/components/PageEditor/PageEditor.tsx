@@ -5,10 +5,9 @@ import React, {
 import EventEmitter from 'events';
 import nodePath from 'path';
 
-import { keymap } from '@codemirror/view';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditor, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
+import { CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -158,6 +157,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
+    console.log({ value });
     setMarkdownToPreview(value);
   })), []);
   const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
@@ -508,25 +508,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     };
   }, [saveAndReturnToViewHandler]);
 
-  // set handler to save with shortcut key
-  useEffect(() => {
-    const extension = keymap.of([
-      {
-        key: 'Mod-s',
-        preventDefault: true,
-        run: () => {
-          saveWithShortcut();
-          return true;
-        },
-      },
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtension(extension);
-
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, saveWithShortcut]);
-
   // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
@@ -589,8 +570,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onUpload={uploadHandler}
           onSave={saveWithShortcut}
         /> */}
-        <CodeMirrorEditor
-          editorKey={GlobalCodeMirrorEditorKey.MAIN}
+        <CodeMirrorEditorMain
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
         />
