@@ -1,39 +1,38 @@
 import type { IUserHasId, HasObjectId } from '@growi/core';
 
 
-const WORKFLOW_STATUS = {
+const WorkflowStatus = {
   INPROGRESS: 'INPROGRESS',
   APPROVE: 'APPROVE',
   REJECT: 'REJECT',
   CANCEL: 'CANCEL',
 } as const;
 
-const WORKFLOW_APPROVER_STATUS = {
+const WorkflowApproverStatus = {
   NONE: 'NONE',
   APPROVE: 'APPROVE',
   REMAND: 'REMAND',
   DELEGATE: 'DELEGATE',
 } as const;
 
-const WORKFLOW_APPROVAL_TYPE = {
+const WorkflowApprovalType = {
   AND: 'AND',
   OR: 'OR',
 } as const;
 
 
-type IWorkflowApproverStatus = typeof WORKFLOW_APPROVER_STATUS[keyof typeof WORKFLOW_APPROVER_STATUS];
+type WorkflowStatus = typeof WorkflowStatus[keyof typeof WorkflowStatus];
+type WorkflowApproverStatus = typeof WorkflowApproverStatus[keyof typeof WorkflowApproverStatus];
+type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowApprovalType];
 
-type IWorkflowStatus = typeof WORKFLOW_STATUS[keyof typeof WORKFLOW_STATUS];
-
-type IWorkflowApprovalType = typeof WORKFLOW_APPROVAL_TYPE[keyof typeof WORKFLOW_APPROVAL_TYPE];
 
 type IWorkflowApprover = {
   user: IUserHasId,
-  status: IWorkflowApproverStatus,
+  status: WorkflowApproverStatus,
 }
 
 type IWorkflowApproverGroup = {
-  approvalType: IWorkflowApprovalType
+  approvalType: WorkflowApprovalType
   approvers: (IWorkflowApprover | IWorkflowApproverGroup)[],
 };
 
@@ -42,7 +41,7 @@ export type IWorkflow = {
   name: string,
   comment: string,
   pageId: string,
-  status: IWorkflowStatus,
+  status: WorkflowStatus,
   approverGroups: IWorkflowApproverGroup[]
 }
 export type IWorkflowHasId = IWorkflow & HasObjectId
