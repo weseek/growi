@@ -48,6 +48,8 @@ export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props
 
   if (shouldUpdate) {
     ref.current = newData;
+    // eslint-disable-next-line no-console
+    console.info('Initializing codemirror for main');
   }
 
   return useSWRStatic('codeMirrorEditorMain', shouldUpdate ? newData : undefined);

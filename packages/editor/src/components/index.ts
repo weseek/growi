@@ -1,1 +1,1 @@
-export * from './CodeMirrorEditorContainer';
+export * from './CodeMirrorEditor';

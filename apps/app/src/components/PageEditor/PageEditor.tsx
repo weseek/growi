@@ -8,8 +8,7 @@ import nodePath from 'path';
 import { keymap } from '@codemirror/view';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditorContainer, useCodeMirrorEditorMain } from '@growi/editor';
-import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import { CodeMirrorEditor, useCodeMirrorEditorMain } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -166,18 +165,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
   })), [mutateIsEnabledUnsavedWarning]);
 
-  const useCodeMirrorEditorMainProps = useMemo<ReactCodeMirrorProps>(() => {
-    return {
-      onChange: (value) => {
-        setMarkdownPreviewWithDebounce(value);
-        mutateIsEnabledUnsavedWarningWithDebounce(value);
-      },
-    };
+  const markdownChangedHandler = useCallback((value: string) => {
+    setMarkdownPreviewWithDebounce(value);
+    mutateIsEnabledUnsavedWarningWithDebounce(value);
   }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorMain(
-    codeMirrorEditorContainerRef.current,
-    useCodeMirrorEditorMainProps,
-  );
+
+
+  const { data: codeMirrorEditor } = useCodeMirrorEditorMain();
 
 
   const checkIsConflict = useCallback((data) => {
@@ -595,7 +589,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onUpload={uploadHandler}
           onSave={saveWithShortcut}
         /> */}
-        <CodeMirrorEditorContainer ref={codeMirrorEditorContainerRef} />
+        <CodeMirrorEditor
+          onChange={markdownChangedHandler}
+          onSave={saveWithShortcut}
+        />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
         <Preview

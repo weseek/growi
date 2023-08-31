@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -48,6 +48,11 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const getDoc = useGetDoc(view);
   const focus = useFocus(view);
   const setCaretLine = useSetCaretLine(view);
+
+  // workaround to fix the doc initialization not working issue -- 2023.08.31 Yuki Takei
+  useEffect(() => {
+    initDoc(' ');
+  }, [initDoc]);
 
   return {
     state,
