@@ -11,6 +11,8 @@ import { useDrag, useDrop } from 'react-dnd';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
+import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import { IPageHasId } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -19,7 +21,8 @@ import loggerFactory from '~/utils/logger';
 import ClosableTextInput from '../../Common/ClosableTextInput';
 
 import { ItemNode } from './ItemNode';
-import SimpleItem, { SimpleItemProps } from './SimpleItem';
+// import { SimpleItem, SimpleItemProps } from './SimpleItem';
+import SimpleItem, { SimpleItemProps, SimpleItemTool } from './SimpleItem';
 
 const logger = loggerFactory('growi:cli:Item');
 
@@ -34,8 +37,10 @@ const ChildPageCreateButton = (props) => {
   const { t } = useTranslation();
 
   const {
-    page, isOpen: _isOpen = false, isEnableActions, children,
+    page, isOpen: _isOpen = false, isEnableActions, itemNode, children,
   } = props;
+
+  // const { page, children } = itemNode;
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -50,6 +55,14 @@ const ChildPageCreateButton = (props) => {
 
   const isChildrenLoaded = currentChildren?.length > 0;
   const hasDescendants = descendantCount > 0 || isChildrenLoaded;
+
+  const onClickPlusButton = useCallback(() => {
+    setNewPageInputShown(true);
+
+    if (hasDescendants) {
+      setIsOpen(true);
+    }
+  }, [hasDescendants]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -88,19 +101,25 @@ const ChildPageCreateButton = (props) => {
     }
   };
 
+  console.log(!pagePathUtils.isUsersTopPage(page.path ?? ''));
+
   return (
     <>
-      {isEnableActions && isNewPageInputShown && (
-        <div className="flex-fill">
-          <NotDraggableForClosableTextInput>
-            <ClosableTextInput
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setNewPageInputShown(false) }}
-              onPressEnter={onPressEnterForCreateHandler}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </NotDraggableForClosableTextInput>
-        </div>
+      <SimpleItemTool page={page} isEnableActions={false} isReadOnlyUser={false}/>
+
+      {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+        <NotAvailableForGuest>
+          <NotAvailableForReadOnlyUser>
+            <button
+              id='page-create-button-in-page-tree'
+              type="button"
+              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+              onClick={onClickPlusButton}
+            >
+              <i className="icon-plus d-block p-0" />
+            </button>
+          </NotAvailableForReadOnlyUser>
+        </NotAvailableForGuest>
       )}
     </>
   );
@@ -129,6 +148,8 @@ export const PageTreeItemForModal = (props) => {
       onRenamed={props.onRenamed}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
+      // customComponentUnderItem={ChildPageCreateButton}
+      customComponent={ChildPageCreateButton}
     />
   );
 };

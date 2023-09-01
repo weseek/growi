@@ -27,6 +27,9 @@ import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
 import { ItemNode } from './ItemNode';
+// import {
+//   SimpleItem, SimpleItemProps, SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+// } from './SimpleItem';
 import SimpleItem, {
   SimpleItemProps, SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
 } from './SimpleItem';

@@ -42,6 +42,7 @@ export type SimpleItemProps = {
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
   customComponent?: React.FunctionComponent<SimpleItemToolProps>
+  customComponentUnderItem?
 };
 
 // Utility to mark target
@@ -86,7 +87,7 @@ export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.
 };
 
 type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
+export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem, children};
 
 export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   const { t } = useTranslation();
@@ -260,13 +261,17 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
   const SimpleItemContent = CustomComponent ?? SimpleItemTool;
 
   const SimpleItemContentProps = {
+    itemNode,
     page,
     onRenamed,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
     isEnableActions,
     isReadOnlyUser,
+    children,
   };
+
+  const CustomComponentUnderItem = props.customComponentUnderItem;
 
   return (
     <div
@@ -296,7 +301,7 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
 
         <SimpleItemContent {...SimpleItemContentProps}/>
 
-        {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+        {/* {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
           <NotAvailableForGuest>
             <NotAvailableForReadOnlyUser>
               <button
@@ -309,10 +314,10 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
               </button>
             </NotAvailableForReadOnlyUser>
           </NotAvailableForGuest>
-        )}
+        )} */}
       </li>
 
-      {isEnableActions && isNewPageInputShown && (
+      {/* {isEnableActions && isNewPageInputShown && (
         <div className="flex-fill">
           <NotDraggableForClosableTextInput>
             <ClosableTextInput
@@ -323,7 +328,15 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
             />
           </NotDraggableForClosableTextInput>
         </div>
-      )}
+      )} */}
+
+      {/* <CustomComponentUnderItem
+        page={page}
+        isOpen
+        isEnableActions={isEnableActions}
+        itemNode={itemNode}
+      /> */}
+
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
@@ -340,7 +353,6 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
       }
     </div>
   );
-
 };
 
 export default SimpleItem;
