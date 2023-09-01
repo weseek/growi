@@ -21,6 +21,9 @@ interface WorkflowDocument extends IWorkflow, Document {}
 type WorkflowModel = Model<WorkflowDocument>;
 
 
+/*
+* WorkflowApprover
+*/
 const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowApproverModel>({
   user: {
     type: Types.ObjectId,
@@ -36,6 +39,9 @@ const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowAppr
 });
 
 
+/*
+* WorkflowApproverGroup
+*/
 const WorkflowApproverGroupSchema = new Schema<WorkflowApproverGroupDocument, WorkflowApproverGroupModel>({
   approvalType: {
     type: Schema.Types.String,
@@ -46,7 +52,29 @@ const WorkflowApproverGroupSchema = new Schema<WorkflowApproverGroupDocument, Wo
   approvers: [WorkflowApproverSchema],
 });
 
+const getApproverStatuses = (approvers: IWorkflowApprover[]) => {
+  return approvers.map(approver => approver.status);
+};
 
+WorkflowApproverGroupSchema.virtual('isApproved').get(function() {
+  if (this.approvalType === WorkflowApprovalType.AND) {
+    const statuses = getApproverStatuses(this.approvers);
+    return statuses.every(status => status === WorkflowApproverStatus.APPROVE);
+  }
+
+  if (this.approvalType === WorkflowApprovalType.OR) {
+    const statuses = getApproverStatuses(this.approvers);
+    return statuses.some(status => status === WorkflowApproverStatus.APPROVE);
+  }
+});
+
+WorkflowApproverGroupSchema.set('toJSON', { virtuals: true });
+WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
+
+
+/*
+* Workflow
+*/
 const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
   creator: {
     type: Types.ObjectId,
