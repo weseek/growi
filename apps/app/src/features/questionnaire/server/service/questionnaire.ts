@@ -42,7 +42,7 @@ class QuestionnaireService {
     // https://mongoosejs.com/docs/6.x/docs/api.html#model_Model-findOne
     // https://stackoverflow.com/questions/13443069/mongoose-findone-with-sorting
     const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
-    logger.debug(user);
+
     const installedAtByOldestUser = user ? user.createdAt : null;
 
     const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
