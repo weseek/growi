@@ -5,10 +5,9 @@ import React, {
 import EventEmitter from 'events';
 import nodePath from 'path';
 
-
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditorContainer, useCodeMirrorEditorMain } from '@growi/editor';
+import { CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -17,7 +16,6 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
@@ -56,7 +54,6 @@ import loggerFactory from '~/utils/logger';
 // import Editor from './Editor';
 import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
-
 
 import '@growi/editor/dist/style.css';
 
@@ -115,14 +112,15 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
-  const { data: codemirrorEditor } = useCodeMirrorEditorMain(codeMirrorEditorContainerRef.current);
-  const { initDoc, focus: focusToEditor, setCaretLine } = codemirrorEditor ?? {};
+  const { data: socket } = useGlobalSocket();
 
   const { data: rendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const saveOrUpdate = useSaveOrUpdate();
+  const { mutate: mutateIsConflict } = useIsConflict();
 
+  const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
+
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
@@ -132,6 +130,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // for https://redmine.weseek.co.jp/issues/125923
   const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
 
+  const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
     if (!isNotFound) {
       return editingMarkdown ?? '';
@@ -145,15 +144,33 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (templateBodyData != null) {
       initialValue += `${templateBodyData}\n`;
     }
+
     return initialValue;
 
   }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
 
+  useEffect(() => {
+    // set to ref
+    initialValueRef.current = initialValue;
+  }, [initialValue]);
+
+
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
+  const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
+    setMarkdownToPreview(value);
+  })), []);
+  const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
+    // Displays an unsaved warning alert
+    mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
+  })), [mutateIsEnabledUnsavedWarning]);
 
-  const { data: socket } = useGlobalSocket();
+  const markdownChangedHandler = useCallback((value: string) => {
+    setMarkdownPreviewWithDebounce(value);
+    mutateIsEnabledUnsavedWarningWithDebounce(value);
+  }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
 
-  const { mutate: mutateIsConflict } = useIsConflict();
+
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
 
   const checkIsConflict = useCallback((data) => {
@@ -197,17 +214,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     return optionsToSave;
   }, [grantData, isSlackEnabled, pageTags]);
 
-  const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
-    setMarkdownToPreview(value);
-
-    // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(!isClean);
-  })), [mutateIsEnabledUnsavedWarning]);
-
-
-  const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
-    setMarkdownWithDebounce(value, isClean);
-  }, [setMarkdownWithDebounce]);
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
     if (currentPathname == null || optionsToSave == null) {
@@ -221,10 +227,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateWaitingSaveProcessing(true);
 
       const { page } = await saveOrUpdate(
-        // TODO: get contents from the custom hook
-        // refs: https://redmine.weseek.co.jp/issues/128973
-        // markdownToSave.current,
-        '',
+        codeMirrorEditor?.getDoc() ?? '',
         { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
         options,
       );
@@ -250,16 +253,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
   }, [
+    codeMirrorEditor,
     currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
     currentPagePath, currentRevisionId,
     mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
   ]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
-    if (editorMode !== EditorMode.Editor) {
-      return;
-    }
-
     const page = await save(opts);
     if (page == null) {
       return;
@@ -272,13 +272,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       updateStateAfterSave?.();
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+  }, [save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    if (editorMode !== EditorMode.Editor) {
-      return;
-    }
-
     const page = await save();
     if (page == null) {
       return;
@@ -293,7 +289,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     toastSuccess(t('toaster.save_succeeded'));
     mutateEditorMode(EditorMode.Editor);
 
-  }, [editorMode, isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
+  }, [isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
   /**
@@ -301,12 +297,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
    * @param {any} file
    */
   const uploadHandler = useCallback(async(file) => {
-    // TODO: implement
-    // refs: https://redmine.weseek.co.jp/issues/126528
-    // if (editorRef.current == null) {
-    //   return;
-    // }
-
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let res: any = await apiGet('/attachments.limit', {
@@ -326,11 +316,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       if (pageId != null) {
         formData.append('page_id', pageId);
       }
-      // TODO: get contents from the custom hook
-      // refs: https://redmine.weseek.co.jp/issues/128973
-      // if (pageId == null && markdownToSave.current != null) {
-      //   formData.append('page_body', markdownToSave.current);
-      // }
+      if (pageId == null) {
+        formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
+      }
 
       res = await apiPostForm('/attachments.add', formData);
       const attachment = res.attachment;
@@ -366,7 +354,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // refs: https://redmine.weseek.co.jp/issues/126528
       // editorRef.current.terminateUploadingState();
     }
-  }, [currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
+  }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -484,21 +472,20 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (initialValue == null) {
       return;
     }
-    // markdownToSave.current = initialValue;
-    initDoc?.(initialValue);
+    codeMirrorEditor?.initDoc(initialValue);
     setMarkdownToPreview(initialValue);
     mutateIsEnabledUnsavedWarning(false);
-  }, [initDoc, initialValue, mutateIsEnabledUnsavedWarning]);
+  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning]);
 
   // initial caret line
   useEffect(() => {
-    setCaretLine?.();
-  }, [setCaretLine]);
+    codeMirrorEditor?.setCaretLine();
+  }, [codeMirrorEditor]);
 
   // set handler to set caret line
   useEffect(() => {
     const handler = (line) => {
-      setCaretLine?.(line);
+      codeMirrorEditor?.setCaretLine(line);
 
       if (previewRef.current != null) {
         scrollSyncHelper.scrollPreview(previewRef.current, line);
@@ -509,7 +496,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     return function cleanup() {
       globalEmitter.removeListener('setCaretLine', handler);
     };
-  }, [setCaretLine]);
+  }, [codeMirrorEditor]);
 
   // set handler to save and return to View
   useEffect(() => {
@@ -523,9 +510,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
-      focusToEditor?.();
+      codeMirrorEditor?.focus();
     }
-  }, [editorMode, focusToEditor]);
+  }, [codeMirrorEditor, editorMode]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
@@ -546,9 +533,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // when transitioning to a different page, if the initialValue is the same,
   // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
   const onRouterChangeComplete = useCallback(() => {
-    initDoc?.(initialValue);
-    setCaretLine?.();
-  }, [initDoc, initialValue, setCaretLine]);
+    codeMirrorEditor?.initDoc(initialValue);
+    codeMirrorEditor?.setCaretLine();
+  }, [codeMirrorEditor, initialValue]);
 
   useEffect(() => {
     router.events.on('routeChangeComplete', onRouterChangeComplete);
@@ -582,7 +569,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onUpload={uploadHandler}
           onSave={saveWithShortcut}
         /> */}
-        <CodeMirrorEditorContainer ref={codeMirrorEditorContainerRef} />
+        <CodeMirrorEditorMain
+          onChange={markdownChangedHandler}
+          onSave={saveWithShortcut}
+        />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
         <Preview

@@ -63,7 +63,7 @@ export const CustomizeTitle: FC = () => {
           <br />
           Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
         </div>
-        <div className="form-group col-12">
+        <div className="col-12">
           <input
             className="form-control"
             defaultValue={currentCustomizeTitle}

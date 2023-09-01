@@ -107,8 +107,8 @@ const CustomBotWithProxySettings = (props) => {
             connectionStatuses={connectionStatuses}
           />
 
-          <div className="form-group row my-4">
-            <label className="text-start text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
+          <div className="row my-4">
+            <label className="text-start text-md-end col-md-3 col-form-label mt-3">Proxy URL</label>
             <div className="col-md-6 mt-3">
               <input
                 className="form-control"
@@ -118,7 +118,7 @@ const CustomBotWithProxySettings = (props) => {
                 onChange={(e) => { setNewProxyServerUri(e.target.value) }}
               />
             </div>
-            <div className="col-md-2 mt-3 text-center text-md-left">
+            <div className="col-md-2 mt-3 text-center text-md-start">
               <button type="button" className="btn btn-primary" onClick={updateProxyUri}>{ t('Update') }</button>
             </div>
           </div>

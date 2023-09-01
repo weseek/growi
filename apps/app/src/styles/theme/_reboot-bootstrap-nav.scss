@@ -26,6 +26,7 @@
     border: $nav-tabs-border-width solid transparent;
     @include border-top-radius($nav-tabs-border-radius);
 
+    // TODO: hover-focus() dropped in bootstrap v5
     @include hover-focus() {
       border-color: $nav-tabs-link-hover-border-color;
     }

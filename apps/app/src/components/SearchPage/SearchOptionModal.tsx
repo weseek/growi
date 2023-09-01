@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'next-i18next';
 
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -52,7 +52,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
       <ModalBody>
         <div className="d-flex p-2">
           <div className="border border-gray me-3">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center">
+            <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="me-2"
                 type="checkbox"
@@ -63,7 +63,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
             </label>
           </div>
           <div className="border border-gray">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center">
+            <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="me-2"
                 type="checkbox"

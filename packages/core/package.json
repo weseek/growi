@@ -73,6 +73,6 @@
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
-    "swr": "^2.0.3"
+    "swr": "^2.2.2"
   }
 }

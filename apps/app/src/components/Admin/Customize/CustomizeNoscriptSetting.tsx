@@ -45,7 +45,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="form-group">
+          <div>
             <textarea
               className="form-control"
               name="customizeNoscript"

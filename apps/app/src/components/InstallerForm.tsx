@@ -100,7 +100,7 @@ const InstallerForm = memo((): JSX.Element => {
         <form role="form" id="register-form" className="col-md-12" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
             <div className="input-group">
-              <div className="input-group-prepend dropdown-with-icon">
+              <div className=" dropdown-with-icon">
                 <i className="input-group-text icon-bubbles border-0 rounded-0" />
               </div>
               <button
@@ -147,7 +147,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className={`input-group mb-3${hasErrorClass}`}>
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text"><i className="icon-user" /></span>
             </div>
             <input
@@ -163,7 +163,7 @@ const InstallerForm = memo((): JSX.Element => {
           <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text"><i className="icon-tag" /></span>
             </div>
             <input
@@ -177,7 +177,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text"><i className="icon-envelope" /></span>
             </div>
             <input
@@ -191,7 +191,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text"><i className="icon-lock" /></span>
             </div>
             <input

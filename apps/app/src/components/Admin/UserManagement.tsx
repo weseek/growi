@@ -81,15 +81,15 @@ const UserManagement = (props: UserManagementProps) => {
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
-      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} me-2`}>
+      <div className={`form-check form-check-${statusColor} me-2`}>
         <input
-          className="custom-control-input"
+          className="form-check-input"
           type="checkbox"
           id={`c_${status}`}
           checked={adminUsersContainer.isSelected(status)}
           onChange={() => clickHandler(status)}
         />
-        <label className="custom-control-label" htmlFor={`c_${status}`}>
+        <label className="form-label form-check-label" htmlFor={`c_${status}`}>
           <span className={`badge rounded-pill bg-${statusColor} d-inline-block vt mt-1`}>
             {statusLabel}
           </span>
@@ -165,7 +165,7 @@ const UserManagement = (props: UserManagementProps) => {
           </div>
 
           <div className="offset-md-1 col-md-6 my-2">
-            <div className="form-inline">
+            <div>
               {renderCheckbox('all', 'All', 'secondary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}

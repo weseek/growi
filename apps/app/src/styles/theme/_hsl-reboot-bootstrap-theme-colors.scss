@@ -21,18 +21,20 @@ $hsl-colors: (
   }
 }
 
-@each $color, $value in $hsl-colors {
-  .text-#{$color} {
-    color: $value !important;
-    @if $emphasized-link-hover-darken-percentage != 0 {
-      a {
-        @include hover-focus() {
-          color: hsl.darken($value, $emphasized-link-hover-darken-percentage) !important;
-        }
-      }
-    }
-  }
-}
+// TODO: hover-focus() dropped in bootstrap v5
+// https://redmine.weseek.co.jp/issues/128307
+// @each $color, $value in $hsl-colors {
+//   .text-#{$color} {
+//     color: $value !important;
+//     @if $emphasized-link-hover-darken-percentage != 0 {
+//       a {
+//         @include hover-focus() {
+//           color: hsl.darken($value, $emphasized-link-hover-darken-percentage) !important;
+//         }
+//       }
+//     }
+//   }
+// }
 
 @each $color, $value in $hsl-colors {
   .btn-#{$color} {

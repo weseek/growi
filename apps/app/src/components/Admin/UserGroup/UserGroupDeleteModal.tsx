@@ -196,7 +196,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <form className="d-flex justify-content-between w-100" onSubmit={handleSubmit}>
-          <div className="d-flex form-group mb-0">
+          <div className="d-flex mb-0">
             {renderPageActionSelector()}
             {renderGroupSelector()}
           </div>

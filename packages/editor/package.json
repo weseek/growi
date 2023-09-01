@@ -33,6 +33,8 @@
     "codemirror": "^6.0.1",
     "eslint-plugin-react-refresh": "^0.4.1",
     "react-hook-form": "^7.45.4",
-    "swr": "^2.0.3"
+    "react-toastify": "^9.1.3",
+    "swr": "^2.2.2",
+    "ts-deepmerge": "^6.2.0"
   }
 }

@@ -66,6 +66,7 @@ code:not([class^='language-']) {
 //
 
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+// theme-color-level() dropped in bootstrap v5
 // Alert link
 // @each $color, $value in $theme-colors {
 //   .alert.alert-#{$color} {
@@ -90,6 +91,7 @@ code:not([class^='language-']) {
 }
 
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+// form-control-focus() dropped in bootstrap v5
 // Form
 // .form-control {
 //   @include form-control-focus();
@@ -260,24 +262,24 @@ ul.pagination {
     }
 
     .grw-recent-changes-resize-button {
-      .custom-control-label::before {
+      .form-check-label::before {
         background-color: var(--primary);
       }
 
-      .custom-control-label::after {
+      .form-check-label::after {
         background-color: var(--bgcolor-global);
       }
 
-      .custom-control-input:not(:checked) + .custom-control-label::before {
+      .form-check-input:not(:checked) + .form-check-label::before {
         color: var(--bgcolor-global);
       }
 
-      .custom-control-input:checked + .custom-control-label::before {
+      .form-check-input:checked + .form-check-label::before {
         color: var(--bgcolor-global);
         background-color: var(--primary);
         border-color: var(--primary);
       }
-      .custom-control-input:checked + .custom-control-label::after {
+      .form-check-input:checked + .form-check-label::after {
         color: var(--bgcolor-global);
       }
     }
