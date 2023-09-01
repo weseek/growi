@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import styles from './PageViewLayout.module.scss';
 
 type Props = {
