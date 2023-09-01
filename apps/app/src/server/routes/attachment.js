@@ -261,7 +261,8 @@ module.exports = function(crowi, app) {
     else {
       res.set({
         'Content-Type': attachment.fileFormat,
-        'Content-Security-Policy': "script-src 'unsafe-hashes'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
+        'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
+        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
       });
     }
   }
