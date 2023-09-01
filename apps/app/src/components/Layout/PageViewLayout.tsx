@@ -7,7 +7,7 @@ type Props = {
   footerContents?: ReactNode,
 }
 
-export const MainPane = (props: Props): JSX.Element => {
+export const PageViewLayout = (props: Props): JSX.Element => {
   const {
     children, sideContents, footerContents,
   } = props;
