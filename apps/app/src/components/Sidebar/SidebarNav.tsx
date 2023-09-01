@@ -120,12 +120,12 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
+        <InAppNotificationDropdown />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         {/* TODO: This setting will be consolidated in "Settings" on My Page, so delete it from here. */}
         {/* <AppearanceModeDropdown isAuthenticated={isAuthenticated} /> */}
         <PersonalDropdown />
-        <InAppNotificationDropdown />
         <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
         <SecondaryItem label="Trash" href="/trash" iconName="delete" />
