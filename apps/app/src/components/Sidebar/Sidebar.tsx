@@ -301,18 +301,16 @@ export const Sidebar = memo((): JSX.Element => {
       <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`} data-testid="grw-sidebar">
         {/* Brand Logo  */}
         <div className="p-2 w-100 d-flex navbar-brand">
-          <div className="grw-logo-and-app-title flex-grow-1 d-flex align-items-center gap-2">
-            {!isCollapsed && (
-              <>
-                <Link href="/" className="grw-logo d-inline-block">
-                  <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
-                </Link>
-                <div className="grw-app-title d-none d-md-block text-nowrap">
-                  {appTitle}
-                </div>
-              </>
-            )}
-          </div>
+          {!isCollapsed && (
+            <div className="grw-logo-and-app-title flex-grow-1 d-flex align-items-center gap-2">
+              <Link href="/" className="grw-logo d-inline-block">
+                <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
+              </Link>
+              <div className="grw-app-title d-none d-md-block text-nowrap">
+                {appTitle}
+              </div>
+            </div>
+          )}
           <DrawerToggler />
         </div>
         <div className="data-layout-container">
