@@ -7,7 +7,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
-import { CodeMirrorEditorToolbar } from './CodeMirrorEditorToolbar';
+import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
 
@@ -41,7 +41,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   return (
     <div className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <CodeMirrorEditorToolbar />
+      <Toolbar />
     </div>
   );
 };
