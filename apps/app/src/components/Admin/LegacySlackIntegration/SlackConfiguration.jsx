@@ -65,7 +65,7 @@ class SlackConfiguration extends React.Component {
             <h2 className="border-bottom mb-5">{t('notification_settings.slack_incoming_configuration')}</h2>
 
             <div className="row mb-3">
-              <label className="col-md-3 text-start text-md-right">Webhook URL</label>
+              <label className="form-label col-md-3 text-start text-md-end">Webhook URL</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -78,15 +78,15 @@ class SlackConfiguration extends React.Component {
 
             <div className="row mb-3">
               <div className="offset-md-3 col-md-6 text-start">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="cbPrioritizeIWH"
                     checked={adminSlackIntegrationLegacyContainer.state.isIncomingWebhookPrioritized || false}
                     onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
                   />
-                  <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
+                  <label className="form-label form-check-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_settings.prioritize_webhook')}
                   </label>
                 </div>
@@ -117,7 +117,7 @@ class SlackConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="col-md-3 text-start text-md-right">OAuth access token</label>
+                <label className="form-label col-md-3 text-start text-md-end">OAuth access token</label>
                 <div className="col-md-6">
                   <input
                     className="form-control"

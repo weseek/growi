@@ -67,7 +67,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label>{t('admin:user_management.invite_modal.emails')}</label>
+        <label className="form-label">{t('admin:user_management.invite_modal.emails')}</label>
         <p>
           {t('admin:user_management.invite_modal.description1')}
           <br />
@@ -105,16 +105,16 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="col text-start custom-control custom-checkbox custom-checkbox-info text-start" onChange={this.handleCheckBox}>
+        <div className="col text-start form-check form-check-info" onChange={this.handleCheckBox}>
           <input
             type="checkbox"
             id="sendEmail"
-            className="custom-control-input"
+            className="form-check-input"
             name="sendEmail"
             defaultChecked={this.state.sendEmail}
             disabled={!isMailerSetup}
           />
-          <label className="custom-control-label" htmlFor="sendEmail">
+          <label className="form-label form-check-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
           {isMailerSetup
@@ -151,7 +151,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="me-3 text-start" style={{ flex: 1 }}>
+        <label className="form-label me-3 text-start" style={{ flex: 1 }}>
           <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
           <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>

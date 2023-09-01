@@ -137,19 +137,19 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
   return (
     <div className="py-4 px-5">
       <p className="fw-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
-      <div className="form-group row">
-        <label className="text-start text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
+      <div className="row">
+        <label className="text-start text-md-end col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
-          <div className="input-group-prepend mx-1">
+          <div className=" mx-1">
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
             <CustomCopyToClipBoard textToBeCopied={props.tokenPtoG || ''} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
           </div>
         </div>
       </div>
-      <div className="form-group row">
-        <label className="text-start text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
+      <div className="row">
+        <label className="text-start text-md-end col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
-          <div className="input-group-prepend mx-1">
+          <div className=" mx-1">
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
             <CustomCopyToClipBoard textToBeCopied={props.tokenGtoP || ''} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
           </div>
@@ -184,7 +184,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
             <div className="input-group align-items-center ps-2 mb-3">
-              <div className="input-group-prepend w-75">
+              <div className="w-75">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
                 <CustomCopyToClipBoard textToBeCopied={props.growiUrl} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
               </div>
@@ -243,9 +243,9 @@ const TestProcess = ({
         <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
       </p>
       <div className="d-flex justify-content-center">
-        <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
+        <form className="justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
             </div>
             <input
@@ -268,8 +268,8 @@ const TestProcess = ({
       <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} logsValue={logsValue} />
       <form>
         <div className="row my-3 justify-content-center">
-          <div className="form-group slack-connection-log col-md-4">
-            <label className="mb-1"><p className="border-info slack-connection-log-title ps-2 m-0">Logs</p></label>
+          <div className="slack-connection-log col-md-4">
+            <label className="form-label mb-1"><p className="border-info slack-connection-log-title ps-2 m-0">Logs</p></label>
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-3"
               rows="5"
