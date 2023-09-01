@@ -110,11 +110,9 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
 
   return (
     <div className="input-group me-2">
-      <div>
-        <span className="input-group-text">
-          <i className="icon-people" />
-        </span>
-      </div>
+      <span className="input-group-text">
+        <i className="icon-people" />
+      </span>
       <AsyncTypeahead
         ref={typeaheadRef}
         id="search-username-typeahead-asynctypeahead"
