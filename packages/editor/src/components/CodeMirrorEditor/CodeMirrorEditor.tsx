@@ -4,8 +4,8 @@ import {
 
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
-import { useCodeMirrorEditorIsolated } from '../stores';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import style from './CodeMirrorEditor.module.scss';
 
