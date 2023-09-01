@@ -187,11 +187,12 @@ module.exports = (crowi) => {
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
+    const locale = configManager.getConfig('crowi', 'app:globalLang');
 
     await mailService.send({
       to: user.email,
       subject: `New password for ${appTitle}`,
-      template: path.join(crowi.localeDir, `${locale}/admin/userResetPassword.ejs'),
+      template: path.join(crowi.localeDir, `${locale}/admin/userResetPassword.ejs`),
       vars: {
         email: user.email,
         password: user.password,
