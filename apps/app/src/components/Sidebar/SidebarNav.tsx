@@ -103,26 +103,20 @@ export const SidebarNav: FC<Props> = (props: Props) => {
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
-        {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
-        {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
-        {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
-        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
-        {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
-        {/* eslint-enable max-len */}
         <PrimaryItem contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onItemSelected={onItemSelected} />
+        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
+        <InAppNotificationDropdown />
       </div>
       <div className="grw-sidebar-nav-secondary-container">
-        <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
+        {/* TODO: This setting will be consolidated in "Settings" on My Page, so delete it from here. */}
+        {/* <AppearanceModeDropdown isAuthenticated={isAuthenticated} /> */}
         <PersonalDropdown />
-        <InAppNotificationDropdown />
-
-        {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
-        {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
         <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
-        <SecondaryItem label="Trash" iconName="delete" href="/trash" />
+        {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
+        <SecondaryItem label="Trash" href="/trash" iconName="delete" />
       </div>
     </div>
   );
