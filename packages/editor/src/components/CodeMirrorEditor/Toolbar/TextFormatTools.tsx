@@ -8,7 +8,9 @@ type TogglarProps = {
   onClick?: () => void,
 }
 
-const TextFormatToolsToggler = ({ isOpen, onClick }: TogglarProps): JSX.Element => {
+const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
+
+  const { onClick } = props;
 
   // TODO: change color by isOpen
 
