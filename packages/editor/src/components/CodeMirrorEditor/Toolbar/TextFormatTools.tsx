@@ -1,60 +1,70 @@
-import { memo } from 'react';
+import { useCallback, useState } from 'react';
 
-import { UncontrolledCollapse } from 'reactstrap';
+import { Collapse } from 'reactstrap';
 
 
-const TextFormatToolsToggler = memo((): JSX.Element => {
+type TogglarProps = {
+  isOpen: boolean,
+  onClick?: () => void,
+}
+
+const TextFormatToolsToggler = ({ isOpen, onClick }: TogglarProps): JSX.Element => {
+
+  // TODO: change color by isOpen
+
   return (
     <button
-      id="btn-text-format-tools"
       type="button"
-      className="btn btn-toolbar-button"
-      data-bs-toggle="collapse"
-      data-bs-target="#collapseTextFormatTools"
-      aria-expanded="false"
-      aria-controls="collapseTextFormatTools"
+      className="btn btn-toolbar-button bg"
+      onClick={onClick}
     >
-      <span className="material-icons text-secondary fs-5">text_increase</span>
+      <span className="material-icons fs-5">text_increase</span>
     </button>
   );
-});
+};
 
 export const TextFormatTools = (): JSX.Element => {
+  const [isOpen, setOpen] = useState(false);
+
+  const toggle = useCallback(() => {
+    setOpen(bool => !bool);
+  }, []);
+
   return (
     <div className="d-flex">
-      <TextFormatToolsToggler />
+      <TextFormatToolsToggler isOpen={isOpen} onClick={toggle} />
 
-      <UncontrolledCollapse toggler="#btn-text-format-tools" horizontal>
+      <Collapse isOpen={isOpen} horizontal>
         <div className="d-flex px-1 gap-0" style={{ width: '200px' }}>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">format_bold</span>
+            <span className="material-icons-outlined fs-5">format_bold</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">format_italic</span>
+            <span className="material-icons-outlined fs-5">format_italic</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">format_strikethrough</span>
+            <span className="material-icons-outlined fs-5">format_strikethrough</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">block</span>
+            <span className="material-icons-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">code</span>
+            <span className="material-icons-outlined fs-5">code</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">format_list_bulleted</span>
+            <span className="material-icons-outlined fs-5">format_list_bulleted</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">format_list_numbered</span>
+            <span className="material-icons-outlined fs-5">format_list_numbered</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">block</span>
+            <span className="material-icons-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined text-secondary fs-5">checklist</span>
+            <span className="material-icons-outlined fs-5">checklist</span>
           </button>
         </div>
-      </UncontrolledCollapse>
+      </Collapse>
     </div>
   );
 };
