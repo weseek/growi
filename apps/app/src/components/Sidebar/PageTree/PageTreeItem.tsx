@@ -27,15 +27,16 @@ import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
 import { ItemNode } from './ItemNode';
-import SimpleItem, { SimpleItemProps, NotDraggableForClosableTextInput, SimpleItemTool } from './SimpleItem';
+import SimpleItem, {
+  SimpleItemProps, SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+} from './SimpleItem';
 
 const logger = loggerFactory('growi:cli:Item');
 
 type PageTreeItemPropsOptional = 'itemRef' | 'itemClass' | 'mainClassName';
 type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional> & {key};
 
-type EllipsisPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-type EllipsisProps = Omit<SimpleItemProps, EllipsisPropsOptional> & {page: IPageForItem};
+type EllipsisProps = SimpleItemToolProps & {page: IPageForItem};
 
 const Ellipsis: FC<EllipsisProps> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);

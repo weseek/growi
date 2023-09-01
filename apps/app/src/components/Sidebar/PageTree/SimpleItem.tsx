@@ -86,7 +86,7 @@ export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.
 };
 
 type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
+export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
 
 export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   const { t } = useTranslation();
