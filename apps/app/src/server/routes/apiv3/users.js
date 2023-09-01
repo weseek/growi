@@ -191,7 +191,7 @@ module.exports = (crowi) => {
     await mailService.send({
       to: user.email,
       subject: `New password for ${appTitle}`,
-      template: path.join(crowi.localeDir, 'en_US/admin/userResetPassword.ejs'),
+      template: path.join(crowi.localeDir, `${locale}/admin/userResetPassword.ejs'),
       vars: {
         email: user.email,
         password: user.password,
