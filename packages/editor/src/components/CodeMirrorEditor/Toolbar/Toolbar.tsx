@@ -1,13 +1,21 @@
+import { memo } from 'react';
+
 import { AttachmentsDropup } from './AttachmentsDropup';
+import { DiagramButton } from './DiagramButton';
+import { EmojiButton } from './EmojiButton';
+import { TableButton } from './TableButton';
 import { TextFormatTools } from './TextFormatTools';
 
 import styles from './Toolbar.module.scss';
 
-export const Toolbar = (): JSX.Element => {
+export const Toolbar = memo((): JSX.Element => {
   return (
-    <div className={`d-flex gap-3 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
+    <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup />
       <TextFormatTools />
+      <EmojiButton />
+      <TableButton />
+      <DiagramButton />
     </div>
   );
-};
+});
