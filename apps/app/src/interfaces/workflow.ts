@@ -39,6 +39,7 @@ export type IWorkflowApprover = {
 export type IWorkflowApproverGroup = {
   approvalType: WorkflowApprovalType
   approvers: IWorkflowApprover[],
+  isApproved: boolean, // vietual
 };
 
 export type IWorkflow = {
