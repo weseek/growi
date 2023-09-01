@@ -28,9 +28,9 @@ export function useSWRStatic<Data, Error>(
     ),
   });
 
-  // write data to cache directly
+  // update data
   if (key != null && data !== undefined) {
-    cache.set(key.toString(), { ...cache.get(key.toString()), data });
+    swrResponse.mutate(data, { optimisticData: data });
   }
 
   return swrResponse;
