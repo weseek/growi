@@ -18,11 +18,9 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
 
   return (
     <div className="input-group admin-audit-log">
-      <div className="input-group-prepend">
-        <span className="input-group-text">
-          <i className="fa fa-fw fa-calendar" />
-        </span>
-      </div>
+      <span className="input-group-text">
+        <i className="fa fa-fw fa-calendar" />
+      </span>
       <input
         ref={ref}
         type="text"
@@ -62,7 +60,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
   }, [onChange]);
 
   return (
-    <div className="btn-group me-2">
+    <div className="me-2">
       <DatePicker
         selectsRange
         startDate={startDate}

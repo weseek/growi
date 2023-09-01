@@ -49,7 +49,7 @@ const MailSetting = (props: Props) => {
       {!adminAppContainer.state.isMailerSetup && (
         <div className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.mailer_is_not_set_up')}</div>
       )}
-      <div className="row form-group mb-5">
+      <div className="row mb-5">
         <label className="col-md-3 col-form-label text-end">{t('admin:app_setting.from_e-mail_address')}</label>
         <div className="col-md-6">
           <input
@@ -62,17 +62,17 @@ const MailSetting = (props: Props) => {
         </div>
       </div>
 
-      <div className="row form-group mb-5">
-        <label className="text-start text-md-right col-md-3 col-form-label">
+      <div className="row mb-5">
+        <label className="form-label text-start text-md-end col-md-3 col-form-label">
           {t('admin:app_setting.transmission_method')}
         </label>
         <div className="col-md-6 py-2">
           {transmissionMethods.map((method) => {
             return (
-              <div key={method} className="custom-control custom-radio custom-control-inline">
+              <div key={method} className="form-check form-check-inline">
                 <input
                   type="radio"
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="transmission-method"
                   id={`transmission-method-radio-${method}`}
                   checked={adminAppContainer.state.transmissionMethod === method}
@@ -80,7 +80,7 @@ const MailSetting = (props: Props) => {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
                 />
-                <label className="custom-control-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
+                <label className="form-label form-check-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
               </div>
             );
           })}

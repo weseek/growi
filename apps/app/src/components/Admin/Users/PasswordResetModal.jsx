@@ -69,7 +69,7 @@ class PasswordResetModal extends React.Component {
     return (
       <div className="d-flex col text-start ms-1 ps-0">
         {!isMailerSetup ? (
-          <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          <label className="form-label form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
         ) : (
           <>
             <p className="me-2">To:</p>

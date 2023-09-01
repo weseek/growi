@@ -41,7 +41,7 @@ const IndentForm = (props: Props) => {
     return (
       <div className="col">
         <div>
-          <label htmlFor="adminPreferredIndentSize">{t('markdown_settings.indent_options.indentSize')}</label>
+          <label htmlFor="adminPreferredIndentSize" className="form-label">{t('markdown_settings.indent_options.indentSize')}</label>
           <UncontrolledDropdown id="adminPreferredIndentSize">
             <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-end">
               <span className="float-start">
@@ -74,17 +74,17 @@ const IndentForm = (props: Props) => {
 
     return (
       <div className="col">
-        <div className="custom-control custom-checkbox custom-checkbox-success">
+        <div className="form-check form-check-success">
           <input
             type="checkbox"
-            className="custom-control-input"
+            className="form-check-input"
             id="isIndentSizeForced"
             checked={isIndentSizeForced || false}
             onChange={() => {
               adminMarkDownContainer.setState({ isIndentSizeForced: !isIndentSizeForced });
             }}
           />
-          <label className="custom-control-label" htmlFor="isIndentSizeForced">
+          <label className="form-label form-check-label" htmlFor="isIndentSizeForced">
             {t('markdown_settings.indent_options.disallow_indent_change')}
           </label>
         </div>
@@ -97,7 +97,7 @@ const IndentForm = (props: Props) => {
 
   return (
     <React.Fragment>
-      <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
+      <fieldset className="row row-cols-1 row-cols-md-2 mx-3">
         {renderIndentSizeOption(props)}
         {renderIndentForceOption(props)}
       </fieldset>

@@ -50,20 +50,20 @@ const OtherSettings = (): JSX.Element => {
         </div>
       )}
 
-      <div className="form-group row">
+      <div className="row">
         <div className="offset-md-3 col-md-6 text-start">
           {!isLoadingCurrentUser && (
-            <div className="custom-control custom-switch custom-checkbox-primary">
+            <div className="form-check form-switch form-check-primary">
               <span id="grw-questionnaire-settings-toggle-wrapper">
                 <input
                   type="checkbox"
-                  className="custom-control-input"
+                  className="form-check-input"
                   id="isQuestionnaireEnabled"
                   checked={growiIsQuestionnaireEnabled && isQuestionnaireEnabled}
                   onChange={onChangeIsQuestionnaireEnabledHandler}
                   disabled={!growiIsQuestionnaireEnabled}
                 />
-                <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
+                <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
                   {t('questionnaire.enable_questionnaire')}
                 </label>
               </span>

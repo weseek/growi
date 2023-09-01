@@ -84,7 +84,7 @@ const PermissionSettingForEachPermissionTypeComponent = ({
   return (
     <div className="my-1 mb-2">
       <div className="row align-items-center mb-3">
-        <p className="col-md-5 text-md-right mb-2">
+        <p className="col-md-5 text-md-end mb-2">
           <strong className="text-capitalize">{keyName}</strong>
           {singleCommandDescription && (
             <small className="form-text text-muted small">
@@ -305,7 +305,7 @@ const ManageCommandsProcess = ({
           </div>
         )}
 
-        <div className="custom-control custom-checkbox">
+        <div className="form-check">
           <div className="row mb-5 d-block">
             {defaultCommandsName.map(keyName => (
               <PermissionSettingForEachPermissionTypeComponent

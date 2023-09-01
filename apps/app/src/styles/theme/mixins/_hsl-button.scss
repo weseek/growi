@@ -22,6 +22,8 @@
     color: hsl.contrast($background);
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
+    // TODO: color-yiq() to color-contrast()
+    // https://redmine.weseek.co.jp/issues/128307
     // @if $enable-shadows {
     //   @include box-shadow($btn-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5));
     // } @else {
@@ -54,6 +56,8 @@
   //   }
   //   border-color: $active-border;
 
+  // TODO: color-yiq() to color-contrast()
+  // https://redmine.weseek.co.jp/issues/128307
   //   &:focus {
   //     // @if $enable-shadows and $btn-active-box-shadow != none {
   //     //   @include box-shadow($btn-active-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5));
