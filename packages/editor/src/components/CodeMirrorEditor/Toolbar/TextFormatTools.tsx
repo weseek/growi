@@ -15,7 +15,7 @@ const TextFormatToolsToggler = ({ isOpen, onClick }: TogglarProps): JSX.Element 
   return (
     <button
       type="button"
-      className="btn btn-toolbar-button bg"
+      className="btn btn-toolbar-button"
       onClick={onClick}
     >
       <span className="material-icons fs-5">text_increase</span>
@@ -35,7 +35,7 @@ export const TextFormatTools = (): JSX.Element => {
       <TextFormatToolsToggler isOpen={isOpen} onClick={toggle} />
 
       <Collapse isOpen={isOpen} horizontal>
-        <div className="d-flex px-1 gap-0" style={{ width: '200px' }}>
+        <div className="d-flex px-1 gap-1" style={{ width: '220px' }}>
           <button type="button" className="btn btn-toolbar-button">
             <span className="material-icons-outlined fs-5">format_bold</span>
           </button>
