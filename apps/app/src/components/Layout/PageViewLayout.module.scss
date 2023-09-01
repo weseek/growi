@@ -1,0 +1,3 @@
+.page-view-layout :global {
+  min-height: calc(100vh - 116px - 250px); // 100vh - subnavigation height - page-comments-row minimum height
+}
