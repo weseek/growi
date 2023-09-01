@@ -4,7 +4,7 @@ import type { PresentationOptions } from '../consts';
 import { GrowiSlides } from './GrowiSlides';
 import { MarpSlides } from './MarpSlides';
 
-import './Slides.global.scss';
+import styles from './Slides.module.scss';
 
 type Props = {
   options: PresentationOptions,
@@ -19,8 +19,12 @@ export const Slides = (props: Props): JSX.Element => {
   } = props;
 
   return (
-    hasMarpFlag
-      ? <MarpSlides presentation={presentation}>{children}</MarpSlides>
-      : <GrowiSlides options={options} presentation={presentation}>{children}</GrowiSlides>
+    <div className={`${styles['slides-styles']}`}>
+      {
+        hasMarpFlag
+          ? <MarpSlides presentation={presentation}>{children}</MarpSlides>
+          : <GrowiSlides options={options} presentation={presentation}>{children}</GrowiSlides>
+      }
+    </div>
   );
 };

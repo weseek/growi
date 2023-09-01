@@ -1,0 +1,11 @@
+.slides-styles {
+  div.slides.marpit {
+    /*! destyle.css v4.0.0 | MIT License | https://github.com/nicolas-cusan/destyle.min.css */
+    *,::before,::after{box-sizing:border-box;border-style:solid;border-width:0}html{line-height:1.15;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}body{margin:0}main{display:block}p,table,blockquote,address,pre,iframe,form,figure,dl{margin:0}h1,h2,h3,h4,h5,h6{margin:0;font-size:inherit;font-weight:inherit}ul,ol{padding:0;margin:0;list-style:none}dt{font-weight:700}dd{margin-left:0}hr{box-sizing:content-box;height:0;margin:0;overflow:visible;clear:both;color:inherit;border-top-width:1px}pre{font-family:monospace,monospace;font-size:inherit}address{font-style:inherit}a{color:inherit;text-decoration:none;background-color:transparent}abbr[title]{text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:inherit}small{font-size:80%}sub,sup{position:relative;font-size:75%;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}svg,img,embed,object,iframe{vertical-align:bottom}button,input,optgroup,select,textarea{padding:0;margin:0;font:inherit;color:inherit;text-align:inherit;text-transform:inherit;vertical-align:middle;background:transparent;border-radius:0;-webkit-appearance:none;appearance:none}button,[type='button'],[type='reset'],[type='submit']{cursor:pointer}button:disabled,[type='button']:disabled,[type='reset']:disabled,[type='submit']:disabled{cursor:default}:-moz-focusring{outline:auto}select:disabled{opacity:inherit}option{padding:0}fieldset{min-width:0;padding:0;margin:0}legend{padding:0}progress{vertical-align:baseline}textarea{overflow:auto}[type='number']::-webkit-inner-spin-button,[type='number']::-webkit-outer-spin-button{height:auto}[type='search']{outline-offset:-2px}[type='search']::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}[type='number']{-moz-appearance:textfield}label[for]{cursor:pointer}details{display:block}summary{display:list-item}[contenteditable]:focus{outline:auto}table{border-collapse:collapse;border-color:inherit}caption{text-align:left}td,th{padding:0;vertical-align:top}th{font-weight:700;text-align:left}
+  }
+}
+
+div.slides.marpit > section :is(pre, marp-pre) {
+  padding: 0;
+  border: none;
+}
