@@ -1076,6 +1076,6 @@
     "remove_plugin_success": "{{pluginName}}を削除しました"
   },
   "forbidden_page": {
-    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません。"
+    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません"
   }
 }
