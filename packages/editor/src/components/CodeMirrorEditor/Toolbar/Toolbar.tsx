@@ -4,6 +4,7 @@ import { AttachmentsDropup } from './AttachmentsDropup';
 import { DiagramButton } from './DiagramButton';
 import { EmojiButton } from './EmojiButton';
 import { TableButton } from './TableButton';
+import { TemplateButton } from './TemplateButton';
 import { TextFormatTools } from './TextFormatTools';
 
 import styles from './Toolbar.module.scss';
@@ -16,6 +17,7 @@ export const Toolbar = memo((): JSX.Element => {
       <EmojiButton />
       <TableButton />
       <DiagramButton />
+      <TemplateButton />
     </div>
   );
 });
