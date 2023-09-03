@@ -3,7 +3,7 @@ import { Readable, Writable } from 'stream';
 
 import type {
   Ref, HasObjectId, IUserHasId,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, GrantedGroup,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
 import { PageGrant, PageStatus } from '@growi/core';
 import {
@@ -2362,7 +2362,7 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup: GrantedGroup, user) {
+  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup: IGrantedGroup, user) {
     const Page = this.crowi.model('Page');
     const pages = await Page.find({
       grantedGroups: {
@@ -3533,7 +3533,7 @@ class PageService {
     pageDocument.status = Page.STATUS_PUBLISHED;
   }
 
-  private async validateAppliedScope(user, grant, grantUserGroupIds: GrantedGroup[]) {
+  private async validateAppliedScope(user, grant, grantUserGroupIds: IGrantedGroup[]) {
     if (grant === PageGrant.GRANT_USER_GROUP && grantUserGroupIds == null) {
       throw new Error('grantUserGroupIds is not specified');
     }
@@ -3554,7 +3554,7 @@ class PageService {
       grantData: {
         grant: number,
         grantedUserIds?: ObjectIdLike[],
-        grantUserGroupIds?: GrantedGroup[],
+        grantUserGroupIds?: IGrantedGroup[],
       },
       shouldValidateGrant: boolean,
       user?,
@@ -3886,7 +3886,7 @@ class PageService {
    * @param {UserDocument} user
    * @param options
    */
-  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroups: GrantedGroup[]}): Promise<PageDocument> {
+  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroups: IGrantedGroup[]}): Promise<PageDocument> {
     const { grant, grantedGroups } = grantData;
 
     const options = {

@@ -688,7 +688,7 @@ export const getPageSchema = (crowi) => {
   /**
    * transfer pages grant to specified user group
    * @param {Page[]} pages
-   * @param {GrantedGroup} transferToUserGroup
+   * @param {IGrantedGroup} transferToUserGroup
    */
   pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroup) {
     const userGroupModel = transferToUserGroup.type === GroupType.userGroup ? UserGroup : ExternalUserGroup;

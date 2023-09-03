@@ -5,7 +5,7 @@ import nodePath from 'path';
 
 import {
   type IPage,
-  type GrantedGroup,
+  type IGrantedGroup,
   GroupType, type HasObjectId,
 } from '@growi/core';
 import { isPopulated } from '@growi/core/dist/interfaces';
@@ -1046,7 +1046,7 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
 
 export type PageCreateOptions = {
   format?: string
-  grantUserGroupIds?: GrantedGroup[],
+  grantUserGroupIds?: IGrantedGroup[],
   grant?: number
   overwriteScopesOfDescendants?: boolean
 }

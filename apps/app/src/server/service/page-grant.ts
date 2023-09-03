@@ -1,5 +1,5 @@
 import {
-  type GrantedGroup,
+  type IGrantedGroup,
   PageGrant, type PageGrantCanBeOnTree,
 } from '@growi/core';
 import {
@@ -28,7 +28,7 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 type ComparableTarget = {
   grant: number,
   grantedUserIds?: ObjectIdLike[],
-  grantedGroupIds?: GrantedGroup[],
+  grantedGroupIds?: IGrantedGroup[],
   applicableUserIds?: ObjectIdLike[],
   applicableGroupIds?: ObjectIdLike[],
 };
@@ -43,7 +43,7 @@ type ComparableAncestor = {
 type ComparableDescendants = {
   isPublicExist: boolean,
   grantedUserIds: ObjectIdLike[],
-  grantedGroupIds: GrantedGroup[],
+  grantedGroupIds: IGrantedGroup[],
 };
 
 /**
@@ -214,7 +214,7 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: GrantedGroup[] | undefined, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: IGrantedGroup[] | undefined, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
       const Page = mongoose.model('Page') as unknown as PageModel;
@@ -419,7 +419,7 @@ class PageGrantService {
    */
   async isGrantNormalized(
       // eslint-disable-next-line max-len
-      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupIds?: GrantedGroup[], shouldCheckDescendants = false, includeNotMigratedPages = false,
+      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupIds?: IGrantedGroup[], shouldCheckDescendants = false, includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
@@ -599,7 +599,7 @@ class PageGrantService {
   }
 
   async generateUpdateGrantInfoToOverwriteDescendants(
-      operator, updateGrant: PageGrantCanBeOnTree, grantGroupIds?: GrantedGroup[],
+      operator, updateGrant: PageGrantCanBeOnTree, grantGroupIds?: IGrantedGroup[],
   ): Promise<UpdateGrantInfo> {
     let updateGrantInfo: UpdateGrantInfo | null = null;
 
