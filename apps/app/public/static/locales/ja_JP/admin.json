@@ -55,9 +55,9 @@
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
     "user_homepage_deletion": {
-      "user_homepage_deletion": "ユーザーページの削除",
-      "enable_user_homepage_deletion": "ユーザーページの削除を有効化",
-      "when_deleting_a_user_the_user_homepage_is_also_deleted": "ユーザー削除時にユーザーページも削除します。"
+      "user_homepage_deletion": "ユーザーホームページの削除",
+      "enable_user_homepage_deletion": "ユーザー削除時にユーザーホームページを完全削除する",
+      "desc": "ユーザーを削除する際に、ユーザーホームページとその配下のページも完全削除されます。"
     },
     "session": "セッション",
     "max_age": "有効期間 (ミリ秒)",
@@ -488,7 +488,13 @@
       "show_all_reply_comments": "返信コメントを全て表示する",
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
-      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
+      "enable_marp": "Marp を有効化する",
+      "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
+      "marp_official_site": "参考：Marp 公式サイト",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "参考：GROWI Docs - Marp でスライドを作成する",
+      "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
@@ -1100,6 +1106,6 @@
     "remove_plugin_success": "{{pluginName}}を削除しました"
   },
   "forbidden_page": {
-    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません。"
+    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません"
   }
 }

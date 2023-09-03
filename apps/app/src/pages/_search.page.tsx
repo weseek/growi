@@ -122,6 +122,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
