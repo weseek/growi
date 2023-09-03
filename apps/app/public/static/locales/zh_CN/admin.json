@@ -1077,19 +1077,33 @@
       "membership_attribute_type_detail": "Whether membership attribute value is of type DN or UID",
       "child_group_attribute": "Child Group Attribute",
       "child_group_attribute_detail": "Attribute of the group object which indicates child group info. The attribute value needs to be the DN of the child group.",
-      "auto_generate_user_on_sync": "Auto Generate User on Sync",
       "preserve_deleted_ldap_groups": "Preserve Deleted LDAP Groups",
       "name_mapper_detail": "Attribute to map as group name",
-      "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync.",
       "updated_group_sync_settings": "Updated LDAP group sync settings",
-      "sync_succeeded": "Group sync succeeded",
-      "sync_failed": "Sync failed. Check LDAP security settings and group sync settings",
+      "sync_succeeded": "Sync succeeded",
       "password": "Password",
       "password_detail": "Login password is necessary because Bind type is set to User Bind",
       "circular_reference": "Sync failed because there is a possible circular reference in your LDAP group tree structure",
       "group_search_failed": "LDAP group search failed. Please check your LDAP security settings and group sync settings.",
       "user_search_failed": "LDAP user search failed. Please check your LDAP security settings and group sync settings."
-    }
+    },
+    "keycloak": {
+      "group_sync_settings": "Keycloak Group Sync Settings",
+      "host": "Host",
+      "host_detail": "Keycloak host URL",
+      "realm": "Realm",
+      "realm_detail": "Realm that contains the groups to sync",
+      "group_sync_client_name": "Group Sync Client Name",
+      "group_sync_client_name_detail": "Name of the client in the master realm to use for group sync",
+      "group_sync_client_id": "Group Sync Client ID",
+      "group_sync_client_id_detail": "ID of the client in the master realm to use for group sync",
+      "group_sync_client_secret": "Group Sync Client Secret",
+      "group_sync_client_secret_detail": "Secret of the client in the master realm to use for group sync",
+      "updated_group_sync_settings": "Updated Keycloak group sync settings",
+      "preserve_deleted_keycloak_groups": "Preserve Deleted Keycloak Groups"
+    },
+    "auto_generate_user_on_sync": "Auto Generate User on Sync",
+    "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync."
   },
   "toaster": {
     "grant_user_admin": "Succeeded to grant {{username}} admin",

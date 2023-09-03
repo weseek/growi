@@ -34,6 +34,17 @@ export interface LdapGroupSyncSettings {
   ldapGroupDescriptionAttribute?: string
 }
 
+export interface KeycloakGroupSyncSettings {
+  keycloakHost: string
+  keycloakRealm: string
+  keycloakGroupSyncClientName: string
+  keycloakGroupSyncClientID: string
+  keycloakGroupSyncClientSecret: string
+  autoGenerateUserOnKeycloakGroupSync: boolean
+  preserveDeletedKeycloakGroups: boolean
+  keycloakGroupDescriptionAttribute?: string
+}
+
 export type ExternalUserInfo = {
   id: string, // external user id
   username: string,
