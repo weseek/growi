@@ -57,14 +57,16 @@ module.exports = (crowi: Crowi): Router => {
     ],
     updateWorkflowApproverGroups: [
       body('id').isMongoId().withMessage('id is required'),
-      body('approverGroups').isArray().withMessage('approverGroups is required'),
+      body('isNew').optional().isBoolean().withMessage('isNew must be  boolean'),
+      body('approverGroup').isArray().withMessage('approverGroups is required'),
+      body('approverGroupOffset').isInt().withMessage('approverGroupOffset is required'),
     ],
     updateWorkflowApproverStatus: [
-      body('workflowId').isMongoId().withMessage('workflowId is required'),
-      body('workflowApproverStatus').isString().withMessage('workflowApproverStatus is required'),
+      body('id').isMongoId().withMessage('id is required'),
+      body('approverStatus').isString().withMessage('approverStatus is required'),
     ],
     deleteWorkflow: [
-      body('id').isMongoId().withMessage('id is required'),
+      param('id').isMongoId().withMessage('id is required'),
     ],
   };
 
@@ -154,15 +156,19 @@ module.exports = (crowi: Crowi): Router => {
    *                pageId:
    *                  description: id of page
    *                  type: string
+   *                  required: true
    *                name:
    *                  description: Workflow name
    *                  type: string
+   *                  required: true
    *                comment:
    *                  description: Workflow comment
    *                  type: string
+   *                  required: true
    *                approverGroups:
    *                  descriotion: Workflow Approver Groups
    *                  type: array
+   *                  required: true
    *                  items:
    *                    $ref: '#/components/schemas/workflowApproverGroup'
    *
@@ -204,21 +210,31 @@ module.exports = (crowi: Crowi): Router => {
    *              type: object
    *              properties:
    *                id:
-   *                  description: id of workflow
+   *                  description: WorkflowId to be updated
    *                  type: string
-   *                approverGroups:
-   *                  descriotion: workflow workflowApproverGroups
-   *                  type: array
-   *                  items:
-   *                    $ref: '#/components/schemas/workflowApproverGroup'
+   *                  required: true
+   *                isNew:
+   *                  description: Whether it's a new creation or not.
+   *                  type: boolean
+   *                approverGroup:
+   *                  descriotion: WorkflowApproverGroup
+   *                  $ref: '#/components/schemas/workflowApproverGroup'
+   *                  required: true
+   *                approverGroupOffset:
+   *                  description: Position of Workflow.approverGroups (Array) when updating or creating
+   *                  type: number
+   *                  required: true
    *
    *      responses:
    *        200:
    *          description: Succeeded to update WorkflowApproverGroup
    */
-  router.post('/update-approver-groups', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
+  router.post('/update-approver-group', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
-      const { id, approverGroups } = req.body;
+      const {
+        id, isNew, approverGroup, approverGroupOffset,
+      } = req.body;
+
       return res.apiv3();
     });
 
@@ -242,13 +258,15 @@ module.exports = (crowi: Crowi): Router => {
    *                id:
    *                  description: WorkflowId to be updated
    *                  type: string
+   *                  required: true
    *                approverStatus:
-   *                  description: WorkflowApprover status
+   *                  description: WorkflowApproverStatus
    *                  type: string
+   *                  required: true
    *
    *      responses:
    *        200:
-   *          description: Succeeded to WorkflowApproverStatus
+   *          description: Succeeded to update WorkflowApproverStatus
    */
   router.post('/update-approver-status', accessTokenParser, loginRequired, validator.updateWorkflowApproverStatus, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
@@ -262,10 +280,11 @@ module.exports = (crowi: Crowi): Router => {
   /**
   * @swagger
   *  paths
-  *    /{id}:
+  *    /workflow/{id}:
   *      delete:
   *        tags: [Workflow]
   *        description: Delete one workflow
+  *
   *        parameters:
   *          - name: id
   *            in: path
