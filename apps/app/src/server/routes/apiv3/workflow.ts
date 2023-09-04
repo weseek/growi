@@ -57,6 +57,9 @@ module.exports = (crowi: Crowi): Router => {
       body('workflowId').isMongoId().withMessage('workflowId is required'),
       body('workflowApproverStatus').isString().withMessage('workflowApproverStatus is required'),
     ],
+    deleteWorkflow: [
+      body('id').isMongoId().withMessage('id is required'),
+    ],
   };
 
 
@@ -252,6 +255,31 @@ module.exports = (crowi: Crowi): Router => {
 
       return res.apiv3();
     });
+
+
+  /**
+  * @swagger
+  *
+  *    /{id}:
+  *      delete:
+  *        tags: [Workflow]
+  *        description: Delete one workflow
+  *        parameters:
+  *          - name: id
+  *            in: path
+  *            required: true
+  *            description: ID of workflow
+  *            schema:
+  *              type: string
+  *        responses:
+  *          200:
+  *            description: Succeeded to delete one workflow
+  */
+  router.delete('/:id', accessTokenParser, loginRequired, validator.deleteWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
+    const { id } = req.params;
+
+    return res.apiv3();
+  });
 
   return router;
 };
