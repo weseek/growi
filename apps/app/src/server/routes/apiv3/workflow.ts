@@ -57,8 +57,8 @@ module.exports = (crowi: Crowi): Router => {
     ],
     updateWorkflowApproverGroups: [
       body('id').isMongoId().withMessage('id is required'),
-      body('isNew').optional().isBoolean().withMessage('isNew must be  boolean'),
-      body('approverGroup').isArray().withMessage('approverGroups is required'),
+      body('isNew').optional().isBoolean().withMessage('isNew must be boolean'),
+      body('approverGroup').isObject().withMessage('approverGroups is required'),
       body('approverGroupOffset').isInt().withMessage('approverGroupOffset is required'),
     ],
     updateWorkflowApproverStatus: [
