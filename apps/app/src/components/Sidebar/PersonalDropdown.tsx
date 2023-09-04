@@ -53,7 +53,7 @@ export const PersonalDropdown = (): JSX.Element => {
         </button>
 
         {/* Menu */}
-        <ul className="dropdown-menu grw-personal-dropdown" data-testid="personal-dropdown-menu" style={{ width: 'max-content' }}>
+        <ul className="dropdown-menu" data-testid="personal-dropdown-menu">
           <div className="px-4 pt-3 pb-2">
             <UserPicture user={currentUser} size="lg" noLink noTooltip />
 
