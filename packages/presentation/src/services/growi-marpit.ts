@@ -45,7 +45,7 @@ const marpitOption: MarpOptions = {
   inlineSVG: true,
   emoji: undefined,
   html: false,
-  math: 'katex',
+  math: false,
 };
 
 const slideMarpitOption = marpitOption;
