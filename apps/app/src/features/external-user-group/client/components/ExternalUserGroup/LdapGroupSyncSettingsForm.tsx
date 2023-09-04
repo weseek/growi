@@ -142,7 +142,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           <label
             className="text-left text-md-right col-md-3 col-form-label"
           >
-            {/* {t('external_user_group.ldap.auto_generate_user_on_sync')} */}
+            {/* {t('external_user_group.auto_generate_user_on_sync')} */}
           </label>
           <div className="col-md-6">
             <div className="custom-control custom-checkbox custom-checkbox-info">
@@ -158,7 +158,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
                 className="custom-control-label"
                 htmlFor="autoGenerateUserOnLdapGroupSync"
               >
-                {t('external_user_group.ldap.auto_generate_user_on_sync')}
+                {t('external_user_group.auto_generate_user_on_sync')}
               </label>
             </div>
           </div>
@@ -225,7 +225,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             />
             <p className="form-text text-muted">
               <small>
-                {t('external_user_group.ldap.description_mapper_detail')}
+                {t('external_user_group.description_mapper_detail')}
               </small>
             </p>
           </div>
