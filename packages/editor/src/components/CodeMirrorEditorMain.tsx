@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { indentUnit, getIndentUnit } from '@codemirror/language';
-import type { Extension } from '@codemirror/state';
+import { indentUnit } from '@codemirror/language';
+import { Compartment, type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
@@ -39,19 +39,19 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       return;
     }
 
-    const extension = keymap.of([
-      {
-        key: 'Mod-s',
-        preventDefault: true,
-        run: () => {
-          const doc = codeMirrorEditor?.getDoc();
-          if (doc != null) {
-            onSave();
-          }
-          return true;
-        },
+    const extension = [keymap.of([{
+      key: 'Mod-s',
+      preventDefault: true,
+      run: () => {
+        const doc = codeMirrorEditor?.getDoc();
+        if (doc != null) {
+          onSave();
+        }
+        return true;
       },
-    ]);
+    },
+    ]),
+    ];
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
 
@@ -63,11 +63,18 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     if (indentSize == null) {
       return;
     }
+
     const extension = indentUnit.of(' '.repeat(indentSize));
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
 
     return cleanupFunction;
+    // const compartment = new Compartment();
+    // codeMirrorEditor?.view?.dispatch({
+    //   effects: compartment.reconfigure(indentUnit.of(' '.repeat(indentSize))),
+    // });
+
+
   }, [codeMirrorEditor, indentSize]);
 
   return (
