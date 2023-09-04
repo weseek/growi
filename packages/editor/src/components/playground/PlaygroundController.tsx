@@ -2,11 +2,12 @@ import { useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { useCodeMirrorEditorMain } from '../../stores';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
 
-  const { data } = useCodeMirrorEditorMain();
+  const { data } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const initDoc = data?.initDoc;
   const initEditorValue = useCallback(() => {
@@ -34,7 +35,7 @@ type SetCaretLineRowFormData = {
 
 export const SetCaretLineRow = (): JSX.Element => {
 
-  const { data } = useCodeMirrorEditorMain();
+  const { data } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const { register, handleSubmit } = useForm<SetCaretLineRowFormData>({
     defaultValues: {
       lineNumber: 1,

@@ -1,13 +1,12 @@
 import {
-  useEffect, useMemo, useRef, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 
-import { keymap } from '@codemirror/view';
-import { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { toast } from 'react-toastify';
 
-import { CodeMirrorEditorContainer } from '..';
-import { useCodeMirrorEditorMain } from '../../stores';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useCodeMirrorEditorIsolated } from '../../stores';
+import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
 import { PlaygroundController } from './PlaygroundController';
 import { Preview } from './Preview';
@@ -16,37 +15,26 @@ export const Playground = (): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState('');
 
-  const containerRef = useRef(null);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  const props = useMemo<ReactCodeMirrorProps>(() => {
-    return {
-      onChange: setMarkdownToPreview,
-    };
-  }, []);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorMain(containerRef.current, props);
+  const initialValue = '# header\n';
 
+  // initialize
   useEffect(() => {
-    codeMirrorEditor?.initDoc('# header\n');
+    codeMirrorEditor?.initDoc(initialValue);
+    setMarkdownToPreview(initialValue);
+  }, [codeMirrorEditor, initialValue]);
+
+  // initial caret line
+  useEffect(() => {
+    codeMirrorEditor?.setCaretLine();
   }, [codeMirrorEditor]);
 
   // set handler to save with shortcut key
-  useEffect(() => {
-    const extension = keymap.of([
-      {
-        key: 'Mod-s',
-        preventDefault: true,
-        run: () => {
-          // eslint-disable-next-line no-console
-          console.log({ doc: codeMirrorEditor?.getDoc() });
-          toast.success('Saved.', { autoClose: 2000 });
-          return true;
-        },
-      },
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtension?.(extension);
-
-    return cleanupFunction;
+  const saveHandler = useCallback(() => {
+    // eslint-disable-next-line no-console
+    console.log({ doc: codeMirrorEditor?.getDoc() });
+    toast.success('Saved.', { autoClose: 2000 });
   }, [codeMirrorEditor]);
 
   return (
@@ -56,7 +44,10 @@ export const Playground = (): JSX.Element => {
       </div>
       <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
-          <CodeMirrorEditorContainer ref={containerRef} />
+          <CodeMirrorEditorMain
+            onSave={saveHandler}
+            onChange={setMarkdownToPreview}
+          />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <Preview markdown={markdownToPreview} />

@@ -1,10 +1,9 @@
 import { useMemo, useRef } from 'react';
 
-import { type Extension } from '@codemirror/state';
-import { scrollPastEnd } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror';
 import type { SWRResponse } from 'swr';
+import deepmerge from 'ts-deepmerge';
 
 import type { UseCodeMirrorEditor } from '../services';
 import { useCodeMirrorEditor } from '../services';
@@ -20,35 +19,35 @@ const isDeepEquals = <T extends object>(obj1: T, obj2: T): boolean => {
 };
 
 
-const defaultExtensionsMain: Extension[] = [
-  scrollPastEnd(),
-];
+export const useCodeMirrorEditorIsolated = (
+    key: string | null, container?: HTMLDivElement | null, props?: ReactCodeMirrorProps,
+): SWRResponse<UseCodeMirrorEditor> => {
 
-export const useCodeMirrorEditorMain = (container?: HTMLDivElement | null, props?: ReactCodeMirrorProps): SWRResponse<UseCodeMirrorEditor> => {
   const ref = useRef<UseCodeMirrorEditor>();
   const currentData = ref.current;
 
+  const swrKey = key != null ? `codeMirrorEditor_${key}` : null;
   const mergedProps = useMemo<UseCodeMirror>(() => {
-    return {
-      ...props,
-      container,
-      extensions: [
-        ...(props?.extensions ?? []),
-        ...defaultExtensionsMain,
-      ],
-    };
+    return deepmerge(
+      props ?? {},
+      {
+        container,
+      },
+    );
   }, [container, props]);
 
   const newData = useCodeMirrorEditor(mergedProps);
 
-  const shouldUpdate = props != null && (
+  const shouldUpdate = swrKey != null && container != null && props != null && (
     currentData == null
     || (isValid(newData) && !isDeepEquals(currentData, newData))
   );
 
   if (shouldUpdate) {
     ref.current = newData;
+    // eslint-disable-next-line no-console
+    console.info('Initializing codemirror for main');
   }
 
-  return useSWRStatic('codeMirrorEditorMain', shouldUpdate ? newData : undefined);
+  return useSWRStatic(swrKey, shouldUpdate ? newData : undefined);
 };
