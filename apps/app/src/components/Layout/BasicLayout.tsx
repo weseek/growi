@@ -40,9 +40,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
 
           <div className="flex-expand-vert">{/* neccessary for nested {children} make expanded */}
             <AlertSiteUrlUndefined />
-            <div className="flex-expand-horiz">{/* neccessary for nested {children} make expanded */}
-              {children}
-            </div>
+            {children}
           </div>
         </div>
 

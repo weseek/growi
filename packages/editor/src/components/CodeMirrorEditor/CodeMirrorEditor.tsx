@@ -4,14 +4,16 @@ import {
 
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
-import { useCodeMirrorEditorIsolated } from '../stores';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useCodeMirrorEditorIsolated } from '../../stores';
+
+import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
 
 const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
   return (
-    <div {...props} className={`${style['codemirror-editor-container']}`} ref={ref} />
+    <div {...props} className={`flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} />
   );
 });
 
@@ -36,5 +38,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [onChange]);
   useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
-  return <CodeMirrorEditorContainer ref={containerRef} />;
+  return (
+    <div className="flex-expand-vert">
+      <CodeMirrorEditorContainer ref={containerRef} />
+      <Toolbar />
+    </div>
+  );
 };

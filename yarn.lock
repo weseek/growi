@@ -11814,10 +11814,10 @@ markdown-table@^3.0.0:
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.2.tgz#9b59eb2c1b22fe71954a65ff512887065a7bb57c"
   integrity sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==
 
-material-icons@^1.11.3:
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/material-icons/-/material-icons-1.11.3.tgz#a17ae4387df09d0fc117df19aecdcd07d2266769"
-  integrity sha512-pGkZ5LJOLH/R3jlqL2HXGVi36cucTn/RxSkPtqsinxB2xoDE0fZStwAUZlMKcW0z4qqDamBwVvzM1IVQe6OQDw==
+material-icons@^1.13.10:
+  version "1.13.10"
+  resolved "https://registry.yarnpkg.com/material-icons/-/material-icons-1.13.10.tgz#08f128aab3976c2f1ac03a35a0b030e945817291"
+  integrity sha512-XSESl/zo7XzD9nz8ihUq5HO0DzsvnVex9t8hpH8pqY1SFlESAdHlMQQbcCyyP58mPp6Wm1tyt0OaDNZhBT9lXQ==
 
 mathjax-full@^3.2.2:
   version "3.2.2"
