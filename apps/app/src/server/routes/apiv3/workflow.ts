@@ -1,6 +1,6 @@
 import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
-import { body } from 'express-validator';
+import { param, body } from 'express-validator';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -43,17 +43,23 @@ module.exports = (crowi: Crowi): Router => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const validator = {
+    getWorkflow: [
+      param('id').isMongoId().withMessage('id is required'),
+    ],
+    getWorkflows: [
+      param('pageId').isMongoId().withMessage('pageId is required'),
+    ],
     createWorkflow: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('workflowName').isString().withMessage('workflowName is required'),
-      body('workflowComment').isString().withMessage('workflowComment is required'),
-      body('workflowApproverGroups').isArray().withMessage('workflowApproverGroups is required'),
+      body('name').isString().withMessage('name is required'),
+      body('comment').isString().withMessage('comment is required'),
+      body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
-    updateWorkflow: [
-      body('workflowId').isMongoId().withMessage('workflowId is required'),
-      body('workflowApproverGroups').isArray().withMessage('workflowApproverGroups is required'),
+    updateWorkflowApproverGroups: [
+      body('id').isMongoId().withMessage('id is required'),
+      body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
-    updateWorkflowAction: [
+    updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
       body('workflowApproverStatus').isString().withMessage('workflowApproverStatus is required'),
     ],
@@ -67,15 +73,15 @@ module.exports = (crowi: Crowi): Router => {
    * @swagger
    *
    *  paths:
-   *    /workflow/{workflowId}:
+   *    /workflow/{id}:
    *      get:
    *        tags: [Workflow]
-   *        summary: Get workflow data from workflowId
+   *        summary: Get workflow data
    *
    *        parameters:
-   *          - name: workflowId
+   *          - name: id
    *            in: path
-   *            description: id of workflow data to be retrieved
+   *            description: id of workflow
    *            type: string
    *            required: true
    *
@@ -87,8 +93,8 @@ module.exports = (crowi: Crowi): Router => {
    *                schema:
    *                  $ref: '#/components/schemas/Workflow'
    */
-  router.get('/:workflowId', accessTokenParser, loginRequired, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
-    const { workflowId } = req.params;
+  router.get('/:id', accessTokenParser, loginRequired, validator.getWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
+    const { id } = req.params;
 
     return res.apiv3();
   });
@@ -122,7 +128,7 @@ module.exports = (crowi: Crowi): Router => {
    *                      items:
    *                        $ref: '#/components/schemas/Workflow'
    */
-  router.get('/list/:pageId', accessTokenParser, loginRequired, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
+  router.get('/list/:pageId', accessTokenParser, loginRequired, validator.getWorkflows, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
 
     return res.apiv3();
@@ -146,16 +152,16 @@ module.exports = (crowi: Crowi): Router => {
    *              type: object
    *              properties:
    *                pageId:
-   *                  description: pageId for Workflow creation
+   *                  description: id of page
    *                  type: string
-   *                workflowName:
-   *                  description: workflow name
+   *                name:
+   *                  description: Workflow name
    *                  type: string
-   *                workflowComment:
-   *                  description: workflow comment
+   *                comment:
+   *                  description: Workflow comment
    *                  type: string
-   *                workflowApproverGroups:
-   *                  descriotion: workflow Groups
+   *                approverGroups:
+   *                  descriotion: Workflow Approver Groups
    *                  type: array
    *                  items:
    *                    $ref: '#/components/schemas/workflowApproverGroup'
@@ -171,9 +177,9 @@ module.exports = (crowi: Crowi): Router => {
   router.post('/create', accessTokenParser, loginRequired, validator.createWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const {
       pageId,
-      workflowName,
-      workflowComment,
-      workflowApproverGroups,
+      name,
+      comment,
+      approverGroups,
     } = req.body;
     const { user } = req;
 
@@ -185,10 +191,10 @@ module.exports = (crowi: Crowi): Router => {
    * @swagger
    *
    *  paths:
-   *    /workflow/update:
+   *    /workflow/update-approver-groups:
    *      post:
    *        tags: [Workflow]
-   *        summary: Update Workflow
+   *        summary: Update WorkflowApproverGroup
    *
    *      requestBody:
    *        required: true
@@ -197,10 +203,10 @@ module.exports = (crowi: Crowi): Router => {
    *            schema:
    *              type: object
    *              properties:
-   *                workflowId:
-   *                  description: WorkflowId to be updated
+   *                id:
+   *                  description: id of workflow
    *                  type: string
-   *                workflowApproverGroups:
+   *                approverGroups:
    *                  descriotion: workflow workflowApproverGroups
    *                  type: array
    *                  items:
@@ -208,27 +214,23 @@ module.exports = (crowi: Crowi): Router => {
    *
    *      responses:
    *        200:
-   *          description: Workflow data
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/Workflow'
+   *          description: Succeeded to update WorkflowApproverGroup
    */
-  router.post('/update', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
-    const { workflowId, workflowApproverGroups } = req.body;
-
-    return res.apiv3();
-  });
+  router.post('/update-approver-groups', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
+    async(req: RequestWithUser, res: ApiV3Response) => {
+      const { id, approverGroups } = req.body;
+      return res.apiv3();
+    });
 
 
   /**
    * @swagger
    *
    *  paths:
-   *    /workflow/action:
+   *    /update-approver-status:
    *      post:
    *        tags: [Workflow]
-   *        summary: Update WorkflowApprover status
+   *        summary: Update WorkflowApproverStatus
    *
    *      requestBody:
    *        required: true
@@ -237,20 +239,20 @@ module.exports = (crowi: Crowi): Router => {
    *            schema:
    *              type: object
    *              properties:
-   *                workflowId:
+   *                id:
    *                  description: WorkflowId to be updated
    *                  type: string
-   *                workflowApproverStatus:
+   *                approverStatus:
    *                  description: WorkflowApprover status
    *                  type: string
    *
    *      responses:
    *        200:
-   *          description: Succeeded to update approver status
+   *          description: Succeeded to WorkflowApproverStatus
    */
-  router.post('/action', accessTokenParser, loginRequired, validator.updateWorkflowAction, apiV3FormValidator,
+  router.post('/update-approver-status', accessTokenParser, loginRequired, validator.updateWorkflowApproverStatus, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
-      const { workflowId, workflowApproverStatus } = req.body;
+      const { id, approverStatus } = req.body;
       const { user } = req;
 
       return res.apiv3();
@@ -259,7 +261,7 @@ module.exports = (crowi: Crowi): Router => {
 
   /**
   * @swagger
-  *
+  *  paths
   *    /{id}:
   *      delete:
   *        tags: [Workflow]
