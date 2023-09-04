@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { GroupType, type GrantedGroup } from '@growi/core';
+import { GroupType, type IGrantedGroup } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
@@ -101,7 +101,7 @@ describe('PageService page operations with non-public pages', () => {
   };
 
   // normalize for result comparison
-  const normalizeGrantedGroups = (grantedGroups: GrantedGroup[]) => {
+  const normalizeGrantedGroups = (grantedGroups: IGrantedGroup[]) => {
     return grantedGroups.map((group) => {
       const itemId = typeof group.item === 'string' ? group.item : group.item._id;
       return { item: itemId, type: group.type };

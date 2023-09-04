@@ -1,4 +1,4 @@
-import type { IUser, GrantedGroup } from '@growi/core';
+import type { IUser, IGrantedGroup } from '@growi/core';
 import { Model } from 'mongoose';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -114,7 +114,7 @@ class UserGroupService {
   }
 
   async removeCompletelyByRootGroupId(
-      deleteRootGroupId, action, user, transferToUserGroup?: GrantedGroup,
+      deleteRootGroupId, action, user, transferToUserGroup?: IGrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
       userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
   ) {

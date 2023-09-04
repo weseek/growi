@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
-import type { GroupType, GrantedGroup } from '@growi/core';
+import type { GroupType, IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -85,7 +85,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
   }, [onUpdateGrant, showSelectGroupModal]);
 
-  const groupListItemClickHandler = useCallback((grantGroup: GrantedGroup) => {
+  const groupListItemClickHandler = useCallback((grantGroup: IGrantedGroup) => {
     if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
       onUpdateGrant({ grant: 5, grantedGroups: [{ id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type }] });
     }

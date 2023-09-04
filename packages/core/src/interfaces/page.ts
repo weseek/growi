@@ -10,7 +10,7 @@ import type {
 export const GroupType = { userGroup: 'UserGroup', externalUserGroup: 'ExternalUserGroup' } as const;
 export type GroupType = typeof GroupType[keyof typeof GroupType];
 
-export type GrantedGroup = {
+export type IGrantedGroup = {
   type: GroupType,
   item: Ref<IUserGroup>,
 }
@@ -29,7 +29,7 @@ export type IPage = {
   isEmpty: boolean,
   grant: PageGrant,
   grantedUsers: Ref<IUser>[],
-  grantedGroups: GrantedGroup[],
+  grantedGroups: IGrantedGroup[],
   lastUpdateUser: Ref<IUser>,
   liker: Ref<IUser>[],
   commentCount: number
