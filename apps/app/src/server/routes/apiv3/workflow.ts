@@ -200,7 +200,7 @@ module.exports = (crowi: Crowi): Router => {
    *    /workflow/update-approver-groups:
    *      post:
    *        tags: [Workflow]
-   *        summary: Update WorkflowApproverGroup
+   *        summary: Update WorkflowApproverGroups
    *
    *      requestBody:
    *        required: true
@@ -229,7 +229,7 @@ module.exports = (crowi: Crowi): Router => {
    *        200:
    *          description: Succeeded to update WorkflowApproverGroup
    */
-  router.post('/update-approver-group', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
+  router.post('/update-approver-groups', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const {
         id, isNew, approverGroup, approverGroupOffset,
