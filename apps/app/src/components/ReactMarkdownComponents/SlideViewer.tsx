@@ -6,7 +6,7 @@ import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import { usePresentationViewOptions } from '~/stores/slide-viewer-renderer';
 
 
-const Slides = dynamic(() => import('@growi/presentation').then(mod => mod.Slides), { ssr: false });
+const Slides = dynamic(() => import('../Presentation/Slides').then(mod => mod.Slides), { ssr: false });
 
 type SlideViewerProps = {
   marp: string | undefined,

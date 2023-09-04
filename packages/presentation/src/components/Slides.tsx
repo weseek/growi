@@ -6,14 +6,14 @@ import { MarpSlides } from './MarpSlides';
 
 import styles from './Slides.module.scss';
 
-type Props = {
+export type SlidesProps = {
   options: PresentationOptions,
   children?: string,
   hasMarpFlag?: boolean,
   presentation?: boolean,
 }
 
-export const Slides = (props: Props): JSX.Element => {
+export const Slides = (props: SlidesProps): JSX.Element => {
   const {
     options, children, hasMarpFlag, presentation,
   } = props;
