@@ -134,8 +134,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
-    toastSuccess(t('toaster.file_upload_succeeded'));
-
     // abort if length is not 1
     if (items.length < 1) {
       return;

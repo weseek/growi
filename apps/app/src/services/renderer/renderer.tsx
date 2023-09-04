@@ -6,6 +6,7 @@ import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-s
 import slug from 'rehype-slug';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
+import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 import toc from 'remark-toc';
@@ -99,6 +100,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       emoji,
       pukiwikiLikeLinker,
       growiDirective,
+      remarkFrontmatter,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
