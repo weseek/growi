@@ -130,17 +130,15 @@
   //   }
 
 
-  // TODO: Use .custom-card instead of .well
-  // https://redmine.weseek.co.jp/issues/128307
   //   /*
   //   * Card
   //   */
-  //   .card:not([class*='bg-']):not(.well):not(.card-disabled) {
+  //   .card:not([class*='bg-']):not(.custom-card):not(.card-disabled) {
   //     @extend .bg-dark;
   //   }
 
-  //   [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
-  //   .card.well {
+  //   [TODO] GW-3219 modify common color of custom-card in dark theme, then remove below css.
+  //   .card.custom-card {
   //     border-color: var(--secondary);
   //   }
 
