@@ -39,7 +39,7 @@ export type IWorkflowApprover = {
 export type IWorkflowApproverGroup = {
   approvalType: WorkflowApprovalType
   approvers: IWorkflowApprover[],
-  isApproved: boolean, // vietual
+  isApproved: boolean, // virtual
 };
 
 export type IWorkflow = {
