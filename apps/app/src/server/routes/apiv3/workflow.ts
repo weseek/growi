@@ -98,6 +98,9 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/:id', accessTokenParser, loginRequired, validator.getWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { id } = req.params;
 
+    // Description
+    // id に紐つく workflow を取得する
+
     return res.apiv3();
   });
 
@@ -132,6 +135,9 @@ module.exports = (crowi: Crowi): Router => {
    */
   router.get('/list/:pageId', accessTokenParser, loginRequired, validator.getWorkflows, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
+
+    // Description
+    // ページ内に存在する workflow を配列で取得する
 
     return res.apiv3();
   });
@@ -189,6 +195,14 @@ module.exports = (crowi: Crowi): Router => {
     } = req.body;
     const { user } = req;
 
+    // Description
+    // workflow の作成
+
+    // Memo
+    // ページ内に進行中の workflow が存在する場合は新規に作成することはできない
+    // 1つの workflow に対して同一の approver は存在できない (workflow-a に対して user-a は1つのみ存在できる)
+    // workflow 作成者は approver にはなれない
+
     return res.apiv3();
   });
 
@@ -235,6 +249,13 @@ module.exports = (crowi: Crowi): Router => {
         id, isNew, approverGroup, approverGroupOffset,
       } = req.body;
 
+      // Descirption
+      // approverGroup の作成 or 更新
+
+      // Memo
+      // workflow 自体が承認済みの場合は作成と更新はできない
+      // 承認済みの approverGroup 以前に作成と更新はできない
+
       return res.apiv3();
     });
 
@@ -273,6 +294,14 @@ module.exports = (crowi: Crowi): Router => {
       const { id, approverStatus } = req.body;
       const { user } = req;
 
+      // Descirption
+      // approver の status の更新
+
+      // Memo
+      // 進行中の workflow 内の approver の status を更新することができる
+      // 所属している approverGroup 以降に承認済みの approverGroup が存在する場合は apprver の status は更新できない
+
+
       return res.apiv3();
     });
 
@@ -298,6 +327,12 @@ module.exports = (crowi: Crowi): Router => {
   */
   router.delete('/:id', accessTokenParser, loginRequired, validator.deleteWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { id } = req.params;
+
+    // Description
+    // workflow の削除
+
+    // Memo
+    // ワークフロー作成者 or 管理者権限を持つ user が削除できる
 
     return res.apiv3();
   });
