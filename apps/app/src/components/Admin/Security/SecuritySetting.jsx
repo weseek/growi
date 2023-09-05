@@ -470,7 +470,7 @@ class SecuritySetting extends React.Component {
             </div>
             <p
               className="form-text text-muted small"
-              dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.when_deleting_a_user_the_user_homepage_is_also_deleted') }}
+              dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.desc') }}
             />
           </div>
         </div>

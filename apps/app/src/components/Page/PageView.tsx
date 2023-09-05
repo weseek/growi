@@ -17,7 +17,7 @@ import { useIsMobile } from '~/stores/ui';
 
 
 import type { CommentsProps } from '../Comments';
-import { MainPane } from '../Layout/MainPane';
+import { PageViewLayout } from '../Layout/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
@@ -140,7 +140,7 @@ export const PageView = (props: Props): JSX.Element => {
   };
 
   return (
-    <MainPane
+    <PageViewLayout
       sideContents={sideContents}
       footerContents={footerContents}
     >
@@ -156,6 +156,6 @@ export const PageView = (props: Props): JSX.Element => {
         </>
       )}
 
-    </MainPane>
+    </PageViewLayout>
   );
 };
