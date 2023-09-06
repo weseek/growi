@@ -40,7 +40,7 @@
     "express": "^4.16.1",
     "http-errors": "^2.0.0",
     "mongoose": "^6.11.3",
-    "swr": "^2.0.3"
+    "swr": "^2.2.2"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",

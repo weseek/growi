@@ -1,6 +1,7 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { useStaticSWR } from '~/stores/use-static-swr';
 
 import type { IGrowiPluginHasId } from '../../interfaces';
 
@@ -21,4 +22,50 @@ export const useSWRxAdminPlugins = (): SWRResponse<Plugins, Error> => {
       }
     },
   );
+};
+
+/*
+ * PluginDeleteModal
+ */
+type PluginDeleteModalStatus = {
+  isOpen: boolean,
+  id: string,
+  name: string,
+  url: string,
+}
+
+type PluginDeleteModalUtils = {
+  open(plugin: IGrowiPluginHasId): Promise<void>,
+  close(): Promise<void>,
+}
+
+export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
+  const initialStatus: PluginDeleteModalStatus = {
+    isOpen: false,
+    id: '',
+    name: '',
+    url: '',
+  };
+
+  const swrResponse = useStaticSWR<PluginDeleteModalStatus, Error>('pluginDeleteModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
+
+  const open = async(plugin) => {
+    mutate({
+      isOpen: true,
+      id: plugin._id,
+      name: plugin.meta.name,
+      url: plugin.origin.url,
+    });
+  };
+
+  const close = async() => {
+    mutate(initialStatus);
+  };
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
 };

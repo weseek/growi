@@ -280,7 +280,7 @@ class SecuritySetting extends React.Component {
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
-                      <p className="card well">
+                      <p className="card custom-card">
                         <span className="text-warning">
                           <i className="icon-info"></i>
                           {/* eslint-disable-next-line react/no-danger */}
@@ -470,7 +470,7 @@ class SecuritySetting extends React.Component {
             </div>
             <p
               className="form-text text-muted small"
-              dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.when_deleting_a_user_the_user_homepage_is_also_deleted') }}
+              dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.desc') }}
             />
           </div>
         </div>
@@ -490,7 +490,7 @@ class SecuritySetting extends React.Component {
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
-            <p className="card well">
+            <p className="card custom-card">
               <span className="text-warning">
                 <i className="icon-info"></i> {t('security_settings.max_age_caution')}
               </span>

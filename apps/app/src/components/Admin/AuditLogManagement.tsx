@@ -172,28 +172,36 @@ export const AuditLogManagement: FC = () => {
         <AuditLogSettings />
       ) : (
         <>
-          <div className="mb-3">
-            <SearchUsernameTypeahead
-              ref={typeaheadRef}
-              onChange={setUsernamesHandler}
-            />
+          <div className="row row-cols-lg-auto mb-3 g-3">
+            <div className="col-12">
+              <SearchUsernameTypeahead
+                ref={typeaheadRef}
+                onChange={setUsernamesHandler}
+              />
+            </div>
 
-            <DateRangePicker
-              startDate={startDate}
-              endDate={endDate}
-              onChange={datePickerChangedHandler}
-            />
+            <div className="col-12">
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onChange={datePickerChangedHandler}
+              />
+            </div>
 
-            <SelectActionDropdown
-              actionMap={actionMap}
-              availableActions={auditLogAvailableActionsData || []}
-              onChangeAction={actionCheckboxChangedHandler}
-              onChangeMultipleAction={multipleActionCheckboxChangedHandler}
-            />
+            <div className="col-12">
+              <SelectActionDropdown
+                actionMap={actionMap}
+                availableActions={auditLogAvailableActionsData || []}
+                onChangeAction={actionCheckboxChangedHandler}
+                onChangeMultipleAction={multipleActionCheckboxChangedHandler}
+              />
+            </div>
 
-            <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
-              {t('admin:audit_log_management.clear')}
-            </button>
+            <div className="col-12">
+              <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
+                {t('admin:audit_log_management.clear')}
+              </button>
+            </div>
           </div>
 
           <p

@@ -1,4 +1,4 @@
-div.marpit > div.slides > section :is(pre, marp-pre) {
+div.slides.marpit > section :is(pre, marp-pre) {
   padding: 0;
   border: none;
 }
