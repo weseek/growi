@@ -1,5 +1,5 @@
 .slides-styles :global {
-  // Reset _wiki.scss, vendor.scss, etc... in <div class=slides marpit>.
+  // Reset _wiki.scss, vendor.scss and other css in <div class=slides marpit>.
   // This ensures that Marp is rendered currently.
   .slides {
     *, *:before, *::after {
