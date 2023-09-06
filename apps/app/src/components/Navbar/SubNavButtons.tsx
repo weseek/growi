@@ -90,6 +90,7 @@ type CommonProps = {
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
   onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
+  onClickWorkflowMenuItem?: () => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -106,7 +107,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth, onClickWorkflowMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -205,8 +206,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const workflowMenuItemClickHandler = useCallback(async() => {
-    console.log('clicked!');
-  }, []);
+    if (onClickWorkflowMenuItem == null) {
+      return;
+    }
+
+    onClickWorkflowMenuItem();
+  }, [onClickWorkflowMenuItem]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
