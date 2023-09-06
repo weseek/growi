@@ -10,20 +10,19 @@ export type SlidesProps = {
   options: PresentationOptions,
   children?: string,
   hasMarpFlag?: boolean,
-  presentation?: boolean,
 }
 
 export const Slides = (props: SlidesProps): JSX.Element => {
   const {
-    options, children, hasMarpFlag, presentation,
+    options, children, hasMarpFlag,
   } = props;
 
   return (
     <div className={`${styles['slides-styles']}`}>
       {
         hasMarpFlag
-          ? <MarpSlides presentation={presentation}>{children}</MarpSlides>
-          : <GrowiSlides options={options} presentation={presentation}>{children}</GrowiSlides>
+          ? <MarpSlides>{children}</MarpSlides>
+          : <GrowiSlides options={options}>{children}</GrowiSlides>
       }
     </div>
   );

@@ -1,4 +1,4 @@
-import { Marp, MarpOptions } from '@marp-team/marp-core';
+import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
 
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
@@ -36,26 +36,17 @@ const lineNumber = (md) => {
   });
 };
 
-const marpitOption: MarpOptions = {
-  container: [
-    new Element('div', { class: `slides ${MARP_CONTAINER_CLASS_NAME}` }),
-  ],
-  inlineSVG: true,
-  emoji: undefined,
-  html: false,
-  math: false,
-};
-
-const slideMarpitOption = marpitOption;
-slideMarpitOption.slideContainer = (
-  [new Element('section', { class: 'shadow rounded m-2' })]
-);
-
-export const slideMarpit = new Marp(slideMarpitOption).use(lineNumber);
-
-const presentationMarpitOption = marpitOption;
-presentationMarpitOption.slideContainer = (
-  [new Element('section', { class: 'm-2' })]
-);
-
-export const presentationMarpit = new Marp(presentationMarpitOption);
+export const marpit = new Marp(
+  {
+    container: [
+      new Element('div', { class: `slides ${MARP_CONTAINER_CLASS_NAME}` }),
+    ],
+    slideContainer: [
+      new Element('section', { class: 'shadow rounded m-2' }),
+    ],
+    inlineSVG: true,
+    emoji: undefined,
+    html: false,
+    math: false,
+  },
+).use(lineNumber);
