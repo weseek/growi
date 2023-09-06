@@ -25,9 +25,9 @@
     }
 
   }
-}
 
-div.slides.marpit > section :is(pre, marp-pre) {
-  padding: 0;
-  border: none;
+  section {
+    padding: 0;
+    border: none;
+  }
 }
