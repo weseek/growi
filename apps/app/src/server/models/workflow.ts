@@ -91,7 +91,6 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
   },
   comment: {
     type: Schema.Types.String,
-    required: true,
   },
   status: {
     type: Schema.Types.String,
