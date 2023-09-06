@@ -1,13 +1,4 @@
-:root[data-theme='light'] {
-  .reveal-viewport {
-    // adjust marp default theme
-    background-color: #fff;
-  }
-}
-
-:root[data-theme='dark'] {
-  .reveal-viewport {
-    // adjust marp default theme
-    background-color: #0d1117;
-  }
+.reveal-viewport {
+  // adjust marp default theme
+  background-color: #000;
 }
