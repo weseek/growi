@@ -37,7 +37,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
       <div className="row">
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.function')}</h2>
-          <Card className="card well my-3">
+          <Card className="card custom-card my-3">
             <CardBody className="px-0 py-2">
               {t('admin:customize_settings.function_desc')}
             </CardBody>
