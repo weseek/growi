@@ -830,6 +830,6 @@
   "approval_workflow": {
     "approval_workflow": "Approval Workflow",
     "list": "Workflow List",
-    "create": "Create Workflow"
+    "create": "Create new workflow"
   }
 }

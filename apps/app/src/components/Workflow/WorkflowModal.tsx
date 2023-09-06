@@ -1,30 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal } from 'reactstrap';
 
 import { useWorkflowModal } from '~/stores/modal';
 
+import { CreateWorkflowPage } from './CreateWorkflowPage';
+import { WorkflowListPage } from './WorkflowListPage';
+
+
+export const PageType = {
+  list: 'LIST',
+  create: 'CREATE',
+} as const;
+
+type PageType = typeof PageType[keyof typeof PageType];
+
 
 const WorkflowModal = (): JSX.Element => {
-  const { t } = useTranslation();
+  const [pageType, setPageType] = useState<PageType>(PageType.list);
+
   const { data: workflowModalData, close: closeWorkflowModal } = useWorkflowModal();
 
   return (
     <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
-      <ModalHeader className="bg-primary text-light">
-        {t('approval_workflow.list')}
-      </ModalHeader>
+      { pageType === PageType.list && (
+        <WorkflowListPage />
+      )}
 
-      <ModalBody>
-        Body
-      </ModalBody>
-
-      <ModalFooter>
-        Footer
-      </ModalFooter>
+      { pageType === PageType.create && (
+        <CreateWorkflowPage />
+      )}
     </Modal>
   );
 };
