@@ -6,7 +6,7 @@
   </p>
   <p align="center">
     <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
-    <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+    <a href="https://communityinviter.com/apps/wsgrowi/invite"></a>
   </p>
 
 <p align="center">
@@ -129,7 +129,7 @@ Issue と Pull requests の作成は英語・日本語どちらでも受け付�
 
 ## GROWI について話し合いましょう！
 
-質問や提案があれば、私たちの [Slack team](https://growi-slackin.weseek.co.jp/) にぜひご参加ください。
+質問や提案があれば、私たちの [Slack team](https://communityinviter.com/apps/wsgrowi/invite) にぜひご参加ください。
 いつでも、どこでも GROWI について議論しましょう！
 
 # ライセンス
