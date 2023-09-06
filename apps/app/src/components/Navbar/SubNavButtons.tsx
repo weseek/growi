@@ -61,6 +61,24 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   );
 };
 
+type CommunicationMenuItemsProps = {
+  onClickWokflowMenuItem: () => void,
+}
+
+const CommunicationMenuItems = (props: CommunicationMenuItemsProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const { onClickWokflowMenuItem } = props;
+
+  return (
+    // TODO: Add dropdown items for announcements and in-app notifications
+    <DropdownItem onClick={() => onClickWokflowMenuItem()}>
+      <i className="fa fa-fw icon-organization grw-page-control-dropdown-icon"></i>
+      { t('approval_workflow') }
+    </DropdownItem>
+  );
+};
+
 
 type CommonProps = {
   isCompactMode?: boolean,
@@ -186,16 +204,26 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
   }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
+  const workflowMenuItemClickHandler = useCallback(async() => {
+    console.log('clicked!');
+  }, []);
+
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
+    const TopMenuItemRenderer = (props: WideViewMenuItemProps & CommunicationMenuItemsProps) => {
 
-      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+      return (
+        <>
+          <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />
+          <DropdownItem divider />
+          <CommunicationMenuItems onClickWokflowMenuItem={workflowMenuItemClickHandler} />
+        </>
+      );
     };
-    return wideviewMenuItemRenderer;
-  }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
+    return TopMenuItemRenderer;
+  }, [pageInfo, switchContentWidthClickHandler, workflowMenuItemClickHandler, expandContentWidth]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;

@@ -160,6 +160,7 @@
   "not_allowed_to_see_this_page": "你不能看到这个页面",
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
+  "approval_workflow": "审批流程",
   "copied_to_clipboard": "它已复制到剪贴板。",
 	"form_validation": {
 		"error_message": "有些值不正确",

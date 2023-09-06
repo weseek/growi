@@ -154,6 +154,7 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
+  "approval_workflow": "Approval Workflow",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",

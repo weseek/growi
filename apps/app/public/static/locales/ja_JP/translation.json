@@ -155,6 +155,7 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
+  "approval_workflow": "ワークフロー",
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -859,5 +860,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "アタッチメントが見つかりません"
+  },
+  "workflow": {
+
   }
 }
