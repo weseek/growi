@@ -42,10 +42,8 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
 
-  let marp = false;
-  if (isEnabledMarp) {
-    [marp] = parseSlideFrontmatterInMarkdown(children);
-  }
+  const [marp] = parseSlideFrontmatterInMarkdown(children);
+  const hasMarpFlag = isEnabledMarp && marp;
 
   useEffect(() => {
     let deck: Reveal.Api;
@@ -66,7 +64,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
-      <Slides options={options} hasMarpFlag={marp} presentation>{children}</Slides>
+      <Slides options={options} hasMarpFlag={hasMarpFlag} presentation>{children}</Slides>
     </div>
   );
 };

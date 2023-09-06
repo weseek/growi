@@ -1076,6 +1076,6 @@
     "remove_plugin_success": "Succeeded to removing {{pluginName}}"
   },
   "forbidden_page": {
-    "do_not_have_admin_permission": "没有管理权限的用户无法访问管理屏幕。"
+    "do_not_have_admin_permission": "没有管理权限的用户无法访问管理屏幕"
   }
 }

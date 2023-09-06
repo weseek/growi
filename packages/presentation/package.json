@@ -38,6 +38,8 @@
     "hast-util-sanitize": "^4.1.0",
     "hast-util-select": "^5.0.5",
     "react-markdown": "^8.0.7",
+    "remark-frontmatter": "^4.0.1",
+    "remark-stringify": "^10.0.0",
     "unified": "^10.1.2",
     "unist-util-find-after": "^4.0.0",
     "unist-util-visit": "^4.0.0"
