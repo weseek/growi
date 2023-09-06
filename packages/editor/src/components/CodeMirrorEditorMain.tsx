@@ -37,19 +37,19 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       return;
     }
 
-    const extension = [keymap.of([{
-      key: 'Mod-s',
-      preventDefault: true,
-      run: () => {
-        const doc = codeMirrorEditor?.getDoc();
-        if (doc != null) {
-          onSave();
-        }
-        return true;
+    const extension = keymap.of([
+      {
+        key: 'Mod-s',
+        preventDefault: true,
+        run: () => {
+          const doc = codeMirrorEditor?.getDoc();
+          if (doc != null) {
+            onSave();
+          }
+          return true;
+        },
       },
-    },
-    ]),
-    ];
+    ]);
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
 
