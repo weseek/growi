@@ -98,6 +98,7 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
     enum: WorkflowStatuses,
     required: true,
   },
+  // TODO: https://redmine.weseek.co.jp/issues/130039
   approverGroups: [WorkflowApproverGroupSchema],
 });
 
