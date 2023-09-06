@@ -154,7 +154,6 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
-  "approval_workflow": "Approval Workflow",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
@@ -827,5 +826,10 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "The attachment could not be found"
+  },
+  "approval_workflow": {
+    "approval_workflow": "Approval Workflow",
+    "list": "Workflow List",
+    "create": "Create Workflow"
   }
 }
