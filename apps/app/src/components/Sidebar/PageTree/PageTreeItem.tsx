@@ -11,16 +11,18 @@ import { useDrag, useDrop } from 'react-dnd';
 import { DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
+import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta, IPageForItem,
 } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
+import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
@@ -183,6 +185,136 @@ const Ellipsis: FC<EllipsisProps> = (props) => {
   );
 };
 
+export const useNewPageInput = () => {
+
+  const [isNewPageInputShown, setNewPageInputShown] = useState(false);
+
+  const NewPageCreateButton = (props) => {
+    const {
+      page, isOpen: _isOpen = false, children, stateHandlers,
+    } = props;
+
+    const { setIsOpen } = stateHandlers;
+
+    const currentChildren = children;
+
+    // descendantCount
+    const { getDescCount } = usePageTreeDescCountMap();
+    const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+    const isChildrenLoaded = currentChildren?.length > 0;
+    const hasDescendants = descendantCount > 0 || isChildrenLoaded;
+
+    const onClickPlusButton = useCallback(() => {
+      setNewPageInputShown(true);
+      // openNewPageInput();
+
+      if (hasDescendants) {
+        setIsOpen(true);
+      }
+    }, [hasDescendants]);
+
+    return (
+      <>
+        {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+          <NotAvailableForGuest>
+            <NotAvailableForReadOnlyUser>
+              <button
+                id='page-create-button-in-page-tree'
+                type="button"
+                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                onClick={onClickPlusButton}
+              >
+                <i className="icon-plus d-block p-0" />
+              </button>
+            </NotAvailableForReadOnlyUser>
+          </NotAvailableForGuest>
+        )}
+      </>
+    );
+  };
+
+  const NewPageInput = (props) => {
+    const { t } = useTranslation();
+
+    const {
+      page, isOpen: _isOpen = false, isEnableActions, children, stateHandlers,
+    } = props;
+
+    const { isOpen, setIsOpen, setCreating } = stateHandlers;
+
+    const currentChildren = children;
+
+    const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+
+    const { getDescCount } = usePageTreeDescCountMap();
+    const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+    const isChildrenLoaded = currentChildren?.length > 0;
+    const hasDescendants = descendantCount > 0 || isChildrenLoaded;
+
+    const onPressEnterForCreateHandler = async(inputText: string) => {
+      setNewPageInputShown(false);
+      // closeNewPageInput();
+      const parentPath = pathUtils.addTrailingSlash(page.path as string);
+      const newPagePath = nodePath.resolve(parentPath, inputText);
+      const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
+
+      if (!isCreatable) {
+        toastWarning(t('you_can_not_create_page_with_this_name'));
+        return;
+      }
+
+      try {
+        setCreating(true);
+
+        await apiv3Post('/pages/', {
+          path: newPagePath,
+          body: undefined,
+          grant: page.grant,
+          grantUserGroupId: page.grantedGroup,
+        });
+
+        mutateChildren();
+
+        if (!hasDescendants) {
+          setIsOpen(true);
+        }
+
+        toastSuccess(t('successfully_saved_the_page'));
+      }
+      catch (err) {
+        toastError(err);
+      }
+      finally {
+        setCreating(false);
+      }
+    };
+
+    return (
+      <>
+        {isEnableActions && isNewPageInputShown && (
+          <div className="flex-fill">
+            <NotDraggableForClosableTextInput>
+              <ClosableTextInput
+                placeholder={t('Input page name')}
+                onClickOutside={() => { setNewPageInputShown(false) }}
+                onPressEnter={onPressEnterForCreateHandler}
+                validationTarget={ValidationTarget.PAGE}
+              />
+            </NotDraggableForClosableTextInput>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  return {
+    NewPageInput,
+    NewPageCreateButton,
+  };
+};
+
 export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
     const pageTitle = nodePath.basename(droppedPagePath);
@@ -312,6 +444,8 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
 
   const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
+  const { NewPageInput, NewPageCreateButton } = useNewPageInput();
+
   return (
     <SimpleItem
       key={props.key}
@@ -326,7 +460,8 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
       itemRef={itemRef}
       itemClass={PageTreeItem}
       mainClassName={mainClassName}
-      customComponent={Ellipsis}
+      customComponent={[Ellipsis, NewPageCreateButton]}
+      customComponentUnderItem={[NewPageInput]}
     />
   );
 };

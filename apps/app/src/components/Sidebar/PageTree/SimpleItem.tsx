@@ -41,8 +41,8 @@ export type SimpleItemProps = {
   itemRef?
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
-  customComponent?: React.FunctionComponent<SimpleItemToolProps>
-  customComponentUnderItem?
+  customComponent?: Array<React.FunctionComponent<SimpleItemToolProps>>
+  customComponentUnderItem?: Array<React.FunctionComponent<SimpleItemToolProps>>
 };
 
 // Utility to mark target
@@ -151,10 +151,16 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+
+  const stateHandlers = {
+    isOpen,
+    setIsOpen,
+    isCreating,
+    setCreating,
+  };
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -172,51 +178,6 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
   const onClickLoadChildren = useCallback(async() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
-
-  const onClickPlusButton = useCallback(() => {
-    setNewPageInputShown(true);
-
-    if (hasDescendants) {
-      setIsOpen(true);
-    }
-  }, [hasDescendants]);
-
-  const onPressEnterForCreateHandler = async(inputText: string) => {
-    setNewPageInputShown(false);
-    const parentPath = pathUtils.addTrailingSlash(page.path as string);
-    const newPagePath = nodePath.resolve(parentPath, inputText);
-    const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
-
-    if (!isCreatable) {
-      toastWarning(t('you_can_not_create_page_with_this_name'));
-      return;
-    }
-
-    try {
-      setCreating(true);
-
-      await apiv3Post('/pages/', {
-        path: newPagePath,
-        body: undefined,
-        grant: page.grant,
-        grantUserGroupId: page.grantedGroup,
-      });
-
-      mutateChildren();
-
-      if (!hasDescendants) {
-        setIsOpen(true);
-      }
-
-      toastSuccess(t('successfully_saved_the_page'));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setCreating(false);
-    }
-  };
 
   // didMount
   useEffect(() => {
@@ -254,13 +215,12 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     onRenamed,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
+    stateHandlers,
   };
 
   const CustomComponent = props.customComponent;
 
-  const SimpleItemContent = CustomComponent ?? SimpleItemTool;
-
-  console.dir(SimpleItemContent);
+  const SimpleItemContent = CustomComponent ?? [SimpleItemTool];
 
   const SimpleItemContentProps = {
     itemNode,
@@ -271,9 +231,11 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     isEnableActions,
     isReadOnlyUser,
     children,
+    stateHandlers,
   };
 
   const CustomComponentUnderItem = props.customComponentUnderItem;
+
 
   return (
     <div
@@ -300,31 +262,14 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-
-        <SimpleItemContent {...SimpleItemContentProps}/>
-
-        {/* {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
-          <NotAvailableForGuest>
-            <NotAvailableForReadOnlyUser>
-              <button
-                id='page-create-button-in-page-tree'
-                type="button"
-                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-                onClick={onClickPlusButton}
-              >
-                <i className="icon-plus d-block p-0" />
-              </button>
-            </NotAvailableForReadOnlyUser>
-          </NotAvailableForGuest>
-        )} */}
+        {SimpleItemContent.map((ItemContent, index) => (
+          <ItemContent key={index} {...SimpleItemContentProps}/>
+        ))}
       </li>
 
-      <CustomComponentUnderItem
-        page={page}
-        isOpen
-        isEnableActions={isEnableActions}
-        itemNode={itemNode}
-      />
+      {CustomComponentUnderItem?.map((UnderItemContent, index) => (
+        <UnderItemContent key={index} {...SimpleItemContentProps}/>
+      ))}
 
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
