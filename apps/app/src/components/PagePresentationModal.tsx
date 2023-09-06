@@ -8,6 +8,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
+import { useIsEnabledMarp } from '~/stores/context';
 import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
@@ -34,6 +35,8 @@ const PagePresentationModal = (): JSX.Element => {
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePresentationViewOptions();
+
+  const { data: isEnabledMarp } = useIsEnabledMarp();
 
   const toggleFullscreenHandler = useCallback(() => {
     if (fullscreen.active) {
@@ -77,7 +80,7 @@ const PagePresentationModal = (): JSX.Element => {
         <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
-        { rendererOptions != null && (
+        { rendererOptions != null && isEnabledMarp != null && (
           <Presentation
             options={{
               rendererOptions: rendererOptions as ReactMarkdownOptions,
@@ -87,6 +90,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
+            isEnabledMarp={isEnabledMarp}
           >
             {markdown}
           </Presentation>

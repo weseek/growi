@@ -1,5 +1,5 @@
 import {
-  isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
+  isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths, getUsernameByPath,
 } from './index';
 
 describe.concurrent('isMovablePage test', () => {
@@ -117,4 +117,23 @@ describe.concurrent('isCreatablePage test', () => {
       expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
   });
+
+
+  describe.concurrent('Test getUsernameByPath', () => {
+    test.concurrent('found', () => {
+      const username = getUsernameByPath('/user/sotarok');
+      expect(username).toBe('sotarok');
+    });
+
+    test.concurrent('found with slash', () => {
+      const username = getUsernameByPath('/user/some.user.name12/');
+      expect(username).toBe('some.user.name12');
+    });
+
+    test.concurrent('not found', () => {
+      const username = getUsernameByPath('/the/page/is/not/related/to/user/page');
+      expect(username).toBeNull();
+    });
+  });
+
 });

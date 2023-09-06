@@ -53,9 +53,9 @@ export default class ElasticsearchClient {
   };
 
   cluster = {
-    health: (params: ES7RequestParams.ClusterHealth & estypes.ClusterHealthRequest)
+    health: ()
     : Promise<ES7ApiResponse<ClusterHealthResponse> | estypes.ClusterHealthResponse> =>
-      this.client instanceof ES7Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
+      this.client instanceof ES7Client ? this.client.cluster.health() : this.client.cluster.health(),
   };
 
   indices = {
@@ -71,9 +71,11 @@ export default class ElasticsearchClient {
     : Promise<IndicesExistsResponse | estypes.IndicesExistsResponse> =>
       this.client instanceof ES7Client ? (await this.client.indices.exists(params)).body as IndicesExistsResponse : this.client.indices.exists(params),
 
-    existsAlias: (params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
-    : Promise<ES7ApiResponse<IndicesExistsAliasResponse> | estypes.IndicesExistsAliasResponse> =>
-      this.client instanceof ES7Client ? this.client.indices.existsAlias(params) : this.client.indices.existsAlias(params),
+    existsAlias: async(params: ES7RequestParams.IndicesExistsAlias & estypes.IndicesExistsAliasRequest)
+    : Promise<IndicesExistsAliasResponse | estypes.IndicesExistsAliasResponse> =>
+      this.client instanceof ES7Client
+        ? (await this.client.indices.existsAlias(params)).body as IndicesExistsAliasResponse
+        : this.client.indices.existsAlias(params),
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     putAlias: (params: ES7RequestParams.IndicesPutAlias & estypes.IndicesPutAliasRequest) =>
@@ -107,8 +109,10 @@ export default class ElasticsearchClient {
     return this.client instanceof ES7Client ? this.client.ping() : this.client.ping();
   }
 
-  reindex(params: ES7RequestParams.Reindex & estypes.ReindexRequest): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
-    return this.client instanceof ES7Client ? this.client.reindex(params) : this.client.reindex(params);
+  reindex(indexName: string, tmpIndexName: string): Promise<ES7ApiResponse<ReindexResponse> | estypes.ReindexResponse> {
+    return this.client instanceof ES7Client
+      ? this.client.reindex({ wait_for_completion: false, body: { source: { index: indexName }, dest: { index: tmpIndexName } } })
+      : this.client.reindex({ wait_for_completion: false, source: { index: indexName }, dest: { index: tmpIndexName } });
   }
 
   async search(params: ES7RequestParams.Search & estypes.SearchRequest): Promise<SearchResponse | estypes.SearchResponse> {
