@@ -617,7 +617,9 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const fileName = path.basename(pagePath);
+    const fileName = path.basename(pagePath)
+      .replace(/[\\/:;"*?<>,」ˆ|]/g, '_')
+      .replace(/.$/, '_');
     let stream;
 
     try {
@@ -629,7 +631,7 @@ module.exports = (crowi) => {
     }
 
     res.set({
-      'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(fileName.replace(/[\\/:;"*?<>,」ˆ|]/g, '_'))}.${format}`,
+      'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(fileName)}.${format}`,
     });
 
     const parameters = {
