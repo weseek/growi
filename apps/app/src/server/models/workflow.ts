@@ -36,6 +36,8 @@ const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowAppr
     default: WorkflowApproverStatus.NONE,
     required: true,
   },
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
 
 
@@ -50,6 +52,8 @@ const WorkflowApproverGroupSchema = new Schema<WorkflowApproverGroupDocument, Wo
     required: true,
   },
   approvers: [WorkflowApproverSchema],
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
 
 const getApproverStatuses = (approvers: IWorkflowApprover[]) => {
@@ -57,6 +61,10 @@ const getApproverStatuses = (approvers: IWorkflowApprover[]) => {
 };
 
 WorkflowApproverGroupSchema.virtual('isApproved').get(function() {
+  if (this.approvers.length === 0) {
+    return false;
+  }
+
   if (this.approvalType === WorkflowApprovalType.AND) {
     const statuses = getApproverStatuses(this.approvers);
     return statuses.every(status => status === WorkflowApproverStatus.APPROVE);
@@ -99,6 +107,8 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
   },
   // TODO: https://redmine.weseek.co.jp/issues/130039
   approverGroups: [WorkflowApproverGroupSchema],
+}, {
+  timestamps: { createdAt: true, updatedAt: true },
 });
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);
