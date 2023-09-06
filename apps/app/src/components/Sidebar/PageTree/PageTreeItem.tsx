@@ -191,7 +191,7 @@ export const useNewPageInput = () => {
 
   const NewPageCreateButton = (props) => {
     const {
-      page, isOpen: _isOpen = false, children, stateHandlers,
+      page, children, stateHandlers,
     } = props;
 
     const { setIsOpen } = stateHandlers;
@@ -207,12 +207,11 @@ export const useNewPageInput = () => {
 
     const onClickPlusButton = useCallback(() => {
       setNewPageInputShown(true);
-      // openNewPageInput();
 
       if (hasDescendants) {
         setIsOpen(true);
       }
-    }, [hasDescendants]);
+    }, [hasDescendants, setIsOpen]);
 
     return (
       <>
@@ -238,14 +237,14 @@ export const useNewPageInput = () => {
     const { t } = useTranslation();
 
     const {
-      page, isOpen: _isOpen = false, isEnableActions, children, stateHandlers,
+      page, isEnableActions, children, stateHandlers,
     } = props;
 
     const { isOpen, setIsOpen, setCreating } = stateHandlers;
 
     const currentChildren = children;
 
-    const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+    const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
     const { getDescCount } = usePageTreeDescCountMap();
     const descendantCount = getDescCount(page._id) || page.descendantCount || 0;

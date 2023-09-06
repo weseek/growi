@@ -5,25 +5,19 @@ import React, {
 import nodePath from 'path';
 
 import {
-  pathUtils, pagePathUtils, Nullable,
+  pathUtils, Nullable,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { ValidationTarget } from '~/client/util/input-validator';
-import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
-import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import { IPageToDeleteWithMeta, IPageForItem } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import ClosableTextInput from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
 
 import { ItemNode } from './ItemNode';
@@ -139,8 +133,6 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
 };
 
 const SimpleItem: FC<SimpleItemProps> = (props) => {
-  const { t } = useTranslation();
-
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
@@ -153,7 +145,7 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isCreating, setCreating] = useState(false);
 
-  const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const stateHandlers = {
     isOpen,
