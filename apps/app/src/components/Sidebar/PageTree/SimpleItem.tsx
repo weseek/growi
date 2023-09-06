@@ -87,7 +87,7 @@ export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.
 };
 
 type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem, children};
+export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
 
 export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   const { t } = useTranslation();
@@ -260,6 +260,8 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const SimpleItemContent = CustomComponent ?? SimpleItemTool;
 
+  console.dir(SimpleItemContent);
+
   const SimpleItemContentProps = {
     itemNode,
     page,
@@ -317,25 +319,12 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
         )} */}
       </li>
 
-      {/* {isEnableActions && isNewPageInputShown && (
-        <div className="flex-fill">
-          <NotDraggableForClosableTextInput>
-            <ClosableTextInput
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setNewPageInputShown(false) }}
-              onPressEnter={onPressEnterForCreateHandler}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </NotDraggableForClosableTextInput>
-        </div>
-      )} */}
-
-      {/* <CustomComponentUnderItem
+      <CustomComponentUnderItem
         page={page}
         isOpen
         isEnableActions={isEnableActions}
         itemNode={itemNode}
-      /> */}
+      />
 
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
