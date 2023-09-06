@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
-import { indentUnit } from '@codemirror/language';
-import { Compartment, type Extension } from '@codemirror/state';
+import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
@@ -13,7 +12,6 @@ import { CodeMirrorEditor } from '.';
 const additionalExtensions: Extension[] = [
   scrollPastEnd(),
 ];
-
 
 type Props = {
   onChange?: (value: string) => void,
@@ -58,29 +56,11 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-  // Change indentUnit size
-  useEffect(() => {
-    if (indentSize == null) {
-      return;
-    }
-
-    const extension = indentUnit.of(' '.repeat(indentSize));
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-
-    return cleanupFunction;
-    // const compartment = new Compartment();
-    // codeMirrorEditor?.view?.dispatch({
-    //   effects: compartment.reconfigure(indentUnit.of(' '.repeat(indentSize))),
-    // });
-
-
-  }, [codeMirrorEditor, indentSize]);
-
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
+      indentSize={indentSize}
     />
   );
 };

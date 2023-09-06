@@ -520,6 +520,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   useEffect(() => {
     // do nothing if the indent size fixed
     if (isIndentSizeForced == null || isIndentSizeForced) {
+      mutateCurrentIndentSize(undefined);
       return;
     }
 
