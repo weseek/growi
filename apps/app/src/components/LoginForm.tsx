@@ -518,7 +518,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {/* Sign up button (submit) */}
           <div className="input-group justify-content-center my-4">
             <button
-              type="button"
+              type="submit"
               className="btn btn-fill rounded-0"
               id="register"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}

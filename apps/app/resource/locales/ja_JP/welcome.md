@@ -19,7 +19,7 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
 - 書けたら "**更新**" ボタンを押してページを公開しましょう
     - `Ctrl(⌘) + S` でも保存できます
 
-さらに詳しくはこちら: [チュートリアル#新規ページ作成](https://docs.growi.org/ja/guide/tutorial/create_page.html#新規ページ作成)
+さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
 
 <div class="mt-4 card border-primary">
   <div class="card-header bg-primary text-light">Tips</div>

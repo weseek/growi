@@ -20,7 +20,7 @@ Let's increase the information exchange everyday.
 - Once we finished, press the "**Update**" button to publish the page.
     - We can also save it by `Ctrl(⌘) + S`.
 
-For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
+For more information: [Create page](https://docs.growi.org/en/guide/features/create_page.html)
 
 <div class="mt-4 card border-primary">
   <div class="card-header bg-primary text-light">
