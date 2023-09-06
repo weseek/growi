@@ -40,8 +40,6 @@ const marpitOption: MarpOptions = {
   container: [
     new Element('div', { class: `slides ${MARP_CONTAINER_CLASS_NAME}` }),
   ],
-  slideContainer: [
-  ],
   inlineSVG: true,
   emoji: undefined,
   html: false,
