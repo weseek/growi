@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { Modal } from 'reactstrap';
 
@@ -8,7 +8,7 @@ import { CreateWorkflowPage } from './CreateWorkflowPage';
 import { WorkflowListPage } from './WorkflowListPage';
 
 
-export const PageType = {
+const PageType = {
   list: 'LIST',
   create: 'CREATE',
 } as const;
@@ -21,14 +21,32 @@ const WorkflowModal = (): JSX.Element => {
 
   const { data: workflowModalData, close: closeWorkflowModal } = useWorkflowModal();
 
+  /*
+  * for WorkflowListPage
+  */
+  const createWorkflowButtonClickHandler = useCallback(() => {
+    setPageType(PageType.create);
+  }, []);
+
+  /*
+  * for CreateWorkflowPage
+  */
+  const workflowListPageBackButtonClickHandler = useCallback(() => {
+    setPageType(PageType.list);
+  }, []);
+
   return (
     <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
       { pageType === PageType.list && (
-        <WorkflowListPage />
+        <WorkflowListPage
+          onClickCreateWorkflowButton={createWorkflowButtonClickHandler}
+        />
       )}
 
       { pageType === PageType.create && (
-        <CreateWorkflowPage />
+        <CreateWorkflowPage
+          onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
+        />
       )}
     </Modal>
   );

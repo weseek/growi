@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-export const WorkflowListPage = (): JSX.Element => {
+
+type Props = {
+  onClickCreateWorkflowButton: () => void;
+}
+
+
+export const WorkflowListPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+
+  const { onClickCreateWorkflowButton } = props;
+
+  const createWorkflowButtonClickHandler = useCallback(() => {
+    if (onClickCreateWorkflowButton == null) {
+      return;
+    }
+
+    onClickCreateWorkflowButton();
+  }, [onClickCreateWorkflowButton]);
 
   return (
     <>
@@ -17,7 +33,9 @@ export const WorkflowListPage = (): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        Footer
+        <button type="button" onClick={createWorkflowButtonClickHandler}>
+          {t('approval_workflow.create')}
+        </button>
       </ModalFooter>
     </>
   );

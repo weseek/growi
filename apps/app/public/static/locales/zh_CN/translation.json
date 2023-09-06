@@ -832,7 +832,9 @@
   },
   "approval_workflow": {
     "approval_workflow": "工作流程",
+    "back": "返回",
     "list": "工作流程列表",
-    "create": "创建新工作流程"
+    "create": "创建工作流程",
+    "create_new": "创建新工作流程"
   }
 }

@@ -829,7 +829,9 @@
   },
   "approval_workflow": {
     "approval_workflow": "Approval Workflow",
+    "back": "Back",
     "list": "Workflow List",
-    "create": "Create new workflow"
+    "create": "Create workflow",
+    "create_new": "Create new workflow"
   }
 }

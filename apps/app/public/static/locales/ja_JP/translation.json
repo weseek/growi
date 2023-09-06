@@ -862,7 +862,9 @@
   },
   "approval_workflow": {
     "approval_workflow": "ワークフロー",
+    "back": "戻る",
     "list": "ワークフロー一覧",
-    "create": "ワークフロー新規作成"
+    "create": "ワークフローを作成",
+    "create_new": "ワークフロー新規作成"
   }
 }
