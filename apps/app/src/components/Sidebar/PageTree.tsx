@@ -7,6 +7,7 @@ import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
+import { PageTreeItem } from './PageTree/PageTreeItem';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 import PageTreeContentSkeleton from './Skeleton/PageTreeContentSkeleton';
 
@@ -68,6 +69,7 @@ const PageTree: FC = memo(() => {
     <div className="px-3">
       <PageTreeHeader />
       <ItemsTree
+        CustomTreeItem={PageTreeItem}
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
         targetPath={path}
