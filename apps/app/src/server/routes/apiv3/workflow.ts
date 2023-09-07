@@ -14,6 +14,13 @@ const router = express.Router();
 type RequestWithUser = Request & { user?: IUserHasId }
 
 
+// for PUT:/workflow/{workflowId}:
+const actuonTypeForWorkflowApproverGroups = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+} as const;
+
 /**
  * @swagger
  *  tags:
@@ -44,29 +51,32 @@ module.exports = (crowi: Crowi): Router => {
 
   const validator = {
     getWorkflow: [
-      param('id').isMongoId().withMessage('id is required'),
+      param('workflowId').isMongoId().withMessage('workflowId is required'),
     ],
     getWorkflows: [
       param('pageId').isMongoId().withMessage('pageId is required'),
     ],
     createWorkflow: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('name').isString().withMessage('name is required'),
-      body('comment').isString().withMessage('comment is required'),
-      body('approverGroups').isArray().withMessage('approverGroups is required'),
+      body('name').optional().isString().withMessage('name must be string'),
+      body('comment').optional().isString().withMessage('comment must be string'),
+      body('approverGroups').optional().isArray().withMessage('approverGroups must be array'),
+      body('isDraft').optional().isBoolean().withMessage('isDraft must be boolean'),
     ],
     updateWorkflowApproverGroups: [
-      body('id').isMongoId().withMessage('id is required'),
+      body('workflowId').isMongoId().withMessage('workflowId is required'),
       body('isNew').optional().isBoolean().withMessage('isNew must be boolean'),
       body('approverGroup').isObject().withMessage('approverGroups is required'),
       body('approverGroupOffset').isInt().withMessage('approverGroupOffset is required'),
+      body('actionType').isString().withMessage('actionType is required'),
     ],
     updateWorkflowApproverStatus: [
-      body('id').isMongoId().withMessage('id is required'),
+      body('workflowId').isMongoId().withMessage('workflowId is required'),
       body('approverStatus').isString().withMessage('approverStatus is required'),
+      body('delegatedUserId').isString().withMessage('delegatedUserId must be string'),
     ],
     deleteWorkflow: [
-      param('id').isMongoId().withMessage('id is required'),
+      param('workflowId').isMongoId().withMessage('workflowId is required'),
     ],
   };
 
@@ -75,13 +85,13 @@ module.exports = (crowi: Crowi): Router => {
    * @swagger
    *
    *  paths:
-   *    /workflow/{id}:
+   *    /workflow/{workflowId}:
    *      get:
    *        tags: [Workflow]
    *        summary: Get workflow data
    *
    *        parameters:
-   *          - name: id
+   *          - name: workflowId
    *            in: path
    *            description: id of workflow
    *            type: string
@@ -95,11 +105,11 @@ module.exports = (crowi: Crowi): Router => {
    *                schema:
    *                  $ref: '#/components/schemas/Workflow'
    */
-  router.get('/:id', accessTokenParser, loginRequired, validator.getWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
-    const { id } = req.params;
+  router.get('/:workflowId', accessTokenParser, loginRequired, validator.getWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
+    const { workflowId } = req.params;
 
     // Description
-    // id に紐つく workflow を取得する
+    // workflowId に紐つく workflow を取得する
 
     return res.apiv3();
   });
@@ -147,7 +157,7 @@ module.exports = (crowi: Crowi): Router => {
    * @swagger
    *
    *  paths:
-   *    /workflow/create:
+   *    /workflow
    *      post:
    *        tags: [Workflow]
    *        summary: Create Workflow
@@ -166,11 +176,9 @@ module.exports = (crowi: Crowi): Router => {
    *                name:
    *                  description: Workflow name
    *                  type: string
-   *                  required: true
    *                comment:
    *                  description: Workflow comment
    *                  type: string
-   *                  required: true
    *                approverGroups:
    *                  descriotion: Workflow Approver Groups
    *                  type: array
@@ -186,12 +194,13 @@ module.exports = (crowi: Crowi): Router => {
    *              schema:
    *                $ref: '#/components/schemas/Workflow'
    */
-  router.post('/create', accessTokenParser, loginRequired, validator.createWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
+  router.post('/', accessTokenParser, loginRequired, validator.createWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const {
       pageId,
       name,
       comment,
       approverGroups,
+      isDraft,
     } = req.body;
     const { user } = req;
 
@@ -211,8 +220,8 @@ module.exports = (crowi: Crowi): Router => {
    * @swagger
    *
    *  paths:
-   *    /workflow/update-approver-groups:
-   *      post:
+   *    /workflow/{workflowId}:
+   *      put:
    *        tags: [Workflow]
    *        summary: Update WorkflowApproverGroups
    *
@@ -223,37 +232,41 @@ module.exports = (crowi: Crowi): Router => {
    *            schema:
    *              type: object
    *              properties:
-   *                id:
+   *                workflowId:
    *                  description: WorkflowId to be updated
    *                  type: string
    *                  required: true
-   *                isNew:
-   *                  description: Whether it's a new creation or not.
-   *                  type: boolean
    *                approverGroup:
    *                  descriotion: WorkflowApproverGroup
    *                  $ref: '#/components/schemas/workflowApproverGroup'
    *                  required: true
    *                approverGroupOffset:
-   *                  description: Position of Workflow.approverGroups (Array) when updating or creating
+   *                  description: Position to create, update, and delete approverGroups in Workflow.approverGroups
    *                  type: number
+   *                  required: true
+   *                actionType:
+   *                  description: Whether to create, update, or delete the approver group
+   *                  type: string
    *                  required: true
    *
    *      responses:
    *        200:
    *          description: Succeeded to update WorkflowApproverGroup
    */
-  router.post('/update-approver-groups', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
+  router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const {
-        id, isNew, approverGroup, approverGroupOffset,
+        workflowId, approverGroup, approverGroupOffset, actionType,
       } = req.body;
 
       // Descirption
-      // approverGroup の作成 or 更新
+      // approverGroup の作成 or 更新 or 削除
 
       // Memo
-      // workflow 自体が承認済みの場合は作成と更新はできない
+      // actionType は actuonTypeForWorkflowApproverGroups に対応する
+      // req.body.approverGroupOffset は workflow.approverGroups の配列のインデックス番号
+      // req.body.actionType ごとに処理を分ける
+      // workflow 自体が承認済みの場合は作成と更新と削除はできない
       // 承認済みの approverGroup 以前に作成と更新はできない
 
       return res.apiv3();
@@ -264,8 +277,8 @@ module.exports = (crowi: Crowi): Router => {
    * @swagger
    *
    *  paths:
-   *    /update-approver-status:
-   *      post:
+   *    /workflow/{workflowId}/status:
+   *      put:
    *        tags: [Workflow]
    *        summary: Update WorkflowApproverStatus
    *
@@ -276,7 +289,7 @@ module.exports = (crowi: Crowi): Router => {
    *            schema:
    *              type: object
    *              properties:
-   *                id:
+   *                workflowId:
    *                  description: WorkflowId to be updated
    *                  type: string
    *                  required: true
@@ -284,14 +297,17 @@ module.exports = (crowi: Crowi): Router => {
    *                  description: WorkflowApproverStatus
    *                  type: string
    *                  required: true
+   *                delegatedUserId:
+   *                  description: userId for delegation if req.body.approverStatus is 'DELEGATE'.
+   *                  type: string
    *
    *      responses:
    *        200:
    *          description: Succeeded to update WorkflowApproverStatus
    */
-  router.post('/update-approver-status', accessTokenParser, loginRequired, validator.updateWorkflowApproverStatus, apiV3FormValidator,
+  router.put('/:workflowId/status', accessTokenParser, loginRequired, validator.updateWorkflowApproverStatus, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
-      const { id, approverStatus } = req.body;
+      const { workflowId, approverStatus, delegatedUserId } = req.body;
       const { user } = req;
 
       // Descirption
@@ -299,8 +315,7 @@ module.exports = (crowi: Crowi): Router => {
 
       // Memo
       // 進行中の workflow 内の approver の status を更新することができる
-      // 所属している approverGroup 以降に承認済みの approverGroup が存在する場合は apprver の status は更新できない
-
+      // req.body.approverStatus が "DELEGATE" だった場合は req.body.delegatedUserId が必須となる
 
       return res.apiv3();
     });
@@ -309,33 +324,35 @@ module.exports = (crowi: Crowi): Router => {
   /**
   * @swagger
   *  paths
-  *    /workflow/{id}:
+  *    /workflow/{workflowId}:
   *      delete:
   *        tags: [Workflow]
   *        description: Delete one workflow
   *
   *        parameters:
-  *          - name: id
+  *          - name: workflowId
   *            in: path
   *            required: true
   *            description: ID of workflow
   *            schema:
   *              type: string
+  *
   *        responses:
   *          200:
   *            description: Succeeded to delete one workflow
   */
-  router.delete('/:id', accessTokenParser, loginRequired, validator.deleteWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
-    const { id } = req.params;
+  router.delete('/:workflowId', accessTokenParser, loginRequired, validator.deleteWorkflow, apiV3FormValidator,
+    async(req: RequestWithUser, res: ApiV3Response) => {
+      const { workflowId } = req.params;
 
-    // Description
-    // workflow の削除
+      // Description
+      // workflow の削除
 
-    // Memo
-    // ワークフロー作成者 or 管理者権限を持つ user が削除できる
+      // Memo
+      // ワークフロー作成者 or 管理者権限を持つ user が削除できる
 
-    return res.apiv3();
-  });
+      return res.apiv3();
+    });
 
   return router;
 };

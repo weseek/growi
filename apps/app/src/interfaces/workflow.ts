@@ -44,8 +44,8 @@ export type IWorkflowApproverGroup = {
 
 export type IWorkflow = {
   creator: IUserHasId,
-  name: string,
-  comment: string,
+  name?: string,
+  comment?: string,
   pageId: string,
   status: WorkflowStatus,
   approverGroups: IWorkflowApproverGroup[]
