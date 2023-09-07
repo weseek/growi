@@ -101,6 +101,8 @@ module.exports = (crowi, app) => {
 
   router.use('/forgot-password', require('./forgot-password')(crowi));
 
+  router.use('/workflow', require('./workflow')(crowi));
+
   const user = require('../user')(crowi, null);
   router.get('/check-username', user.api.checkUsername);
 
