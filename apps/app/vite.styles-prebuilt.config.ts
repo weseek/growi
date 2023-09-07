@@ -7,7 +7,6 @@ export default defineConfig({
     outDir: 'src/styles/prebuilt',
     rollupOptions: {
       input: [
-        '/src/styles/colors/colors.scss',
         '/src/styles/vendor.scss',
       ],
       output: {

@@ -21,7 +21,6 @@ import { registerTransformerForObjectId } from './utils/objectid-transformer';
 import '~/styles/prebuilt/vendor.css';
 import '~/styles/font-icons.scss';
 import '~/styles/style-app.scss';
-import '~/styles/prebuilt/colors.css';
 
 
 const isDev = process.env.NODE_ENV === 'development';
