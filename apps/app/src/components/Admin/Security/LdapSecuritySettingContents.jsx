@@ -177,7 +177,7 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
               <div className="col-md-6">
                 {(adminLdapSecurityContainer.state.isUserBind) ? (
-                  <p className="well card passport-ldap-userbind">
+                  <p className="card custom-card passport-ldap-userbind">
                     <small>
                       {t('security_settings.ldap.bind_DN_password_user_detail')}
                     </small>
@@ -185,7 +185,7 @@ class LdapSecuritySettingContents extends React.Component {
                 )
                   : (
                     <>
-                      <p className="well card passport-ldap-managerbind">
+                      <p className="card custom-card passport-ldap-managerbind">
                         <small>
                           {t('security_settings.ldap.bind_DN_password_manager_detail')}
                         </small>

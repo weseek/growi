@@ -1,6 +1,5 @@
 import Head from 'next/head';
 
-import './Slides.global.scss';
 import { presentationMarpit, slideMarpit } from '../services/growi-marpit';
 
 type Props = {

@@ -37,7 +37,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
       <div className="row">
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.function')}</h2>
-          <Card className="card well my-3">
+          <Card className="card custom-card my-3">
             <CardBody className="px-0 py-2">
               {t('admin:customize_settings.function_desc')}
             </CardBody>
@@ -152,7 +152,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                   </a>
                   <br></br>
                   <a
-                    href={`${t('admin:customize_settings.function_options.marp_in_gorwi_link')}`}
+                    href={`${t('admin:customize_settings.function_options.marp_in_growi_link')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >{`${t('admin:customize_settings.function_options.marp_in_growi')}`}

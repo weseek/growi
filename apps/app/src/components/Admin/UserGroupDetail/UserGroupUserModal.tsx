@@ -48,7 +48,7 @@ const UserGroupUserModal = (props: Props): JSX.Element => {
         {t('admin:user_group_management.add_modal.add_user') }
       </ModalHeader>
       <ModalBody>
-        <p className="card well">{t('admin:user_group_management.add_modal.description')}</p>
+        <p className="card custom-card">{t('admin:user_group_management.add_modal.description')}</p>
         <div className="p-3">
           <UserGroupUserFormByInput
             userGroup={userGroup}

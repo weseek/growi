@@ -4,23 +4,27 @@ import type { PresentationOptions } from '../consts';
 import { GrowiSlides } from './GrowiSlides';
 import { MarpSlides } from './MarpSlides';
 
-import './Slides.global.scss';
+import styles from './Slides.module.scss';
 
-type Props = {
+export type SlidesProps = {
   options: PresentationOptions,
   children?: string,
   hasMarpFlag?: boolean,
   presentation?: boolean,
 }
 
-export const Slides = (props: Props): JSX.Element => {
+export const Slides = (props: SlidesProps): JSX.Element => {
   const {
     options, children, hasMarpFlag, presentation,
   } = props;
 
   return (
-    hasMarpFlag
-      ? <MarpSlides presentation={presentation}>{children}</MarpSlides>
-      : <GrowiSlides options={options} presentation={presentation}>{children}</GrowiSlides>
+    <div className={`${styles['slides-styles']}`}>
+      {
+        hasMarpFlag
+          ? <MarpSlides presentation={presentation}>{children}</MarpSlides>
+          : <GrowiSlides options={options} presentation={presentation}>{children}</GrowiSlides>
+      }
+    </div>
   );
 };
