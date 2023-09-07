@@ -132,12 +132,11 @@
   //   /*
   //   * Card
   //   */
-  //   .card:not([class*='bg-']):not(.well):not(.card-disabled) {
+  //   .card:not([class*='bg-']):not(.custom-card):not(.card-disabled) {
   //     @extend .bg-dark;
   //   }
 
-  //   [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
-  //   .card.well {
+  //   .card.custom-card {
   //     border-color: var(--secondary);
   //   }
 
