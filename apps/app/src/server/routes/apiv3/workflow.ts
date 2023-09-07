@@ -61,11 +61,9 @@ module.exports = (crowi: Crowi): Router => {
       body('name').optional().isString().withMessage('name must be string'),
       body('comment').optional().isString().withMessage('comment must be string'),
       body('approverGroups').optional().isArray().withMessage('approverGroups must be array'),
-      body('isDraft').optional().isBoolean().withMessage('isDraft must be boolean'),
     ],
     updateWorkflowApproverGroups: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
-      body('isNew').optional().isBoolean().withMessage('isNew must be boolean'),
       body('approverGroup').isObject().withMessage('approverGroups is required'),
       body('approverGroupOffset').isInt().withMessage('approverGroupOffset is required'),
       body('actionType').isString().withMessage('actionType is required'),
@@ -73,7 +71,7 @@ module.exports = (crowi: Crowi): Router => {
     updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
       body('approverStatus').isString().withMessage('approverStatus is required'),
-      body('delegatedUserId').isString().withMessage('delegatedUserId must be string'),
+      body('delegatedUserId').optional().isMongoId().withMessage('delegatedUserId must be mongo id'),
     ],
     deleteWorkflow: [
       param('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -200,7 +198,6 @@ module.exports = (crowi: Crowi): Router => {
       name,
       comment,
       approverGroups,
-      isDraft,
     } = req.body;
     const { user } = req;
 
