@@ -85,6 +85,7 @@ function Crowi() {
   this.xss = new Xss();
   this.questionnaireService = null;
   this.questionnaireCronService = null;
+  this.workflowService = null;
 
   this.tokens = null;
 
@@ -148,6 +149,7 @@ Crowi.prototype.init = async function() {
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
+    this.setupWorkflowService(),
     this.setUpCustomize(), // depends on pluginService
   ]);
 
@@ -776,6 +778,13 @@ Crowi.prototype.setupG2GTransferService = async function() {
   }
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
+  }
+};
+
+Crowi.prototype.setupWorkflowService = async function() {
+  const WorkflowService = require('../service/workflow');
+  if (this.workflowService == null) {
+    this.workflowService = new WorkflowService(this);
   }
 };
 

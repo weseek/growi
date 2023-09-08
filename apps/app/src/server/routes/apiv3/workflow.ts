@@ -201,6 +201,8 @@ module.exports = (crowi: Crowi): Router => {
     } = req.body;
     const { user } = req;
 
+    const result = await crowi.workflowService.createWorkflow();
+
     // Description
     // workflow の作成
 
