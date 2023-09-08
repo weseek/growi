@@ -2,13 +2,14 @@ import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, body } from 'express-validator';
 
+import loggerFactory from '~/utils/logger';
+
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
-
+const logger = loggerFactory('growi:routes:apiv3:workflow');
 const router = express.Router();
 
 type RequestWithUser = Request & { user?: IUserHasId }
@@ -201,7 +202,14 @@ module.exports = (crowi: Crowi): Router => {
     } = req.body;
     const { user } = req;
 
-    const result = await crowi.workflowService.createWorkflow();
+    try {
+      const createdWorkflow = await crowi.workflowService.createWorkflow(pageId, name, comment, approverGroups);
+      return res.apiv3({ createdWorkflow });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err);
+    }
 
     // Description
     // workflow の作成

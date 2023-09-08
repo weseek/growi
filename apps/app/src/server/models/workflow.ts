@@ -7,6 +7,7 @@ import {
   WorkflowApproverStatuses,
   WorkflowApprovalType,
   WorkflowApprovalTypes,
+  WorkflowStatus,
 } from '~/interfaces/workflow';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -16,9 +17,6 @@ type WorkflowApproverModel = Model<WorkflowApproverDocument>;
 
 interface WorkflowApproverGroupDocument extends IWorkflowApproverGroup, Document {}
 type WorkflowApproverGroupModel = Model<WorkflowApproverGroupDocument>
-
-interface WorkflowDocument extends IWorkflow, Document {}
-type WorkflowModel = Model<WorkflowDocument>;
 
 
 /*
@@ -83,6 +81,11 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 /*
 * Workflow
 */
+interface WorkflowDocument extends IWorkflow, Document {}
+interface WorkflowModel extends Model<WorkflowDocument> {
+  hasInprogressWorkflowInTargetPage(pageId: string): Promise<boolean>
+}
+
 const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
   creator: {
     type: Types.ObjectId,
@@ -109,5 +112,10 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
 }, {
   timestamps: { createdAt: true, updatedAt: true },
 });
+
+WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: string) {
+  const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
+  return workflow != null;
+};
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);
