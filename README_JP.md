@@ -6,7 +6,7 @@
   </p>
   <p align="center">
     <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
-    <a href="https://communityinviter.com/apps/wsgrowi/invite"></a>
+    <a href="https://communityinviter.com/apps/wsgrowi/invite">join our Slack team</a>
   </p>
 
 <p align="center">
