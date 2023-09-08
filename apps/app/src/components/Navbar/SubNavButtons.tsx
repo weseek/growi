@@ -27,9 +27,7 @@ import {
   SubscribeButton,
   BookmarkButtons,
   WideViewMenuItem,
-  WideViewMenuItemProps,
   CommunicationMenuItems,
-  CommunicationMenuItemsProps,
 } from '../SubNavButtons';
 
 
@@ -170,11 +168,10 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    const TopMenuItemRenderer = (props: WideViewMenuItemProps & CommunicationMenuItemsProps) => {
-
+    const TopMenuItemRenderer = () => {
       return (
         <>
-          <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />
+          <WideViewMenuItem onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />
           <DropdownItem divider />
           <CommunicationMenuItems onClickWokflowMenuItem={workflowMenuItemClickHandler} />
         </>

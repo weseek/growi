@@ -3,10 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
-import type { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-
-export type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
+type WideViewMenuItemProps = {
   onClickMenuItem: (newValue: boolean) => void,
   expandContentWidth?: boolean,
 }

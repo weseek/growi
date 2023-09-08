@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 
-export type CommunicationMenuItemsProps = {
+type CommunicationMenuItemsProps = {
   onClickWokflowMenuItem: () => void,
 }
 
