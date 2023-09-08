@@ -1,23 +1,21 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useMemo, useRef, useState,
 } from 'react';
 
-
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 
-
-import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { IFormattedSearchResult } from '~/interfaces/search';
+import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import { useSearchOperation } from '~/client/services/search-operation';
+import type { IFormattedSearchResult } from '~/interfaces/search';
 import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
-import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
+import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
+import { type IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -93,15 +91,8 @@ export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
 
-  // routerRef solve the problem of infinite redrawing that occurs with routers
-  const router = useRouter();
-  const routerRef = useRef(router);
+  const { keyword, search } = useSearchOperation();
 
-  // parse URL Query
-  const queries = router.query.q;
-  const initQ = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
-
-  const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
@@ -116,11 +107,13 @@ export const SearchPage = (): JSX.Element => {
     limit,
   });
 
-  const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
-    setKeyword(_keyword);
+  const searchInvokedHandler = useCallback((newKeyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setOffset(0);
     setConfigurationsByControl(newConfigurations);
-  }, []);
+
+    const ignorePushingState = keyword === newKeyword;
+    search(newKeyword, ignorePushingState);
+  }, [keyword, search]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -175,25 +168,6 @@ export const SearchPage = (): JSX.Element => {
 
   // for bulk deletion
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
-
-  // push state
-  useEffect(() => {
-    const newUrl = new URL('/_search', 'http://example.com');
-    newUrl.searchParams.append('q', keyword);
-    routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
-  }, [keyword, routerRef]);
-
-  // browser back and forward
-  useEffect(() => {
-    routerRef.current.beforePopState(({ url }) => {
-      const newUrl = new URL(url, 'https://exmple.com');
-      const newKeyword = newUrl.searchParams.get('q');
-      if (newKeyword != null) {
-        setKeyword(newKeyword);
-      }
-      return true;
-    });
-  }, [setKeyword, routerRef]);
 
   const hitsCount = data?.meta.hitsCount;
 
