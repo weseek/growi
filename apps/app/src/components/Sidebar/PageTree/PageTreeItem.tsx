@@ -456,8 +456,8 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
       itemRef={itemRef}
       itemClass={PageTreeItem}
       mainClassName={mainClassName}
-      customComponent={[Ellipsis, NewPageCreateButton]}
-      customComponentUnderItem={[NewPageInput]}
+      customEndComponents={[Ellipsis, NewPageCreateButton]}
+      customNextComponents={[NewPageInput]}
     />
   );
 };

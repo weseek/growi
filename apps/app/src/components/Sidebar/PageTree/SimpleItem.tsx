@@ -35,8 +35,8 @@ export type SimpleItemProps = {
   itemRef?
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
-  customComponent?: Array<React.FunctionComponent<SimpleItemToolProps>>
-  customComponentUnderItem?: Array<React.FunctionComponent<SimpleItemToolProps>>
+  customEndComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
+  customNextComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
 };
 
 // Utility to mark target
@@ -210,9 +210,9 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     stateHandlers,
   };
 
-  const CustomComponent = props.customComponent;
+  const CustomEndComponents = props.customEndComponents;
 
-  const SimpleItemContent = CustomComponent ?? [SimpleItemTool];
+  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
 
   const SimpleItemContentProps = {
     itemNode,
@@ -226,7 +226,7 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     stateHandlers,
   };
 
-  const CustomComponentUnderItem = props.customComponentUnderItem;
+  const CustomNextComponents = props.customNextComponents;
 
 
   return (
@@ -259,7 +259,7 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
         ))}
       </li>
 
-      {CustomComponentUnderItem?.map((UnderItemContent, index) => (
+      {CustomNextComponents?.map((UnderItemContent, index) => (
         <UnderItemContent key={index} {...SimpleItemContentProps}/>
       ))}
 

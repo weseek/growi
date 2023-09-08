@@ -21,9 +21,9 @@ export const PageTreeItemForModal: FC<PageTreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
-      customComponentUnderItem={[NewPageInput]}
+      customNextComponents={[NewPageInput]}
       itemClass={PageTreeItemForModal}
-      customComponent={[SimpleItemTool, NewPageCreateButton]}
+      customEndComponents={[SimpleItemTool, NewPageCreateButton]}
     />
   );
 };
