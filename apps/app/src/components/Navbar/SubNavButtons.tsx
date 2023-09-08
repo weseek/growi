@@ -17,20 +17,20 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
-import { BookmarkButtons } from '../BookmarkButtons';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
-import LikeButtons from '../LikeButtons';
 import {
+  LikeButtons,
+  SeenUserInfo,
+  SubscribeButton,
+  BookmarkButtons,
   WideViewMenuItem,
   WideViewMenuItemProps,
   CommunicationMenuItems,
   CommunicationMenuItemsProps,
 } from '../SubNavButtons';
-import SubscribeButton from '../SubscribeButton';
-import SeenUserInfo from '../User/SeenUserInfo';
 
 
 type CommonProps = {

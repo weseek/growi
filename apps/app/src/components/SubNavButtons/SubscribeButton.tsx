@@ -13,7 +13,7 @@ type Props = {
   onClick?: () => Promise<void>,
 };
 
-const SubscribeButton: FC<Props> = (props: Props) => {
+export const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { isGuestUser, status } = props;
 
@@ -46,5 +46,3 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   );
 
 };
-
-export default SubscribeButton;
