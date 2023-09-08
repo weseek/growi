@@ -6,7 +6,6 @@ import type {
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
-import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
@@ -24,60 +23,14 @@ import {
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
 import LikeButtons from '../LikeButtons';
+import {
+  WideViewMenuItem,
+  WideViewMenuItemProps,
+  CommunicationMenuItems,
+  CommunicationMenuItemsProps,
+} from '../SubNavButtons';
 import SubscribeButton from '../SubscribeButton';
 import SeenUserInfo from '../User/SeenUserInfo';
-
-
-type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (newValue: boolean) => void,
-  expandContentWidth?: boolean,
-}
-
-const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
-  const { t } = useTranslation();
-
-  const {
-    onClickMenuItem, expandContentWidth,
-  } = props;
-
-  return (
-    <DropdownItem
-      onClick={() => onClickMenuItem(!(expandContentWidth))}
-      className="grw-page-control-dropdown-item"
-    >
-      <div className="form-check form-switch ms-1">
-        <input
-          id="switchContentWidth"
-          className="form-check-input"
-          type="checkbox"
-          checked={expandContentWidth}
-          onChange={() => {}}
-        />
-        <label className="form-label form-check-label" htmlFor="switchContentWidth">
-          { t('wide_view') }
-        </label>
-      </div>
-    </DropdownItem>
-  );
-};
-
-type CommunicationMenuItemsProps = {
-  onClickWokflowMenuItem: () => void,
-}
-
-const CommunicationMenuItems = (props: CommunicationMenuItemsProps): JSX.Element => {
-  const { t } = useTranslation();
-
-  const { onClickWokflowMenuItem } = props;
-
-  return (
-    // TODO: Add dropdown items for announcements and in-app notifications
-    <DropdownItem onClick={() => onClickWokflowMenuItem()}>
-      <i className="fa fa-fw icon-organization grw-page-control-dropdown-icon"></i>
-      { t('approval_workflow.approval_workflow') }
-    </DropdownItem>
-  );
-};
 
 
 type CommonProps = {
