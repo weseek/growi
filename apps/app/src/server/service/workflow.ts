@@ -50,12 +50,13 @@ export default class WorkflowService {
     const uniqueApprovers = new Set();
     uniqueApprovers.add(creatorId);
 
-    for (const approverGroup of approverGroups) {
+    approverGroups.forEach((approverGroup) => {
+      console.log('approverGroup', approverGroup);
       if (approverGroup.approvers.length <= 1 && approverGroup.approvalType === WorkflowApprovalType.OR) {
-        throw Error('approverGroup.approvalType cannot be set to OR when approverGroup.approvers.length is 1');
+        throw Error('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
       }
 
-      for (const approver of approverGroup.approvers) {
+      approverGroup.approvers.forEach((approver) => {
         if (uniqueApprovers.has(approver.user)) {
           throw Error('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
         }
@@ -64,8 +65,8 @@ export default class WorkflowService {
         if (isNew && approver.status != null && approver.status !== WorkflowApproverStatus.NONE) {
           throw Error('Cannot set approver.status to anything other than "NONE" during creation');
         }
-      }
-    }
+      });
+    });
   }
 
 }
