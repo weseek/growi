@@ -20,10 +20,7 @@ export default class WorkflowService {
     this.validateApproverGroups = this.validateApproverGroups.bind(this);
   }
 
-  createWorkflow = async function(
-      creatorId: string, pageId: string, name: string, comment: string, approverGroups: IWorkflowApproverGroup[],
-  ): Promise<IWorkflow> {
-
+  async createWorkflow(creatorId: string, pageId: string, name: string, comment: string, approverGroups: IWorkflowApproverGroup[]): Promise<IWorkflow> {
     /*
     *  Validation
     */
@@ -47,10 +44,9 @@ export default class WorkflowService {
     });
 
     return createdWorkflow;
-  };
+  }
 
-
-  validateApproverGroups = function(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroup[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroup[]): void {
     const uniqueApprovers = new Set();
     uniqueApprovers.add(creatorId);
 
@@ -70,7 +66,7 @@ export default class WorkflowService {
         }
       }
     }
-  };
+  }
 
 }
 

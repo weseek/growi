@@ -61,7 +61,7 @@ module.exports = (crowi: Crowi): Router => {
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('name').optional().isString().withMessage('name must be string'),
       body('comment').optional().isString().withMessage('comment must be string'),
-      body('approverGroups').optional().isArray().withMessage('approverGroups must be array'),
+      body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
     updateWorkflowApproverGroups: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -210,16 +210,6 @@ module.exports = (crowi: Crowi): Router => {
       logger.error(err);
       return res.apiv3Err(err);
     }
-
-    // Description
-    // workflow の作成
-
-    // Memo
-    // ページ内に進行中の workflow が存在する場合は新規に作成することはできない
-    // 1つの workflow に対して同一の approver は存在できない (workflow-a に対して user-a は1つのみ存在できる)
-    // workflow 作成者は approver にはなれない
-
-    return res.apiv3();
   });
 
 

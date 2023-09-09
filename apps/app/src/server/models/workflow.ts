@@ -2,26 +2,23 @@ import { Model, Schema, Types } from 'mongoose';
 
 import type { IWorkflow, IWorkflowApproverGroup, IWorkflowApprover } from '~/interfaces/workflow';
 import {
+  WorkflowStatus,
   WorkflowStatuses,
   WorkflowApproverStatus,
   WorkflowApproverStatuses,
   WorkflowApprovalType,
   WorkflowApprovalTypes,
-  WorkflowStatus,
 } from '~/interfaces/workflow';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
-
-interface WorkflowApproverDocument extends IWorkflowApprover, Document {}
-type WorkflowApproverModel = Model<WorkflowApproverDocument>;
-
-interface WorkflowApproverGroupDocument extends IWorkflowApproverGroup, Document {}
-type WorkflowApproverGroupModel = Model<WorkflowApproverGroupDocument>
 
 
 /*
 * WorkflowApprover
 */
+interface WorkflowApproverDocument extends IWorkflowApprover, Document {}
+type WorkflowApproverModel = Model<WorkflowApproverDocument>;
+
 const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowApproverModel>({
   user: {
     type: Types.ObjectId,
@@ -42,6 +39,9 @@ const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowAppr
 /*
 * WorkflowApproverGroup
 */
+interface WorkflowApproverGroupDocument extends IWorkflowApproverGroup, Document {}
+type WorkflowApproverGroupModel = Model<WorkflowApproverGroupDocument>
+
 const WorkflowApproverGroupSchema = new Schema<WorkflowApproverGroupDocument, WorkflowApproverGroupModel>({
   approvalType: {
     type: Schema.Types.String,
