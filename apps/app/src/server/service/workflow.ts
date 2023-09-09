@@ -51,7 +51,6 @@ export default class WorkflowService {
     uniqueApprovers.add(creatorId);
 
     approverGroups.forEach((approverGroup) => {
-      console.log('approverGroup', approverGroup);
       if (approverGroup.approvers.length <= 1 && approverGroup.approvalType === WorkflowApprovalType.OR) {
         throw Error('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
       }
