@@ -2965,6 +2965,16 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
+"@keycloak/keycloak-admin-client@22.0.1":
+  version "22.0.1"
+  resolved "https://registry.yarnpkg.com/@keycloak/keycloak-admin-client/-/keycloak-admin-client-22.0.1.tgz#2cb574c90d20e69a5b98fccce376291857070da6"
+  integrity sha512-/eKzNzT2hW/tRQd8/33dX1dfRU4xBsd3/30bL2OFF5+J+1UUmRYM2klYcFhdIkFX3P9/ptqH+vHpqCusdMcSCw==
+  dependencies:
+    camelize-ts "^3.0.0"
+    lodash-es "^4.17.21"
+    url-join "^5.0.0"
+    url-template "^3.1.0"
+
 "@khanacademy/simple-markdown@^0.8.6":
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/@khanacademy/simple-markdown/-/simple-markdown-0.8.6.tgz#9c9aef1f5ce2ce60292d13849165965a57c26f25"
@@ -3488,6 +3498,13 @@
     argparse "~1.0.9"
     colors "~1.2.1"
     string-argv "~0.3.1"
+
+"@s3pweb/keycloak-admin-client-cjs@^22.0.1":
+  version "22.0.1"
+  resolved "https://registry.yarnpkg.com/@s3pweb/keycloak-admin-client-cjs/-/keycloak-admin-client-cjs-22.0.1.tgz#65b2861a947a8fe9be34ff0b2932cb01652c05a8"
+  integrity sha512-F8zr13/rR3QcDzKEty541rXaubU6+Yn/5aMzmSy6in5TeUL3FLqF0QmuW3g1xrgABywcGopew2sEq0X3qJfRUw==
+  dependencies:
+    "@keycloak/keycloak-admin-client" "22.0.1"
 
 "@sematext/gc-stats@1.5.8":
   version "1.5.8"
@@ -5673,6 +5690,11 @@ camelcase@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
+
+camelize-ts@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/camelize-ts/-/camelize-ts-3.0.0.tgz#b9a7b4ff802464dc3d6475637a64a9742ad3db09"
+  integrity sha512-cgRwKKavoDKLTjO4FQTs3dRBePZp/2Y9Xpud0FhuCOTE86M2cniKN4CCXgRnsyXNMmQMifVHcv6SPaMtTx6ofQ==
 
 can-use-dom@^0.1.0:
   version "0.1.0"
@@ -16571,6 +16593,16 @@ uri-js@^4.2.2:
 url-join@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/url-join/-/url-join-4.0.0.tgz#4d3340e807d3773bda9991f8305acdcc2a665d2a"
+
+url-join@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/url-join/-/url-join-5.0.0.tgz#c2f1e5cbd95fa91082a93b58a1f42fecb4bdbcf1"
+  integrity sha512-n2huDr9h9yzd6exQVnH/jU5mr+Pfx08LRXXZhkLLetAMESRj+anQsTAh940iMrIetKAmry9coFuZQ2jY8/p3WA==
+
+url-template@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/url-template/-/url-template-3.1.0.tgz#d9be13d342ad31fcedc3c0bd21405fd141d02ff1"
+  integrity sha512-vB/eHWttzhN+NZzk9FcQB2h1cSEgb7zDYyvyxPhw02LYw7YqIzO+w1AqkcKvZ51gPH8o4+nyiWve/xuQqMdJZw==
 
 url-value-parser@2.2.0:
   version "2.2.0"

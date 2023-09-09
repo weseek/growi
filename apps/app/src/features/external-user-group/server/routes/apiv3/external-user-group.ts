@@ -17,6 +17,7 @@ import { configManager } from '~/server/service/config-manager';
 import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
+import KeycloakUserGroupSyncService from '../../service/keycloak-user-group-sync';
 import LdapUserGroupSyncService from '../../service/ldap-user-group-sync';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
@@ -301,6 +302,20 @@ module.exports = (crowi: Crowi): Router => {
     try {
       const ldapUserGroupSyncService = new LdapUserGroupSyncService(crowi.passportService, req.user.name, req.body.password);
       await ldapUserGroupSyncService.syncExternalUserGroups();
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err.message, 500);
+    }
+
+    return res.apiv3({}, 204);
+  });
+
+  router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    try {
+      const keycloakUserGroupSyncService = new KeycloakUserGroupSyncService();
+      await keycloakUserGroupSyncService.auth();
+      await keycloakUserGroupSyncService.syncExternalUserGroups();
     }
     catch (err) {
       logger.error(err);
