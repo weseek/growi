@@ -195,15 +195,15 @@ module.exports = (crowi: Crowi): Router => {
    */
   router.post('/', accessTokenParser, loginRequired, validator.createWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const {
-      pageId,
-      name,
-      comment,
-      approverGroups,
+      pageId, name, comment, approverGroups,
     } = req.body;
     const { user } = req;
 
+    const xssProcessedName = crowi.xss.process(name);
+    const xssProcessedComment = crowi.xss.process(comment);
+
     try {
-      const createdWorkflow = await crowi.workflowService.createWorkflow(pageId, name, comment, approverGroups);
+      const createdWorkflow = await crowi.workflowService.createWorkflow(user?._id, pageId, xssProcessedName, xssProcessedComment, approverGroups);
       return res.apiv3({ createdWorkflow });
     }
     catch (err) {
