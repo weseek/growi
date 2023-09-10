@@ -35,7 +35,7 @@ describe('Workflow', () => {
   });
 
   describe('hasInprogressWorkflowInTargetPage()', () => {
-    test('found', async() => {
+    test('Should return true if there are in-progress workflows on the page」', async() => {
       // when
       const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(page1);
 
@@ -43,7 +43,7 @@ describe('Workflow', () => {
       expect(hasInprogressWorkflowInTargetPage).toBe(true);
     });
 
-    test('not found', async() => {
+    test('Should return false if there are no in-progress workflows on the page', async() => {
       // when
       const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(page2);
 

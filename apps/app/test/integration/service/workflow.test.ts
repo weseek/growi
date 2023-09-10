@@ -28,7 +28,7 @@ describe('WorkflowService', () => {
   });
 
   describe('createWorkflow()', () => {
-    test('Create a workflow using createWorkflow()', async() => {
+    test('Should be able to create a workflow', async() => {
       // setup
       const approverGroups = [
         {
@@ -51,7 +51,7 @@ describe('WorkflowService', () => {
       expect(createdWorkflow).toBeInstanceOf(Workflow);
     });
 
-    test('Fail to create multiple in-progress workflows for a single page fail', async() => {
+    test('Should fail when attempting to create multiple in-progress workflows on single page', async() => {
 
       // setup
       const approverGroups = [
@@ -76,7 +76,7 @@ describe('WorkflowService', () => {
     });
 
 
-    test('If approverGroup.approvers.length is 1, setting approverGroup.approveType to "OR" will fail', async() => {
+    test('Should fail when setting approverGroup.approveType to "OR" when approverGroup.approvers.length is 1', async() => {
 
       // setup
       const approverGroups = [
@@ -97,7 +97,7 @@ describe('WorkflowService', () => {
       await expect(result).rejects.toThrow('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
     });
 
-    test('Fail to attempting to set the same approver', async() => {
+    test('Should fail when attempting to set a user as an approver who is already an approver', async() => {
 
       // setup
       const approverGroups = [
@@ -121,7 +121,7 @@ describe('WorkflowService', () => {
       await expect(result).rejects.toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
     });
 
-    test('Fails when attempting to set the creator as an approver', async() => {
+    test('Should fail when attempting to set the workflow creator as an approver', async() => {
 
       // setup
       const approverGroups = [
@@ -143,7 +143,7 @@ describe('WorkflowService', () => {
     });
 
 
-    test('Fail when setting approver.status to anything other than "NONE" during Workflow creation', async() => {
+    test('Should fail when setting approver.status to anything other than "NONE" during workflow creation', async() => {
 
       // setup
       const approverGroups = [
