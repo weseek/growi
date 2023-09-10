@@ -9,11 +9,9 @@ let page2;
 describe('Workflow', () => {
 
   beforeAll(async() => {
-    // Page
     page1 = new mongoose.Types.ObjectId();
     page2 = new mongoose.Types.ObjectId();
 
-    // Workflow
     await Workflow.insertMany([
       {
         creator: new mongoose.Types.ObjectId(),
@@ -36,14 +34,20 @@ describe('Workflow', () => {
     ]);
   });
 
-  describe('hasInprogressWorkflowInTargetPage', () => {
+  describe('hasInprogressWorkflowInTargetPage()', () => {
     test('found', async() => {
+      // when
       const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(page1);
+
+      // then
       expect(hasInprogressWorkflowInTargetPage).toBe(true);
     });
 
     test('not found', async() => {
+      // when
       const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(page2);
+
+      // then
       expect(hasInprogressWorkflowInTargetPage).toBe(false);
     });
   });
