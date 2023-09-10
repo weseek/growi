@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 
-import UserPictureList from './UserPictureList';
+import UserPictureList from './User/UserPictureList';
 
 import styles from './LikeButtons.module.scss';
 
@@ -20,7 +20,7 @@ type LikeButtonsProps = {
   onLikeClicked?: ()=>void,
 }
 
-export const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
+const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   const { t } = useTranslation();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -80,3 +80,5 @@ export const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   );
 
 };
+
+export default LikeButtons;

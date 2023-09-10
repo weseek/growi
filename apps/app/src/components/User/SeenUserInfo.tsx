@@ -17,7 +17,7 @@ interface Props {
   disabled?: boolean,
 }
 
-export const SeenUserInfo: FC<Props> = (props: Props) => {
+const SeenUserInfo: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -46,3 +46,5 @@ export const SeenUserInfo: FC<Props> = (props: Props) => {
     </div>
   );
 };
+
+export default SeenUserInfo;
