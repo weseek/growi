@@ -34,7 +34,9 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     allControl,
   } = props;
 
-  const [keyword, setKeyword] = useState(initialSearchConditions.keyword ?? '');
+  const keywordOnInit = initialSearchConditions.keyword ?? '';
+
+  const [keyword, setKeyword] = useState(keywordOnInit);
   const [sort, setSort] = useState<SORT_AXIS>(initialSearchConditions.sort ?? SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(initialSearchConditions.order ?? SORT_ORDER.DESC);
   const [includeUserPages, setIncludeUserPages] = useState(initialSearchConditions.includeUserPages ?? false);
@@ -43,28 +45,42 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation('');
 
-  const invokeSearch = useCallback(() => {
-    onSearchInvoked?.(keyword, {
-      sort, order, includeUserPages, includeTrashPages,
-    });
-  }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
-
   const searchFormSubmittedHandler = useCallback((input: string) => {
     setKeyword(input);
-  }, []);
+
+    onSearchInvoked?.(input, {
+      sort, order, includeUserPages, includeTrashPages,
+    });
+  }, [includeTrashPages, includeUserPages, onSearchInvoked, order, sort]);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
     setSort(nextSort);
     setOrder(nextOrder);
-  }, []);
+
+    onSearchInvoked?.(keyword, {
+      sort: nextSort, order: nextOrder, includeUserPages, includeTrashPages,
+    });
+  }, [includeTrashPages, includeUserPages, keyword, onSearchInvoked]);
+
+  const changeIncludeUserPagesHandler = useCallback((include: boolean) => {
+    setIncludeUserPages(include);
+
+    onSearchInvoked?.(keyword, {
+      sort, order, includeUserPages: include, includeTrashPages,
+    });
+  }, [includeTrashPages, keyword, onSearchInvoked, order, sort]);
+
+  const changeIncludeTrashPagesHandler = useCallback((include: boolean) => {
+    setIncludeTrashPages(include);
+
+    onSearchInvoked?.(keyword, {
+      sort, order, includeUserPages, includeTrashPages: include,
+    });
+  }, [includeUserPages, keyword, onSearchInvoked, order, sort]);
 
   useEffect(() => {
-    invokeSearch();
-  }, [invokeSearch]);
-
-  useEffect(() => {
-    setKeyword(initialSearchConditions.keyword ?? '');
-  }, [initialSearchConditions.keyword]);
+    setKeyword(keywordOnInit);
+  }, [keywordOnInit]);
 
   return (
     <div className="position-sticky sticky-top shadow-sm">
@@ -124,7 +140,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     type="checkbox"
                     id="flexCheckDefault"
                     defaultChecked={includeUserPages}
-                    onChange={e => setIncludeUserPages(e.target.checked)}
+                    onChange={e => changeIncludeUserPagesHandler(e.target.checked)}
                   />
                   <label className="custom-control-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                     {t('Include Subordinated Target Page', { target: '/user' })}
@@ -138,7 +154,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     type="checkbox"
                     id="flexCheckChecked"
                     checked={includeTrashPages}
-                    onChange={e => setIncludeTrashPages(e.target.checked)}
+                    onChange={e => changeIncludeTrashPagesHandler(e.target.checked)}
                   />
                   <label
                     className="custom-control-label
