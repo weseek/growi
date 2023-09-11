@@ -37,7 +37,10 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const mergedProps = useMemo<UseCodeMirror>(() => {
     return deepmerge(
       props ?? {},
-      { extensions: defaultExtensions },
+      {
+        extensions: defaultExtensions,
+        indentWithTab: false,
+      },
     );
   }, [props]);
 
