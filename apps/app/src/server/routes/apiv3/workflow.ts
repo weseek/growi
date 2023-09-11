@@ -165,9 +165,10 @@ module.exports = (crowi: Crowi): Router => {
       const paginateResult: IWorkflowPaginateResult = await (Workflow as any).paginate(
         { pageId },
         {
-          populate: 'creator',
           limit,
           offset,
+          populate: 'creator',
+          sort: { createdAt: -1 },
         },
       );
 
