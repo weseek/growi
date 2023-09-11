@@ -22,7 +22,7 @@ import {
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, useWorkflowModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
@@ -231,6 +231,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { open: openWorkflowModal } = useWorkflowModal();
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
@@ -332,6 +333,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     setIsPageTempleteModalShown(true);
   }, []);
 
+  const workflowItemClickedHandler = useCallback(() => {
+    openWorkflowModal();
+  }, [openWorkflowModal]);
 
   const RightComponent = () => {
     const additionalMenuItemsRenderer = () => {
@@ -389,6 +393,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     onClickRenameMenuItem={renameItemClickedHandler}
                     onClickDeleteMenuItem={deleteItemClickedHandler}
                     onClickSwitchContentWidth={switchContentWidthHandler}
+                    onClickWorkflowMenuItem={workflowItemClickedHandler}
                   />
                 )}
               </div>
