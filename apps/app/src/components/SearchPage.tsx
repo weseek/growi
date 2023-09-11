@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { useSearchOperation } from '~/client/services/search-operation';
+import { useKeywordManager } from '~/client/services/search-operation';
 import type { IFormattedSearchResult } from '~/interfaces/search';
 import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
@@ -91,7 +91,7 @@ export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
 
-  const { data: keyword, search } = useSearchOperation();
+  const { data: keyword, pushState } = useKeywordManager();
 
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
@@ -111,10 +111,10 @@ export const SearchPage = (): JSX.Element => {
     setOffset(0);
     setConfigurationsByControl(newConfigurations);
 
-    const ignorePushingState = keyword === newKeyword;
-    search(newKeyword, ignorePushingState);
+    pushState(newKeyword);
+
     mutate();
-  }, [keyword, mutate, search]);
+  }, [keyword, mutate, pushState]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;

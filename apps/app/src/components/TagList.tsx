@@ -4,7 +4,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 
-import { useSearchOperation } from '~/client/services/search-operation';
+import { useKeywordManager } from '~/client/services/search-operation';
 import { IDataTagCount } from '~/interfaces/tag';
 
 import PaginationWrapper from './PaginationWrapper';
@@ -29,22 +29,23 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   const isTagExist: boolean = tagData.length > 0;
   const { t } = useTranslation('');
 
-  const { search } = useSearchOperation();
+  const { pushState } = useKeywordManager();
 
   const generateTagList = useCallback((tagData) => {
     return tagData.map((tag:IDataTagCount) => {
       return (
         <button
           key={tag._id}
+          type="button"
           className="list-group-item list-group-item-action d-flex"
-          onClick={() => search(`tag:${tag.name}`)}
+          onClick={() => pushState(`tag:${tag.name}`)}
         >
           <div className="text-truncate list-tag-name">{tag.name}</div>
           <div className="ml-4 my-auto py-1 px-2 list-tag-count badge badge-secondary text-white">{tag.count}</div>
         </button>
       );
     });
-  }, [search]);
+  }, [pushState]);
 
   if (!isTagExist) {
     return <h3>{ t('You have no tag, You can set tags on pages') }</h3>;

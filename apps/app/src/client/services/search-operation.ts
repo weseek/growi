@@ -5,11 +5,11 @@ import { useRouter } from 'next/router';
 import useSWRImmutable from 'swr/immutable';
 
 
-type UseSearchOperation = {
-  search: (newKeyword: string, ignorePushingState?: boolean) => void,
+type UseKeywordManagerUtils = {
+  pushState: (newKeyword: string) => void,
 }
 
-export const useSearchOperation = (): SWRResponseWithUtils<UseSearchOperation, string> => {
+export const useKeywordManager = (): SWRResponseWithUtils<UseKeywordManagerUtils, string> => {
   // routerRef solve the problem of infinite redrawing that occurs with routers
   const router = useRouter();
   const routerRef = useRef(router);
@@ -23,16 +23,22 @@ export const useSearchOperation = (): SWRResponseWithUtils<UseSearchOperation, s
   });
 
   const { mutate } = swrResponse;
-  const search = useCallback((newKeyword: string, ignorePushingState?: boolean) => {
-    mutate(newKeyword);
+  const pushState = useCallback((newKeyword: string) => {
+    mutate((prevKeyword) => {
+      if (prevKeyword !== newKeyword) {
+        const newUrl = new URL('/_search', 'http://example.com');
+        newUrl.searchParams.append('q', newKeyword);
+        routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '');
+      }
 
-    if (ignorePushingState !== true) {
-      const newUrl = new URL('/_search', 'http://example.com');
-      newUrl.searchParams.append('q', newKeyword);
-      // routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
-      routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '');
-    }
+      return newKeyword;
+    });
   }, [mutate]);
+
+  // detect search keyword from the query of URL
+  useEffect(() => {
+    mutate(initialKeyword);
+  }, [mutate, initialKeyword]);
 
   // browser back and forward
   useEffect(() => {
@@ -47,6 +53,6 @@ export const useSearchOperation = (): SWRResponseWithUtils<UseSearchOperation, s
   }, [mutate]);
 
   return withUtils(swrResponse, {
-    search,
+    pushState,
   });
 };
