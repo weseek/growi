@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-drawio",
-  "version": "6.1.15-RC.0",
+  "version": "6.1.15",
   "description": "remark plugin to draw diagrams with draw.io (diagrams.net)",
   "license": "MIT",
   "keywords": [
