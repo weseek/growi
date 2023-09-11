@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { type Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
