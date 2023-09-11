@@ -13,6 +13,7 @@ const additionalExtensions: Extension[] = [
   scrollPastEnd(),
 ];
 
+
 type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
