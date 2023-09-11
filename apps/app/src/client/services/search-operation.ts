@@ -1,15 +1,15 @@
-import {
-  useCallback, useEffect, useRef, useState,
-} from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
+import { type SWRResponseWithUtils, withUtils } from '@growi/core';
 import { useRouter } from 'next/router';
+import useSWRImmutable from 'swr/immutable';
+
 
 type UseSearchOperation = {
-  keyword: string,
   search: (newKeyword: string, ignorePushingState?: boolean) => void,
 }
 
-export const useSearchOperation = (): UseSearchOperation => {
+export const useSearchOperation = (): SWRResponseWithUtils<UseSearchOperation, string> => {
   // routerRef solve the problem of infinite redrawing that occurs with routers
   const router = useRouter();
   const routerRef = useRef(router);
@@ -18,17 +18,21 @@ export const useSearchOperation = (): UseSearchOperation => {
   const queries = router.query.q;
   const initialKeyword = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
 
-  const [keyword, setKeyword] = useState(initialKeyword);
+  const swrResponse = useSWRImmutable<string>('searchKeyword', null, {
+    fallbackData: initialKeyword,
+  });
 
+  const { mutate } = swrResponse;
   const search = useCallback((newKeyword: string, ignorePushingState?: boolean) => {
-    setKeyword(newKeyword);
+    mutate(newKeyword);
 
     if (ignorePushingState !== true) {
       const newUrl = new URL('/_search', 'http://example.com');
       newUrl.searchParams.append('q', newKeyword);
-      routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
+      // routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '', { shallow: true });
+      routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '');
     }
-  }, []);
+  }, [mutate]);
 
   // browser back and forward
   useEffect(() => {
@@ -36,14 +40,13 @@ export const useSearchOperation = (): UseSearchOperation => {
       const newUrl = new URL(url, 'https://exmple.com');
       const newKeyword = newUrl.searchParams.get('q');
       if (newKeyword != null) {
-        setKeyword(newKeyword);
+        mutate(newKeyword);
       }
       return true;
     });
-  }, [setKeyword, routerRef]);
+  }, [mutate]);
 
-  return {
-    keyword,
+  return withUtils(swrResponse, {
     search,
-  };
+  });
 };

@@ -91,7 +91,7 @@ export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
 
-  const { keyword, search } = useSearchOperation();
+  const { data: keyword, search } = useSearchOperation();
 
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
@@ -101,7 +101,7 @@ export const SearchPage = (): JSX.Element => {
 
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  const { data, conditions, mutate } = useSWRxSearch(keyword, null, {
+  const { data, conditions, mutate } = useSWRxSearch(keyword ?? '', null, {
     ...configurationsByControl,
     offset,
     limit,
@@ -113,7 +113,8 @@ export const SearchPage = (): JSX.Element => {
 
     const ignorePushingState = keyword === newKeyword;
     search(newKeyword, ignorePushingState);
-  }, [keyword, search]);
+    mutate();
+  }, [keyword, mutate, search]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -220,7 +221,7 @@ export const SearchPage = (): JSX.Element => {
     return (
       <SearchResultListHead
         searchResult={data}
-        searchingKeyword={keyword}
+        searchingKeyword={keyword ?? ''}
         offset={offset}
         pagingSize={limit}
         onPagingSizeChanged={pagingSizeChangedHandler}
