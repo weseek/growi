@@ -168,7 +168,7 @@ module.exports = (crowi: Crowi): Router => {
           limit,
           offset,
           populate: 'creator',
-          sort: { createdAt: -1 },
+          sort: { createdAt: -1 }, // Sort by date in order of newest to oldest
         },
       );
 
