@@ -18,7 +18,7 @@ type Props = {
   isEnableFilter: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
-  onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
+  onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
   allControl: React.ReactNode,
 }
@@ -44,11 +44,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation('');
 
   const invokeSearch = useCallback(() => {
-    if (onSearchInvoked == null) {
-      return;
-    }
-
-    onSearchInvoked(keyword, {
+    onSearchInvoked?.(keyword, {
       sort, order, includeUserPages, includeTrashPages,
     });
   }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
