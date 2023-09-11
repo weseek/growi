@@ -152,7 +152,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                   </a>
                   <br></br>
                   <a
-                    href={`${t('admin:customize_settings.function_options.marp_in_gorwi_link')}`}
+                    href={`${t('admin:customize_settings.function_options.marp_in_growi_link')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >{`${t('admin:customize_settings.function_options.marp_in_growi')}`}
