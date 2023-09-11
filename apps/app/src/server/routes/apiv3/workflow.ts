@@ -1,6 +1,6 @@
 import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
-import { param, body } from 'express-validator';
+import { param, query, body } from 'express-validator';
 
 import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
@@ -61,6 +61,8 @@ module.exports = (crowi: Crowi): Router => {
     ],
     getWorkflows: [
       param('pageId').isMongoId().withMessage('pageId is required'),
+      query('limit').optional().isInt().withMessage('limit must be a number'),
+      query('offset').optional().isInt().withMessage('offset must be a number'),
     ],
     createWorkflow: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -134,6 +136,12 @@ module.exports = (crowi: Crowi): Router => {
    *            description: pageId to rterieve a list of workflows
    *            type: string
    *            required: true
+   *          - name: limit
+   *            in: query
+   *            type: number
+   *          - name: offset
+   *            in: query
+   *            type: number
    *
    *        responses:
    *          200:
@@ -150,11 +158,16 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/list/:pageId', accessTokenParser, loginRequired, validator.getWorkflows, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
 
+    const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const offset = req.query.offset || 1;
+
     try {
       const paginateResult: IWorkflowPaginateResult = await (Workflow as any).paginate(
         { pageId },
         {
           populate: 'creator',
+          limit,
+          offset,
         },
       );
 
