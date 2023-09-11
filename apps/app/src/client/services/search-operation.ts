@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { type SWRResponseWithUtils, withUtils } from '@growi/core';
+import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import { useRouter } from 'next/router';
 import useSWRImmutable from 'swr/immutable';
 
