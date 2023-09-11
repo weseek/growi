@@ -2,6 +2,11 @@ import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, body } from 'express-validator';
 
+import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
+import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import Workflow from '~/server/models/workflow';
+import loggerFactory from '~/utils/logger';
+
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
@@ -9,6 +14,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
 
+const logger = loggerFactory('growi:routes:apiv3:workflow');
 const router = express.Router();
 
 type RequestWithUser = Request & { user?: IUserHasId }
@@ -144,10 +150,27 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/list/:pageId', accessTokenParser, loginRequired, validator.getWorkflows, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
 
-    // Description
-    // ページ内に存在する workflow を配列で取得する
+    try {
+      const paginateResult: IWorkflowPaginateResult = await (Workflow as any).paginate(
+        { pageId },
+        {
+          populate: 'creator',
+        },
+      );
 
-    return res.apiv3();
+      const User = crowi.model('User');
+      paginateResult.docs.forEach((doc) => {
+        if (doc.creator != null && doc.creator instanceof User) {
+          doc.creator = serializeUserSecurely(doc.creator);
+        }
+      });
+
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err);
+    }
   });
 
 
