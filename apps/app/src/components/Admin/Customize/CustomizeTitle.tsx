@@ -37,7 +37,7 @@ export const CustomizeTitle: FC = () => {
         </div>
 
         <div className="col-12">
-          <Card className="card well">
+          <Card className="card custom-card">
             <CardBody className="px-0 py-2">
               {/* eslint-disable react/no-danger */}
               <p dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_title_detail') }} />

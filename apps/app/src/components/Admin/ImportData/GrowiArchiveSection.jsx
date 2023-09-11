@@ -93,7 +93,7 @@ class GrowiArchiveSection extends React.Component {
     return (
       <Fragment>
         <h2>{t('importer_management.import_growi_archive')}</h2>
-        <div className="card well mb-4 small">
+        <div className="card custom-card mb-4 small">
           <ul>
             <li>{t('importer_management.skip_username_and_email_when_overlapped')}</li>
             <li>{t('importer_management.prepare_new_account_for_migration')}</li>

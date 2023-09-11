@@ -36,7 +36,7 @@ const GlobalNotification = (props) => {
     <>
       <h2 className="border-bottom my-4">{t('notification_settings.valid_page')}</h2>
 
-      <p className="card well">
+      <p className="card custom-card">
         {/* eslint-disable-next-line react/no-danger */}
         <span dangerouslySetInnerHTML={{ __html: t('notification_settings.link_notification_help') }} />
       </p>
