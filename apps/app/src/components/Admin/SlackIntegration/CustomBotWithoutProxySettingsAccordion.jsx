@@ -70,7 +70,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   );
 
   return (
-    <div className="card border-0 rounded-3 shadow overflow-hidden">
+    <div className="accordion rounded-3 shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
         title={<><span className="me-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}

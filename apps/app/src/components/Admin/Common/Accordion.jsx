@@ -9,20 +9,20 @@ import { Collapse } from 'reactstrap';
 const Accordion = (props) => {
   const [isOpen, setIsOpen] = useState(props.isOpenDefault);
   return (
-    <div className="card border-0 rounded-3 mb-0">
-      <div
-        className="card-header fw-normal py-3 d-flex justify-content-between"
-        role="button"
-        onClick={() => setIsOpen(prevState => !prevState)}
-      >
-        <p className="mb-0">{props.title}</p>
-        {isOpen
-          ? <i className="fa fa-chevron-up" />
-          : <i className="fa fa-chevron-down" />
-        }
-      </div>
+    <div className="accordion-item card mb-0">
+      <p className="accordion-header" id="headingOne">
+        <button
+          className={`accordion-button ${isOpen ? '' : 'collapsed'}`}
+          type="button"
+          data-bs-toggle="collapse"
+          aria-expanded="true"
+          onClick={() => setIsOpen(prevState => !prevState)}
+        >
+          {props.title}
+        </button>
+      </p>
       <Collapse isOpen={isOpen}>
-        <div className="card-body">
+        <div className="accordion-body">
           {props.children}
         </div>
       </Collapse>
