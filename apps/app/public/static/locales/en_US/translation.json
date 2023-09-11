@@ -825,5 +825,12 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "The attachment could not be found"
+  },
+  "approval_workflow": {
+    "approval_workflow": "Approval Workflow",
+    "back": "Back",
+    "list": "Workflow List",
+    "create": "Create workflow",
+    "create_new": "Create new workflow"
   }
 }

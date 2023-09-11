@@ -739,3 +739,30 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
+
+/*
+* workflowModal
+*/
+export type WorkflowModalStatus = {
+  isOpened: boolean,
+}
+
+type WorkflowModalUtils = {
+  open(): void,
+  close(): void,
+}
+
+export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & WorkflowModalUtils => {
+
+  const initialStatus: WorkflowModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<WorkflowModalStatus, Error>('workflowModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: () => {
+      swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};

@@ -858,5 +858,12 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "アタッチメントが見つかりません"
+  },
+  "approval_workflow": {
+    "approval_workflow": "ワークフロー",
+    "back": "戻る",
+    "list": "ワークフロー一覧",
+    "create": "ワークフローを作成",
+    "create_new": "ワークフロー新規作成"
   }
 }
