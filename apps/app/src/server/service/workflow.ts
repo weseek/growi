@@ -1,5 +1,5 @@
 import {
-  IWorkflow, IWorkflowApproverGroup, WorkflowApprovalType, WorkflowApproverStatus, WorkflowStatus,
+  IWorkflow, IWorkflowApproverGroup, WorkflowApprovalType, WorkflowApproverStatus,
 } from '~/interfaces/workflow';
 import Workflow from '~/server/models/workflow';
 import loggerFactory from '~/utils/logger';
@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
-  createWorkflow(creatorId: string, pageId: string, name: string, comment: string, approverGroups: IWorkflowApproverGroup[]): Promise<IWorkflow>,
+  createWorkflow(workflow: IWorkflow): Promise<IWorkflow>,
   validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroup[]): void,
 }
 
@@ -17,29 +17,21 @@ class WorkflowServiceImpl implements WorkflowService {
     this.validateApproverGroups = this.validateApproverGroups.bind(this);
   }
 
-  async createWorkflow(creatorId: string, pageId: string, name: string, comment: string, approverGroups: IWorkflowApproverGroup[]): Promise<IWorkflow> {
+  async createWorkflow(workflow: IWorkflow): Promise<IWorkflow> {
     /*
     *  Validation
     */
-    const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(pageId);
+    const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
     if (hasInprogressWorkflowInTargetPage) {
       throw Error('An in-progress workflow already exists');
     }
 
-    this.validateApproverGroups(true, creatorId, approverGroups);
+    this.validateApproverGroups(true, workflow.creator._id, workflow.approverGroups);
 
     /*
     *  Create
     */
-    const createdWorkflow = await Workflow.create({
-      creator: creatorId,
-      status: WorkflowStatus.INPROGRESS,
-      pageId,
-      name,
-      comment,
-      approverGroups,
-    });
-
+    const createdWorkflow = await Workflow.create(workflow);
     return createdWorkflow;
   }
 

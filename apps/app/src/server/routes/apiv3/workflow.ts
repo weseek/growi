@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, body } from 'express-validator';
 
+import { IWorkflow, WorkflowStatus } from '~/interfaces/workflow';
 import { WorkflowService } from '~/server/service/workflow';
 import loggerFactory from '~/utils/logger';
 
@@ -203,8 +204,17 @@ module.exports = (crowi: Crowi): Router => {
     const xssProcessedName = crowi.xss.process(name);
     const xssProcessedComment = crowi.xss.process(comment);
 
+    const workflow: IWorkflow = {
+      pageId,
+      creator: user,
+      name: xssProcessedName,
+      comment: xssProcessedComment,
+      status: WorkflowStatus.INPROGRESS,
+      approverGroups: approverGroups as any,
+    };
+
     try {
-      const createdWorkflow = await WorkflowService.createWorkflow(user._id, pageId, xssProcessedName, xssProcessedComment, approverGroups);
+      const createdWorkflow = await WorkflowService.createWorkflow(workflow);
       return res.apiv3({ createdWorkflow });
     }
     catch (err) {
