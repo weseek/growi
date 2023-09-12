@@ -16,38 +16,25 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   kcAdminClient: KeycloakAdminClient;
 
-  realm: string;
+  realm: string; // realm that contains the groups
 
-  groupDescriptionAttribute: string;
+  groupDescriptionAttribute: string; // attribute to map to group description
 
-  constructor() {
-    const keycloakHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
-    const keycloakRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:realm');
-    const keycloakGroupDescriptionAttribute = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
-    // TODO: allow user to choose 'oidc' or 'saml' for keycloak in settings
-    super(ExternalGroupProviderType.ldap, 'oidc');
-    this.kcAdminClient = new KeycloakAdminClient({ baseUrl: keycloakHost });
-    this.realm = keycloakRealm;
-    this.groupDescriptionAttribute = keycloakGroupDescriptionAttribute;
-  }
+  constructor(authProviderType: string) {
+    const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
+    const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
+    const kcGroupSyncClientRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
+    const kcGroupDescriptionAttribute = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
 
-  async auth(): Promise<void> {
-    const keycloakGroupSyncClientName = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientName');
-    const keycloakGroupSyncClientID: string = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID');
-    const keycloakGroupSyncClientSecret: string = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret');
-
-    await this.kcAdminClient.auth({
-      // grantType: 'client_credentials',
-      // clientId: keycloakGroupSyncClientID,
-      // clientSecret: keycloakGroupSyncClientSecret,
-      grantType: 'password',
-      username: 'admin',
-      password: 'admin',
-      clientId: keycloakGroupSyncClientID,
-    });
+    super(ExternalGroupProviderType.keycloak, authProviderType);
+    this.kcAdminClient = new KeycloakAdminClient({ baseUrl: kcHost, realmName: kcGroupSyncClientRealm });
+    this.realm = kcGroupRealm;
+    this.groupDescriptionAttribute = kcGroupDescriptionAttribute;
   }
 
   async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
+    await this.auth();
+
     // Type is 'GroupRepresentation', but 'find' does not return 'attributes' field. Hence, attribute for description is not present.
     const rootGroups = await this.kcAdminClient.groups.find({ realm: this.realm });
 
@@ -55,6 +42,23 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
       .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
   }
 
+  /**
+   * Authenticate to group sync client using client credentials grant type
+   */
+  private async auth(): Promise<void> {
+    const kcGroupSyncClientID: string = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID');
+    const kcGroupSyncClientSecret: string = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret');
+
+    await this.kcAdminClient.auth({
+      grantType: 'client_credentials',
+      clientId: kcGroupSyncClientID,
+      clientSecret: kcGroupSyncClientSecret,
+    });
+  }
+
+  /**
+   * Convert GroupRepresentation response returned from Keycloak to ExternalUserGroupTreeNode
+   */
   private async groupRepresentationToTreeNode(group: GroupRepresentation): Promise<ExternalUserGroupTreeNode | null> {
     if (group.id == null || group.name == null) return null;
 
@@ -84,15 +88,21 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     };
   }
 
+  /**
+   * Fetch group detail from Keycloak and return group description
+   */
   private async getGroupDescription(groupId: string): Promise<string | null> {
     if (this.groupDescriptionAttribute == null) return null;
 
     const groupDetail = await this.kcAdminClient.groups.findOne({ id: groupId, realm: this.realm });
 
-    const description = groupDetail?.attributes?.[this.groupDescriptionAttribute];
+    const description = groupDetail?.attributes?.[this.groupDescriptionAttribute]?.[0];
     return typeof description === 'string' ? description : null;
   }
 
+  /**
+   * Convert UserRepresentation array response returned from Keycloak to ExternalUserInfo
+   */
   private userRepresentationsToExternalUserInfos(userRepresentations: UserRepresentation[]): ExternalUserInfo[] {
     const externalUserGroupsWithNull: (ExternalUserInfo | null)[] = userRepresentations.map((userRepresentation) => {
       if (userRepresentation.id != null && userRepresentation.username != null) {

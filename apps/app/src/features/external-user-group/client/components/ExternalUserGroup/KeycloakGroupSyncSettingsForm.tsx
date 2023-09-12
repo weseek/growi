@@ -16,8 +16,8 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
 
   const [formValues, setFormValues] = useState<KeycloakGroupSyncSettings>({
     keycloakHost: '',
-    keycloakRealm: '',
-    keycloakGroupSyncClientName: '',
+    keycloakGroupRealm: '',
+    keycloakGroupSyncClientRealm: '',
     keycloakGroupSyncClientID: '',
     keycloakGroupSyncClientSecret: '',
     autoGenerateUserOnKeycloakGroupSync: false,
@@ -68,43 +68,43 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakRealm" className="text-left text-md-right col-md-3 col-form-label">
-            {t('external_user_group.keycloak.realm')}
+          <label htmlFor="keycloakGroupRealm" className="text-left text-md-right col-md-3 col-form-label">
+            {t('external_user_group.keycloak.group_realm')}
           </label>
           <div className="col-md-6">
             <input
               className="form-control"
               required
               type="text"
-              name="keycloakRealm"
-              id="keycloakRealm"
-              value={formValues.keycloakRealm}
-              onChange={e => setFormValues({ ...formValues, keycloakRealm: e.target.value })}
+              name="keycloakGroupRealm"
+              id="keycloakGroupRealm"
+              value={formValues.keycloakGroupRealm}
+              onChange={e => setFormValues({ ...formValues, keycloakGroupRealm: e.target.value })}
             />
             <p className="form-text text-muted">
               <small>
-                {t('external_user_group.keycloak.realm_detail')} <br />
+                {t('external_user_group.keycloak.group_realm_detail')} <br />
               </small>
             </p>
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakGroupSyncClientName" className="text-left text-md-right col-md-3 col-form-label">
-            {t('external_user_group.keycloak.group_sync_client_name')}
+          <label htmlFor="keycloakGroupSyncClientRealm" className="text-left text-md-right col-md-3 col-form-label">
+            {t('external_user_group.keycloak.group_sync_client_realm')}
           </label>
           <div className="col-md-6">
             <input
               className="form-control"
               required
               type="text"
-              name="keycloakGroupSyncClientName"
-              id="keycloakGroupSyncClientName"
-              value={formValues.keycloakGroupSyncClientName}
-              onChange={e => setFormValues({ ...formValues, keycloakGroupSyncClientName: e.target.value })}
+              name="keycloakGroupSyncClientRealm"
+              id="keycloakGroupSyncClientRealm"
+              value={formValues.keycloakGroupSyncClientRealm}
+              onChange={e => setFormValues({ ...formValues, keycloakGroupSyncClientRealm: e.target.value })}
             />
             <p className="form-text text-muted">
               <small>
-                {t('external_user_group.keycloak.group_sync_client_name_detail')} <br />
+                {t('external_user_group.keycloak.group_sync_client_realm_detail')} <br />
               </small>
             </p>
           </div>

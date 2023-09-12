@@ -36,8 +36,8 @@ export interface LdapGroupSyncSettings {
 
 export interface KeycloakGroupSyncSettings {
   keycloakHost: string
-  keycloakRealm: string
-  keycloakGroupSyncClientName: string
+  keycloakGroupRealm: string
+  keycloakGroupSyncClientRealm: string
   keycloakGroupSyncClientID: string
   keycloakGroupSyncClientSecret: string
   autoGenerateUserOnKeycloakGroupSync: boolean
