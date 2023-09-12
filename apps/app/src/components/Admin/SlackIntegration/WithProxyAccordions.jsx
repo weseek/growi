@@ -336,15 +336,15 @@ const WithProxyAccordions = (props) => {
   };
 
   const CustomBotIntegrationProcedure = {
-    '①': {
+    '1': {
       title: 'create_bot',
       content: <BotCreateProcess />,
     },
-    '②': {
+    '2': {
       title: 'install_bot_to_slack',
       content: <BotInstallProcessForCustomBotWithProxy />,
     },
-    '③': {
+    '3': {
       title: 'register_for_growi_custom_bot_proxy',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={siteUrl}
@@ -354,11 +354,11 @@ const WithProxyAccordions = (props) => {
         onUpdateTokens={props.onUpdateTokens}
       />,
     },
-    '④': {
+    '4': {
       title: 'set_proxy_url_on_growi',
       content: <RegisteringProxyUrlProcess />,
     },
-    '⑤': {
+    '5': {
       title: 'manage_permission',
       content: <ManageCommandsProcess
         slackAppIntegrationId={props.slackAppIntegrationId}
@@ -367,7 +367,7 @@ const WithProxyAccordions = (props) => {
         permissionsForSlackEventActions={props.permissionsForSlackEventActions}
       />,
     },
-    '⑥': {
+    '6': {
       title: 'test_connection',
       content: <TestProcess
         slackAppIntegrationId={props.slackAppIntegrationId}
@@ -389,7 +389,7 @@ const WithProxyAccordions = (props) => {
           <Accordion
             title={(
               <>
-                <span className="me-2">{key}</span>
+                <span className="me-3">{key}</span>
                 {t(`admin:slack_integration.accordion.${value.title}`)}
                 {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}
               </>
