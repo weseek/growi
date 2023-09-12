@@ -4,19 +4,16 @@ import {
 import Workflow from '~/server/models/workflow';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../crowi';
-
-
 const logger = loggerFactory('growi:service:workflow');
 
+interface WorkflowService {
+  createWorkflow(creatorId: string, pageId: string, name: string, comment: string, approverGroups: IWorkflowApproverGroup[]): Promise<IWorkflow>,
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroup[]): void,
+}
 
-export default class WorkflowService {
+class WorkflowServiceImpl implements WorkflowService {
 
-  crowi!: Crowi;
-
-  constructor(crowi: Crowi) {
-    this.crowi = crowi;
-
+  constructor() {
     this.validateApproverGroups = this.validateApproverGroups.bind(this);
   }
 
@@ -70,4 +67,4 @@ export default class WorkflowService {
 
 }
 
-module.exports = WorkflowService;
+export const WorkflowService = new WorkflowServiceImpl();

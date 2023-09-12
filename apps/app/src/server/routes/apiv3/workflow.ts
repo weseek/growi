@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, body } from 'express-validator';
 
+import { WorkflowService } from '~/server/service/workflow';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
@@ -12,7 +13,7 @@ import type { ApiV3Response } from './interfaces/apiv3-response';
 const logger = loggerFactory('growi:routes:apiv3:workflow');
 const router = express.Router();
 
-type RequestWithUser = Request & { user?: IUserHasId }
+type RequestWithUser = Request & { user: IUserHasId }
 
 
 // for PUT:/workflow/{workflowId}:
@@ -203,7 +204,7 @@ module.exports = (crowi: Crowi): Router => {
     const xssProcessedComment = crowi.xss.process(comment);
 
     try {
-      const createdWorkflow = await crowi.workflowService.createWorkflow(user?._id, pageId, xssProcessedName, xssProcessedComment, approverGroups);
+      const createdWorkflow = await WorkflowService.createWorkflow(user._id, pageId, xssProcessedName, xssProcessedComment, approverGroups);
       return res.apiv3({ createdWorkflow });
     }
     catch (err) {
