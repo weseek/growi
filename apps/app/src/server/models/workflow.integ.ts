@@ -35,6 +35,10 @@ describe('Workflow', () => {
     ]);
   });
 
+  afterAll(async() => {
+    await Workflow.deleteMany({});
+  });
+
   describe('hasInprogressWorkflowInTargetPage()', () => {
     test('Should return true if there are in-progress workflows on the page」', async() => {
       // when

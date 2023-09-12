@@ -26,6 +26,10 @@ describe('WorkflowService', () => {
     approver2 = new mongoose.Types.ObjectId();
   });
 
+  afterAll(async() => {
+    await Workflow.deleteMany({});
+  });
+
   describe('.createWorkflow', () => {
     test('Should be able to create a workflow', async() => {
 
