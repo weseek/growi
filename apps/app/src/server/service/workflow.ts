@@ -1,5 +1,5 @@
 import {
-  IWorkflow, IWorkflowApproverGroup, WorkflowApprovalType, WorkflowApproverStatus,
+  IWorkflow, IWorkflowReq, IWorkflowApproverGroup, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
 } from '~/interfaces/workflow';
 import Workflow from '~/server/models/workflow';
 import loggerFactory from '~/utils/logger';
@@ -17,7 +17,7 @@ class WorkflowServiceImpl implements WorkflowService {
     this.validateApproverGroups = this.validateApproverGroups.bind(this);
   }
 
-  async createWorkflow(workflow: IWorkflow): Promise<IWorkflow> {
+  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow> {
     /*
     *  Validation
     */
@@ -35,7 +35,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return createdWorkflow;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroup[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void {
     const uniqueApprovers = new Set();
     uniqueApprovers.add(creatorId);
 

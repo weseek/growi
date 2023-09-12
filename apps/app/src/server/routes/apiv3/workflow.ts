@@ -2,7 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, body } from 'express-validator';
 
-import { IWorkflow, WorkflowStatus } from '~/interfaces/workflow';
+import { IWorkflowReq, WorkflowStatus } from '~/interfaces/workflow';
 import { WorkflowService } from '~/server/service/workflow';
 import loggerFactory from '~/utils/logger';
 
@@ -204,7 +204,7 @@ module.exports = (crowi: Crowi): Router => {
     const xssProcessedName = crowi.xss.process(name);
     const xssProcessedComment = crowi.xss.process(comment);
 
-    const workflow: IWorkflow = {
+    const workflow: IWorkflowReq = {
       pageId,
       creator: user,
       name: xssProcessedName,

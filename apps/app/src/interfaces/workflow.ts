@@ -51,4 +51,8 @@ export type IWorkflow = {
   approverGroups: IWorkflowApproverGroup[]
 }
 
+export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'status'> & { status?: WorkflowApproverStatus }
+export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
+export type IWorkflowReq = Omit<IWorkflow, 'approverGroups'> & { approverGroups: IWorkflowApproverGroupReq[] }
+
 export type IWorkflowHasId = IWorkflow & HasObjectId
