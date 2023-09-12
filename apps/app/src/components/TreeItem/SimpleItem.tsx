@@ -131,7 +131,7 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   );
 };
 
-const SimpleItem: FC<SimpleItemProps> = (props) => {
+export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
@@ -281,5 +281,3 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     </div>
   );
 };
-
-export default SimpleItem;
