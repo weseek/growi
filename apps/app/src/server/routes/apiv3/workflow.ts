@@ -2,7 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, body } from 'express-validator';
 
-import { IWorkflowReq, WorkflowStatus } from '~/interfaces/workflow';
+import { IWorkflowReq, IWorkflowApproverGroupReq, WorkflowStatus } from '~/interfaces/workflow';
 import { WorkflowService } from '~/server/service/workflow';
 import loggerFactory from '~/utils/logger';
 
@@ -210,7 +210,7 @@ module.exports = (crowi: Crowi): Router => {
       name: xssProcessedName,
       comment: xssProcessedComment,
       status: WorkflowStatus.INPROGRESS,
-      approverGroups: approverGroups as any,
+      approverGroups: approverGroups as IWorkflowApproverGroupReq[],
     };
 
     try {
