@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
-import { WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType } from '../../../src/interfaces/workflow';
-import Workflow from '../../../src/server/models/workflow';
+import { WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType } from '~/interfaces/workflow';
+
+import Workflow from './workflow';
 
 let page1;
 let page2;

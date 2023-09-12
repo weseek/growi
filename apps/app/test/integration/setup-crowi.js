@@ -24,7 +24,6 @@ const initCrowi = async(crowi) => {
     crowi.setupInAppNotificationService(),
     crowi.setupActivityService(),
     crowi.setupUserGroupService(),
-    crowi.setupWorkflowService(),
   ]);
 };
 

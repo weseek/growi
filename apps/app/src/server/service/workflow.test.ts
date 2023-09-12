@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import { WorkflowApprovalType } from '../../../src/interfaces/workflow';
-import Workflow from '../../../src/server/models/workflow';
-import { getInstance } from '../setup-crowi';
+import { getInstance } from '../../../test/integration/setup-crowi';
+import { WorkflowApprovalType } from '../../interfaces/workflow';
+import Workflow from '../models/workflow';
 
 
 let page1;
