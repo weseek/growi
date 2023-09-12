@@ -1,10 +1,12 @@
 import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
+import mongoose from 'mongoose';
 
 import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import Workflow from '~/server/models/workflow';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
@@ -158,7 +160,7 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/list/:pageId', accessTokenParser, loginRequired, validator.getWorkflows, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
 
-    const limit = req.query.limit || await crowi.configManager?.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || await configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const offset = req.query.offset || 1;
 
     try {
@@ -172,7 +174,7 @@ module.exports = (crowi: Crowi): Router => {
         },
       );
 
-      const User = crowi.model('User');
+      const User = mongoose.model('User');
       paginateResult.docs.forEach((doc) => {
         if (doc.creator != null && doc.creator instanceof User) {
           doc.creator = serializeUserSecurely(doc.creator);
