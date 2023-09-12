@@ -40,11 +40,11 @@ describe('WorkflowService', () => {
             approvalType: WorkflowApprovalType.AND,
             approvers: [
               {
-                user: approver1.status,
+                user: approver1._id,
                 status:  WorkflowApproverStatus.NONE,
               },
               {
-                user: approver2.status,
+                user: approver2._id,
                 status: WorkflowApproverStatus.NONE,
               },
             ],
@@ -63,8 +63,8 @@ describe('WorkflowService', () => {
 
       // setup
       const workflow: IWorkflow = {
-        creator: creator._id,
-        pageId: page1._id,
+        creator,
+        pageId: page1,
         status: WorkflowStatus.INPROGRESS,
         name: 'page1 workflow',
         comment: 'comment',
@@ -73,11 +73,11 @@ describe('WorkflowService', () => {
             approvalType: WorkflowApprovalType.AND,
             approvers: [
               {
-                user: approver1.status,
+                user: approver1._id,
                 status:  WorkflowApproverStatus.NONE,
               },
               {
-                user: approver2.status,
+                user: approver2._id,
                 status: WorkflowApproverStatus.NONE,
               },
             ],
