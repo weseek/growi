@@ -75,16 +75,14 @@ export const NewPageInput = (props) => {
   return (
     <>
       {isEnableActions && isNewPageInputShown && (
-        <div className="flex-fill">
-          <NotDraggableForClosableTextInput>
-            <ClosableTextInput
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setNewPageInputShown(false) }}
-              onPressEnter={onPressEnterForCreateHandler}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </NotDraggableForClosableTextInput>
-        </div>
+        <NotDraggableForClosableTextInput>
+          <ClosableTextInput
+            placeholder={t('Input page name')}
+            onClickOutside={() => { setNewPageInputShown(false) }}
+            onPressEnter={onPressEnterForCreateHandler}
+            validationTarget={ValidationTarget.PAGE}
+          />
+        </NotDraggableForClosableTextInput>
       )}
     </>
   );

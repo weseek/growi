@@ -258,9 +258,11 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
         ))}
       </li>
 
-      {CustomNextComponents?.map((UnderItemContent, index) => (
-        <UnderItemContent key={index} {...SimpleItemContentProps}/>
-      ))}
+      <div className="flex-fill">
+        {CustomNextComponents?.map((UnderItemContent, index) => (
+          <UnderItemContent key={index} {...SimpleItemContentProps}/>
+        ))}
+      </div>
 
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (

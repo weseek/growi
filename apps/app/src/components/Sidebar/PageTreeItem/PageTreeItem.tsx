@@ -4,75 +4,30 @@ import React, {
 
 import nodePath from 'path';
 
-
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useDrag, useDrop } from 'react-dnd';
-import { DropdownToggle } from 'reactstrap';
 
-import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
-import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
-import { ValidationTarget } from '~/client/util/input-validator';
-import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
-import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastWarning, toastError } from '~/client/util/toastr';
 import {
-  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta, IPageForItem,
+  IPageHasId,
 } from '~/interfaces/page';
-import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRMUTxPageInfo } from '~/stores/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
-import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import ClosableTextInput from '../../Common/ClosableTextInput';
-import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
-import { NewPageCreateButton } from '../../TreeItem/NewPageCreateButton';
-import { NewPageInput } from '../../TreeItem/NewPageInput';
 import SimpleItem, {
-  SimpleItemProps, SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+  SimpleItemProps,
 } from '../../TreeItem/SimpleItem';
+import { useNewPageInput } from '../../TreeItem/UseNewPageInput';
 import { ItemNode } from '../PageTree/ItemNode';
+
+import { Ellipsis } from './Ellipsis';
 
 const logger = loggerFactory('growi:cli:Item');
 
 type PageTreeItemPropsOptional = 'itemRef' | 'itemClass' | 'mainClassName';
 type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional> & {key};
-
-export const useNewPageInput = () => {
-
-  const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-
-  const NewPageCreateButtonWrapper = (props) => {
-    return (
-      <NewPageCreateButton
-        page={props.page}
-        children={props.children}
-        stateHandlers={props.stateHandlers}
-        setNewPageInputShown={setNewPageInputShown}
-      />
-    );
-  };
-
-  const NewPageInputWrapper = (props) => {
-    return (
-      <NewPageInput
-        page={props.page}
-        isEnableActions={props.isEnableActions}
-        children={props.chilren}
-        stateHandlers={props.stateHandlers}
-        isNewPageInputShown={isNewPageInputShown}
-        setNewPageInputShown={setNewPageInputShown}
-      />
-    );
-  };
-
-
-  return {
-    NewPageInputWrapper,
-    NewPageCreateButtonWrapper,
-  };
-};
 
 export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
