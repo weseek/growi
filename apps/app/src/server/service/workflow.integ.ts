@@ -1,25 +1,24 @@
 import mongoose from 'mongoose';
 
-import { getInstance } from '../../../test/integration/setup-crowi';
-import { WorkflowApprovalType } from '../../interfaces/workflow';
-import Workflow from '../models/workflow';
+import {
+  IWorkflow, WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
+} from '~/interfaces/workflow';
+import Workflow from '~/server/models/workflow';
+
+import { WorkflowService } from './workflow';
 
 
 let page1;
-let page2;
+
 let creator;
 let approver1;
 let approver2;
 
 describe('WorkflowService', () => {
-  let crowi;
 
   beforeAll(async() => {
-    crowi = await getInstance();
-
     // page
     page1 = new mongoose.Types.ObjectId();
-    page2 = new mongoose.Types.ObjectId();
 
     // user
     creator = new mongoose.Types.ObjectId();
@@ -27,25 +26,34 @@ describe('WorkflowService', () => {
     approver2 = new mongoose.Types.ObjectId();
   });
 
-  describe('createWorkflow()', () => {
+  describe('.createWorkflow', () => {
     test('Should be able to create a workflow', async() => {
-      // setup
-      const approverGroups = [
-        {
-          approvalType: WorkflowApprovalType.AND,
-          approvers: [
-            {
-              user: approver1,
-            },
-            {
-              user: approver2,
-            },
-          ],
-        },
-      ];
+
+      const workflow: IWorkflow = {
+        creator: creator._id,
+        pageId: page1._id,
+        status: WorkflowStatus.INPROGRESS,
+        name: 'page1 workflow',
+        comment: 'comment',
+        approverGroups: [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: approver1.status,
+                status:  WorkflowApproverStatus.NONE,
+              },
+              {
+                user: approver2.status,
+                status: WorkflowApproverStatus.NONE,
+              },
+            ],
+          },
+        ] as any,
+      };
 
       // when
-      const createdWorkflow = await crowi.workflowService.createWorkflow(creator, page1, 'page1 workflow', 'comment', approverGroups);
+      const createdWorkflow = await WorkflowService.createWorkflow(workflow);
 
       // then
       expect(createdWorkflow).toBeInstanceOf(Workflow);
@@ -54,115 +62,125 @@ describe('WorkflowService', () => {
     test('Should fail when attempting to create multiple in-progress workflows on single page', async() => {
 
       // setup
-      const approverGroups = [
-        {
-          approvalType: WorkflowApprovalType.AND,
-          approvers: [
-            {
-              user: approver1,
-            },
-            {
-              user: approver2,
-            },
-          ],
-        },
-      ];
+      const workflow: IWorkflow = {
+        creator: creator._id,
+        pageId: page1._id,
+        status: WorkflowStatus.INPROGRESS,
+        name: 'page1 workflow',
+        comment: 'comment',
+        approverGroups: [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: approver1.status,
+                status:  WorkflowApproverStatus.NONE,
+              },
+              {
+                user: approver2.status,
+                status: WorkflowApproverStatus.NONE,
+              },
+            ],
+          },
+        ] as any,
+      };
 
       // when
-      const result = crowi.workflowService.createWorkflow(creator, page1, 'page1 workflow', 'comment', approverGroups);
+      const result = WorkflowService.createWorkflow(workflow);
 
       // then
       await expect(result).rejects.toThrow('An in-progress workflow already exists');
     });
 
 
-    test('Should fail when setting approverGroup.approveType to "OR" when approverGroup.approvers.length is 1', async() => {
+    describe('.validateApproverGroups', () => {
+      test('Should fail when setting approverGroup.approveType to "OR" when approverGroup.approvers.length is 1', () => {
 
-      // setup
-      const approverGroups = [
-        {
-          approvalType: WorkflowApprovalType.OR,
-          approvers: [
-            {
-              user: creator,
-            },
-          ],
-        },
-      ];
+        // setup
+        const approverGroups = [
+          {
+            approvalType: WorkflowApprovalType.OR,
+            approvers: [
+              {
+                user: creator,
+              },
+            ],
+          },
+        ] as any;
 
-      // when
-      const result = crowi.workflowService.createWorkflow(creator, page2, 'page2 workflow', 'comment', approverGroups);
+        // when
+        const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
 
-      // then
-      await expect(result).rejects.toThrow('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
-    });
+        // then
+        expect(caller).toThrow('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
+      });
 
-    test('Should fail when attempting to set a user as an approver who is already an approver', async() => {
+      test('Should fail when attempting to set a user as an approver who is already an approver', () => {
 
-      // setup
-      const approverGroups = [
-        {
-          approvalType: WorkflowApprovalType.OR,
-          approvers: [
-            {
-              user: approver1,
-            },
-            {
-              user: approver1,
-            },
-          ],
-        },
-      ];
+        // setup
+        const approverGroups = [
+          {
+            approvalType: WorkflowApprovalType.OR,
+            approvers: [
+              {
+                user: approver1,
+              },
+              {
+                user: approver1,
+              },
+            ],
+          },
+        ] as any;
 
-      // when
-      const result = crowi.workflowService.createWorkflow(creator, page2, 'page2 workflow', 'comment', approverGroups);
+        // when
+        const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
 
-      // then
-      await expect(result).rejects.toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
-    });
+        // then
+        expect(caller).toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
+      });
 
-    test('Should fail when attempting to set the workflow creator as an approver', async() => {
+      test('Should fail when attempting to set the workflow creator as an approver', () => {
 
-      // setup
-      const approverGroups = [
-        {
-          approvalType: WorkflowApprovalType.AND,
-          approvers: [
-            {
-              user: creator,
-            },
-          ],
-        },
-      ];
+        // setup
+        const approverGroups = [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: creator,
+              },
+            ],
+          },
+        ] as any;
 
-      // when
-      const result = crowi.workflowService.createWorkflow(creator, page2, 'page2 workflow', 'comment', approverGroups);
+        // when
+        const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
 
-      // then
-      await expect(result).rejects.toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
-    });
+        // then
+        expect(caller).toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
+      });
 
+      test('Should fail when setting approver.status to anything other than "NONE" during workflow creation', () => {
 
-    test('Should fail when setting approver.status to anything other than "NONE" during workflow creation', async() => {
+        // setup
+        const approverGroups = [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: approver1,
+                status: 'APPROVE',
+              },
+            ],
+          },
+        ] as any;
 
-      // setup
-      const approverGroups = [
-        {
-          approvalType: WorkflowApprovalType.AND,
-          approvers: [
-            {
-              user: approver1,
-              status: 'APPROVE',
-            },
-          ],
-        },
-      ];
+        // when
+        const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
 
-      // when
-      const result = crowi.workflowService.createWorkflow(creator, page2, 'page2 workflow', 'comment', approverGroups);
-
-      // then
-      await expect(result).rejects.toThrow('Cannot set approver.status to anything other than "NONE" during creation');
+        // then
+        expect(caller).toThrow('Cannot set approver.status to anything other than "NONE" during creation');
+      });
     });
   });
 });
