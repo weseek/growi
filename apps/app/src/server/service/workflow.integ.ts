@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IWorkflow, WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
+  IWorkflowReq, IWorkflowApproverGroupReq, WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
 } from '~/interfaces/workflow';
 import Workflow from '~/server/models/workflow';
 
@@ -29,7 +29,7 @@ describe('WorkflowService', () => {
   describe('.createWorkflow', () => {
     test('Should be able to create a workflow', async() => {
 
-      const workflow: IWorkflow = {
+      const workflow: IWorkflowReq = {
         creator: creator._id,
         pageId: page1._id,
         status: WorkflowStatus.INPROGRESS,
@@ -49,7 +49,7 @@ describe('WorkflowService', () => {
               },
             ],
           },
-        ] as any,
+        ],
       };
 
       // when
@@ -62,7 +62,7 @@ describe('WorkflowService', () => {
     test('Should fail when attempting to create multiple in-progress workflows on single page', async() => {
 
       // setup
-      const workflow: IWorkflow = {
+      const workflow: IWorkflowReq = {
         creator,
         pageId: page1,
         status: WorkflowStatus.INPROGRESS,
@@ -97,16 +97,12 @@ describe('WorkflowService', () => {
       test('Should fail when setting approverGroup.approveType to "OR" when approverGroup.approvers.length is 1', () => {
 
         // setup
-        const approverGroups = [
+        const approverGroups: IWorkflowApproverGroupReq[] = [
           {
             approvalType: WorkflowApprovalType.OR,
-            approvers: [
-              {
-                user: creator,
-              },
-            ],
+            approvers: [{ user: creator }],
           },
-        ] as any;
+        ];
 
         // when
         const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
@@ -118,7 +114,7 @@ describe('WorkflowService', () => {
       test('Should fail when attempting to set a user as an approver who is already an approver', () => {
 
         // setup
-        const approverGroups = [
+        const approverGroups: IWorkflowApproverGroupReq[] = [
           {
             approvalType: WorkflowApprovalType.OR,
             approvers: [
@@ -130,7 +126,7 @@ describe('WorkflowService', () => {
               },
             ],
           },
-        ] as any;
+        ];
 
         // when
         const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
@@ -142,7 +138,7 @@ describe('WorkflowService', () => {
       test('Should fail when attempting to set the workflow creator as an approver', () => {
 
         // setup
-        const approverGroups = [
+        const approverGroups: IWorkflowApproverGroupReq[] = [
           {
             approvalType: WorkflowApprovalType.AND,
             approvers: [
@@ -151,7 +147,7 @@ describe('WorkflowService', () => {
               },
             ],
           },
-        ] as any;
+        ];
 
         // when
         const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
@@ -163,7 +159,7 @@ describe('WorkflowService', () => {
       test('Should fail when setting approver.status to anything other than "NONE" during workflow creation', () => {
 
         // setup
-        const approverGroups = [
+        const approverGroups: IWorkflowApproverGroupReq[] = [
           {
             approvalType: WorkflowApprovalType.AND,
             approvers: [
@@ -173,7 +169,7 @@ describe('WorkflowService', () => {
               },
             ],
           },
-        ] as any;
+        ];
 
         // when
         const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
