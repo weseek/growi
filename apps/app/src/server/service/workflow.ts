@@ -1,5 +1,5 @@
 import {
-  IWorkflow, IWorkflowReq, IWorkflowApproverGroup, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
+  IWorkflow, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
 } from '~/interfaces/workflow';
 import Workflow from '~/server/models/workflow';
 import loggerFactory from '~/utils/logger';
@@ -7,8 +7,8 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
-  createWorkflow(workflow: IWorkflow): Promise<IWorkflow>,
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroup[]): void,
+  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void,
 }
 
 class WorkflowServiceImpl implements WorkflowService {
