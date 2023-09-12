@@ -18,9 +18,8 @@ import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import CountBadge from '../../Common/CountBadge';
-
-import { ItemNode } from './ItemNode';
+import CountBadge from '../Common/CountBadge';
+import { ItemNode } from '../Sidebar/PageTree/ItemNode';
 
 
 export type SimpleItemProps = {
