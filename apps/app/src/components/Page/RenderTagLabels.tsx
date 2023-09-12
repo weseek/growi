@@ -32,7 +32,12 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
     <>
       {tags.map((tag) => {
         return (
-          <a key={tag} type="button" className="grw-tag-label badge badge-secondary mr-2" onClick={() => pushState(tag)}>
+          <a
+            key={tag}
+            type="button"
+            className="grw-tag-label badge badge-secondary mr-2"
+            onClick={() => pushState(`tag:${tag}`)}
+          >
             {tag}
           </a>
         );
