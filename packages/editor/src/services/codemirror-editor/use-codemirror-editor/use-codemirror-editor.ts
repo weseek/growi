@@ -40,6 +40,9 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
       {
         extensions: defaultExtensions,
         indentWithTab: false,
+        basicSetup: {
+          tabSize: 1,
+        },
       },
     );
   }, [props]);
