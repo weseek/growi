@@ -60,6 +60,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
+      onSave={onSave}
     />
   );
 };
