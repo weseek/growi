@@ -7,7 +7,7 @@ import { Collapse } from 'reactstrap';
 const Accordion = (props) => {
   const [isOpen, setIsOpen] = useState(props.isOpenDefault);
   return (
-    <div className="accordion-item mb-0">
+    <div className="accordion-item">
       <p className="accordion-header" id="headingOne">
         <button
           className={`accordion-button ${isOpen ? '' : 'collapsed'}`}

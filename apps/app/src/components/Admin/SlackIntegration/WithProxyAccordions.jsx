@@ -382,7 +382,7 @@ const WithProxyAccordions = (props) => {
 
   return (
     <div
-      className="accordion border-0 overflow-hidden"
+      className="accordion"
     >
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
         return (
