@@ -618,11 +618,11 @@ module.exports = (crowi) => {
     }
 
     let fileName = path.basename(pagePath)
-      .replace(/[\\/:;"*? <>,」ˆ|¥]/g, '_')
+      .replace(/[\\/:;"*?<>,」ˆ|¥]/g, '_')
       .replace(/\.$/, '_');
 
     if (!fileName) {
-      fileName = 'page';
+      fileName = '_top';
     }
 
     let stream;
