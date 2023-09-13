@@ -39,6 +39,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
       props ?? {},
       {
         extensions: defaultExtensions,
+        // Reset settings of react-codemirror.
+        // The extension defined first will be used, so it must be disabled here.
         indentWithTab: false,
         basicSetup: {
           defaultKeymap: false,
