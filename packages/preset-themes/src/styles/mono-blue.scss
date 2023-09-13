@@ -1,18 +1,34 @@
-@import '@growi/core/scss/bootstrap/init-stage-1';
-
-$primary: orange !default;
-@import 'bootstrap/scss/variables';
-@import 'bootstrap/scss/variables-dark';
-
-@import '@growi/core/scss/bootstrap/init-stage-2';
-
 :root[data-bs-theme='light'] {
-  .btn-primary {
-    @include button-variant($primary, $primary);
-  }
-  .btn-outline-primary {
-    @include button-outline-variant($primary);
-  }
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+
+  $primary: orange;
+  $secondary: $gray-600;
+
+  $body-color:                $gray-900;
+  $body-bg:                   white;
+
+  $body-secondary-color:      rgba($body-color, .75);
+  $body-secondary-bg:         $gray-200;
+
+  $body-tertiary-color:       rgba($body-color, .5);
+  $body-tertiary-bg:          $gray-100;
+
+  $body-emphasis-color:       black;
+
+  $link-color:                $primary;
+
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
+
+  @import '@growi/core/scss/bootstrap/init-stage-2';
+
+  @import '@growi/core/scss/bootstrap/theming/root-light';
+  @import '@growi/core/scss/bootstrap/theming/tables';
+  @import '@growi/core/scss/bootstrap/theming/buttons';
+  @import '@growi/core/scss/bootstrap/theming/pagination';
+  @import '@growi/core/scss/bootstrap/theming/progress';
+  @import '@growi/core/scss/bootstrap/theming/list-group';
 }
 
 // @use '@growi/core/scss/bootstrap/init' as bs;
