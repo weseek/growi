@@ -2,9 +2,7 @@ import {
   forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
-import { defaultKeymap } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
-import { keymap } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
