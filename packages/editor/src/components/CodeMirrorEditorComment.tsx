@@ -26,7 +26,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     onComment, onChange,
   } = props;
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
 
   // setup additional extensions
   useEffect(() => {

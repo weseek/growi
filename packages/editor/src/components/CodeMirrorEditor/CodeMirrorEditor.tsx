@@ -2,7 +2,6 @@ import {
   forwardRef, useMemo, useRef,
 } from 'react';
 
-
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
@@ -37,7 +36,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       onChange,
     };
   }, [onChange]);
-
   useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   return (
