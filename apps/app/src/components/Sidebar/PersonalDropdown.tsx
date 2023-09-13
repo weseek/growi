@@ -54,18 +54,18 @@ export const PersonalDropdown = (): JSX.Element => {
 
         {/* Menu */}
         <ul className="dropdown-menu" data-testid="personal-dropdown-menu">
-          <div className="px-4 pt-3 pb-2">
+          <li className="px-4 pt-3 pb-2">
             <UserPicture user={currentUser} size="lg" noLink noTooltip />
-
-            <h5 className="mt-2">{currentUser.name}</h5>
-
-            <div className="my-2">
-              <i className="icon-user icon-fw"></i>{currentUser.username}<br />
+            <h5>{currentUser.name}</h5>
+            <div className="d-flex align-items-center">
+              <i className="icon-user icon-fw"></i>{currentUser.username}
+            </div>
+            <div className="d-flex align-items-center">
               <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{currentUser.email}</span>
             </div>
-          </div>
+          </li>
 
-          <div className="dropdown-divider"></div>
+          <li className="dropdown-divider"></li>
 
           <li>
             <Link
