@@ -30,6 +30,15 @@
 
   @import '@growi/core/scss/bootstrap/theming/root-light';
   @import '@growi/core/scss/bootstrap/theming/apply';
+
+  .wiki {
+    a {
+      color: var(--grw-primary-500);
+      &:hover {
+        color: var(--grw-primary-700);
+      }
+    }
+  }
 }
 
 // @use '@growi/core/scss/bootstrap/init' as bs;
