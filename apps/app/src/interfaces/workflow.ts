@@ -1,6 +1,7 @@
 import type { IUserHasId, HasObjectId } from '@growi/core';
 
 import type { PaginateResult } from '~/interfaces/mongoose-utils';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 
 export const WorkflowStatus = {
@@ -46,16 +47,16 @@ export type IWorkflowApproverGroup = {
 
 export type IWorkflow = {
   creator: IUserHasId,
+  pageId: string,
   name?: string,
   comment?: string,
-  pageId: string,
   status: WorkflowStatus,
   approverGroups: IWorkflowApproverGroup[]
 }
 
-export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'status'> & { status?: WorkflowApproverStatus }
+export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
-export type IWorkflowReq = Omit<IWorkflow, 'approverGroups'> & { approverGroups: IWorkflowApproverGroupReq[] }
+export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
 
 export type IWorkflowHasId = IWorkflow & HasObjectId
 

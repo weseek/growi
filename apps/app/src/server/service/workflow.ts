@@ -1,6 +1,7 @@
 import {
   IWorkflow, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
 } from '~/interfaces/workflow';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import Workflow from '~/server/models/workflow';
 import loggerFactory from '~/utils/logger';
 
@@ -26,7 +27,7 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('An in-progress workflow already exists');
     }
 
-    this.validateApproverGroups(true, workflow.creator._id, workflow.approverGroups);
+    this.validateApproverGroups(true, workflow.creator, workflow.approverGroups);
 
     /*
     *  Create
@@ -35,7 +36,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return createdWorkflow;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
     const uniqueApprovers = new Set();
     uniqueApprovers.add(creatorId);
 

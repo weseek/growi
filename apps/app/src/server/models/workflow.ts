@@ -12,6 +12,7 @@ import {
   WorkflowApprovalType,
   WorkflowApprovalTypes,
 } from '~/interfaces/workflow';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
@@ -86,7 +87,7 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 */
 interface WorkflowDocument extends IWorkflow, Document {}
 interface WorkflowModel extends Model<WorkflowDocument> {
-  hasInprogressWorkflowInTargetPage(pageId: string): Promise<boolean>
+  hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
 }
 
 const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
@@ -118,7 +119,7 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
 
 WorkflowSchema.plugin(mongoosePaginate);
 
-WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: string) {
+WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike) {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
   return workflow != null;
 };
