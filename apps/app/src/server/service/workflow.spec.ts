@@ -48,6 +48,9 @@ describe('WorkflowService', () => {
             {
               user: approver,
             },
+            {
+              user: approver,
+            },
           ],
         },
       ];
