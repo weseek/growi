@@ -58,7 +58,7 @@ GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
 
 # Slack
 
-<a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
 
 我们欢迎新人加入我们的slack频道，帮助改善Growi。
 除了讨论发展问题，我们也很乐意在你加入时回答你的问题。
