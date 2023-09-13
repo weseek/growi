@@ -1,6 +1,9 @@
 import { Model, Schema, Types } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-import type { IWorkflow, IWorkflowApproverGroup, IWorkflowApprover } from '~/interfaces/workflow';
+import type {
+  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover,
+} from '~/interfaces/workflow';
 import {
   WorkflowStatus,
   WorkflowStatuses,
@@ -112,6 +115,8 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
 }, {
   timestamps: { createdAt: true, updatedAt: true },
 });
+
+WorkflowSchema.plugin(mongoosePaginate);
 
 WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: string) {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
