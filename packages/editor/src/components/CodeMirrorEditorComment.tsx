@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+
 import { defaultKeymap } from '@codemirror/commands';
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
@@ -17,12 +18,12 @@ const additionalExtensions: Extension[] = [
 
 type Props = {
   onChange?: (value: string) => void,
-  onSave?: () => void,
+  onComment?: () => void,
 }
 
-export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
+export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
-    onSave, onChange,
+    onComment, onChange,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -32,36 +33,36 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return codeMirrorEditor?.appendExtensions?.(additionalExtensions);
   }, [codeMirrorEditor]);
 
-  // setup page keymap
+  // setup comment keymap
   useEffect(() => {
-    if (onSave == null) {
+    if (onComment == null) {
       return;
     }
 
     const keymapExtension = keymap.of([
       {
-        // set handler to save with shortcut key
-        key: 'Mod-s',
+        // set handler to comment with ctrl/cmd + Enter key
+        key: 'Mod-Enter',
         preventDefault: true,
         run: () => {
           const doc = codeMirrorEditor?.getDoc();
           if (doc != null) {
-            onSave();
+            onComment();
           }
           return true;
         },
-        ...defaultKeymap,
       },
+      ...defaultKeymap,
     ]);
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
 
     return cleanupFunction;
-  }, [codeMirrorEditor, onSave]);
+  }, [codeMirrorEditor, onComment]);
 
   return (
     <CodeMirrorEditor
-      editorKey={GlobalCodeMirrorEditorKey.MAIN}
+      editorKey={GlobalCodeMirrorEditorKey.COMMENT}
       onChange={onChange}
     />
   );
