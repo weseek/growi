@@ -17,11 +17,12 @@ const additionalExtensions: Extension[] = [
 type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
+  indentSize?: number,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange,
+    onSave, onChange, indentSize,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -60,6 +61,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
+      indentSize={indentSize}
     />
   );
 };
