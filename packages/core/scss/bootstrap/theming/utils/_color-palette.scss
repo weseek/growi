@@ -1,0 +1,11 @@
+@mixin generate-color-palette($color, $value, $shade-color-ratio: 20%, $tint-color-ratio: 20%, $prefix: 'grw-') {
+  --#{$prefix}#{$color}-900: #{shade-color($value, $shade-color-ratio * 4)};
+  --#{$prefix}#{$color}-800: #{shade-color($value, $shade-color-ratio * 3)};
+  --#{$prefix}#{$color}-700: #{shade-color($value, $shade-color-ratio * 2)};
+  --#{$prefix}#{$color}-600: #{shade-color($value, $shade-color-ratio)};
+  --#{$prefix}#{$color}-500: #{$value};
+  --#{$prefix}#{$color}-400: #{tint-color($value, $tint-color-ratio)};
+  --#{$prefix}#{$color}-300: #{tint-color($value, $tint-color-ratio * 2)};
+  --#{$prefix}#{$color}-200: #{tint-color($value, $tint-color-ratio * 3)};
+  --#{$prefix}#{$color}-100: #{tint-color($value, $tint-color-ratio * 4)};
+}

@@ -1,9 +1,14 @@
 :root[data-bs-theme='light'] {
   @import '@growi/core/scss/bootstrap/init-stage-1';
   @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  $primary: orange;
+  $primary: #409cb9;
   $secondary: $gray-600;
+  $highlight: #93e3ea;
+
+  @include generate-color-palette('primary', $primary);
+  @include generate-color-palette('highlight', $highlight);
 
   $body-color:                $gray-900;
   $body-bg:                   white;
