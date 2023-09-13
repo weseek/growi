@@ -301,11 +301,11 @@ const WithProxyAccordions = (props) => {
 
 
   const officialBotIntegrationProcedure = {
-    '①': {
+    1: {
       title: 'install_bot_to_slack',
       content: <BotInstallProcessForOfficialBot />,
     },
-    '②': {
+    2: {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={siteUrl}
@@ -315,7 +315,7 @@ const WithProxyAccordions = (props) => {
         onUpdateTokens={props.onUpdateTokens}
       />,
     },
-    '③': {
+    3: {
       title: 'manage_permission',
       content: <ManageCommandsProcess
         slackAppIntegrationId={props.slackAppIntegrationId}
@@ -324,7 +324,7 @@ const WithProxyAccordions = (props) => {
         permissionsForSlackEventActions={props.permissionsForSlackEventActions}
       />,
     },
-    '④': {
+    4: {
       title: 'test_connection',
       content: <TestProcess
         slackAppIntegrationId={props.slackAppIntegrationId}
