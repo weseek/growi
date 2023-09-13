@@ -122,6 +122,7 @@
     "i18next-chained-backend": "^4.0.0",
     "i18next-http-backend": "^2.0.0",
     "i18next-localstorage-backend": "^4.0.0",
+    "i18next-locize-backend": "^6.2.3",
     "is-absolute-url": "^4.0.1",
     "is-iso-date": "^0.0.1",
     "lucene-query-parser": "^1.2.0",
