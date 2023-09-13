@@ -3,11 +3,13 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { IWorkflowApproverGroup } from '~/interfaces/workflow';
+
 type Props = {
   pageId?: string,
   onClickWorkflowListPageBackButton: () => void;
 }
-
 
 export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -16,6 +18,7 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
 
   const [workflowName, setWorkflowName] = useState<string>('');
   const [workflowDescription, setWorkflowDescription] = useState<string>('');
+  const [approverGroup, setApproverGroup] = useState<IWorkflowApproverGroup | undefined>();
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
@@ -33,8 +36,15 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
     onClickWorkflowListPageBackButton();
   }, [onClickWorkflowListPageBackButton]);
 
-  const createWorkflowButtonClickHandler = useCallback(() => {
-    //
+  const createWorkflowButtonClickHandler = useCallback(async() => {
+    try {
+      await apiv3Post('_api/v3/workflow', {
+        pageId, name: workflowName, comment: workflowDescription, approverGroup,
+      });
+    }
+    catch (err) {
+      //
+    }
   }, []);
 
   return (
