@@ -15,7 +15,6 @@
   font-size: 16px;
 
   a {
-    @extend .link-primary;
     @extend .link-offset-2;
     @extend .link-underline-opacity-25;
     @extend .link-underline-opacity-50-hover;
