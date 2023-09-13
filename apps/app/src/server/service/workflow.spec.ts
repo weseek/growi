@@ -26,7 +26,7 @@ describe('WorkflowService', () => {
       ];
 
       // when
-      const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
+      const caller = () => WorkflowService.validateApproverGroups(true, creator, approverGroups);
 
       // then
       expect(caller).toThrow('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
@@ -50,7 +50,7 @@ describe('WorkflowService', () => {
       ];
 
       // when
-      const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
+      const caller = () => WorkflowService.validateApproverGroups(true, creator, approverGroups);
 
       // then
       expect(caller).toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
@@ -71,7 +71,7 @@ describe('WorkflowService', () => {
       ];
 
       // when
-      const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
+      const caller = () => WorkflowService.validateApproverGroups(true, creator, approverGroups);
 
       // then
       expect(caller).toThrow('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
@@ -93,7 +93,7 @@ describe('WorkflowService', () => {
       ];
 
       // when
-      const caller = () => WorkflowService.validateApproverGroups(true, creator._id, approverGroups);
+      const caller = () => WorkflowService.validateApproverGroups(true, creator, approverGroups);
 
       // then
       expect(caller).toThrow('Cannot set approver.status to anything other than "NONE" during creation');

@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void,
+  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
 }
 
 class WorkflowServiceImpl implements WorkflowService {

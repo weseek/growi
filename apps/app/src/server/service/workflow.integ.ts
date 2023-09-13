@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IWorkflowReq, WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
+  WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
 } from '~/interfaces/workflow';
 import Workflow from '~/server/models/workflow';
 
@@ -11,9 +11,9 @@ import { WorkflowService } from './workflow';
 describe('WorkflowService', () => {
 
   describe('.createWorkflow', () => {
-    const workflow: IWorkflowReq = {
+    const workflow = {
       creator: new mongoose.Types.ObjectId(),
-      pageId: new mongoose.Types.ObjectId().toString(),
+      pageId: new mongoose.Types.ObjectId(),
       status: WorkflowStatus.INPROGRESS,
       name: 'page1 workflow',
       comment: 'comment',

@@ -4,7 +4,7 @@ import { param, query, body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
-import { IWorkflowReq, IWorkflowApproverGroupReq, WorkflowStatus } from '~/interfaces/workflow';
+import { IWorkflowApproverGroupReq, WorkflowStatus } from '~/interfaces/workflow';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import Workflow from '~/server/models/workflow';
 import { configManager } from '~/server/service/config-manager';
@@ -241,7 +241,7 @@ module.exports = (crowi: Crowi): Router => {
     const xssProcessedName = crowi.xss.process(name);
     const xssProcessedComment = crowi.xss.process(comment);
 
-    const workflow: IWorkflowReq = {
+    const workflow = {
       pageId,
       creator: user._id,
       name: xssProcessedName,
