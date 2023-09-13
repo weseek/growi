@@ -44,16 +44,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   useEffect(() => {
-    const extension = keymap.of([
-      ...defaultKeymap,
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor]);
-
-  useEffect(() => {
     if (indentSize == null) {
       return;
     }

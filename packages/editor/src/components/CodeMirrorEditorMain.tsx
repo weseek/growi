@@ -51,8 +51,8 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
           }
           return true;
         },
-        ...defaultKeymap,
       },
+      ...defaultKeymap,
     ]);
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
