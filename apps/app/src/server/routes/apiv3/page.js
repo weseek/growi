@@ -617,9 +617,14 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const fileName = path.basename(pagePath)
-      .replace(/[\\/:;"*?<>,」ˆ|¥]/g, '_')
+    let fileName = path.basename(pagePath)
+      .replace(/[\\/:;"*? <>,」ˆ|¥]/g, '_')
       .replace(/\.$/, '_');
+
+    if (!fileName) {
+      fileName = 'page';
+    }
+
     let stream;
 
     try {
