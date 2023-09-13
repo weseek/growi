@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
 
+import { useKeywordManager } from '~/client/services/search-operation';
 import { IDataTagCount } from '~/interfaces/tag';
 
 import PaginationWrapper from './PaginationWrapper';
@@ -29,26 +29,23 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   const isTagExist: boolean = tagData.length > 0;
   const { t } = useTranslation('');
 
+  const { pushState } = useKeywordManager();
+
   const generateTagList = useCallback((tagData) => {
-    return tagData.map((tag:IDataTagCount, index:number) => {
-      const tagListClasses: string = index === 0 ? 'list-group-item d-flex' : 'list-group-item d-flex border-top-0';
-
-      const url = new URL('/_search', 'https://example.com');
-      url.searchParams.append('q', `tag:${tag.name}`);
-
+    return tagData.map((tag:IDataTagCount) => {
       return (
-        <Link
+        <button
           key={tag._id}
-          href={`${url.pathname}${url.search}`}
-          className={tagListClasses}
-          prefetch={false}
+          type="button"
+          className="list-group-item list-group-item-action d-flex"
+          onClick={() => pushState(`tag:${tag.name}`)}
         >
           <div className="text-truncate list-tag-name">{tag.name}</div>
           <div className="ms-4 my-auto py-1 px-2 list-tag-count badge bg-primary">{tag.count}</div>
-        </Link>
+        </button>
       );
     });
-  }, []);
+  }, [pushState]);
 
   if (!isTagExist) {
     return <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
@@ -56,9 +53,9 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
 
   return (
     <>
-      <ul className="list-group text-start mb-5">
+      <div className="list-group text-start mb-5">
         {generateTagList(tagData)}
-      </ul>
+      </div>
       {isPaginationShown
       && (
         <PaginationWrapper
