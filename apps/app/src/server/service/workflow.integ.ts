@@ -8,55 +8,33 @@ import Workflow from '~/server/models/workflow';
 import { WorkflowService } from './workflow';
 
 
-let page1;
-
-let creator;
-let approver1;
-let approver2;
-
 describe('WorkflowService', () => {
 
-  beforeAll(async() => {
-    // page
-    page1 = new mongoose.Types.ObjectId();
-
-    // user
-    creator = new mongoose.Types.ObjectId();
-    approver1 = new mongoose.Types.ObjectId();
-    approver2 = new mongoose.Types.ObjectId();
-  });
-
-  afterAll(async() => {
-    await Workflow.deleteMany({});
-  });
-
   describe('.createWorkflow', () => {
-    test('Should be able to create a workflow', async() => {
+    const workflow: IWorkflowReq = {
+      creator: new mongoose.Types.ObjectId(),
+      pageId: new mongoose.Types.ObjectId().toString(),
+      status: WorkflowStatus.INPROGRESS,
+      name: 'page1 workflow',
+      comment: 'comment',
+      approverGroups: [
+        {
+          approvalType: WorkflowApprovalType.AND,
+          approvers: [
+            {
+              user: new mongoose.Types.ObjectId(),
+              status:  WorkflowApproverStatus.NONE,
+            },
+          ],
+        },
+      ],
+    };
 
-      // setup
-      const workflow: IWorkflowReq = {
-        creator,
-        pageId: page1,
-        status: WorkflowStatus.INPROGRESS,
-        name: 'page1 workflow',
-        comment: 'comment',
-        approverGroups: [
-          {
-            approvalType: WorkflowApprovalType.AND,
-            approvers: [
-              {
-                user: approver1,
-                status:  WorkflowApproverStatus.NONE,
-              },
-              {
-                user: approver2,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-        ],
-      };
+    afterAll(async() => {
+      await Workflow.deleteMany({});
+    });
 
+    it('Should be able to create a workflow', async() => {
       // when
       const createdWorkflow = await WorkflowService.createWorkflow(workflow);
 
@@ -64,32 +42,7 @@ describe('WorkflowService', () => {
       expect(createdWorkflow).toBeInstanceOf(Workflow);
     });
 
-    test('Should fail when attempting to create multiple in-progress workflows on single page', async() => {
-
-      // setup
-      const workflow: IWorkflowReq = {
-        creator,
-        pageId: page1,
-        status: WorkflowStatus.INPROGRESS,
-        name: 'page1 workflow',
-        comment: 'comment',
-        approverGroups: [
-          {
-            approvalType: WorkflowApprovalType.AND,
-            approvers: [
-              {
-                user: approver1,
-                status:  WorkflowApproverStatus.NONE,
-              },
-              {
-                user: approver2,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-        ],
-      };
-
+    it('Should fail when attempting to create multiple in-progress workflows on single page', async() => {
       // when
       const result = WorkflowService.createWorkflow(workflow);
 

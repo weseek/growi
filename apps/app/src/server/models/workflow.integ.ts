@@ -4,17 +4,15 @@ import { WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType } from '~/
 
 import Workflow from './workflow';
 
-let page1;
-let page2;
 
 describe('Workflow', () => {
 
-  beforeAll(async() => {
-    page1 = new mongoose.Types.ObjectId();
-    page2 = new mongoose.Types.ObjectId();
+  describe('hasInprogressWorkflowInTargetPage()', () => {
+    const page1 = new mongoose.Types.ObjectId();
+    const page2 = new mongoose.Types.ObjectId();
 
-    await Workflow.insertMany([
-      {
+    beforeAll(async() => {
+      await Workflow.create({
         creator: new mongoose.Types.ObjectId(),
         pageId: page1,
         name: 'page1 Workflow',
@@ -31,16 +29,14 @@ describe('Workflow', () => {
             ],
           },
         ],
-      },
-    ]);
-  });
+      });
+    });
 
-  afterAll(async() => {
-    await Workflow.deleteMany({});
-  });
+    afterAll(async() => {
+      await Workflow.deleteMany({});
+    });
 
-  describe('hasInprogressWorkflowInTargetPage()', () => {
-    test('Should return true if there are in-progress workflows on the page', async() => {
+    it('Should return true if there are in-progress workflows on the page', async() => {
       // when
       const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(page1);
 
@@ -48,7 +44,7 @@ describe('Workflow', () => {
       expect(hasInprogressWorkflowInTargetPage).toBe(true);
     });
 
-    test('Should return false if there are no in-progress workflows on the page', async() => {
+    it('Should return false if there are no in-progress workflows on the page', async() => {
       // when
       const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(page2);
 

@@ -243,7 +243,7 @@ module.exports = (crowi: Crowi): Router => {
 
     const workflow: IWorkflowReq = {
       pageId,
-      creator: user,
+      creator: user._id,
       name: xssProcessedName,
       comment: xssProcessedComment,
       status: WorkflowStatus.INPROGRESS,
