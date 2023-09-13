@@ -45,6 +45,7 @@ const WorkflowModal = (): JSX.Element => {
 
       { pageType === PageType.create && (
         <CreateWorkflowPage
+          pageId={workflowModalData?.pageId}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
         />
       )}

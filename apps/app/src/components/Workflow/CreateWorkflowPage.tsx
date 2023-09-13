@@ -3,8 +3,8 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-
 type Props = {
+  pageId?: string,
   onClickWorkflowListPageBackButton: () => void;
 }
 
@@ -12,7 +12,7 @@ type Props = {
 export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { onClickWorkflowListPageBackButton } = props;
+  const { onClickWorkflowListPageBackButton, pageId } = props;
 
   const [workflowName, setWorkflowName] = useState<string>('');
   const [workflowDescription, setWorkflowDescription] = useState<string>('');
@@ -32,6 +32,10 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
 
     onClickWorkflowListPageBackButton();
   }, [onClickWorkflowListPageBackButton]);
+
+  const createWorkflowButtonClickHandler = useCallback(() => {
+    //
+  }, []);
 
   return (
     <>
@@ -82,7 +86,7 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button">
+        <button type="button" onClick={createWorkflowButtonClickHandler}>
           {t('approval_workflow.create')}
         </button>
 
