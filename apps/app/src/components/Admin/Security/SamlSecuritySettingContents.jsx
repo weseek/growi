@@ -475,7 +475,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                         </a>.
                       </p>
                       <div className="accordion" id="accordionExample">
-                        <div className="accordion-item">
+                        <div className="accordion-item p-1">
                           <h2 className="accordion-header">
                             <button
                               className="btn btn-link text-start"
