@@ -3,14 +3,14 @@ import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import Crowi from '~/server/crowi';
 import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '~/features/workflow/interfaces/workflow';
 import Workflow from '~/features/workflow/server/models/workflow';
+import { WorkflowService } from '~/features/workflow/server/services/workflow';
+import Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import { WorkflowService } from '~/server/service/workflow';
 import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 

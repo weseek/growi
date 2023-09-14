@@ -1,8 +1,8 @@
 import {
   IWorkflow, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
-} from '~/interfaces/workflow';
+} from '~/features/workflow/interfaces/workflow';
+import Workflow from '~/features/workflow/server/models/workflow';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import Workflow from '~/server/models/workflow';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:workflow');

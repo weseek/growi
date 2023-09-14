@@ -1,7 +1,7 @@
 import type { IUserHasId, HasObjectId } from '@growi/core';
 
 import type { PaginateResult } from '~/interfaces/mongoose-utils';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 
 export const WorkflowStatus = {
