@@ -1,7 +1,9 @@
+import { SWRResponse, useSWRImmutable } from 'swr';
 
-import { SWRResponse } from 'swr';
-
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
+
+import { IWorkflowPaginateResult } from '../../interfaces/workflow';
 
 export type WorkflowModalStatus = {
   pageId?: string,
@@ -26,4 +28,15 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+
+export const useSWRxWorkflowList = (pageId: string): SWRResponse<IWorkflowPaginateResult, Error> => {
+
+  const key = `/workflow/list/${pageId}`;
+
+  return useSWRImmutable(
+    key,
+    endpoint => apiv3Get<IWorkflowPaginateResult >(endpoint).then(result => result.data),
+  );
 };

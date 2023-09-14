@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { useSWRxWorkflowList } from '~/stores/workflow';
+import { useSWRxWorkflowList } from '../stores/workflow';
 
 
 type Props = {
