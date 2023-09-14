@@ -7,7 +7,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
-  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+  <a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
 </p>
 
 <p align="center">
@@ -132,7 +132,7 @@ You can write issues and PRs in English or Japanese.
 
 ## Discussion
 
-If you have questions or suggestions, you can [join our Slack team](https://growi-slackin.weseek.co.jp/) and talk about anything, anytime.
+If you have questions or suggestions, you can [join our Slack team](https://communityinviter.com/apps/wsgrowi/invite/) and talk about anything, anytime.
 
 # License
 

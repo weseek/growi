@@ -19,6 +19,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
+  useDefaultIndentSize,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
@@ -103,6 +104,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+  const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
@@ -518,6 +520,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   useEffect(() => {
     // do nothing if the indent size fixed
     if (isIndentSizeForced == null || isIndentSizeForced) {
+      mutateCurrentIndentSize(undefined);
       return;
     }
 
@@ -572,6 +575,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <CodeMirrorEditorMain
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
+          indentSize={currentIndentSize ?? defaultIndentSize}
         />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
