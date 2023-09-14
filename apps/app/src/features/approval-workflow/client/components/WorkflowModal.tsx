@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { Modal } from 'reactstrap';
 
-import { useWorkflowModal } from '~/stores/modal';
+import { useWorkflowModal } from '../stores/workflow';
 
 import { CreateWorkflowPage } from './CreateWorkflowPage';
 import { WorkflowListPage } from './WorkflowListPage';

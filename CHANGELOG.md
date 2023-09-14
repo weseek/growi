@@ -1,8 +1,62 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.12...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
+
+### 🚀 Improvement
+
+- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (for v6.1.x) (#8057) @yuki-takei
+
+## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
+
+### 🐛 Bug Fixes
+
+- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
+
+## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
+
+### 🐛 Bug Fixes
+
+- fix: Do not work img tag if use style property (#7988) @jam411
+- fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
+
+## [v6.2.0](https://github.com/weseek/growi/compare/v6.1.12...v6.2.0) - 2023-09-14
+
+### 💎 Features
+
+- feat: Presentation preview and support Marp  (#8029) @reiji-h
+
+### 🚀 Improvement
+
+- imprv: Able to customize users homepage deletion (#7921) @yuki-takei
+- imprv: Search behavior (#8069) @yuki-takei
+- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (#8049) @ykanematsu
+- imprv: Correct update message (#8040) @reiji-h
+- imprv: Add installed date to questionnaire answer (#7971) @TatsuyaIse
+- imprv: Show modal when you delete plugin (#7875) @soumaeda
+- imprv: i18n resetting password mail body (#8058) @meiri-k
+- imprv: Create Japanese ejs files (#7957) @meiri-k
+- imprv: Clean up old toastr (#7949) @jam411
+- imprv: Persist the installed date in the Config collection (#7936) @TatsuyaIse
+
+### 🐛 Bug Fixes
+
+- fix: Pages can be created under a non-existent user page (#7974) @miya
+- fix: Pages can be created under a non-existent user page (During attachment upload) (#8001) @miya
+- fix: Type safe implementation for objects imported from ElasticsearchClient (#7862) @miya
+- fix: Consider an empty page when renaming and duplicating (#7979) @yuki-takei
+- fix: Remove redundant toastSuccess for pasted attachments (#8044) @jam411
+- fix: Fixing swagger for tag update api (#8010) @miya
+- fix: Modification of links in the docs (#8004) @miya
+
+### 🧰 Maintenance
+
+- support: Omit core-js v2 (#7944) @yuki-takei
+- support: Improve build settings (#7919) @yuki-takei
+- support: Url to join to the slack team (#8073) @WNomunomu
 
 ## [v6.1.12](https://github.com/weseek/growi/compare/v6.1.11...v6.1.12) - 2023-08-14
 

@@ -3,8 +3,8 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { IWorkflowApproverGroup, WorkflowApprovalType, WorkflowApproverStatus } from '~/interfaces/workflow';
+import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
+import { useCreateWorkflow } from '../services/workflow';
 
 type Props = {
   pageId: string,
@@ -14,25 +14,27 @@ type Props = {
 export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { onClickWorkflowListPageBackButton, pageId } = props;
+  const { pageId, onClickWorkflowListPageBackButton } = props;
 
   const approverGroupsDummyData = [{
     approvalType: WorkflowApprovalType.AND,
     approvers: [
       {
-        user: '64e4072930f26dcc81590064',
+        user: '64e41166aa753ef87f073770',
         status: WorkflowApproverStatus.NONE,
       },
       {
-        user: '64e4072930f86dcc81590068',
+        user: '64ec3bcd763893423f32b9dd',
         status: WorkflowApproverStatus.NONE,
       },
     ],
-  }] as unknown as IWorkflowApproverGroup[];
+  }] as IWorkflowApproverGroupReq[];
 
   const [workflowName, setWorkflowName] = useState<string>('');
   const [workflowDescription, setWorkflowDescription] = useState<string>('');
-  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroup[] | undefined>(approverGroupsDummyData);
+  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
+
+  const { createWorkflow } = useCreateWorkflow(pageId, workflowName, workflowDescription, approverGroups);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
@@ -51,16 +53,18 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
   }, [onClickWorkflowListPageBackButton]);
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
+    if (approverGroups == null) {
+      return;
+    }
+
     try {
-      await apiv3Post('/workflow', {
-        pageId, name: workflowName, comment: workflowDescription, approverGroups,
-      });
+      await createWorkflow();
       // TODO: Move to the detail screen
     }
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [pageId, approverGroups, workflowDescription, workflowName]);
+  }, [approverGroups, createWorkflow]);
 
   return (
     <>
