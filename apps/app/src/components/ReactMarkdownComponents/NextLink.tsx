@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import Link, { LinkProps } from 'next/link';
 
 import { useSiteUrl } from '~/stores/context';
@@ -61,7 +61,7 @@ export const NextLink = (props: Props): JSX.Element => {
   if (isExternalLink(href, siteUrl)) {
     return (
       <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
-        {children}&nbsp;<i className='icon-share-alt small'></i>
+        {children}&nbsp;<i className="icon-share-alt small"></i>
       </a>
     );
   }

@@ -58,13 +58,21 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
             */}
           </div>
 
-          <a className="text-muted"
-            data-toggle="collapse" href="#collapseExampleScript" role="button" aria-expanded="false" aria-controls="collapseExampleScript">
+          <a
+            className="text-muted"
+            data-toggle="collapse"
+            href="#collapseExampleScript"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseExampleScript"
+          >
             <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleScript">
-            <PrismAsyncLight style={oneDark} language={'javascript'}
+            <PrismAsyncLight
+              style={oneDark}
+              language="javascript"
             >
               {`(function(w,d,s,l,i){
 w[l]=w[l]||[];

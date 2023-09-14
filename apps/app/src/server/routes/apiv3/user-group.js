@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';
@@ -17,12 +17,9 @@ const router = express.Router();
 
 const { body, param, query } = require('express-validator');
 const { sanitizeQuery } = require('express-validator');
-const mongoose = require('mongoose');
 
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
-
-const { ObjectId } = mongoose.Types;
 
 
 /**

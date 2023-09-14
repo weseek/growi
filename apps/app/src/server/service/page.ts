@@ -5,10 +5,11 @@ import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
+import { PageGrant, PageStatus } from '@growi/core';
 import {
-  pagePathUtils, pathUtils, PageGrant, PageStatus,
-} from '@growi/core';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils/collect-ancestor-paths';
+  pagePathUtils, pathUtils,
+} from '@growi/core/dist/utils';
+import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -374,7 +375,7 @@ class PageService {
 
     const activity = await this.crowi.activityService.createActivity(parameters);
 
-    const isExist = await Page.exists({ path: newPagePath });
+    const isExist = await Page.exists({ path: newPagePath, isEmpty: false });
     if (isExist) {
       throw Error(`Page already exists at ${newPagePath}`);
     }
@@ -1959,6 +1960,98 @@ class PageService {
       for await (const page of pages) {
         await this.deletePage(page, user, {}, isRecursively, activityParameters);
       }
+    }
+  }
+
+  /**
+   * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
+   * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
+   *
+   * @param {string} userHomepagePath - The path of the user's homepage.
+   * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
+   * @throws {Error} - If an error occurs during the deletion process.
+   */
+  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
+    const Page = this.crowi.model('Page');
+    const userHomepage = await Page.findByPath(userHomepagePath, true);
+
+    if (userHomepage == null) {
+      logger.error('user homepage is not found.');
+      return;
+    }
+
+    const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
+
+    const ids = [userHomepage._id];
+    const paths = [userHomepage.path];
+
+    try {
+      if (!shouldUseV4Process) {
+        // Ensure consistency of ancestors
+        const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
+        await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
+      }
+
+      // Delete the user's homepage
+      await this.deleteCompletelyOperation(ids, paths);
+
+      if (!shouldUseV4Process) {
+        // Remove leaf empty pages
+        await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
+      }
+
+      if (!userHomepage.isEmpty) {
+        // Emit an event for the search service
+        this.pageEvent.emit('deleteCompletely', userHomepage);
+      }
+
+      const { PageQueryBuilder } = Page;
+
+      // Find descendant pages with system deletion condition
+      const builder = new PageQueryBuilder(Page.find(), true)
+        .addConditionForSystemDeletion()
+        .addConditionToListOnlyDescendants(userHomepage.path);
+
+      // Stream processing to delete descendant pages
+      // ────────┤ start │─────────
+      const readStream = await builder
+        .query
+        .lean()
+        .cursor({ batchSize: BULK_REINDEX_SIZE });
+
+      let count = 0;
+
+      const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
+      const writeStream = new Writable({
+        objectMode: true,
+        async write(batch, encoding, callback) {
+          try {
+            count += batch.length;
+            // Delete multiple pages completely
+            await deleteMultipleCompletely(batch, null, {});
+            logger.debug(`Adding pages progressing: (count=${count})`);
+          }
+          catch (err) {
+            logger.error('addAllPages error on add anyway: ', err);
+          }
+          callback();
+        },
+        final(callback) {
+          logger.debug(`Adding pages has completed: (totalCount=${count})`);
+          callback();
+        },
+      });
+
+      readStream
+        .pipe(createBatchStream(BULK_REINDEX_SIZE))
+        .pipe(writeStream);
+
+      await streamToPromise(writeStream);
+      // ────────┤ end │─────────
+    }
+    catch (err) {
+      logger.error('Error occurred while deleting user homepage and subpages.', err);
+      throw err;
     }
   }
 

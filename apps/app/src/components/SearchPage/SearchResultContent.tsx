@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { getIdForRef } from '@growi/core';
+import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { animateScroll } from 'react-scroll';
@@ -11,7 +12,6 @@ import { debounce } from 'throttle-debounce';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
-import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useCurrentUser, useIsContainerFluid } from '~/stores/context';

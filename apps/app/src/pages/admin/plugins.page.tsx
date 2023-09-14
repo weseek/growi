@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -43,7 +43,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout componentTitle={title} >
+      <AdminLayout componentTitle={title}>
         <Head>
           <title>{generateCustomTitle(props, title)}</title>
         </Head>

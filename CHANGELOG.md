@@ -1,8 +1,34 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.1.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
+
+### 🚀 Improvement
+
+- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (for v6.1.x) (#8057) @yuki-takei
+
+## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
+
+### 🐛 Bug Fixes
+
+- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
+
+## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
+
+### 🐛 Bug Fixes
+
+- fix: Do not work img tag if use style property (#7988) @jam411
+- fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
+
+## [v6.1.12](https://github.com/weseek/growi/compare/v6.1.11...v6.1.12) - 2023-08-14
+
+### 🐛 Bug Fixes
+
+- fix: Consider an empty page when renaming and duplicating (v6.1.x) (#7980) @yuki-takei
+- fix: Do not work image tag properties (#7977) @jam411
 
 ## [v6.1.11](https://github.com/weseek/growi/compare/v6.1.10...v6.1.11) - 2023-08-07
 

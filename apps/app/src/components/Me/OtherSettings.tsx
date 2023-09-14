@@ -44,9 +44,11 @@ const OtherSettings = (): JSX.Element => {
     <>
       <h2 className="border-bottom my-4">{t('questionnaire.settings')}</h2>
 
-      {isLoadingCurrentUser && <div className="text-muted text-center mb-5">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
-      </div>}
+      {isLoadingCurrentUser && (
+        <div className="text-muted text-center mb-5">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+        </div>
+      )}
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
@@ -68,9 +70,11 @@ const OtherSettings = (): JSX.Element => {
               <p className="form-text text-muted small">
                 {t('questionnaire.personal_settings_explanation')}
               </p>
-              {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-toggle-wrapper">
-                {t('questionnaire.disabled_by_admin')}
-              </UncontrolledTooltip> }
+              {!growiIsQuestionnaireEnabled && (
+                <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-toggle-wrapper">
+                  {t('questionnaire.disabled_by_admin')}
+                </UncontrolledTooltip>
+              ) }
             </div>
           )}
         </div>
@@ -90,9 +94,11 @@ const OtherSettings = (): JSX.Element => {
               {t('Update')}
             </button>
           </span>
-          {!growiIsQuestionnaireEnabled && <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-update-btn-wrapper">
-            {t('questionnaire.disabled_by_admin')}
-          </UncontrolledTooltip>}
+          {!growiIsQuestionnaireEnabled && (
+            <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-update-btn-wrapper">
+              {t('questionnaire.disabled_by_admin')}
+            </UncontrolledTooltip>
+          )}
         </div>
       </div>
     </>

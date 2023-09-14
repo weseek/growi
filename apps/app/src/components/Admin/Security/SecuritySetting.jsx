@@ -453,6 +453,28 @@ class SecuritySetting extends React.Component {
           ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
+        <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
+        <div className="row mb-4">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch custom-checkbox-success">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="is-user-page-deletion-enabled"
+                checked={adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomepageDeletionEnabled() }}
+              />
+              <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
+                {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
+              </label>
+            </div>
+            <p
+              className="form-text text-muted small"
+              dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.desc') }}
+            />
+          </div>
+        </div>
+
         <h4>{t('security_settings.session')}</h4>
         <div className="form-group row">
           <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { pagePathUtils } from '@growi/core/dist/utils';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -23,9 +24,11 @@ const PersonalDropdown = () => {
   useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   if (currentUser == null) {
-    return <div className="text-muted text-center mb-5">
-      <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
-    </div>;
+    return (
+      <div className="text-muted text-center mb-5">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
+      </div>
+    );
   }
 
   const logoutHandler = async() => {
@@ -64,7 +67,7 @@ const PersonalDropdown = () => {
 
           <div className="btn-group btn-block mt-2" role="group">
             <Link
-              href={`/user/${currentUser.username}`}
+              href={pagePathUtils.userHomepagePath(currentUser)}
               className="btn btn-sm btn-outline-secondary col"
               data-testid="grw-personal-dropdown-menu-user-home"
             >
@@ -86,7 +89,8 @@ const PersonalDropdown = () => {
           data-testid="grw-proactive-questionnaire-modal-toggle-btn"
           type="button"
           className="dropdown-item"
-          onClick={() => setQuestionnaireModalOpen(true)}>
+          onClick={() => setQuestionnaireModalOpen(true)}
+        >
           <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
         </button>
 

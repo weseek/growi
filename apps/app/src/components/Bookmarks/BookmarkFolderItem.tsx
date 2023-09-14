@@ -2,6 +2,7 @@ import {
   FC, useCallback, useState,
 } from 'react';
 
+import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
 
 import {
@@ -13,7 +14,6 @@ import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
   BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
 } from '~/interfaces/bookmark-info';
-import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 
@@ -29,7 +29,7 @@ type BookmarkFolderItemProps = {
   isOperable: boolean,
   level: number
   root: string
-  isUserHomePage?: boolean
+  isUserHomepage?: boolean
   onClickDeleteMenuItemHandler: (pageToDelete: IPageToDeleteWithMeta) => void
   bookmarkFolderTreeMutation: () => void
 }
@@ -38,7 +38,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
-    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomePage,
+    isReadOnlyUser, bookmarkFolder, isOpen: _isOpen = false, isOperable, level, root, isUserHomepage,
     onClickDeleteMenuItemHandler, bookmarkFolderTreeMutation,
   } = props;
 
@@ -155,7 +155,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             bookmarkFolder={childFolder}
             level={level + 1}
             root={root}
-            isUserHomePage={isUserHomePage}
+            isUserHomepage={isUserHomepage}
             onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
             bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
           />
@@ -174,7 +174,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           bookmarkedPage={bookmark.page}
           level={level + 1}
           parentFolder={bookmarkFolder}
-          canMoveToRoot={true}
+          canMoveToRoot
           onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
           bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
         />
@@ -222,7 +222,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         isDropable={isDropable}
       >
         <li
-          className={'list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center'}
+          className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
           onClick={loadChildFolder}
           style={{ paddingLeft }}
         >
@@ -239,11 +239,9 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               </button>
             )}
           </div>
-          {
-            <div>
-              <FolderIcon isOpen={isOpen} />
-            </div>
-          }
+          <div>
+            <FolderIcon isOpen={isOpen} />
+          </div>
           {isRenameAction ? (
             <BookmarkFolderNameInput
               onClickOutside={() => setIsRenameAction(false)}
@@ -252,8 +250,8 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             />
           ) : (
             <>
-              <div className='grw-foldertree-title-anchor pl-2' >
-                <p className={'text-truncate m-auto '}>{name}</p>
+              <div className="grw-foldertree-title-anchor pl-2">
+                <p className="text-truncate m-auto ">{name}</p>
               </div>
             </>
           )}
@@ -276,7 +274,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               {/* Maximum folder hierarchy of 2 levels */}
               {!(bookmarkFolder.parent != null) && (
                 <button
-                  id='create-bookmark-folder-button'
+                  id="create-bookmark-folder-button"
                   type="button"
                   className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
                   onClick={onClickPlusButton}

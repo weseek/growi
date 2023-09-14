@@ -8,6 +8,8 @@ export const growiInfoSchema = new Schema<IGrowiInfo>({
   version: { type: String, required: true },
   appSiteUrl: { type: String },
   appSiteUrlHashed: { type: String, required: true },
+  installedAt: { type: Date, required: true },
+  installedAtByOldestUser: { type: Date, required: true },
   type: { type: String, required: true, enum: Object.values(GrowiServiceType) },
   currentUsersCount: { type: Number, required: true },
   currentActiveUsersCount: { type: Number, required: true },

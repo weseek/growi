@@ -1,7 +1,7 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import {
-  DevidedPagePath, Lang, AllLang, isServer,
-} from '@growi/core';
+import { Lang, AllLang } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
 

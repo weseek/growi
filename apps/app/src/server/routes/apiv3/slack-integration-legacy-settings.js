@@ -1,4 +1,6 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
+import express from 'express';
+import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
@@ -10,11 +12,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:slack-integration-legacy-setting');
 
-const express = require('express');
-
 const router = express.Router();
-
-const { body } = require('express-validator');
 
 const validator = {
   slackConfiguration: [

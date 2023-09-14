@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "6.1.11",
+  "version": "6.2.0-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": [
@@ -10,6 +10,7 @@
   "files": [
     "dist"
   ],
+  "type": "module",
   "scripts": {
     "build": "run-p build:*",
     "build:client": "vite build -c vite.client.config.ts",
@@ -37,16 +38,20 @@
     "@growi/ui": "link:../ui",
     "escape-string-regexp": "^4.0.0",
     "express": "^4.16.1",
+    "http-errors": "^2.0.0",
     "mongoose": "^6.11.3",
     "swr": "^2.0.3"
   },
   "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0"
+    "eslint-plugin-regex": "^1.8.0",
+    "hast-util-sanitize": "^4.1.0",
+    "hast-util-select": "^5.0.5",
+    "unified": "^10.1.2",
+    "unist-util-visit": "^4.0.0"
   },
   "peerDependencies": {
     "next": "^13",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-markdown": "^8.0.3"
+    "react-dom": "^18.2.0"
   }
 }

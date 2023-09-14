@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import styles from './PluginCard.module.scss';
@@ -13,14 +13,14 @@ type Props = {
   name: string,
   url: string,
   isEnalbed: boolean,
-  mutate: () => void,
   desc?: string,
+  onDelete: () => void,
 }
 
 export const PluginCard = (props: Props): JSX.Element => {
 
   const {
-    id, name, url, isEnalbed, desc, mutate,
+    id, name, url, isEnalbed, desc,
   } = props;
 
   const { t } = useTranslation('admin');
@@ -70,30 +70,14 @@ export const PluginCard = (props: Props): JSX.Element => {
 
   const PluginDeleteButton = (): JSX.Element => {
 
-    const onClickPluginDeleteBtnHandler = async() => {
-      const reqUrl = `/plugins/${id}/remove`;
-
-      try {
-        const res = await apiv3Delete(reqUrl);
-        const pluginName = res.data.pluginName;
-        toastSuccess(t('toaster.remove_plugin_success', { pluginName }));
-      }
-      catch (err) {
-        toastError(err);
-      }
-      finally {
-        mutate();
-      }
-    };
-
     return (
       <div className="">
         <button
           type="submit"
           className="btn btn-primary"
-          onClick={() => onClickPluginDeleteBtnHandler()}
+          onClick={props.onDelete}
         >
-          {t('plugins.delete')}
+          {t('Delete')}
         </button>
       </div>
     );
@@ -109,7 +93,7 @@ export const PluginCard = (props: Props): JSX.Element => {
             </h2>
             <p className="card-text text-muted">{desc}</p>
           </div>
-          <div className='col-3'>
+          <div className="col-3">
             <div>
               <PluginCardButton />
             </div>

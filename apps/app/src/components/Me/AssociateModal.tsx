@@ -61,7 +61,7 @@ const AssociateModal = (props: Props): JSX.Element => {
       </ModalHeader>
       <ModalBody>
         <div>
-          <Nav tabs className='mb-2'>
+          <Nav tabs className="mb-2">
             <NavLink
               className={activeTab === 1 ? 'active' : ''}
               onClick={() => setActiveTab(1)}

@@ -2,7 +2,12 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { HasObjectId, pagePathUtils } from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
+import type {
+  HasObjectId,
+  IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
+} from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -10,9 +15,7 @@ import {
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import {
-  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
-} from '~/interfaces/page';
+import type { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';

@@ -1,5 +1,6 @@
-// eslint-disable-next-line no-unused-vars
-import { ColorScheme, DevidedPagePath, getForcedColorScheme } from '@growi/core';
+import { ColorScheme } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { getForcedColorScheme } from '@growi/core/dist/utils';
 import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
 import uglifycss from 'uglifycss';
 

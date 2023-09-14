@@ -4,9 +4,13 @@ import React, {
 
 import nodePath from 'path';
 
-import {
-  pathUtils, pagePathUtils, Nullable,
+import type {
+  Nullable,
+  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '@growi/core';
+import {
+  pathUtils, pagePathUtils,
+} from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
@@ -19,9 +23,6 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
-import {
-  IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
-} from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRMUTxPageInfo } from '~/stores/page';
@@ -501,7 +502,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             >
               {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
               <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                <i id='option-button-in-page-tree' className="icon-options fa fa-rotate-90 p-1"></i>
+                <i id="option-button-in-page-tree" className="icon-options fa fa-rotate-90 p-1"></i>
               </DropdownToggle>
             </PageItemControl>
           </div>
@@ -511,7 +512,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <NotAvailableForGuest>
             <NotAvailableForReadOnlyUser>
               <button
-                id='page-create-button-in-page-tree'
+                id="page-create-button-in-page-tree"
                 type="button"
                 className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
                 onClick={onClickPlusButton}

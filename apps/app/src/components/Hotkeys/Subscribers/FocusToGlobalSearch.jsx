@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useIsEditable } from '~/stores/context';
 import { useGlobalSearchFormRef } from '~/stores/ui';

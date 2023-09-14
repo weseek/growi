@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';

@@ -2,7 +2,7 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
-import { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useSWRxInfinitePageRevisions } from '~/stores/page';
@@ -224,7 +224,8 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
           currentPageId={currentPageId}
           currentPagePath={currentPagePath}
           onClose={onClose}
-        />)
+        />
+      )
       }
     </>
   );

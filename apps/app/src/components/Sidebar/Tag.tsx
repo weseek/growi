@@ -47,7 +47,7 @@ const Tag: FC = () => {
     <div className="grw-container-convertible container-lg px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">{t('Tags')}</h3>
-        <SidebarHeaderReloadButton onClick={() => onReload()}/>
+        <SidebarHeaderReloadButton onClick={() => onReload()} />
       </div>
 
       <h3 className="my-3">{t('tag_list')}</h3>

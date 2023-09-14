@@ -134,8 +134,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
-    toastSuccess(t('toaster.file_upload_succeeded'));
-
     // abort if length is not 1
     if (items.length < 1) {
       return;
@@ -248,7 +246,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size={'lg'} >
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size="lg">
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
@@ -282,7 +280,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
   return (
     <>
-      <div style={flexContainer} className={`editor-container ${styles['editor-container']}`} >
+      <div style={flexContainer} className={`editor-container ${styles['editor-container']}`}>
         <Dropzone
           ref={dropzoneRef}
           accept={getAcceptableType()}

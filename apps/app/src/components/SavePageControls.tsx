@@ -2,14 +2,14 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core';
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
@@ -28,8 +28,6 @@ declare global {
 
 
 const logger = loggerFactory('growi:SavePageControls');
-
-const { isTopPage } = pagePathUtils;
 
 export type SavePageControlsProps = {
   slackChannels: string
@@ -71,7 +69,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isRootPage = isTopPage(currentPage?.path ?? '');
+  const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
@@ -83,7 +81,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           <div className="mr-2">
             <GrantSelector
               grant={grant}
-              disabled={isRootPage}
+              disabled={isGrantSelectorDisabledPage}
               grantGroupId={grantedGroup?.id}
               grantGroupName={grantedGroup?.name}
               onUpdateGrant={updateGrantHandler}
@@ -94,7 +92,8 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
       <UncontrolledButtonDropdown direction="up">
         <Button
-          id="caret" data-testid="save-page-btn"
+          id="caret"
+          data-testid="save-page-btn"
           color="primary"
           className="btn-submit"
           onClick={save}

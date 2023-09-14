@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
@@ -29,7 +29,7 @@ const MenuLabel = ({ menu }: { menu: string }) => {
     case 'plugins':                  return <><i className="mr-1 icon-fw icon-puzzle"></i>{          t('plugins.plugins')}</>;
     case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
     case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
-    default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
+    default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_homepage') }</>;
       /* eslint-enable no-multi-spaces, max-len */
   }
 };
@@ -86,22 +86,22 @@ export const AdminNavigation = (): JSX.Element => {
     return (
       <>
         {/* eslint-disable no-multi-spaces */}
-        <MenuLink menu="home"                       isListGroupItems={isListGroupItems} isActive={pathname === '/admin'} isRoot />
-        <MenuLink menu="app"                        isListGroupItems={isListGroupItems} isActive={isActiveMenu('/app')} />
-        <MenuLink menu="security"                   isListGroupItems={isListGroupItems} isActive={isActiveMenu('/security')} />
-        <MenuLink menu="markdown"                   isListGroupItems={isListGroupItems} isActive={isActiveMenu('/markdown')} />
-        <MenuLink menu="customize"                  isListGroupItems={isListGroupItems} isActive={isActiveMenu('/customize')} />
-        <MenuLink menu="importer"                   isListGroupItems={isListGroupItems} isActive={isActiveMenu('/importer')} />
-        <MenuLink menu="export"                     isListGroupItems={isListGroupItems} isActive={isActiveMenu('/export')} />
-        <MenuLink menu="data-transfer"              isListGroupItems={isListGroupItems} isActive={isActiveMenu('/data-transfer')} />
-        <MenuLink menu="notification"               isListGroupItems={isListGroupItems} isActive={isActiveMenu(['/notification', '/global-notification'])} />
-        <MenuLink menu="slack-integration"          isListGroupItems={isListGroupItems} isActive={isActiveMenu('/slack-integration')} />
-        <MenuLink menu="slack-integration-legacy"   isListGroupItems={isListGroupItems} isActive={isActiveMenu('/slack-integration-legacy')} />
-        <MenuLink menu="users"                      isListGroupItems={isListGroupItems} isActive={isActiveMenu('/users')} />
-        <MenuLink menu="user-groups"                isListGroupItems={isListGroupItems} isActive={isActiveMenu(['/user-groups', 'user-group-detail'])} />
-        <MenuLink menu="audit-log"                  isListGroupItems={isListGroupItems} isActive={isActiveMenu('/audit-log')} />
-        <MenuLink menu="plugins"                    isListGroupItems={isListGroupItems} isActive={isActiveMenu('/plugins')} />
-        <MenuLink menu="search"                     isListGroupItems={isListGroupItems} isActive={isActiveMenu('/search')} />
+        <MenuLink menu="home" isListGroupItems={isListGroupItems} isActive={pathname === '/admin'} isRoot />
+        <MenuLink menu="app" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/app')} />
+        <MenuLink menu="security" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/security')} />
+        <MenuLink menu="markdown" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/markdown')} />
+        <MenuLink menu="customize" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/customize')} />
+        <MenuLink menu="importer" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/importer')} />
+        <MenuLink menu="export" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/export')} />
+        <MenuLink menu="data-transfer" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/data-transfer')} />
+        <MenuLink menu="notification" isListGroupItems={isListGroupItems} isActive={isActiveMenu(['/notification', '/global-notification'])} />
+        <MenuLink menu="slack-integration" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/slack-integration')} />
+        <MenuLink menu="slack-integration-legacy" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/slack-integration-legacy')} />
+        <MenuLink menu="users" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/users')} />
+        <MenuLink menu="user-groups" isListGroupItems={isListGroupItems} isActive={isActiveMenu(['/user-groups', 'user-group-detail'])} />
+        <MenuLink menu="audit-log" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/audit-log')} />
+        <MenuLink menu="plugins" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/plugins')} />
+        <MenuLink menu="search" isListGroupItems={isListGroupItems} isActive={isActiveMenu('/search')} />
         {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a

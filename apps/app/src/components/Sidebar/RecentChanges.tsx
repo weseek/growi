@@ -2,14 +2,13 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 
-import { DevidedPagePath, isPopulated } from '@growi/core';
-import { FootstampIcon } from '@growi/ui/dist/components/FootstampIcon';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { isPopulated, type IPageHasId } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
-import Link from 'next/link';
 
+import { useKeywordManager } from '~/client/services/search-operation';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
@@ -31,6 +30,7 @@ type PageItemLowerProps = {
 
 type PageItemProps = PageItemLowerProps & {
   isSmall: boolean
+  onClickTag?: (tagName: string) => void,
 }
 
 const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
@@ -50,7 +50,7 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
 });
 PageItemLower.displayName = 'PageItemLower';
 
-const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
+const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -71,14 +71,14 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
       return <></>;
     }
     return (
-      <Link
+      <a
         key={tag.name}
-        href={`/_search?q=tag:${tag.name}`}
+        type="button"
         className="grw-tag-label badge badge-secondary mr-2 small"
-        prefetch={false}
+        onClick={() => onClickTag?.(tag.name)}
       >
         {tag.name}
-      </Link>
+      </a>
     );
   });
 
@@ -92,9 +92,11 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          {!isSmall && <div className="grw-tag-labels mt-1 mb-2">
-            { tagElements }
-          </div>}
+          {!isSmall && (
+            <div className="grw-tag-labels mt-1 mb-2">
+              { tagElements }
+            </div>
+          )}
           <PageItemLower page={page} />
         </div>
       </div>
@@ -111,6 +113,8 @@ const RecentChanges = (): JSX.Element => {
   const {
     data, mutate, isLoading,
   } = swrInifinitexRecentlyUpdated;
+
+  const { pushState } = useKeywordManager();
 
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
   const isEmpty = data?.[0]?.pages.length === 0;
@@ -136,7 +140,7 @@ const RecentChanges = (): JSX.Element => {
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
-        <SidebarHeaderReloadButton onClick={() => mutate()}/>
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input
@@ -161,7 +165,7 @@ const RecentChanges = (): JSX.Element => {
               >
                 { data != null && data.map(apiResult => apiResult.pages).flat()
                   .map(page => (
-                    <PageItem key={page._id} page={page} isSmall={isRecentChangesSidebarSmall} />
+                    <PageItem key={page._id} page={page} isSmall={isRecentChangesSidebarSmall} onClickTag={tagName => pushState(`tag:${tagName}`)} />
                   ))
                 }
               </InfiniteScroll>

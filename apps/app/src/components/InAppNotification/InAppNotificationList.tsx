@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 

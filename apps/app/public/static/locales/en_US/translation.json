@@ -442,7 +442,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
-    "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
     "initialize_successed": "Succeeded to initialize {{target}}",
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",

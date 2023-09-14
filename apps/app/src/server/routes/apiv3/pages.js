@@ -1,7 +1,11 @@
 
+import { PageGrant } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
+import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
+import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
+
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -9,16 +13,12 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
-import { ErrorV3 } from '@growi/core';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const { pathUtils, pagePathUtils } = require('@growi/core');
 const express = require('express');
 const { body } = require('express-validator');
 const { query } = require('express-validator');
 const mongoose = require('mongoose');
-
-const { isCreatablePage } = pagePathUtils;
 
 const router = express.Router();
 
@@ -301,7 +301,18 @@ module.exports = (crowi) => {
     let { path } = req.body;
 
     // check whether path starts slash
-    path = pathUtils.addHeadingSlash(path);
+    path = addHeadingSlash(path);
+
+    if (!isCreatablePage(path)) {
+      return res.apiv3Err(`Could not use the path '${path}'`);
+    }
+
+    if (isUserPage(path)) {
+      const isExistUser = await User.isExistUserByUserPagePath(path);
+      if (!isExistUser) {
+        return res.apiv3Err("Unable to create a page under a non-existent user's user page");
+      }
+    }
 
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
@@ -315,7 +326,7 @@ module.exports = (crowi) => {
     if (isNoBodyPage) {
       const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
       if (isEnabledAttachTitleHeader) {
-        initialBody += `${pathUtils.attachTitleHeader(path)}\n`;
+        initialBody += `${attachTitleHeader(path)}\n`;
       }
 
       const templateData = await Page.findTemplate(path);
@@ -508,7 +519,7 @@ module.exports = (crowi) => {
   router.put('/rename', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
-    let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
+    let newPagePath = normalizePath(req.body.newPagePath);
 
     const options = {
       isRecursively: req.body.isRecursively,
@@ -526,10 +537,17 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath}'`, 'invalid_path'), 409);
     }
 
-    // check whether path starts slash
-    newPagePath = pathUtils.addHeadingSlash(newPagePath);
+    if (isUserPage(newPagePath)) {
+      const isExistUser = await User.isExistUserByUserPagePath(newPagePath);
+      if (!isExistUser) {
+        return res.apiv3Err("Unable to rename a page under a non-existent user's user page");
+      }
+    }
 
-    const isExist = await Page.count({ path: newPagePath }) > 0;
+    // check whether path starts slash
+    newPagePath = addHeadingSlash(newPagePath);
+
+    const isExist = await Page.exists({ path: newPagePath, isEmpty: false });
     if (isExist) {
       // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
@@ -673,9 +691,6 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
 
-
-    const { isTrashPage } = pagePathUtils;
-
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
     const page = req.query.page || 1;
@@ -752,15 +767,22 @@ module.exports = (crowi) => {
     async(req, res) => {
       const { pageId, isRecursively } = req.body;
 
-      const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
+      const newPagePath = normalizePath(req.body.pageNameInput);
 
       const isCreatable = isCreatablePage(newPagePath);
       if (!isCreatable) {
         return res.apiv3Err(new ErrorV3('This page path is invalid', 'invalid_path'), 400);
       }
 
+      if (isUserPage(newPagePath)) {
+        const isExistUser = await User.isExistUserByUserPagePath(newPagePath);
+        if (!isExistUser) {
+          return res.apiv3Err("Unable to duplicate a page under a non-existent user's user page");
+        }
+      }
+
       // check page existence
-      const isExist = (await Page.count({ path: newPagePath })) > 0;
+      const isExist = (await Page.exists({ path: newPagePath, isEmpty: false }));
       if (isExist) {
         return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
       }
@@ -920,7 +942,7 @@ module.exports = (crowi) => {
     const { convertPath } = req.body;
 
     // Convert by path
-    const normalizedPath = pathUtils.normalizePath(convertPath);
+    const normalizedPath = normalizePath(convertPath);
     try {
       await crowi.pageService.normalizeParentByPath(normalizedPath, req.user);
     }

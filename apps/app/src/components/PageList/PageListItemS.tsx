@@ -1,12 +1,10 @@
 import React from 'react';
 
-import { PageListMeta } from '@growi/ui/dist/components/PagePath/PageListMeta';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type { IPageHasId } from '@growi/core';
+import { UserPicture } from '@growi/ui/dist/components';
+import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
-
-import { IPageHasId } from '~/interfaces/page';
 
 import styles from './PageListItemS.module.scss';
 
