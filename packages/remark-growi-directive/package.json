@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-growi-directive",
-  "version": "6.2.0-RC.0",
+  "version": "6.2.0",
   "description": "remark plugin to support GROWI plugin (forked from remark-directive@2.0.1)",
   "license": "MIT",
   "keywords": [
