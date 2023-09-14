@@ -41,7 +41,7 @@ type CommonProps = {
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
   onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
-  onClickWorkflowMenuItem?: () => void,
+  onClickWorkflowMenuItem?: (pageId: string) => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -156,12 +156,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
   }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
-  const workflowMenuItemClickHandler = useCallback(async() => {
+  const workflowMenuItemClickHandler = useCallback(async(pageId: string) => {
     if (onClickWorkflowMenuItem == null) {
       return;
     }
 
-    onClickWorkflowMenuItem();
+    onClickWorkflowMenuItem(pageId);
   }, [onClickWorkflowMenuItem]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
@@ -173,7 +173,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         <>
           <WideViewMenuItem onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />
           <DropdownItem divider />
-          <CommunicationMenuItems onClickWokflowMenuItem={workflowMenuItemClickHandler} />
+          <CommunicationMenuItems pageId={pageId} onClickWokflowMenuItem={workflowMenuItemClickHandler} />
         </>
       );
     };

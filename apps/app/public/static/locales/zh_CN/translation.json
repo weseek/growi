@@ -831,6 +831,8 @@
   },
   "approval_workflow": {
     "approval_workflow": "工作流程",
+    "name": "工作流程名称",
+    "description": "描述",
     "back": "返回",
     "list": "工作流程列表",
     "create": "创建工作流程",
