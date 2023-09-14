@@ -61,8 +61,9 @@ const router = express.Router();
  *            type: boolean
  *          isSearchScopeChildrenAsDefault:
  *            type: boolean
- *          isEnabledMarp:
- *            type: boolean
+ *      CutomizePresentation:
+ *        isEnabledMarp:
+ *          type: boolean
  *      CustomizeHighlight:
  *        description: CustomizeHighlight
  *        type: object
@@ -127,6 +128,8 @@ module.exports = (crowi) => {
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
       body('isSearchScopeChildrenAsDefault').isBoolean(),
+    ],
+    CustomizePresentation: [
       body('isEnabledMarp').isBoolean(),
     ],
     customizeTitle: [
