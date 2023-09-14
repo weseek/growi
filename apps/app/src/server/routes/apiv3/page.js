@@ -617,10 +617,13 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
+    // replace forbidden characters to '_'
+    // refer to https://kb.acronis.com/node/56475?ckattempt=1
     let fileName = path.basename(pagePath)
       .replace(/[\\/:;"*?<>,」ˆ|¥]/g, '_')
       .replace(/\.$/, '_');
 
+    // replace root page name to '_top'
     if (!fileName) {
       fileName = '_top';
     }
