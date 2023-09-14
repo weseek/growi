@@ -4,22 +4,24 @@ import { param, query, body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
+import { IWorkflowApproverGroupReq, WorkflowStatus } from '~/interfaces/workflow';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import Workflow from '~/server/models/workflow';
 import { configManager } from '~/server/service/config-manager';
+import { WorkflowService } from '~/server/service/workflow';
 import loggerFactory from '~/utils/logger';
+import XssService from '~/services/xss';
+
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 import type { ApiV3Response } from './interfaces/apiv3-response';
-
 
 const logger = loggerFactory('growi:routes:apiv3:workflow');
 const router = express.Router();
 
-type RequestWithUser = Request & { user?: IUserHasId }
+type RequestWithUser = Request & { user: IUserHasId }
 
 
 // for PUT:/workflow/{workflowId}:
@@ -70,7 +72,7 @@ module.exports = (crowi: Crowi): Router => {
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('name').optional().isString().withMessage('name must be string'),
       body('comment').optional().isString().withMessage('comment must be string'),
-      body('approverGroups').optional().isArray().withMessage('approverGroups must be array'),
+      body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
     updateWorkflowApproverGroups: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -87,6 +89,8 @@ module.exports = (crowi: Crowi): Router => {
       param('workflowId').isMongoId().withMessage('workflowId is required'),
     ],
   };
+
+  const xss = new XssService();
 
 
   /**
@@ -233,22 +237,30 @@ module.exports = (crowi: Crowi): Router => {
    */
   router.post('/', accessTokenParser, loginRequired, validator.createWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const {
-      pageId,
-      name,
-      comment,
-      approverGroups,
+      pageId, name, comment, approverGroups,
     } = req.body;
     const { user } = req;
 
-    // Description
-    // workflow の作成
+    const xssProcessedName = xss.process(name);
+    const xssProcessedComment = xss.process(comment);
 
-    // Memo
-    // ページ内に進行中の workflow が存在する場合は新規に作成することはできない
-    // 1つの workflow に対して同一の approver は存在できない (workflow-a に対して user-a は1つのみ存在できる)
-    // workflow 作成者は approver にはなれない
+    const workflow = {
+      pageId,
+      creator: user._id,
+      name: xssProcessedName,
+      comment: xssProcessedComment,
+      status: WorkflowStatus.INPROGRESS,
+      approverGroups: approverGroups as IWorkflowApproverGroupReq[],
+    };
 
-    return res.apiv3();
+    try {
+      const createdWorkflow = await WorkflowService.createWorkflow(workflow);
+      return res.apiv3({ createdWorkflow });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err);
+    }
   });
 
 
