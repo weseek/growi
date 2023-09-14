@@ -3,16 +3,15 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import type {
   IWorkflow, IWorkflowApproverGroup, IWorkflowApprover,
-} from '~/interfaces/workflow';
+} from '~/features/workflow/interfaces/workflow';
 import {
   WorkflowStatuses,
   WorkflowApproverStatus,
   WorkflowApproverStatuses,
   WorkflowApprovalType,
   WorkflowApprovalTypes,
-} from '~/interfaces/workflow';
-
-import { getOrCreateModel } from '../util/mongoose-utils';
+} from '~/features/workflow/interfaces/workflow';
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 interface WorkflowApproverDocument extends IWorkflowApprover, Document {}
 type WorkflowApproverModel = Model<WorkflowApproverDocument>;
