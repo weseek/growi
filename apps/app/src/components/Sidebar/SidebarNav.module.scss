@@ -93,3 +93,13 @@
     }
   }
 }
+
+
+.grw-sidebar-nav {
+  background-color: var(--grw-highlight-100);
+}
+@include bs.color-mode(dark) {
+  .grw-sidebar-nav {
+    background-color: var(--grw-highlight-900);
+  }
+}
