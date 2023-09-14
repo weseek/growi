@@ -12,7 +12,7 @@ import {
   WorkflowApprovalType,
   WorkflowApprovalTypes,
 } from '~/features/workflow/interfaces/workflow';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 
