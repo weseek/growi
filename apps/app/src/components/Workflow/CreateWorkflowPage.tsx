@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { IWorkflowApproverGroup, WorkflowApprovalType, WorkflowApproverStatus } from '~/interfaces/workflow';
+import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '~/interfaces/workflow';
 
 type Props = {
   pageId: string,
@@ -20,19 +20,19 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
     approvalType: WorkflowApprovalType.AND,
     approvers: [
       {
-        user: '64e4072930f26dcc81590064',
+        user: '64e41166aa753ef87f073770',
         status: WorkflowApproverStatus.NONE,
       },
       {
-        user: '64e4072930f86dcc81590068',
+        user: '64e4116aaa753ef87fk73777',
         status: WorkflowApproverStatus.NONE,
       },
     ],
-  }] as unknown as IWorkflowApproverGroup[];
+  }] as IWorkflowApproverGroupReq[];
 
   const [workflowName, setWorkflowName] = useState<string>('');
   const [workflowDescription, setWorkflowDescription] = useState<string>('');
-  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroup[] | undefined>(approverGroupsDummyData);
+  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
