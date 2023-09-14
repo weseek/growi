@@ -14,6 +14,7 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useWorkflowModal } from '~/features/workflow/client/stores/workflow';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -22,7 +23,7 @@ import {
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, useWorkflowModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
