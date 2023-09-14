@@ -481,6 +481,9 @@
       "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted.",
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
       "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range.",
+
+      "presentation": "Presentation",
+    "presentation_options": {
       "enable_marp": "Enable Marp ",
       "enable_marp_desc": "Marp can be used in presentation preview. This option may make you vulnerable to XSS.",
       "marp_official_site": "The Marp Official Site",
