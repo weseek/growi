@@ -3,16 +3,23 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+import { useSWRxWorkflowList } from '~/stores/workflow';
+
 
 type Props = {
+  pageId: string,
   onClickCreateWorkflowButton: () => void;
 }
 
 
 export const WorkflowListPage = (props: Props): JSX.Element => {
+  const { pageId, onClickCreateWorkflowButton } = props;
+
   const { t } = useTranslation();
 
-  const { onClickCreateWorkflowButton } = props;
+  const { data: workflows } = useSWRxWorkflowList(pageId);
+
+  console.log('workflows', workflows);
 
   const createWorkflowButtonClickHandler = useCallback(() => {
     if (onClickCreateWorkflowButton == null) {

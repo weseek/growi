@@ -43,6 +43,7 @@ const WorkflowModal = (): JSX.Element => {
     <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
       { pageType === PageType.list && (
         <WorkflowListPage
+          pageId={workflowModalData.pageId}
           onClickCreateWorkflowButton={createWorkflowButtonClickHandler}
         />
       )}
