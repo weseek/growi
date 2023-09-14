@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 import {
   WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
-} from '~/interfaces/workflow';
-import Workflow from '~/server/models/workflow';
+} from '../../interfaces/workflow';
+import Workflow from '../models/workflow';
 
 import { WorkflowService } from './workflow';
 

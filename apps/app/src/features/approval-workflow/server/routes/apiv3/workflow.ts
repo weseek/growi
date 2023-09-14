@@ -3,20 +3,18 @@ import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
-import { IWorkflowApproverGroupReq, WorkflowStatus } from '~/interfaces/workflow';
+import Crowi from '~/server/crowi';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
-import Workflow from '~/server/models/workflow';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import { WorkflowService } from '~/server/service/workflow';
-import loggerFactory from '~/utils/logger';
 import XssService from '~/services/xss';
+import loggerFactory from '~/utils/logger';
 
+import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '../../../interfaces/workflow';
+import Workflow from '../../models/workflow';
+import { WorkflowService } from '../../services/workflow';
 
-import Crowi from '../../crowi';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
-import type { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:workflow');
 const router = express.Router();
@@ -56,8 +54,8 @@ const actuonTypeForWorkflowApproverGroups = {
  */
 
 module.exports = (crowi: Crowi): Router => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
+  const loginRequired = require('~/server/middlewares/login-required')(crowi, true);
 
   const validator = {
     getWorkflow: [
