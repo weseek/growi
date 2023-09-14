@@ -3,9 +3,9 @@ import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '~/features/workflow/interfaces/workflow';
-import Workflow from '~/features/workflow/server/models/workflow';
-import { WorkflowService } from '~/features/workflow/server/services/workflow';
+import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '~/features/approval-workflow/interfaces/workflow';
+import Workflow from '~/features/approval-workflow/server/models/workflow';
+import { WorkflowService } from '~/features/approval-workflow/server/services/workflow';
 import Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';

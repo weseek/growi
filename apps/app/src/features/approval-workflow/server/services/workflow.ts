@@ -1,7 +1,7 @@
 import {
   IWorkflow, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
-} from '~/features/workflow/interfaces/workflow';
-import Workflow from '~/features/workflow/server/models/workflow';
+} from '~/features/approval-workflow/interfaces/workflow';
+import Workflow from '~/features/approval-workflow/server/models/workflow';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 

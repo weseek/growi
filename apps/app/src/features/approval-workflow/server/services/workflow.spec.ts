@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { WorkflowApprovalType, IWorkflowApproverGroupReq } from '~/features/workflow/interfaces/workflow';
+import { WorkflowApprovalType, IWorkflowApproverGroupReq } from '~/features/approval-workflow/interfaces/workflow';
 
 import { WorkflowService } from './workflow';
 

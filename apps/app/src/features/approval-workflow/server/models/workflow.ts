@@ -3,7 +3,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import type {
   IWorkflow, IWorkflowApproverGroup, IWorkflowApprover,
-} from '~/features/workflow/interfaces/workflow';
+} from '~/features/approval-workflow/interfaces/workflow';
 import {
   WorkflowStatus,
   WorkflowStatuses,
@@ -11,7 +11,7 @@ import {
   WorkflowApproverStatuses,
   WorkflowApprovalType,
   WorkflowApprovalTypes,
-} from '~/features/workflow/interfaces/workflow';
+} from '~/features/approval-workflow/interfaces/workflow';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 

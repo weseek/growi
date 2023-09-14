@@ -14,7 +14,7 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useWorkflowModal } from '~/features/workflow/client/stores/workflow';
+import { useWorkflowModal } from '~/features/approval-workflow/client/stores/workflow';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
