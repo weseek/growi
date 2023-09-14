@@ -3,8 +3,8 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { useCreateWorkflow } from '~/features/approval-workflow/client/services/workflow';
-import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '~/features/approval-workflow/interfaces/workflow';
+import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
+import { useCreateWorkflow } from '../services/workflow';
 
 type Props = {
   pageId: string,

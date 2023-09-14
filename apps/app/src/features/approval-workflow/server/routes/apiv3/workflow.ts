@@ -3,9 +3,6 @@ import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '~/features/approval-workflow/interfaces/workflow';
-import Workflow from '~/features/approval-workflow/server/models/workflow';
-import { WorkflowService } from '~/features/approval-workflow/server/services/workflow';
 import Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
@@ -13,6 +10,10 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import { configManager } from '~/server/service/config-manager';
 import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
+
+import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '../../../interfaces/workflow';
+import Workflow from '../../models/workflow';
+import { WorkflowService } from '../../services/workflow';
 
 
 const logger = loggerFactory('growi:routes:apiv3:workflow');

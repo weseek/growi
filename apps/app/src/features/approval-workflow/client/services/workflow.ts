@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { IWorkflowHasId, IWorkflowApproverGroupReq } from '~/features/approval-workflow/interfaces/workflow';
+
+import { IWorkflowHasId, IWorkflowApproverGroupReq } from '../../interfaces/workflow';
 
 
 export const useCreateWorkflow = (
