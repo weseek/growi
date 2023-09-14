@@ -19,7 +19,7 @@
   $body-tertiary-color:       rgba($body-color, .5);
   $body-tertiary-bg:          $gray-100;
 
-  $body-emphasis-color:       black;
+  $border-color:              $gray-300;
 
   $link-color:                $gray-800;
 
@@ -28,6 +28,7 @@
 
   @import '@growi/core/scss/bootstrap/init-stage-2';
 
+  @import '@growi/core/scss/bootstrap/theming/root';
   @import '@growi/core/scss/bootstrap/theming/root-light';
   @import '@growi/core/scss/bootstrap/theming/apply';
 
@@ -36,6 +37,50 @@
       color: var(--grw-primary-500);
       &:hover {
         color: var(--grw-primary-700);
+      }
+    }
+  }
+}
+
+:root[data-bs-theme='dark'] {
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
+
+  $primary: #439cb9;
+  $secondary: $gray-500;
+  $highlight: #64a9ed;
+
+  @include generate-color-palette('primary', $primary);
+  @include generate-color-palette('highlight', $highlight);
+
+  $body-color-dark:                   $gray-200;
+  $body-bg-dark:                      #16202c;
+
+  $body-secondary-color-dark:         rgba($body-color-dark, .75);
+  $body-secondary-bg-dark:            $gray-800;
+
+  $body-tertiary-color-dark:          rgba($body-color-dark, .5);
+  $body-tertiary-bg-dark:             mix($gray-800, $gray-900, 50%);
+
+  $border-color-dark:                 $gray-700;
+
+  $link-color-dark:                   $gray-300;
+
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
+
+  @import '@growi/core/scss/bootstrap/init-stage-2';
+
+  @import '@growi/core/scss/bootstrap/theming/root';
+  @import '@growi/core/scss/bootstrap/theming/root-dark';
+  @import '@growi/core/scss/bootstrap/theming/apply';
+
+  .wiki {
+    a {
+      color: var(--grw-primary-500);
+      &:hover {
+        color: var(--grw-primary-300);
       }
     }
   }
