@@ -35,6 +35,10 @@ const WorkflowModal = (): JSX.Element => {
     setPageType(PageType.list);
   }, []);
 
+  if (workflowModalData?.pageId == null) {
+    return <></>;
+  }
+
   return (
     <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
       { pageType === PageType.list && (
@@ -45,7 +49,7 @@ const WorkflowModal = (): JSX.Element => {
 
       { pageType === PageType.create && (
         <CreateWorkflowPage
-          pageId={workflowModalData?.pageId}
+          pageId={workflowModalData.pageId}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
         />
       )}

@@ -4,10 +4,10 @@ import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { IWorkflowApproverGroup } from '~/interfaces/workflow';
+import { IWorkflowApproverGroup, WorkflowApprovalType, WorkflowApproverStatus } from '~/interfaces/workflow';
 
 type Props = {
-  pageId?: string,
+  pageId: string,
   onClickWorkflowListPageBackButton: () => void;
 }
 
@@ -16,9 +16,23 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
 
   const { onClickWorkflowListPageBackButton, pageId } = props;
 
+  const approverGroupsDummyData = [{
+    approvalType: WorkflowApprovalType.AND,
+    approvers: [
+      {
+        user: '64e4072930f26dcc81590064',
+        status: WorkflowApproverStatus.NONE,
+      },
+      {
+        user: '64e4072930f86dcc81590068',
+        status: WorkflowApproverStatus.NONE,
+      },
+    ],
+  }] as unknown as IWorkflowApproverGroup[];
+
   const [workflowName, setWorkflowName] = useState<string>('');
   const [workflowDescription, setWorkflowDescription] = useState<string>('');
-  const [approverGroup, setApproverGroup] = useState<IWorkflowApproverGroup | undefined>();
+  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroup[] | undefined>(approverGroupsDummyData);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
@@ -39,15 +53,14 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const createWorkflowButtonClickHandler = useCallback(async() => {
     try {
       await apiv3Post('/workflow', {
-        pageId, name: workflowName, comment: workflowDescription, approverGroup,
+        pageId, name: workflowName, comment: workflowDescription, approverGroups,
       });
-
       // TODO: Move to the detail screen
     }
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [pageId, approverGroup, workflowDescription, workflowName]);
+  }, [pageId, approverGroups, workflowDescription, workflowName]);
 
   return (
     <>
