@@ -22,7 +22,7 @@ import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
-import type { UsersHomepageFooterProps } from '../../features/growi-plugin/UsersHomepageFooter';
+import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
 import RevisionRenderer from './RevisionRenderer';
 
@@ -35,7 +35,7 @@ const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const PageContentsUtilities = dynamic(() => import('./PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
 const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
-const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../../features/growi-plugin/UsersHomepageFooter')
+const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
 
