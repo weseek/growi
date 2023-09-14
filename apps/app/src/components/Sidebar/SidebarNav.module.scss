@@ -58,12 +58,12 @@
     // icon opacity
     &:not(.active) {
       i {
-        opacity: 0.6;
+        opacity: 0.7;
       }
       &:hover,
       &:focus {
         i {
-          opacity: 0.7;
+          opacity: 0.8;
         }
       }
     }
@@ -90,6 +90,7 @@
       padding: 0.9em;
       i {
         font-size: 1.5em;
+        opacity: 0.4;
       }
     }
   }
