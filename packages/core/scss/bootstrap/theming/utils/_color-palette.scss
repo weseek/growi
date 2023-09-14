@@ -1,11 +1,31 @@
 @mixin generate-color-palette($color, $value, $shade-color-ratio: 20%, $tint-color-ratio: 20%, $prefix: 'grw-') {
-  --#{$prefix}#{$color}-900: #{shade-color($value, $shade-color-ratio * 4)};
-  --#{$prefix}#{$color}-800: #{shade-color($value, $shade-color-ratio * 3)};
-  --#{$prefix}#{$color}-700: #{shade-color($value, $shade-color-ratio * 2)};
-  --#{$prefix}#{$color}-600: #{shade-color($value, $shade-color-ratio)};
-  --#{$prefix}#{$color}-500: #{$value};
-  --#{$prefix}#{$color}-400: #{tint-color($value, $tint-color-ratio)};
-  --#{$prefix}#{$color}-300: #{tint-color($value, $tint-color-ratio * 2)};
-  --#{$prefix}#{$color}-200: #{tint-color($value, $tint-color-ratio * 3)};
-  --#{$prefix}#{$color}-100: #{tint-color($value, $tint-color-ratio * 4)};
+  $color-900: shade-color($value, $shade-color-ratio * 4);
+  $color-800: shade-color($value, $shade-color-ratio * 3);
+  $color-700: shade-color($value, $shade-color-ratio * 2);
+  $color-600: shade-color($value, $shade-color-ratio);
+  $color-500: $value;
+  $color-400: tint-color($value, $tint-color-ratio);
+  $color-300: tint-color($value, $tint-color-ratio * 2);
+  $color-200: tint-color($value, $tint-color-ratio * 3);
+  $color-100: tint-color($value, $tint-color-ratio * 4);
+
+  --#{$prefix}#{$color}-900: #{$color-900};
+  --#{$prefix}#{$color}-800: #{$color-800};
+  --#{$prefix}#{$color}-700: #{$color-700};
+  --#{$prefix}#{$color}-600: #{$color-600};
+  --#{$prefix}#{$color}-500: #{$color-500};
+  --#{$prefix}#{$color}-400: #{$color-400};
+  --#{$prefix}#{$color}-300: #{$color-300};
+  --#{$prefix}#{$color}-200: #{$color-200};
+  --#{$prefix}#{$color}-100: #{$color-100};
+
+  --#{$prefix}#{$color}-900-rgb: #{to-rgb($color-900)};
+  --#{$prefix}#{$color}-800-rgb: #{to-rgb($color-800)};
+  --#{$prefix}#{$color}-700-rgb: #{to-rgb($color-700)};
+  --#{$prefix}#{$color}-600-rgb: #{to-rgb($color-600)};
+  --#{$prefix}#{$color}-500-rgb: #{to-rgb($color-500)};
+  --#{$prefix}#{$color}-400-rgb: #{to-rgb($color-400)};
+  --#{$prefix}#{$color}-300-rgb: #{to-rgb($color-300)};
+  --#{$prefix}#{$color}-200-rgb: #{to-rgb($color-200)};
+  --#{$prefix}#{$color}-100-rgb: #{to-rgb($color-100)};
 }

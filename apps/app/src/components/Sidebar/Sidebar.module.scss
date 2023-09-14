@@ -218,3 +218,25 @@
     }
   }
 }
+
+
+.grw-sidebar :global {
+  .grw-contextual-navigation {
+    backdrop-filter: blur(20px);
+  }
+}
+@include bs.color-mode(light) {
+  .grw-sidebar :global {
+    .grw-contextual-navigation {
+      background-color: rgba(var(--grw-highlight-100-rgb), .5);
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-sidebar :global {
+    .grw-contextual-navigation {
+      background-color: rgba(var(--grw-highlight-900-rgb), .5);
+    }
+  }
+}
