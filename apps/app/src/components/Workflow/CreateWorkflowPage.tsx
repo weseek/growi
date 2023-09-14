@@ -38,14 +38,16 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
     try {
-      await apiv3Post('_api/v3/workflow', {
+      await apiv3Post('/workflow', {
         pageId, name: workflowName, comment: workflowDescription, approverGroup,
       });
+
+      // TODO: Move to the detail screen
     }
     catch (err) {
-      //
+      // TODO: Consider how to display errors
     }
-  }, []);
+  }, [pageId, approverGroup, workflowDescription, workflowName]);
 
   return (
     <>
