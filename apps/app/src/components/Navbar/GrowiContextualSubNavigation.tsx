@@ -333,8 +333,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     setIsPageTempleteModalShown(true);
   }, []);
 
-  const workflowItemClickedHandler = useCallback(() => {
-    openWorkflowModal();
+  const workflowItemClickedHandler = useCallback((pageId: string) => {
+    openWorkflowModal(pageId);
   }, [openWorkflowModal]);
 
   const RightComponent = () => {

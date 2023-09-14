@@ -744,11 +744,12 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
 * workflowModal
 */
 export type WorkflowModalStatus = {
+  pageId?: string,
   isOpened: boolean,
 }
 
 type WorkflowModalUtils = {
-  open(): void,
+  open(pageId: string): void,
   close(): void,
 }
 
@@ -758,8 +759,8 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
   const swrResponse = useStaticSWR<WorkflowModalStatus, Error>('workflowModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: () => {
-      swrResponse.mutate({ isOpened: true });
+    open: (pageId: string) => {
+      swrResponse.mutate({ isOpened: true, pageId });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });

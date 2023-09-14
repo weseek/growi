@@ -861,6 +861,8 @@
   },
   "approval_workflow": {
     "approval_workflow": "ワークフロー",
+    "name": "ワークフロー名",
+    "description": "説明",
     "back": "戻る",
     "list": "ワークフロー一覧",
     "create": "ワークフローを作成",

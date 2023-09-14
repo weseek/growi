@@ -54,7 +54,7 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
 
 # Slack
 
-<a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
 
 GROWI をより良いものにするために、是非 Slack に参加してください。  
 開発に関する議論を行っている他、導入時の質問等も受け付けています。

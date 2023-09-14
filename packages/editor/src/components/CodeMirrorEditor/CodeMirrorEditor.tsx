@@ -1,7 +1,10 @@
 import {
-  forwardRef, useMemo, useRef,
+  forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
+import { defaultKeymap } from '@codemirror/commands';
+import { indentUnit } from '@codemirror/language';
+import { keymap } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
@@ -21,12 +24,14 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
+  indentSize?: number,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
     onChange,
+    indentSize,
   } = props;
 
   const containerRef = useRef(null);
@@ -36,7 +41,28 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       onChange,
     };
   }, [onChange]);
-  useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
+
+  useEffect(() => {
+    const extension = keymap.of([
+      ...defaultKeymap,
+    ]);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor]);
+
+  useEffect(() => {
+    if (indentSize == null) {
+      return;
+    }
+    const extension = indentUnit.of(' '.repeat(indentSize));
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, indentSize]);
 
   return (
     <div className="flex-expand-vert">

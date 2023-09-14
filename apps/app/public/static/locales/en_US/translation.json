@@ -828,6 +828,8 @@
   },
   "approval_workflow": {
     "approval_workflow": "Approval Workflow",
+    "name": "Workflow Name",
+    "description": "Description",
     "back": "Back",
     "list": "Workflow List",
     "create": "Create workflow",
