@@ -1,6 +1,11 @@
 import { Server } from 'socket.io';
+import { MongodbPersistence } from 'y-mongodb-provider';
+import { YSocketIO } from 'y-socket.io/dist/server';
+import * as Y from 'yjs';
 
 import loggerFactory from '~/utils/logger';
+
+import { getMongoUri } from '../util/mongoose-utils';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const expressSession = require('express-session');
@@ -33,6 +38,10 @@ class SocketIoService {
     });
     this.io.attach(server);
 
+    // Create the YSocketIO instance
+    this.ysocketio = new YSocketIO(this.io);
+    this.ysocketio.initialize();
+
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
 
@@ -47,6 +56,7 @@ class SocketIoService {
 
     await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
+    await this.setupYjsConnection();
   }
 
   getDefaultSocket() {
@@ -147,6 +157,59 @@ class SocketIoService {
       // set event handlers for joining rooms
       socket.on('join:page', ({ pageId }) => {
         socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
+    });
+  }
+
+  setupYjsConnection() {
+    // TODO: Check init place
+    const mdb = new MongodbPersistence(getMongoUri(), {
+      collectionName: 'yjs-writings',
+      flushSize: 100,
+    });
+
+    this.io.on('connection', (socket) => {
+
+      socket.on('disconnect', () => {
+        console.log(`[disconnect] Disconnected with user: ${socket.id}`);
+      });
+
+      socket.on('create:doc', async({ pageId }) => {
+        const docName = pageId;
+
+        // ページにジョインしたらそのページ id の永続データがないか DB を確認
+        const persistedYdoc = await mdb.getYDoc(docName);
+        await mdb.flushDocument(docName);
+        const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
+
+        // // もし DB に ydoc があれば 現状の ydoc と比較してその差分を db に保存する
+        // // TODO: つまり、ここで client から最新の Ydoc を取得する必要がある
+        const persistedStateVector = Y.encodeStateVector(persistedYdoc);
+
+        if (currentYdoc != null) {
+          const diff = Y.encodeStateAsUpdate(currentYdoc, persistedStateVector);
+          // store the new data in db (if there is any: empty update is an array of 0s)
+          if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0) {
+            mdb.storeUpdate(docName, diff);
+          }
+
+          // クライアントに persisted data を送信する
+          Y.applyUpdate(currentYdoc, Y.encodeStateAsUpdate(persistedYdoc));
+
+          // ソケットリッスン、もしアップデートイベントがあれば db も更新する
+          currentYdoc.on('update', async(update, origin, doc, tr) => {
+            mdb.storeUpdate(docName, update);
+          });
+
+          // ソケットリッスン、db をきれいにする
+          // TODO: Clarify the event conditions
+          currentYdoc.on('destroy', async(doc) => {
+            await mdb.flushDocument(docName);
+          });
+        }
+
+        // 不要なデータを削除
+        persistedYdoc.destroy();
       });
     });
   }

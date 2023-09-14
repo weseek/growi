@@ -37,7 +37,7 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
       { isViewMode && pageView }
 
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
-        <PageEditor />
+        <PageEditor isViewMode={editorMode} />
       </LazyRenderer>
 
       { isEditable && !isViewMode && <EditorNavbarBottom /> }

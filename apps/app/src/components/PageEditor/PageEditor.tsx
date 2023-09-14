@@ -12,6 +12,11 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { yCollab } from 'y-codemirror.next';
+import { SocketIOProvider } from 'y-socket.io';
+import * as Y from 'yjs';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
@@ -75,6 +80,7 @@ let isOriginOfScrollSyncPreview = false;
 
 type Props = {
   visibility?: boolean,
+  isViewMode?: any,
 }
 
 export const PageEditor = React.memo((props: Props): JSX.Element => {
@@ -466,16 +472,136 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
+  const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
+  const [provider, setProvider] = useState<SocketIOProvider | null>(null);
+  const [cPageId, setcPageId] = useState(pageId);
 
   // initialize
   useEffect(() => {
-    if (initialValue == null) {
+    console.log(cPageId, pageId);
+    if (cPageId === pageId) {
       return;
     }
-    codeMirrorEditor?.initDoc(initialValue);
-    setMarkdownToPreview(initialValue);
-    mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning]);
+    if (cPageId !== pageId && !!provider && !!ydoc && socket != null) {
+      console.log('removef', pageId);
+      socket.emit('remove:doc', { pageId });
+
+      provider.destroy();
+      provider.disconnect();
+
+      ydoc.destroy();
+      console.log('clent, socket off');
+      socket.off('create:doc');
+
+      console.log('destroy');
+    }
+    setYdoc(null);
+    setProvider(null);
+    setcPageId(pageId);
+  }, [cPageId, codeMirrorEditor, mutateIsEnabledUnsavedWarning, pageId, provider, socket, ydoc]);
+
+  useEffect(() => {
+    if (!ydoc) {
+      console.log('setting doc');
+      const _ydoc = new Y.Doc();
+      setYdoc(_ydoc);
+    }
+  }, [ydoc]);
+
+  useEffect(() => {
+    if (!!ydoc && !provider && socket != null) {
+      console.log('setting up provider');
+      const socketIOProvider = new SocketIOProvider(
+        'ws://localhost:3000',
+        `yjs/${pageId}`,
+        ydoc,
+        { autoConnect: true },
+      );
+
+      socketIOProvider.awareness.setLocalState({ id: Math.random(), name: 'Perico' });
+      socketIOProvider.on('sync', (isSync: boolean) => {
+        console.log('websocket sync', pageId, isSync);
+        if (isSync) {
+          console.log('emit!!', pageId);
+          socket.emit('create:doc', { pageId });
+        }
+      });
+      socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
+        if (_status) console.log(_status);
+      });
+      setProvider(socketIOProvider);
+    }
+  }, [ydoc, provider, pageId, socket, currentPage]);
+
+  useEffect(() => {
+
+    if (!!ydoc && !!provider) {
+      console.log('setup extension');
+      const ytext = ydoc.getText('codemirror');
+      const undoManager = new Y.UndoManager(ytext);
+
+      // const initValue = () => {
+      //   if (initialValue !== ytext.toString()) {
+      //   // TODO: 空文字にしたリビジョンがあるときの対応
+      //     if (ytext.toString() === '') {
+      //       console.log('init', initialValue.length);
+      //       console.log(ytext.length);
+      //       // ytext.delete(0, initialValue.length - 1);
+      //       ytext.insert(0, initialValue);
+      //       return ytext.toString();
+      //     }
+      //     // if (ytext.toString() === initialValue) {
+      //     //   // ytext.delete(0, initialValue.length);
+      //     //   ytext.insert(0, initialValue);
+      //     //   return ytext.toString();
+      //     // }
+
+      //     // return ytext.toString();
+      //   }
+      //   return ytext.toString();
+      // };
+
+      // const initValue = () => {
+      //   console.log('string', ytext.toString());
+      //   if (ytext.toString() === '') {
+      //     ytext.insert(0, initialValue);
+      //     return ytext.toString();
+      //   }
+      //   return ytext.toString();
+      // };
+
+      // console.log('undefined', initValue());
+
+      // codeMirrorEditor?.initDoc(initValue());
+      // codeMirrorEditor?.initDoc(ytext.toString());
+      const cleanup = codeMirrorEditor?.appendExtensions?.([
+        yCollab(ytext, provider.awareness, { undoManager }),
+      ]);
+
+      if (initialValue == null) {
+        return;
+      }
+      console.log('initialValue');
+      codeMirrorEditor?.initDoc(initialValue);
+      setMarkdownToPreview(initialValue);
+      mutateIsEnabledUnsavedWarning(false);
+
+      return cleanup;
+    }
+  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning, pageId, provider, ydoc]);
+
+  // useEffect(() => {
+  //   if (props.isViewMode === 'editor') {
+  //     // provider?.connect();
+  //     console.log('connect provider', props.isViewMode, provider);
+  //   }
+  //   if (props.isViewMode === 'view') {
+  //     // provider?.disconnect();
+  //     // ydoc?.destroy();
+  //     // provider?.destroy();
+  //     console.log('disconnect', provider);
+  //   }
+  // }, [pageId, props.isViewMode, provider, ydoc]);
 
   // initial caret line
   useEffect(() => {
