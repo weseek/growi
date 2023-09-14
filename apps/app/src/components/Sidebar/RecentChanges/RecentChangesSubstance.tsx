@@ -5,8 +5,8 @@ import React, {
 import { isPopulated, type IPageHasId } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
-import Link from 'next/link';
 
+import { useKeywordManager } from '~/client/services/search-operation';
 import FormattedDistanceDate from '~/components/FormattedDistanceDate';
 import InfiniteScroll from '~/components/InfiniteScroll';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
@@ -27,7 +27,8 @@ type PageItemLowerProps = {
 }
 
 type PageItemProps = PageItemLowerProps & {
-  isSmall: boolean
+  isSmall: boolean,
+  onClickTag?: (tagName: string) => void,
 }
 
 const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
@@ -47,7 +48,7 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
 });
 PageItemLower.displayName = 'PageItemLower';
 
-const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
+const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -68,14 +69,14 @@ const PageItem = memo(({ page, isSmall }: PageItemProps): JSX.Element => {
       return <></>;
     }
     return (
-      <Link
+      <a
         key={tag.name}
-        href={`/_search?q=tag:${tag.name}`}
+        type="button"
         className="grw-tag-label badge bg-primary me-2 small"
-        prefetch={false}
+        onClick={() => onClickTag?.(tag.name)}
       >
         {tag.name}
-      </Link>
+      </a>
     );
   });
 
@@ -156,6 +157,8 @@ export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => 
   const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 
+  const { pushState } = useKeywordManager();
+
   const isEmpty = data?.[0]?.pages.length === 0;
   const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
@@ -168,7 +171,7 @@ export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => 
         >
           { data != null && data.map(apiResult => apiResult.pages).flat()
             .map(page => (
-              <PageItem key={page._id} page={page} isSmall={isSmall} />
+              <PageItem key={page._id} page={page} isSmall={isSmall} onClickTag={tagName => pushState(`tag:${tagName}`)} />
             ))
           }
         </InfiniteScroll>
