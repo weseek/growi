@@ -51,13 +51,14 @@
   .btn {
     width: var.$grw-sidebar-nav-width;
     line-height: 1em;
+    border: 0;
     border-radius: 0;
     box-shadow: none !important;
 
     // icon opacity
     &:not(.active) {
       i {
-        opacity: 0.4;
+        opacity: 0.6;
       }
       &:hover,
       &:focus {
@@ -95,11 +96,33 @@
 }
 
 
-.grw-sidebar-nav {
-  background-color: var(--grw-highlight-100);
+.grw-sidebar-nav :global {
+  .btn-primary {
+    --bs-btn-bg: transparent !important;
+    --bs-btn-active-bg: transparent !important;
+  }
+}
+@include bs.color-mode(light) {
+  .grw-sidebar-nav :global {
+    background-color: var(--grw-highlight-100);
+
+    .btn-primary {
+      --bs-btn-color: var(--grw-primary-500);
+      --bs-btn-hover-color: var(--grw-primary-500);
+      --bs-btn-hover-bg: var(--grw-highlight-300);
+      --bs-btn-active-color: var(--grw-primary-500);
+    }
+  }
 }
 @include bs.color-mode(dark) {
-  .grw-sidebar-nav {
+  .grw-sidebar-nav :global {
     background-color: var(--grw-highlight-900);
+
+    .btn-primary {
+      --bs-btn-color: var(--grw-primary-400);
+      --bs-btn-hover-color: var(--grw-primary-400);
+      --bs-btn-hover-bg: var(--grw-highlight-700);
+      --bs-btn-active-color: var(--grw-primary-400);
+    }
   }
 }
