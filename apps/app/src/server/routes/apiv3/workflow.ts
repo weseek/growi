@@ -1,6 +1,13 @@
 import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
-import { param, body } from 'express-validator';
+import { param, query, body } from 'express-validator';
+import mongoose from 'mongoose';
+
+import type { IWorkflowPaginateResult } from '~/interfaces/workflow';
+import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import Workflow from '~/server/models/workflow';
+import { configManager } from '~/server/service/config-manager';
+import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -9,6 +16,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
 
+const logger = loggerFactory('growi:routes:apiv3:workflow');
 const router = express.Router();
 
 type RequestWithUser = Request & { user?: IUserHasId }
@@ -55,6 +63,8 @@ module.exports = (crowi: Crowi): Router => {
     ],
     getWorkflows: [
       param('pageId').isMongoId().withMessage('pageId is required'),
+      query('limit').optional().isInt().withMessage('limit must be a number'),
+      query('offset').optional().isInt().withMessage('offset must be a number'),
     ],
     createWorkflow: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -128,6 +138,12 @@ module.exports = (crowi: Crowi): Router => {
    *            description: pageId to rterieve a list of workflows
    *            type: string
    *            required: true
+   *          - name: limit
+   *            in: query
+   *            type: number
+   *          - name: offset
+   *            in: query
+   *            type: number
    *
    *        responses:
    *          200:
@@ -144,10 +160,33 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/list/:pageId', accessTokenParser, loginRequired, validator.getWorkflows, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { pageId } = req.params;
 
-    // Description
-    // ページ内に存在する workflow を配列で取得する
+    const limit = req.query.limit || await configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const offset = req.query.offset || 1;
 
-    return res.apiv3();
+    try {
+      const paginateResult: IWorkflowPaginateResult = await (Workflow as any).paginate(
+        { pageId },
+        {
+          limit,
+          offset,
+          populate: 'creator',
+          sort: { createdAt: -1 }, // Sort by date in order of newest to oldest
+        },
+      );
+
+      const User = mongoose.model('User');
+      paginateResult.docs.forEach((doc) => {
+        if (doc.creator != null && doc.creator instanceof User) {
+          doc.creator = serializeUserSecurely(doc.creator);
+        }
+      });
+
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err);
+    }
   });
 
 
