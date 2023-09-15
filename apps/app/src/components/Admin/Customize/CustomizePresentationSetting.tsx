@@ -35,7 +35,7 @@ const CustomizePresentationSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
-            optionId="isEnabledMarp"
+          {/* optionId="isEnabledMarp" */}
             label={t('admin:customize_settings.presentation_options.enable_marp')}
             isChecked={adminCustomizeContainer.state.isEnabledMarp || false}
             onChecked={() => { adminCustomizeContainer.switchIsEnabledMarp() }}
