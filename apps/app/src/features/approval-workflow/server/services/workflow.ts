@@ -1,3 +1,5 @@
+import { IUserHasId } from '@growi/core';
+
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -10,6 +12,7 @@ const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
+  deleteWorkflow(workflowId: ObjectIdLike, operator: IUserHasId): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
 }
 
@@ -35,6 +38,10 @@ class WorkflowServiceImpl implements WorkflowService {
     */
     const createdWorkflow = await Workflow.create(workflow);
     return createdWorkflow;
+  }
+
+  async deleteWorkflow(workflowId: ObjectIdLike, operator: IUserHasId): Promise<void> {
+    //
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
