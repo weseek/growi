@@ -8,6 +8,9 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { StatsEvent } from '@aws-sdk/client-s3';
 
+type Props = {
+  adminCustomizeContainer: AdminCustomizeContainer
+}
 
 export const CustomizePresentationSetting = (): JSX.Element => {
 
@@ -42,7 +45,6 @@ export const CustomizePresentationSetting = (): JSX.Element => {
       </div>
 
       <AdminUpdateButtonRow onClick={onClickSubmit} disabled={AdminCustomizeContainer.state.retrieveError != null} />
-
     </React.Fragment>
-  );
+  )
 };
