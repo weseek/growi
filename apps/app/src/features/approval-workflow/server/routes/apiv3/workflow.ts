@@ -163,7 +163,7 @@ module.exports = (crowi: Crowi): Router => {
     const { pageId } = req.params;
 
     const limit = req.query.limit || await configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
-    const offset = req.query.offset || 1;
+    const offset = req.query.offset || 0;
 
     try {
       const paginateResult: IWorkflowPaginateResult = await (Workflow as any).paginate(
