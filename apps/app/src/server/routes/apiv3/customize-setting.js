@@ -61,9 +61,6 @@ const router = express.Router();
  *            type: boolean
  *          isSearchScopeChildrenAsDefault:
  *            type: boolean
- *      CutomizePresentation:
- *        isEnabledMarp:
- *          type: boolean
  *      CustomizeHighlight:
  *        description: CustomizeHighlight
  *        type: object
