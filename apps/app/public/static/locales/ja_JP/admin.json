@@ -511,6 +511,7 @@
     "write_css": " システム全体に適用されるCSSを記述できます。",
     "ctrl_space": "Ctrl+Space でコード補完",
     "custom_script": "カスタムスクリプト",
+    "custom_presentation":"プレゼンテーション",
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "reflect_change": "変更の反映はページの更新が必要です。",
     "custom_logo": "カスタムロゴ",

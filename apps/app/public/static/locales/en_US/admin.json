@@ -480,8 +480,8 @@
       "show_all_reply_comments": "Show all reply comments",
       "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted.",
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
-      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range.",
-
+      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
+    },
       "presentation": "Presentation",
     "presentation_options": {
       "enable_marp": "Enable Marp ",
@@ -502,6 +502,7 @@
     "write_css": "You can write CSS that is applied to whole system.",
     "ctrl_space": "Ctrl+Space to autocomplete",
     "custom_script": "Custom script",
+    "custom_presentation": "Custom presentation",
     "write_java": "You can write Javascript that is applied to whole system.",
     "reflect_change": "You need to reload the page to reflect the change.",
     "custom_logo" : "Custom Logo",
