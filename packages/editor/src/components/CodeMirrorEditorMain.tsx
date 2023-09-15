@@ -23,8 +23,8 @@ type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
   indentSize?: number,
-  ydoc?: Y.Doc,
-  provider?: SocketIOProvider,
+  ydoc?: Y.Doc | null,
+  provider?: SocketIOProvider | null,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
