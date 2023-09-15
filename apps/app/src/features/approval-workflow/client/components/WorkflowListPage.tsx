@@ -1,3 +1,4 @@
+// TODO: https://redmine.weseek.co.jp/issues/130336
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -36,6 +37,7 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
           <>{t('approval_workflow.list_not_found')}</>
         )}
 
+        {/* TODO: Allow infinite scrolling */}
         {(workflows.length >= 1 && (
           <div className="table-responsive text-nowrap h-100">
             <table className="table">
