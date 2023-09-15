@@ -835,6 +835,7 @@
     "description": "描述",
     "back": "返回",
     "list": "工作流程列表",
+    "list_not_found": "本页没有工作流程。",
     "create": "创建工作流程",
     "create_new": "创建新工作流程"
   }

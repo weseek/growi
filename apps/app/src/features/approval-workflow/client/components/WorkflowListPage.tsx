@@ -3,23 +3,19 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { useSWRxWorkflowList } from '../stores/workflow';
+import { IWorkflow } from '../../interfaces/workflow';
 
 
 type Props = {
-  pageId: string,
+  workflows: IWorkflow[]
   onClickCreateWorkflowButton: () => void;
 }
 
 
 export const WorkflowListPage = (props: Props): JSX.Element => {
-  const { pageId, onClickCreateWorkflowButton } = props;
+  const { workflows, onClickCreateWorkflowButton } = props;
 
   const { t } = useTranslation();
-
-  const { data: workflows } = useSWRxWorkflowList(pageId);
-
-  console.log('workflows', workflows);
 
   const createWorkflowButtonClickHandler = useCallback(() => {
     if (onClickCreateWorkflowButton == null) {
@@ -36,7 +32,9 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
       </ModalHeader>
 
       <ModalBody>
-        Body
+        {(workflows.length === 0) && (
+          <>{t('approval_workflow.list_not_found')}</>
+        )}
       </ModalBody>
 
       <ModalFooter>

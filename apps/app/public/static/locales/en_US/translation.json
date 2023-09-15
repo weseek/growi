@@ -832,6 +832,7 @@
     "description": "Description",
     "back": "Back",
     "list": "Workflow List",
+    "list_not_found": "There is no workflow on this page.",
     "create": "Create workflow",
     "create_new": "Create new workflow"
   }
