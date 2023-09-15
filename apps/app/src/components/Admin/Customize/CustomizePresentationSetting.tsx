@@ -1,70 +1,15 @@
 import React, { useCallback } from 'react';
 
+import { Presentation } from '@growi/presentation';
 import { useTranslation } from 'next-i18next';
-import { Card, CardBody } from 'reactstrap';
-
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import { toastSuccess, toastError } from '~/client/util/toastr';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-
-import CustomizeFunctionOption from './CustomizeFunctionOption';
-import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 
-type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
-}
-const CustomizePresentationSetting = (props: Props): JSX.Element => {
-
-  const { adminCustomizeContainer } = props;
-  const { t } = useTranslation();
-
-  const onClickSubmit = useCallback(async() => {
-    try {
-      await adminCustomizeContainer.updateCustomizePresentation();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.Presentation'), ns: 'commons' }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [t, adminCustomizeContainer]);
+export const CustomizePresentationSetting = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      <div className="form-group row">
-        <div className="offset-md-3 col-md-6 text-left">
-          {/* optionId="isEnabledMarp" */}
-            label={t('admin:customize_settings.presentation_options.enable_marp')}
-            isChecked={adminCustomizeContainer.state.isEnabledMarp || false}
-            onChecked={() => { adminCustomizeContainer.switchIsEnabledMarp() }}
-          <p className="form-text text-muted">
-            {t('admin:customize_settings.presentation_options.enable_marp_desc')}
-            <br></br>
-            <a
-              href={`${t('admin:customize_settings.presentation_options.marp_official_site_link')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >{`${t('admin:customize_settings.presentation_options.marp_official_site')}`}
-            </a>
-            <br></br>
-            <a
-              href={`${t('admin:customize_settings.presentation_options.marp_in_gorwi_link')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >{`${t('admin:customize_settings.presentation_options.marp_in_growi')}`}
-            </a>
-          </p>
-
-        </div>
-      </div>
-
-      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+      <h2 className="admin-setting-header">Presentation</h2>
 
     </React.Fragment>
   );
 };
-const CustomizePresentationSettingWrapper = withUnstatedContainers(CustomizePresentationSetting, [AdminCustomizeContainer]);
-
-export default CustomizePresentationSettingWrapper;
