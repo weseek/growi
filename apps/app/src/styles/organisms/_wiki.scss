@@ -292,3 +292,21 @@
     }
   }
 }
+
+
+// == Colors
+.wiki {
+  a {
+    color: rgba(
+      var(--grw-wiki-link-color-rgb, var(--bs-link-color-rgb)),
+      var(--bs-link-opacity, 1)
+    );
+
+    &:hover {
+      color: rgba(
+        var(--grw-wiki-link-hover-color-rgb, var(--bs-link-hover-color-rgb)),
+        var(--bs-link-opacity, 1)
+      );
+    }
+  }
+}

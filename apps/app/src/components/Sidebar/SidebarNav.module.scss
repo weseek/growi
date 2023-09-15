@@ -97,33 +97,44 @@
 }
 
 
+// == Colors
 .grw-sidebar-nav :global {
-  .btn-primary {
-    --bs-btn-bg: transparent !important;
-    --bs-btn-active-bg: transparent !important;
+  .btn.btn-primary {
+    --bs-btn-bg: transparent;
+    --bs-btn-active-bg: transparent;
+    --bs-btn-hover-color: var(
+      --grw-sidebar-nav-btn-hover-color,
+      var(
+        --grw-sidebar-nav-btn-color,
+        var(--bs-btn-color)
+      ),
+    );
+    --bs-btn-active-color: var(
+      --grw-sidebar-nav-btn-active-color,
+      var(
+        --grw-sidebar-nav-btn-color,
+        var(--bs-btn-color)
+      ),
+    );
   }
 }
 @include bs.color-mode(light) {
   .grw-sidebar-nav :global {
-    background-color: var(--grw-highlight-100);
+    background-color: var(--grw-sidebar-nav-bg, var(--grw-highlight-100));
 
     .btn-primary {
-      --bs-btn-color: var(--grw-primary-500);
-      --bs-btn-hover-color: var(--grw-primary-500);
-      --bs-btn-hover-bg: var(--grw-highlight-300);
-      --bs-btn-active-color: var(--grw-primary-500);
+      --bs-btn-color: var(--grw-sidebar-nav-btn-color, var(--grw-primary-500));
+      --bs-btn-hover-bg: var(--grw-sidebar-nav-btn-hover-bg, var(--grw-highlight-300));
     }
   }
 }
 @include bs.color-mode(dark) {
   .grw-sidebar-nav :global {
-    background-color: var(--grw-highlight-900);
+    background-color: var(--grw-sidebar-nav-bg, var(--grw-highlight-900));
 
     .btn-primary {
-      --bs-btn-color: var(--grw-primary-400);
-      --bs-btn-hover-color: var(--grw-primary-400);
-      --bs-btn-hover-bg: var(--grw-highlight-700);
-      --bs-btn-active-color: var(--grw-primary-400);
+      --bs-btn-color: var(--grw-sidebar-nav-btn-color, var(--grw-primary-400));
+      --bs-btn-hover-bg: var(--grw-sidebar-nav-btn-hover-bg, var(--grw-highlight-700));
     }
   }
 }
