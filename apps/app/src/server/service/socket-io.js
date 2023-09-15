@@ -191,7 +191,7 @@ class SocketIoService {
         const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
         const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
         if (persistedCodeMirrorText === '' && currentCodeMirrorText === '') {
-          currentYdoc.insert(0, initialValue);
+          currentYdoc.getText('codemirror').insert(0, initialValue);
         }
 
         // store the new data in db (if there is any: empty update is an array of 0s)
