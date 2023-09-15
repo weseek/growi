@@ -38,6 +38,9 @@ import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
 
+import styles from './Item.module.scss';
+
+
 const logger = loggerFactory('growi:cli:Item');
 
 
@@ -424,7 +427,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       id={`pagetree-item-${page._id}`}
       data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
-    ${shouldHide ? 'd-none' : ''}`}
+        pagetree-item ${styles['pagetree-item']}
+        ${shouldHide ? 'd-none' : ''}`
+      }
     >
       <li
         ref={(c) => { drag(c); drop(c) }}
