@@ -204,7 +204,6 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
         isSearchScopeChildrenAsDefault: this.state.isSearchScopeChildrenAsDefault,
-        isEnabledMarp: this.state.isEnabledMarp,
       });
       const { customizedParams } = response.data;
       this.setState({
@@ -217,7 +216,6 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
-        isEnabledMarp: customizedParams.state.isEnabledMarp,
       });
     }
     catch (err) {
@@ -226,35 +224,18 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
   /**
-   * Update function
+   * Update presentation
    * @memberOf AdminCustomizeContainer
    */
   async updateCustomizePresentation() {
     try {
       const response = await apiv3Put('/customize-setting/presentation', {
-        isEnabledTimeline: this.state.isEnabledTimeline,
-        isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-        pageLimitationS: this.state.pageLimitationS,
-        pageLimitationM: this.state.pageLimitationM,
-        pageLimitationL: this.state.pageLimitationL,
-        pageLimitationXL: this.state.pageLimitationXL,
-        isEnabledStaleNotification: this.state.isEnabledStaleNotification,
-        isAllReplyShown: this.state.isAllReplyShown,
-        isSearchScopeChildrenAsDefault: this.state.isSearchScopeChildrenAsDefault,
         isEnabledMarp: this.state.isEnabledMarp,
       });
+
       const { customizedParams } = response.data;
       this.setState({
-        isEnabledTimeline: customizedParams.isEnabledTimeline,
-        isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
-        pageLimitationS: customizedParams.pageLimitationS,
-        pageLimitationM: customizedParams.pageLimitationM,
-        pageLimitationL: customizedParams.pageLimitationL,
-        pageLimitationXL: customizedParams.pageLimitationXL,
-        isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
-        isAllReplyShown: customizedParams.isAllReplyShown,
-        isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
-        isEnabledMarp: customizedParams.state.isEnabledMarp,
+        isEnabledMarp: customizedParams.isEnabledMarp,
       });
     }
     catch (err) {

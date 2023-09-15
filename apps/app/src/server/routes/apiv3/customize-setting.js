@@ -442,6 +442,28 @@ module.exports = (crowi) => {
     }
   });
 
+
+  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.CustomizePresentation, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:isEnabledMarp': req.body.isEnabledMarp,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
+      };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating presentaion';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
+    }
+  });
+
   /**
    * @swagger
    *

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { t } from 'i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -14,12 +14,16 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-export const CustomizePresentationSetting = (props: Props): JSX.Element => {
+const CustomizePresentationSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
+
+  console.log(adminCustomizeContainer);
+
+  const { t } = useTranslation();
   const onClickSubmit = useCallback(async() => {
     try {
-      await adminCustomizeContainer.updateCustomizeFunction();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.function'), ns: 'commons' }));
+      await adminCustomizeContainer.updateCustomizePresentation();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.presentation'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -27,12 +31,12 @@ export const CustomizePresentationSetting = (props: Props): JSX.Element => {
   }, [adminCustomizeContainer]);
   return (
     <React.Fragment>
-      <h2 className="admin-setting-header">{t('presentation')}</h2>
+      <h2 className="admin-setting-header">{t('admin:customize_settings.custom_presentation')}</h2>
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
           <CustomizePresentationOption
             optionId="isEnabledMarp"
-            label={t('admin:customize_settings.function_options.enable_marp')}
+            label={t('admin:customize_settings.presentation_options.enable_marp')}
             isChecked={adminCustomizeContainer?.state.isEnabledMarp || false}
             onChecked={() => { adminCustomizeContainer.switchIsEnabledMarp() }}
           >

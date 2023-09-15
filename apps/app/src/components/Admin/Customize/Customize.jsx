@@ -15,7 +15,7 @@ import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeLogoSetting from './CustomizeLogoSetting';
 import CustomizeNoscriptSetting from './CustomizeNoscriptSetting';
-import { CustomizePresentationSetting } from './CustomizePresentationSetting';
+import CustomizePresentationSetting from './CustomizePresentationSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
