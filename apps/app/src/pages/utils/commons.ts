@@ -31,6 +31,7 @@ export type CommonProps = {
   redirectDestination: string | null,
   isDefaultLogo: boolean,
   growiCloudUri: string,
+  isAccessDeniedForNonAdminUser?: boolean,
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
   sidebarConfig: ISidebarConfig,

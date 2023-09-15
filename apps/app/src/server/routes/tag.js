@@ -107,6 +107,8 @@ module.exports = function(crowi, app) {
    *                properties:
    *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  revisionId:
+   *                    $ref: '#/components/schemas/Revision/properties/_id'
    *                  tags:
    *                    $ref: '#/components/schemas/Tags'
    *        responses:

@@ -18,7 +18,6 @@ import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 import styles from './LoginForm.module.scss';
 
-
 type LoginFormProps = {
   username?: string,
   name?: string,
@@ -142,8 +141,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <div className="alert alert-danger">
-        {errors.map((err, index) => {
-          return <small key={index} dangerouslySetInnerHTML={{ __html: tWithOpt(err.message, err.args) }}></small>;
+        {errors.map((err) => {
+          // eslint-disable-next-line react/no-danger
+          return <small dangerouslySetInnerHTML={{ __html: tWithOpt(err.message, err.args) }}></small>;
         })}
       </div>
     );
@@ -154,12 +154,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">
-        {errors.map((err, index) => {
-          return (
-            <li key={index} className={index > 0 ? 'mt-1' : ''}>
-              {tWithOpt(err.message, err.args)}
-            </li>);
-        })}
+        {errors.map((err, index) => (
+          <li className={index > 0 ? 'mt-1' : ''}>
+            {tWithOpt(err.message, err.args)}
+          </li>
+        ))}
       </ul>
     );
   }, [tWithOpt]);
@@ -181,13 +180,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       <>
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
         {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
-        <div className='sr-only'>
+        <div className="sr-only">
           <i className="fa fa-spinner fa-pulse" />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
-            <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br/>
+            <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br />
             <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
           </div>
         )}
@@ -201,8 +200,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <i className="icon-user"></i>
               </span>
             </div>
-            <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail"
-              onChange={(e) => { setUsernameForLogin(e.target.value) }} name="usernameForLogin" />
+            <input
+              type="text"
+              className="form-control rounded-0"
+              data-testid="tiUsernameForLogin"
+              placeholder="Username or E-mail"
+              onChange={(e) => { setUsernameForLogin(e.target.value) }}
+              name="usernameForLogin"
+            />
             {isLdapStrategySetup && (
               <div className="input-group-append">
                 <small className="input-group-text text-success">
@@ -218,8 +223,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <i className="icon-lock"></i>
               </span>
             </div>
-            <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password"
-              onChange={(e) => { setPasswordForLogin(e.target.value) }} name="passwordForLogin" />
+            <input
+              type="password"
+              className="form-control rounded-0"
+              data-testid="tiPasswordForLogin"
+              placeholder="Password"
+              onChange={(e) => { setPasswordForLogin(e.target.value) }}
+              name="passwordForLogin"
+            />
           </div>
 
           <div className="input-group my-4">
@@ -335,6 +346,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       resetRegisterErrors();
 
       const { redirectTo } = res.data;
+
       if (redirectTo != null) {
         router.push(redirectTo);
       }
@@ -387,13 +399,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {
           registerErrors != null && registerErrors.length > 0 && (
             <p className="alert alert-danger">
-              {registerErrors.map((err, index) => {
-                return (
-                  <span key={index}>
-                    {t(err.message)}<br/>
-                  </span>
-                );
-              })}
+              {registerErrors.map(err => (
+                <span>
+                  {t(err.message)}<br />
+                </span>
+              ))}
             </p>
           )
         }
@@ -406,7 +416,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )
         }
 
-        <form role="form" onSubmit={e => handleRegisterFormSubmit(e, registerAction) } id="register-form">
+        <form role="form" onSubmit={e => handleRegisterFormSubmit(e, registerAction)} id="register-form">
 
           {!isEmailAuthenticationEnabled && (
             <div>
@@ -437,13 +447,15 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   </span>
                 </div>
                 {/* name */}
-                <input type="text"
+                <input
+                  type="text"
                   className="form-control rounded-0"
                   onChange={(e) => { setNameForRegister(e.target.value) }}
                   placeholder={t('Name')}
                   name="name"
                   defaultValue={props.name}
-                  required />
+                  required
+                />
               </div>
             </div>
           )}
@@ -455,7 +467,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               </span>
             </div>
             {/* email */}
-            <input type="email"
+            <input
+              type="email"
               disabled={!isMailerSetup && isEmailAuthenticationEnabled}
               className="form-control rounded-0"
               onChange={(e) => { setEmailForRegister(e.target.value) }}
@@ -490,12 +503,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   </span>
                 </div>
                 {/* Password */}
-                <input type="password"
+                <input
+                  type="password"
                   className="form-control rounded-0"
                   onChange={(e) => { setPasswordForRegister(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
-                  required />
+                  required
+                />
               </div>
             </div>
           )}
@@ -503,6 +518,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {/* Sign up button (submit) */}
           <div className="input-group justify-content-center my-4">
             <button
+              type="submit"
               className="btn btn-fill rounded-0"
               id="register"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
@@ -525,7 +541,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               id="login"
               className="link-switch"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-              onClick={switchForm}>
+              onClick={switchForm}
+            >
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -566,7 +583,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                       id="register"
                       className="link-switch"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-                      onClick={switchForm}>
+                      onClick={switchForm}
+                    >
                       <i className="ti ti-check-box"></i> {t('Sign up is here')}
                     </a>
                   </div>

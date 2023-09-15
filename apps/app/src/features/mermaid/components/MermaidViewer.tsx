@@ -19,9 +19,11 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
 
   return (
     children
-      ? <div ref={ref} key={children as string}>
-        {children}
-      </div>
+      ? (
+        <div ref={ref} key={children as string}>
+          {children}
+        </div>
+      )
       : <div key={children as string} />
   );
 });

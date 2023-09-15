@@ -39,7 +39,8 @@ export const DrawioViewerScript = (): JSX.Element => {
   return (
     <Head>
       <script
-        type="text/javascript" async
+        type="text/javascript"
+        async
         src={(new URL('/js/viewer.min.js', rendererConfig.drawioUri)).toString()}
         onLoad={loadedHandler}
       />

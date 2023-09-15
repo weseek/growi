@@ -86,12 +86,12 @@ const LoginPage: NextPage<CommonProps> = () => {
   return (
     <NoLoginLayout className={classNames.join(' ')}>
       <div className="mb-4 login-form-errors text-center">
-        <div className='nologin-dialog pb-4 mx-auto'>
+        <div className="nologin-dialog pb-4 mx-auto">
           <div className="col-12">
             {loginErrorElm}
           </div>
           {/* If the transition source is "/login", use <a /> tag since the transition will not occur if next/link is used. */}
-          <a href='/login'>
+          <a href="/login">
             <i className="icon-login mr-1" />{t('Sign in is here')}
           </a>
         </div>

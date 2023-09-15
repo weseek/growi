@@ -7,30 +7,48 @@ import type { Plugin } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
+import { parseSlideFrontmatter } from '../parse-slide-frontmatter';
+
 const SUPPORTED_ATTRIBUTES = ['children', 'marp'];
 
-const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
-  let slide = false;
-  let marp = false;
+const nodeToMakrdown = (node: Node) => {
+  return toMarkdown(node as Root, {
+    extensions: [
+      frontmatterToMarkdown(['yaml']),
+      gfmToMarkdown(),
+    ],
+  });
+};
 
-  const lines = (node.value as string).split('\n');
-
-  lines.forEach((line) => {
-    const [key, value] = line.split(':').map(part => part.trim());
-
-    if (key === 'slide' && value === 'true') {
-      slide = true;
+// Allow node tree to be converted to markdown
+const removeCustomType = (tree: Node) => {
+  // Try toMarkdown() on all Node.
+  visit(tree, (node) => {
+    const tmp = node?.children;
+    node.children = [];
+    try {
+      nodeToMakrdown(node);
     }
-    else if (key === 'marp' && value === 'true') {
-      marp = true;
+    catch (err) {
+      // if some Node cannot convert to markdown, change to a convertible type
+      node.type = 'text';
+      node.value = '';
+    }
+    finally {
+      node.children = tmp;
     }
   });
+};
 
-  if (isEnabledMarp === false) {
-    marp = false;
-  }
+const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
 
-  if (marp || slide) {
+  const [marp, slide] = parseSlideFrontmatter(node.value as string);
+
+  if ((marp && isEnabledMarp) || slide) {
+
+    removeCustomType(tree);
+
+    const markdown = nodeToMakrdown(tree);
 
     const newNode: Node = {
       type: 'root',
@@ -43,15 +61,8 @@ const rewriteNode = (tree: Node, node: Node, isEnabledMarp: boolean) => {
     tree.children = [newNode];
     data.hName = 'slide';
     data.hProperties = {
-      marp: marp ? 'marp' : '',
-      children: toMarkdown(tree as Root, {
-        extensions: [
-          frontmatterToMarkdown(['yaml']),
-          gfmToMarkdown(),
-          // TODO: add new extension remark-growi-directive to markdown
-          // https://redmine.weseek.co.jp/issues/126744
-        ],
-      }),
+      marp: marp ? '' : undefined,
+      children: markdown,
     };
   }
 };

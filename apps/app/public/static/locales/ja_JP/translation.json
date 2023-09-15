@@ -475,7 +475,6 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
-    "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "remove_share_link_success": "{{shareLinkId}}を削除しました",

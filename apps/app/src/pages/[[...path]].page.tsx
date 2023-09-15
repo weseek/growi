@@ -125,7 +125,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentPage } = useSWRxCurrentPage();
   return (
     <div data-testid="grw-contextual-sub-nav">
-      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
     </div>
   );
 };
@@ -349,13 +349,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
-          pageView={
+          pageView={(
             <PageView
               pagePath={pagePath}
               initialPage={pageWithMeta?.data}
               rendererConfig={props.rendererConfig}
             />
-          }
+          )}
         />
 
         <PageStatusAlert />
