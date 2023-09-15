@@ -414,7 +414,6 @@ module.exports = (crowi) => {
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
       'customize:isSearchScopeChildrenAsDefault': req.body.isSearchScopeChildrenAsDefault,
-      'customize:isEnabledMarp': req.body.isEnabledMarp,
     };
 
     try {
@@ -429,7 +428,6 @@ module.exports = (crowi) => {
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
         isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
-        isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
