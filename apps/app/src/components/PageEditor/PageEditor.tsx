@@ -475,10 +475,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setcPageId] = useState(pageId);
+  const [isSync, setIsSync] = useState<boolean>();
 
   // initialize
   useEffect(() => {
-    console.log(cPageId, pageId);
+    console.log('init', cPageId, pageId);
     if (cPageId === pageId) {
       return;
     }
@@ -494,19 +495,25 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       socket.off('create:doc');
 
       console.log('destroy');
+
+      console.log('setdoc null');
+      setYdoc(null);
+      setProvider(null);
+      setcPageId(pageId);
     }
-    setYdoc(null);
-    setProvider(null);
-    setcPageId(pageId);
   }, [cPageId, codeMirrorEditor, mutateIsEnabledUnsavedWarning, pageId, provider, socket, ydoc]);
 
   useEffect(() => {
     if (!ydoc) {
       console.log('setting doc');
       const _ydoc = new Y.Doc();
+      // const ytext = _ydoc.getText('codemirror');
+      // console.log('ytext', ytext.toString());
+      // ytext.insert(0, initialValue);
+      // console.log('ytext', ytext.toString());
       setYdoc(_ydoc);
     }
-  }, [ydoc]);
+  }, [initialValue, ydoc]);
 
   useEffect(() => {
     if (!!ydoc && !provider && socket != null) {
@@ -524,6 +531,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         if (isSync) {
           console.log('emit!!', pageId);
           socket.emit('create:doc', { pageId });
+          setIsSync(true);
+        }
+        if (!isSync) {
+          setIsSync(false);
         }
       });
       socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
@@ -534,7 +545,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [ydoc, provider, pageId, socket, currentPage]);
 
   useEffect(() => {
-
     if (!!ydoc && !!provider) {
       console.log('setup extension');
       const ytext = ydoc.getText('codemirror');
@@ -574,6 +584,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       // codeMirrorEditor?.initDoc(initValue());
       // codeMirrorEditor?.initDoc(ytext.toString());
+      console.log('set ytext', ytext.toString());
+      console.log('init value', initialValue);
       const cleanup = codeMirrorEditor?.appendExtensions?.([
         yCollab(ytext, provider.awareness, { undoManager }),
       ]);
@@ -582,7 +594,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         return;
       }
       console.log('initialValue');
-      codeMirrorEditor?.initDoc(initialValue);
+      // codeMirrorEditor?.initDoc(ytext.toString());
       setMarkdownToPreview(initialValue);
       mutateIsEnabledUnsavedWarning(false);
 

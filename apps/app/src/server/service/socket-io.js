@@ -182,6 +182,8 @@ class SocketIoService {
         await mdb.flushDocument(docName);
         const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
 
+        console.log('current Doc', currentYdoc.getText('codemirror').toString());
+
         // // もし DB に ydoc があれば 現状の ydoc と比較してその差分を db に保存する
         // // TODO: つまり、ここで client から最新の Ydoc を取得する必要がある
         const persistedStateVector = Y.encodeStateVector(persistedYdoc);
