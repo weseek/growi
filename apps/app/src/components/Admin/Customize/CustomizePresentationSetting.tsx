@@ -1,28 +1,29 @@
 import React, { useCallback } from 'react';
 
+import { StatsEvent } from '@aws-sdk/client-s3';
 import { Presentation } from '@growi/presentation';
-import { useTranslation } from 'next-i18next';
 import { t } from 'i18next';
+import { useTranslation } from 'next-i18next';
+
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import { StatsEvent } from '@aws-sdk/client-s3';
 
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-export const CustomizePresentationSetting = (): JSX.Element => {
-
+export const CustomizePresentationSetting = (props: Props): JSX.Element => {
+  const { adminCustomizeContainer } = props;
   return (
     <React.Fragment>
-      {/* <h2 className="admin-setting-header">{t('presentation')}</h2>
-      {/* <div className="form-group row">
-        <div className="offset-md-3 col-md-6 text-left">
-          {/* optionId="isEnabledMarp" */}
+      <h2 className="admin-setting-header">{t('presentation')}</h2>
+      <div className="form-group row">
+          { optionId = 'isEnabledMarp' }
             label={t('admin:customize_settings.presentation_options.enable_marp')}
-            isChecked={AdminCustomizeContainer.state.isEnabledMarp || false}
-            onChecked={() => { AdminCustomizeContainer.switchIsEnabledMarp() }}
+            isChecked={adminCustomizeContainer.state.isEnabledMarp || false}
+            onChecked={() => { adminCustomizeContainer.switchIsEnabledMarp() }}
           <p className="form-text text-muted">
             {t('admin:customize_settings.presentation_options.enable_marp_desc')}
             <br></br>
@@ -43,8 +44,7 @@ export const CustomizePresentationSetting = (): JSX.Element => {
 
         </div>
       </div>
-
-      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={AdminCustomizeContainer.state.retrieveError != null} />
+    // <adminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
     </React.Fragment>
-  )
+  );
 };
