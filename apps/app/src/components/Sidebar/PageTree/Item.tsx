@@ -20,7 +20,6 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
-import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
@@ -445,7 +444,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
-                <TriangleIcon />
+                <span className="material-icons-round">arrow_right</span>
               </div>
             </button>
           )}
