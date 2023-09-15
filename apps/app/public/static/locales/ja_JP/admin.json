@@ -492,7 +492,7 @@
 
     },
     "presentation":"プレゼンテーション",
-    "Presentation_options":{
+    "presentation_options":{
       "enable_marp": "Marp を有効化する",
       "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
       "marp_official_site": "参考：Marp 公式サイト",
