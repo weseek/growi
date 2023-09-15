@@ -218,6 +218,11 @@
 
 .grw-sidebar :global {
   .grw-contextual-navigation {
+    --bs-heading-color: var(--bs-tertiary-color);
+    --bs-body-color: var(--bs-secondary-color);
+    --bs-link-color-rgb: var(--bs-secondary-color-rgb);
+    --bs-link-opacity: .75;
+
     backdrop-filter: blur(20px);
   }
 }
@@ -233,6 +238,7 @@
 
 @include bs.color-mode(dark) {
   .grw-sidebar :global {
+    --bs-color: var(--bs-gray-400);
     --bs-border-color: var(--grw-highlight-800);
 
     .grw-contextual-navigation {
