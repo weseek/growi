@@ -9,6 +9,7 @@
   // set the max value that should be taken when sticky
   height: 100vh;
 
+  border-right : 1px solid var(--bs-border-color);
 
   .data-layout-container {
     display: flex;
@@ -222,6 +223,8 @@
 }
 @include bs.color-mode(light) {
   .grw-sidebar :global {
+    --bs-border-color: var(--grw-highlight-200);
+
     .grw-contextual-navigation {
       background-color: rgba(var(--grw-highlight-100-rgb), .5);
     }
@@ -230,6 +233,8 @@
 
 @include bs.color-mode(dark) {
   .grw-sidebar :global {
+    --bs-border-color: var(--grw-highlight-800);
+
     .grw-contextual-navigation {
       background-color: rgba(var(--grw-highlight-900-rgb), .5);
     }

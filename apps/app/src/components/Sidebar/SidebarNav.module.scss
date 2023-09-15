@@ -9,6 +9,8 @@
 
   height: 100vh;
 
+  border-right : 1px solid var(--bs-border-color);
+
   .grw-logo {
     svg {
       width: var.$grw-logo-width;
