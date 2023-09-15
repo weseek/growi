@@ -834,9 +834,17 @@
     "name": "工作流程名称",
     "description": "描述",
     "back": "返回",
+    "status": "进展情况",
+    "applicant": "申请人",
     "list": "工作流程列表",
     "list_not_found": "本页没有工作流程。",
     "create": "创建工作流程",
-    "create_new": "创建新工作流程"
+    "create_new": "创建新工作流程",
+    "statuses": {
+      "INPROGRESS": "进行中",
+      "APPROVE": "批准",
+      "REJECT": "拒绝",
+      "CANCEL": "取消"
+    }
   }
 }
