@@ -3,25 +3,6 @@
 @use '~/styles/variables' as var;
 
 .grw-sidebar-nav :global {
-  $sidebar-nav-button-height: 55px;
-
-  %fukidashi-for-active {
-    position: relative;
-
-    // speech balloon
-    &:after {
-      position: absolute;
-      right: -0.1em;
-      display: block;
-      width: 0;
-      content: '';
-      border: 9px solid transparent;
-      border-right-color: white;
-      border-left-width: 0;
-      transform: translateY(-#{$sidebar-nav-button-height / 2});
-    }
-  }
-
   // set position and z-index to prevent dropdowns covered by other element
   position: relative;
   z-index: bs.$zindex-fixed;
@@ -50,6 +31,9 @@
 
   .btn {
     width: var.$grw-sidebar-nav-width;
+    height: var.$grw-sidebar-nav-height;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
     line-height: 1em;
     border: 0;
     border-radius: 0;
@@ -70,14 +54,24 @@
   }
 
   .grw-sidebar-nav-primary-container {
-    .btn {
-      padding: 1em;
-      i {
-        font-size: 2.3em;
-      }
+    $btn-active-indicator-height: 34px;
 
+    .btn {
       &.active {
-        @extend %fukidashi-for-active;
+        position: relative;
+
+        // indicator
+        &:after {
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          width: 3px;
+          height: $btn-active-indicator-height;
+          content: '';
+          background-color: var(--bs-primary);
+          transform: translateY(#{(var.$grw-sidebar-nav-height - $btn-active-indicator-height) / 2});
+        }
       }
     }
   }
@@ -87,9 +81,7 @@
     bottom: 1.5rem;
 
     .btn {
-      padding: 0.9em;
       i {
-        font-size: 1.5em;
         opacity: 0.4;
       }
     }
