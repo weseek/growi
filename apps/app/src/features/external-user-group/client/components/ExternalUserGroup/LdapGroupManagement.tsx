@@ -6,12 +6,22 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
+import { SocketEventName } from '~/interfaces/websocket';
+import { useAdminSocket } from '~/stores/socket-io';
 
 import { LdapGroupSyncSettingsForm } from './LdapGroupSyncSettingsForm';
 
 export const LdapGroupManagement: FC = () => {
   const [isUserBind, setIsUserBind] = useState(false);
   const { t } = useTranslation('admin');
+  const { data: socket } = useAdminSocket();
+
+  const [isSyncExecuting, setIsSyncExecuting] = useState(false);
+  const [progress, setProgress] = useState({
+    total: 0,
+    current: 0,
+  });
 
   useEffect(() => {
     const getIsUserBind = async() => {
@@ -27,8 +37,26 @@ export const LdapGroupManagement: FC = () => {
     getIsUserBind();
   }, []);
 
+  useEffect(() => {
+    if (socket != null) {
+      socket.on(SocketEventName.GroupSyncProgress, (data) => {
+        setIsSyncExecuting(true);
+        setProgress({
+          total: data.totalCount,
+          current: data.count,
+        });
+      });
+
+      socket.on(SocketEventName.FinishGroupSync, () => {
+        setIsSyncExecuting(false);
+      });
+    }
+  }, [socket]);
+
   const onSyncBtnClick = useCallback(async(e) => {
     e.preventDefault();
+    setIsSyncExecuting(true);
+    setProgress({ total: 0, current: 0 });
     try {
       if (isUserBind) {
         const password = e.target.password.value;
@@ -44,10 +72,29 @@ export const LdapGroupManagement: FC = () => {
     }
   }, [t, isUserBind]);
 
+  const renderProgressBar = () => {
+    if (!isSyncExecuting) return null;
+    const header = 'Processing..';
+
+    return (
+      <LabeledProgressBar
+        header={header}
+        currentCount={progress.current}
+        totalCount={progress.total}
+      />
+    );
+  };
+
   return (
     <>
       <LdapGroupSyncSettingsForm />
       <h3 className="border-bottom mb-3">{t('external_user_group.execute_sync')}</h3>
+      <div className="row">
+        <div className="col-md-3"></div>
+        <div className="col-md-9">
+          {renderProgressBar()}
+        </div>
+      </div>
       <form onSubmit={onSyncBtnClick}>
         {isUserBind && (
           <div className="row form-group">

@@ -17,6 +17,10 @@ export const SocketEventName = {
   FinishAddPage: 'finishAddPage',
   RebuildingFailed: 'rebuildingFailed',
 
+  // External user group sync
+  GroupSyncProgress: 'groupSyncProgress',
+  FinishGroupSync: 'finishGroupSync',
+
   // Page Operation
   PageCreated: 'page:create',
   PageUpdated: 'page:update',

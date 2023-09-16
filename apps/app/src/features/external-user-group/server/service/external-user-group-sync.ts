@@ -1,5 +1,6 @@
 import type { IUserHasId } from '@growi/core';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import { batchProcessPromiseAll } from '~/utils/promise';
@@ -25,11 +26,14 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
 
   authProviderType: string; // auth provider type (e.g: ldap, oidc)
 
+  socketIoService: any;
+
   isExecutingSync = false;
 
-  constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string) {
+  constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string, socketIoService) {
     this.groupProviderType = groupProviderType;
     this.authProviderType = authProviderType;
+    this.socketIoService = socketIoService;
   }
 
   /** External user group tree sync method
@@ -41,6 +45,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
     if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
     this.isExecutingSync = true;
 
+    const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     const existingExternalUserGroupIds: string[] = [];
 
     const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
@@ -53,14 +58,20 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
       }
     };
 
+    const socket = this.socketIoService.getAdminSocket();
+
     try {
       const trees = await this.generateExternalUserGroupTrees(params);
+      const totalCount = trees.map(tree => this.getGroupCountOfTree(tree))
+        .reduce((sum, current) => sum + current);
+      let count = 0;
 
       await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
+        count += 1;
+        socket.emit(SocketEventName.GroupSyncProgress, { totalCount, count });
         return syncNode(root);
       });
 
-      const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
       if (!preserveDeletedLdapGroups) {
         await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
         await ExternalUserGroupRelation.removeAllInvalidRelations();
@@ -68,6 +79,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
     }
     finally {
       this.isExecutingSync = false;
+      socket.emit(SocketEventName.FinishGroupSync);
     }
   }
 
@@ -79,7 +91,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
    * @param {string} parentId Parent group id (id in GROWI) of the group we want to create/update
    * @returns {Promise<IExternalUserGroupHasId>} ExternalUserGroup that was created/updated
   */
-  async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
+  private async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
       node.name, node.id, this.groupProviderType, node.description, parentId,
     );
@@ -108,7 +120,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
    * @param {ExternalUserInfo} externalUserInfo Search external app/server using this identifier
    * @returns {Promise<IUserHasId | null>} User when found or created, null when neither
    */
-  async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
+  private async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
     const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
 
     const getExternalAccount = async() => {
@@ -126,6 +138,16 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
       return (await externalAccount.populate<{user: IUserHasId | null}>('user')).user;
     }
     return null;
+  }
+
+  getGroupCountOfTree(tree: ExternalUserGroupTreeNode): number {
+    if (tree.childGroupNodes.length === 0) return 1;
+
+    let count = 1;
+    tree.childGroupNodes.forEach((childGroup) => {
+      count += this.getGroupCountOfTree(childGroup);
+    });
+    return count;
   }
 
   /** Method to generate external group tree structure

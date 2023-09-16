@@ -154,14 +154,15 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
-    this.setupExternalAccountService(),
-    this.setupLdapUserGroupSyncService(),
   ]);
 
-  // globalNotification depends on slack and mailer
   await Promise.all([
+    // globalNotification depends on slack and mailer
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
+    // depends on passport service
+    this.setupExternalAccountService(),
+    this.setupLdapUserGroupSyncService(),
   ]);
 
   await this.autoInstall();
@@ -789,9 +790,9 @@ Crowi.prototype.setupExternalAccountService = function() {
   instanciateExternalAccountService(this.passportService);
 };
 
-// execute after setupPassport
+// execute after setupPassport and socketIoService
 Crowi.prototype.setupLdapUserGroupSyncService = function() {
-  instanciateLdapUserGroupSyncService(this.passportService);
+  instanciateLdapUserGroupSyncService(this.passportService, this.socketIoService);
 };
 
 export default Crowi;

@@ -27,8 +27,8 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
   ldapService: LdapService;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(passportService) {
-    super(ExternalGroupProviderType.ldap, 'ldap');
+  constructor(passportService, socketIoService) {
+    super(ExternalGroupProviderType.ldap, 'ldap', socketIoService);
     this.passportService = passportService;
     this.ldapService = new LdapService();
   }
@@ -161,6 +161,6 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
 
 // eslint-disable-next-line import/no-mutable-exports
 export let ldapUserGroupSyncService: LdapUserGroupSyncService | undefined; // singleton instance
-export function instanciate(passportService: PassportService): void {
-  ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService);
+export function instanciate(passportService: PassportService, socketIoService): void {
+  ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService, socketIoService);
 }
