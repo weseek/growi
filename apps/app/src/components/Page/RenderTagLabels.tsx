@@ -2,6 +2,8 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useKeywordManager } from '~/client/services/search-operation';
+
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
@@ -14,6 +16,8 @@ type RenderTagLabelsProps = {
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const { tags, isTagLabelsDisabled, openEditorModal } = props;
   const { t } = useTranslation();
+
+  const { pushState } = useKeywordManager();
 
   function openEditorHandler() {
     if (openEditorModal == null) {
@@ -28,7 +32,12 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
     <>
       {tags.map((tag) => {
         return (
-          <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
+          <a
+            key={tag}
+            type="button"
+            className="grw-tag-label badge badge-secondary mr-2"
+            onClick={() => pushState(`tag:${tag}`)}
+          >
             {tag}
           </a>
         );

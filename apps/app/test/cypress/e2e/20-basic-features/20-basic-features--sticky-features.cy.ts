@@ -111,7 +111,8 @@ context('Access to any page', () => {
     });
     cy.waitUntil(() => {
       cy.getByTestid('grw-subnav-switcher').within(() => {
-        cy.getByTestid('editor-button').should('be.visible').click();
+        cy.getByTestid('editor-button').as('editorButton').should('be.visible');
+        cy.get('@editorButton').click();
       });
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     });
