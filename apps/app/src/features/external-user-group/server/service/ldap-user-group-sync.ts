@@ -33,10 +33,6 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
     this.ldapService = new LdapService();
   }
 
-  override async syncExternalUserGroups(options?: SyncParamsType): Promise<void> {
-    super.syncExternalUserGroups(options);
-  }
-
   async generateExternalUserGroupTrees(options?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]> {
     const groupChildGroupAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
     const groupMembershipAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
