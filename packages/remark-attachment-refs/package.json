@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-attachment-refs",
-  "version": "6.2.0-RC.0",
+  "version": "6.2.1-RC.0",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
   "keywords": [
@@ -48,8 +48,8 @@
     "axios": "^0.24.0",
     "bunyan": "^1.8.15",
     "hast-util-select": "^5.0.5",
-    "universal-bunyan": "^0.9.2",
-    "swr": "^2.0.3"
+    "swr": "^2.0.3",
+    "universal-bunyan": "^0.9.2"
   },
   "devDependencies": {
     "csstype": "^3.1.2",

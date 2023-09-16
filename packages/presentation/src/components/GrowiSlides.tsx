@@ -5,8 +5,6 @@ import type { PresentationOptions } from '../consts';
 import { MARP_CONTAINER_CLASS_NAME, presentationMarpit, slideMarpit } from '../services/growi-marpit';
 import * as extractSections from '../services/renderer/extract-sections';
 
-
-import './Slides.global.scss';
 import { PresentationRichSlideSection, RichSlideSection } from './RichSlideSection';
 
 

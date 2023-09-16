@@ -1,6 +1,6 @@
 {
   "name": "@growi/presentation",
-  "version": "6.2.0-RC.0",
+  "version": "6.2.1-RC.0",
   "description": "GROWI plugin for presentation",
   "license": "MIT",
   "keywords": [
@@ -31,21 +31,23 @@
     "@marp-team/marp-core": "^3.6.0",
     "@types/reveal.js": "^4.4.1",
     "eslint-plugin-regex": "^1.8.0",
-    "reveal.js": "^4.4.0",
+    "hast-util-sanitize": "^4.1.0",
+    "hast-util-select": "^5.0.5",
     "mdast-util-frontmatter": "^1.0.0",
     "mdast-util-gfm": "^2.0.1",
     "mdast-util-to-markdown": "^1.3.0",
-    "hast-util-sanitize": "^4.1.0",
-    "hast-util-select": "^5.0.5",
     "react-markdown": "^8.0.7",
+    "remark-frontmatter": "^4.0.1",
+    "remark-stringify": "^10.0.0",
+    "reveal.js": "^4.4.0",
     "unified": "^10.1.2",
     "unist-util-find-after": "^4.0.0",
     "unist-util-visit": "^4.0.0"
   },
   "peerDependencies": {
+    "@marp-team/marpit": "*",
     "next": "^13",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@marp-team/marpit": "*"
+    "react-dom": "^18.2.0"
   }
 }
