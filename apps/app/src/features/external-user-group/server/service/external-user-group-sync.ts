@@ -30,6 +30,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
 
   isExecutingSync = false;
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string, socketIoService) {
     this.groupProviderType = groupProviderType;
     this.authProviderType = authProviderType;
@@ -66,10 +67,10 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
         .reduce((sum, current) => sum + current);
       let count = 0;
 
-      await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
-        count += 1;
+      await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, async(tree) => {
+        await syncNode(tree);
+        count += this.getGroupCountOfTree(tree);
         socket.emit(SocketEventName.GroupSyncProgress, { totalCount, count });
-        return syncNode(root);
       });
 
       if (!preserveDeletedLdapGroups) {
