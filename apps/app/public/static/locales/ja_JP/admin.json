@@ -1078,10 +1078,8 @@
       "membership_attribute_type_detail": "グループの所属メンバーを表すグループオブジェクトの属性値は DN か UID か",
       "child_group_attribute": "子グループを表す LDAP 属性",
       "child_group_attribute_detail": "グループに所属する子グループを表すグループオブジェクトの属性。属性値は DN である必要があります。",
-      "auto_generate_user_on_sync": "作成されていない GROWI アカウントを自動生成する",
       "preserve_deleted_ldap_groups": "LDAP から削除されたグループを GROWI に残す",
       "name_mapper_detail": "グループの「名前」として読み込む属性",
-      "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。",
       "updated_group_sync_settings": "LDAP グループ同期設定を更新しました",
       "sync_succeeded": "同期に成功しました",
       "password": "パスワード",
@@ -1089,7 +1087,24 @@
       "circular_reference": "LDAP グループの木構造に循環参照が行われている可能性があるため、同期に失敗しました",
       "group_search_failed": "LDAP グループ検索に失敗しました。LDAP セキュリティ設定、グループ同期設定が正しいことを確認してください。",
       "user_search_failed": "LDAP ユーザ検索に失敗しました。LDAP セキュリティ設定、グループ同期設定が正しいことを確認してください。"
-    }
+    },
+    "keycloak": {
+      "group_sync_settings": "Keycloak グループ同期設定",
+      "host": "Host",
+      "host_detail": "Keycloak ホスト URL",
+      "realm": "Realm",
+      "realm_detail": "同期対象のグループがある realm",
+      "group_sync_client_name": "グループ同期に使う Client 名",
+      "group_sync_client_name_detail": "Master realm にある、グループ同期に使う Client 名",
+      "group_sync_client_id": "グループ同期に使う Client の ID",
+      "group_sync_client_id_detail": "Master realm にある、グループ同期に使う Client ID",
+      "group_sync_client_secret": "グループ同期に使う Client の Secret",
+      "group_sync_client_secret_detail": "Master realm にある、グループ同期に使う Client の secret",
+      "updated_group_sync_settings": "Keycloak グループ同期設定を更新しました",
+      "preserve_deleted_keycloak_groups": "Keycloak から削除されたグループを GROWI に残す"
+    },
+    "auto_generate_user_on_sync": "作成されていない GROWI アカウントを自動生成する",
+    "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。"
   },
   "toaster": {
     "grant_user_admin": "{{username}}を管理者に設定しました",

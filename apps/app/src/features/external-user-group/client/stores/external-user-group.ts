@@ -3,7 +3,9 @@ import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { IExternalUserGroupHasId, IExternalUserGroupRelationHasId, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
+import {
+  IExternalUserGroupHasId, IExternalUserGroupRelationHasId, KeycloakGroupSyncSettings, LdapGroupSyncSettings,
+} from '~/features/external-user-group/interfaces/external-user-group';
 import {
   ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupListResult, UserGroupRelationListResult,
 } from '~/interfaces/user-group-response';
@@ -11,6 +13,15 @@ import {
 export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSettings, Error> => {
   return useSWR(
     '/external-user-groups/ldap/sync-settings',
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return response.data;
+    }),
+  );
+};
+
+export const useSWRxKeycloakGroupSyncSettings = (): SWRResponse<KeycloakGroupSyncSettings, Error> => {
+  return useSWR(
+    '/external-user-groups/keycloak/sync-settings',
     endpoint => apiv3Get(endpoint).then((response) => {
       return response.data;
     }),

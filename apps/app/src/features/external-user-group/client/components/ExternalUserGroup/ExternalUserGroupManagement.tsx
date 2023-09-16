@@ -16,6 +16,7 @@ import { useIsAclEnabled } from '~/stores/context';
 
 import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWRxExternalUserGroupRelationList } from '../../stores/external-user-group';
 
+import { KeycloakGroupManagement } from './KeycloakGroupManagement';
 import { LdapGroupManagement } from './LdapGroupManagement';
 
 export const ExternalGroupManagement: FC = () => {
@@ -122,6 +123,10 @@ export const ExternalGroupManagement: FC = () => {
         Icon: () => <i className="fa fa-sitemap" />,
         i18n: 'LDAP',
       },
+      keycloak: {
+        Icon: () => <i className="fa fa-key" />,
+        i18n: 'Keycloak',
+      },
     };
   }, []);
 
@@ -166,6 +171,9 @@ export const ExternalGroupManagement: FC = () => {
       <TabContent activeTab={activeTab} className="p-5">
         <TabPane tabId="ldap">
           {activeComponents.has('ldap') && <LdapGroupManagement />}
+        </TabPane>
+        <TabPane tabId="keycloak">
+          {activeComponents.has('keycloak') && <KeycloakGroupManagement />}
         </TabPane>
       </TabContent>
     </>

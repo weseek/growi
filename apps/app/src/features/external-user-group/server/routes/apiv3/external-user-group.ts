@@ -45,6 +45,16 @@ module.exports = (crowi: Crowi): Router => {
       body('ldapGroupNameAttribute').optional({ nullable: true }).isString(),
       body('ldapGroupDescriptionAttribute').optional({ nullable: true }).isString(),
     ],
+    keycloakSyncSettings: [
+      body('keycloakHost').exists({ checkFalsy: true }).isString(),
+      body('keycloakRealm').exists({ checkFalsy: true }).isString(),
+      body('keycloakGroupSyncClientName').exists({ checkFalsy: true }).isString(),
+      body('keycloakGroupSyncClientID').exists({ checkFalsy: true }).isString(),
+      body('keycloakGroupSyncClientSecret').exists({ checkFalsy: true }).isString(),
+      body('autoGenerateUserOnKeycloakGroupSync').exists().isBoolean(),
+      body('preserveDeletedKeycloakGroups').exists().isBoolean(),
+      body('keycloakGroupDescriptionAttribute').optional({ nullable: true }).isString(),
+    ],
     listChildren: [
       query('parentIds').optional().isArray(),
       query('includeGrandChildren').optional().isBoolean(),
@@ -197,7 +207,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, (req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
       ldapGroupSearchBase: configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase'),
       ldapGroupMembershipAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
@@ -207,6 +217,21 @@ module.exports = (crowi: Crowi): Router => {
       preserveDeletedLdapGroups: configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups'),
       ldapGroupNameAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute'),
       ldapGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute'),
+    };
+
+    return res.apiv3(settings);
+  });
+
+  router.get('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+    const settings = {
+      keycloakHost: configManager?.getConfig('crowi', 'external-user-group:keycloak:host'),
+      keycloakRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:realm'),
+      keycloakGroupSyncClientName: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientName'),
+      keycloakGroupSyncClientID: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID'),
+      keycloakGroupSyncClientSecret: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret'),
+      autoGenerateUserOnKeycloakGroupSync: configManager?.getConfig('crowi', 'external-user-group:keycloak:autoGenerateUserOnGroupSync'),
+      preserveDeletedKeycloakGroups: configManager?.getConfig('crowi', 'external-user-group:keycloak:preserveDeletedGroups'),
+      keycloakGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute'),
     };
 
     return res.apiv3(settings);
@@ -243,6 +268,34 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(err, 500);
     }
   });
+
+  router.put('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, validators.keycloakSyncSettings,
+    async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
+      }
+
+      const params = {
+        'external-user-group:keycloak:host': req.body.keycloakHost,
+        'external-user-group:keycloak:realm': req.body.keycloakRealm,
+        'external-user-group:keycloak:groupSyncClientName': req.body.keycloakGroupSyncClientName,
+        'external-user-group:keycloak:groupSyncClientID': req.body.keycloakGroupSyncClientID,
+        'external-user-group:keycloak:groupSyncClientSecret': req.body.keycloakGroupSyncClientSecret,
+        'external-user-group:keycloak:autoGenerateUserOnGroupSync': req.body.autoGenerateUserOnKeycloakGroupSync,
+        'external-user-group:keycloak:preserveDeletedGroups': req.body.preserveDeletedKeycloakGroups,
+        'external-user-group:keycloak:groupDescriptionAttribute': req.body.keycloakGroupDescriptionAttribute,
+      };
+
+      try {
+        await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+        return res.apiv3({}, 204);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     if (ldapUserGroupSyncService?.isExecutingSync) return res.apiv3Err('external_user_group.sync_being_executed', 409);
