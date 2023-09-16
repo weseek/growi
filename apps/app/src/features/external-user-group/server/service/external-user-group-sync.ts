@@ -49,7 +49,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     const existingExternalUserGroupIds: string[] = [];
 
-    const socket = this.socketIoService.getAdminSocket();
+    const socket = this.socketIoService?.getAdminSocket();
 
     try {
       const trees = await this.generateExternalUserGroupTrees(params);
@@ -61,7 +61,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
         const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
         existingExternalUserGroupIds.push(externalUserGroup._id);
         count++;
-        socket.emit(SocketEventName.GroupSyncProgress, { totalCount, count });
+        socket?.emit(SocketEventName.GroupSyncProgress, { totalCount, count });
         // Do not use Promise.all, because the number of promises processed can
         // exponentially grow when group tree is enormous
         for await (const childNode of node.childGroupNodes) {
@@ -80,7 +80,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
     }
     finally {
       this.isExecutingSync = false;
-      socket.emit(SocketEventName.FinishGroupSync);
+      socket?.emit(SocketEventName.FinishGroupSync);
     }
   }
 
