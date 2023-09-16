@@ -1,21 +1,37 @@
 import React, {
-  useCallback,
+  useCallback, FC,
 } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
+import { IPageForItem } from '~/interfaces/page';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
-export const NewPageCreateButton = (props) => {
+import { ItemNode } from '../Sidebar/PageTree/ItemNode';
+
+type StateHandlersType = {
+  isOpen: boolean,
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  isCreating: boolean,
+  setCreating: React.Dispatch<React.SetStateAction<boolean>>,
+};
+
+export type NewPageCreateButtonProps = {
+  page: IPageForItem,
+  currentChildren: ItemNode[],
+  stateHandlers: StateHandlersType,
+  isNewPageInputShown?: boolean,
+  setNewPageInputShown: React.Dispatch<React.SetStateAction<boolean>>,
+};
+
+export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
   const {
-    page, children, stateHandlers, setNewPageInputShown,
+    page, currentChildren, stateHandlers, setNewPageInputShown,
   } = props;
 
   const { setIsOpen } = stateHandlers;
-
-  const currentChildren = children;
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();

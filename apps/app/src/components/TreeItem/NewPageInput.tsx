@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import nodePath from 'path';
 
@@ -13,18 +13,19 @@ import ClosableTextInput from '~/components/Common/ClosableTextInput';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
+import { NewPageCreateButtonProps } from './NewPageCreateButton';
 import { NotDraggableForClosableTextInput } from './SimpleItem';
 
-export const NewPageInput = (props) => {
+type NewPageInputProps = NewPageCreateButtonProps & {isEnableActions: boolean};
+
+export const NewPageInput: FC<NewPageInputProps> = (props) => {
   const { t } = useTranslation();
 
   const {
-    page, isEnableActions, children, stateHandlers, isNewPageInputShown, setNewPageInputShown,
+    page, isEnableActions, currentChildren, stateHandlers, isNewPageInputShown, setNewPageInputShown,
   } = props;
 
   const { isOpen, setIsOpen, setCreating } = stateHandlers;
-
-  const currentChildren = children;
 
   const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 

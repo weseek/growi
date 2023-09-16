@@ -10,9 +10,7 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastWarning, toastError } from '~/client/util/toastr';
-import {
-  IPageHasId,
-} from '~/interfaces/page';
+import { IPageHasId } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
