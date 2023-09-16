@@ -1,8 +1,11 @@
+import path from 'path';
+
 import {
   AllSubscriptionStatusType, SubscriptionStatusType,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import sanitize from 'sanitize-filename';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -11,6 +14,7 @@ import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -163,7 +167,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
-  const path = require('path');
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const configManager = crowi.configManager;
@@ -619,9 +622,9 @@ module.exports = (crowi) => {
 
     // replace forbidden characters to '_'
     // refer to https://kb.acronis.com/node/56475?ckattempt=1
-    let fileName = path.basename(pagePath)
-      .replace(/[\\/:;"*?<>,」ˆ|¥]/g, '_')
-      .replace(/\.$/, '_');
+    const sanitize = require('sanitize-filename');
+    let fileName = sanitize(path.basename(pagePath), { replacement: '_' });
+
 
     // replace root page name to '_top'
     if (!fileName) {
