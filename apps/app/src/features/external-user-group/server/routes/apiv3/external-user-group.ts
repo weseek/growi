@@ -17,7 +17,7 @@ import { configManager } from '~/server/service/config-manager';
 import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
-import LdapUserGroupSyncService from '../../service/ldap-user-group-sync';
+import { ldapUserGroupSyncService } from '../../service/ldap-user-group-sync';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
@@ -245,9 +245,10 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    if (ldapUserGroupSyncService?.isExecutingSync) return res.apiv3Err('external_user_group.sync_being_executed', 409);
+
     try {
-      const ldapUserGroupSyncService = new LdapUserGroupSyncService(crowi.passportService, req.user.name, req.body.password);
-      await ldapUserGroupSyncService.syncExternalUserGroups();
+      await ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
     }
     catch (err) {
       logger.error(err);

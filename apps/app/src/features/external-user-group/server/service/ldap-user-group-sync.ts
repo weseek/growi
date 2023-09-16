@@ -18,20 +18,26 @@ const logger = loggerFactory('growi:service:ldap-user-sync-service');
 const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
-class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
+type SyncParamsType = { userBindUsername: string, userBindPassword: string };
+
+class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsType> {
 
   passportService: PassportService;
 
   ldapService: LdapService;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(passportService, userBindUsername?: string, userBindPassword?: string) {
+  constructor(passportService) {
     super(ExternalGroupProviderType.ldap, 'ldap');
     this.passportService = passportService;
-    this.ldapService = new LdapService(userBindUsername, userBindPassword);
+    this.ldapService = new LdapService();
   }
 
-  async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
+  override async syncExternalUserGroups(options?: SyncParamsType): Promise<void> {
+    super.syncExternalUserGroups(options);
+  }
+
+  async generateExternalUserGroupTrees(options?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]> {
     const groupChildGroupAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
     const groupMembershipAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
     const groupNameAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
@@ -40,7 +46,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
     let groupEntries: SearchResultEntry[];
     try {
-      await this.ldapService.bind();
+      await this.ldapService.bind(options?.userBindUsername, options?.userBindPassword);
       groupEntries = await this.ldapService.searchGroupDir();
     }
     catch (e) {
@@ -153,4 +159,8 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
 }
 
-export default LdapUserGroupSyncService;
+// eslint-disable-next-line import/no-mutable-exports
+export let ldapUserGroupSyncService: LdapUserGroupSyncService | undefined; // singleton instance
+export function instanciate(passportService: PassportService): void {
+  ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService);
+}

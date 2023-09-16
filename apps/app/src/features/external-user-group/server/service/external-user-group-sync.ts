@@ -18,11 +18,14 @@ import ExternalUserGroupRelation from '../models/external-user-group-relation';
 const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
-abstract class ExternalUserGroupSyncService {
+// SyncParamsType: type of params to propagate and use on executing syncExternalUserGroups
+abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
   authProviderType: string; // auth provider type (e.g: ldap, oidc)
+
+  isExecutingSync = false;
 
   constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string) {
     this.groupProviderType = groupProviderType;
@@ -34,8 +37,9 @@ abstract class ExternalUserGroupSyncService {
    * 2. Use createUpdateExternalUserGroup on each node in the tree using DFS
    * 3. If preserveDeletedLDAPGroups is false、delete all ExternalUserGroups that were not found during tree search
   */
-  async syncExternalUserGroups(): Promise<void> {
-    const trees = await this.generateExternalUserGroupTrees();
+  async syncExternalUserGroups(params?: SyncParamsType): Promise<void> {
+    if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
+    this.isExecutingSync = true;
 
     const existingExternalUserGroupIds: string[] = [];
 
@@ -49,14 +53,21 @@ abstract class ExternalUserGroupSyncService {
       }
     };
 
-    await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
-      return syncNode(root);
-    });
+    try {
+      const trees = await this.generateExternalUserGroupTrees(params);
 
-    const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
-    if (!preserveDeletedLdapGroups) {
-      await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
-      await ExternalUserGroupRelation.removeAllInvalidRelations();
+      await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
+        return syncNode(root);
+      });
+
+      const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
+      if (!preserveDeletedLdapGroups) {
+        await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
+        await ExternalUserGroupRelation.removeAllInvalidRelations();
+      }
+    }
+    finally {
+      this.isExecutingSync = false;
     }
   }
 
@@ -122,7 +133,7 @@ abstract class ExternalUserGroupSyncService {
    * 2. Convert each group tree structure to ExternalUserGroupTreeNode
    * 3. Return the root node of each tree
   */
-  abstract generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]>
+  abstract generateExternalUserGroupTrees(params?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]>
 
 }
 

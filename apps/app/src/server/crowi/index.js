@@ -10,6 +10,7 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import { instanciate as instanciateLdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -154,6 +155,7 @@ Crowi.prototype.init = async function() {
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
     this.setupExternalAccountService(),
+    this.setupLdapUserGroupSyncService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -785,6 +787,11 @@ Crowi.prototype.setupG2GTransferService = async function() {
 // execute after setupPassport
 Crowi.prototype.setupExternalAccountService = function() {
   instanciateExternalAccountService(this.passportService);
+};
+
+// execute after setupPassport
+Crowi.prototype.setupLdapUserGroupSyncService = function() {
+  instanciateLdapUserGroupSyncService(this.passportService);
 };
 
 export default Crowi;

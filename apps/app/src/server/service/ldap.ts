@@ -23,19 +23,12 @@ export interface SearchResultEntry {
 */
 class LdapService {
 
-  username?: string; // Necessary when bind type is user bind
-
-  password?: string; // Necessary when bind type is user bind
-
   client: ldap.Client;
 
   searchBase: string;
 
-  constructor(username?: string, password?: string) {
+  constructor() {
     const serverUrl = configManager?.getConfig('crowi', 'security:passport-ldap:serverUrl');
-
-    this.username = username;
-    this.password = password;
 
     // parse serverUrl
     // see: https://regex101.com/r/0tuYBB/1
@@ -56,8 +49,10 @@ class LdapService {
   /**
    * Bind to LDAP server.
    * This method is declared independently, so multiple operations can be requested to the LDAP server with a single bind.
+   * @param {string} userBindUsername Necessary when bind type is user bind
+   * @param {string} userBindPassword Necessary when bind type is user bind
    */
-  bind(): Promise<void> {
+  bind(userBindUsername?: string, userBindPassword?: string): Promise<void> {
     const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
       const notEnabledMessage = 'LDAP is not enabled';
@@ -72,9 +67,9 @@ class LdapService {
 
     // user bind
     const fixedBindDN = (isUserBind)
-      ? bindDN.replace(/{{username}}/, this.username)
+      ? bindDN.replace(/{{username}}/, userBindUsername)
       : bindDN;
-    const fixedBindCredentials = (isUserBind) ? this.password : bindCredentials;
+    const fixedBindCredentials = (isUserBind) ? userBindPassword : bindCredentials;
 
     return new Promise<void>((resolve, reject) => {
       this.client.bind(fixedBindDN, fixedBindCredentials, (err) => {
