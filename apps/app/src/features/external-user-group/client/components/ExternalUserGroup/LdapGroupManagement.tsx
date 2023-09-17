@@ -37,7 +37,7 @@ export const LdapGroupManagement: FC = () => {
       else {
         await apiv3Put('/external-user-groups/ldap/sync');
       }
-      toastSuccess(t('external_user_group.ldap.sync_succeeded'));
+      toastSuccess(t('external_user_group.sync_succeeded'));
     }
     catch (errs) {
       toastError(t(errs[0]?.message));

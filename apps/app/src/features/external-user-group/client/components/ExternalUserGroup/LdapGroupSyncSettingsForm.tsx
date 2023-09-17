@@ -38,7 +38,7 @@ export const LdapGroupSyncSettingsForm: FC = () => {
       toastSuccess(t('external_user_group.ldap.updated_group_sync_settings'));
     }
     catch (errs) {
-      toastError(t(errs[0]?.message));
+      toastError(t(errs[0]?.code));
     }
   }, [formValues, t]);
 
