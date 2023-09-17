@@ -1065,6 +1065,7 @@
     "execute_sync": "Execute Sync",
     "sync": "Sync",
     "invalid_sync_settings": "Invalid sync settings",
+    "update_sync_settings_failed": "Failed to update sync settings",
     "description_form_detail": "Please note that edited value will be overwritten on next sync if description mapper is set in sync settings",
     "only_description_edit_allowed": "Only description can be edited for external user groups",
     "sync_succeeded": "Sync succeeded",

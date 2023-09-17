@@ -17,7 +17,7 @@ export const KeycloakGroupManagement: FC = () => {
       toastSuccess(t('external_user_group.sync_succeeded'));
     }
     catch (errs) {
-      toastError(t(errs[0]?.message));
+      toastError(t(errs[0]?.code));
     }
   }, [t]);
 

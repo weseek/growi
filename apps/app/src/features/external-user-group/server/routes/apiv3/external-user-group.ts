@@ -241,7 +241,9 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
+      return res.apiv3Err(
+        new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400,
+      );
     }
 
     const params = {
@@ -266,7 +268,9 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(
+        new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500,
+      );
     }
   });
 
@@ -274,7 +278,9 @@ module.exports = (crowi: Crowi): Router => {
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
+        return res.apiv3Err(
+          new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400,
+        );
       }
 
       const params = {
@@ -294,7 +300,9 @@ module.exports = (crowi: Crowi): Router => {
       }
       catch (err) {
         logger.error(err);
-        return res.apiv3Err(err, 500);
+        return res.apiv3Err(
+          new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500,
+        );
       }
     });
 
@@ -334,7 +342,11 @@ module.exports = (crowi: Crowi): Router => {
     };
 
     const authProviderType = getAuthProviderType();
-    if (authProviderType == null) return res.apiv3Err('external_user_group.keycloak.auth_not_set', 500);
+    if (authProviderType == null) {
+      return res.apiv3Err(
+        new ErrorV3('Authentication using keycloak is not set', 'external_user_group.keycloak.auth_not_set'), 500,
+      );
+    }
 
     try {
       const keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(authProviderType);
@@ -342,7 +354,9 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('external_user_group.sync_failed', 500);
+      return res.apiv3Err(
+        new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500,
+      );
     }
 
     return res.apiv3({}, 204);
