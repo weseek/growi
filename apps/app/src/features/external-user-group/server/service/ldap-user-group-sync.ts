@@ -62,6 +62,9 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
     };
 
     const convert = async(entry: SearchResultEntry, converted: string[]): Promise<ExternalUserGroupTreeNode | null> => {
+      const name = this.ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
+      if (name == null) return null;
+
       if (converted.includes(entry.objectName)) {
         throw Error('external_user_group.ldap.circular_reference');
       }
@@ -72,7 +75,6 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
       const userInfos = (await batchProcessPromiseAll(userIds, USERS_BATCH_SIZE, (id) => {
         return this.getUserInfo(id);
       })).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
-      const name = this.ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
       const description = this.ldapService.getStringValFromSearchResultEntry(entry, groupDescriptionAttribute);
       const childGroupDNs = getChildGroupDnsFromGroupEntry(entry);
 
@@ -86,13 +88,13 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
       const childGroupNodes: ExternalUserGroupTreeNode[] = childGroupNodesWithNull
         .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
 
-      return name != null ? {
+      return {
         id: entry.objectName,
         userInfos,
         childGroupNodes,
         name,
         description,
-      } : null;
+      };
     };
 
     // all the DNs of groups that are not a root of a tree

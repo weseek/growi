@@ -17,6 +17,7 @@ import { configManager } from '~/server/service/config-manager';
 import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
+import KeycloakUserGroupSyncService from '../../service/keycloak-user-group-sync';
 import { ldapUserGroupSyncService } from '../../service/ldap-user-group-sync';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
@@ -47,8 +48,8 @@ module.exports = (crowi: Crowi): Router => {
     ],
     keycloakSyncSettings: [
       body('keycloakHost').exists({ checkFalsy: true }).isString(),
-      body('keycloakRealm').exists({ checkFalsy: true }).isString(),
-      body('keycloakGroupSyncClientName').exists({ checkFalsy: true }).isString(),
+      body('keycloakGroupRealm').exists({ checkFalsy: true }).isString(),
+      body('keycloakGroupSyncClientRealm').exists({ checkFalsy: true }).isString(),
       body('keycloakGroupSyncClientID').exists({ checkFalsy: true }).isString(),
       body('keycloakGroupSyncClientSecret').exists({ checkFalsy: true }).isString(),
       body('autoGenerateUserOnKeycloakGroupSync').exists().isBoolean(),
@@ -225,8 +226,8 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
       keycloakHost: configManager?.getConfig('crowi', 'external-user-group:keycloak:host'),
-      keycloakRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:realm'),
-      keycloakGroupSyncClientName: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientName'),
+      keycloakGroupRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm'),
+      keycloakGroupSyncClientRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm'),
       keycloakGroupSyncClientID: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID'),
       keycloakGroupSyncClientSecret: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret'),
       autoGenerateUserOnKeycloakGroupSync: configManager?.getConfig('crowi', 'external-user-group:keycloak:autoGenerateUserOnGroupSync'),
@@ -240,7 +241,9 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
+      return res.apiv3Err(
+        new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400,
+      );
     }
 
     const params = {
@@ -265,7 +268,9 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err, 500);
+      return res.apiv3Err(
+        new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500,
+      );
     }
   });
 
@@ -273,13 +278,15 @@ module.exports = (crowi: Crowi): Router => {
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.apiv3Err('external_user_group.invalid_sync_settings', 400);
+        return res.apiv3Err(
+          new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400,
+        );
       }
 
       const params = {
         'external-user-group:keycloak:host': req.body.keycloakHost,
-        'external-user-group:keycloak:realm': req.body.keycloakRealm,
-        'external-user-group:keycloak:groupSyncClientName': req.body.keycloakGroupSyncClientName,
+        'external-user-group:keycloak:groupRealm': req.body.keycloakGroupRealm,
+        'external-user-group:keycloak:groupSyncClientRealm': req.body.keycloakGroupSyncClientRealm,
         'external-user-group:keycloak:groupSyncClientID': req.body.keycloakGroupSyncClientID,
         'external-user-group:keycloak:groupSyncClientSecret': req.body.keycloakGroupSyncClientSecret,
         'external-user-group:keycloak:autoGenerateUserOnGroupSync': req.body.autoGenerateUserOnKeycloakGroupSync,
@@ -293,7 +300,9 @@ module.exports = (crowi: Crowi): Router => {
       }
       catch (err) {
         logger.error(err);
-        return res.apiv3Err(err, 500);
+        return res.apiv3Err(
+          new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500,
+        );
       }
     });
 
@@ -306,6 +315,49 @@ module.exports = (crowi: Crowi): Router => {
     catch (err) {
       logger.error(err);
       return res.apiv3Err(err.message, 500);
+    }
+
+    return res.apiv3({}, 204);
+  });
+
+  router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const getAuthProviderType = () => {
+      const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
+      const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
+
+      // starts with kcHost, contains kcGroupRealm in path
+      // see: https://regex101.com/r/3ihDmf/1
+      const regex = new RegExp(`^${kcHost}/.*/${kcGroupRealm}(/|$).*`);
+
+      const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
+      const oidcIssuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
+
+      if (isOidcEnabled && regex.test(oidcIssuerHost)) return 'oidc';
+
+      const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
+      const samlEntryPoint = configManager.getConfig('crowi', 'security:passport-saml:entryPoint');
+
+      if (isSamlEnabled && regex.test(samlEntryPoint)) return 'saml';
+
+      return null;
+    };
+
+    const authProviderType = getAuthProviderType();
+    if (authProviderType == null) {
+      return res.apiv3Err(
+        new ErrorV3('Authentication using keycloak is not set', 'external_user_group.keycloak.auth_not_set'), 500,
+      );
+    }
+
+    try {
+      const keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(authProviderType);
+      await keycloakUserGroupSyncService.syncExternalUserGroups();
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(
+        new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500,
+      );
     }
 
     return res.apiv3({}, 204);

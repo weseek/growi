@@ -3,7 +3,7 @@ import type {
 } from '@growi/core';
 
 
-export const ExternalGroupProviderType = { ldap: 'ldap' } as const;
+export const ExternalGroupProviderType = { ldap: 'ldap', keycloak: 'keycloak' } as const;
 export type ExternalGroupProviderType = typeof ExternalGroupProviderType[keyof typeof ExternalGroupProviderType];
 
 export interface IExternalUserGroup extends Omit<IUserGroup, 'parent'> {
@@ -36,8 +36,8 @@ export interface LdapGroupSyncSettings {
 
 export interface KeycloakGroupSyncSettings {
   keycloakHost: string
-  keycloakRealm: string
-  keycloakGroupSyncClientName: string
+  keycloakGroupRealm: string
+  keycloakGroupSyncClientRealm: string
   keycloakGroupSyncClientID: string
   keycloakGroupSyncClientSecret: string
   autoGenerateUserOnKeycloakGroupSync: boolean
