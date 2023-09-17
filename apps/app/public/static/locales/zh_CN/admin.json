@@ -1089,10 +1089,7 @@
       "name_mapper_detail": "Attribute to map as group name",
       "updated_group_sync_settings": "Updated LDAP group sync settings",
       "password": "Password",
-      "password_detail": "Login password is necessary because Bind type is set to User Bind",
-      "circular_reference": "Sync failed because there is a possible circular reference in your LDAP group tree structure",
-      "group_search_failed": "LDAP group search failed. Please check your LDAP security settings and group sync settings.",
-      "user_search_failed": "LDAP user search failed. Please check your LDAP security settings and group sync settings."
+      "password_detail": "Login password is necessary because Bind type is set to User Bind"
     },
     "keycloak": {
       "group_sync_settings": "Keycloak Group Sync Settings",
