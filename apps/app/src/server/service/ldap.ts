@@ -32,7 +32,7 @@ class LdapService {
 
     // parse serverUrl
     // see: https://regex101.com/r/0tuYBB/1
-    const match = serverUrl.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
+    const match = serverUrl?.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
     if (match == null || match.length < 1) {
       const urlInvalidMessage = 'serverUrl is invalid';
       logger.error(urlInvalidMessage);
