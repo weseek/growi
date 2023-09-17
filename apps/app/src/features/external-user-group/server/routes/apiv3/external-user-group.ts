@@ -17,7 +17,7 @@ import { configManager } from '~/server/service/config-manager';
 import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
-import KeycloakUserGroupSyncService from '../../service/keycloak-user-group-sync';
+import { keycloakUserGroupSyncService } from '../../service/keycloak-user-group-sync';
 import { ldapUserGroupSyncService } from '../../service/ldap-user-group-sync';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
@@ -27,6 +27,10 @@ const router = Router();
 interface AuthorizedRequest extends Request {
   user?: any
 }
+
+const isExecutingSync = () => {
+  return ldapUserGroupSyncService?.isExecutingSync || keycloakUserGroupSyncService?.isExecutingSync || false;
+};
 
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
@@ -307,20 +311,30 @@ module.exports = (crowi: Crowi): Router => {
     });
 
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    if (ldapUserGroupSyncService?.isExecutingSync) return res.apiv3Err('external_user_group.sync_being_executed', 409);
+    if (isExecutingSync()) {
+      return res.apiv3Err(
+        new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409,
+      );
+    }
 
     try {
       await ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err.message, 500);
+      return res.apiv3Err(new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500);
     }
 
     return res.apiv3({}, 204);
   });
 
   router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    if (isExecutingSync()) {
+      return res.apiv3Err(
+        new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409,
+      );
+    }
+
     const getAuthProviderType = () => {
       const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
       const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
@@ -350,14 +364,11 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      const keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(authProviderType);
-      await keycloakUserGroupSyncService.syncExternalUserGroups();
+      await keycloakUserGroupSyncService?.syncExternalUserGroups(authProviderType);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(
-        new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500,
-      );
+      return res.apiv3Err(new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500);
     }
 
     return res.apiv3({}, 204);

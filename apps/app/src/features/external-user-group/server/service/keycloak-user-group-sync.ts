@@ -20,19 +20,24 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   groupDescriptionAttribute: string; // attribute to map to group description
 
-  constructor(authProviderType: string) {
+  constructor(socketIoService) {
     const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
     const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
     const kcGroupSyncClientRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
     const kcGroupDescriptionAttribute = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
 
-    super(ExternalGroupProviderType.keycloak, authProviderType);
+    super(ExternalGroupProviderType.keycloak, socketIoService);
     this.kcAdminClient = new KeycloakAdminClient({ baseUrl: kcHost, realmName: kcGroupSyncClientRealm });
     this.realm = kcGroupRealm;
     this.groupDescriptionAttribute = kcGroupDescriptionAttribute;
   }
 
-  async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
+  override syncExternalUserGroups(authProviderType: 'oidc' | 'saml'): Promise<void> {
+    this.authProviderType = authProviderType;
+    return super.syncExternalUserGroups();
+  }
+
+  override async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
     await this.auth();
 
     // Type is 'GroupRepresentation', but 'find' does not return 'attributes' field. Hence, attribute for description is not present.
@@ -120,4 +125,9 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
 }
 
-export default KeycloakUserGroupSyncService;
+// eslint-disable-next-line import/no-mutable-exports
+export let keycloakUserGroupSyncService: KeycloakUserGroupSyncService | undefined; // singleton instance
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function instanciate(socketIoService): void {
+  keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(socketIoService);
+}

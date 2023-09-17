@@ -10,6 +10,7 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import { instanciate as instanciateKeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { instanciate as instanciateLdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
@@ -162,7 +163,7 @@ Crowi.prototype.init = async function() {
     this.setUpUserNotification(),
     // depends on passport service
     this.setupExternalAccountService(),
-    this.setupLdapUserGroupSyncService(),
+    this.setupExternalUserGroupSyncService(),
   ]);
 
   await this.autoInstall();
@@ -791,8 +792,9 @@ Crowi.prototype.setupExternalAccountService = function() {
 };
 
 // execute after setupPassport and socketIoService
-Crowi.prototype.setupLdapUserGroupSyncService = function() {
+Crowi.prototype.setupExternalUserGroupSyncService = function() {
   instanciateLdapUserGroupSyncService(this.passportService, this.socketIoService);
+  instanciateKeycloakUserGroupSyncService(this.socketIoService);
 };
 
 export default Crowi;

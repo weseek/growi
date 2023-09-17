@@ -24,16 +24,15 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
-  authProviderType: string; // auth provider type (e.g: ldap, oidc)
+  authProviderType: string | null; // auth provider type (e.g: ldap, oidc)
 
   socketIoService: any;
 
   isExecutingSync = false;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string, socketIoService) {
+  constructor(groupProviderType: ExternalGroupProviderType, socketIoService) {
     this.groupProviderType = groupProviderType;
-    this.authProviderType = authProviderType;
     this.socketIoService = socketIoService;
   }
 
@@ -122,13 +121,16 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
    * @returns {Promise<IUserHasId | null>} User when found or created, null when neither
    */
   private async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
+    const authProviderType = this.authProviderType;
+    if (authProviderType == null) throw new Error('auth provider type is not set');
+
     const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
 
     const getExternalAccount = async() => {
       if (autoGenerateUserOnGroupSync && externalAccountService != null) {
         return externalAccountService.getOrCreateUser({
           id: userInfo.id, username: userInfo.username, name: userInfo.name, email: userInfo.email,
-        }, this.authProviderType);
+        }, authProviderType);
       }
       return ExternalAccount.findOne({ providerType: this.groupProviderType, accountId: userInfo.id });
     };

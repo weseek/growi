@@ -72,7 +72,7 @@ export const LdapGroupManagement: FC = () => {
       mutateExternalUserGroups();
     }
     catch (errs) {
-      toastError(t(errs[0]?.message));
+      toastError(t(errs[0]?.code));
     }
   }, [t, isUserBind, mutateExternalUserGroups]);
 

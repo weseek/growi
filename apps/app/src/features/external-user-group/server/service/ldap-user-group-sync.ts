@@ -28,12 +28,13 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(passportService, socketIoService) {
-    super(ExternalGroupProviderType.ldap, 'ldap', socketIoService);
+    super(ExternalGroupProviderType.ldap, socketIoService);
+    this.authProviderType = 'ldap';
     this.passportService = passportService;
     this.ldapService = new LdapService();
   }
 
-  async generateExternalUserGroupTrees(options?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]> {
+  override async generateExternalUserGroupTrees(options?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]> {
     const groupChildGroupAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
     const groupMembershipAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
     const groupNameAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
