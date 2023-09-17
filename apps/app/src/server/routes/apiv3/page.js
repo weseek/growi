@@ -627,7 +627,7 @@ module.exports = (crowi) => {
 
 
     // replace root page name to '_top'
-    if (!fileName) {
+    if (fileName === '') {
       fileName = '_top';
     }
 
