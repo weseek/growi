@@ -3,6 +3,7 @@ import type { IUserHasId } from '@growi/core';
 import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { configManager } from '../../../../server/service/config-manager';
@@ -12,6 +13,8 @@ import {
 } from '../../interfaces/external-user-group';
 import ExternalUserGroup from '../models/external-user-group';
 import ExternalUserGroupRelation from '../models/external-user-group-relation';
+
+const logger = loggerFactory('growi:service:external-user-group-sync-service');
 
 // When d = max depth of group trees
 // Max space complexity of syncExternalUserGroups will be:
@@ -76,10 +79,14 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
         await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
         await ExternalUserGroupRelation.removeAllInvalidRelations();
       }
+      socket?.emit(SocketEventName.GroupSyncCompleted);
+    }
+    catch (e) {
+      logger.error(e.message);
+      socket?.emit(SocketEventName.GroupSyncFailed);
     }
     finally {
       this.isExecutingSync = false;
-      socket?.emit(SocketEventName.FinishGroupSync);
     }
   }
 

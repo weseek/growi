@@ -317,15 +317,10 @@ module.exports = (crowi: Crowi): Router => {
       );
     }
 
-    try {
-      await ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500);
-    }
+    // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
+    ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
 
-    return res.apiv3({}, 204);
+    return res.apiv3({}, 202);
   });
 
   router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
@@ -363,15 +358,10 @@ module.exports = (crowi: Crowi): Router => {
       );
     }
 
-    try {
-      await keycloakUserGroupSyncService?.syncExternalUserGroups(authProviderType);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Sync failed', 'external_user_group.sync_failed'), 500);
-    }
+    // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
+    keycloakUserGroupSyncService?.syncExternalUserGroups(authProviderType);
 
-    return res.apiv3({}, 204);
+    return res.apiv3({}, 202);
   });
 
   return router;

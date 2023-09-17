@@ -19,7 +19,8 @@ export const SocketEventName = {
 
   // External user group sync
   GroupSyncProgress: 'groupSyncProgress',
-  FinishGroupSync: 'finishGroupSync',
+  GroupSyncFailed: 'groupSyncFailed',
+  GroupSyncCompleted: 'groupSyncCompleted',
 
   // Page Operation
   PageCreated: 'page:create',

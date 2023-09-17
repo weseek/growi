@@ -10,7 +10,7 @@ import {
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
 
-const logger = loggerFactory('growi:service:ldap-user-sync-service');
+const logger = loggerFactory('growi:service:ldap-user-group-sync-service');
 
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:

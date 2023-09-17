@@ -20,7 +20,7 @@ export const LdapGroupManagement: FC = () => {
   const { data: socket } = useAdminSocket();
   const { mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
 
-  const [syncStatus, setSyncStatus] = useState<'beforeSync' | 'syncExecuting' | 'syncFinished'>('beforeSync');
+  const [syncStatus, setSyncStatus] = useState<'beforeSync' | 'syncExecuting' | 'syncCompleted' | 'syncFailed'>('beforeSync');
   const [progress, setProgress] = useState({
     total: 0,
     current: 0,
@@ -42,6 +42,7 @@ export const LdapGroupManagement: FC = () => {
 
   useEffect(() => {
     if (socket != null) {
+      socket.off(SocketEventName.GroupSyncProgress);
       socket.on(SocketEventName.GroupSyncProgress, (data) => {
         setSyncStatus('syncExecuting');
         setProgress({
@@ -50,16 +51,24 @@ export const LdapGroupManagement: FC = () => {
         });
       });
 
-      socket.on(SocketEventName.FinishGroupSync, () => {
-        setSyncStatus('syncFinished');
+      socket.off(SocketEventName.GroupSyncCompleted);
+      socket.on(SocketEventName.GroupSyncCompleted, () => {
+        setSyncStatus('syncCompleted');
+        mutateExternalUserGroups();
+        toastSuccess(t('external_user_group.sync_succeeded'));
+      });
+
+      socket.off(SocketEventName.GroupSyncFailed);
+      socket.on(SocketEventName.GroupSyncFailed, () => {
+        setSyncStatus('syncFailed');
+        mutateExternalUserGroups();
+        toastError(t('external_user_group.sync_failed'));
       });
     }
-  }, [socket]);
+  }, [socket, mutateExternalUserGroups, t]);
 
   const onSyncBtnClick = useCallback(async(e) => {
     e.preventDefault();
-    setProgress({ total: 0, current: 0 });
-    setSyncStatus('syncExecuting');
     try {
       if (isUserBind) {
         const password = e.target.password.value;
@@ -68,18 +77,27 @@ export const LdapGroupManagement: FC = () => {
       else {
         await apiv3Put('/external-user-groups/ldap/sync');
       }
-      toastSuccess(t('external_user_group.sync_succeeded'));
-      mutateExternalUserGroups();
+      setProgress({ total: 0, current: 0 });
+      setSyncStatus('syncExecuting');
     }
     catch (errs) {
       toastError(t(errs[0]?.code));
     }
-  }, [t, isUserBind, mutateExternalUserGroups]);
+  }, [t, isUserBind]);
 
   const renderProgressBar = () => {
     if (syncStatus === 'beforeSync') return null;
 
-    const header = syncStatus === 'syncExecuting' ? 'Processing..' : 'Completed';
+    let header;
+    if (syncStatus === 'syncExecuting') {
+      header = 'Processing..';
+    }
+    else if (syncStatus === 'syncCompleted') {
+      header = 'Completed';
+    }
+    else {
+      header = 'Failed';
+    }
 
     return (
       <LabeledProgressBar
