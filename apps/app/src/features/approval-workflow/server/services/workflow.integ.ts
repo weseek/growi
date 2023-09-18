@@ -56,6 +56,7 @@ describe('WorkflowService', () => {
 
     // // workflow
     const workflowId1 = new mongoose.Types.ObjectId();
+    const workflowId2 = new mongoose.Types.ObjectId();
 
     // // user
     const creator = new mongoose.Types.ObjectId() as unknown as IUserHasId;
@@ -83,12 +84,19 @@ describe('WorkflowService', () => {
       });
     });
 
+    it('Should fail when an non-existent workflowId is provided', () => {
+      // when
+      const caller = () => WorkflowService.deleteWorkflow(workflowId2, user);
+
+      expect(caller).rejects.toThrow('Target workflow does not exist');
+    });
+
     it('Should fail when user who is neither Workflow Creator or Admin User attempts deletion', () => {
       // when
       const caller = () => WorkflowService.deleteWorkflow(workflowId1, user);
 
       // then
-      expect(caller).rejects.toThrow('error message');
+      expect(caller).rejects.toThrow('Only the person who created the workflow or has administrative privileges can delete it');
     });
 
     it('Should be able to delete the workflow if the user is either the Workflow Creator or an Admin User', async() => {
@@ -96,7 +104,7 @@ describe('WorkflowService', () => {
       await WorkflowService.deleteWorkflow(workflowId1, creator);
 
       // then
-      const workflow = await Workflow.findOne({ _id: workflowId1 });
+      const workflow = await Workflow.findById(workflowId1);
       expect(workflow).toBe(null);
     });
   });
