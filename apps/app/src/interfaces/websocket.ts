@@ -1,3 +1,23 @@
+import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
+
+const generateGroupSyncEvents = () => {
+  const events = {};
+  Object.values(ExternalGroupProviderType).forEach((provider) => {
+    events[provider] = {
+      GroupSyncProgress: `${provider}:groupSyncProgress`,
+      GroupSyncCompleted: `${provider}:groupSyncCompleted`,
+      GroupSyncFailed: `${provider}:groupSyncFailed`,
+    };
+  });
+  return events as {
+    [key in ExternalGroupProviderType]: {
+      GroupSyncProgress: string,
+      GroupSyncCompleted: string,
+      GroupSyncFailed: string,
+    }
+  };
+};
+
 export const SocketEventName = {
   // Update descendantCount
   UpdateDescCount: 'UpdateDescCount',
@@ -18,18 +38,7 @@ export const SocketEventName = {
   RebuildingFailed: 'rebuildingFailed',
 
   // External user group sync
-  externalUserGroup: {
-    ldap: {
-      GroupSyncProgress: 'ldap:groupSyncProgress',
-      GroupSyncFailed: 'ldap:groupSyncFailed',
-      GroupSyncCompleted: 'ldap:groupSyncCompleted',
-    },
-    keycloak: {
-      GroupSyncProgress: 'keycloak:groupSyncProgress',
-      GroupSyncFailed: 'keycloak:groupSyncFailed',
-      GroupSyncCompleted: 'keycloak:groupSyncCompleted',
-    },
-  },
+  externalUserGroup: generateGroupSyncEvents(),
 
   // Page Operation
   PageCreated: 'page:create',
