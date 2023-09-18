@@ -53,6 +53,8 @@ class WorkflowServiceImpl implements WorkflowService {
 
     await targetWorkflow.delete();
 
+    // TODO: Also delete the related WorkflowActivity (temporary) document
+
     return;
   }
 
