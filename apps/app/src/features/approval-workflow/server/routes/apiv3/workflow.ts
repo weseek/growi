@@ -390,14 +390,22 @@ module.exports = (crowi: Crowi): Router => {
   router.delete('/:workflowId', accessTokenParser, loginRequired, validator.deleteWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const { workflowId } = req.params;
+      const { user } = req;
+
+      try {
+        await WorkflowService.deleteWorkflow(workflowId, user);
+        return res.apiv3();
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err);
+      }
 
       // Description
       // workflow の削除
 
       // Memo
       // ワークフロー作成者 or 管理者権限を持つ user が削除できる
-
-      return res.apiv3();
     });
 
   return router;

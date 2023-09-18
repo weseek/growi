@@ -41,7 +41,19 @@ class WorkflowServiceImpl implements WorkflowService {
   }
 
   async deleteWorkflow(workflowId: ObjectIdLike, operator: IUserHasId): Promise<void> {
-    //
+    const targetWorkflow = await Workflow.findById(workflowId);
+    if (targetWorkflow == null) {
+      throw Error('Target workflow does not exist');
+    }
+
+    const creatorId = targetWorkflow.creator.toString();
+    if (creatorId !== operator._id || !operator.admin) {
+      throw Error('Only the person who created the workflow or has administrative privileges can delete it');
+    }
+
+    await targetWorkflow.delete();
+
+    return;
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
