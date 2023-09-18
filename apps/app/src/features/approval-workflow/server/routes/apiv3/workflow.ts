@@ -400,12 +400,6 @@ module.exports = (crowi: Crowi): Router => {
         logger.error(err);
         return res.apiv3Err(err);
       }
-
-      // Description
-      // workflow の削除
-
-      // Memo
-      // ワークフロー作成者 or 管理者権限を持つ user が削除できる
     });
 
   return router;
