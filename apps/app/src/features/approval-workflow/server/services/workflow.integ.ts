@@ -1,4 +1,4 @@
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {

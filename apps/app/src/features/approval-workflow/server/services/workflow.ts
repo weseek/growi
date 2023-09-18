@@ -1,4 +1,4 @@
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
