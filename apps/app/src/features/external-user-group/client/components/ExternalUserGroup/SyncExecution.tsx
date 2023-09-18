@@ -18,6 +18,13 @@ type SyncExecutionProps = {
   AdditionalForm?: FC
 }
 
+enum SyncStatus {
+  beforeSync,
+  syncExecuting,
+  syncCompleted,
+  syncFailed,
+}
+
 export const SyncExecution = ({
   provider,
   requestSyncAPI,
@@ -26,7 +33,7 @@ export const SyncExecution = ({
   const { t } = useTranslation('admin');
   const { data: socket } = useAdminSocket();
   const { mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
-  const [syncStatus, setSyncStatus] = useState<'beforeSync' | 'syncExecuting' | 'syncCompleted' | 'syncFailed'>('beforeSync');
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(SyncStatus.beforeSync);
   const [progress, setProgress] = useState({
     total: 0,
     current: 0,
@@ -36,7 +43,7 @@ export const SyncExecution = ({
     if (socket != null) {
       socket.off(SocketEventName.externalUserGroup[provider].GroupSyncProgress);
       socket.on(SocketEventName.externalUserGroup[provider].GroupSyncProgress, (data) => {
-        setSyncStatus('syncExecuting');
+        setSyncStatus(SyncStatus.syncExecuting);
         setProgress({
           total: data.totalCount,
           current: data.count,
@@ -45,14 +52,14 @@ export const SyncExecution = ({
 
       socket.off(SocketEventName.externalUserGroup[provider].GroupSyncCompleted);
       socket.on(SocketEventName.externalUserGroup[provider].GroupSyncCompleted, () => {
-        setSyncStatus('syncCompleted');
+        setSyncStatus(SyncStatus.syncCompleted);
         mutateExternalUserGroups();
         toastSuccess(t('external_user_group.sync_succeeded'));
       });
 
       socket.off(SocketEventName.externalUserGroup[provider].GroupSyncFailed);
       socket.on(SocketEventName.externalUserGroup[provider].GroupSyncFailed, () => {
-        setSyncStatus('syncFailed');
+        setSyncStatus(SyncStatus.syncFailed);
         mutateExternalUserGroups();
         toastError(t('external_user_group.sync_failed'));
       });
@@ -64,7 +71,7 @@ export const SyncExecution = ({
     try {
       await requestSyncAPI(e);
       setProgress({ total: 0, current: 0 });
-      setSyncStatus('syncExecuting');
+      setSyncStatus(SyncStatus.syncExecuting);
     }
     catch (errs) {
       toastError(t(errs[0]?.code));
@@ -72,13 +79,13 @@ export const SyncExecution = ({
   }, [t, requestSyncAPI]);
 
   const renderProgressBar = () => {
-    if (syncStatus === 'beforeSync') return null;
+    if (syncStatus === SyncStatus.beforeSync) return null;
 
     let header;
-    if (syncStatus === 'syncExecuting') {
+    if (syncStatus === SyncStatus.syncExecuting) {
       header = 'Processing..';
     }
-    else if (syncStatus === 'syncCompleted') {
+    else if (syncStatus === SyncStatus.syncCompleted) {
       header = 'Completed';
     }
     else {
