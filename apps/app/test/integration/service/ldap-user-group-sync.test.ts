@@ -256,7 +256,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
         return Promise.reject(new Error('not found'));
       });
 
-      await expect(ldapUserGroupSyncService?.generateExternalUserGroupTrees()).rejects.toThrow('external_user_group.ldap.circular_reference');
+      await expect(ldapUserGroupSyncService?.generateExternalUserGroupTrees()).rejects.toThrow('Circular reference inside LDAP group tree');
     });
   });
 });

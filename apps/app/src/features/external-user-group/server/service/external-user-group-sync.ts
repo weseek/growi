@@ -27,7 +27,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
-  authProviderType: string | null; // auth provider type (e.g: ldap, oidc)
+  authProviderType: string | null; // auth provider type (e.g: ldap, oidc) has to be set before syncExternalUserGroups execution
 
   socketIoService: any;
 
@@ -45,6 +45,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
    * 3. If preserveDeletedLDAPGroups is false、delete all ExternalUserGroups that were not found during tree search
   */
   async syncExternalUserGroups(params?: SyncParamsType): Promise<void> {
+    if (this.authProviderType == null) throw new Error('auth provider type is not set');
     if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
     this.isExecutingSync = true;
 

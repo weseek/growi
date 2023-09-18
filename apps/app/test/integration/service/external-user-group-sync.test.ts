@@ -17,7 +17,8 @@ import { getInstance } from '../setup-crowi';
 class TestExternalUserGroupSyncService extends ExternalUserGroupSyncService {
 
   constructor(socketIoService) {
-    super(ExternalGroupProviderType.ldap, 'ldap', socketIoService);
+    super('ldap', socketIoService);
+    this.authProviderType = ExternalGroupProviderType.ldap;
   }
 
   async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {

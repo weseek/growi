@@ -23,11 +23,16 @@ export interface SearchResultEntry {
 */
 class LdapService {
 
-  client: ldap.Client;
+  client: ldap.Client | null;
 
   searchBase: string;
 
-  constructor() {
+  /**
+   * Initialize LDAP client and bind.
+   * @param {string} userBindUsername Necessary when bind type is user bind
+   * @param {string} userBindPassword Necessary when bind type is user bind
+   */
+  initClient(userBindUsername?: string, userBindPassword?: string): void {
     const serverUrl = configManager?.getConfig('crowi', 'security:passport-ldap:serverUrl');
 
     // parse serverUrl
@@ -44,6 +49,7 @@ class LdapService {
     this.client = ldap.createClient({
       url,
     });
+    this.bind(userBindUsername, userBindPassword);
   }
 
   /**
@@ -53,6 +59,9 @@ class LdapService {
    * @param {string} userBindPassword Necessary when bind type is user bind
    */
   bind(userBindUsername?: string, userBindPassword?: string): Promise<void> {
+    const client = this.client;
+    if (client == null) throw new Error('LDAP client is not initialized');
+
     const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
       const notEnabledMessage = 'LDAP is not enabled';
@@ -72,7 +81,7 @@ class LdapService {
     const fixedBindCredentials = (isUserBind) ? userBindPassword : bindCredentials;
 
     return new Promise<void>((resolve, reject) => {
-      this.client.bind(fixedBindDN, fixedBindCredentials, (err) => {
+      client.bind(fixedBindDN, fixedBindCredentials, (err) => {
         if (err != null) {
           reject(err);
         }
@@ -89,15 +98,18 @@ class LdapService {
    * @returns {SearchEntry[]} Search result. Default scope is set to 'sub'.
    */
   search(filter?: string, base?: string, scope: 'sub' | 'base' | 'one' = 'sub'): Promise<SearchResultEntry[]> {
+    const client = this.client;
+    if (client == null) throw new Error('LDAP client is not initialized');
+
     const searchResults: SearchResultEntry[] = [];
 
     return new Promise((resolve, reject) => {
       // reject on client connection error (occures when not binded or host is not found)
-      this.client.on('error', (err) => {
+      client.on('error', (err) => {
         reject(err);
       });
 
-      this.client.search(base || this.searchBase, {
+      client.search(base || this.searchBase, {
         scope, filter, paged: true, sizeLimit: 200,
       }, (err, res) => {
         if (err != null) {

@@ -38,7 +38,7 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
     const groupDescriptionAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
     const groupBase: string = this.ldapService.getGroupSearchBase();
 
-    await this.ldapService.bind(options?.userBindUsername, options?.userBindPassword);
+    await this.ldapService.initClient(options?.userBindUsername, options?.userBindPassword);
     const groupEntries = await this.ldapService.searchGroupDir();
 
     const getChildGroupDnsFromGroupEntry = (groupEntry: SearchResultEntry) => {
