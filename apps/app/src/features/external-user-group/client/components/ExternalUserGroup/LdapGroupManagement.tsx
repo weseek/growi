@@ -5,26 +5,14 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
-import { SocketEventName } from '~/interfaces/websocket';
-import { useAdminSocket } from '~/stores/socket-io';
-
-import { useSWRxExternalUserGroupList } from '../../stores/external-user-group';
+import { toastError } from '~/client/util/toastr';
 
 import { LdapGroupSyncSettingsForm } from './LdapGroupSyncSettingsForm';
+import { SyncExecution } from './SyncExecution';
 
 export const LdapGroupManagement: FC = () => {
   const [isUserBind, setIsUserBind] = useState(false);
   const { t } = useTranslation('admin');
-  const { data: socket } = useAdminSocket();
-  const { mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
-
-  const [syncStatus, setSyncStatus] = useState<'beforeSync' | 'syncExecuting' | 'syncCompleted' | 'syncFailed'>('beforeSync');
-  const [progress, setProgress] = useState({
-    total: 0,
-    current: 0,
-  });
 
   useEffect(() => {
     const getIsUserBind = async() => {
@@ -40,106 +28,39 @@ export const LdapGroupManagement: FC = () => {
     getIsUserBind();
   }, []);
 
-  useEffect(() => {
-    if (socket != null) {
-      socket.off(SocketEventName.GroupSyncProgress);
-      socket.on(SocketEventName.GroupSyncProgress, (data) => {
-        setSyncStatus('syncExecuting');
-        setProgress({
-          total: data.totalCount,
-          current: data.count,
-        });
-      });
-
-      socket.off(SocketEventName.GroupSyncCompleted);
-      socket.on(SocketEventName.GroupSyncCompleted, () => {
-        setSyncStatus('syncCompleted');
-        mutateExternalUserGroups();
-        toastSuccess(t('external_user_group.sync_succeeded'));
-      });
-
-      socket.off(SocketEventName.GroupSyncFailed);
-      socket.on(SocketEventName.GroupSyncFailed, () => {
-        setSyncStatus('syncFailed');
-        mutateExternalUserGroups();
-        toastError(t('external_user_group.sync_failed'));
-      });
-    }
-  }, [socket, mutateExternalUserGroups, t]);
-
-  const onSyncBtnClick = useCallback(async(e) => {
-    e.preventDefault();
-    try {
-      if (isUserBind) {
-        const password = e.target.password.value;
-        await apiv3Put('/external-user-groups/ldap/sync', { password });
-      }
-      else {
-        await apiv3Put('/external-user-groups/ldap/sync');
-      }
-      setProgress({ total: 0, current: 0 });
-      setSyncStatus('syncExecuting');
-    }
-    catch (errs) {
-      toastError(t(errs[0]?.code));
-    }
-  }, [t, isUserBind]);
-
-  const renderProgressBar = () => {
-    if (syncStatus === 'beforeSync') return null;
-
-    let header;
-    if (syncStatus === 'syncExecuting') {
-      header = 'Processing..';
-    }
-    else if (syncStatus === 'syncCompleted') {
-      header = 'Completed';
+  const requestSyncAPI = useCallback(async(e) => {
+    if (isUserBind) {
+      const password = e.target.password.value;
+      await apiv3Put('/external-user-groups/ldap/sync', { password });
     }
     else {
-      header = 'Failed';
+      await apiv3Put('/external-user-groups/ldap/sync');
     }
+  }, [isUserBind]);
 
-    return (
-      <LabeledProgressBar
-        header={header}
-        currentCount={progress.current}
-        totalCount={progress.total}
-      />
-    );
+  const AdditionalForm = (): JSX.Element => {
+    return isUserBind ? (
+      <div className="row form-group">
+        <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            type="password"
+            name="password"
+            id="ldapGroupSyncPassword"
+          />
+          <p className="form-text text-muted">
+            <small>{t('external_user_group.ldap.password_detail')}</small>
+          </p>
+        </div>
+      </div>
+    ) : <></>;
   };
 
   return (
     <>
       <LdapGroupSyncSettingsForm />
-      <h3 className="border-bottom mb-3">{t('external_user_group.execute_sync')}</h3>
-      <div className="row">
-        <div className="col-md-3"></div>
-        <div className="col-md-9">
-          {renderProgressBar()}
-        </div>
-      </div>
-      <form onSubmit={onSyncBtnClick}>
-        {isUserBind && (
-          <div className="row form-group">
-            <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                type="password"
-                name="password"
-                id="ldapGroupSyncPassword"
-              />
-              <p className="form-text text-muted">
-                <small>{t('external_user_group.ldap.password_detail')}</small>
-              </p>
-            </div>
-          </div>
-        )}
-        <div className="row">
-          <div className="col-md-3"></div>
-          <div className="col-md-6"><button className="btn btn-primary" type="submit">{t('external_user_group.sync')}</button></div>
-        </div>
-      </form>
+      <SyncExecution requestSyncAPI={requestSyncAPI} AdditionalForm={AdditionalForm} />
     </>
   );
 };
