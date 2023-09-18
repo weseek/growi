@@ -54,18 +54,22 @@ describe('WorkflowService', () => {
 
   describe('.deleteWorkflow', () => {
 
-    // // workflow
+    // workflow
     const workflowId1 = new mongoose.Types.ObjectId();
     const workflowId2 = new mongoose.Types.ObjectId();
 
-    // // user
-    const creator = new mongoose.Types.ObjectId() as unknown as IUserHasId;
-    const user = new mongoose.Types.ObjectId() as unknown as IUserHasId;
+    // user
+    const workflowCreatorId = new mongoose.Types.ObjectId();
+    const workflowCreator = { _id: workflowCreatorId.toString() } as IUserHasId;
+
+    const nonWorkflowCreator = { _id: new mongoose.Types.ObjectId().toString() } as IUserHasId;
+
+    const nonAdminUser = { admin: false } as IUserHasId;
 
     beforeAll(async() => {
       await Workflow.create({
         _id: workflowId1,
-        creator,
+        creator: workflowCreator,
         pageId: new mongoose.Types.ObjectId(),
         name: 'page1 Workflow',
         comment: 'commnet',
@@ -86,14 +90,22 @@ describe('WorkflowService', () => {
 
     it('Should fail when an non-existent workflowId is provided', () => {
       // when
-      const caller = () => WorkflowService.deleteWorkflow(workflowId2, user);
+      const caller = () => WorkflowService.deleteWorkflow(workflowId2, workflowCreator);
 
       expect(caller).rejects.toThrow('Target workflow does not exist');
     });
 
+    it('Should fail when a non-Workflow Creator user attempts deletion', () => {
+      // when
+      const caller = () => WorkflowService.deleteWorkflow(workflowId1, nonWorkflowCreator);
+
+      // then
+      expect(caller).rejects.toThrow('Only the person who created the workflow or has administrative privileges can delete it');
+    });
+
     it('Should fail when user who is neither Workflow Creator or Admin User attempts deletion', () => {
       // when
-      const caller = () => WorkflowService.deleteWorkflow(workflowId1, user);
+      const caller = () => WorkflowService.deleteWorkflow(workflowId1, nonAdminUser);
 
       // then
       expect(caller).rejects.toThrow('Only the person who created the workflow or has administrative privileges can delete it');
@@ -101,7 +113,7 @@ describe('WorkflowService', () => {
 
     it('Should be able to delete the workflow if the user is either the Workflow Creator or an Admin User', async() => {
       // when
-      await WorkflowService.deleteWorkflow(workflowId1, creator);
+      await WorkflowService.deleteWorkflow(workflowId1, workflowCreator);
 
       // then
       const workflow = await Workflow.findById(workflowId1);
