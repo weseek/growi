@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
+import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 
 import { LdapGroupSyncSettingsForm } from './LdapGroupSyncSettingsForm';
 import { SyncExecution } from './SyncExecution';
@@ -60,7 +61,7 @@ export const LdapGroupManagement: FC = () => {
   return (
     <>
       <LdapGroupSyncSettingsForm />
-      <SyncExecution requestSyncAPI={requestSyncAPI} AdditionalForm={AdditionalForm} />
+      <SyncExecution provider={ExternalGroupProviderType.ldap} requestSyncAPI={requestSyncAPI} AdditionalForm={AdditionalForm} />
     </>
   );
 };

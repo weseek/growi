@@ -63,7 +63,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
         const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
         existingExternalUserGroupIds.push(externalUserGroup._id);
         count++;
-        socket?.emit(SocketEventName.GroupSyncProgress, { totalCount, count });
+        socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncProgress, { totalCount, count });
         // Do not use Promise.all, because the number of promises processed can
         // exponentially grow when group tree is enormous
         for await (const childNode of node.childGroupNodes) {
@@ -79,11 +79,11 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
         await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
         await ExternalUserGroupRelation.removeAllInvalidRelations();
       }
-      socket?.emit(SocketEventName.GroupSyncCompleted);
+      socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncCompleted);
     }
     catch (e) {
       logger.error(e.message);
-      socket?.emit(SocketEventName.GroupSyncFailed);
+      socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncFailed);
     }
     finally {
       this.isExecutingSync = false;

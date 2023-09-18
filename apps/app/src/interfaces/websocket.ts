@@ -18,9 +18,18 @@ export const SocketEventName = {
   RebuildingFailed: 'rebuildingFailed',
 
   // External user group sync
-  GroupSyncProgress: 'groupSyncProgress',
-  GroupSyncFailed: 'groupSyncFailed',
-  GroupSyncCompleted: 'groupSyncCompleted',
+  externalUserGroup: {
+    ldap: {
+      GroupSyncProgress: 'ldap:groupSyncProgress',
+      GroupSyncFailed: 'ldap:groupSyncFailed',
+      GroupSyncCompleted: 'ldap:groupSyncCompleted',
+    },
+    keycloak: {
+      GroupSyncProgress: 'keycloak:groupSyncProgress',
+      GroupSyncFailed: 'keycloak:groupSyncFailed',
+      GroupSyncCompleted: 'keycloak:groupSyncCompleted',
+    },
+  },
 
   // Page Operation
   PageCreated: 'page:create',

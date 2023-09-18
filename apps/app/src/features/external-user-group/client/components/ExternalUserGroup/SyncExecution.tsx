@@ -6,17 +6,20 @@ import { useTranslation } from 'react-i18next';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
+import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import { useSWRxExternalUserGroupList } from '../../stores/external-user-group';
 
 type SyncExecutionProps = {
+  provider: ExternalGroupProviderType
   requestSyncAPI: (e) => Promise<void>
   AdditionalForm?: FC
 }
 
 export const SyncExecution = ({
+  provider,
   requestSyncAPI,
   AdditionalForm = () => <></>,
 }: SyncExecutionProps): JSX.Element => {
@@ -31,8 +34,8 @@ export const SyncExecution = ({
 
   useEffect(() => {
     if (socket != null) {
-      socket.off(SocketEventName.GroupSyncProgress);
-      socket.on(SocketEventName.GroupSyncProgress, (data) => {
+      socket.off(SocketEventName.externalUserGroup[provider].GroupSyncProgress);
+      socket.on(SocketEventName.externalUserGroup[provider].GroupSyncProgress, (data) => {
         setSyncStatus('syncExecuting');
         setProgress({
           total: data.totalCount,
@@ -40,21 +43,21 @@ export const SyncExecution = ({
         });
       });
 
-      socket.off(SocketEventName.GroupSyncCompleted);
-      socket.on(SocketEventName.GroupSyncCompleted, () => {
+      socket.off(SocketEventName.externalUserGroup[provider].GroupSyncCompleted);
+      socket.on(SocketEventName.externalUserGroup[provider].GroupSyncCompleted, () => {
         setSyncStatus('syncCompleted');
         mutateExternalUserGroups();
         toastSuccess(t('external_user_group.sync_succeeded'));
       });
 
-      socket.off(SocketEventName.GroupSyncFailed);
-      socket.on(SocketEventName.GroupSyncFailed, () => {
+      socket.off(SocketEventName.externalUserGroup[provider].GroupSyncFailed);
+      socket.on(SocketEventName.externalUserGroup[provider].GroupSyncFailed, () => {
         setSyncStatus('syncFailed');
         mutateExternalUserGroups();
         toastError(t('external_user_group.sync_failed'));
       });
     }
-  }, [socket, mutateExternalUserGroups, t]);
+  }, [socket, mutateExternalUserGroups, t, provider]);
 
   const onSyncBtnClick = useCallback(async(e) => {
     e.preventDefault();
