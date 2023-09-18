@@ -1,6 +1,7 @@
 import { Model, Schema, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import {
