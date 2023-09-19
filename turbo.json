@@ -42,7 +42,8 @@
     "@growi/app#styles-prebuilt": {
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
-        "src/styles/**/*.scss"
+        "src/styles/**/*.scss",
+        "../../packages/core/scss/**/*.scss"
       ],
       "outputMode": "new-only"
     },
