@@ -21,7 +21,7 @@ export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<
   return useSWRStatic<Date, Error>('remoteRevisionLastUpdatedAt', initialData);
 };
 
-type RemoteRevisionData = {
+export type RemoteRevisionData = {
   remoteRevisionId: string,
   remoteRevisionBody: string,
   remoteRevisionLastUpdateUser: IUser,
