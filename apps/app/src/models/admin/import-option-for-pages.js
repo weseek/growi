@@ -6,7 +6,6 @@ const DEFAULT_PROPS = {
   makePublicForGrant4: false,
   makePublicForGrant5: false,
   initPageMetadatas: false,
-  initHackmdDatas: false,
 };
 
 class ImportOptionForPages extends GrowiArchiveImportOption {

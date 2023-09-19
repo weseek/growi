@@ -566,10 +566,6 @@
           "initialize_meta_datas": {
             "label": "「いいね」「閲覧したユーザー」「コメント数」を初期化する",
             "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "HackMD 関連データを初期化する",
-            "desc": "HackMD に重要な下書きデータがない限りはこのオプションをチェックすることを推奨します。"
           }
         },
         "revisions": {

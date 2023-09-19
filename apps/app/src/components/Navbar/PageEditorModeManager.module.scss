@@ -20,18 +20,6 @@ $btn-line-height: 1.2rem;
         }
       }
     }
-    &.hackmd-button {
-      line-height: $btn-line-height;
-      .grw-page-editor-mode-manager-icon {
-        @include bs.media-breakpoint-down(sm) {
-          font-size: 1.2rem;
-        }
-      }
-      .grw-page-editor-mode-manager-label {
-        font-size: 12px;
-        letter-spacing: -0.6px;
-      }
-    }
   }
 }
 
