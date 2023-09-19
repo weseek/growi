@@ -46,8 +46,9 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Target workflow does not exist');
     }
 
+    const operatorId = operator._id.toString();
     const creatorId = targetWorkflow.creator.toString();
-    if (creatorId !== operator._id && !operator.admin) {
+    if (creatorId !== operatorId && !operator.admin) {
       throw Error('Only the person who created the workflow or has administrative privileges can delete it');
     }
 
