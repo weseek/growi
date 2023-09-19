@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 
-
-import { defaultKeymap } from '@codemirror/commands';
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
@@ -52,7 +50,6 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
           return true;
         },
       },
-      ...defaultKeymap,
     ]);
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
