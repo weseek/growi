@@ -20,6 +20,7 @@ const WorkflowModal = (): JSX.Element => {
   const [pageType, setPageType] = useState<PageType>(PageType.list);
 
   const { data: workflowModalData, close: closeWorkflowModal } = useWorkflowModal();
+  // TODO: https://redmine.weseek.co.jp/issues/130992
   const { data: workflowPaginateResult, mutate: mutateWorkflows } = useSWRxWorkflowList(workflowModalData?.pageId, 1, 0);
 
   /*
