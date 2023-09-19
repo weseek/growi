@@ -113,12 +113,14 @@ describe('WorkflowService', () => {
     });
 
     it('Should be able to delete the workflow if the user is either the Workflow Creator or an Admin User', async() => {
+      // setup
+      expect(await Workflow.exists(workflowId1)).not.toBeNull();
+
       // when
       await WorkflowService.deleteWorkflow(workflowId1, workflowCreator);
 
       // then
-      const workflow = await Workflow.findById(workflowId1);
-      expect(workflow).toBe(null);
+      expect(await Workflow.exists(workflowId1)).toBeNull();
     });
   });
 });
