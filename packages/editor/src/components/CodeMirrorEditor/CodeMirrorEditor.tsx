@@ -65,7 +65,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  const { getRootProps } = useDropzone(
+  // ------------------------| Dropzone |------------------------------------------
+  const { getRootProps, open } = useDropzone(
     {
       noKeyboard: true,
       noClick: true,
@@ -73,10 +74,11 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     },
   );
 
+  // ------------------------| Dropzone |-------------------------------------------
   return (
     <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar />
+      <Toolbar fileOpen={open} />
     </div>
   );
 };
