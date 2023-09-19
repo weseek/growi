@@ -64,7 +64,7 @@ describe('WorkflowService', () => {
 
     const nonWorkflowCreator = { _id: new mongoose.Types.ObjectId().toString() } as IUserHasId;
 
-    const nonAdminUser = { admin: false } as IUserHasId;
+    const nonAdminUser = { _id: new mongoose.Types.ObjectId().toString(), admin: false } as IUserHasId;
 
     beforeAll(async() => {
       await Workflow.create({
@@ -92,6 +92,7 @@ describe('WorkflowService', () => {
       // when
       const caller = () => WorkflowService.deleteWorkflow(workflowId2, workflowCreator);
 
+      // then
       expect(caller).rejects.toThrow('Target workflow does not exist');
     });
 
