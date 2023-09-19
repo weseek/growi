@@ -32,15 +32,14 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return codeMirrorEditor?.appendExtensions?.(additionalExtensions);
   }, [codeMirrorEditor]);
 
-  // setup page keymap
+  // set handler to save with shortcut key
   useEffect(() => {
     if (onSave == null) {
       return;
     }
 
-    const keymapExtension = keymap.of([
+    const extension = keymap.of([
       {
-        // set handler to save with shortcut key
         key: 'Mod-s',
         preventDefault: true,
         run: () => {
@@ -53,7 +52,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       },
     ]);
 
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
 
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);

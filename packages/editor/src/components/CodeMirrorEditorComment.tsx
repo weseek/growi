@@ -31,7 +31,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     return codeMirrorEditor?.appendExtensions?.(additionalExtensions);
   }, [codeMirrorEditor]);
 
-  // setup comment keymap
+  // set handler to comment with ctrl/cmd + Enter key
   useEffect(() => {
     if (onComment == null) {
       return;
@@ -39,7 +39,6 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
     const keymapExtension = keymap.of([
       {
-        // set handler to comment with ctrl/cmd + Enter key
         key: 'Mod-Enter',
         preventDefault: true,
         run: () => {
