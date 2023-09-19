@@ -9,14 +9,14 @@ import { useCreateWorkflow } from '../services/workflow';
 
 type Props = {
   pageId: string,
-  mutateWorkflows: () => void;
+  onCreated: () => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
 export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageId, mutateWorkflows, onClickWorkflowListPageBackButton } = props;
+  const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
 
   const approverGroupsDummyData = [{
     approvalType: WorkflowApprovalType.AND,
@@ -61,13 +61,13 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
 
     try {
       await createWorkflow();
-      mutateWorkflows();
+      onCreated();
       // TODO: Move to the detail screen
     }
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [approverGroups, createWorkflow, mutateWorkflows]);
+  }, [approverGroups, createWorkflow, onCreated]);
 
   return (
     <>
