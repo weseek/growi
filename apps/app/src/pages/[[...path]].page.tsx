@@ -33,7 +33,7 @@ import {
   useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
+  useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
@@ -154,7 +154,6 @@ type Props = CommonProps & {
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   drawioUri: string | null,
-  hackmdUri: string,
   noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
@@ -210,7 +209,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
   useDefaultIndentSize(props.adminPreferredIndentSize);
   useIsIndentSizeForced(props.isIndentSizeForced);
@@ -562,7 +560,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');

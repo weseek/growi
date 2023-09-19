@@ -135,23 +135,6 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     const { path, pageId, revisionId } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
-    /*
-    * Note: variable "markdown" will be received from params
-    * please delete the following code after implemating HackMD editor function
-    */
-    // let markdown;
-    // if (editorMode === EditorMode.HackMD) {
-    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    // markdown = await pageEditorByHackmd.getMarkdown();
-    // // set option to sync
-    // options.isSyncRevisionToHackmd = true;
-    // revisionId = this.state.revisionIdHackmdSynced;
-    // }
-    // else {
-    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    // const pageEditor = getComponentInstance('PageEditor');
-    // markdown = pageEditor.getMarkdown();
-    // }
 
     let res;
     if (pageId == null || revisionId == null) {
