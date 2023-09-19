@@ -749,7 +749,7 @@
         "isForbidden": "権限の閲覧が許可されていません",
         "currentPageGrantLabel": "このページの権限: ",
         "parentPageGrantLabel": "親のページの権限: ",
-        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>を参照してください"
+        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/guide/features/authority.html#%E9%85%8D%E4%B8%8B%E3%83%98%E3%82%9A%E3%83%BC%E3%82%B7%E3%82%99%E3%81%AB%E8%A8%AD%E5%AE%9A%E3%81%A6%E3%82%99%E3%81%8D%E3%82%8B%E6%A8%A9%E9%99%90'>こちらのリンク</a>を参照してください"
       },
       "radio_btn": {
         "restrected": "リンクを知っている人のみ",

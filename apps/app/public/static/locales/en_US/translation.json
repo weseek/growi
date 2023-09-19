@@ -716,7 +716,7 @@
         "isForbidden": "Authority not allowed to view",
         "currentPageGrantLabel": "Authorization for this page: ",
         "parentPageGrantLabel": "Authority of parent page: ",
-        "docLink": "For more information on modifying permissions, please refer to <a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>"
+        "docLink": "For more information on modifying permissions, please refer to <a href='https://docs.growi.org/en/guide/features/authority.html#permissions-for-subordinate-pages'>こちらのリンク</a>"
       },
       "radio_btn": {
         "restrected": "Only those who know the link",

@@ -719,7 +719,7 @@
         "isForbidden": "无权查看的机构",
         "currentPageGrantLabel": "本页的权限: ",
         "parentPageGrantLabel": "父页的权限: ",
-        "docLink": "关于修改授权的更多信息，请参见此<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>此链接</a>"
+        "docLink": "关于修改授权的更多信息，请参见此<a href='https://docs.growi.org/en/guide/features/authority.html#permissions-for-subordinate-pages'>此链接</a>"
       },
       "radio_btn": {
         "restrected": "只有那些知道链接的人",
