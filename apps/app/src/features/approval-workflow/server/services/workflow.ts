@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
-  deleteWorkflow(workflowId: ObjectIdLike, operator: IUserHasId): Promise<void>,
+  deleteWorkflow(workflowId: ObjectIdLike, operator?: IUserHasId, isDeletePage?: boolean): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
 }
 
@@ -40,16 +40,18 @@ class WorkflowServiceImpl implements WorkflowService {
     return createdWorkflow;
   }
 
-  async deleteWorkflow(workflowId: ObjectIdLike, operator: IUserHasId): Promise<void> {
+  async deleteWorkflow(workflowId: ObjectIdLike, operator?: IUserHasId, isDeletePage = false): Promise<void> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
       throw Error('Target workflow does not exist');
     }
 
-    const operatorId = operator._id.toString();
-    const creatorId = targetWorkflow.creator.toString();
-    if (creatorId !== operatorId && !operator.admin) {
-      throw Error('Only the person who created the workflow or has administrative privileges can delete it');
+    if (!isDeletePage) {
+      const operatorId = operator?._id.toString();
+      const creatorId = targetWorkflow.creator.toString();
+      if (creatorId !== operatorId && !operator?.admin) {
+        throw Error('Only the person who created the workflow or has administrative privileges can delete it');
+      }
     }
 
     await targetWorkflow.delete();
