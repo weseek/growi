@@ -6,6 +6,7 @@ import { defaultKeymap } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
 import { keymap } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import { useDropzone } from 'react-dropzone';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
@@ -64,8 +65,16 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
+  const { getRootProps } = useDropzone(
+    {
+      noKeyboard: true,
+      noClick: true,
+      onDrop: (props) => { console.log(props); return 0 },
+    },
+  );
+
   return (
-    <div className="flex-expand-vert">
+    <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
       <Toolbar />
     </div>
