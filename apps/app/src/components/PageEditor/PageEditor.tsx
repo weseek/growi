@@ -575,6 +575,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <CodeMirrorEditorMain
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
+          onUpload={uploadHandler}
           indentSize={currentIndentSize ?? defaultIndentSize}
         />
       </div>

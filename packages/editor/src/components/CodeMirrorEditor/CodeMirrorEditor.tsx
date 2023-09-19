@@ -1,5 +1,5 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useCallback,
 } from 'react';
 
 import { defaultKeymap } from '@codemirror/commands';
@@ -25,6 +25,7 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
+  onUpload?: (file: any) => Promise<void>,
   indentSize?: number,
 }
 
@@ -32,6 +33,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
     onChange,
+    onUpload,
     indentSize,
   } = props;
 
@@ -66,11 +68,18 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, indentSize]);
 
   // ------------------------| Dropzone |------------------------------------------
+  const dropHandler = useCallback((accepted) => {
+    if (onUpload == null) {
+      return;
+    }
+    accepted.forEach(file => onUpload(file));
+  }, [onUpload]);
+
   const { getRootProps, open } = useDropzone(
     {
       noKeyboard: true,
       noClick: true,
-      onDrop: (props) => { console.log(props); return 0 },
+      onDrop: dropHandler,
     },
   );
 
