@@ -393,7 +393,8 @@ module.exports = (crowi: Crowi): Router => {
       const { user } = req;
 
       try {
-        await WorkflowService.deleteWorkflow(workflowId, user);
+        await WorkflowService.validateDeletableTaraget(workflowId, user);
+        await WorkflowService.deleteWorkflow(workflowId);
         return res.apiv3();
       }
       catch (err) {

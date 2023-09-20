@@ -52,12 +52,11 @@ describe('WorkflowService', () => {
     });
   });
 
-  describe('.deleteWorkflow', () => {
 
+  describe('.validateDeletableTaraget', () => {
     // workflow
     const workflowId1 = new mongoose.Types.ObjectId();
     const workflowId2 = new mongoose.Types.ObjectId();
-    const workflowId3 = new mongoose.Types.ObjectId();
 
     // user
     const workflowCreatorId = new mongoose.Types.ObjectId();
@@ -68,51 +67,30 @@ describe('WorkflowService', () => {
     const nonAdminUser = { _id: new mongoose.Types.ObjectId().toString(), admin: false } as IUserHasId;
 
     beforeAll(async() => {
-      await Workflow.insertMany([
-        {
-          _id: workflowId1,
-          creator: workflowCreator,
-          pageId: new mongoose.Types.ObjectId(),
-          name: 'page1 Workflow',
-          comment: 'commnet',
-          status: WorkflowStatus.INPROGRESS,
-          approverGroups: [
-            {
-              approvalType: WorkflowApprovalType.AND,
-              approvers: [
-                {
-                  user: new mongoose.Types.ObjectId(),
-                  status: WorkflowApproverStatus.NONE,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          _id: workflowId2,
-          creator: workflowCreator,
-          pageId: new mongoose.Types.ObjectId(),
-          name: 'page1 Workflow',
-          comment: 'commnet',
-          status: WorkflowStatus.INPROGRESS,
-          approverGroups: [
-            {
-              approvalType: WorkflowApprovalType.AND,
-              approvers: [
-                {
-                  user: new mongoose.Types.ObjectId(),
-                  status: WorkflowApproverStatus.NONE,
-                },
-              ],
-            },
-          ],
-        },
-      ]);
+      await Workflow.create({
+        _id: workflowId1,
+        creator: workflowCreator,
+        pageId: new mongoose.Types.ObjectId(),
+        name: 'page1 Workflow',
+        comment: 'commnet',
+        status: WorkflowStatus.INPROGRESS,
+        approverGroups: [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: new mongoose.Types.ObjectId(),
+                status: WorkflowApproverStatus.NONE,
+              },
+            ],
+          },
+        ],
+      });
     });
 
     it('Should fail when an non-existent workflowId is provided', () => {
       // when
-      const caller = () => WorkflowService.deleteWorkflow(workflowId3, workflowCreator);
+      const caller = () => WorkflowService.validateDeletableTaraget(workflowId2, workflowCreator);
 
       // then
       expect(caller).rejects.toThrow('Target workflow does not exist');
@@ -120,40 +98,61 @@ describe('WorkflowService', () => {
 
     it('Should fail when a non-Workflow Creator user attempts deletion', () => {
       // when
-      const caller = () => WorkflowService.deleteWorkflow(workflowId1, nonWorkflowCreator);
+      const caller = () => WorkflowService.validateDeletableTaraget(workflowId1, nonWorkflowCreator);
 
       // then
-      expect(caller).rejects.toThrow('Only the person who created the workflow or has administrative privileges can delete it');
+      expect(caller).rejects.toThrow('Users with workflow creator or administrator privileges can perform the deletion');
     });
 
     it('Should fail when user who is neither Workflow Creator or Admin User attempts deletion', () => {
       // when
-      const caller = () => WorkflowService.deleteWorkflow(workflowId1, nonAdminUser);
+      const caller = () => WorkflowService.validateDeletableTaraget(workflowId1, nonAdminUser);
 
       // then
-      expect(caller).rejects.toThrow('Only the person who created the workflow or has administrative privileges can delete it');
+      expect(caller).rejects.toThrow('Users with workflow creator or administrator privileges can perform the deletion');
+    });
+  });
+
+  describe('.deleteWorkflow', () => {
+
+    // workflow
+    const workflowId = new mongoose.Types.ObjectId();
+
+    // user
+    const workflowCreatorId = new mongoose.Types.ObjectId();
+    const workflowCreator = { _id: workflowCreatorId.toString() } as IUserHasId;
+
+    beforeAll(async() => {
+      await Workflow.create({
+        _id: workflowId,
+        creator: workflowCreator,
+        pageId: new mongoose.Types.ObjectId(),
+        name: 'page1 Workflow',
+        comment: 'commnet',
+        status: WorkflowStatus.INPROGRESS,
+        approverGroups: [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: new mongoose.Types.ObjectId(),
+                status: WorkflowApproverStatus.NONE,
+              },
+            ],
+          },
+        ],
+      });
     });
 
-    it('Should be able to delete the workflow if the user is either the Workflow Creator or an Admin User', async() => {
+    it('Should allow workflow creator to delete the workflow', async() => {
       // setup
-      expect(await Workflow.exists(workflowId1)).not.toBeNull();
+      expect(await Workflow.exists(workflowId)).not.toBeNull();
 
       // when
-      await WorkflowService.deleteWorkflow(workflowId1, workflowCreator);
+      await WorkflowService.deleteWorkflow(workflowId, workflowCreator);
 
       // then
-      expect(await Workflow.exists(workflowId1)).toBeNull();
-    });
-
-    it('Should allow anyone to delete when "isDeletePage" flag is true', async() => {
-      // setup
-      expect(await Workflow.exists(workflowId2)).not.toBeNull();
-
-      // when
-      await WorkflowService.deleteWorkflow(workflowId2, nonWorkflowCreator, true);
-
-      // then
-      expect(await Workflow.exists(workflowId2)).toBeNull();
+      expect(await Workflow.exists(workflowId)).toBeNull();
     });
   });
 });
