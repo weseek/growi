@@ -298,64 +298,70 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
    * the upload event handler
    * @param {any} file
    */
-  const uploadHandler = useCallback(async(file) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let res: any = await apiGet('/attachments.limit', {
-        fileSize: file.size,
-      });
+  const uploadHandler = useCallback((args: File | File[]) => {
+    const files = Array.isArray(args)
+      ? args
+      : [args];
 
-      if (!res.isUploadable) {
-        throw new Error(res.errorMessage);
-      }
+    files.forEach(async(file) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let res: any = await apiGet('/attachments.limit', {
+          fileSize: file.size,
+        });
 
-      const formData = new FormData();
-      // const { pageId, path } = pageContainer.state;
-      formData.append('file', file);
-      if (currentPagePath != null) {
-        formData.append('path', currentPagePath);
-      }
-      if (pageId != null) {
-        formData.append('page_id', pageId);
-      }
-      if (pageId == null) {
-        formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
-      }
+        if (!res.isUploadable) {
+          throw new Error(res.errorMessage);
+        }
 
-      res = await apiPostForm('/attachments.add', formData);
-      const attachment = res.attachment;
-      const fileName = attachment.originalName;
+        const formData = new FormData();
+        // const { pageId, path } = pageContainer.state;
+        formData.append('file', file);
+        if (currentPagePath != null) {
+          formData.append('path', currentPagePath);
+        }
+        if (pageId != null) {
+          formData.append('page_id', pageId);
+        }
+        if (pageId == null) {
+          formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
+        }
 
-      let insertText = `[${fileName}](${attachment.filePathProxied})`;
-      // when image
-      if (attachment.fileFormat.startsWith('image/')) {
+        res = await apiPostForm('/attachments.add', formData);
+        const attachment = res.attachment;
+        const fileName = attachment.originalName;
+
+        let insertText = `[${fileName}](${attachment.filePathProxied})`;
+        // when image
+        if (attachment.fileFormat.startsWith('image/')) {
         // modify to "![fileName](url)" syntax
-        insertText = `!${insertText}`;
-      }
-      // TODO: implement
-      // refs: https://redmine.weseek.co.jp/issues/126528
-      // editorRef.current.insertText(insertText);
+          insertText = `!${insertText}`;
+        }
+        // TODO: implement
+        // refs: https://redmine.weseek.co.jp/issues/126528
+        // editorRef.current.insertText(insertText);
 
-      // when if created newly
-      // Not using 'mutateGrant' to inherit the grant of the parent page
-      if (res.pageCreated) {
-        logger.info('Page is created', res.page._id);
-        globalEmitter.emit('resetInitializedHackMdStatus');
-        mutateIsLatestRevision(true);
-        setCreatedPageRevisionIdWithAttachment(res.page.revision);
-        await mutateCurrentPageId(res.page._id);
-        await mutateCurrentPage();
+        // when if created newly
+        // Not using 'mutateGrant' to inherit the grant of the parent page
+        if (res.pageCreated) {
+          logger.info('Page is created', res.page._id);
+          globalEmitter.emit('resetInitializedHackMdStatus');
+          mutateIsLatestRevision(true);
+          setCreatedPageRevisionIdWithAttachment(res.page.revision);
+          await mutateCurrentPageId(res.page._id);
+          await mutateCurrentPage();
+        }
       }
-    }
-    catch (e) {
-      logger.error('failed to upload', e);
-      toastError(e);
-    }
-    finally {
-      // TODO: implement
-      // refs: https://redmine.weseek.co.jp/issues/126528
-      // editorRef.current.terminateUploadingState();
-    }
+      catch (e) {
+        logger.error('failed to upload', e);
+        toastError(e);
+      }
+      finally {
+        codeMirrorEditor?.insertText(insertText);
+      }
+
+    });
+
   }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
 

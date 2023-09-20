@@ -25,7 +25,7 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
-  onUpload?: (file: any) => Promise<void>,
+  onUpload?: (args: File | File[]) => void,
   indentSize?: number,
 }
 
@@ -68,11 +68,11 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, indentSize]);
 
   // ------------------------| Dropzone |------------------------------------------
-  const dropHandler = useCallback((accepted) => {
+  const dropHandler = useCallback((acceptedFiles: File[]) => {
     if (onUpload == null) {
       return;
     }
-    accepted.forEach(file => onUpload(file));
+    onUpload(acceptedFiles);
   }, [onUpload]);
 
   const { getRootProps, open } = useDropzone(
