@@ -331,7 +331,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         const attachment = res.attachment;
         const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${attachment.filePathProxied})`;
+        let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
         // when image
         if (attachment.fileFormat.startsWith('image/')) {
         // modify to "![fileName](url)" syntax
@@ -340,6 +340,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         // TODO: implement
         // refs: https://redmine.weseek.co.jp/issues/126528
         // editorRef.current.insertText(insertText);
+        // codeMirrorEditor?.view?.state.replaceSelection(insertText);
+        codeMirrorEditor?.insertText(insertText);
 
         // when if created newly
         // Not using 'mutateGrant' to inherit the grant of the parent page
@@ -357,7 +359,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         toastError(e);
       }
       finally {
-        codeMirrorEditor?.insertText(insertText);
       }
 
     });
