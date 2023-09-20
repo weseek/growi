@@ -1,0 +1,14 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@include bs.color-mode(light) {
+  .list-group-item-action {
+    --bs-list-group-action-hover-bg: var(--grw-highlight-200);
+    --bs-list-group-action-active-bg: var(--grw-highlight-400);
+  }
+}
+@include bs.color-mode(dark) {
+  .list-group-item-action {
+    --bs-list-group-action-hover-bg: var(--grw-highlight-800);
+    --bs-list-group-action-active-bg: var(--grw-highlight-800);
+  }
+}
