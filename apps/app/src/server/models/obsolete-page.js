@@ -701,49 +701,6 @@ export const getPageSchema = (crowi) => {
     await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroup: transferToUserGroupId });
   };
 
-  /**
-   * associate GROWI page and HackMD page
-   * @param {Page} pageData
-   * @param {string} pageIdOnHackmd
-   */
-  pageSchema.statics.registerHackmdPage = function(pageData, pageIdOnHackmd) {
-    pageData.pageIdOnHackmd = pageIdOnHackmd;
-    return this.syncRevisionToHackmd(pageData);
-  };
-
-  /**
-   * update revisionHackmdSynced
-   * @param {Page} pageData
-   * @param {bool} isSave whether save or not
-   */
-  pageSchema.statics.syncRevisionToHackmd = function(pageData, isSave = true) {
-    pageData.revisionHackmdSynced = pageData.revision;
-    pageData.hasDraftOnHackmd = false;
-
-    let returnData = pageData;
-    if (isSave) {
-      returnData = pageData.save();
-    }
-    return returnData;
-  };
-
-  /**
-   * update hasDraftOnHackmd
-   * !! This will be invoked many time from many people !!
-   *
-   * @param {Page} pageData
-   * @param {Boolean} newValue
-   */
-  pageSchema.statics.updateHasDraftOnHackmd = async function(pageData, newValue) {
-    if (pageData.hasDraftOnHackmd === newValue) {
-      // do nothing when hasDraftOnHackmd equals to newValue
-      return;
-    }
-
-    pageData.hasDraftOnHackmd = newValue;
-    return pageData.save();
-  };
-
   pageSchema.methods.getNotificationTargetUsers = async function() {
     const Comment = mongoose.model('Comment');
     const Revision = mongoose.model('Revision');

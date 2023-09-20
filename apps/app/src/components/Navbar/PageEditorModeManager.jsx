@@ -2,9 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { UncontrolledTooltip } from 'reactstrap';
 
-import { useIsAdmin, useHackmdUri } from '~/stores/context';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import styles from './PageEditorModeManager.module.scss';
@@ -47,11 +45,6 @@ function PageEditorModeManager(props) {
 
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { data: hackmdUri } = useHackmdUri();
-
-  const { data: isAdmin } = useIsAdmin();
-  const isHackmdEnabled = hackmdUri != null;
-  const showHackmdBtn = isHackmdEnabled || isAdmin;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
     if (isBtnDisabled) {
@@ -89,24 +82,6 @@ function PageEditorModeManager(props) {
             icon={<i className="icon-note" />}
             label={t('Edit')}
           />
-        )}
-        {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && (
-          <>
-            <PageEditorModeButtonWrapper
-              editorMode={editorMode}
-              isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
-              onClick={isHackmdEnabled ? pageEditorModeButtonClickedHandler : undefined}
-              targetMode={EditorMode.HackMD}
-              icon={<i className="fa fa-file-text-o" />}
-              label={t('hackmd.hack_md')}
-              id="grw-page-editor-mode-manager-hackmd-button"
-            />
-            { !isHackmdEnabled && (
-              <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
-                {t('hackmd.not_set_up')}
-              </UncontrolledTooltip>
-            )}
-          </>
         )}
       </div>
     </>

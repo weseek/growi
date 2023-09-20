@@ -455,7 +455,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null || revisionId === null) {
@@ -482,7 +481,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
-    const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
