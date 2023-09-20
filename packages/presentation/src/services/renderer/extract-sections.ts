@@ -62,7 +62,7 @@ export const remarkPlugin: Plugin<[ExtractSectionsPluginParams]> = (options) => 
       tree,
       startCondition,
       (node, index, parent: Parent) => {
-        if (parent == null || parent.type !== 'root') {
+        if (parent == null || parent.type !== 'root' || node.type === 'yaml') {
           return;
         }
 

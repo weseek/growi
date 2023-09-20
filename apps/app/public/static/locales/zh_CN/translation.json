@@ -62,6 +62,7 @@
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
+  "Create Sidebar Page": "创建 <strong>/Sidebar</strong> 页面",
   "File type": "文件类型",
   "Target page": "目标页面",
   "Include Attachment File": "包含附件",
@@ -431,7 +432,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
 	"toaster": {
-    "file_upload_succeeded": "文件上传成功",
     "file_upload_failed": "文件上传失败",
     "initialize_successed": "Succeeded to initialize {{target}}",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",

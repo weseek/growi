@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "6.2.0-RC.0",
+  "version": "6.2.1-RC.0",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -185,6 +185,7 @@
     "rehype-toc": "^3.0.2",
     "remark-breaks": "^3.0.2",
     "remark-emoji": "^3.0.2",
+    "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "remark-toc": "^8.0.1",

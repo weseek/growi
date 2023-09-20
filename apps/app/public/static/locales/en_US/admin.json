@@ -47,8 +47,8 @@
     "anyone": "Anyone",
     "user_homepage_deletion": {
       "user_homepage_deletion": "User homepage deletion",
-      "enable_user_homepage_deletion": "Enable user homepage deletion",
-      "when_deleting_a_user_the_user_homepage_is_also_deleted": "When deleting a user, the user homepage is also deleted."
+      "enable_user_homepage_deletion": "Complete deletion of user homepage, when user deletion",
+      "desc": "When deleting a user, the user homepage and its sub pages are also completely deleted."
     },
     "session": "Session",
     "max_age": "Max age (msec)",
@@ -482,6 +482,15 @@
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
       "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
     },
+      "presentation": "Presentation",
+    "presentation_options": {
+      "enable_marp": "Enable Marp ",
+      "enable_marp_desc": "Marp can be used in presentation preview. This option may make you vulnerable to XSS.",
+      "marp_official_site": "The Marp Official Site",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
+    },
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - The site name of this wiki.",
@@ -493,6 +502,7 @@
     "write_css": "You can write CSS that is applied to whole system.",
     "ctrl_space": "Ctrl+Space to autocomplete",
     "custom_script": "Custom script",
+    "custom_presentation": "Custom presentation",
     "write_java": "You can write Javascript that is applied to whole system.",
     "reflect_change": "You need to reload the page to reflect the change.",
     "custom_logo" : "Custom Logo",
@@ -871,7 +881,7 @@
     "plugin_card": "Plugin Card",
     "plugin_is_not_installed": "Plugin is not installed",
     "install": "Install",
-    "delete": "Delete"
+    "confirm": "Delete plugin?"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "Open GROWI.cloud Settings"
@@ -1062,6 +1072,6 @@
     "remove_plugin_success": "Succeeded to removing {{pluginName}}"
   },
   "forbidden_page": {
-    "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen."
+    "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen"
   }
 }

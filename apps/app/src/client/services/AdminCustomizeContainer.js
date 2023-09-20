@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
@@ -34,6 +35,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       isSearchScopeChildrenAsDefault: false,
+      isEnabledMarp: false,
       currentCustomizeTitle: '',
       currentCustomizeNoscript: '',
       currentCustomizeCss: '',
@@ -71,6 +73,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizeParams.isSearchScopeChildrenAsDefault,
+        isEnabledMarp: customizeParams.isEnabledMarp,
         currentCustomizeTitle: customizeParams.customizeTitle,
         currentCustomizeNoscript: customizeParams.customizeNoscript,
         currentCustomizeCss: customizeParams.customizeCss,
@@ -150,6 +153,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Switch isEnabledMarp
+   */
+  switchIsEnabledMarp(inputValue) {
+    this.setState({ isEnabledMarp: !this.state.isEnabledMarp });
+  }
+
+  /**
    * Change customize Title
    */
   changeCustomizeTitle(inputValue) {
@@ -206,6 +216,26 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
+  }
+  /**
+   * Update presentation
+   * @memberOf AdminCustomizeContainer
+   */
+  async updateCustomizePresentation() {
+    try {
+      const response = await apiv3Put('/customize-setting/presentation', {
+        isEnabledMarp: this.state.isEnabledMarp,
+      });
+
+      const { customizedParams } = response.data;
+      this.setState({
+        isEnabledMarp: customizedParams.isEnabledMarp,
       });
     }
     catch (err) {

@@ -2500,13 +2500,13 @@
     xdg-basedir "^4.0.0"
 
 "@growi/core@link:packages/core":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     bson-objectid "^2.0.4"
     escape-string-regexp "^4.0.0"
 
 "@growi/hackmd@link:packages/hackmd":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
 
 "@growi/pluginkit@link:packages/pluginkit":
   version "0.1.0"
@@ -2515,18 +2515,18 @@
     extensible-custom-error "^0.0.7"
 
 "@growi/presentation@link:packages/presentation":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
 
 "@growi/preset-templates@link:packages/preset-templates":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
 
 "@growi/preset-themes@link:packages/preset-themes":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
 
 "@growi/remark-attachment-refs@link:packages/remark-attachment-refs":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
     "@growi/remark-growi-directive" "link:packages/remark-growi-directive"
@@ -2538,10 +2538,10 @@
     universal-bunyan "^0.9.2"
 
 "@growi/remark-drawio@link:packages/remark-drawio":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
 
 "@growi/remark-growi-directive@link:packages/remark-growi-directive":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     "@types/mdast" "^3.0.0"
     "@types/unist" "^2.0.0"
@@ -2558,7 +2558,7 @@
     uvu "^0.5.0"
 
 "@growi/remark-lsx@link:packages/remark-lsx":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
     "@growi/remark-growi-directive" "link:packages/remark-growi-directive"
@@ -2570,7 +2570,7 @@
     swr "^2.0.3"
 
 "@growi/slack@link:packages/slack":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     "@slack/oauth" "^2.0.1"
     "@slack/web-api" "^6.2.4"
@@ -2586,7 +2586,7 @@
     url-join "^4.0.0"
 
 "@growi/ui@link:packages/ui":
-  version "6.2.0-RC.0"
+  version "6.2.1-RC.0"
   dependencies:
     "@growi/core" "link:packages/core"
 
@@ -8153,6 +8153,13 @@ fault@^1.0.0:
   dependencies:
     format "^0.2.0"
 
+fault@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fault/-/fault-2.0.1.tgz#d47ca9f37ca26e4bd38374a7c500b5a384755b6c"
+  integrity sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==
+  dependencies:
+    format "^0.2.0"
+
 fb-watchman@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/fb-watchman/-/fb-watchman-2.0.0.tgz#54e9abf7dfa2f26cd9b1636c588c1afc05de5d58"
@@ -11272,6 +11279,15 @@ mdast-util-from-markdown@^1.0.0:
     unist-util-stringify-position "^3.0.0"
     uvu "^0.5.0"
 
+mdast-util-frontmatter@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mdast-util-frontmatter/-/mdast-util-frontmatter-1.0.1.tgz#79c46d7414eb9d3acabe801ee4a70a70b75e5af1"
+  integrity sha512-JjA2OjxRqAa8wEG8hloD0uTU0kdn8kbtOWpPP94NBkfAlbxn4S8gCGf/9DwFtEeGPXrDcNXdiDjVaRdUFqYokw==
+  dependencies:
+    "@types/mdast" "^3.0.0"
+    mdast-util-to-markdown "^1.3.0"
+    micromark-extension-frontmatter "^1.0.0"
+
 mdast-util-gfm-autolink-literal@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mdast-util-gfm-autolink-literal/-/mdast-util-gfm-autolink-literal-1.0.2.tgz#4032dcbaddaef7d4f2f3768ed830475bb22d3970"
@@ -11320,6 +11336,19 @@ mdast-util-gfm@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/mdast-util-gfm/-/mdast-util-gfm-2.0.1.tgz#16fcf70110ae689a06d77e8f4e346223b64a0ea6"
   integrity sha512-42yHBbfWIFisaAfV1eixlabbsa6q7vHeSPY+cg+BBjX51M8xhgMacqH9g6TftB/9+YkcI0ooV4ncfrJslzm/RQ==
+  dependencies:
+    mdast-util-from-markdown "^1.0.0"
+    mdast-util-gfm-autolink-literal "^1.0.0"
+    mdast-util-gfm-footnote "^1.0.0"
+    mdast-util-gfm-strikethrough "^1.0.0"
+    mdast-util-gfm-table "^1.0.0"
+    mdast-util-gfm-task-list-item "^1.0.0"
+    mdast-util-to-markdown "^1.0.0"
+
+mdast-util-gfm@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/mdast-util-gfm/-/mdast-util-gfm-2.0.2.tgz#e92f4d8717d74bdba6de57ed21cc8b9552e2d0b6"
+  integrity sha512-qvZ608nBppZ4icQlhQQIAdc6S3Ffj9RGmzwUKUWuEICFnd1LVkN3EktF7ZHAgfcEdvZB5owU9tQgt99e2TlLjg==
   dependencies:
     mdast-util-from-markdown "^1.0.0"
     mdast-util-gfm-autolink-literal "^1.0.0"
@@ -11555,6 +11584,16 @@ micromark-core-commonmark@^1.0.0, micromark-core-commonmark@^1.0.1:
     micromark-util-symbol "^1.0.0"
     micromark-util-types "^1.0.1"
     uvu "^0.5.0"
+
+micromark-extension-frontmatter@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/micromark-extension-frontmatter/-/micromark-extension-frontmatter-1.1.1.tgz#2946643938e491374145d0c9aacc3249e38a865f"
+  integrity sha512-m2UH9a7n3W8VAH9JO9y01APpPKmNNNs71P0RbknEmYSaZU5Ghogv38BYO94AI5Xw6OYfxZRdHZZ2nYjs/Z+SZQ==
+  dependencies:
+    fault "^2.0.0"
+    micromark-util-character "^1.0.0"
+    micromark-util-symbol "^1.0.0"
+    micromark-util-types "^1.0.0"
 
 micromark-extension-gfm-autolink-literal@^1.0.0:
   version "1.0.3"
@@ -14294,6 +14333,16 @@ remark-emoji@^3.0.2:
     emoticon "^4.0.0"
     node-emoji "^1.11.0"
     unist-util-visit "^4.1.0"
+
+remark-frontmatter@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/remark-frontmatter/-/remark-frontmatter-4.0.1.tgz#84560f7ccef114ef076d3d3735be6d69f8922309"
+  integrity sha512-38fJrB0KnmD3E33a5jZC/5+gGAC2WKNiPw1/fdXJvijBlhA7RCsvJklrYJakS0HedninvaCYW8lQGf9C918GfA==
+  dependencies:
+    "@types/mdast" "^3.0.0"
+    mdast-util-frontmatter "^1.0.0"
+    micromark-extension-frontmatter "^1.0.0"
+    unified "^10.0.0"
 
 remark-gfm@^3.0.1:
   version "3.0.1"
