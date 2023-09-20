@@ -3,14 +3,14 @@
   @import '@growi/core/scss/bootstrap/theming/variables';
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  $primary: #409cb9;
+  $primary: #439cb9;
   $secondary: $gray-600;
   $highlight: #93e3ea;
 
   @include generate-color-palette('primary', $primary);
   @include generate-color-palette('highlight', $highlight);
 
-  $body-color:                $gray-900;
+  $body-color:                $gray-700;
   $body-bg:                   white;
 
   $body-secondary-color:      rgba($body-color, .75);
