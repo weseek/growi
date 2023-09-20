@@ -622,7 +622,6 @@ module.exports = (crowi) => {
 
     // replace forbidden characters to '_'
     // refer to https://kb.acronis.com/node/56475?ckattempt=1
-    const sanitize = require('sanitize-filename');
     let fileName = sanitize(path.basename(pagePath), { replacement: '_' });
 
 
