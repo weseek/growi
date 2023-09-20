@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
 
@@ -22,6 +22,17 @@
 
 - fix: Do not work img tag if use style property (#7988) @jam411
 - fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
+
+## [v6.2.1](https://github.com/weseek/growi/compare/v6.2.0...v6.2.1) - 2023-09-20
+
+### 🚀 Improvement
+
+- imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
+- imprv: Admin customize presentation form (#8083) @meiri-k
+
+### 🐛 Bug Fixes
+
+- fix: Do not work img tag if use style property 62x (#8092) @jam411
 
 ## [v6.2.0](https://github.com/weseek/growi/compare/v6.1.12...v6.2.0) - 2023-09-14
 
