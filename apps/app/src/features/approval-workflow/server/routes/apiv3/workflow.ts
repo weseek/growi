@@ -118,10 +118,22 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/:workflowId', accessTokenParser, loginRequired, validator.getWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { workflowId } = req.params;
 
-    // Description
-    // workflowId に紐つく workflow を取得する
+    const workflow = await Workflow.findById(workflowId)
+      .populate('creator')
+      .populate('approverGroups.approvers.user');
 
-    return res.apiv3();
+    if (workflow == null) {
+      return res.apiv3Err('Target workflow does not exist');
+    }
+
+    workflow.creator = serializeUserSecurely(workflow.creator);
+    workflow.approverGroups.forEach((approverGroup) => {
+      approverGroup.approvers.forEach((approver) => {
+        approver.user = serializeUserSecurely(approver.user);
+      });
+    });
+
+    return res.apiv3({ workflow });
   });
 
 
