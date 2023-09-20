@@ -116,7 +116,8 @@ describe('WorkflowService', () => {
   describe('.deleteWorkflow', () => {
 
     // workflow
-    const workflowId = new mongoose.Types.ObjectId();
+    const workflowId1 = new mongoose.Types.ObjectId();
+    const workflowId2 = new mongoose.Types.ObjectId();
 
     // user
     const workflowCreatorId = new mongoose.Types.ObjectId();
@@ -124,7 +125,7 @@ describe('WorkflowService', () => {
 
     beforeAll(async() => {
       await Workflow.create({
-        _id: workflowId,
+        _id: workflowId1,
         creator: workflowCreator,
         pageId: new mongoose.Types.ObjectId(),
         name: 'page1 Workflow',
@@ -145,14 +146,22 @@ describe('WorkflowService', () => {
     });
 
     it('Should allow workflow creator to delete the workflow', async() => {
-      // setup
-      expect(await Workflow.exists(workflowId)).not.toBeNull();
-
       // when
-      await WorkflowService.deleteWorkflow(workflowId, workflowCreator);
+      const caller = () => WorkflowService.deleteWorkflow(workflowId2, workflowCreator);
 
       // then
-      expect(await Workflow.exists(workflowId)).toBeNull();
+      expect(caller).rejects.toThrow('Target workflow does not exist');
+    });
+
+    it('Should allow workflow creator to delete the workflow', async() => {
+      // setup
+      expect(await Workflow.exists(workflowId1)).not.toBeNull();
+
+      // when
+      await WorkflowService.deleteWorkflow(workflowId1, workflowCreator);
+
+      // then
+      expect(await Workflow.exists(workflowId1)).toBeNull();
     });
   });
 });
