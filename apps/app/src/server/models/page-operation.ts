@@ -74,7 +74,6 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   grant: { type: Number },
   grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
   format: { type: String },
-  isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },
 }, { _id: false });
 
