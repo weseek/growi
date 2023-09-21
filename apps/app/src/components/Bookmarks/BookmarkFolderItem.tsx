@@ -10,7 +10,6 @@ import {
 } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
-import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
   BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
 } from '~/interfaces/bookmark-info';
@@ -234,7 +233,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
                 onClick={loadChildFolder}
               >
                 <div className="d-flex justify-content-center">
-                  <TriangleIcon />
+                  <span className="material-icons-round">arrow_right</span>
                 </div>
               </button>
             )}

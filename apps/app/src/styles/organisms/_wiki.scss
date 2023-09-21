@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/utilities' as bs;
 
 @use '../variables' as var;
 
@@ -13,6 +13,13 @@
   }
 
   font-size: 16px;
+
+  a {
+    @extend .link-offset-2;
+    @extend .link-underline-opacity-25;
+    @extend .link-underline-opacity-50-hover;
+    text-decoration: underline;
+  }
 
   // @extend .text-break;
   // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
@@ -282,6 +289,24 @@
   .main .wiki {
     img {
       max-width: 100%;
+    }
+  }
+}
+
+
+// == Colors
+.wiki {
+  a {
+    color: rgba(
+      var(--grw-wiki-link-color-rgb, var(--bs-link-color-rgb)),
+      var(--bs-link-opacity, 1)
+    );
+
+    &:hover {
+      color: rgba(
+        var(--grw-wiki-link-hover-color-rgb, var(--bs-link-hover-color-rgb)),
+        var(--bs-link-opacity, 1)
+      );
     }
   }
 }

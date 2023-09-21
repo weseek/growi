@@ -25,9 +25,6 @@ export type IPage = {
   liker: Ref<IUser>[],
   commentCount: number
   slackChannels: string,
-  pageIdOnHackmd: string,
-  revisionHackmdSynced: Ref<IRevision>,
-  hasDraftOnHackmd: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
   latestRevision?: Ref<IRevision>,

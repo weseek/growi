@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import { useCurrentPageId } from '~/stores/page';
-import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
+import { useSetRemoteLatestPageData, type RemoteRevisionData } from '~/stores/remote-latest-page';
 import { useGlobalSocket } from '~/stores/websocket';
 
 export const usePageUpdatedEffect = (): void => {
@@ -15,13 +15,11 @@ export const usePageUpdatedEffect = (): void => {
   const setLatestRemotePageData = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
 
-    const remoteData = {
+    const remoteData: RemoteRevisionData = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
       remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
       remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
       remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
-      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
-      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
     };
 
     if (currentPageId != null && currentPageId === s2cMessagePageUpdated.pageId) {

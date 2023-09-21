@@ -1,7 +1,3 @@
-//== GROWI Official Color
-$growi-green: #74bc46;
-$growi-blue: #175fa5;
-
 //== Marker Color
 $grw-marker-yellow: #ff6;
 $grw-marker-red: #f6c;
@@ -20,9 +16,10 @@ $grw-subnav-search-preview-min-height: 90px;
 $grw-navbar-bottom-height: 48px;
 $grw-editor-navbar-bottom-height: 48px;
 
-$grw-sidebar-nav-width: 64px; // !!DO NOT CHANGE!! 'margin-left' for '.css-teprsg' is hardcoded
+$grw-sidebar-nav-width: 48px;
+$grw-sidebar-nav-height: 50px;
 
 $grw-logo-width: $grw-sidebar-nav-width;
-$grw-logomark-width: 36px;
+$grw-logomark-width: 24px;
 
 $grw-scroll-margin-top-in-view: 130px;

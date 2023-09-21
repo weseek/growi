@@ -20,11 +20,11 @@ import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
 import {
-  IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
+  type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
+  type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -32,9 +32,9 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '../models/page-operation';
-import { PageRedirectModel } from '../models/page-redirect';
+import type { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
+import PageOperation, { type PageOperationDocument } from '../models/page-operation';
+import type { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
@@ -3882,10 +3882,9 @@ class PageService {
   async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}): Promise<PageDocument> {
     const { grant, grantedGroup } = grantData;
 
-    const options = {
+    const options: IOptionsForUpdate = {
       grant,
       grantUserGroupId: grantedGroup,
-      isSyncRevisionToHackmd: false,
     };
 
     return this.updatePage(page, null, null, user, options);
@@ -4011,17 +4010,12 @@ class PageService {
     let savedPage = await newPageData.save();
 
     // Update body
-    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const isBodyPresent = body != null && previousBody != null;
     const shouldUpdateBody = isBodyPresent;
     if (shouldUpdateBody) {
       const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
-
-      if (isSyncRevisionToHackmd) {
-        savedPage = await Page.syncRevisionToHackmd(savedPage);
-      }
     }
 
 
@@ -4074,7 +4068,6 @@ class PageService {
 
     const grant = options.grant || pageData.grant; // use the previous data if absence
     const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
-    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
     await this.validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -4089,10 +4082,6 @@ class PageService {
       const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
-
-      if (isSyncRevisionToHackmd) {
-        savedPage = await Page.syncRevisionToHackmd(savedPage);
-      }
     }
 
     // update scopes for descendants
