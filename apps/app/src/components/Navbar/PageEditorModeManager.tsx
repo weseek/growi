@@ -1,7 +1,6 @@
 import React, { type ReactNode, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
@@ -21,7 +20,7 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
     currentEditorMode, isBtnDisabled, editorMode, icon, label, onClick,
   } = props;
 
-  const classNames = [`btn btn-outline-primary ${editorMode}-button px-1`];
+  const classNames = ['btn btn-outline-primary px-1'];
   if (currentEditorMode === editorMode) {
     classNames.push('active');
   }
