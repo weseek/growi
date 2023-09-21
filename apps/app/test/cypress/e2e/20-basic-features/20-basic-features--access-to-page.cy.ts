@@ -258,7 +258,7 @@ context('Access to Template Editing Mode', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until
@@ -293,7 +293,7 @@ context('Access to Template Editing Mode', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // Wait until
@@ -327,7 +327,7 @@ context('Access to Template Editing Mode', () => {
 
     cy.waitUntil(() => {
       //do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until
