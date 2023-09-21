@@ -93,7 +93,7 @@ describe('WorkflowService', () => {
 
     it('Should allow workflow creator to delete the workflow', async() => {
       // setup
-      expect(await Workflow.exists(workflowId1)).not.toBeNull();
+      expect(await Workflow.exists(workflowId2)).not.toBeNull();
 
       // when
       await WorkflowService.deleteWorkflow(workflowId2);
