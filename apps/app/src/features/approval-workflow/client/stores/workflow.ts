@@ -32,10 +32,10 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
 
 // TODO: https://redmine.weseek.co.jp/issues/131035
 export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: number): SWRResponse<IWorkflowPaginateResult, Error> => {
-  const key = pageId != null ? `/workflow/list/${pageId}` : null;
+  const key = pageId != null ? [`/workflow/list/${pageId}`, limit, offset] : null;
 
   return useSWR(
     key,
-    endpoint => apiv3Get<{paginateResult: IWorkflowPaginateResult}>(endpoint, { limit, offset }).then(result => result.data.paginateResult),
+    ([endpoint, limit, offset]) => apiv3Get(endpoint as string, { limit, offset }).then(result => result.data.paginateResult),
   );
 };
