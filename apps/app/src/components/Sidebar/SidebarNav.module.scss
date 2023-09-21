@@ -124,7 +124,7 @@
 }
 @include bs.color-mode(dark) {
   .grw-sidebar-nav :global {
-    background-color: var(--grw-sidebar-nav-bg, var(--grw-highlight-900));
+    background-color: var(--grw-sidebar-nav-bg, var(--grw-highlight-800));
 
     .btn-primary {
       --bs-btn-color: var(--grw-sidebar-nav-btn-color, var(--grw-primary-400));

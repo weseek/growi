@@ -2,29 +2,50 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
-$btn-line-height: 1.2rem;
-
 .grw-page-editor-mode-manager :global {
   .btn {
+    --bs-btn-font-size: 13px;
+
     width: 70px;
+
     white-space: nowrap;
 
     @include mixins.border-vertical('before', 70%, 1, true);
-
-    &.view-button,
-    &.edit-button {
-      line-height: $btn-line-height;
-      .grw-page-editor-mode-manager-icon {
-        @include bs.media-breakpoint-down(sm) {
-          font-size: 1.2rem;
-        }
+    .grw-page-editor-mode-manager-icon {
+      @include bs.media-breakpoint-down(sm) {
+        font-size: 16px;
       }
     }
   }
 }
 
 .grw-page-editor-mode-manager-skeleton :global {
+  width: 139px;
+  height: calc(var(--bs-btn-line-height) + bs.$btn-padding-y*2 + bs.$btn-border-width*2);
+}
 
-  width: 213px;
-  height: calc($btn-line-height + bs.$btn-padding-y*2 + bs.$btn-border-width*2);
+// == Colors
+@include bs.color-mode(light) {
+  .grw-page-editor-mode-manager :global {
+    .btn-outline-primary {
+      --bs-btn-border-width: 2px;
+
+      --bs-btn-color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-600));
+      --bs-btn-border-color: var(--grw-page-editor-mode-manager-btn-border-color, var(--grw-primary-100));
+      --bs-btn-hover-color: var(--grw-page-editor-mode-manager-btn-hover-color, var(--grw-primary-600));
+      --bs-btn-hover-bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
+      --bs-btn-hover-border-color: var(--grw-page-editor-mode-manager-btn-hover-border-color, var(--grw-primary-100));
+      --bs-btn-active-color: var(--grw-page-editor-mode-manager-btn-active-color, var(--grw-primary-600));
+      --bs-btn-active-bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
+      --bs-btn-active-border-color: var(--grw-page-editor-mode-manager-btn-active-border-color, var(--grw-primary-100));
+    }
+  }
+}
+@include bs.color-mode(dark) {
+  .grw-page-editor-mode-manager :global {
+    .btn-outline-primary {
+      --bs-btn-color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-400));
+      --bs-btn-hover-bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-900));
+    }
+  }
 }

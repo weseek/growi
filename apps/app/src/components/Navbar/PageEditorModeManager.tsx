@@ -1,18 +1,27 @@
-import React, { useCallback } from 'react';
+import React, { type ReactNode, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import styles from './PageEditorModeManager.module.scss';
 
-/* eslint-disable react/prop-types */
-const PageEditorModeButtonWrapper = React.memo(({
-  editorMode, isBtnDisabled, onClick, targetMode, icon, label, id,
-}) => {
-  const classNames = [`btn btn-outline-primary ${targetMode}-button px-1`];
-  if (editorMode === targetMode) {
+
+type PageEditorModeButtonProps = {
+  currentEditorMode: EditorMode,
+  editorMode: EditorMode,
+  icon: ReactNode,
+  label: ReactNode,
+  isBtnDisabled?: boolean,
+  onClick?: (mode: EditorMode) => void,
+}
+const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
+  const {
+    currentEditorMode, isBtnDisabled, editorMode, icon, label, onClick,
+  } = props;
+
+  const classNames = ['btn btn-outline-primary px-1'];
+  if (currentEditorMode === editorMode) {
     classNames.push('active');
   }
   if (isBtnDisabled) {
@@ -23,9 +32,8 @@ const PageEditorModeButtonWrapper = React.memo(({
     <button
       type="button"
       className={classNames.join(' ')}
-      onClick={() => { onClick(targetMode) }}
-      id={id}
-      data-testid={`${targetMode}-button`}
+      onClick={() => onClick?.(editorMode)}
+      data-testid={`${editorMode}-button`}
     >
       <span className="d-flex flex-column flex-md-row justify-content-center">
         <span className="grw-page-editor-mode-manager-icon me-md-1">{icon}</span>
@@ -34,20 +42,25 @@ const PageEditorModeButtonWrapper = React.memo(({
     </button>
   );
 });
-/* eslint-enable react/prop-types */
 
-PageEditorModeButtonWrapper.displayName = 'PageEditorModeButtonWrapper';
+type Props = {
+  editorMode: EditorMode | undefined,
+  onPageEditorModeButtonClicked?: (editorMode: EditorMode) => void,
+  isBtnDisabled?: boolean,
+}
 
-function PageEditorModeManager(props) {
+export const PageEditorModeManager = (props: Props): JSX.Element => {
   const {
-    editorMode, onPageEditorModeButtonClicked, isBtnDisabled,
+    editorMode = EditorMode.View,
+    isBtnDisabled,
+    onPageEditorModeButtonClicked,
   } = props;
 
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
-    if (isBtnDisabled) {
+    if (isBtnDisabled ?? false) {
       return;
     }
     if (onPageEditorModeButtonClicked != null) {
@@ -64,21 +77,21 @@ function PageEditorModeManager(props) {
         id="grw-page-editor-mode-manager"
       >
         {(!isDeviceSmallerThanMd || editorMode !== EditorMode.View) && (
-          <PageEditorModeButtonWrapper
-            editorMode={editorMode}
+          <PageEditorModeButton
+            currentEditorMode={editorMode}
+            editorMode={EditorMode.View}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            targetMode={EditorMode.View}
             icon={<i className="icon-control-play" />}
             label={t('view')}
           />
         )}
         {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && (
-          <PageEditorModeButtonWrapper
-            editorMode={editorMode}
+          <PageEditorModeButton
+            currentEditorMode={editorMode}
+            editorMode={EditorMode.Editor}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            targetMode={EditorMode.Editor}
             icon={<i className="icon-note" />}
             label={t('Edit')}
           />
@@ -87,16 +100,4 @@ function PageEditorModeManager(props) {
     </>
   );
 
-}
-
-PageEditorModeManager.propTypes = {
-  onPageEditorModeButtonClicked: PropTypes.func,
-  isBtnDisabled: PropTypes.bool,
-  editorMode: PropTypes.string,
 };
-
-PageEditorModeManager.defaultProps = {
-  isBtnDisabled: false,
-};
-
-export default PageEditorModeManager;
