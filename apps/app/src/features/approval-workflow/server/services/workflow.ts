@@ -79,7 +79,11 @@ class WorkflowServiceImpl implements WorkflowService {
   // Call this method before performing operations (update, delete) on a Workflow document
   // Don't need to call this if workflows are deleted as a side effect, such as when deleting a page
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void {
-    const operatorId = operator?._id.toString();
+    if (operator.admin) {
+      return;
+    }
+
+    const operatorId = operator._id.toString();
     const creatorId = workflow.creator.toString();
 
     const creatorAndApprovers: ObjectIdLike[] = [creatorId];
@@ -89,7 +93,7 @@ class WorkflowServiceImpl implements WorkflowService {
       });
     });
 
-    if (!creatorAndApprovers.includes(operatorId) && !operator.admin) {
+    if (!creatorAndApprovers.includes(operatorId)) {
       throw Error('Only the workflow creator, workflow approver or administrator can operate it');
     }
   }
