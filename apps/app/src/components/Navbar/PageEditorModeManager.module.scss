@@ -5,6 +5,7 @@
 .grw-page-editor-mode-manager :global {
   .btn {
     --bs-btn-font-size: 13px;
+    --bs-btn-border-width: 2px;
 
     width: 70px;
 
@@ -28,24 +29,40 @@
 @include bs.color-mode(light) {
   .grw-page-editor-mode-manager :global {
     .btn-outline-primary {
-      --bs-btn-border-width: 2px;
+      $color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-700));
+      $bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
+      $bg-rgb: var(--grw-page-editor-mode-manager-btn-bg-rgb, var(--grw-primary-100-rgb));
 
-      --bs-btn-color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-600));
-      --bs-btn-border-color: var(--grw-page-editor-mode-manager-btn-border-color, var(--grw-primary-100));
-      --bs-btn-hover-color: var(--grw-page-editor-mode-manager-btn-hover-color, var(--grw-primary-600));
-      --bs-btn-hover-bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
-      --bs-btn-hover-border-color: var(--grw-page-editor-mode-manager-btn-hover-border-color, var(--grw-primary-100));
-      --bs-btn-active-color: var(--grw-page-editor-mode-manager-btn-active-color, var(--grw-primary-600));
-      --bs-btn-active-bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
-      --bs-btn-active-border-color: var(--grw-page-editor-mode-manager-btn-active-border-color, var(--grw-primary-100));
+      --bs-btn-color: #{$color};
+      --bs-btn-border-color: #{$bg};
+      --bs-btn-hover-color: #{$color};
+      --bs-btn-hover-bg: rgba(#{$bg-rgb}, 0.5);
+      --bs-btn-hover-border-color: #{$bg};
+      --bs-btn-active-color: #{$color};
+      --bs-btn-active-bg: #{$bg};
+      --bs-btn-active-border-color: #{$bg};
+      --bs-btn-disabled-color: $color;
+      --bs-btn-disabled-border-color: #{$bg};
     }
   }
 }
 @include bs.color-mode(dark) {
   .grw-page-editor-mode-manager :global {
     .btn-outline-primary {
-      --bs-btn-color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-400));
-      --bs-btn-hover-bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-900));
+      $color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-300));
+      $bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-800));
+      $bg-rgb: var(--grw-page-editor-mode-manager-btn-bg-rgb, var(--grw-primary-800-rgb));
+
+      --bs-btn-color: #{$color};
+      --bs-btn-border-color: #{$bg};
+      --bs-btn-hover-color: #{$color};
+      --bs-btn-hover-bg: rgba(#{$bg-rgb}, 0.5);
+      --bs-btn-hover-border-color: #{$bg};
+      --bs-btn-active-color: #{$color};
+      --bs-btn-active-bg: #{$bg};
+      --bs-btn-active-border-color: #{$bg};
+      --bs-btn-disabled-color: $color;
+      --bs-btn-disabled-border-color: #{$bg};
     }
   }
 }
