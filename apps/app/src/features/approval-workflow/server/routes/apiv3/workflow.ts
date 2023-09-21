@@ -1,11 +1,9 @@
 import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
-import mongoose from 'mongoose';
 
 import Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
-import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
 import XssService from '~/services/xss';
@@ -14,6 +12,7 @@ import loggerFactory from '~/utils/logger';
 import {
   IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
 } from '../../../interfaces/workflow';
+import { serializeWorkflowSecurely } from '../../models/serializers/workflow-seroalizer';
 import Workflow from '../../models/workflow';
 import { WorkflowService } from '../../services/workflow';
 
@@ -120,10 +119,17 @@ module.exports = (crowi: Crowi): Router => {
   router.get('/:workflowId', accessTokenParser, loginRequired, validator.getWorkflow, apiV3FormValidator, async(req: RequestWithUser, res: ApiV3Response) => {
     const { workflowId } = req.params;
 
-    // Description
-    // workflowId に紐つく workflow を取得する
+    const workflow = await Workflow.findById(workflowId)
+      .populate('creator')
+      .populate('approverGroups.approvers.user');
 
-    return res.apiv3();
+    if (workflow == null) {
+      return res.apiv3Err('Target workflow does not exist');
+    }
+
+    const serializedWorkflow = serializeWorkflowSecurely(workflow as unknown as IWorkflowHasId);
+
+    return res.apiv3({ workflow: serializedWorkflow });
   });
 
 
@@ -178,11 +184,8 @@ module.exports = (crowi: Crowi): Router => {
         },
       );
 
-      const User = mongoose.model('User');
       paginateResult.docs.forEach((doc) => {
-        if (doc.creator != null && doc.creator instanceof User) {
-          doc.creator = serializeUserSecurely(doc.creator);
-        }
+        serializeWorkflowSecurely(doc, true);
       });
 
       return res.apiv3({ paginateResult });

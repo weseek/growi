@@ -60,4 +60,4 @@ export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups'> & { cre
 
 export type IWorkflowHasId = IWorkflow & HasObjectId
 
-export type IWorkflowPaginateResult = PaginateResult<IWorkflow>
+export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
