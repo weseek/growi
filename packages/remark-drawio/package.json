@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-drawio",
-  "version": "6.2.0-RC.0",
+  "version": "6.2.2-RC.0",
   "description": "remark plugin to draw diagrams with draw.io (diagrams.net)",
   "license": "MIT",
   "keywords": [
@@ -30,8 +30,7 @@
     "lint": "run-p lint:*",
     "version": "yarn version --no-git-tag-version --preid=RC"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
     "hast-util-sanitize": "^4.1.0",
