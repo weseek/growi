@@ -7,10 +7,12 @@ import {
 } from 'reactstrap';
 
 import { IWorkflowHasId } from '../../interfaces/workflow';
+import { deleteWorkflow } from '../services/workflow';
 
 
 type Props = {
   workflows: IWorkflowHasId[]
+  onDeleted?: () => void;
   onClickCreateWorkflowButton: () => void;
 }
 
@@ -18,7 +20,7 @@ type Props = {
 export const WorkflowListPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflows, onClickCreateWorkflowButton } = props;
+  const { workflows, onDeleted, onClickCreateWorkflowButton } = props;
 
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
@@ -30,9 +32,17 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
     onClickCreateWorkflowButton();
   }, [onClickCreateWorkflowButton]);
 
-  const deleteWorkflowButtonClickHandler = useCallback((workflowId: string) => {
-    console.log('clicked', workflowId);
-  }, []);
+  const deleteWorkflowButtonClickHandler = useCallback(async(workflowId: string) => {
+    try {
+      await deleteWorkflow(workflowId);
+      if (onDeleted != null) {
+        onDeleted();
+      }
+    }
+    catch (err) {
+      // TODO: Consider how to display errors
+    }
+  }, [onDeleted]);
 
   return (
     <>

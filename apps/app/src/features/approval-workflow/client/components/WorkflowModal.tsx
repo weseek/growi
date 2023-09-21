@@ -47,6 +47,7 @@ const WorkflowModal = (): JSX.Element => {
       { pageType === PageType.list && (
         <WorkflowListPage
           workflows={workflowPaginateResult?.docs ?? []}
+          onDeleted={mutateWorkflows}
           onClickCreateWorkflowButton={createWorkflowButtonClickHandler}
         />
       )}
