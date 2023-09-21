@@ -1,8 +1,10 @@
 // TODO: https://redmine.weseek.co.jp/issues/130336
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {
+  ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
+} from 'reactstrap';
 
 import { IWorkflowHasId } from '../../interfaces/workflow';
 
@@ -18,6 +20,8 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
 
   const { workflows, onClickCreateWorkflowButton } = props;
 
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
   const createWorkflowButtonClickHandler = useCallback(() => {
     if (onClickCreateWorkflowButton == null) {
       return;
@@ -25,6 +29,10 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
 
     onClickCreateWorkflowButton();
   }, [onClickCreateWorkflowButton]);
+
+  const deleteWorkflowButtonClickHandler = useCallback((workflowId: string) => {
+    console.log('clicked', workflowId);
+  }, []);
 
   return (
     <>
@@ -60,6 +68,21 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                     </td>
                     <td>
                       {workflow.creator.username}
+                    </td>
+                    <td>
+                      <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
+                        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+                          <i className="icon-options"></i>
+                        </DropdownToggle>
+
+                        <DropdownMenu>
+                          <DropdownItem
+                            className="text-danger"
+                            onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
+                          >{t('approval_workflow.delete')}
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
                     </td>
                   </tr>
                 );

@@ -850,6 +850,7 @@
     "list_not_found": "このページにはワークフローがありません。",
     "create": "ワークフローを作成",
     "create_new": "ワークフロー新規作成",
+    "delete": "削除",
     "statuses": {
       "INPROGRESS": "進行中",
       "APPROVE": "承認",

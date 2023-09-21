@@ -820,6 +820,7 @@
     "list_not_found": "本页没有工作流程。",
     "create": "创建工作流程",
     "create_new": "创建新工作流程",
+    "delete": "删除",
     "statuses": {
       "INPROGRESS": "进行中",
       "APPROVE": "批准",
