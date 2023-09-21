@@ -1,8 +1,14 @@
 .codemirror-editor-container :global {
 
   .cm-editor {
-    width: 100%;
-    height: 100%;
+    font-family: var(--font-family-monospace);
+    font-size: 15px;
+
+    .cm-line {
+      padding-top: 0.16em;
+      padding-bottom: 0.08em;
+      font-family: var(--font-family-monospace);
+    }
   }
 
 }
