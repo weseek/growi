@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
-  deleteWorkflow(workflowId: ObjectIdLike, operator?: IUserHasId, isDeletePage?: boolean): Promise<void>,
+  deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
@@ -41,7 +41,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return createdWorkflow;
   }
 
-  async deleteWorkflow(workflowId: ObjectIdLike, operator?: IUserHasId): Promise<void> {
+  async deleteWorkflow(workflowId: ObjectIdLike): Promise<void> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
       throw Error('Target workflow does not exist');
