@@ -120,7 +120,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { isLinkSharingDisabled } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   return (
-    <div data-testid="grw-contextual-sub-nav">
+    <div id="grw-subnav-container" data-testid="grw-contextual-sub-nav">
       <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
     </div>
   );
@@ -326,9 +326,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
         <header className="py-0 position-relative">
-          <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-          </div>
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
 
         <DisplaySwitcher
