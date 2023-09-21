@@ -1,7 +1,9 @@
+import useSWR, { SWRResponse } from 'swr';
 
-import { SWRResponse } from 'swr';
-
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
+
+import { IWorkflowPaginateResult } from '../../interfaces/workflow';
 
 export type WorkflowModalStatus = {
   pageId?: string,
@@ -26,4 +28,14 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+// TODO: https://redmine.weseek.co.jp/issues/131035
+export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: number): SWRResponse<IWorkflowPaginateResult, Error> => {
+  const key = pageId != null ? [`/workflow/list/${pageId}`, limit, offset] : null;
+
+  return useSWR(
+    key,
+    ([endpoint, limit, offset]) => apiv3Get(endpoint as string, { limit, offset }).then(result => result.data.paginateResult),
+  );
 };

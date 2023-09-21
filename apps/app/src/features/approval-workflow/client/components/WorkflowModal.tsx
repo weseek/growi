@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { Modal } from 'reactstrap';
 
-import { useWorkflowModal } from '../stores/workflow';
+import { useWorkflowModal, useSWRxWorkflowList } from '../stores/workflow';
 
 import { CreateWorkflowPage } from './CreateWorkflowPage';
 import { WorkflowListPage } from './WorkflowListPage';
@@ -20,6 +20,8 @@ const WorkflowModal = (): JSX.Element => {
   const [pageType, setPageType] = useState<PageType>(PageType.list);
 
   const { data: workflowModalData, close: closeWorkflowModal } = useWorkflowModal();
+  // TODO: https://redmine.weseek.co.jp/issues/130992
+  const { data: workflowPaginateResult, mutate: mutateWorkflows } = useSWRxWorkflowList(workflowModalData?.pageId, 1, 0);
 
   /*
   * for WorkflowListPage
@@ -35,6 +37,7 @@ const WorkflowModal = (): JSX.Element => {
     setPageType(PageType.list);
   }, []);
 
+
   if (workflowModalData?.pageId == null) {
     return <></>;
   }
@@ -43,6 +46,7 @@ const WorkflowModal = (): JSX.Element => {
     <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
       { pageType === PageType.list && (
         <WorkflowListPage
+          workflows={workflowPaginateResult?.docs ?? []}
           onClickCreateWorkflowButton={createWorkflowButtonClickHandler}
         />
       )}
@@ -50,6 +54,7 @@ const WorkflowModal = (): JSX.Element => {
       { pageType === PageType.create && (
         <CreateWorkflowPage
           pageId={workflowModalData.pageId}
+          onCreated={mutateWorkflows}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
         />
       )}

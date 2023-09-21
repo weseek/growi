@@ -811,8 +811,17 @@
     "name": "Workflow Name",
     "description": "Description",
     "back": "Back",
+    "status": "Status",
+    "applicant": "Applicant",
     "list": "Workflow List",
+    "list_not_found": "There is no workflow on this page.",
     "create": "Create workflow",
-    "create_new": "Create new workflow"
+    "create_new": "Create new workflow",
+    "statuses": {
+      "INPROGRESS": "IN-PROGRESS",
+      "APPROVE": "APPROVE",
+      "REJECT": "REJECT",
+      "CANCEL": "CANCEL"
+    }
   }
 }

@@ -1,3 +1,4 @@
+// TODO: https://redmine.weseek.co.jp/issues/130338
 import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -8,13 +9,14 @@ import { useCreateWorkflow } from '../services/workflow';
 
 type Props = {
   pageId: string,
+  onCreated?: () => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
 export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageId, onClickWorkflowListPageBackButton } = props;
+  const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
 
   const approverGroupsDummyData = [{
     approvalType: WorkflowApprovalType.AND,
@@ -58,13 +60,17 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
     }
 
     try {
+      // TODO: https://redmine.weseek.co.jp/issues/131035
       await createWorkflow();
+      if (onCreated != null) {
+        onCreated();
+      }
       // TODO: Move to the detail screen
     }
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [approverGroups, createWorkflow]);
+  }, [approverGroups, createWorkflow, onCreated]);
 
   return (
     <>

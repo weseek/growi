@@ -844,8 +844,17 @@
     "name": "ワークフロー名",
     "description": "説明",
     "back": "戻る",
+    "status": "進行状況",
+    "applicant": "申請者",
     "list": "ワークフロー一覧",
+    "list_not_found": "このページにはワークフローがありません。",
     "create": "ワークフローを作成",
-    "create_new": "ワークフロー新規作成"
+    "create_new": "ワークフロー新規作成",
+    "statuses": {
+      "INPROGRESS": "進行中",
+      "APPROVE": "承認",
+      "REJECT": "却下",
+      "CANCEL": "キャンセル"
+    }
   }
 }
