@@ -9,7 +9,7 @@ import { useCreateWorkflow } from '../services/workflow';
 
 type Props = {
   pageId: string,
-  onCreated: () => void
+  onCreated?: () => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
@@ -62,7 +62,9 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
     try {
       // TODO: https://redmine.weseek.co.jp/issues/131035
       await createWorkflow();
-      onCreated();
+      if (onCreated != null) {
+        onCreated();
+      }
       // TODO: Move to the detail screen
     }
     catch (err) {
