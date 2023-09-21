@@ -11,7 +11,9 @@ import { configManager } from '~/server/service/config-manager';
 import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
-import { IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus } from '../../../interfaces/workflow';
+import {
+  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
+} from '../../../interfaces/workflow';
 import Workflow from '../../models/workflow';
 import { WorkflowService } from '../../services/workflow';
 
@@ -393,8 +395,14 @@ module.exports = (crowi: Crowi): Router => {
       const { user } = req;
 
       try {
-        await WorkflowService.validateDeletableTaraget(workflowId, user);
+        const workflow = await Workflow.findById(workflowId) as IWorkflowHasId;
+        if (workflow == null) {
+          return res.apiv3Err('Target workflow does not exist');
+        }
+
+        WorkflowService.validateOperatableUser(workflow, user);
         await WorkflowService.deleteWorkflow(workflowId);
+
         return res.apiv3();
       }
       catch (err) {

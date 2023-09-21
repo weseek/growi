@@ -4,7 +4,7 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflow, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
+  IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
@@ -14,7 +14,7 @@ interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike, operator?: IUserHasId, isDeletePage?: boolean): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
-  validateDeletableTaraget(workflowId: ObjectIdLike, operator: IUserHasId): void,
+  validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
 
 class WorkflowServiceImpl implements WorkflowService {
@@ -76,16 +76,19 @@ class WorkflowServiceImpl implements WorkflowService {
     });
   }
 
-  async validateDeletableTaraget(workflowId: ObjectIdLike, operator: IUserHasId) {
-    const targetWorkflow = await Workflow.findById(workflowId);
-    if (targetWorkflow == null) {
-      throw Error('Target workflow does not exist');
-    }
-
+  validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void {
     const operatorId = operator?._id.toString();
-    const creatorId = targetWorkflow.creator.toString();
-    if (creatorId !== operatorId && !operator?.admin) {
-      throw Error('Users with workflow creator or administrator privileges can perform the deletion');
+    const creatorId = workflow.creator.toString();
+
+    const creatorAndApprovers: ObjectIdLike[] = [creatorId];
+    workflow.approverGroups.forEach((approverGroup) => {
+      approverGroup.approvers.forEach((approver) => {
+        creatorAndApprovers.push(approver.user.toString());
+      });
+    });
+
+    if (!creatorAndApprovers.includes(operatorId) && !operator.admin) {
+      throw Error('Only the workflow creator, workflow approver or administrator can operate it');
     }
   }
 
