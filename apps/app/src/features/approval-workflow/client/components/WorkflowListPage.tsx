@@ -39,35 +39,33 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
 
         {/* TODO: Allow infinite scrolling */}
         {(workflows.length >= 1 && (
-          <div className="table-responsive text-nowrap h-100">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">{t('approval_workflow.name')}</th>
-                  <th scope="col">{t('approval_workflow.status')}</th>
-                  <th scope="col">{t('approval_workflow.applicant')}</th>
-                </tr>
-              </thead>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">{t('approval_workflow.name')}</th>
+                <th scope="col">{t('approval_workflow.status')}</th>
+                <th scope="col">{t('approval_workflow.applicant')}</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                {workflows.map((workflow) => {
-                  return (
-                    <tr data-testid="activity-table" key={workflow._id}>
-                      <td>
-                        {workflow.name}
-                      </td>
-                      <td>
-                        {t(`approval_workflow.statuses.${workflow.status}`)}
-                      </td>
-                      <td>
-                        {workflow.creator.username}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+            <tbody>
+              {workflows.map((workflow) => {
+                return (
+                  <tr data-testid="activity-table" key={workflow._id}>
+                    <td>
+                      {workflow.name}
+                    </td>
+                    <td>
+                      {t(`approval_workflow.statuses.${workflow.status}`)}
+                    </td>
+                    <td>
+                      {workflow.creator.username}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         ))}
       </ModalBody>
 
