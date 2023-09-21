@@ -4,7 +4,6 @@
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #439cb9;
-  $secondary: $gray-600;
   $highlight: #93e3ea;
 
   @include generate-color-palette('primary', $primary, #021529, white);
@@ -42,7 +41,6 @@
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #439cb9;
-  $secondary: $gray-500;
   $highlight: #166cc0;
 
   @include generate-color-palette('primary', $primary, #021529, white);
