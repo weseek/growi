@@ -1,7 +1,6 @@
 import type { IUserHasId } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { param, query, body } from 'express-validator';
-import mongoose from 'mongoose';
 
 import Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -396,14 +395,23 @@ module.exports = (crowi: Crowi): Router => {
   router.delete('/:workflowId', accessTokenParser, loginRequired, validator.deleteWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const { workflowId } = req.params;
+      const { user } = req;
 
-      // Description
-      // workflow の削除
+      try {
+        const workflow = await Workflow.findById(workflowId) as IWorkflowHasId;
+        if (workflow == null) {
+          return res.apiv3Err('Target workflow does not exist');
+        }
 
-      // Memo
-      // ワークフロー作成者 or 管理者権限を持つ user が削除できる
+        WorkflowService.validateOperatableUser(workflow, user);
+        await WorkflowService.deleteWorkflow(workflowId);
 
-      return res.apiv3();
+        return res.apiv3();
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err);
+      }
     });
 
   return router;
