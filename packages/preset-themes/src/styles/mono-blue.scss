@@ -7,8 +7,8 @@
   $secondary: $gray-600;
   $highlight: #93e3ea;
 
-  @include generate-color-palette('primary', $primary);
-  @include generate-color-palette('highlight', $highlight);
+  @include generate-color-palette('primary', $primary, #021529, white);
+  @include generate-color-palette('highlight', $highlight, black, #edffff);
 
   $body-color:                $gray-700;
   $body-bg:                   white;
@@ -43,12 +43,12 @@
 
   $primary: #439cb9;
   $secondary: $gray-500;
-  $highlight: #64a9ed;
+  $highlight: #166cc0;
 
-  @include generate-color-palette('primary', $primary);
-  @include generate-color-palette('highlight', $highlight);
+  @include generate-color-palette('primary', $primary, #021529, white);
+  @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color-dark:                   $gray-200;
+  $body-color-dark:                   $gray-400;
   $body-bg-dark:                      #16202c;
 
   $body-secondary-color-dark:         rgba($body-color-dark, .75);
@@ -59,7 +59,7 @@
 
   $border-color-dark:                 $gray-700;
 
-  $link-color-dark:                   $gray-300;
+  $link-color-dark:                   $gray-400;
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
