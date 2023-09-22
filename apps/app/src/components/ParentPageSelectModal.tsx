@@ -4,15 +4,35 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
 
+import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useParentPageSelectModal } from '~/stores/modal';
+import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 
-export const ParentPageSelectModal = (): JSX.Element => {
+import ItemsTree from './Sidebar/PageTree/ItemsTree';
+import { PageTreeItemForModal } from './Sidebar/PageTreeItem/PageTreeItemForModal';
+
+
+export const ParentPageSelectModal = () => {
   const {
     data: parentPageSelectModalData,
     close: closeModal,
   } = useParentPageSelectModal();
 
   const isOpened = parentPageSelectModalData?.isOpened ?? false;
+
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: targetId } = useCurrentPageId();
+  const { data: targetAndAncestorsData } = useTargetAndAncestors();
+
+  const targetPathOrId = targetId || currentPath;
+
+  if (isGuestUser == null) {
+    return null;
+  }
+
+  const path = currentPath || '/';
 
   return (
     <Modal
@@ -22,6 +42,14 @@ export const ParentPageSelectModal = (): JSX.Element => {
     >
       <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
       <ModalBody >
+        <ItemsTree
+          CustomTreeItem={PageTreeItemForModal}
+          isEnableActions={!isGuestUser}
+          isReadOnlyUser={!!isReadOnlyUser}
+          targetPath={path}
+          targetPathOrId={targetPathOrId}
+          targetAndAncestorsData={targetAndAncestorsData}
+        />
       </ModalBody>
       <ModalFooter>
         <Button color="primary">
