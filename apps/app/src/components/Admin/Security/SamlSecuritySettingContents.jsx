@@ -474,7 +474,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
                         </a>.
                       </p>
-                      <div className="accordion" id="accordionExample">
+                      <div className="accordion" id="accordionId">
                         <div className="accordion-item p-1">
                           <h2 className="accordion-header">
                             <button
