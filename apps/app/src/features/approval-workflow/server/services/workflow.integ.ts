@@ -1,3 +1,4 @@
+import type { IUserHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {
@@ -48,6 +49,57 @@ describe('WorkflowService', () => {
 
       // then
       await expect(result).rejects.toThrow('An in-progress workflow already exists');
+    });
+  });
+
+  describe('.deleteWorkflow', () => {
+
+    // workflow
+    const workflowId1 = new mongoose.Types.ObjectId();
+    const workflowId2 = new mongoose.Types.ObjectId();
+
+    // user
+    const workflowCreatorId = new mongoose.Types.ObjectId();
+
+    beforeAll(async() => {
+      await Workflow.create({
+        _id: workflowId2,
+        creator: workflowCreatorId,
+        pageId: new mongoose.Types.ObjectId(),
+        name: 'page1 Workflow',
+        comment: 'commnet',
+        status: WorkflowStatus.INPROGRESS,
+        approverGroups: [
+          {
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: new mongoose.Types.ObjectId(),
+                status: WorkflowApproverStatus.NONE,
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('Should fail if a non-existent workflowId is provided', async() => {
+      // when
+      const caller = () => WorkflowService.deleteWorkflow(workflowId1);
+
+      // then
+      expect(caller).rejects.toThrow('Target workflow does not exist');
+    });
+
+    it('Should allow workflow creator to delete the workflow', async() => {
+      // setup
+      expect(await Workflow.exists(workflowId2)).not.toBeNull();
+
+      // when
+      await WorkflowService.deleteWorkflow(workflowId2);
+
+      // then
+      expect(await Workflow.exists(workflowId2)).toBeNull();
     });
   });
 });

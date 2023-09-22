@@ -2,29 +2,67 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
-$btn-line-height: 1.2rem;
-
 .grw-page-editor-mode-manager :global {
   .btn {
+    --bs-btn-font-size: 13px;
+    --bs-btn-border-width: 2px;
+
     width: 70px;
+
     white-space: nowrap;
 
     @include mixins.border-vertical('before', 70%, 1, true);
-
-    &.view-button,
-    &.edit-button {
-      line-height: $btn-line-height;
-      .grw-page-editor-mode-manager-icon {
-        @include bs.media-breakpoint-down(sm) {
-          font-size: 1.2rem;
-        }
+    .grw-page-editor-mode-manager-icon {
+      @include bs.media-breakpoint-down(sm) {
+        font-size: 16px;
       }
     }
   }
 }
 
 .grw-page-editor-mode-manager-skeleton :global {
+  width: 139px;
+  height: calc(var(--bs-btn-line-height) + bs.$btn-padding-y*2 + bs.$btn-border-width*2);
+}
 
-  width: 213px;
-  height: calc($btn-line-height + bs.$btn-padding-y*2 + bs.$btn-border-width*2);
+// == Colors
+@include bs.color-mode(light) {
+  .grw-page-editor-mode-manager :global {
+    .btn-outline-primary {
+      $color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-700));
+      $bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
+      $bg-rgb: var(--grw-page-editor-mode-manager-btn-bg-rgb, var(--grw-primary-100-rgb));
+
+      --bs-btn-color: #{$color};
+      --bs-btn-border-color: #{$bg};
+      --bs-btn-hover-color: #{$color};
+      --bs-btn-hover-bg: rgba(#{$bg-rgb}, 0.5);
+      --bs-btn-hover-border-color: #{$bg};
+      --bs-btn-active-color: #{$color};
+      --bs-btn-active-bg: #{$bg};
+      --bs-btn-active-border-color: #{$bg};
+      --bs-btn-disabled-color: $color;
+      --bs-btn-disabled-border-color: #{$bg};
+    }
+  }
+}
+@include bs.color-mode(dark) {
+  .grw-page-editor-mode-manager :global {
+    .btn-outline-primary {
+      $color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-300));
+      $bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-800));
+      $bg-rgb: var(--grw-page-editor-mode-manager-btn-bg-rgb, var(--grw-primary-800-rgb));
+
+      --bs-btn-color: #{$color};
+      --bs-btn-border-color: #{$bg};
+      --bs-btn-hover-color: #{$color};
+      --bs-btn-hover-bg: rgba(#{$bg-rgb}, 0.5);
+      --bs-btn-hover-border-color: #{$bg};
+      --bs-btn-active-color: #{$color};
+      --bs-btn-active-bg: #{$bg};
+      --bs-btn-active-border-color: #{$bg};
+      --bs-btn-disabled-color: $color;
+      --bs-btn-disabled-border-color: #{$bg};
+    }
+  }
 }

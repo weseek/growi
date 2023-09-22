@@ -2,21 +2,13 @@
 
 // TODO: relocate following styles into PageTreeItem.mdoule.scss after refactoring
 // https://redmine.weseek.co.jp/issues/127544
-.pagetree-item :global {
-  .list-group-item {
-    --bs-list-group-bg: transparent;
-  }
-}
 @include bs.color-mode(light) {
   .pagetree-item :global {
     .list-group-item-action {
-      --bs-list-group-action-hover-bg: var(--grw-highlight-200);
-      --bs-list-group-action-active-bg: var(--grw-highlight-400);
-
       .btn-page-item-control {
         --bs-btn-bg: transparent;
-        --bs-btn-hover-bg: var(--grw-highlight-400);
-        --bs-btn-active-bg: var(--grw-highlight-600);
+        --bs-btn-hover-bg: var(--grw-primary-300);
+        --bs-btn-active-bg: var(--grw-primary-400);
       }
     }
   }
@@ -24,13 +16,10 @@
 @include bs.color-mode(dark) {
   .pagetree-item :global {
     .list-group-item-action {
-      --bs-list-group-action-hover-bg: var(--grw-highlight-800);
-      --bs-list-group-action-active-bg: var(--grw-highlight-800);
-
       .btn-page-item-control {
         --bs-btn-bg: transparent;
-        --bs-btn-hover-bg: var(--grw-highlight-700);
-        --bs-btn-active-bg: var(--grw-highlight-800);
+        --bs-btn-hover-bg: var(--grw-primary-700);
+        --bs-btn-active-bg: var(--grw-primary-800);
       }
     }
   }

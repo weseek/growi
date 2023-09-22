@@ -53,7 +53,7 @@ const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles[
 
 
 const PageEditorModeManager = dynamic(
-  () => import('./PageEditorModeManager'),
+  () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
   { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
 // TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
@@ -401,9 +401,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             )}
             {isAbleToChangeEditorMode && (
               <PageEditorModeManager
-                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
-                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
                 editorMode={editorMode}
+                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
               />
             )}
           </div>
