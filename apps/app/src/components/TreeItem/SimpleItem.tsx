@@ -19,7 +19,8 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import CountBadge from '../Common/CountBadge';
-import { ItemNode } from '../Sidebar/PageTree/ItemNode';
+
+import { ItemNode } from './ItemNode';
 
 
 export type SimpleItemProps = {

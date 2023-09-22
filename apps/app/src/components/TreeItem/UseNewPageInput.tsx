@@ -1,6 +1,6 @@
 import React, { useState, FC } from 'react';
 
-import { ItemNode } from '../Sidebar/PageTree/ItemNode';
+import { ItemNode } from './ItemNode';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
 import { NewPageInput } from './NewPageInput';

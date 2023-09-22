@@ -26,10 +26,10 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
+import { ItemNode } from '../../TreeItem';
 import { PageTreeItem } from '../PageTreeItem/PageTreeItem';
 import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
-import { ItemNode } from './ItemNode';
 
 import styles from './ItemsTree.module.scss';
 

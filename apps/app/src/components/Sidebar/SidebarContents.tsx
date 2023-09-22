@@ -5,7 +5,7 @@ import { useCurrentSidebarContents } from '~/stores/ui';
 
 import { Bookmarks } from './Bookmarks';
 import CustomSidebar from './CustomSidebar';
-import PageTree from './PageTree';
+import { PageTree } from './PageTree';
 import RecentChanges from './RecentChanges';
 import Tag from './Tag';
 
