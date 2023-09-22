@@ -14,7 +14,7 @@ module "codebuild" {
   buildspec           = "apps/app/docker/codebuild/buildspec.yml"
 
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html
-  build_image         = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+  build_image         = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
   build_compute_type  = "BUILD_GENERAL1_LARGE"
 
   privileged_mode     = true
