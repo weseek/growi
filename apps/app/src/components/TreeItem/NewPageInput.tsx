@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
 
@@ -72,6 +72,16 @@ export const NewPageInput: FC<NewPageInputProps> = (props) => {
       setCreating(false);
     }
   };
+
+  const onPressEscHandler = useCallback((event) => {
+    if (event.keyCode === 27) {
+      setNewPageInputShown(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', onPressEscHandler, false);
+  }, [onPressEscHandler]);
 
   return (
     <>
