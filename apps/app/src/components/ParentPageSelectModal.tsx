@@ -1,4 +1,4 @@
-Fimport React, { FC } from 'react';
+import React from 'react';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
@@ -7,10 +7,9 @@ import {
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useParentPageSelectModal } from '~/stores/modal';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './Sidebar/PageTree/ItemsTree';
-import { PageTreeItemForModal } from './Sidebar/PageTree/PageTreeItemForModal';
+import { PageTreeItemForModal } from './Sidebar/PageTreeItem/PageTreeItemForModal';
 
 
 export const ParentPageSelectModal = () => {
@@ -26,7 +25,6 @@ export const ParentPageSelectModal = () => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
-  const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   const targetPathOrId = targetId || currentPath;
 
