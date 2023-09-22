@@ -18,9 +18,8 @@ import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import CountBadge from '../../Common/CountBadge';
-
-import { ItemNode } from './ItemNode';
+import CountBadge from '../Common/CountBadge';
+import { ItemNode } from '../Sidebar/PageTree/ItemNode';
 
 
 export type SimpleItemProps = {
@@ -35,8 +34,8 @@ export type SimpleItemProps = {
   itemRef?
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
-  customComponent?: Array<React.FunctionComponent<SimpleItemToolProps>>
-  customComponentUnderItem?: Array<React.FunctionComponent<SimpleItemToolProps>>
+  customEndComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
+  customNextComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
 };
 
 // Utility to mark target
@@ -132,7 +131,7 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   );
 };
 
-const SimpleItem: FC<SimpleItemProps> = (props) => {
+export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
@@ -210,9 +209,9 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     stateHandlers,
   };
 
-  const CustomComponent = props.customComponent;
+  const CustomEndComponents = props.customEndComponents;
 
-  const SimpleItemContent = CustomComponent ?? [SimpleItemTool];
+  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
 
   const SimpleItemContentProps = {
     itemNode,
@@ -226,7 +225,7 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     stateHandlers,
   };
 
-  const CustomComponentUnderItem = props.customComponentUnderItem;
+  const CustomNextComponents = props.customNextComponents;
 
 
   return (
@@ -259,7 +258,7 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
         ))}
       </li>
 
-      {CustomComponentUnderItem?.map((UnderItemContent, index) => (
+      {CustomNextComponents?.map((UnderItemContent, index) => (
         <UnderItemContent key={index} {...SimpleItemContentProps}/>
       ))}
 
@@ -280,5 +279,3 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     </div>
   );
 };
-
-export default SimpleItem;
