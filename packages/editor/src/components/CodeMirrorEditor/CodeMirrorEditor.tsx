@@ -54,7 +54,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  const { getRootProps, open } = useDropzoneEditor(onUpload);
+  const { getRootProps, open } = useDropzoneEditor({ onUpload });
 
   return (
     <div {...getRootProps()} className="flex-expand-vert">
