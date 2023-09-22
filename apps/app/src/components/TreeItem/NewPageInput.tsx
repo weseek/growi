@@ -81,6 +81,9 @@ export const NewPageInput: FC<NewPageInputProps> = (props) => {
 
   useEffect(() => {
     document.addEventListener('keydown', onPressEscHandler, false);
+    return () => {
+      document.removeEventListener('keydown', onPressEscHandler, false);
+    };
   }, [onPressEscHandler]);
 
   return (
