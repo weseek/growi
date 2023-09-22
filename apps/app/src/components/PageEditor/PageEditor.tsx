@@ -57,6 +57,7 @@ import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
+import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -306,12 +307,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     files.forEach(async(file) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let res: any = await apiGet('/attachments.limit', {
+        const { data: resLimit } = await apiv3Get('/attachments.limit', {
           fileSize: file.size,
         });
 
-        if (!res.isUploadable) {
-          throw new Error(res.errorMessage);
+        if (!resLimit.isUploadable) {
+          throw new Error(resLimit.errorMessage);
         }
 
         const formData = new FormData();
@@ -327,8 +328,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
         }
 
-        res = await apiPostForm('/attachments.add', formData);
-        const attachment = res.attachment;
+        const { data: resAdd } = await apiv3PostForm('/attachments.add', formData);
+        const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
 
         let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
@@ -340,16 +341,15 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         // TODO: implement
         // refs: https://redmine.weseek.co.jp/issues/126528
         // editorRef.current.insertText(insertText);
-        // codeMirrorEditor?.view?.state.replaceSelection(insertText);
         codeMirrorEditor?.insertText(insertText);
 
         // when if created newly
         // Not using 'mutateGrant' to inherit the grant of the parent page
-        if (res.pageCreated) {
-          logger.info('Page is created', res.page._id);
+        if (resAdd.pageCreated) {
+          logger.info('Page is created', resAdd.page._id);
           mutateIsLatestRevision(true);
-          setCreatedPageRevisionIdWithAttachment(res.page.revision);
-          await mutateCurrentPageId(res.page._id);
+          setCreatedPageRevisionIdWithAttachment(resAdd.page.revision);
+          await mutateCurrentPageId(resAdd.page._id);
           await mutateCurrentPage();
         }
       }
@@ -358,6 +358,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         toastError(e);
       }
       finally {
+        // TODO: implement
+        // refs: https://redmine.weseek.co.jp/issues/126528
+        // editorRef.current.terminateUploadingState();
       }
     });
 
