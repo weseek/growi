@@ -29,7 +29,6 @@ import loggerFactory from '~/utils/logger';
 import { ItemNode, SimpleItemProps } from '../../TreeItem';
 import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
-
 import styles from './ItemsTree.module.scss';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
