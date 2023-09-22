@@ -26,8 +26,7 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { ItemNode } from '../../TreeItem';
-import { PageTreeItem } from '../PageTreeItem/PageTreeItem';
+import { ItemNode, SimpleItemProps } from '../../TreeItem';
 import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
 
@@ -94,6 +93,7 @@ type ItemsTreeProps = {
   targetPath: string
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
+  CustomTreeItem: React.FunctionComponent<SimpleItemProps>
 }
 
 /*
@@ -101,7 +101,7 @@ type ItemsTreeProps = {
  */
 const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, CustomTreeItem,
   } = props;
 
   const { t } = useTranslation();
@@ -273,7 +273,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   if (initialItemNode != null) {
     return (
       <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
-        <PageTreeItem
+        <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
