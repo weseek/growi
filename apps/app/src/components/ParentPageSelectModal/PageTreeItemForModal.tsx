@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import {
   SimpleItem, SimpleItemProps, SimpleItemTool, useNewPageInput,
-} from '../../TreeItem';
+} from '../TreeItem';
 
 type Optional = 'itemRef' | 'itemClass' | 'mainClassName';
 type PageTreeItemProps = Omit<SimpleItemProps, Optional> & {key};
