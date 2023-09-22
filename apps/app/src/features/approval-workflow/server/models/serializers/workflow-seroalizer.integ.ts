@@ -1,3 +1,4 @@
+import type { IUserHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {
@@ -8,31 +9,36 @@ import { serializeWorkflowSecurely } from './workflow-seroalizer';
 
 
 describe('workflow-seroalizer', () => {
-  describe('.serializeWorkflowSecurely', () => {
+  describe('.serializeWorkflowSecurely', async() => {
 
-    const User = mongoose.model('User');
+    const DummyUserSchema = new mongoose.Schema({
+      name: { type: String, required: true },
+      username: { type: String, required: true },
+      email: { type: String, required: true },
+      password: { type: String, required: true },
+      apiToken: { type: String, required: true },
+    });
+    const User = mongoose.model('User', DummyUserSchema);
 
-    const creator = {
+    const creator = new User({
       name: 'Workflow Creator',
       username: 'workflow-creator',
       email: 'workflow-creator@example.com',
       password: 'password',
       apiToken: 'bX8XYssHo2L2v2SdWFvTb2zCTMpwGHnhZRf+fMKrfec=',
-      lang: 'en_US',
-    };
+    }) as unknown as IUserHasId;
 
-    const approver = {
+    const approver = new User({
       name: 'Workflow Approver',
       username: 'workflow-approver',
       email: 'workflow-approver@example.com',
       password: 'password',
       apiToken: '3Cq0QJfrStpv74P26asp2lJiefHwO/y+ooWeuoOBuaI=',
-      lang: 'en_US',
-    };
+    }) as unknown as IUserHasId;
 
     const workflow = {
       _id: new mongoose.Types.ObjectId().toString(),
-      creator: new User(creator),
+      creator,
       pageId: new mongoose.Types.ObjectId().toString(),
       name: 'test workflow',
       comment: 'test comment',
@@ -43,7 +49,7 @@ describe('workflow-seroalizer', () => {
           approvalType: WorkflowApprovalType.AND,
           approvers: [
             {
-              user: new User(approver),
+              user: approver,
               status: WorkflowApproverStatus.NONE,
             },
           ],
