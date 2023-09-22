@@ -10,6 +10,8 @@ import { serializeWorkflowSecurely } from './workflow-seroalizer';
 describe('workflow-seroalizer', () => {
   describe('.serializeWorkflowSecurely', () => {
 
+    const User = mongoose.model('User');
+
     const creator = {
       name: 'Workflow Creator',
       username: 'workflow-creator',
@@ -30,7 +32,7 @@ describe('workflow-seroalizer', () => {
 
     const workflow = {
       _id: new mongoose.Types.ObjectId().toString(),
-      creator,
+      creator: new User(creator),
       pageId: new mongoose.Types.ObjectId().toString(),
       name: 'test workflow',
       comment: 'test comment',
@@ -41,7 +43,7 @@ describe('workflow-seroalizer', () => {
           approvalType: WorkflowApprovalType.AND,
           approvers: [
             {
-              user: approver,
+              user: new User(approver),
               status: WorkflowApproverStatus.NONE,
             },
           ],
