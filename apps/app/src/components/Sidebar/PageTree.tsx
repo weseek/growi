@@ -6,7 +6,7 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
-import ItemsTree from './PageTree/ItemsTree';
+import ItemsTree from '../ItemsTree/ItemsTree';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 import { PageTreeItem } from './PageTreeItem/PageTreeItem';
 import PageTreeContentSkeleton from './Skeleton/PageTreeContentSkeleton';
