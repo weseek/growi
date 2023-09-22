@@ -4,25 +4,6 @@
 
 *Please do not manually update this file. We've automated the process.*
 
-## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
-
-### 🚀 Improvement
-
-- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (for v6.1.x) (#8057) @yuki-takei
-
-## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
-
-### 🐛 Bug Fixes
-
-- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
-
-## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
-
-### 🐛 Bug Fixes
-
-- fix: Do not work img tag if use style property (#7988) @jam411
-- fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
-
 ## [v6.2.0](https://github.com/weseek/growi/compare/v6.1.12...v6.2.0) - 2023-09-14
 
 ### 💎 Features
@@ -57,6 +38,25 @@
 - support: Omit core-js v2 (#7944) @yuki-takei
 - support: Improve build settings (#7919) @yuki-takei
 - support: Url to join to the slack team (#8073) @WNomunomu
+
+## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
+
+### 🚀 Improvement
+
+- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (for v6.1.x) (#8057) @yuki-takei
+
+## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
+
+### 🐛 Bug Fixes
+
+- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
+
+## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
+
+### 🐛 Bug Fixes
+
+- fix: Do not work img tag if use style property (#7988) @jam411
+- fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
 
 ## [v6.1.12](https://github.com/weseek/growi/compare/v6.1.11...v6.1.12) - 2023-08-14
 
