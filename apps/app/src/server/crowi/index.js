@@ -453,7 +453,7 @@ Crowi.prototype.start = async function() {
     this.crowiDev.init();
   }
 
-  const { express, configManager } = this;
+  const { express } = this;
 
   const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
