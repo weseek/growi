@@ -6,6 +6,8 @@ import {
   ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
+import { useCurrentUser } from '~/stores/context';
+
 import { IWorkflowHasId } from '../../interfaces/workflow';
 import { deleteWorkflow } from '../services/workflow';
 
@@ -23,6 +25,8 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
   const { workflows, onDeleted, onClickCreateWorkflowButton } = props;
 
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const { data: currentUser } = useCurrentUser();
 
   const createWorkflowButtonClickHandler = useCallback(() => {
     if (onClickCreateWorkflowButton == null) {
@@ -43,6 +47,30 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
       // TODO: Consider how to display errors
     }
   }, [onDeleted]);
+
+  const isDeletable = useCallback((workflow: IWorkflowHasId): boolean => {
+    if (currentUser == null) {
+      return false;
+    }
+
+    if (currentUser.admin) {
+      return true;
+    }
+
+    const creatorAndApprovers: string[] = [workflow.creator._id];
+    workflow.approverGroups.forEach((approverGroup) => {
+      approverGroup.approvers.forEach((approver) => {
+        creatorAndApprovers.push(approver.user.toString());
+      });
+    });
+
+    if (creatorAndApprovers.includes(currentUser._id)) {
+      return true;
+    }
+
+    return false;
+
+  }, [currentUser]);
 
   return (
     <>
@@ -87,7 +115,8 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
 
                         <DropdownMenu>
                           <DropdownItem
-                            className="text-danger"
+                            className={isDeletable(workflow) ? 'text-danger' : ''}
+                            disabled={!isDeletable(workflow)}
                             onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
                           >{t('approval_workflow.delete')}
                           </DropdownItem>
