@@ -9,7 +9,7 @@ import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnl
 import { IPageForItem } from '~/interfaces/page';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
-import { ItemNode } from '../Sidebar/PageTree/ItemNode';
+import { ItemNode } from '../ItemsTree';
 
 type StateHandlersType = {
   isOpen: boolean,

@@ -17,7 +17,7 @@ import loggerFactory from '~/utils/logger';
 import {
   SimpleItem, SimpleItemProps, useNewPageInput,
 } from '../../TreeItem';
-import { ItemNode } from '../PageTree/ItemNode';
+import { ItemNode } from '../../ItemsTree';
 
 import { Ellipsis } from './Ellipsis';
 

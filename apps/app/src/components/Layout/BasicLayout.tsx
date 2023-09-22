@@ -8,7 +8,7 @@ import { Button } from 'reactstrap';
 import { useParentPageSelectModal } from '~/stores/modal';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
-import { ParentPageSelectModal } from '../ParentPageSelectModal';
+import { ParentPageSelectModal } from '../ParentPageSelectModal/ParentPageSelectModal';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
