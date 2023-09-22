@@ -40,30 +40,35 @@ export const SyncExecution = ({
   });
 
   useEffect(() => {
-    if (socket != null) {
-      socket.off(SocketEventName.externalUserGroup[provider].GroupSyncProgress);
-      socket.on(SocketEventName.externalUserGroup[provider].GroupSyncProgress, (data) => {
-        setSyncStatus(SyncStatus.syncExecuting);
-        setProgress({
-          total: data.totalCount,
-          current: data.count,
-        });
-      });
+    if (socket == null) return;
 
-      socket.off(SocketEventName.externalUserGroup[provider].GroupSyncCompleted);
-      socket.on(SocketEventName.externalUserGroup[provider].GroupSyncCompleted, () => {
-        setSyncStatus(SyncStatus.syncCompleted);
-        mutateExternalUserGroups();
-        toastSuccess(t('external_user_group.sync_succeeded'));
-      });
+    const eventName = SocketEventName.externalUserGroup[provider];
 
-      socket.off(SocketEventName.externalUserGroup[provider].GroupSyncFailed);
-      socket.on(SocketEventName.externalUserGroup[provider].GroupSyncFailed, () => {
-        setSyncStatus(SyncStatus.syncFailed);
-        mutateExternalUserGroups();
-        toastError(t('external_user_group.sync_failed'));
+    socket.on(eventName.GroupSyncProgress, (data) => {
+      setSyncStatus(SyncStatus.syncExecuting);
+      setProgress({
+        total: data.totalCount,
+        current: data.count,
       });
-    }
+    });
+
+    socket.on(eventName.GroupSyncCompleted, () => {
+      setSyncStatus(SyncStatus.syncCompleted);
+      mutateExternalUserGroups();
+      toastSuccess(t('external_user_group.sync_succeeded'));
+    });
+
+    socket.on(eventName.GroupSyncFailed, () => {
+      setSyncStatus(SyncStatus.syncFailed);
+      mutateExternalUserGroups();
+      toastError(t('external_user_group.sync_failed'));
+    });
+
+    return () => {
+      socket.off(eventName.GroupSyncProgress);
+      socket.off(eventName.GroupSyncCompleted);
+      socket.off(eventName.GroupSyncFailed);
+    };
   }, [socket, mutateExternalUserGroups, t, provider]);
 
   const onSyncBtnClick = useCallback(async(e) => {

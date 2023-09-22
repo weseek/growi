@@ -1065,8 +1065,8 @@
     "description_form_detail": "Please note that edited value will be overwritten on next sync if description mapper is set in sync settings",
     "only_description_edit_allowed": "Only description can be edited for external user groups",
     "sync_being_executed": "There is a running external group sync process started by you or another user. The next sync cannot be executed until this finishes.",
-    "sync_succeeded": "Sync succeeded",
-    "sync_failed": "Sync failed",
+    "sync_succeeded": "External group sync succeeded",
+    "sync_failed": "External group sync failed",
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",

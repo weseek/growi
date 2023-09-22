@@ -1073,9 +1073,9 @@
     "update_sync_settings_failed": "同期設定の更新が失敗しました",
     "description_form_detail": "同期設定で「説明」の mapper が設定されている場合、編集内容は再同期によって上書きされることに注意してください",
     "only_description_edit_allowed": "外部グループは説明の編集のみが可能です",
-    "sync_being_executed": "自身または他のユーザが実行した外部グループの同期が実行されており、これが終わるまで次の実行ができません",
-    "sync_succeeded": "同期に成功しました",
-    "sync_failed": "同期に失敗しました",
+    "sync_being_executed": "自身または他のユーザが実行した外部グループ同期が終了するまで次の実行ができません",
+    "sync_succeeded": "外部グループ同期に成功しました",
+    "sync_failed": "外部グループ同期に失敗しました",
     "ldap": {
       "group_sync_settings": "LDAP グループ同期設定",
       "group_search_base_DN": "グループ検索ベース DN",
