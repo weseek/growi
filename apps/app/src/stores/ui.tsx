@@ -42,7 +42,6 @@ const logger = loggerFactory('growi:stores:ui');
 export const EditorMode = {
   View: 'view',
   Editor: 'editor',
-  HackMD: 'hackmd',
 } as const;
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
@@ -86,9 +85,6 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[]
     case EditorMode.Editor:
       classNames.push('editing', 'builtin-editor');
       break;
-    case EditorMode.HackMD:
-      classNames.push('editing', 'hackmd');
-      break;
   }
 
   return classNames;
@@ -97,7 +93,6 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[]
 export const EditorModeHash = {
   View: '',
   Edit: '#edit',
-  HackMD: '#hackmd',
 } as const;
 export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
 
@@ -113,9 +108,6 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
     case EditorMode.Editor:
       window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
       break;
-    case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.HackMD}`);
-      break;
   }
 };
 
@@ -129,8 +121,6 @@ export const determineEditorModeByHash = (): EditorMode => {
   switch (hash) {
     case EditorModeHash.Edit:
       return EditorMode.Editor;
-    case EditorModeHash.HackMD:
-      return EditorMode.HackMD;
     default:
       return EditorMode.View;
   }

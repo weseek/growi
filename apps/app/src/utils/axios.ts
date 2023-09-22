@@ -3,6 +3,9 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import qs from 'qs';
 
+// eslint-disable-next-line no-restricted-imports
+export * from 'axios';
+
 const customAxios = axios.create({
   headers: {
     'X-Requested-With': 'XMLHttpRequest',

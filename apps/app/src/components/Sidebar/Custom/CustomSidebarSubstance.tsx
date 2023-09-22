@@ -23,7 +23,7 @@ export const CustomSidebarSubstance = (): JSX.Element => {
 
   return (
     <div className={`py-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
-      { markdown === undefined
+      { markdown == null
         ? <SidebarNotFound />
         : (
           <RevisionRenderer

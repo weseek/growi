@@ -20,7 +20,6 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
-import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
@@ -36,6 +35,9 @@ import CountBadge from '../../Common/CountBadge';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 
 import { ItemNode } from './ItemNode';
+
+
+import styles from './Item.module.scss';
 
 
 const logger = loggerFactory('growi:cli:Item');
@@ -424,7 +426,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       id={`pagetree-item-${page._id}`}
       data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
-    ${shouldHide ? 'd-none' : ''}`}
+        pagetree-item ${styles['pagetree-item']}
+        ${shouldHide ? 'd-none' : ''}`
+      }
     >
       <li
         ref={(c) => { drag(c); drop(c) }}
@@ -440,7 +444,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
-                <TriangleIcon />
+                <span className="material-icons-round">arrow_right</span>
               </div>
             </button>
           )}

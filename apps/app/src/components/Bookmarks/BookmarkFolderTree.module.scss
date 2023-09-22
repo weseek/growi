@@ -40,7 +40,7 @@ $grw-bookmark-item-padding-left: 35px;
     }
 
     .grw-foldertree-triangle-btn {
-      background-color: transparent;
+      border: 0;
       transition: all 0.2s ease-out;
       transform: rotate(0deg);
 
@@ -58,7 +58,9 @@ $grw-bookmark-item-padding-left: 35px;
 
   .grw-foldertree-item-container {
     .grw-triangle-container {
-      min-width: 35px;
+      // TODO: ignore width frickering
+      // https://redmine.weseek.co.jp/issues/130828
+      // min-width: 35px;
       height: 40px;
     }
 
