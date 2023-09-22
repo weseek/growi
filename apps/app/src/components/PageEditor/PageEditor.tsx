@@ -57,7 +57,6 @@ import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
-import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -307,7 +306,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     files.forEach(async(file) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: resLimit } = await apiv3Get('/attachments.limit', {
+        const resLimit: any = await apiGet('/attachments.limit', {
           fileSize: file.size,
         });
 
@@ -328,7 +327,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
         }
 
-        const { data: resAdd } = await apiv3PostForm('/attachments.add', formData);
+        const resAdd: any = await apiPostForm('/attachments.add', formData);
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
 
