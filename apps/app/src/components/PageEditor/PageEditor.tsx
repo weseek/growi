@@ -347,7 +347,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         // Not using 'mutateGrant' to inherit the grant of the parent page
         if (res.pageCreated) {
           logger.info('Page is created', res.page._id);
-          globalEmitter.emit('resetInitializedHackMdStatus');
           mutateIsLatestRevision(true);
           setCreatedPageRevisionIdWithAttachment(res.page.revision);
           await mutateCurrentPageId(res.page._id);
@@ -360,7 +359,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }
       finally {
       }
-
     });
 
   }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);

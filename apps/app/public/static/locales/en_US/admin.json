@@ -557,10 +557,6 @@
           "initialize_meta_datas": {
             "label": "Initialize page's like, read users and comment count",
             "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "Initialize HackMD related data",
-            "desc": "Recommended to check this unless there is important drafts on HackMD."
           }
         },
         "revisions": {

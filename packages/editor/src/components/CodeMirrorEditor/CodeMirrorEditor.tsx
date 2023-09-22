@@ -2,9 +2,7 @@ import {
   forwardRef, useMemo, useRef, useEffect, useCallback,
 } from 'react';
 
-import { defaultKeymap } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
-import { keymap } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { useDropzone } from 'react-dropzone';
 
@@ -45,16 +43,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     };
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
-
-  useEffect(() => {
-    const extension = keymap.of([
-      ...defaultKeymap,
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor]);
 
   useEffect(() => {
     if (indentSize == null) {

@@ -218,11 +218,6 @@
 
 .grw-sidebar :global {
   .grw-contextual-navigation {
-    --bs-heading-color: var(--bs-tertiary-color);
-    --bs-body-color: var(--bs-secondary-color);
-    --bs-link-color-rgb: var(--bs-secondary-color-rgb);
-    --bs-link-opacity: .75;
-
     backdrop-filter: blur(20px);
   }
 }
@@ -242,7 +237,7 @@
     --bs-border-color: var(--grw-highlight-800);
 
     .grw-contextual-navigation {
-      background-color: rgba(var(--grw-highlight-900-rgb), .5);
+      background-color: rgba(var(--grw-highlight-800-rgb), .5);
     }
   }
 }

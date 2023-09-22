@@ -40,24 +40,6 @@
     display: none !important;
   }
 
-  // hide when HackMD view
-  &.hackmd .d-hackmd-none {
-    display: none;
-  }
-
-  // show only either Edit button or HackMD button
-  &.hackmd .nav-tab-edit {
-    display: none;
-  }
-
-  &.hackmd .grw-nav-item-edit {
-    display: none;
-  }
-
-  &:not(.hackmd) .nav-tab-hackmd {
-    display: none;
-  }
-
 
   /*****************
    * Expand Editor
@@ -223,36 +205,6 @@
   }
 
   // .builtin-editor .tab-pane#edit
-
-  &.hackmd {
-    .hackmd-preinit,
-    #iframe-hackmd-container > iframe {
-      border: none;
-    }
-
-    .hackmd-error {
-      top: 0;
-      background-color: rgba(bs.$gray-800, 0.8);
-    }
-
-    .hackmd-status-label {
-      font-size: 3em;
-    }
-
-    .hackmd-resume-button-container,
-    .hackmd-discard-button-container {
-      .btn-text {
-        display: inline-block;
-        min-width: 230px;
-      }
-    }
-
-    .btn-view-outdated-draft {
-      text-decoration: underline;
-      vertical-align: unset;
-    }
-  }
-
 
   /*****************
    *     Toastr

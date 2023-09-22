@@ -16,9 +16,7 @@
 
   a {
     @extend .link-offset-2;
-    @extend .link-underline-opacity-25;
-    @extend .link-underline-opacity-50-hover;
-    text-decoration: underline;
+    text-decoration-line: underline;
   }
 
   // @extend .text-break;
@@ -297,10 +295,13 @@
 // == Colors
 .wiki {
   a {
-    color: rgba(
-      var(--grw-wiki-link-color-rgb, var(--bs-link-color-rgb)),
-      var(--bs-link-opacity, 1)
-    );
+    @extend .link-underline-opacity-25;
+    @extend .link-underline-opacity-100-hover;
+
+    $color-rgb: var(--grw-wiki-link-color-rgb, var(--bs-link-color-rgb));
+
+    color: rgba($color-rgb, var(--bs-link-opacity, 1));
+    text-decoration-color: rgba($color-rgb, var(--bs-link-underline-opacity, 1));
 
     &:hover {
       color: rgba(

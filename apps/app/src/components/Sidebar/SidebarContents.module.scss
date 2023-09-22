@@ -1,0 +1,14 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+.grw-sidebar-contents :global {
+
+  --bs-heading-color: var(--bs-tertiary-color);
+  --bs-body-color: var(--bs-secondary-color);
+  --bs-link-color-rgb: var(--bs-secondary-color-rgb);
+  --bs-link-opacity: .75;
+
+  .list-group-item {
+    --bs-list-group-bg: transparent;
+  }
+
+}
