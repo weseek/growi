@@ -1,6 +1,27 @@
-import { useDropzone } from 'react-dropzone';
-import type { DropzoneOptions, DropzoneState } from 'react-dropzone';
+import { useCallback } from 'react';
 
-export const useDropzoneEditor = (props?: DropzoneOptions): DropzoneState => {
-  return useDropzone(props);
+import { useDropzone } from 'react-dropzone';
+import type { DropzoneState } from 'react-dropzone';
+
+type DropzoneEditor = {
+  onUpload?: (args: File | File[]) => void,
+}
+
+export const useDropzoneEditor = (props: DropzoneEditor): DropzoneState => {
+
+  const { onUpload } = props;
+
+  const dropHandler = useCallback((acceptedFiles: File[]) => {
+    if (onUpload == null) {
+      return;
+    }
+    onUpload(acceptedFiles);
+  }, [onUpload]);
+
+  return useDropzone({
+    noKeyboard: true,
+    noClick: true,
+    onDrop: dropHandler,
+  });
+
 };

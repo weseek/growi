@@ -1,12 +1,12 @@
 import {
-  forwardRef, useMemo, useRef, useEffect, useCallback,
+  forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
-import { useDropzone } from 'react-dropzone';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useDropzoneEditor } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -18,7 +18,6 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
     <div {...props} className={`flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} />
   );
 });
-
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
@@ -55,23 +54,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  // ------------------------| Dropzone |------------------------------------------
-  const dropHandler = useCallback((acceptedFiles: File[]) => {
-    if (onUpload == null) {
-      return;
-    }
-    onUpload(acceptedFiles);
-  }, [onUpload]);
+  const { getRootProps, open } = useDropzoneEditor(onUpload);
 
-  const { getRootProps, open } = useDropzone(
-    {
-      noKeyboard: true,
-      noClick: true,
-      onDrop: dropHandler,
-    },
-  );
-
-  // ------------------------| Dropzone |-------------------------------------------
   return (
     <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
