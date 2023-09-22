@@ -5,28 +5,21 @@ import React, {
 import nodePath from 'path';
 
 import {
-  pathUtils, pagePathUtils, Nullable,
+  pathUtils, Nullable,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { ValidationTarget } from '~/client/util/input-validator';
-import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import { TriangleIcon } from '~/components/Icons/TriangleIcon';
-import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import { IPageToDeleteWithMeta, IPageForItem } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import ClosableTextInput from '../../Common/ClosableTextInput';
-import CountBadge from '../../Common/CountBadge';
-
-import { ItemNode } from './ItemNode';
+import CountBadge from '../Common/CountBadge';
+import { ItemNode } from '../Sidebar/PageTree/ItemNode';
 
 
 export type SimpleItemProps = {
@@ -41,7 +34,8 @@ export type SimpleItemProps = {
   itemRef?
   itemClass?: React.FunctionComponent<SimpleItemProps>
   mainClassName?: string
-  customComponent?: React.FunctionComponent<SimpleItemToolProps>
+  customEndComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
+  customNextComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
 };
 
 // Utility to mark target
@@ -137,9 +131,7 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   );
 };
 
-const SimpleItem: FC<SimpleItemProps> = (props) => {
-  const { t } = useTranslation();
-
+export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
@@ -150,10 +142,16 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
-  const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { data } = useSWRxPageChildren(isOpen ? page._id : null);
+
+  const stateHandlers = {
+    isOpen,
+    setIsOpen,
+    isCreating,
+    setCreating,
+  };
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -171,51 +169,6 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
   const onClickLoadChildren = useCallback(async() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
-
-  const onClickPlusButton = useCallback(() => {
-    setNewPageInputShown(true);
-
-    if (hasDescendants) {
-      setIsOpen(true);
-    }
-  }, [hasDescendants]);
-
-  const onPressEnterForCreateHandler = async(inputText: string) => {
-    setNewPageInputShown(false);
-    const parentPath = pathUtils.addTrailingSlash(page.path as string);
-    const newPagePath = nodePath.resolve(parentPath, inputText);
-    const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
-
-    if (!isCreatable) {
-      toastWarning(t('you_can_not_create_page_with_this_name'));
-      return;
-    }
-
-    try {
-      setCreating(true);
-
-      await apiv3Post('/pages/', {
-        path: newPagePath,
-        body: undefined,
-        grant: page.grant,
-        grantUserGroupId: page.grantedGroup,
-      });
-
-      mutateChildren();
-
-      if (!hasDescendants) {
-        setIsOpen(true);
-      }
-
-      toastSuccess(t('successfully_saved_the_page'));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setCreating(false);
-    }
-  };
 
   // didMount
   useEffect(() => {
@@ -253,20 +206,27 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
     onRenamed,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
+    stateHandlers,
   };
 
-  const CustomComponent = props.customComponent;
+  const CustomEndComponents = props.customEndComponents;
 
-  const SimpleItemContent = CustomComponent ?? SimpleItemTool;
+  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
 
   const SimpleItemContentProps = {
+    itemNode,
     page,
     onRenamed,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
     isEnableActions,
     isReadOnlyUser,
+    children,
+    stateHandlers,
   };
+
+  const CustomNextComponents = props.customNextComponents;
+
 
   return (
     <div
@@ -293,37 +253,15 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-
-        <SimpleItemContent {...SimpleItemContentProps}/>
-
-        {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
-          <NotAvailableForGuest>
-            <NotAvailableForReadOnlyUser>
-              <button
-                id='page-create-button-in-page-tree'
-                type="button"
-                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-                onClick={onClickPlusButton}
-              >
-                <i className="icon-plus d-block p-0" />
-              </button>
-            </NotAvailableForReadOnlyUser>
-          </NotAvailableForGuest>
-        )}
+        {SimpleItemContent.map((ItemContent, index) => (
+          <ItemContent key={index} {...SimpleItemContentProps}/>
+        ))}
       </li>
 
-      {isEnableActions && isNewPageInputShown && (
-        <div className="flex-fill">
-          <NotDraggableForClosableTextInput>
-            <ClosableTextInput
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setNewPageInputShown(false) }}
-              onPressEnter={onPressEnterForCreateHandler}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </NotDraggableForClosableTextInput>
-        </div>
-      )}
+      {CustomNextComponents?.map((UnderItemContent, index) => (
+        <UnderItemContent key={index} {...SimpleItemContentProps}/>
+      ))}
+
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
@@ -340,7 +278,4 @@ const SimpleItem: FC<SimpleItemProps> = (props) => {
       }
     </div>
   );
-
 };
-
-export default SimpleItem;
