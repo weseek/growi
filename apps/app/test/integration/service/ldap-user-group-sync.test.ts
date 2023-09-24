@@ -1,15 +1,14 @@
 import ldap, { Client } from 'ldapjs';
 
-import LdapUserGroupSyncService from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
+import { LdapUserGroupSyncService } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
 import { configManager } from '../../../src/server/service/config-manager';
-import LdapService from '../../../src/server/service/ldap';
+import { ldapService } from '../../../src/server/service/ldap';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
 
-
 describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   let crowi;
-  let ldapGroupSyncService: LdapUserGroupSyncService;
+  let ldapUserGroupSyncService: LdapUserGroupSyncService;
 
   const configParams = {
     'security:passport-ldap:attrMapName': 'name',
@@ -23,8 +22,8 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   };
 
   jest.mock('../../../src/server/service/ldap');
-  const mockBind = jest.spyOn(LdapService.prototype, 'bind');
-  const mockLdapSearch = jest.spyOn(LdapService.prototype, 'search');
+  const mockBind = jest.spyOn(ldapService, 'bind');
+  const mockLdapSearch = jest.spyOn(ldapService, 'search');
   const mockLdapCreateClient = jest.spyOn(ldap, 'createClient');
 
   beforeAll(async() => {
@@ -37,7 +36,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
     mockLdapCreateClient.mockImplementation(() => { return {} as Client });
 
     const passportService = new PassportService(crowi);
-    ldapGroupSyncService = new LdapUserGroupSyncService(passportService);
+    ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService, null, null);
   });
 
   describe('When there is no circular reference in group tree', () => {
@@ -150,12 +149,12 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
         return Promise.reject(new Error('not found'));
       });
 
-      const rootNodes = await ldapGroupSyncService.generateExternalUserGroupTrees();
+      const rootNodes = await ldapUserGroupSyncService?.generateExternalUserGroupTrees();
 
-      expect(rootNodes.length).toBe(2);
+      expect(rootNodes?.length).toBe(2);
 
       // check grandParentGroup
-      const grandParentNode = rootNodes.find(node => node.id === 'cn=grandParentGroup,ou=groups,dc=example,dc=org');
+      const grandParentNode = rootNodes?.find(node => node.id === 'cn=grandParentGroup,ou=groups,dc=example,dc=org');
       const expectedChildNode = {
         id: 'cn=childGroup,ou=groups,dc=example,dc=org',
         userInfos: [{
@@ -195,7 +194,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
       expect(grandParentNode).toStrictEqual(expectedGrandParentNode);
 
       // check rootGroup
-      const rootNode = rootNodes.find(node => node.id === 'cn=rootGroup,ou=groups,dc=example,dc=org');
+      const rootNode = rootNodes?.find(node => node.id === 'cn=rootGroup,ou=groups,dc=example,dc=org');
       const expectedRootNode = {
         id: 'cn=rootGroup,ou=groups,dc=example,dc=org',
         userInfos: [{
@@ -258,7 +257,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
         return Promise.reject(new Error('not found'));
       });
 
-      await expect(ldapGroupSyncService.generateExternalUserGroupTrees()).rejects.toThrow('external_user_group.ldap.circular_reference');
+      await expect(ldapUserGroupSyncService?.generateExternalUserGroupTrees()).rejects.toThrow('Circular reference inside LDAP group tree');
     });
   });
 });

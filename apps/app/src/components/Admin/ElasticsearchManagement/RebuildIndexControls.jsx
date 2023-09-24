@@ -3,6 +3,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import LabeledProgressBar from '../Common/LabeledProgressBar';
@@ -27,7 +28,7 @@ class RebuildIndexControls extends React.Component {
     const { socket } = this.props;
 
     if (socket != null) {
-      socket.on('addPageProgress', (data) => {
+      socket.on(SocketEventName.AddPageProgress, (data) => {
         this.setState({
           total: data.totalCount,
           current: data.count,
@@ -35,7 +36,7 @@ class RebuildIndexControls extends React.Component {
         });
       });
 
-      socket.on('finishAddPage', (data) => {
+      socket.on(SocketEventName.FinishAddPage, (data) => {
         this.setState({
           total: data.totalCount,
           current: data.count,

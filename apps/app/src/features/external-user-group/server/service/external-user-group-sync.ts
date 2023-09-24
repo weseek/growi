@@ -1,7 +1,12 @@
 import type { IUserHasId } from '@growi/core';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
+import S2sMessage from '~/server/models/vo/s2s-message';
+import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import { S2sMessageHandlable } from '~/server/service/s2s-messaging/handlable';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { configManager } from '../../../../server/service/config-manager';
@@ -12,21 +17,69 @@ import {
 import ExternalUserGroup from '../models/external-user-group';
 import ExternalUserGroupRelation from '../models/external-user-group-relation';
 
+const logger = loggerFactory('growi:service:external-user-group-sync-service');
+
 // When d = max depth of group trees
 // Max space complexity of syncExternalUserGroups will be:
 // O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
 const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
-abstract class ExternalUserGroupSyncService {
+class ExternalUserGroupSyncS2sMessage extends S2sMessage {
+
+  isExecutingSync: boolean;
+
+}
+
+abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
-  authProviderType: string; // auth provider type (e.g: ldap, oidc)
+  authProviderType: string | null; // auth provider type (e.g: ldap, oidc). Has to be set before syncExternalUserGroups execution.
 
-  constructor(groupProviderType: ExternalGroupProviderType, authProviderType: string) {
+  socketIoService: any;
+
+  s2sMessagingService: S2sMessagingService | null;
+
+  isExecutingSync = false;
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  constructor(groupProviderType: ExternalGroupProviderType, s2sMessagingService: S2sMessagingService | null, socketIoService) {
     this.groupProviderType = groupProviderType;
-    this.authProviderType = authProviderType;
+    this.s2sMessagingService = s2sMessagingService;
+    this.socketIoService = socketIoService;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleS2sMessage(s2sMessage: ExternalUserGroupSyncS2sMessage): boolean {
+    return s2sMessage.eventName === 'switchExternalUserGroupExecSyncStatus';
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleS2sMessage(s2sMessage: ExternalUserGroupSyncS2sMessage): Promise<void> {
+    logger.info(`Set isExecutingSync to ${s2sMessage.isExecutingSync} by pubsub notification`);
+    this.isExecutingSync = s2sMessage.isExecutingSync;
+  }
+
+  async switchIsExecutingSync(isExecutingSync: boolean): Promise<void> {
+    this.isExecutingSync = isExecutingSync;
+
+    if (this.s2sMessagingService != null) {
+      const s2sMessage = new ExternalUserGroupSyncS2sMessage('switchExternalUserGroupExecSyncStatus', {
+        isExecutingSync,
+      });
+
+      try {
+        await this.s2sMessagingService.publish(s2sMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
+      }
+    }
   }
 
   /** External user group tree sync method
@@ -35,28 +88,49 @@ abstract class ExternalUserGroupSyncService {
    * 3. If preserveDeletedLDAPGroups is false、delete all ExternalUserGroups that were not found during tree search
   */
   async syncExternalUserGroups(): Promise<void> {
-    const trees = await this.generateExternalUserGroupTrees();
-
-    const existingExternalUserGroupIds: string[] = [];
-
-    const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
-      const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
-      existingExternalUserGroupIds.push(externalUserGroup._id);
-      // Do not use Promise.all, because the number of promises processed can
-      // exponentially grow when group tree is enormous
-      for await (const childNode of node.childGroupNodes) {
-        await syncNode(childNode, externalUserGroup._id);
-      }
-    };
-
-    await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, (root) => {
-      return syncNode(root);
-    });
+    if (this.authProviderType == null) throw new Error('auth provider type is not set');
+    if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
+    await this.switchIsExecutingSync(true);
 
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
-    if (!preserveDeletedLdapGroups) {
-      await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
-      await ExternalUserGroupRelation.removeAllInvalidRelations();
+    const existingExternalUserGroupIds: string[] = [];
+
+    const socket = this.socketIoService?.getAdminSocket();
+
+    try {
+      const trees = await this.generateExternalUserGroupTrees();
+      const totalCount = trees.map(tree => this.getGroupCountOfTree(tree))
+        .reduce((sum, current) => sum + current);
+      let count = 0;
+
+      const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
+        const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
+        existingExternalUserGroupIds.push(externalUserGroup._id);
+        count++;
+        socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncProgress, { totalCount, count });
+        // Do not use Promise.all, because the number of promises processed can
+        // exponentially grow when group tree is enormous
+        for await (const childNode of node.childGroupNodes) {
+          await syncNode(childNode, externalUserGroup._id);
+        }
+      };
+
+      await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, async(tree) => {
+        return syncNode(tree);
+      });
+
+      if (!preserveDeletedLdapGroups) {
+        await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
+        await ExternalUserGroupRelation.removeAllInvalidRelations();
+      }
+      socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncCompleted);
+    }
+    catch (e) {
+      logger.error(e.message);
+      socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncFailed);
+    }
+    finally {
+      await this.switchIsExecutingSync(false);
     }
   }
 
@@ -68,7 +142,7 @@ abstract class ExternalUserGroupSyncService {
    * @param {string} parentId Parent group id (id in GROWI) of the group we want to create/update
    * @returns {Promise<IExternalUserGroupHasId>} ExternalUserGroup that was created/updated
   */
-  async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
+  private async createUpdateExternalUserGroup(node: ExternalUserGroupTreeNode, parentId?: string): Promise<IExternalUserGroupHasId> {
     const externalUserGroup = await ExternalUserGroup.findAndUpdateOrCreateGroup(
       node.name, node.id, this.groupProviderType, node.description, parentId,
     );
@@ -97,14 +171,17 @@ abstract class ExternalUserGroupSyncService {
    * @param {ExternalUserInfo} externalUserInfo Search external app/server using this identifier
    * @returns {Promise<IUserHasId | null>} User when found or created, null when neither
    */
-  async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
+  private async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
+    const authProviderType = this.authProviderType;
+    if (authProviderType == null) throw new Error('auth provider type is not set');
+
     const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
 
     const getExternalAccount = async() => {
       if (autoGenerateUserOnGroupSync && externalAccountService != null) {
         return externalAccountService.getOrCreateUser({
           id: userInfo.id, username: userInfo.username, name: userInfo.name, email: userInfo.email,
-        }, this.authProviderType);
+        }, authProviderType);
       }
       return ExternalAccount.findOne({ providerType: this.groupProviderType, accountId: userInfo.id });
     };
@@ -115,6 +192,16 @@ abstract class ExternalUserGroupSyncService {
       return (await externalAccount.populate<{user: IUserHasId | null}>('user')).user;
     }
     return null;
+  }
+
+  getGroupCountOfTree(tree: ExternalUserGroupTreeNode): number {
+    if (tree.childGroupNodes.length === 0) return 1;
+
+    let count = 1;
+    tree.childGroupNodes.forEach((childGroup) => {
+      count += this.getGroupCountOfTree(childGroup);
+    });
+    return count;
   }
 
   /** Method to generate external group tree structure

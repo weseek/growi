@@ -5,9 +5,11 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError } from '~/client/util/toastr';
+import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 
 import { LdapGroupSyncSettingsForm } from './LdapGroupSyncSettingsForm';
+import { SyncExecution } from './SyncExecution';
 
 export const LdapGroupManagement: FC = () => {
   const [isUserBind, setIsUserBind] = useState(false);
@@ -27,49 +29,39 @@ export const LdapGroupManagement: FC = () => {
     getIsUserBind();
   }, []);
 
-  const onSyncBtnClick = useCallback(async(e) => {
-    e.preventDefault();
-    try {
-      if (isUserBind) {
-        const password = e.target.password.value;
-        await apiv3Put('/external-user-groups/ldap/sync', { password });
-      }
-      else {
-        await apiv3Put('/external-user-groups/ldap/sync');
-      }
-      toastSuccess(t('external_user_group.sync_succeeded'));
+  const requestSyncAPI = useCallback(async(e) => {
+    if (isUserBind) {
+      const password = e.target.password.value;
+      await apiv3Put('/external-user-groups/ldap/sync', { password });
     }
-    catch (errs) {
-      toastError(t(errs[0]?.message));
+    else {
+      await apiv3Put('/external-user-groups/ldap/sync');
     }
-  }, [t, isUserBind]);
+  }, [isUserBind]);
+
+  const AdditionalForm = (): JSX.Element => {
+    return isUserBind ? (
+      <div className="row form-group">
+        <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            type="password"
+            name="password"
+            id="ldapGroupSyncPassword"
+          />
+          <p className="form-text text-muted">
+            <small>{t('external_user_group.ldap.password_detail')}</small>
+          </p>
+        </div>
+      </div>
+    ) : <></>;
+  };
 
   return (
     <>
       <LdapGroupSyncSettingsForm />
-      <h3 className="border-bottom mb-3">{t('external_user_group.execute_sync')}</h3>
-      <form onSubmit={onSyncBtnClick}>
-        {isUserBind && (
-          <div className="row form-group">
-            <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                type="password"
-                name="password"
-                id="ldapGroupSyncPassword"
-              />
-              <p className="form-text text-muted">
-                <small>{t('external_user_group.ldap.password_detail')}</small>
-              </p>
-            </div>
-          </div>
-        )}
-        <div className="row">
-          <div className="col-md-3"></div>
-          <div className="col-md-6"><button className="btn btn-primary" type="submit">{t('external_user_group.sync')}</button></div>
-        </div>
-      </form>
+      <SyncExecution provider={ExternalGroupProviderType.ldap} requestSyncAPI={requestSyncAPI} AdditionalForm={AdditionalForm} />
     </>
   );
 };
