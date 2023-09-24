@@ -2,11 +2,14 @@ import { GroupRepresentation, KeycloakAdminClient, UserRepresentation } from '@s
 
 import { configManager } from '~/server/service/config-manager';
 import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
+
+const logger = loggerFactory('growi:service:keycloak-user-group-sync-service');
 
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:
@@ -21,6 +24,8 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   groupDescriptionAttribute: string; // attribute to map to group description
 
+  isInitialized = false;
+
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(s2sMessagingService: S2sMessagingService, socketIoService) {
     const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
@@ -34,8 +39,17 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     this.groupDescriptionAttribute = kcGroupDescriptionAttribute;
   }
 
-  override syncExternalUserGroups(authProviderType: 'oidc' | 'saml'): Promise<void> {
+  init(authProviderType: 'oidc' | 'saml'): void {
     this.authProviderType = authProviderType;
+    this.isInitialized = true;
+  }
+
+  override syncExternalUserGroups(): Promise<void> {
+    if (!this.isInitialized) {
+      const msg = 'Service not initialized';
+      logger.error(msg);
+      throw new Error(msg);
+    }
     return super.syncExternalUserGroups();
   }
 

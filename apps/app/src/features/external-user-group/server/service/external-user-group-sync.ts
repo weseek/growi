@@ -31,12 +31,11 @@ class ExternalUserGroupSyncS2sMessage extends S2sMessage {
 
 }
 
-// SyncParamsType: type of params to propagate and use on executing syncExternalUserGroups
-abstract class ExternalUserGroupSyncService<SyncParamsType = any> implements S2sMessageHandlable {
+abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
-  authProviderType: string | null; // auth provider type (e.g: ldap, oidc) has to be set before syncExternalUserGroups execution
+  authProviderType: string | null; // auth provider type (e.g: ldap, oidc). Has to be set before syncExternalUserGroups execution.
 
   socketIoService: any;
 
@@ -88,7 +87,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> implements S2s
    * 2. Use createUpdateExternalUserGroup on each node in the tree using DFS
    * 3. If preserveDeletedLDAPGroups is false、delete all ExternalUserGroups that were not found during tree search
   */
-  async syncExternalUserGroups(params?: SyncParamsType): Promise<void> {
+  async syncExternalUserGroups(): Promise<void> {
     if (this.authProviderType == null) throw new Error('auth provider type is not set');
     if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
     await this.switchIsExecutingSync(true);
@@ -99,7 +98,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> implements S2s
     const socket = this.socketIoService?.getAdminSocket();
 
     try {
-      const trees = await this.generateExternalUserGroupTrees(params);
+      const trees = await this.generateExternalUserGroupTrees();
       const totalCount = trees.map(tree => this.getGroupCountOfTree(tree))
         .reduce((sum, current) => sum + current);
       let count = 0;
@@ -210,7 +209,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> implements S2s
    * 2. Convert each group tree structure to ExternalUserGroupTreeNode
    * 3. Return the root node of each tree
   */
-  abstract generateExternalUserGroupTrees(params?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]>
+  abstract generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]>
 
 }
 

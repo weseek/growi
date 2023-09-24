@@ -169,4 +169,5 @@ class LdapService {
 
 }
 
-export default LdapService;
+// export the singleton instance
+export const ldapService = new LdapService();

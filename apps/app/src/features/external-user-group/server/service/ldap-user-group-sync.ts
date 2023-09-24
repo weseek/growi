@@ -1,7 +1,8 @@
 import { configManager } from '~/server/service/config-manager';
-import LdapService, { SearchResultEntry } from '~/server/service/ldap';
+import { ldapService, SearchResultEntry } from '~/server/service/ldap';
 import PassportService from '~/server/service/passport';
 import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import {
@@ -10,51 +11,63 @@ import {
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
 
+const logger = loggerFactory('growi:service:ldap-user-group-sync-service');
+
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:
 // O(TREES_BATCH_SIZE * d * USERS_BATCH_SIZE)
 const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
-type SyncParamsType = { userBindUsername: string, userBindPassword: string };
-
-export class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsType> {
+export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
   passportService: PassportService;
 
-  ldapService: LdapService;
+  isInitialized = false;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(passportService: PassportService, s2sMessagingService: S2sMessagingService, socketIoService) {
     super(ExternalGroupProviderType.ldap, s2sMessagingService, socketIoService);
     this.authProviderType = 'ldap';
     this.passportService = passportService;
-    this.ldapService = new LdapService();
   }
 
-  override async generateExternalUserGroupTrees(options?: SyncParamsType): Promise<ExternalUserGroupTreeNode[]> {
+  async init(userBindUsername?: string, userBindPassword?: string): Promise<void> {
+    await ldapService.initClient(userBindUsername, userBindPassword);
+    this.isInitialized = true;
+  }
+
+  override syncExternalUserGroups(): Promise<void> {
+    if (!this.isInitialized) {
+      const msg = 'Service not initialized';
+      logger.error(msg);
+      throw new Error(msg);
+    }
+    return super.syncExternalUserGroups();
+  }
+
+  override async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
     const groupChildGroupAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
     const groupMembershipAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
     const groupNameAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
     const groupDescriptionAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
-    const groupBase: string = this.ldapService.getGroupSearchBase();
+    const groupBase: string = ldapService.getGroupSearchBase();
 
-    await this.ldapService.initClient(options?.userBindUsername, options?.userBindPassword);
-    const groupEntries = await this.ldapService.searchGroupDir();
+    const groupEntries = await ldapService.searchGroupDir();
 
     const getChildGroupDnsFromGroupEntry = (groupEntry: SearchResultEntry) => {
       // groupChildGroupAttribute and groupMembershipAttribute may be the same,
       // so filter values of groupChildGroupAttribute to ones that include groupBase
-      return this.ldapService.getArrayValFromSearchResultEntry(groupEntry, groupChildGroupAttribute).filter(attr => attr.includes(groupBase));
+      return ldapService.getArrayValFromSearchResultEntry(groupEntry, groupChildGroupAttribute).filter(attr => attr.includes(groupBase));
     };
     const getUserIdsFromGroupEntry = (groupEntry: SearchResultEntry) => {
       // groupChildGroupAttribute and groupMembershipAttribute may be the same,
       // so filter values of groupMembershipAttribute to ones that does not include groupBase
-      return this.ldapService.getArrayValFromSearchResultEntry(groupEntry, groupMembershipAttribute).filter(attr => !attr.includes(groupBase));
+      return ldapService.getArrayValFromSearchResultEntry(groupEntry, groupMembershipAttribute).filter(attr => !attr.includes(groupBase));
     };
 
     const convert = async(entry: SearchResultEntry, converted: string[]): Promise<ExternalUserGroupTreeNode | null> => {
-      const name = this.ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
+      const name = ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
       if (name == null) return null;
 
       if (converted.includes(entry.objectName)) {
@@ -67,7 +80,7 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncP
       const userInfos = (await batchProcessPromiseAll(userIds, USERS_BATCH_SIZE, (id) => {
         return this.getUserInfo(id);
       })).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
-      const description = this.ldapService.getStringValFromSearchResultEntry(entry, groupDescriptionAttribute);
+      const description = ldapService.getStringValFromSearchResultEntry(entry, groupDescriptionAttribute);
       const childGroupDNs = getChildGroupDnsFromGroupEntry(entry);
 
       const childGroupNodesWithNull: (ExternalUserGroupTreeNode | null)[] = [];
@@ -112,10 +125,10 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncP
     // get full user info from LDAP server using externalUserInfo (DN or UID)
     const getUserEntries = async() => {
       if (groupMembershipAttributeType === LdapGroupMembershipAttributeType.dn) {
-        return this.ldapService.search(undefined, userId, 'base');
+        return ldapService.search(undefined, userId, 'base');
       }
       if (groupMembershipAttributeType === LdapGroupMembershipAttributeType.uid) {
-        return this.ldapService.search(`(uid=${userId})`, undefined);
+        return ldapService.search(`(uid=${userId})`, undefined);
       }
     };
 
@@ -123,11 +136,11 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncP
 
     if (userEntries != null && userEntries.length > 0) {
       const userEntry = userEntries[0];
-      const uid = this.ldapService.getStringValFromSearchResultEntry(userEntry, 'uid');
+      const uid = ldapService.getStringValFromSearchResultEntry(userEntry, 'uid');
       if (uid != null) {
-        const usernameToBeRegistered = attrMapUsername === 'uid' ? uid : this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapUsername);
-        const nameToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapName);
-        const mailToBeRegistered = this.ldapService.getStringValFromSearchResultEntry(userEntry, attrMapMail);
+        const usernameToBeRegistered = attrMapUsername === 'uid' ? uid : ldapService.getStringValFromSearchResultEntry(userEntry, attrMapUsername);
+        const nameToBeRegistered = ldapService.getStringValFromSearchResultEntry(userEntry, attrMapName);
+        const mailToBeRegistered = ldapService.getStringValFromSearchResultEntry(userEntry, attrMapMail);
 
         return usernameToBeRegistered != null ? {
           id: uid,

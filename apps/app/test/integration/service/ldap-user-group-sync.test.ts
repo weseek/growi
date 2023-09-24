@@ -2,7 +2,7 @@ import ldap, { Client } from 'ldapjs';
 
 import { LdapUserGroupSyncService } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
 import { configManager } from '../../../src/server/service/config-manager';
-import LdapService from '../../../src/server/service/ldap';
+import { ldapService } from '../../../src/server/service/ldap';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
 
@@ -22,8 +22,8 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   };
 
   jest.mock('../../../src/server/service/ldap');
-  const mockBind = jest.spyOn(LdapService.prototype, 'bind');
-  const mockLdapSearch = jest.spyOn(LdapService.prototype, 'search');
+  const mockBind = jest.spyOn(ldapService, 'bind');
+  const mockLdapSearch = jest.spyOn(ldapService, 'search');
   const mockLdapCreateClient = jest.spyOn(ldap, 'createClient');
 
   beforeAll(async() => {

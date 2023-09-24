@@ -315,7 +315,8 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
-    crowi.ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
+    await crowi.ldapUserGroupSyncService?.init(req.user.name, req.body.password);
+    crowi.ldapUserGroupSyncService?.syncExternalUserGroups();
 
     return res.apiv3({}, 202);
   });
@@ -356,7 +357,8 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
-    crowi.keycloakUserGroupSyncService?.syncExternalUserGroups(authProviderType);
+    crowi.keycloakUserGroupSyncService?.init(authProviderType);
+    crowi.keycloakUserGroupSyncService?.syncExternalUserGroups();
 
     return res.apiv3({}, 202);
   });
