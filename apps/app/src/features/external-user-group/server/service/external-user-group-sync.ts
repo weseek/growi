@@ -2,6 +2,9 @@ import type { IUserHasId } from '@growi/core';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
+import S2sMessage from '~/server/models/vo/s2s-message';
+import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import { S2sMessageHandlable } from '~/server/service/s2s-messaging/handlable';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
@@ -22,8 +25,14 @@ const logger = loggerFactory('growi:service:external-user-group-sync-service');
 const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
+class ExternalUserGroupSyncS2sMessage extends S2sMessage {
+
+  isExecutingSync: boolean;
+
+}
+
 // SyncParamsType: type of params to propagate and use on executing syncExternalUserGroups
-abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
+abstract class ExternalUserGroupSyncService<SyncParamsType = any> implements S2sMessageHandlable {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
@@ -31,12 +40,47 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
 
   socketIoService: any;
 
+  s2sMessagingService: S2sMessagingService | null;
+
   isExecutingSync = false;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(groupProviderType: ExternalGroupProviderType, socketIoService) {
+  constructor(groupProviderType: ExternalGroupProviderType, s2sMessagingService: S2sMessagingService | null, socketIoService) {
     this.groupProviderType = groupProviderType;
+    this.s2sMessagingService = s2sMessagingService;
     this.socketIoService = socketIoService;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleS2sMessage(s2sMessage: ExternalUserGroupSyncS2sMessage): boolean {
+    return s2sMessage.eventName === 'switchExternalUserGroupExecSyncStatus';
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleS2sMessage(s2sMessage: ExternalUserGroupSyncS2sMessage): Promise<void> {
+    logger.info(`Set isExecutingSync to ${s2sMessage.isExecutingSync} by pubsub notification`);
+    this.isExecutingSync = s2sMessage.isExecutingSync;
+  }
+
+  async switchIsExecutingSync(isExecutingSync: boolean): Promise<void> {
+    this.isExecutingSync = isExecutingSync;
+
+    if (this.s2sMessagingService != null) {
+      const s2sMessage = new ExternalUserGroupSyncS2sMessage('switchExternalUserGroupExecSyncStatus', {
+        isExecutingSync,
+      });
+
+      try {
+        await this.s2sMessagingService.publish(s2sMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
+      }
+    }
   }
 
   /** External user group tree sync method
@@ -47,7 +91,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
   async syncExternalUserGroups(params?: SyncParamsType): Promise<void> {
     if (this.authProviderType == null) throw new Error('auth provider type is not set');
     if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
-    this.isExecutingSync = true;
+    await this.switchIsExecutingSync(true);
 
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     const existingExternalUserGroupIds: string[] = [];
@@ -87,7 +131,7 @@ abstract class ExternalUserGroupSyncService<SyncParamsType = any> {
       socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncFailed);
     }
     finally {
-      this.isExecutingSync = false;
+      await this.switchIsExecutingSync(false);
     }
   }
 

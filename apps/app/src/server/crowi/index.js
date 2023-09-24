@@ -10,8 +10,8 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
-import { instanciate as instanciateKeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
-import { instanciate as instanciateLdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
+import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
+import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -791,10 +791,10 @@ Crowi.prototype.setupExternalAccountService = function() {
   instanciateExternalAccountService(this.passportService);
 };
 
-// execute after setupPassport and socketIoService
+// execute after setupPassport, s2sMessagingService, socketIoService
 Crowi.prototype.setupExternalUserGroupSyncService = function() {
-  instanciateLdapUserGroupSyncService(this.passportService, this.socketIoService);
-  instanciateKeycloakUserGroupSyncService(this.socketIoService);
+  this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
+  this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
 };
 
 export default Crowi;

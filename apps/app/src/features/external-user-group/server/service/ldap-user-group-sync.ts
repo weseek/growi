@@ -1,6 +1,7 @@
 import { configManager } from '~/server/service/config-manager';
 import LdapService, { SearchResultEntry } from '~/server/service/ldap';
 import PassportService from '~/server/service/passport';
+import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import {
@@ -17,15 +18,15 @@ const USERS_BATCH_SIZE = 30;
 
 type SyncParamsType = { userBindUsername: string, userBindPassword: string };
 
-class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsType> {
+export class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsType> {
 
   passportService: PassportService;
 
   ldapService: LdapService;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(passportService, socketIoService) {
-    super(ExternalGroupProviderType.ldap, socketIoService);
+  constructor(passportService: PassportService, s2sMessagingService: S2sMessagingService, socketIoService) {
+    super(ExternalGroupProviderType.ldap, s2sMessagingService, socketIoService);
     this.authProviderType = 'ldap';
     this.passportService = passportService;
     this.ldapService = new LdapService();
@@ -139,11 +140,4 @@ class LdapUserGroupSyncService extends ExternalUserGroupSyncService<SyncParamsTy
     return null;
   }
 
-}
-
-// eslint-disable-next-line import/no-mutable-exports
-export let ldapUserGroupSyncService: LdapUserGroupSyncService | undefined; // singleton instance
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function instanciate(passportService: PassportService, socketIoService): void {
-  ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService, socketIoService);
 }

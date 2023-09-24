@@ -17,9 +17,6 @@ import { configManager } from '~/server/service/config-manager';
 import UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
-import { keycloakUserGroupSyncService } from '../../service/keycloak-user-group-sync';
-import { ldapUserGroupSyncService } from '../../service/ldap-user-group-sync';
-
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 
 const router = Router();
@@ -28,16 +25,16 @@ interface AuthorizedRequest extends Request {
   user?: any
 }
 
-const isExecutingSync = () => {
-  return ldapUserGroupSyncService?.isExecutingSync || keycloakUserGroupSyncService?.isExecutingSync || false;
-};
-
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
+
+  const isExecutingSync = () => {
+    return crowi.ldapUserGroupSyncService?.isExecutingSync || crowi.keycloakUserGroupSyncService?.isExecutingSync || false;
+  };
 
   const validators = {
     ldapSyncSettings: [
@@ -318,7 +315,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
-    ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
+    crowi.ldapUserGroupSyncService?.syncExternalUserGroups({ userBindUsername: req.user.name, userBindPassword: req.body.password });
 
     return res.apiv3({}, 202);
   });
@@ -359,7 +356,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
-    keycloakUserGroupSyncService?.syncExternalUserGroups(authProviderType);
+    crowi.keycloakUserGroupSyncService?.syncExternalUserGroups(authProviderType);
 
     return res.apiv3({}, 202);
   });

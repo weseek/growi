@@ -1,6 +1,6 @@
 import ldap, { Client } from 'ldapjs';
 
-import { ldapUserGroupSyncService, instanciate } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
+import { LdapUserGroupSyncService } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
 import { configManager } from '../../../src/server/service/config-manager';
 import LdapService from '../../../src/server/service/ldap';
 import PassportService from '../../../src/server/service/passport';
@@ -8,6 +8,7 @@ import { getInstance } from '../setup-crowi';
 
 describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   let crowi;
+  let ldapUserGroupSyncService: LdapUserGroupSyncService;
 
   const configParams = {
     'security:passport-ldap:attrMapName': 'name',
@@ -35,7 +36,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
     mockLdapCreateClient.mockImplementation(() => { return {} as Client });
 
     const passportService = new PassportService(crowi);
-    instanciate(passportService, null);
+    ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService, null, null);
   });
 
   describe('When there is no circular reference in group tree', () => {

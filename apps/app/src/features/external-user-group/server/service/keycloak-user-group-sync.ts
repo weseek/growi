@@ -1,6 +1,7 @@
 import { GroupRepresentation, KeycloakAdminClient, UserRepresentation } from '@s3pweb/keycloak-admin-client-cjs';
 
 import { configManager } from '~/server/service/config-manager';
+import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo } from '../../interfaces/external-user-group';
@@ -12,7 +13,7 @@ import ExternalUserGroupSyncService from './external-user-group-sync';
 // O(TREES_BATCH_SIZE * d)
 const TREES_BATCH_SIZE = 10;
 
-class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
+export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   kcAdminClient: KeycloakAdminClient;
 
@@ -20,13 +21,14 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   groupDescriptionAttribute: string; // attribute to map to group description
 
-  constructor(socketIoService) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  constructor(s2sMessagingService: S2sMessagingService, socketIoService) {
     const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
     const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
     const kcGroupSyncClientRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
     const kcGroupDescriptionAttribute = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
 
-    super(ExternalGroupProviderType.keycloak, socketIoService);
+    super(ExternalGroupProviderType.keycloak, s2sMessagingService, socketIoService);
     this.kcAdminClient = new KeycloakAdminClient({ baseUrl: kcHost, realmName: kcGroupSyncClientRealm });
     this.realm = kcGroupRealm;
     this.groupDescriptionAttribute = kcGroupDescriptionAttribute;
@@ -123,11 +125,4 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     return externalUserGroupsWithNull.filter((node): node is NonNullable<ExternalUserInfo> => node != null);
   }
 
-}
-
-// eslint-disable-next-line import/no-mutable-exports
-export let keycloakUserGroupSyncService: KeycloakUserGroupSyncService | undefined; // singleton instance
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function instanciate(socketIoService): void {
-  keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(socketIoService);
 }
