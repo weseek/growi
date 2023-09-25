@@ -2,21 +2,22 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { ModalBody, ModalFooter } from 'reactstrap';
 
 import { IWorkflowHasId } from '../../interfaces/workflow';
+
+import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 
 type Props = {
   workflow?: IWorkflowHasId,
+  onClickWorkflowListPageBackButton: () => void,
 }
 
 export const WorkflowDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflow } = props;
+  const { workflow, onClickWorkflowListPageBackButton } = props;
 
   if (workflow == null) {
     return <></>;
@@ -24,9 +25,10 @@ export const WorkflowDetailPage = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ModalHeader className="bg-primary">
-        { workflow.name }
-      </ModalHeader>
+      <WorkflowModalHeader
+        title={workflow.name ?? ''}
+        onClickBackButton={onClickWorkflowListPageBackButton}
+      />
 
       <ModalBody>
         詳細ページ

@@ -71,7 +71,10 @@ const WorkflowModal = (): JSX.Element => {
       )}
 
       { pageType === PageType.detail && (
-        <WorkflowDetailPage workflow={selectedWorkflow} />
+        <WorkflowDetailPage
+          workflow={selectedWorkflow}
+          onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
+        />
       )}
     </Modal>
   );
