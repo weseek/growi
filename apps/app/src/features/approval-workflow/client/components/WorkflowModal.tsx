@@ -5,12 +5,14 @@ import { Modal } from 'reactstrap';
 import { useWorkflowModal, useSWRxWorkflowList } from '../stores/workflow';
 
 import { CreateWorkflowPage } from './CreateWorkflowPage';
+import { WorkflowDetailPage } from './WorkflowDetailPage';
 import { WorkflowListPage } from './WorkflowListPage';
 
 
 const PageType = {
   list: 'LIST',
   create: 'CREATE',
+  detail: 'DETAIL',
 } as const;
 
 type PageType = typeof PageType[keyof typeof PageType];
@@ -28,6 +30,10 @@ const WorkflowModal = (): JSX.Element => {
   */
   const createWorkflowButtonClickHandler = useCallback(() => {
     setPageType(PageType.create);
+  }, []);
+
+  const showWorkflowDetailButtonClickHandler = useCallback((workflowId: string) => {
+    setPageType(PageType.detail);
   }, []);
 
   /*
@@ -49,6 +55,7 @@ const WorkflowModal = (): JSX.Element => {
           workflows={workflowPaginateResult?.docs ?? []}
           onDeleted={mutateWorkflows}
           onClickCreateWorkflowButton={createWorkflowButtonClickHandler}
+          onClickShowWorkflowDetailButton={showWorkflowDetailButtonClickHandler}
         />
       )}
 
@@ -58,6 +65,10 @@ const WorkflowModal = (): JSX.Element => {
           onCreated={mutateWorkflows}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
         />
+      )}
+
+      { pageType === PageType.detail && (
+        <WorkflowDetailPage />
       )}
     </Modal>
   );

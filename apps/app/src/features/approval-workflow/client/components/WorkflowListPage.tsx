@@ -17,6 +17,7 @@ type Props = {
   workflows: IWorkflowHasId[]
   onDeleted?: () => void;
   onClickCreateWorkflowButton: () => void;
+  onClickShowWorkflowDetailButton: (workflowId: string) => void;
 }
 
 const formatDate = (date: Date) => {
@@ -26,7 +27,9 @@ const formatDate = (date: Date) => {
 export const WorkflowListPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflows, onDeleted, onClickCreateWorkflowButton } = props;
+  const {
+    workflows, onDeleted, onClickCreateWorkflowButton, onClickShowWorkflowDetailButton,
+  } = props;
 
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
@@ -51,6 +54,15 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
       // TODO: Consider how to display errors
     }
   }, [onDeleted]);
+
+  const showWorkflowDetailButtonClickHandler = useCallback((workflowId: string) => {
+    if (onClickShowWorkflowDetailButton == null) {
+      return null;
+    }
+
+    onClickShowWorkflowDetailButton(workflowId);
+
+  }, [onClickShowWorkflowDetailButton]);
 
   const isDeletable = useCallback((workflow: IWorkflowHasId): boolean => {
     if (currentUser == null) {
@@ -104,8 +116,14 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td>
                       {workflow.name}
-                      <div className="text-muted">
-                        {formatDate(workflow.createdAt)}
+                      <div>
+                        <span className="text-muted">
+                          {formatDate(workflow.createdAt)}
+                        </span>
+                        <div className="btn btn-link text-muted" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                          {t('approval_workflow.show_detail')}
+                          <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+                        </div>
                       </div>
                     </td>
                     <td>

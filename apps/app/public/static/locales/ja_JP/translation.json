@@ -851,6 +851,7 @@
     "create": "ワークフローを作成",
     "create_new": "ワークフロー新規作成",
     "delete": "削除",
+    "show_detail": "詳細を見る",
     "statuses": {
       "INPROGRESS": "進行中",
       "APPROVE": "承認",

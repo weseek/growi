@@ -818,6 +818,7 @@
     "create": "Create workflow",
     "create_new": "Create new workflow",
     "delete": "Delete",
+    "show_detail": "Show detail",
     "statuses": {
       "INPROGRESS": "IN-PROGRESS",
       "APPROVE": "APPROVE",

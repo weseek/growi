@@ -821,6 +821,7 @@
     "create": "创建工作流程",
     "create_new": "创建新工作流程",
     "delete": "删除",
+    "show_detail": "显示详情",
     "statuses": {
       "INPROGRESS": "进行中",
       "APPROVE": "批准",
