@@ -851,6 +851,7 @@
     "create": "ワークフローを作成",
     "create_new": "ワークフロー新規作成",
     "delete": "削除",
+    "delete_button_tooltip": "ワークフローの作成者、承認者または管理者のみが削除できます",
     "statuses": {
       "INPROGRESS": "進行中",
       "APPROVE": "承認",

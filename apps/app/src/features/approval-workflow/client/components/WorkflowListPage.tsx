@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
-  ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
+  ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
 } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores/context';
@@ -114,12 +114,24 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                         </DropdownToggle>
 
                         <DropdownMenu>
-                          <DropdownItem
-                            className={isDeletable(workflow) ? 'text-danger' : ''}
-                            disabled={!isDeletable(workflow)}
-                            onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
-                          >{t('approval_workflow.delete')}
-                          </DropdownItem>
+                          <div id="delete-workflow-button">
+                            <DropdownItem
+                              className={isDeletable(workflow) ? 'text-danger' : ''}
+                              disabled={!isDeletable(workflow)}
+                              onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
+                            >{t('approval_workflow.delete')}
+                            </DropdownItem>
+                            {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
+                            { !isDeletable(workflow) && (
+                              <UncontrolledTooltip
+                                target="delete-workflow-button"
+                                placement="bottom"
+                                fade={false}
+                              >
+                                {t('approval_workflow.delete_button_tooltip')}
+                              </UncontrolledTooltip>
+                            )}
+                          </div>
                         </DropdownMenu>
                       </Dropdown>
                     </td>
