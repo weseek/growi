@@ -34,8 +34,8 @@ export const WorkflowCreationPage = (props: Props): JSX.Element => {
     ],
   }] as IWorkflowApproverGroupReq[];
 
-  const [workflowName, setWorkflowName] = useState<string>('');
-  const [workflowDescription, setWorkflowDescription] = useState<string>('');
+  const [workflowName, setWorkflowName] = useState<string | undefined>();
+  const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
   const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
 
   const { createWorkflow } = useCreateWorkflow(pageId, workflowName, workflowDescription, approverGroups);
@@ -56,6 +56,7 @@ export const WorkflowCreationPage = (props: Props): JSX.Element => {
     try {
       // TODO: https://redmine.weseek.co.jp/issues/131035
       const createdWorkflow = await createWorkflow();
+      console.log('createdWorkflow', createdWorkflow);
       if (onCreated != null && createdWorkflow != null) {
         onCreated(createdWorkflow._id);
       }
