@@ -1,14 +1,20 @@
 // TODO: https://redmine.weseek.co.jp/issues/130336
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {
+  ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
+} from 'reactstrap';
+
+import { useCurrentUser } from '~/stores/context';
 
 import { IWorkflowHasId } from '../../interfaces/workflow';
+import { deleteWorkflow } from '../services/workflow';
 
 
 type Props = {
   workflows: IWorkflowHasId[]
+  onDeleted?: () => void;
   onClickCreateWorkflowButton: () => void;
 }
 
@@ -16,7 +22,11 @@ type Props = {
 export const WorkflowListPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflows, onClickCreateWorkflowButton } = props;
+  const { workflows, onDeleted, onClickCreateWorkflowButton } = props;
+
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const { data: currentUser } = useCurrentUser();
 
   const createWorkflowButtonClickHandler = useCallback(() => {
     if (onClickCreateWorkflowButton == null) {
@@ -25,6 +35,42 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
 
     onClickCreateWorkflowButton();
   }, [onClickCreateWorkflowButton]);
+
+  const deleteWorkflowButtonClickHandler = useCallback(async(workflowId: string) => {
+    try {
+      await deleteWorkflow(workflowId);
+      if (onDeleted != null) {
+        onDeleted();
+      }
+    }
+    catch (err) {
+      // TODO: Consider how to display errors
+    }
+  }, [onDeleted]);
+
+  const isDeletable = useCallback((workflow: IWorkflowHasId): boolean => {
+    if (currentUser == null) {
+      return false;
+    }
+
+    if (currentUser.admin) {
+      return true;
+    }
+
+    const creatorAndApprovers: string[] = [workflow.creator._id];
+    workflow.approverGroups.forEach((approverGroup) => {
+      approverGroup.approvers.forEach((approver) => {
+        creatorAndApprovers.push(approver.user.toString());
+      });
+    });
+
+    if (creatorAndApprovers.includes(currentUser._id)) {
+      return true;
+    }
+
+    return false;
+
+  }, [currentUser]);
 
   return (
     <>
@@ -60,6 +106,22 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                     </td>
                     <td>
                       {workflow.creator.username}
+                    </td>
+                    <td>
+                      <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
+                        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+                          <i className="icon-options"></i>
+                        </DropdownToggle>
+
+                        <DropdownMenu>
+                          <DropdownItem
+                            className={isDeletable(workflow) ? 'text-danger' : ''}
+                            disabled={!isDeletable(workflow)}
+                            onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
+                          >{t('approval_workflow.delete')}
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
                     </td>
                   </tr>
                 );

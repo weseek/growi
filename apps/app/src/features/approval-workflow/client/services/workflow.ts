@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post, apiv3Delete } from '~/client/util/apiv3-client';
 
 import { IWorkflowHasId, IWorkflowApproverGroupReq } from '../../interfaces/workflow';
 
@@ -21,4 +21,8 @@ export const useCreateWorkflow = (
   }, [approverGroups, comment, name, pageId]);
 
   return { createdWorkflow, createWorkflow };
+};
+
+export const deleteWorkflow = async(workflowId: string): Promise<void> => {
+  await apiv3Delete(`/workflow/${workflowId}`);
 };
