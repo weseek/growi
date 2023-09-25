@@ -13,18 +13,19 @@ type Props = {
   workflow?: IWorkflowHasId,
 }
 
-
 export const WorkflowDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { workflow } = props;
 
-  console.log(workflow);
+  if (workflow == null) {
+    return <></>;
+  }
 
   return (
     <>
       <ModalHeader className="bg-primary">
-        {t('approval_workflow.list')}
+        { workflow.name }
       </ModalHeader>
 
       <ModalBody>
