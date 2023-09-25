@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Skeleton } from '~/components/Skeleton';
 
-import styles from '../../ItemsTree/ItemsTree.module.scss';
+import styles from './ItemsTree.module.scss';
 
 const PageTreeContentSkeleton = (): JSX.Element => {
 

@@ -7,9 +7,9 @@ import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import { PageTreeItem } from '../Sidebar/PageTreeItem/PageTreeItem';
-import DefaultContentSkeleton from '../Sidebar/Skeleton/DefaultContentSkeleton';
 
 import { ItemsTree } from './ItemsTree';
+import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 const PageTreeHeader = () => {

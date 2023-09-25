@@ -25,8 +25,9 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-import PageTreeContentSkeleton from '../Sidebar/Skeleton/PageTreeContentSkeleton';
 import { ItemNode, SimpleItemProps } from '../TreeItem';
+
+import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 
