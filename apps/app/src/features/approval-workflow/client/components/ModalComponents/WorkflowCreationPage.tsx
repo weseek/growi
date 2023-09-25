@@ -56,7 +56,6 @@ export const WorkflowCreationPage = (props: Props): JSX.Element => {
     try {
       // TODO: https://redmine.weseek.co.jp/issues/131035
       const createdWorkflow = await createWorkflow();
-      console.log('createdWorkflow', createdWorkflow);
       if (onCreated != null && createdWorkflow != null) {
         onCreated(createdWorkflow._id);
       }
