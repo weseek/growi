@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
@@ -154,7 +155,7 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch isEnabledMarp
    */
-  switchIsEnabledMarp() {
+  switchIsEnabledMarp(inputValue) {
     this.setState({ isEnabledMarp: !this.state.isEnabledMarp });
   }
 
@@ -203,7 +204,6 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
         isSearchScopeChildrenAsDefault: this.state.isSearchScopeChildrenAsDefault,
-        isEnabledMarp: this.state.isEnabledMarp,
       });
       const { customizedParams } = response.data;
       this.setState({
@@ -216,6 +216,25 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
+  }
+  /**
+   * Update presentation
+   * @memberOf AdminCustomizeContainer
+   */
+  async updateCustomizePresentation() {
+    try {
+      const response = await apiv3Put('/customize-setting/presentation', {
+        isEnabledMarp: this.state.isEnabledMarp,
+      });
+
+      const { customizedParams } = response.data;
+      this.setState({
         isEnabledMarp: customizedParams.isEnabledMarp,
       });
     }

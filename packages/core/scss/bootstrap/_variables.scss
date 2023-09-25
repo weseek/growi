@@ -1,34 +1,9 @@
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 
-//
 // Variables
-// --------------------------------------------------
-
-//== Colors
 //
-// $primary: variables.$growi-blue !default;
-// $secondary: #6c757d !default;
-// $info: #009fbb !default;
-// $success: #00bb83 !default;
-// $warning: #ffa32b !default;
-// $danger: #ff0a54 !default;
-// $light: #e4e7ea !default;
-// $dark: #343a40 !default;
-// $gray-50: lighten($light, 7%) !default;
-// $gray-100: lighten($light, 4%) !default;
-// $gray-200: $light !default;
-// $gray-300: darken($light, 5%) !default;
-// $gray-400: darken($light, 20%) !default;
-// $gray-500: darken($light, 30%) !default;
-// $gray-550: lighten($dark, 15%) !default;
-// $gray-600: lighten($dark, 10%) !default;
-// $gray-700: lighten($dark, 5%) !default;
-// $gray-800: $dark !default;
-// $gray-900: darken($dark, 5%) !default;
-// $grays: (
-//   '50': $gray-50,
-// ) !default;
-// $red: #ff0a54 !default;
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 
 // Options
 //
@@ -40,7 +15,7 @@
 //
 // Style anchor elements.
 
-// $link-hover-decoration: none !default;
+$link-decoration: none;
 
 // Grid breakpoints
 //

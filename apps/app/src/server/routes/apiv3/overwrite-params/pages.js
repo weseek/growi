@@ -54,12 +54,6 @@ class PageOverwriteParamsFactory {
       params.extended = {};
     }
 
-    if (option.initHackmdDatas) {
-      params.pageIdOnHackmd = undefined;
-      params.revisionHackmdSynced = undefined;
-      params.hasDraftOnHackmd = undefined;
-    }
-
     return params;
   }
 
