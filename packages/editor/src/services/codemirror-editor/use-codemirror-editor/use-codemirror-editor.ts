@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { EditorState, Prec, type Extension } from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
+import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
@@ -13,6 +15,15 @@ import { useFocus, type Focus } from './utils/focus';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
+
+const markdownHighlighting = HighlightStyle.define([
+  { tag: tags.heading1, fontSize: '1.6em', fontWeight: 'bold' },
+  { tag: tags.heading2 },
+  { tag: tags.heading3 },
+  { tag: tags.heading4 },
+  { tag: tags.heading5 },
+  { tag: tags.heading6 },
+]);
 
 type UseCodeMirrorEditorUtils = {
   initDoc: InitDoc,
