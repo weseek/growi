@@ -5,23 +5,23 @@ import { ModalHeader } from 'reactstrap';
 
 type Props = {
   title: string
-  onClickBackButton: () => void,
+  onClickPageBackButton: () => void,
 }
 
 export const WorkflowModalHeader = (props: Props): JSX.Element => {
-  const { title, onClickBackButton } = props;
+  const { title, onClickPageBackButton } = props;
 
-  const backbuttonClickHandler = useCallback(() => {
-    if (onClickBackButton == null) {
+  const pageBackbuttonClickHandler = useCallback(() => {
+    if (onClickPageBackButton == null) {
       return;
     }
 
-    onClickBackButton();
-  }, [onClickBackButton]);
+    onClickPageBackButton();
+  }, [onClickPageBackButton]);
 
   return (
     <ModalHeader className="bg-primary">
-      <button type="button" className="btn" onClick={() => backbuttonClickHandler()}>
+      <button type="button" className="btn" onClick={() => pageBackbuttonClickHandler()}>
         <i className="fa fa-fw fa-chevron-left" aria-hidden="true"></i>
       </button>
       { title }
