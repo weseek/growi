@@ -120,10 +120,10 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                         <span className="text-muted">
                           {formatDate(workflow.createdAt)}
                         </span>
-                        <div className="btn btn-link text-muted" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                        <span className="btn btn-link text-muted" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
                           {t('approval_workflow.show_detail')}
                           <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
-                        </div>
+                        </span>
                       </div>
                     </td>
                     <td>
