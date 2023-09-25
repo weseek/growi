@@ -44,7 +44,7 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
       }
       toastSuccess(
         <>
-          <div className="font-weight-bold">{t('questionnaire.thank_you_for_answering')}</div>
+          <div className="fw-bold">{t('questionnaire.thank_you_for_answering')}</div>
           <div className="pt-2">{t('questionnaire.additional_feedback')}</div>
         </>,
         {
@@ -113,53 +113,55 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
 
   const questionnaireOrderTitle = lang === 'en_US' ? questionnaireOrder.title.en_US : questionnaireOrder.title.ja_JP;
 
-  return (<Modal
-    size="lg"
-    isOpen={isOpened}
-    toggle={closeBtnClickHandlerClosingToast}
-    centered
-  >
-    <form onSubmit={submitHandler}>
-      <ModalBody className="bg-primary overflow-hidden p-0" style={{ borderRadius: 8 }}>
-        <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
-          <div className="text-center mb-2">
-            <h2 className="my-4">{questionnaireOrderTitle}</h2>
-            <p className="mb-1">{t('commons:questionnaire_modal.more_satisfied_services')}</p>
-            <p>{t('commons:questionnaire_modal.strive_to_improve_services')}</p>
-          </div>
-          <div className="container">
-            <div className="row mt-4">
-              <div className="col-md-2 offset-md-5 font-weight-bold text-right align-items-center p-0">{t('questionnaire.no_answer')}</div>
-              <div className="col-md-5 d-flex justify-content-between align-items-center">
-                <span className="font-weight-bold">{t('questionnaire.disagree')}</span>
-                <span className="font-weight-bold">{t('questionnaire.agree')}</span>
-              </div>
+  return (
+    <Modal
+      size="lg"
+      isOpen={isOpened}
+      toggle={closeBtnClickHandlerClosingToast}
+      centered
+    >
+      <form onSubmit={submitHandler}>
+        <ModalBody className="bg-primary overflow-hidden p-0" style={{ borderRadius: 8 }}>
+          <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
+            <div className="text-center mb-2">
+              <h2 className="my-4">{questionnaireOrderTitle}</h2>
+              <p className="mb-1">{t('commons:questionnaire_modal.more_satisfied_services')}</p>
+              <p>{t('commons:questionnaire_modal.strive_to_improve_services')}</p>
             </div>
-            {questionnaireOrder.questions?.map((question) => {
-              return <Question question={question} inputNamePrefix={inputNamePrefix} key={question._id}/>;
-            })}
-          </div>
-          <div className="text-center mt-5">
-            <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
-          </div>
-          <div className="text-center cursor-pointer text-decoration-underline my-3">
-            <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={denyBtnClickHandler}>{t('questionnaire.dont_show_again')}</span>
-          </div>
+            <div className="container">
+              <div className="row mt-4">
+                <div className="col-md-2 offset-md-5 fw-bold text-end align-items-center p-0">{t('questionnaire.no_answer')}</div>
+                <div className="col-md-5 d-flex justify-content-between align-items-center">
+                  <span className="fw-bold">{t('questionnaire.disagree')}</span>
+                  <span className="fw-bold">{t('questionnaire.agree')}</span>
+                </div>
+              </div>
+              {questionnaireOrder.questions?.map((question) => {
+                return <Question question={question} inputNamePrefix={inputNamePrefix} key={question._id} />;
+              })}
+            </div>
+            <div className="text-center mt-5">
+              <button type="submit" className="btn btn-primary">{t('questionnaire.answer')}</button>
+            </div>
+            <div className="text-center cursor-pointer text-decoration-underline my-3">
+              <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={denyBtnClickHandler}>{t('questionnaire.dont_show_again')}</span>
+            </div>
 
-          {currentUser?.admin && (
-            <a href="/admin/app#questionnaire-settings">
-              <i className="material-icons mr-1" >admin_panel_settings</i>
-            </a>
-          )}
-          {currentUser != null && (
-            <a href="/me#other_settings">
-              <i className="material-icons" >settings</i>
-            </a>
-          )}
-        </div>
-      </ModalBody>
-    </form>
-  </Modal>);
+            {currentUser?.admin && (
+              <a href="/admin/app#questionnaire-settings">
+                <i className="material-icons me-1">admin_panel_settings</i>
+              </a>
+            )}
+            {currentUser != null && (
+              <a href="/me#other_settings">
+                <i className="material-icons">settings</i>
+              </a>
+            )}
+          </div>
+        </ModalBody>
+      </form>
+    </Modal>
+  );
 };
 
 export default QuestionnaireModal;

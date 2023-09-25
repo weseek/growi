@@ -62,6 +62,7 @@
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
+  "Create Sidebar Page": "<strong>/Sidebar</strong> ページを作成する",
   "Target page": "対象ページ",
   "File type": "ファイル形式",
   "Include Attachment File": "添付ファイルも含める",
@@ -475,7 +476,6 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
-    "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "remove_share_link_success": "{{shareLinkId}}を削除しました",
@@ -534,27 +534,6 @@
     "alt_text": "Alt文字列",
     "insert_image": "で画像を挿入できます",
     "open_sandbox": "Sandbox を開く"
-  },
-  "hackmd":{
-    "hack_md": "HackMD",
-    "not_set_up": "HackMD はセットアップされていません",
-    "used_for_not_found": "HackMD は新しいページの作成には利用できません",
-    "start_to_edit": "HackMD を開始する",
-    "clone_page_content": "ページを複製して編集を開始します",
-    "unsaved_draft": "HackMD のドラフトが保存されていません",
-    "draft_outdated": "ドラフトは古くなっている可能性があります",
-    "based_on_revision": "現在のドラフトは次の revision に基づいています",
-    "view_outdated_draft": "HackMD で古いドラフトを表示する",
-    "resume_to_edit": "HackMD で編集を再開する",
-    "discard_changes": "HackMD の変更を破棄する",
-    "integration_failed": "HackMD の統合に失敗しました",
-    "fail_to_connect": "GROWI クライアントが HackMD の GROWI agent に接続できませんでした。",
-    "check_configuration": "<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
-    "not_initialized": "HackMD コンポーネントは初期化されていません",
-    "someone_editing": "このページは、HackMD で編集されています。",
-    "this_page_has_draft": "このページは、HackMD のドラフトがあります。",
-    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "HackMD を利用して同時多人数編集を行うには、HackMD と GROWI を連携する必要があります。<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちら</a>を参照してください。",
-    "need_to_make_page": "HackMD を利用するためには、<a href='#edit'>ビルトインエディタ</a>で新しいページを作成してください。"
   },
   "slack_notification": {
     "popover_title": "Slack 通知",
@@ -770,7 +749,7 @@
         "isForbidden": "権限の閲覧が許可されていません",
         "currentPageGrantLabel": "このページの権限: ",
         "parentPageGrantLabel": "親のページの権限: ",
-        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのリンク</a>を参照してください"
+        "docLink": "権限の修正についての詳細は<a href='https://docs.growi.org/ja/guide/features/authority.html#%E9%85%8D%E4%B8%8B%E3%83%98%E3%82%9A%E3%83%BC%E3%82%B7%E3%82%99%E3%81%AB%E8%A8%AD%E5%AE%9A%E3%81%A6%E3%82%99%E3%81%8D%E3%82%8B%E6%A8%A9%E9%99%90'>こちらのリンク</a>を参照してください"
       },
       "radio_btn": {
         "restrected": "リンクを知っている人のみ",

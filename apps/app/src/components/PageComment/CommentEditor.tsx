@@ -2,15 +2,15 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { useRouter } from 'next/router';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
-import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { toastError } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
@@ -200,14 +200,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [postCommentHandler]);
 
   const apiErrorHandler = useCallback((error: Error) => {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+    toastError(error.message);
   }, []);
 
   const uploadHandler = useCallback(async(file) => {
@@ -280,7 +273,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
-    const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
+    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
       <Button
         outline
@@ -342,7 +335,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
             {isSlackConfigured && isSlackEnabled != null
               && (
-                <div className="form-inline align-self-center mr-md-2">
+                <div className="align-self-center me-md-2">
                   <SlackNotification
                     isSlackEnabled={isSlackEnabled}
                     slackChannels={slackChannels}
@@ -354,13 +347,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               )
             }
             <div className="d-none d-sm-block">
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
           <div className="d-block d-sm-none mt-2">
             <div className="d-flex justify-content-end">
               {error && errorMessage}
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
         </div>

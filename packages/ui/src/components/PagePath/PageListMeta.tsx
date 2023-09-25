@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import assert from 'assert';
 
-import { templateChecker, pagePathUtils, IPageHasId } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
+import { templateChecker, pagePathUtils } from '@growi/core/dist/utils';
 
 import { FootstampIcon } from '../FootstampIcon';
 
@@ -45,7 +46,7 @@ const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
   const strengthClass = `strength-${strengthLevel}`; // strength-{0, 1, 2, 3, 4}
 
   return (
-    <span className={`seen-users-count ${shouldSpaceOutIcon ? 'mr-2' : ''} ${strengthClass}`}>
+    <span className={`seen-users-count ${shouldSpaceOutIcon ? 'me-2' : ''} ${strengthClass}`}>
       <i className="footstamp-icon"><FootstampIcon /></i>
       {count}
     </span>
@@ -69,33 +70,33 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
   // top check
   let topLabel;
   if (isTopPage(page.path)) {
-    topLabel = <span className={`badge badge-info ${shouldSpaceOutIcon ? 'mr-2' : ''} top-label`}>TOP</span>;
+    topLabel = <span className={`badge bg-info ${shouldSpaceOutIcon ? 'me-2' : ''} top-label`}>TOP</span>;
   }
 
   // template check
   let templateLabel;
   if (checkTemplatePath(page.path)) {
-    templateLabel = <span className={`badge badge-info ${shouldSpaceOutIcon ? 'mr-2' : ''}`}>TMPL</span>;
+    templateLabel = <span className={`badge bg-info ${shouldSpaceOutIcon ? 'me-2' : ''}`}>TMPL</span>;
   }
 
   let commentCount;
   if (page.commentCount > 0) {
-    commentCount = <span className={`${shouldSpaceOutIcon ? 'mr-2' : ''}`}><i className="icon-bubble" />{page.commentCount}</span>;
+    commentCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="icon-bubble" />{page.commentCount}</span>;
   }
 
   let likerCount;
   if (props.likerCount != null && props.likerCount > 0) {
-    likerCount = <span className={`${shouldSpaceOutIcon ? 'mr-2' : ''}`}><i className="fa fa-heart-o" />{props.likerCount}</span>;
+    likerCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="fa fa-heart-o" />{props.likerCount}</span>;
   }
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span className={`${shouldSpaceOutIcon ? 'mr-2' : ''}`}><i className="icon-lock" /></span>;
+    locked = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="icon-lock" /></span>;
   }
 
   let bookmarkCount;
   if (props.bookmarkCount != null && props.bookmarkCount > 0) {
-    bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'mr-2' : ''}`}><i className="fa fa-bookmark-o" />{props.bookmarkCount}</span>;
+    bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="fa fa-bookmark-o" />{props.bookmarkCount}</span>;
   }
 
   return (

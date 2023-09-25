@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { IUserHasId } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
@@ -22,34 +22,34 @@ const UserTable = (props: UserTableProps) => {
   const { adminUsersContainer } = props;
 
   const getUserStatusLabel = (userStatus: number) => {
-    let additionalClassName = 'badge-info';
+    let additionalClassName = 'bg-info';
     let text = 'Approval Pending';
 
     switch (userStatus) {
       case 1:
-        additionalClassName = 'badge-info';
+        additionalClassName = 'bg-info';
         text = 'Approval Pending';
         break;
       case 2:
-        additionalClassName = 'badge-success';
+        additionalClassName = 'bg-success';
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'badge-warning';
+        additionalClassName = 'bg-warning text-dark';
         text = 'Suspended';
         break;
       case 4:
-        additionalClassName = 'badge-danger';
+        additionalClassName = 'bg-danger';
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'badge-pink';
+        additionalClassName = 'bg-pink';
         text = 'Invited';
         break;
     }
 
     return (
-      <span className={`badge badge-pill ${additionalClassName}`}>
+      <span className={`badge rounded-pill ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -70,7 +70,7 @@ const UserTable = (props: UserTableProps) => {
             <th style={{ width: '100px' }}>#</th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('user_management.status')}
                 </div>
                 <SortIcons
@@ -82,7 +82,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   <code>username</code>
                 </div>
                 <SortIcons
@@ -94,7 +94,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('Name')}
                 </div>
                 <SortIcons
@@ -106,7 +106,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('Email')}
                 </div>
                 <SortIcons
@@ -118,7 +118,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th style={{ width: '100px' }}>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('Created')}
                 </div>
                 <SortIcons
@@ -130,7 +130,7 @@ const UserTable = (props: UserTableProps) => {
             </th>
             <th style={{ width: '150px' }}>
               <div className="d-flex align-items-center">
-                <div className="mr-3">
+                <div className="me-3">
                   {t('last_login')}
                 </div>
                 <SortIcons
@@ -153,12 +153,12 @@ const UserTable = (props: UserTableProps) => {
                 <td>
                   {getUserStatusLabel(user.status)}
                   {(user.admin) && (
-                    <span className="badge badge-indigo badge-pill ml-2">
+                    <span className="badge bg-indigo rounded-pill ms-2">
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge badge-light badge-pill ml-2">
+                    <span className="badge bg-light text-dark rounded-pill ms-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

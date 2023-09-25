@@ -1,10 +1,9 @@
 import { type RefObject, useCallback, useEffect } from 'react';
 
-import {
-  isClient, isServer, pagePathUtils, PageGrant, withUtils,
-} from '@growi/core';
-import type { Nullable, SWRResponseWithUtils } from '@growi/core';
-import { Breakpoint } from '@growi/ui/dist/interfaces/breakpoints';
+import { PageGrant, type Nullable } from '@growi/core';
+import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
+import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
+import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
@@ -43,7 +42,6 @@ const logger = loggerFactory('growi:stores:ui');
 export const EditorMode = {
   View: 'view',
   Editor: 'editor',
-  HackMD: 'hackmd',
 } as const;
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
@@ -87,9 +85,6 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[]
     case EditorMode.Editor:
       classNames.push('editing', 'builtin-editor');
       break;
-    case EditorMode.HackMD:
-      classNames.push('editing', 'hackmd');
-      break;
   }
 
   return classNames;
@@ -98,7 +93,6 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[]
 export const EditorModeHash = {
   View: '',
   Edit: '#edit',
-  HackMD: '#hackmd',
 } as const;
 export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
 
@@ -114,9 +108,6 @@ const updateHashByEditorMode = (newEditorMode: EditorMode) => {
     case EditorMode.Editor:
       window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
       break;
-    case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.HackMD}`);
-      break;
   }
 };
 
@@ -130,8 +121,6 @@ export const determineEditorModeByHash = (): EditorMode => {
   switch (hash) {
     case EditorModeHash.Edit:
       return EditorMode.Editor;
-    case EditorModeHash.HackMD:
-      return EditorMode.HackMD;
     default:
       return EditorMode.View;
   }
@@ -182,7 +171,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
   const { cache, mutate } = useSWRConfig();
 
   useEffect(() => {
-    if (isClient()) {
+    if (key != null) {
       const mdOrAvobeHandler = function(this: MediaQueryList): void {
         // sm -> md: matches will be true
         // md -> sm: matches will be false
@@ -210,7 +199,7 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   const { cache, mutate } = useSWRConfig();
 
   useEffect(() => {
-    if (isClient()) {
+    if (key != null) {
       const lgOrAvobeHandler = function(this: MediaQueryList): void {
         // md -> lg: matches will be true
         // lg -> md: matches will be false

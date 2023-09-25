@@ -9,7 +9,7 @@ import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import {
-  EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
+  useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
 
 
@@ -65,7 +65,7 @@ const EditorNavbarBottom = (): JSX.Element => {
   );
 
   const renderExpandButton = () => (
-    <div className="d-md-none ml-2">
+    <div className="d-md-none ms-2">
       <button
         type="button"
         className={`btn btn-outline-secondary btn-expand border-0 ${isExpanded ? 'expand' : ''}`}
@@ -76,8 +76,7 @@ const EditorNavbarBottom = (): JSX.Element => {
     </div>
   );
 
-  const isOptionsSelectorEnabled = editorMode !== EditorMode.HackMD;
-  const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
+  const isCollapsedOptionsSelectorEnabled = isDeviceSmallerThanMd;
 
   return (
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
@@ -100,26 +99,26 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
-        <form className="form-inline">
+      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
+        <form>
           { isDeviceSmallerThanMd && renderDrawerButton() }
-          { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
+          { !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
-        <form className="form-inline flex-nowrap ml-auto">
+        <form className="flex-nowrap ms-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
           {isSlackConfigured && (isDeviceSmallerThanMd ? (
             <Button
-              className="grw-btn-slack border mr-2"
+              className="grw-btn-slack border me-2"
               onClick={() => (setSlackExpanded(!isSlackExpanded))}
             >
               <div className="grw-slack-logo">
                 <SlackLogo />
-                <span className="grw-btn-slack-triangle fa fa-caret-up ml-2"></span>
+                <span className="grw-btn-slack-triangle fa fa-caret-up ms-2"></span>
               </div>
             </Button>
           ) : (
-            <div className="mr-2">
+            <div className="me-2">
               {isSlackEnabled != null
               && (
                 <SlackNotification
@@ -141,7 +140,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         <Collapse isOpen={isExpanded}>
           <div className="px-2"> {/* set padding for border-top */}
             <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
-              <form className="form-inline ml-auto">
+              <form className="ms-auto">
                 <OptionsSelector />
               </form>
             </div>

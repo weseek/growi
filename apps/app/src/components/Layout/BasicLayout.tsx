@@ -7,9 +7,8 @@ import { Button } from 'reactstrap';
 
 import { useParentPageSelectModal } from '~/stores/modal';
 
-import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import { ParentPageSelectModal } from '../ParentPageSelectModal/ParentPageSelectModal';
-import Sidebar from '../Sidebar';
+import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
@@ -17,7 +16,6 @@ import { RawLayout } from './RawLayout';
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
-// const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
 const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
@@ -30,8 +28,6 @@ const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
-// Fab
-const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
 
 
 type Props = {
@@ -48,14 +44,11 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
     <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>
-        <GrowiNavbar />
 
-        <div className="page-wrapper d-flex d-print-block">
-          <div className="grw-sidebar-wrapper">
-            <Sidebar />
-          </div>
+        <div className="page-wrapper flex-row">
+          <Sidebar />
 
-          <div className="flex-fill mw-0">
+          <div className="flex-expand-vert">{/* neccessary for nested {children} make expanded */}
             <AlertSiteUrlUndefined />
             {children}
           </div>
@@ -76,13 +69,11 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <PagePresentationModal />
       <HotkeysManager />
 
-      <Fab />
-
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
 
       <Button onClick={() => openModal()}>Open!</Button>
-      <ParentPageSelectModal/>
+      <ParentPageSelectModal />
       {/* TODO: remove unnecessary code with https://redmine.weseek.co.jp/issues/128327 */}
     </RawLayout>
   );

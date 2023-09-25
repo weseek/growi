@@ -11,7 +11,7 @@
   "Edit": "編集",
   "Description": "説明",
   "last_login": "最終ログイン",
-  "wiki_management_home_page": "Wiki管理トップ",
+  "wiki_management_homepage": "Wiki管理トップ",
   "public": "公開",
   "anyone_with_the_link": "リンクを知っている人のみ",
   "specified_users": "特定ユーザーのみ",
@@ -53,6 +53,11 @@
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
+    "user_homepage_deletion": {
+      "user_homepage_deletion": "ユーザーホームページの削除",
+      "enable_user_homepage_deletion": "ユーザー削除時にユーザーホームページを完全削除する",
+      "desc": "ユーザーを削除する際に、ユーザーホームページとその配下のページも完全削除されます。"
+    },
     "session": "セッション",
     "max_age": "有効期間 (ミリ秒)",
     "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
@@ -484,6 +489,16 @@
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
+
+    },
+    "presentation":"プレゼンテーション",
+    "presentation_options":{
+      "enable_marp": "Marp を有効化する",
+      "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
+      "marp_official_site": "参考：Marp 公式サイト",
+      "marp_official_site_link": "https://marp.app",
+      "marp_in_growi" : "参考：GROWI Docs - Marp でスライドを作成する",
+      "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
@@ -496,6 +511,7 @@
     "write_css": " システム全体に適用されるCSSを記述できます。",
     "ctrl_space": "Ctrl+Space でコード補完",
     "custom_script": "カスタムスクリプト",
+    "custom_presentation":"プレゼンテーション",
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "reflect_change": "変更の反映はページの更新が必要です。",
     "custom_logo": "カスタムロゴ",
@@ -504,7 +520,7 @@
     "current_logo": "現在のロゴ",
     "upload_new_logo": "新しいロゴをアップロードする",
     "delete_logo": "ロゴを削除"
-  },
+   },
   "importer_management": {
     "import_data": "データインポート",
     "article": "記事",
@@ -550,10 +566,6 @@
           "initialize_meta_datas": {
             "label": "「いいね」「閲覧したユーザー」「コメント数」を初期化する",
             "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "HackMD 関連データを初期化する",
-            "desc": "HackMD に重要な下書きデータがない限りはこのオプションをチェックすることを推奨します。"
           }
         },
         "revisions": {
@@ -733,7 +745,7 @@
       "description1": "メールアドレスを使用して新規ユーザーを仮発行します。",
       "description2": "初回のログイン時に使用する仮パスワードが生成されます。",
       "invite_thru_email": "招待メールを送信する",
-      "mail_setting_link": "<i class='icon-settings mr-2'></i><a href='/admin/app'>メールの設定</a>",
+      "mail_setting_link": "<i class='icon-settings me-2'></i><a href='/admin/app'>メールの設定</a>",
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
@@ -874,7 +886,7 @@
     "plugin_card": "プラグインカード",
     "plugin_is_not_installed": "プラグインがインストールされていません",
     "install": "インストール",
-    "delete": "削除"
+    "confirm": "プラグインを削除しますか？"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "GROWI.cloud の管理画面へ"
@@ -1063,5 +1075,8 @@
     "activate_plugin_success": "{{pluginName}}を有効化しました",
     "deactivate_plugin_success": "{{pluginName}}を無効化しました",
     "remove_plugin_success": "{{pluginName}}を削除しました"
+  },
+  "forbidden_page": {
+    "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません"
   }
 }

@@ -2,7 +2,7 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
@@ -32,7 +32,7 @@ const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
       <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg}
       </div>
-      <i className={`${actionIcon} mr-2`} />
+      <i className={`${actionIcon} me-2`} />
       <FormattedDistanceDate
         id={notification._id}
         date={notification.createdAt}

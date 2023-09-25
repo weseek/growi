@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { IAttachmentHasId } from '@growi/core';
-import { Attachment } from '@growi/ui/dist/components/Attachment';
+import type { IAttachmentHasId } from '@growi/core';
+import { Attachment } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
@@ -24,7 +24,7 @@ export const PageAttachmentList = (props: Props): JSX.Element => {
 
   return (
     <div>
-      <ul className="pl-2">
+      <ul className="ps-2">
         {attachments.map((attachment) => {
           return (
             <Attachment

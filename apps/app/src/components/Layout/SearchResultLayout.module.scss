@@ -1,9 +1,9 @@
 @use '~/styles/variables' as var;
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 .on-search :global {
   .page-wrapper {
-    padding-bottom: unset;
+    height: 100vh;
   }
 
   .search-control-include-options {
@@ -12,15 +12,6 @@
     }
   }
   .search-result-list {
-    .search-result-list-scroll {
-      // subtract the height of GrowiNavbar + (SearchControl component + other factors)
-      height: calc(100vh - ((var.$grw-navbar-height + var.$grw-navbar-border-width) + 110px));
-      overflow-y: scroll;
-
-      @include bs.media-breakpoint-down(sm) {
-        height: calc(100vh - ((var.$grw-navbar-height + var.$grw-navbar-border-width + var.$grw-navbar-bottom-height) + 123px));
-      }
-    }
 
     .search-result-keyword {
       font-size: 17.5px;
@@ -54,7 +45,6 @@
     }
 
     .search-result-content {
-      height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
 
       > h2 {
         margin-right: 10px;
@@ -67,30 +57,11 @@
       }
 
       .search-result-content-body-container {
-        // correct apply overflow scrolling for react-markdown on Google Chrome
-        // see: https://github.com/weseek/growi/pull/6731
-        position: relative;
-
-        overflow-y: auto;
-
         .wiki {
           padding: 16px;
           font-size: 14px;
         }
       }
-    }
-  }
-}
-
-// style to apply when displaying search page
-.on-search :global {
-  // set sidebar height shown in search page
-  $search-page-sidebar-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
-
-  .grw-sidebar {
-    height: $search-page-sidebar-height;
-    .data-layout-container {
-      height: 100%;
     }
   }
 }

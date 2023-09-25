@@ -2,8 +2,8 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
-import { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath/PagePathLabel';
+import type { HasObjectId } from '@growi/core';
+import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
@@ -44,7 +44,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
       <div className="text-truncate">
         <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
-      <i className={`${actionIcon} mr-2`} />
+      <i className={`${actionIcon} me-2`} />
       <FormattedDistanceDate
         id={notification._id}
         date={notification.createdAt}

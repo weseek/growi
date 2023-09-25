@@ -1,6 +1,6 @@
-@import './bootstrap/init' ;
-@import './variables' ;
-@import './mixins' ;
+@use '@growi/core/scss/bootstrap/init' as bs;
+@use './variables' as var;
+
 @import './organisms/wiki-custom-sidebar';
 
 // global imported
@@ -14,31 +14,20 @@
 
   // restrict height of subnav
   .grw-subnav {
-    height: $grw-subnav-height-on-edit;
+    height: var.$grw-subnav-height-on-edit;
     min-height: unset;
     padding-top: 0;
     padding-right: 15px;
     padding-left: 15px;
 
-    @include media-breakpoint-up(lg) {
-      height: $grw-subnav-height-lg-on-edit;
+    @include bs.media-breakpoint-up(lg) {
+      height: var.$grw-subnav-height-lg-on-edit;
     }
   }
 
   .page-wrapper {
-    position: relative;
-    top: $grw-navbar-border-width;
-    height: calc(100vh - #{$grw-navbar-border-width});
-  }
-
-  // calculate margin
-  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-on-edit;
-  @include expand-editor($editor-margin-top);
-
-  @include media-breakpoint-up(lg) {
-    // calculate margin
-    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-lg-on-edit;
-    @include expand-editor($editor-margin-top);
+    top: 0;
+    height: 100vh;
   }
 
   // show
@@ -51,38 +40,20 @@
     display: none !important;
   }
 
-  // hide when HackMD view
-  &.hackmd .d-hackmd-none {
-    display: none;
-  }
-
-  // show only either Edit button or HackMD button
-  &.hackmd .nav-tab-edit {
-    display: none;
-  }
-
-  &.hackmd .grw-nav-item-edit {
-    display: none;
-  }
-
-  &:not(.hackmd) .nav-tab-hackmd {
-    display: none;
-  }
-
 
   /*****************
    * Expand Editor
    *****************/
   .grw-editor-navbar-bottom {
-    height: $grw-editor-navbar-bottom-height;
+    height: var.$grw-editor-navbar-bottom-height;
 
     .grw-grant-selector {
-      @include media-breakpoint-down(sm) {
+      @include bs.media-breakpoint-down(sm) {
         .btn .label {
           display: none;
         }
       }
-      @include media-breakpoint-up(md) {
+      @include bs.media-breakpoint-up(md) {
         .dropdown-toggle {
           min-width: 100px;
 
@@ -128,20 +99,11 @@
 
     .grw-taglabels-container {
       margin-bottom: 0;
-
-      // To scroll tags horizontally
-      .grw-tag-labels.form-inline {
-        flex-flow: row nowrap;
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scrollbar-width: thin;
-      }
     }
   }
 
   // ellipsis .grw-page-path-hierarchical-link
-  .grw-subnav-left-side {
+  .grw-subnav-start-side {
     overflow: hidden;
     .grw-path-nav-container {
       margin-right: 1rem;
@@ -216,11 +178,13 @@
     }
 
     .page-editor-preview-body {
+      flex-grow: 1;
       padding: 18px 15px 0;
       overflow-y: scroll;
     }
     // editing /Sidebar
     .page-editor-preview-body.preview-sidebar {
+      flex-grow: 0;
       width: 320px;
       margin-right: auto;
       margin-left: auto;
@@ -241,36 +205,6 @@
   }
 
   // .builtin-editor .tab-pane#edit
-
-  &.hackmd {
-    .hackmd-preinit,
-    #iframe-hackmd-container > iframe {
-      border: none;
-    }
-
-    .hackmd-error {
-      top: 0;
-      background-color: rgba($gray-800, 0.8);
-    }
-
-    .hackmd-status-label {
-      font-size: 3em;
-    }
-
-    .hackmd-resume-button-container,
-    .hackmd-discard-button-container {
-      .btn-text {
-        display: inline-block;
-        min-width: 230px;
-      }
-    }
-
-    .btn-view-outdated-draft {
-      text-decoration: underline;
-      vertical-align: unset;
-    }
-  }
-
 
   /*****************
    *     Toastr
@@ -300,10 +234,10 @@
   .tooltip-inner {
     color: black;
     background-color: white;
-    border: 1px solid $gray-300;
+    border: 1px solid bs.$gray-300;
   }
 
   .tooltip-arrow {
-    border-bottom: 5px solid $gray-300;
+    border-bottom: 5px solid bs.$gray-300;
   }
 }

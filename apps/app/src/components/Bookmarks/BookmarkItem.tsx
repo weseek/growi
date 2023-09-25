@@ -2,7 +2,9 @@ import React, { useCallback, useState } from 'react';
 
 import nodePath from 'path';
 
-import { DevidedPagePath, pathUtils } from '@growi/core';
+import type { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
@@ -13,7 +15,6 @@ import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
-import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
@@ -146,7 +147,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       useDragMode={isOperable}
     >
       <li
-        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
+        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 me-auto d-flex align-items-center"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
         style={{ paddingLeft }}
@@ -163,7 +164,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
           )
           : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}
 
-        <div className='grw-foldertree-control'>
+        <div className="grw-foldertree-control">
           <PageItemControl
             pageId={bookmarkedPage._id}
             isEnableActions
@@ -178,14 +179,13 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler} />
               : undefined}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
               <i className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
         </div>
 
         <UncontrolledTooltip
-          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
           autohide={false}
           placement="right"
           target={bookmarkItemId}

@@ -20,7 +20,7 @@ GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
 - 一旦我们完成了，按 "**更新**"按钮来发布页面。
     - 我们也可以通过`Ctrl(⌘) + S`来保存。
 
-了解更多信息: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
+了解更多信息: [Create page](https://docs.growi.org/en/guide/features/create_page.html)
 
 <div class="mt-4 card border-primary">
   <div class="card-header bg-primary text-light">
@@ -58,7 +58,7 @@ GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
 
 # Slack
 
-<a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
 
 我们欢迎新人加入我们的slack频道，帮助改善Growi。
 除了讨论发展问题，我们也很乐意在你加入时回答你的问题。

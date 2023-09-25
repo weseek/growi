@@ -21,7 +21,6 @@ import { registerTransformerForObjectId } from './utils/objectid-transformer';
 import '~/styles/prebuilt/vendor.css';
 import '~/styles/font-icons.scss';
 import '~/styles/style-app.scss';
-import '~/styles/prebuilt/apply-colors.css';
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -81,7 +80,8 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
           --font-family-serif: Georgia, 'Times New Roman', Times, serif;
           --font-family-monospace: monospace, ${sourceHanCodeJPSubsetMain.style.fontFamily}, ${sourceHanCodeJPSubsetJis2.style.fontFamily};
         }
-      `}</style>
+      `}
+      </style>
       <SWRConfig value={swrGlobalConfiguration}>
         {getLayout(<Component {...pageProps} />)}
       </SWRConfig>

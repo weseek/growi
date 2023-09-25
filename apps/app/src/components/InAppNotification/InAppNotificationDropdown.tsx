@@ -75,18 +75,18 @@ export const InAppNotificationDropdown = (): JSX.Element => {
 
   let badge;
   if (inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
-    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
+    badge = <span className="badge rounded-pill bg-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
   }
   else {
     badge = '';
   }
 
   return (
-    <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler}>
-      <DropdownToggle className="px-3 nav-link border-0 bg-transparent" innerRef={buttonRef}>
+    <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler} direction="end">
+      <DropdownToggle className="px-3" color="primary" innerRef={buttonRef}>
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
-      <DropdownMenu right>
+      <DropdownMenu end>
         { inAppNotificationData != null && inAppNotificationData.docs.length === 0
           // no items
           ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>

@@ -1,0 +1,29 @@
+@use '../bootstrap/init' as *;
+
+//
+// Border
+//
+
+.border {
+  border: $border-width solid $border-color !important;
+}
+
+.border-top {
+  border-top: $border-width solid $border-color !important;
+}
+
+.border-end {
+  border-right: $border-width solid $border-color !important;
+}
+
+.border-bottom {
+  border-bottom: $border-width solid $border-color !important;
+}
+
+.border-start {
+  border-left: $border-width solid $border-color !important;
+}
+
+.border-info {
+  border-color: $info !important;
+}

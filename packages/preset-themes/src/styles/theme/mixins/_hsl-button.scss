@@ -1,4 +1,5 @@
-@use '../../bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 @use '../hsl-functions' as hsl;
 
 // @mixin button-variant($background, $border, $hover-background: darken($background, 7.5%), $hover-border: darken($border, 10%), $active-background: darken($background, 10%), $active-border: darken($border, 12.5%)) {
@@ -11,7 +12,7 @@
   border-color: $border;
   // @include box-shadow($btn-box-shadow);
 
-  @include bs.hover() {
+  &:hover {
     color: hsl.contrast($background);
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
@@ -22,6 +23,8 @@
     color: hsl.contrast($background);
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
+    // TODO: color-yiq() to color-contrast()
+    // https://redmine.weseek.co.jp/issues/128307
     // @if $enable-shadows {
     //   @include box-shadow($btn-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5));
     // } @else {
@@ -54,6 +57,8 @@
   //   }
   //   border-color: $active-border;
 
+  // TODO: color-yiq() to color-contrast()
+  // https://redmine.weseek.co.jp/issues/128307
   //   &:focus {
   //     // @if $enable-shadows and $btn-active-box-shadow != none {
   //     //   @include box-shadow($btn-active-box-shadow, 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5));
@@ -70,7 +75,7 @@
   color: $color;
   border-color: $color;
 
-  @include bs.hover() {
+  &:hover {
     color: $color-hover;
     background-color: $active-background;
     border-color: $active-border;
@@ -111,7 +116,7 @@
     fill: hsl.contrast($background);
   }
 
-  @include bs.hover() {
+  &:hover {
     svg {
       fill: hsl.contrast($background);
     }

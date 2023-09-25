@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { isPopulated } from '@growi/core';
+import type { IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -9,8 +10,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { IPageGrantData } from '~/interfaces/page';
-import { IUserGroupHasId } from '~/interfaces/user';
+import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
 
@@ -137,7 +137,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     return (
-      <div className="form-group grw-grant-selector mb-0" data-testid="grw-grant-selector">
+      <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
         <UncontrolledDropdown direction="up">
           <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}

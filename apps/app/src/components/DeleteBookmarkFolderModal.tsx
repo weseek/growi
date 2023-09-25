@@ -46,9 +46,9 @@ const DeleteBookmarkFolderModal: FC = () => {
         {t('bookmark_folder.delete_modal.modal_header_label')}
       </ModalHeader>
       <ModalBody>
-        <div className="form-group pb-1">
-          <label>{ t('bookmark_folder.delete_modal.modal_body_description') }:</label><br />
-          <FolderIcon isOpen={false}/> {deleteBookmarkFolderModalData?.bookmarkFolder?.name}
+        <div className="pb-1">
+          <label className="form-label">{ t('bookmark_folder.delete_modal.modal_body_description') }:</label><br />
+          <FolderIcon isOpen={false} /> {deleteBookmarkFolderModalData?.bookmarkFolder?.name}
         </div>
         {t('bookmark_folder.delete_modal.modal_body_alert')}
       </ModalBody>
@@ -58,7 +58,7 @@ const DeleteBookmarkFolderModal: FC = () => {
           className="btn btn-danger"
           onClick={onClickDeleteButton}
         >
-          <i className="mr-1 icon-trash" aria-hidden="true"></i>
+          <i className="me-1 icon-trash" aria-hidden="true"></i>
           {t('bookmark_folder.delete_modal.modal_footer_button')}
         </button>
       </ModalFooter>

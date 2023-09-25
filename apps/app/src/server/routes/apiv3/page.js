@@ -1,6 +1,8 @@
 import {
-  pagePathUtils, AllSubscriptionStatusType, SubscriptionStatusType, ErrorV3,
+  AllSubscriptionStatusType, SubscriptionStatusType,
 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
+import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -16,7 +18,6 @@ const express = require('express');
 const { body, query, param } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 
 /**
  * @swagger
@@ -167,7 +168,7 @@ module.exports = (crowi) => {
   const configManager = crowi.configManager;
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
+  const { Page, GlobalNotificationSetting } = crowi.models;
   const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');
@@ -702,87 +703,6 @@ module.exports = (crowi) => {
     }
 
   });
-
-  // TODO GW-2746 bulk export pages
-  // /**
-  //  * @swagger
-  //  *
-  //  *    /page/archive:
-  //  *      post:
-  //  *        tags: [Page]
-  //  *        summary: /page/archive
-  //  *        description: create page archive
-  //  *        requestBody:
-  //  *          content:
-  //  *            application/json:
-  //  *              schema:
-  //  *                properties:
-  //  *                  rootPagePath:
-  //  *                    type: string
-  //  *                    description: path of the root page
-  //  *                  isCommentDownload:
-  //  *                    type: boolean
-  //  *                    description: whether archive data contains comments
-  //  *                  isAttachmentFileDownload:
-  //  *                    type: boolean
-  //  *                    description: whether archive data contains attachments
-  //  *                  isSubordinatedPageDownload:
-  //  *                    type: boolean
-  //  *                    description: whether archive data children pages
-  //  *                  fileType:
-  //  *                    type: string
-  //  *                    description: file type of archive data(.md, .pdf)
-  //  *                  hierarchyType:
-  //  *                    type: string
-  //  *                    description: method of select children pages archive data contains('allSubordinatedPage', 'decideHierarchy')
-  //  *                  hierarchyValue:
-  //  *                    type: number
-  //  *                    description: depth of hierarchy(use when hierarchyType is 'decideHierarchy')
-  //  *        responses:
-  //  *          200:
-  //  *            description: create page archive
-  //  *            content:
-  //  *              application/json:
-  //  *                schema:
-  //  *                  $ref: '#/components/schemas/Page'
-  //  */
-  // router.post('/archive', accessTokenParser, loginRequired, validator.archive, apiV3FormValidator, async(req, res) => {
-  //   const PageArchive = crowi.model('PageArchive');
-
-  //   const {
-  //     rootPagePath,
-  //     isCommentDownload,
-  //     isAttachmentFileDownload,
-  //     fileType,
-  //   } = req.body;
-  //   const owner = req.user._id;
-
-  //   const numOfPages = 1; // TODO 最終的にzipファイルに取り込むページ数を入れる
-
-  //   const createdPageArchive = PageArchive.create({
-  //     owner,
-  //     fileType,
-  //     rootPagePath,
-  //     numOfPages,
-  //     hasComment: isCommentDownload,
-  //     hasAttachment: isAttachmentFileDownload,
-  //   });
-
-  //   console.log(createdPageArchive);
-  //   return res.apiv3({ });
-
-  // });
-
-  // router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
-
-  //   // TO DO implement correct number at another task
-
-  //   const { pageId } = req.query;
-  //   console.log(pageId);
-
-  //   const dummy = 6;
-  //   return res.apiv3({ dummy });
-  // });
 
   /**
    * @swagger

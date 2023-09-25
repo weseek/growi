@@ -1,9 +1,8 @@
 import React, { FC, useCallback, useState } from 'react';
 
+import type { IUserGroupHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
-
-import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   userGroup: IUserGroupHasId,
@@ -64,14 +63,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
 
         {
           userGroup?.createdAt != null && (
-            <div className="form-group row">
+            <div className="row">
               <p className="col-md-2 col-form-label">{t('Created')}</p>
               <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
             </div>
           )
         }
 
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('user_group_management.group_name')}
           </label>
@@ -88,7 +87,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="description" className="col-md-2 col-form-label">
             {t('Description')}
           </label>
@@ -97,7 +96,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <label htmlFor="parent" className="col-md-2 col-form-label">
             {t('user_group_management.parent_group')}
           </label>
@@ -105,7 +104,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
             <button
               type="button"
               id="dropdownMenuButton"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               className={`
                 btn btn-outline-secondary dropdown-toggle mb-3 ${isSelectableParentUserGroups ? '' : 'disabled'}
               `}
@@ -144,7 +143,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <div className="offset-md-2 col-md-10">
             <button type="submit" className="btn btn-primary">
               {submitButtonLabel}

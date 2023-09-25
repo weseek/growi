@@ -2,12 +2,12 @@ import React, {
   FC, useCallback, useState, useMemo,
 } from 'react';
 
+import type { IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { IUserGroupHasId } from '~/interfaces/user';
 
 /**
  * Delete User Group Select component
@@ -188,7 +188,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalHeader>
       <ModalBody>
         <div>
-          <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
+          <span className="fw-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
         </div>
         <div className="text-danger mt-3">
           {t('admin:user_group_management.delete_modal.desc')}
@@ -196,7 +196,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <form className="d-flex justify-content-between w-100" onSubmit={handleSubmit}>
-          <div className="d-flex form-group mb-0">
+          <div className="d-flex mb-0">
             {renderPageActionSelector()}
             {renderGroupSelector()}
           </div>

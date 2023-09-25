@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
@@ -98,9 +98,9 @@ class UserGroupUserFormByInput extends React.Component {
     return (
       <>
         <UserPicture user={user} size="sm" noLink noTooltip />
-        <strong className="ml-2">{user.username}</strong>
-        {isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
-        {isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+        <strong className="ms-2">{user.username}</strong>
+        {isAlsoNameSearched && <span className="ms-2">{user.name}</span>}
+        {isAlsoMailSearched && <span className="ms-2">{user.email}</span>}
       </>
     );
   }
@@ -115,8 +115,8 @@ class UserGroupUserFormByInput extends React.Component {
     const inputProps = { autoComplete: 'off' };
 
     return (
-      <div className="form-group row">
-        <div className="col-8 pr-0">
+      <div className="row">
+        <div className="col-8 pe-0">
           <AsyncTypeahead
             {...this.props}
             id="name-typeahead-asynctypeahead"
@@ -136,7 +136,7 @@ class UserGroupUserFormByInput extends React.Component {
             clearButton
           />
         </div>
-        <div className="col-2 pl-0">
+        <div className="col-2 ps-0">
           <button
             type="button"
             className="btn btn-success"

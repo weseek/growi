@@ -81,16 +81,16 @@ const UserManagement = (props: UserManagementProps) => {
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
-      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} mr-2`}>
+      <div className={`form-check form-check-${statusColor} me-2`}>
         <input
-          className="custom-control-input"
+          className="form-check-input"
           type="checkbox"
           id={`c_${status}`}
           checked={adminUsersContainer.isSelected(status)}
           onChange={() => clickHandler(status)}
         />
-        <label className="custom-control-label" htmlFor={`c_${status}`}>
-          <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
+        <label className="form-label form-check-label" htmlFor={`c_${status}`}>
+          <span className={`badge rounded-pill bg-${statusColor} d-inline-block vt mt-1`}>
             {statusLabel}
           </span>
         </label>
@@ -125,10 +125,10 @@ const UserManagement = (props: UserManagementProps) => {
         <InviteUserControl />
         <Link
           href="/admin/users/external-accounts"
-          className="btn btn-outline-secondary ml-2"
+          className="btn btn-outline-secondary ms-2"
           role="button"
         >
-          <i className="icon-user-follow mr-1" aria-hidden="true"></i>
+          <i className="icon-user-follow me-1" aria-hidden="true"></i>
           {t('admin:user_management.external_account')}
         </Link>
       </p>
@@ -138,7 +138,7 @@ const UserManagement = (props: UserManagementProps) => {
 
         <div className="row d-flex justify-content-start align-items-center my-2">
           <div className="col-md-3 d-flex align-items-center my-2">
-            <i className="icon-magnifier mr-1"></i>
+            <i className="icon-magnifier me-1"></i>
             <span className={`search-typeahead ${styles['search-typeahead']}`}>
               <input
                 className="w-100"
@@ -165,11 +165,11 @@ const UserManagement = (props: UserManagementProps) => {
           </div>
 
           <div className="offset-md-1 col-md-6 my-2">
-            <div className="form-inline">
+            <div>
               {renderCheckbox('all', 'All', 'secondary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}
-              {renderCheckbox('suspended', 'Suspended', 'warning')}
+              {renderCheckbox('suspended', 'Suspended', 'warning text-dark')}
               {renderCheckbox('invited', 'Invited', 'pink')}
             </div>
             <div>
@@ -183,7 +183,7 @@ const UserManagement = (props: UserManagementProps) => {
               className="btn btn-outline-secondary btn-sm"
               onClick={resetButtonClickHandler}
             >
-              <span className="icon-refresh mr-1"></span>
+              <span className="icon-refresh me-1"></span>
               {t('commons:Reset')}
             </button>
           </div>

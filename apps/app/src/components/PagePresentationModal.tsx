@@ -8,6 +8,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
+import { useIsEnabledMarp } from '~/stores/context';
 import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
@@ -34,6 +35,8 @@ const PagePresentationModal = (): JSX.Element => {
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePresentationViewOptions();
+
+  const { data: isEnabledMarp } = useIsEnabledMarp();
 
   const toggleFullscreenHandler = useCallback(() => {
     if (fullscreen.active) {
@@ -67,15 +70,17 @@ const PagePresentationModal = (): JSX.Element => {
       className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
     >
       <div className="grw-presentation-controls d-flex">
-        <button className="close btn-fullscreen" type="button" aria-label="fullscreen" onClick={toggleFullscreenHandler}>
-          <i className={`${fullscreen.active ? 'icon-size-actual' : 'icon-size-fullscreen'}`} aria-hidden></i>
+        <button
+          className={`btn ${fullscreen.active ? 'icon-size-actual' : 'icon-size-fullscreen'}`}
+          type="button"
+          aria-label="fullscreen"
+          onClick={toggleFullscreenHandler}
+        >
         </button>
-        <button className="close btn-close" type="button" aria-label="close" onClick={closeHandler}>
-          <i className="ti ti-close" aria-hidden></i>
-        </button>
+        <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
-        { rendererOptions != null && (
+        { rendererOptions != null && isEnabledMarp != null && (
           <Presentation
             options={{
               rendererOptions: rendererOptions as ReactMarkdownOptions,
@@ -85,6 +90,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
+            isEnabledMarp={isEnabledMarp}
           >
             {markdown}
           </Presentation>

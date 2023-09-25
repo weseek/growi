@@ -1,4 +1,3 @@
-@use '~/styles/variables' as var;
 @use '~/styles/mixins' as *;
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
@@ -18,7 +17,7 @@ $grw-pagetree-item-container-height: 40px;
   }
 
   :global {
-    min-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+    min-height: calc(100vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
     .btn-page-item-control {
       .icon-plus::before {
@@ -42,7 +41,7 @@ $grw-pagetree-item-container-height: 40px;
       }
 
       .grw-pagetree-triangle-btn {
-        background-color: transparent;
+        border: 0;
         transition: all 0.2s ease-out;
         transform: rotate(0deg);
 
@@ -68,7 +67,9 @@ $grw-pagetree-item-container-height: 40px;
 
     .grw-pagetree-item-container {
       .grw-triangle-container {
-        min-width: 35px;
+        // TODO: ignore width frickering
+        // https://redmine.weseek.co.jp/issues/130828
+        // min-width: 35px;
         height: $grw-pagetree-item-container-height;
       }
     }
@@ -150,5 +151,12 @@ $grw-pagetree-item-container-height: 40px;
         }
       }
     }
+  }
+}
+
+
+.grw-pagetree :global {
+  .grw-pagetree-triangle-btn {
+    --btn-color: var(--bs-tertiary-color);
   }
 }

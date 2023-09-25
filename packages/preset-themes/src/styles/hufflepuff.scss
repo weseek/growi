@@ -1,5 +1,6 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -16,7 +17,7 @@
 
 //== Light Mode
 //
-:root[data-theme='light'] {
+:root[data-bs-theme='light'] {
   // Theme colors
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 41,83%;
@@ -32,8 +33,8 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 36,50%;
   --bgcolor-global-l: 97%;
-  --bgcolor-inline-code: #{$gray-100}; //optional
-  --bgcolor-card: #{$gray-100};
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
+  --bgcolor-card: #{bs.$gray-100};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
   --bgcolor-keyword-highlighted: $grw-marker-green;
 
@@ -72,7 +73,7 @@
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: #{lighten(desaturate($gray-100, 10%), 15%)};
+  --fillcolor-logo-mark: #{lighten(desaturate(bs.$gray-100, 10%), 15%)};
 
   // Sidebar
   --bgcolor-sidebar: var(--primary);
@@ -111,7 +112,7 @@
   --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  --bgcolor-dropdown-link-active: #{$growi-blue};
+  --bgcolor-dropdown-link-active: #{var.$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.darken(var(--primary), 5%)};
@@ -181,7 +182,7 @@
   }
 }
 
-:root[data-theme='dark'] {
+:root[data-bs-theme='dark'] {
   // Theme colors
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 41,83%;
@@ -204,13 +205,13 @@
   --bgcolor-inline-code: var(--subthemecolor);
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 50%)};
-  --bgcolor-keyword-highlighted: #{darken($grw-marker-cyan, 40%)};
+  --bgcolor-keyword-highlighted: #{darken(var.$grw-marker-cyan, 40%)};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 36,50%;
   --color-global-l: 87%;
-  --color-reversal: #{$gray-100};
+  --color-reversal: #{bs.$gray-100};
   --color-link: #{hsl.lighten(var(--primary), 30%)};
   --color-link-hs: var(--primary-hs);
   --color-link-l: calc(var(--primary-l) + 30%);

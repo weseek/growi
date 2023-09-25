@@ -58,22 +58,22 @@ class LdapSecuritySettingContents extends React.Component {
           LDAP
         </h2>
 
-        <div className="form-group row">
+        <div className="row">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isLdapEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={isLdapEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsLdapEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="isLdapEnabled">
+              <label className="form-label form-check-label" htmlFor="isLdapEnabled">
                 {t('security_settings.ldap.enable_ldap')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('ldap') && isLdapEnabled)
-              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -83,8 +83,8 @@ class LdapSecuritySettingContents extends React.Component {
 
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
-            <div className="form-group row">
-              <label htmlFor="serverUrl" className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label htmlFor="serverUrl" className="text-start text-md-end col-md-3 col-form-label">
                 Server URL
               </label>
               <div className="col-md-6">
@@ -106,8 +106,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong>{t('security_settings.ldap.bind_mode')}</strong>
               </label>
               <div className="col-md-6">
@@ -116,7 +116,7 @@ class LdapSecuritySettingContents extends React.Component {
                     className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="true"
                   >
@@ -136,8 +136,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong>Bind DN</strong>
               </label>
               <div className="col-md-6">
@@ -171,13 +171,13 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <div htmlFor="bindDNPassword" className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <div htmlFor="bindDNPassword" className="text-start text-md-end col-md-3 col-form-label">
                 <strong>{t('security_settings.ldap.bind_DN_password')}</strong>
               </div>
               <div className="col-md-6">
                 {(adminLdapSecurityContainer.state.isUserBind) ? (
-                  <p className="well card passport-ldap-userbind">
+                  <p className="card custom-card passport-ldap-userbind">
                     <small>
                       {t('security_settings.ldap.bind_DN_password_user_detail')}
                     </small>
@@ -185,7 +185,7 @@ class LdapSecuritySettingContents extends React.Component {
                 )
                   : (
                     <>
-                      <p className="well card passport-ldap-managerbind">
+                      <p className="card custom-card passport-ldap-managerbind">
                         <small>
                           {t('security_settings.ldap.bind_DN_password_manager_detail')}
                         </small>
@@ -202,8 +202,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong>{t('security_settings.ldap.search_filter')}</strong>
               </label>
               <div className="col-md-6">
@@ -238,8 +238,8 @@ class LdapSecuritySettingContents extends React.Component {
               Attribute Mapping ({t('security_settings.optional')})
             </h3>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong htmlFor="attrMapUsername">{t('username')}</strong>
               </label>
               <div className="col-md-6">
@@ -258,18 +258,18 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
+            <div className="row">
               <div className="offset-md-3 col-md-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="isSameUsernameTreatedAsIdenticalUser"
                     checked={adminLdapSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
                     onChange={() => { adminLdapSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="isSameUsernameTreatedAsIdenticalUser"
                     // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
@@ -282,8 +282,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong htmlFor="attrMapMail">{t('Email')}</strong>
               </label>
               <div className="col-md-6">
@@ -303,8 +303,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong htmlFor="attrMapName">{t('Name')}</strong>
               </label>
               <div className="col-md-6">
@@ -328,8 +328,8 @@ class LdapSecuritySettingContents extends React.Component {
               {t('security_settings.ldap.group_search_filter')} ({t('security_settings.optional')})
             </h3>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong htmlFor="groupSearchBase">{t('security_settings.ldap.group_search_base_DN')}</strong>
               </label>
               <div className="col-md-6">
@@ -350,8 +350,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong htmlFor="groupSearchFilter">{t('security_settings.ldap.group_search_filter')}</strong>
               </label>
               <div className="col-md-6">
@@ -381,8 +381,8 @@ class LdapSecuritySettingContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label className="form-label text-start text-md-end col-md-3 col-form-label">
                 <strong htmlFor="groupDnProperty">{t('security_settings.ldap.group_search_user_DN_property')}</strong>
               </label>
               <div className="col-md-6">
@@ -412,7 +412,7 @@ class LdapSecuritySettingContents extends React.Component {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-outline-secondary ml-2"
+                  className="btn btn-outline-secondary ms-2"
                   onClick={this.openLdapAuthTestModal}
                 >{t('security_settings.ldap.test_config')}
                 </button>

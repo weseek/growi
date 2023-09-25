@@ -2,7 +2,7 @@ import React, {
   useState, useMemo, useCallback,
 } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -19,7 +19,7 @@ const { encodeSpaces } = pagePathUtils;
 const DropdownItemContents = ({ title, contents }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
-    <div className="card well mb-1 p-2">{contents}</div>
+    <div className="card custom-card mb-1 p-2">{contents}</div>
   </>
 );
 /* eslint-enable react/prop-types */
@@ -119,8 +119,7 @@ const CopyDropdown = (props) => {
         </DropdownToggle>
 
         <DropdownMenu
-          positionFixed
-          modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
+          strategy="fixed"
           style={{ zIndex: 1016 }} /* zIndex: 1016 // larger than z-index value of grw-subnav-fixed-container in GrowiSubNavigationSwitcher.module.scss */
         >
           <div className="d-flex align-items-center justify-content-between">
@@ -128,15 +127,15 @@ const CopyDropdown = (props) => {
               { t('copy_to_clipboard.Copy to clipboard') }
             </DropdownItem>
             { !isShareLinkMode && (
-              <div className="px-3 custom-control custom-switch custom-switch-sm">
+              <div className="px-3 form-check form-switch form-switch-sm">
                 <input
                   type="checkbox"
                   id={customSwitchForParamsId}
-                  className="custom-control-input"
+                  className="form-check-input"
                   checked={isParamsAppended}
                   onChange={toggleAppendParams}
                 />
-                <label className="custom-control-label small" htmlFor={customSwitchForParamsId}>Append params</label>
+                <label className="form-label form-check-label small" htmlFor={customSwitchForParamsId}>Append params</label>
               </div>
             ) }
           </div>

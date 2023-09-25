@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-growi-directive",
-  "version": "6.1.11-RC.0",
+  "version": "7.0.0-RC.0",
   "description": "remark plugin to support GROWI plugin (forked from remark-directive@2.0.1)",
   "license": "MIT",
   "keywords": [
@@ -54,7 +54,6 @@
     "tape": "^5.0.0",
     "to-vfile": "^7.0.0",
     "type-coverage": "^2.0.0",
-    "typescript": "^4.0.0",
     "unist-util-remove-position": "^4.0.0"
   },
   "typeCoverage": {

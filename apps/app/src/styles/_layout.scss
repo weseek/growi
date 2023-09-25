@@ -1,5 +1,19 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core/scss/flex-expand';
+
 @use './variables' as var;
-@use './bootstrap/init' as bs;
+
+.flex-expand-horiz {
+  @extend %flex-expand-horiz;
+}
+
+.flex-expand-vert {
+  @extend %flex-expand-vert;
+}
+
+.dynamic-layout-root {
+  @extend %flex-expand-vert;
+}
 
 .dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
   width: 100%;
@@ -24,6 +38,11 @@
 .grw-scrollable-modal-body {
   max-height: calc(100vh - 330px);
   overflow-y: scroll;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 // padding settings for GrowiNavbarBottom

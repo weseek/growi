@@ -58,8 +58,8 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       <>
         { loginErrors != null && loginErrors.length > 0 ? (
           <p className="alert alert-danger">
-            { loginErrors.map((err, index) => {
-              return <span key={index}>{ t(err.message) }<br/></span>;
+            { loginErrors.map((err) => {
+              return <span>{ t(err.message) }<br /></span>;
             }) }
           </p>
         ) : (
@@ -82,7 +82,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
-          <div className="input-group-prepend">
+          <div>
             <span className="input-group-text">
               <i className="icon-envelope"></i>
             </span>
@@ -99,7 +99,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* UserID Form */}
         <div className="input-group" id="input-group-username">
-          <div className="input-group-prepend">
+          <div>
             <span className="input-group-text">
               <i className="icon-user"></i>
             </span>
@@ -115,7 +115,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Name Form */}
         <div className="input-group">
-          <div className="input-group-prepend">
+          <div>
             <span className="input-group-text">
               <i className="icon-tag"></i>
             </span>
@@ -131,7 +131,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Password Form */}
         <div className="input-group">
-          <div className="input-group-prepend">
+          <div>
             <span className="input-group-text">
               <i className="icon-lock"></i>
             </span>
@@ -149,7 +149,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
             <div className="eff"></div>
-            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
+            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
             <span className="btn-label-text">{t('Create')}</span>
           </button>
         </div>

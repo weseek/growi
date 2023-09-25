@@ -35,14 +35,14 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
       <div className="row">
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_script')}</h2>
-          <Card className="card well">
+          <Card className="card custom-card">
             <CardBody className="px-0 py-2">
               {t('admin:customize_settings.write_java')}<br />
               {t('admin:customize_settings.reflect_change')}
             </CardBody>
           </Card>
 
-          <div className="form-group">
+          <div>
             <textarea
               className="form-control"
               name="customizeScript"
@@ -51,20 +51,28 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
               onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <span className="form-text text-muted text-right">
+            <span className="form-text text-muted text-end">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
               {t('admin:customize_settings.ctrl_space')}
             </span>
             */}
           </div>
 
-          <a className="text-muted"
-            data-toggle="collapse" href="#collapseExampleScript" role="button" aria-expanded="false" aria-controls="collapseExampleScript">
+          <a
+            className="text-muted"
+            data-bs-toggle="collapse"
+            href="#collapseExampleScript"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseExampleScript"
+          >
             <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleScript">
-            <PrismAsyncLight style={oneDark} language={'javascript'}
+            <PrismAsyncLight
+              style={oneDark}
+              language="javascript"
             >
               {`(function(w,d,s,l,i){
 w[l]=w[l]||[];

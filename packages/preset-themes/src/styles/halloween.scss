@@ -1,5 +1,6 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -16,7 +17,7 @@ $bordercolor: #7e0d7e;
 }
 
 
-:root[data-theme='dark'] {
+:root[data-bs-theme='dark'] {
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 25,95%;
   --primary-l: 34%;
@@ -109,7 +110,7 @@ $bordercolor: #7e0d7e;
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --border-color-theme: #{bs.$gray-300}; // former: `$navbar-border: $gray-300;`
   --bordercolor-inline-code: #4d4d4d; // optional
 
   // admin theme box

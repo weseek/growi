@@ -1,4 +1,3 @@
-import UpdatePost from '~/server/models/update-post';
 import { toArrayFromCsv } from '~/utils/to-array-from-csv';
 
 

@@ -64,21 +64,21 @@ class LocalSecuritySettingContents extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="isLocalEnabled"
                 checked={isLocalEnabled}
                 onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
                 disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="custom-control-label" htmlFor="isLocalEnabled">
+              <label className="form-label form-check-label" htmlFor="isLocalEnabled">
                 {t('security_settings.Local.enable_local')}
               </label>
             </div>
             {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled && (
-              <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
+              <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>
             )}
           </div>
         </div>
@@ -88,7 +88,7 @@ class LocalSecuritySettingContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row">
-              <div className="col-12 col-md-3 text-left text-md-right py-2">
+              <div className="col-12 col-md-3 text-start text-md-end py-2">
                 <strong>{t('security_settings.register_limitation')}</strong>
               </div>
               <div className="col-12 col-md-6">
@@ -97,7 +97,7 @@ class LocalSecuritySettingContents extends React.Component {
                     className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="true"
                   >
@@ -139,7 +139,7 @@ class LocalSecuritySettingContents extends React.Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-12 col-md-3 text-left text-md-right">
+              <div className="col-12 col-md-3 text-start text-md-end">
                 <strong dangerouslySetInnerHTML={{ __html: t('security_settings.The whitelist of registration permission E-mail address') }} />
               </div>
               <div className="col-12 col-md-6">
@@ -163,17 +163,17 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
+              <label className="col-12 col-md-3 text-start text-md-end  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="isPasswordResetEnabled"
                     checked={isPasswordResetEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
-                  <label className="custom-control-label" htmlFor="isPasswordResetEnabled">
+                  <label className="form-label form-check-label" htmlFor="isPasswordResetEnabled">
                     {t('security_settings.Local.enable_password_reset_by_users')}
                   </label>
                 </div>
@@ -192,17 +192,17 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.email_authentication')}</label>
+              <label className="col-12 col-md-3 text-start text-md-end  col-form-label">{t('security_settings.Local.email_authentication')}</label>
               <div className="col-12 col-md-6">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id="isEmailAuthenticationEnabled"
                     checked={isEmailAuthenticationEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsEmailAuthenticationEnabled()}
                   />
-                  <label className="custom-control-label" htmlFor="isEmailAuthenticationEnabled">
+                  <label className="form-label form-check-label" htmlFor="isEmailAuthenticationEnabled">
                     {t('security_settings.Local.enable_email_authentication')}
                   </label>
                 </div>

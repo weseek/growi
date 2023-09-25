@@ -19,7 +19,7 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
 - 書けたら "**更新**" ボタンを押してページを公開しましょう
     - `Ctrl(⌘) + S` でも保存できます
 
-さらに詳しくはこちら: [チュートリアル#新規ページ作成](https://docs.growi.org/ja/guide/tutorial/create_page.html#新規ページ作成)
+さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
 
 <div class="mt-4 card border-primary">
   <div class="card-header bg-primary text-light">Tips</div>
@@ -54,7 +54,7 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
 
 # Slack
 
-<a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
 
 GROWI をより良いものにするために、是非 Slack に参加してください。  
 開発に関する議論を行っている他、導入時の質問等も受け付けています。

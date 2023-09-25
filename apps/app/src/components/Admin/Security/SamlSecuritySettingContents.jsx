@@ -1,7 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
@@ -64,28 +64,28 @@ class SamlSecurityManagementContents extends React.Component {
           />
         )}
 
-        <div className="row form-group mb-5">
+        <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isSamlEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isSamlEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
-              <label className="custom-control-label" htmlFor="isSamlEnabled">
+              <label className="form-label form-check-label" htmlFor="isSamlEnabled">
                 {t('security_settings.SAML.enable_saml')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
-              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
+        <div className="row mb-5">
+          <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -204,7 +204,7 @@ class SamlSecurityManagementContents extends React.Component {
                     <div>
                       <small>
                         e.g.
-                        <pre className="well card">{`-----BEGIN CERTIFICATE-----
+                        <pre className="card custom-card">{`-----BEGIN CERTIFICATE-----
 MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
 UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
 ...
@@ -390,18 +390,18 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
-            <div className="row form-group mb-5">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+            <div className="row mb-5">
+              <div className="offset-md-3 col-md-6 text-start">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByUserName-SAML"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-label form-check-label"
                     htmlFor="bindByUserName-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
@@ -412,18 +412,18 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </div>
             </div>
 
-            <div className="row form-group mb-5">
-              <div className="offset-md-3 col-md-6 text-left">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+            <div className="row mb-5">
+              <div className="offset-md-3 col-md-6 text-start">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByEmail-SAML"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-label form-check-label"
                     htmlFor="bindByEmail-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />
@@ -474,23 +474,21 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
                         </a>.
                       </p>
-                      <div className="accordion" id="accordionExample">
-                        <div className="card">
-                          <div className="card-header p-1">
-                            <h2 className="mb-0">
-                              <button
-                                className="btn btn-link btn-block text-left"
-                                type="button"
-                                onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
-                                aria-expanded="true"
-                                aria-controls="ablchelp"
-                              >
-                                <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
-                              </button>
-                            </h2>
-                          </div>
+                      <div className="accordion" id="accordionId">
+                        <div className="accordion-item p-1">
+                          <h2 className="accordion-header">
+                            <button
+                              className="btn btn-link text-start"
+                              type="button"
+                              onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
+                              aria-expanded="true"
+                              aria-controls="ablchelp"
+                            >
+                              <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                            </button>
+                          </h2>
                           <Collapse isOpen={this.state.isHelpOpened}>
-                            <div className="card-body">
+                            <div className="accordion-body">
                               <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_help') }} />
                               <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_example1') }} />
                               <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_example2') }} />

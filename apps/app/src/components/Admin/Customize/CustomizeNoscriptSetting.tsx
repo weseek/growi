@@ -36,7 +36,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_noscript')}</h2>
 
-          <Card className="card well my-3">
+          <Card className="card custom-card my-3">
             <CardBody className="px-0 py-2">
               <span
                 // eslint-disable-next-line react/no-danger
@@ -45,7 +45,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
             </CardBody>
           </Card>
 
-          <div className="form-group">
+          <div>
             <textarea
               className="form-control"
               name="customizeNoscript"
@@ -54,20 +54,28 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
               onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <span className="form-text text-muted text-right">
+            <span className="form-text text-muted text-end">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
               {t('admin:customize_settings.ctrl_space')}
             </span>
             */}
           </div>
 
-          <a className="text-muted"
-            data-toggle="collapse" href="#collapseExampleHtml" role="button" aria-expanded="false" aria-controls="collapseExampleHtml">
+          <a
+            className="text-muted"
+            data-bs-toggle="collapse"
+            href="#collapseExampleHtml"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseExampleHtml"
+          >
             <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleHtml">
-            <PrismAsyncLight style={oneDark} language={'javascript'}
+            <PrismAsyncLight
+              style={oneDark}
+              language="javascript"
             >
               {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
   height="0"

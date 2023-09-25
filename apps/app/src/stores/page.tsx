@@ -1,50 +1,54 @@
 import { useEffect, useMemo } from 'react';
 
 import type {
-  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable, SWRInfinitePageRevisionsResponse,
+  Ref, Nullable,
+  IPageInfoForEntity, IPagePopulatedToShowRevision,
+  SWRInfinitePageRevisionsResponse,
+  IPageInfo, IPageInfoForOperation,
+  IRevision, IRevisionHasId,
 } from '@growi/core';
-import { Ref, isClient, pagePathUtils } from '@growi/core';
-import useSWR, { mutate, useSWRConfig, type SWRResponse } from 'swr';
+import { useSWRStatic } from '@growi/core/dist/swr';
+import { isClient, pagePathUtils } from '@growi/core/dist/utils';
+import useSWR, {
+  mutate, useSWRConfig, type SWRResponse, type SWRConfiguration,
+} from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type {
-  IPageInfo, IPageInfoForOperation,
-} from '~/interfaces/page';
 import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import type { IRevision, IRevisionHasId } from '~/interfaces/revision';
+import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
 
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
-import { useStaticSWR } from './use-static-swr';
+
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useSWRStatic<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useStaticSWR('isLatestRevision', initialData);
+  return useSWRStatic('isLatestRevision', initialData);
 };
 
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+  return useSWRStatic<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
-  return useStaticSWR<string[], Error>('templateTagData', initialData);
+  return useSWRStatic<string[], Error>('templateTagData', initialData);
 };
 
 export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('templateBodyData', initialData);
+  return useSWRStatic<string, Error>('templateBodyData', initialData);
 };
 
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
@@ -69,6 +73,17 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
   });
 };
 
+const getPageApiErrorHandler = (errs: AxiosResponse[]) => {
+  if (!Array.isArray(errs)) { throw Error('error is not array') }
+
+  const statusCode = errs[0].status;
+  if (statusCode === 403 || statusCode === 404) {
+    // for NotFoundPage
+    return null;
+  }
+  throw Error('failed to get page');
+};
+
 export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
@@ -85,19 +100,9 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
 
   return useSWRMutation(
     key,
-    async() => {
-      return apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
-        .then(result => result.data.page)
-        .catch((errs) => {
-          if (!Array.isArray(errs)) { throw Error('error is not array') }
-          const statusCode = errs[0].status;
-          if (statusCode === 403 || statusCode === 404) {
-            // for NotFoundPage
-            return null;
-          }
-          throw Error('failed to get page');
-        });
-    },
+    () => apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
+      .then(result => result.data.page)
+      .catch(getPageApiErrorHandler),
     {
       populateCache: true,
       revalidate: false,
@@ -105,10 +110,18 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
   );
 };
 
-export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+export const useSWRxPageByPath = (path?: string, config?: SWRConfiguration): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR(
     path != null ? ['/page', path] : null,
-    ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
+    ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path })
+      .then(result => result.data.page)
+      .catch(getPageApiErrorHandler),
+    {
+      ...config,
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 

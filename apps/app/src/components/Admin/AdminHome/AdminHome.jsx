@@ -52,7 +52,7 @@ const AdminHome = (props) => {
             </p>
             <hr />
             <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-              <i className="fa fa-link ml-1" aria-hidden="true"></i>
+              <i className="fa fa-link ms-1" aria-hidden="true"></i>
               <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
             </a>
           </div>
@@ -65,7 +65,7 @@ const AdminHome = (props) => {
           <div className={`alert ${migrationStatus.isV5Compatible == null ? 'alert-warning' : 'alert-info'}`}>
             {t('admin:v5_page_migration.migration_desc')}
             <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-              <i className="fa fa-link ml-1" aria-hidden="true"></i>
+              <i className="fa fa-link ms-1" aria-hidden="true"></i>
               <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
             </a>
           </div>
@@ -115,7 +115,7 @@ const AdminHome = (props) => {
               {t('admin:admin_top:copy_prefilled_host_information:done')}
             </Tooltip>
             {/* eslint-disable-next-line react/no-danger */}
-            <span className="ml-2" dangerouslySetInnerHTML={{ __html: t('admin:admin_top:submit_bug_report') }} />
+            <span className="ms-2" dangerouslySetInnerHTML={{ __html: t('admin:admin_top:submit_bug_report') }} />
           </div>
         </div>
       </div>

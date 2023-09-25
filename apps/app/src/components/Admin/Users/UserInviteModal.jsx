@@ -67,7 +67,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label>{t('admin:user_management.invite_modal.emails')}</label>
+        <label className="form-label">{t('admin:user_management.invite_modal.emails')}</label>
         <p>
           {t('admin:user_management.invite_modal.description1')}
           <br />
@@ -105,16 +105,16 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="col text-left custom-control custom-checkbox custom-checkbox-info text-left" onChange={this.handleCheckBox}>
+        <div className="col text-start form-check form-check-info" onChange={this.handleCheckBox}>
           <input
             type="checkbox"
             id="sendEmail"
-            className="custom-control-input"
+            className="form-check-input"
             name="sendEmail"
             defaultChecked={this.state.sendEmail}
             disabled={!isMailerSetup}
           />
-          <label className="custom-control-label" htmlFor="sendEmail">
+          <label className="form-label form-check-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
           {isMailerSetup
@@ -127,7 +127,7 @@ class UserInviteModal extends React.Component {
         <div>
           <button
             type="button"
-            className="btn btn-outline-secondary mr-2"
+            className="btn btn-outline-secondary me-2"
             onClick={this.onToggleModal}
           >
             {t('Cancel')}
@@ -151,7 +151,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left" style={{ flex: 1 }}>
+        <label className="form-label me-3 text-start" style={{ flex: 1 }}>
           <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
           <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>
@@ -175,7 +175,7 @@ class UserInviteModal extends React.Component {
             <div className="my-1" key={user.email}>
               <CopyToClipboard text={copyText} onCopy={this.showToaster}>
                 <li className="btn btn-outline-secondary">
-                  Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
+                  Email: <strong className="me-3">{user.email}</strong> Password: <strong>{user.password}</strong>
                 </li>
               </CopyToClipboard>
             </div>
@@ -208,8 +208,6 @@ class UserInviteModal extends React.Component {
 
   async handleSubmit() {
     const { adminUsersContainer } = this.props;
-    // eslint-disable-next-line no-unused-vars
-    const { isCreateUserButtonPushed } = this.state;
 
     this.setState({ isCreateUserButtonPushed: true });
 
@@ -295,6 +293,7 @@ const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
+  isMailerSetup: PropTypes.bool.isRequired,
 };
 
 export default UserInviteModalWrapper;

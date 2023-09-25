@@ -1,3 +1,5 @@
+@import '@growi/core/scss/flex-expand';
+
 @import 'mixins';
 
 // atoms
@@ -8,6 +10,7 @@
 
 // molecules
 @import 'molecules/toastr';
+@import 'molecules/list-group-item';
 // @import 'molecules/slack-notification';
 // @import 'molecules/duplicated-paths-table.scss';
 

@@ -18,7 +18,7 @@ type Props = {
   isEnableFilter: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
-  onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
+  onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
   allControl: React.ReactNode,
 }
@@ -34,7 +34,9 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     allControl,
   } = props;
 
-  const [keyword, setKeyword] = useState(initialSearchConditions.keyword ?? '');
+  const keywordOnInit = initialSearchConditions.keyword ?? '';
+
+  const [keyword, setKeyword] = useState(keywordOnInit);
   const [sort, setSort] = useState<SORT_AXIS>(initialSearchConditions.sort ?? SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(initialSearchConditions.order ?? SORT_ORDER.DESC);
   const [includeUserPages, setIncludeUserPages] = useState(initialSearchConditions.includeUserPages ?? false);
@@ -43,35 +45,45 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation('');
 
-  const invokeSearch = useCallback(() => {
-    if (onSearchInvoked == null) {
-      return;
-    }
-
-    onSearchInvoked(keyword, {
-      sort, order, includeUserPages, includeTrashPages,
-    });
-  }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
-
   const searchFormSubmittedHandler = useCallback((input: string) => {
     setKeyword(input);
-  }, []);
+
+    onSearchInvoked?.(input, {
+      sort, order, includeUserPages, includeTrashPages,
+    });
+  }, [includeTrashPages, includeUserPages, onSearchInvoked, order, sort]);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
     setSort(nextSort);
     setOrder(nextOrder);
-  }, []);
+
+    onSearchInvoked?.(keyword, {
+      sort: nextSort, order: nextOrder, includeUserPages, includeTrashPages,
+    });
+  }, [includeTrashPages, includeUserPages, keyword, onSearchInvoked]);
+
+  const changeIncludeUserPagesHandler = useCallback((include: boolean) => {
+    setIncludeUserPages(include);
+
+    onSearchInvoked?.(keyword, {
+      sort, order, includeUserPages: include, includeTrashPages,
+    });
+  }, [includeTrashPages, keyword, onSearchInvoked, order, sort]);
+
+  const changeIncludeTrashPagesHandler = useCallback((include: boolean) => {
+    setIncludeTrashPages(include);
+
+    onSearchInvoked?.(keyword, {
+      sort, order, includeUserPages, includeTrashPages: include,
+    });
+  }, [includeUserPages, keyword, onSearchInvoked, order, sort]);
 
   useEffect(() => {
-    invokeSearch();
-  }, [invokeSearch]);
-
-  useEffect(() => {
-    setKeyword(initialSearchConditions.keyword ?? '');
-  }, [initialSearchConditions.keyword]);
+    setKeyword(keywordOnInit);
+  }, [keywordOnInit]);
 
   return (
-    <div className="position-sticky sticky-top shadow-sm">
+    <div className="shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchForm
@@ -84,7 +96,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
 
         {/* sort option: show when screen is larger than lg */}
         {isEnableSort && (
-          <div className="mr-4 d-lg-flex d-none">
+          <div className="me-4 d-lg-flex d-none">
             <SortControl
               sort={sort}
               order={order}
@@ -100,7 +112,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         </div>
         {/* sort option: show when screen is smaller than lg */}
         {isEnableSort && (
-          <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
+          <div className="me-md-4 me-2 d-flex d-lg-none ms-auto">
             <SortControl
               sort={sort}
               order={order}
@@ -120,33 +132,35 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 <i className="icon-equalizer"></i>
               </button>
             </div>
-            <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
-              <div className="border rounded px-2 py-1 mr-3">
-                <div className="custom-control custom-checkbox custom-checkbox-succsess">
+            <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
+              <div className="border rounded px-2 py-1 me-3">
+                <div className="form-check form-check-succsess">
                   <input
-                    className="custom-control-input mr-2"
+                    className="form-check-input me-2"
                     type="checkbox"
                     id="flexCheckDefault"
                     defaultChecked={includeUserPages}
-                    onChange={e => setIncludeUserPages(e.target.checked)}
+                    onChange={e => changeIncludeUserPagesHandler(e.target.checked)}
                   />
-                  <label className="custom-control-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
+                  <label
+                    className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight"
+                    htmlFor="flexCheckDefault"
+                  >
                     {t('Include Subordinated Target Page', { target: '/user' })}
                   </label>
                 </div>
               </div>
               <div className="border rounded px-2 py-1">
-                <div className="custom-control custom-checkbox custom-checkbox-succsess">
+                <div className="form-check form-check-succsess">
                   <input
-                    className="custom-control-input mr-2"
+                    className="form-check-input me-2"
                     type="checkbox"
                     id="flexCheckChecked"
                     checked={includeTrashPages}
-                    onChange={e => setIncludeTrashPages(e.target.checked)}
+                    onChange={e => changeIncludeTrashPagesHandler(e.target.checked)}
                   />
                   <label
-                    className="custom-control-label
-                  d-flex align-items-center text-secondary with-no-font-weight"
+                    className="form-label form-check-label d-flex align-items-center text-secondary with-no-font-weight"
                     htmlFor="flexCheckChecked"
                   >
                     {t('Include Subordinated Target Page', { target: '/trash' })}

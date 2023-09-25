@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { IRevisionHasId, pathUtils } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type { IRevisionHasId } from '@growi/core';
+import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
@@ -27,8 +28,6 @@ export const Revision = (props: RevisionProps): JSX.Element => {
     revision, isLatestRevision, hasDiff, onClose, currentPageId, currentPagePath,
   } = props;
 
-  const { returnPathForURL } = pathUtils;
-
   const renderSimplifiedNodiff = (revision: IRevisionHasId) => {
 
     const author = revision.author;
@@ -37,11 +36,12 @@ export const Revision = (props: RevisionProps): JSX.Element => {
 
     return (
       <div className={`${styles['revision-history-main']} ${styles['revision-history-main-nodiff']}
-        revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center`}>
+        revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center`}
+      >
         <div className="picture-container">
           { pic }
         </div>
-        <div className="ml-3">
+        <div className="ms-3">
           <span className="text-muted small">
             <UserDate dateTime={revision.createdAt} /> {t('No diff')}
           </span>
@@ -61,17 +61,17 @@ export const Revision = (props: RevisionProps): JSX.Element => {
         <div className="picture-container">
           { pic }
         </div>
-        <div className="ml-2">
+        <div className="ms-2">
           <div className="revision-history-author mb-1">
             <strong><Username user={author}></Username></strong>
-            { isLatestRevision && <span className="badge badge-info ml-2">Latest</span> }
+            { isLatestRevision && <span className="badge bg-info ms-2">Latest</span> }
           </div>
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
             <Link
               href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)}
-              className="ml-xl-3"
+              className="ms-xl-3"
               onClick={onClose}
               prefetch={false}
             >

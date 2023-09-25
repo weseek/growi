@@ -10,7 +10,7 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { MainPane } from './Layout/MainPane';
+import { PageViewLayout } from './Layout/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
 import type { PageSideContentsProps } from './PageSideContents';
@@ -85,7 +85,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   };
 
   return (
-    <MainPane
+    <PageViewLayout
       sideContents={sideContents}
     >
       { specialContents }
@@ -107,6 +107,6 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
           ) }
         </>
       ) }
-    </MainPane>
+    </PageViewLayout>
   );
 };

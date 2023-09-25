@@ -1,9 +1,10 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-:root[data-theme='light']{
+:root[data-bs-theme='light']{
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 212,80%;
   --primary-l: 35%;
@@ -30,7 +31,7 @@
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 217,23%;
   --color-global-l: 31%;
-  --color-reversal: #{$gray-100};
+  --color-reversal: #{bs.$gray-100};
   --color-header: var(--primary);
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 224,56%;
@@ -99,7 +100,7 @@
   --bordercolor-inline-code: var(--lightthemecolor);
 
   // dropdown colors
-  --bgcolor-dropdown-link-active: #{$growi-blue};
+  --bgcolor-dropdown-link-active: #{var.$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};

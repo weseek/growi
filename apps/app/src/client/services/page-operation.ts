@@ -135,23 +135,6 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     const { path, pageId, revisionId } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
-    /*
-    * Note: variable "markdown" will be received from params
-    * please delete the following code after implemating HackMD editor function
-    */
-    // let markdown;
-    // if (editorMode === EditorMode.HackMD) {
-    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    // markdown = await pageEditorByHackmd.getMarkdown();
-    // // set option to sync
-    // options.isSyncRevisionToHackmd = true;
-    // revisionId = this.state.revisionIdHackmdSynced;
-    // }
-    // else {
-    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    // const pageEditor = getComponentInstance('PageEditor');
-    // markdown = pageEditor.getMarkdown();
-    // }
 
     let res;
     if (pageId == null || revisionId == null) {
@@ -165,10 +148,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
       res = await updatePage(pageId, revisionId, markdown, options);
     }
 
-    // The updateFn should be a promise or asynchronous function to handle the remote mutation
-    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+    mutateIsEnabledUnsavedWarning(false);
 
     return res;
   }, [mutateIsEnabledUnsavedWarning]);
@@ -212,8 +192,6 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
       remoteRevisionBody: updatedPage.revision.body,
       remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
       remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced?.toString(),
-      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
     };
 
     setRemoteLatestPageData(remoterevisionData);

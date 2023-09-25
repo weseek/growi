@@ -2,8 +2,8 @@ import React, {
   FC, useRef,
 } from 'react';
 
-import { HasObjectId } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type { HasObjectId } from '@growi/core';
+import { UserPicture } from '@growi/ui/dist/components';
 import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
@@ -166,8 +166,8 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         <span
           className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
             ? 'grw-unopend-notification'
-            : 'ml-2'
-          } rounded-circle mr-3`}
+            : 'ms-2'
+          } rounded-circle me-3`}
         >
         </span>
         {renderActionUserPictures()}

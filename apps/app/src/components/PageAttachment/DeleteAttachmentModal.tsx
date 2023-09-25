@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUser } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -108,7 +108,7 @@ export const DeleteAttachmentModal: React.FC = () => {
         {attachmentFileFormat}
       </ModalBody>
       <ModalFooter>
-        <div className="mr-3 d-inline-block">
+        <div className="me-3 d-inline-block">
           {deletingIndicator}
         </div>
         <Button

@@ -7,6 +7,7 @@ import {
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
@@ -18,7 +19,6 @@ import { MarkdownTableDataImportForm } from './MarkdownTableDataImportForm';
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
-import { debounce } from 'throttle-debounce';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -430,15 +430,12 @@ export const HandsontableModal = (): JSX.Element => {
 
   const closeButton = (
     <span>
-      {/* change order because of `float: right` by '.close' class */}
-      <button type="button" className="close" onClick={cancel} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         contractWindow={contractWindow}
         expandWindow={expandWindow}
       />
+      <button type="button" className="btn btn-close" onClick={cancel} aria-label="Close"></button>
     </span>
   );
 
@@ -460,13 +457,13 @@ export const HandsontableModal = (): JSX.Element => {
         <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
           <button
             type="button"
-            className="mr-4 data-import-button btn btn-secondary"
-            data-toggle="collapse"
+            className="me-4 data-import-button btn btn-secondary"
+            data-bs-toggle="collapse"
             data-target="#collapseDataImport"
             aria-expanded={isDataImportAreaExpanded}
             onClick={toggleDataImportArea}
           >
-            <span className="mr-3">{t('handsontable_modal.data_import')}</span>
+            <span className="me-3">{t('handsontable_modal.data_import')}</span>
             <i className={isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
           </button>
           <div role="group" className="btn-group">
@@ -504,8 +501,8 @@ export const HandsontableModal = (): JSX.Element => {
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
         <button type="button" className="btn btn-danger" onClick={reset}>{t('commons:Reset')}</button>
-        <div className="ml-auto">
-          <button type="button" className="mr-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
+        <div className="ms-auto">
+          <button type="button" className="me-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
           <button type="button" className="btn btn-primary" onClick={save}>{t('handsontable_modal.done')}</button>
         </div>
       </ModalFooter>

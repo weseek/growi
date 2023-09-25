@@ -2,9 +2,13 @@
   "name": "@growi/pluginkit",
   "version": "0.1.0",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
     "clean": "shx rm -rf dist",

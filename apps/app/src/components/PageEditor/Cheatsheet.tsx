@@ -38,7 +38,7 @@ export const Cheatsheet = (): JSX.Element => {
         className="code-highlighted"
         PreTag="div"
         style={oneDark}
-        language={'text'}
+        language="text"
       >
         {String(CheetSheetElm).replace(/\n$/, '')}
       </PrismAsyncLight>
@@ -104,7 +104,7 @@ export const Cheatsheet = (): JSX.Element => {
         {renderCheetSheetElm(imageStr)}
 
         <hr />
-        <a href="/Sandbox" className="btn btn-info btn-block" target="_blank">
+        <a href="/Sandbox" className="btn btn-info" target="_blank">
           <i className="icon-share-alt" /> {t('sandbox.open_sandbox')}
         </a>
       </div>

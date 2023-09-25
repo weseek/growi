@@ -2,11 +2,10 @@ import React, { Fragment } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import * as toastr from 'toastr';
 
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 
-// import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import ImportForm from './GrowiArchive/ImportForm';
 import UploadForm from './GrowiArchive/UploadForm';
@@ -59,27 +58,10 @@ class GrowiArchiveSection extends React.Component {
       await apiv3Delete('/import/all');
       this.resetState();
 
-      // TODO: toastSuccess, toastError
-      toastr.success(undefined, `Deleted ${fileName}`, {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
-      });
+      toastSuccess(`Deleted ${fileName}`);
     }
     catch (err) {
-      // TODO: toastSuccess, toastError
-      toastr.error(err, 'Error', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '3000',
-      });
+      toastError(err);
     }
   }
 
@@ -111,7 +93,7 @@ class GrowiArchiveSection extends React.Component {
     return (
       <Fragment>
         <h2>{t('importer_management.import_growi_archive')}</h2>
-        <div className="card well mb-4 small">
+        <div className="card custom-card mb-4 small">
           <ul>
             <li>{t('importer_management.skip_username_and_email_when_overlapped')}</li>
             <li>{t('importer_management.prepare_new_account_for_migration')}</li>

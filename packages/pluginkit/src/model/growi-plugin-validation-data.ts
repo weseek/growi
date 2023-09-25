@@ -1,4 +1,4 @@
-import { GrowiPluginType } from '@growi/core/dist/consts';
+import { GrowiPluginType } from '@growi/core';
 
 import { GrowiPluginDirective } from './growi-plugin-package-data';
 

@@ -60,7 +60,7 @@ const PutBackPageModal = () => {
     }
     return (
       <>
-        <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
+        <i className="icon-action-undo me-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </>
     );
   };
@@ -71,19 +71,19 @@ const PutBackPageModal = () => {
     }
     return (
       <>
-        <div className="form-group">
-          <label>{t('modal_putback.label.Put Back Page')}:</label><br />
+        <div>
+          <label className="form-label">{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
         </div>
-        <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <div className="form-check form-check-warning">
           <input
-            className="custom-control-input"
+            className="form-check-input"
             id="cbPutBackRecursively"
             type="checkbox"
             checked={isPutbackRecursively}
             onChange={changeIsPutbackRecursivelyHandler}
           />
-          <label htmlFor="cbPutBackRecursively" className="custom-control-label">
+          <label htmlFor="cbPutBackRecursively" className="form-label form-check-label">
             { t('modal_putback.label.recursively') }
           </label>
           <p className="form-text text-muted mt-0">
@@ -102,7 +102,7 @@ const PutBackPageModal = () => {
       <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler} data-testid="put-back-execution-button">
-          <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
+          <i className="icon-action-undo me-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
       </>
     );
@@ -116,13 +116,13 @@ const PutBackPageModal = () => {
   return (
     <Modal isOpen={isOpened} toggle={closeModalHandler} data-testid="put-back-page-modal">
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
-        <HeaderContent/>
+        <HeaderContent />
       </ModalHeader>
       <ModalBody>
-        <BodyContent/>
+        <BodyContent />
       </ModalBody>
       <ModalFooter>
-        <FooterContent/>
+        <FooterContent />
       </ModalFooter>
     </Modal>
   );

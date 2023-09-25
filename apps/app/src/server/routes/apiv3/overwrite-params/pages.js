@@ -1,4 +1,5 @@
-const { PageGrant } = require('@growi/core');
+import { PageGrant } from '@growi/core';
+
 const mongoose = require('mongoose');
 
 // eslint-disable-next-line no-unused-vars
@@ -51,12 +52,6 @@ class PageOverwriteParamsFactory {
       params.seenUsers = [];
       params.commentCount = 0;
       params.extended = {};
-    }
-
-    if (option.initHackmdDatas) {
-      params.pageIdOnHackmd = undefined;
-      params.revisionHackmdSynced = undefined;
-      params.hasDraftOnHackmd = undefined;
     }
 
     return params;

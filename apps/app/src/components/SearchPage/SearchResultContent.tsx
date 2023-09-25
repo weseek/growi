@@ -3,15 +3,16 @@ import React, {
 } from 'react';
 
 import { getIdForRef } from '@growi/core';
+import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
+import { useLayoutFluidClassName } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
-import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
@@ -126,6 +127,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const [isExpandContentWidth, setIsExpandContentWidth] = useState(page.expandContentWidth);
 
+  // TODO: determine className by the 'expandContentWidth' from the updated page
+  const growiLayoutFluidClass = useLayoutFluidClassName(isExpandContentWidth);
+
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -206,7 +210,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const isRenderable = page != null && rendererOptions != null;
 
   return (
-    <div key={page._id} data-testid="search-result-content" className={`search-result-content ${styles['search-result-content']} d-flex flex-column`}>
+    <div
+      key={page._id}
+      data-testid="search-result-content"
+      className={`dynamic-layout-root ${growiLayoutFluidClass} search-result-content ${styles['search-result-content']}`}
+    >
       <div className="grw-page-path-text-muted-container">
         { isRenderable && (
           <GrowiSubNavigation
@@ -218,7 +226,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           />
         ) }
       </div>
-      <div id="search-result-content-body-container" className="search-result-content-body-container" ref={scrollElementRef}>
+      <div
+        id="search-result-content-body-container"
+        ref={scrollElementRef}
+        className="search-result-content-body-container main container-lg grw-container-convertible overflow-y-scroll"
+      >
         { isRenderable && (
           <RevisionLoader
             rendererOptions={rendererOptions}

@@ -36,34 +36,39 @@ const GlobalNotification = (props) => {
     <>
       <h2 className="border-bottom my-4">{t('notification_settings.valid_page')}</h2>
 
-      <p className="card well">
+      <p className="card custom-card">
         {/* eslint-disable-next-line react/no-danger */}
         <span dangerouslySetInnerHTML={{ __html: t('notification_settings.link_notification_help') }} />
-      </p><div className="row mb-4">
+      </p>
+      <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
-          <div className="custom-control custom-checkbox custom-checkbox-success">
+          <div className="form-check form-check-success">
             <input
               id="isNotificationForOwnerPageEnabled"
-              className="custom-control-input"
+              className="form-check-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
-              onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() } } />
-            <label className="custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
+              onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
+            />
+            <label className="form-label form-check-label" htmlFor="isNotificationForOwnerPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.just_me_notification_help') }} />
             </label>
           </div>
         </div>
-      </div><div className="row mb-4">
+      </div>
+
+      <div className="row mb-4">
         <div className="col-md-8 offset-md-2">
-          <div className="custom-control custom-checkbox custom-checkbox-success">
+          <div className="form-check form-check-success">
             <input
               id="isNotificationForGroupPageEnabled"
-              className="custom-control-input"
+              className="form-check-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
-              onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() } } />
-            <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
+              onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
+            />
+            <label className="form-label form-check-label" htmlFor="isNotificationForGroupPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: t('notification_settings.group_notification_help') }} />
             </label>
@@ -81,13 +86,16 @@ const GlobalNotification = (props) => {
           </button>
         </div>
       </div>
+
       <h2 className="border-bottom mb-5">{t('notification_settings.notification_list')}
-        <button className="btn btn-outline-secondary pull-right"
-          type="button" onClick={() => router.push('/admin/global-notification/new')}>{t('notification_settings.add_notification')}</button>
-        {/* <a href="/admin/global-notification/new">
-      <p className="btn btn-outline-secondary pull-right">{t('notification_setting.add_notification')}</p>
-    </a> */}
-      </h2><table className="table table-bordered">
+        <button
+          className="btn btn-outline-secondary pull-right"
+          type="button"
+          onClick={() => router.push('/admin/global-notification/new')}
+        >{t('notification_settings.add_notification')}
+        </button>
+      </h2>
+      <table className="table table-bordered">
         <thead>
           <tr>
             <th>ON/OFF</th>

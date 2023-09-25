@@ -57,25 +57,29 @@ const CustomizeLayoutSetting = (): JSX.Element => {
           <h2 className="admin-setting-header">{t('customize_settings.layout')}</h2>
 
           <div className="d-flex justify-content-around mt-5">
-            <div id="layoutOptions" className="card-deck">
-              <div
-                className={`card customize-layout-card ${!isContainerFluid ? 'border-active' : ''}`}
-                onClick={() => setIsContainerFluid(false)}
-                role="button"
-              >
-                <img src={`/images/customize-settings/default-${resolvedTheme}.svg`} />
-                <div className="card-body text-center">
-                  {t('customize_settings.layout_options.default')}
+            <div id="layoutOptions" className="row row-cols-2">
+              <div className="col">
+                <div
+                  className={`card customize-layout-card ${!isContainerFluid ? 'border-active' : ''}`}
+                  onClick={() => setIsContainerFluid(false)}
+                  role="button"
+                >
+                  <img src={`/images/customize-settings/default-${resolvedTheme}.svg`} />
+                  <div className="card-body text-center">
+                    {t('customize_settings.layout_options.default')}
+                  </div>
                 </div>
               </div>
-              <div
-                className={`card customize-layout-card ${isContainerFluid ? 'border-active' : ''}`}
-                onClick={() => setIsContainerFluid(true)}
-                role="button"
-              >
-                <img src={`/images/customize-settings/fluid-${resolvedTheme}.svg`} />
-                <div className="card-body  text-center">
-                  {t('customize_settings.layout_options.expanded')}
+              <div className="col">
+                <div
+                  className={`card customize-layout-card ${isContainerFluid ? 'border-active' : ''}`}
+                  onClick={() => setIsContainerFluid(true)}
+                  role="button"
+                >
+                  <img src={`/images/customize-settings/fluid-${resolvedTheme}.svg`} />
+                  <div className="card-body  text-center">
+                    {t('customize_settings.layout_options.expanded')}
+                  </div>
                 </div>
               </div>
             </div>

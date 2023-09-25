@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 
@@ -20,7 +20,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
         </div>
       </div>
     );

@@ -1,0 +1,22 @@
+.btn-link {
+  color: var(--color-link);
+  svg {
+    fill: var(--color-link);
+  }
+
+  &:hover {
+    color: var(--color-link-hover);
+    svg {
+      fill: var(--color-link-hover);
+    }
+  }
+
+  &:disabled,
+  &.disabled {
+    color: var(--color-link-disabled, #{$gray-500});
+    svg {
+      fill: var(--color-link-disabled, #{$gray-500});
+    }
+  }
+}
+

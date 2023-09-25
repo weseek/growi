@@ -68,18 +68,18 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
 
   const questionnaireOrderShortTitle = lang === 'en_US' ? questionnaireOrder.shortTitle.en_US : questionnaireOrder.shortTitle.ja_JP;
 
-  return <div className={`toast ${isOpen ? 'show' : 'hide'}`}>
-    <div className="toast-header bg-primary">
-      <strong className="mr-auto text-light">{questionnaireOrderShortTitle}</strong>
-      <button type="button" className="ml-2 mb-1 close" onClick={closeBtnClickHandler}>
-        <span aria-hidden="true" className="text-light">&times;</span>
-      </button>
+  return (
+    <div className={`toast ${isOpen ? 'show' : 'hide'}`}>
+      <div className="toast-header bg-primary">
+        <strong className="me-auto text-light">{questionnaireOrderShortTitle}</strong>
+        <button type="button" className="ms-2 mb-1 btn-close" onClick={closeBtnClickHandler} aria-label="Close"></button>
+      </div>
+      <div className="toast-body bg-light text-dark d-flex justify-content-end">
+        <button type="button" className="btn btn-secondary me-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
+        <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.deny')}</button>
+      </div>
     </div>
-    <div className="toast-body bg-light d-flex justify-content-end">
-      <button type="button" className="btn btn-secondary mr-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
-      <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.deny')}</button>
-    </div>
-  </div>;
+  );
 };
 
 export default QuestionnaireToast;

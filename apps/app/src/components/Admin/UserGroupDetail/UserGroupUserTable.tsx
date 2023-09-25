@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
@@ -54,7 +54,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                     type="button"
                     id={`admin-group-menu-button-${relatedUser._id}`}
                     className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                   >
                     <i className="icon-settings"></i>
                   </button>

@@ -2,7 +2,12 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { HasObjectId, pagePathUtils } from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
+import type {
+  HasObjectId,
+  IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
+} from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -10,9 +15,7 @@ import {
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import {
-  IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
-} from '~/interfaces/page';
+import type { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
@@ -179,16 +182,16 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteRecursivelyForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-warning">
+      <div className="form-check form-check-warning">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           id="deleteRecursively"
           type="checkbox"
           checked={isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
           // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
-        <label className="custom-control-label" htmlFor="deleteRecursively">
+        <label className="form-label form-check-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
           <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
@@ -198,9 +201,9 @@ const PageDeleteModal: FC = () => {
 
   function renderDeleteCompletelyForm() {
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-danger">
+      <div className="form-check form-check-danger">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           name="completely"
           id="deleteCompletely"
           type="checkbox"
@@ -208,7 +211,7 @@ const PageDeleteModal: FC = () => {
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        <label className="custom-control-label" htmlFor="deleteCompletely">
+        <label className="form-label form-check-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
         </label>
@@ -229,7 +232,7 @@ const PageDeleteModal: FC = () => {
       return pages.map(page => (
         <p key={page.data._id} className="mb-1">
           <code>{ page.data.path }</code>
-          { page.meta?.isDeletable != null && !page.meta.isDeletable && <span className="ml-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
+          { page.meta?.isDeletable != null && !page.meta.isDeletable && <span className="ms-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
         </p>
       ));
     }
@@ -256,8 +259,8 @@ const PageDeleteModal: FC = () => {
 
     return (
       <>
-        <div className="form-group grw-scrollable-modal-body pb-1">
-          <label>{ t('modal_delete.deleting_page') }:</label><br />
+        <div className="grw-scrollable-modal-body pb-1">
+          <label className="form-label">{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePathsToDelete()}
         </div>
@@ -282,7 +285,7 @@ const PageDeleteModal: FC = () => {
           onClick={deleteButtonHandler}
           data-testid="delete-page-button"
         >
-          <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <i className={`me-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </>

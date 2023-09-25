@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pathUtils } from '@growi/core';
+import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -11,8 +11,6 @@ export const OldRevisionAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isLatestRevision } = useIsLatestRevision();
   const { data: page } = useSWRxCurrentPage();
-
-  const { returnPathForURL } = pathUtils;
 
   if (page == null || isLatestRevision == null || isLatestRevision) {
     return <></>;

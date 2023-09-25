@@ -122,7 +122,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const WarnForGroups = ({ errors }): JSX.Element => {
+  const WarnForGroups = ({ errors }: { errors: Error[] }): JSX.Element => {
     if (errors.length === 0) {
       return <></>;
     }
@@ -130,8 +130,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <div className="alert alert-warning">
         <ul>
-          {errors.map((error, i) => {
-            return <li key={i}>{error}</li>;
+          {errors.map((error) => {
+            return <li>{error.message}</li>;
           })}
         </ul>
       </div>
@@ -162,7 +162,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     });
 
     // TODO: エラー対応
-    return <GroupImportItems groupList={collectionNames} groupName='Other' errors={[]} />;
+    return <GroupImportItems groupList={collectionNames} groupName="Other" errors={[]} />;
   };
 
   const configurationModal = useMemo(() => {
@@ -199,20 +199,20 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
 
   return (
     <>
-      <form className="form-inline mt-3">
-        <div className="form-group">
-          <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={checkAll}>
+      <form className="mt-3 row row-cols-lg-auto g-3 align-items-center">
+        <div className="col-12">
+          <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={checkAll}>
             <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
           </button>
         </div>
-        <div className="form-group">
-          <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={uncheckAll}>
+        <div className="col-12">
+          <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
             <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
           </button>
         </div>
       </form>
 
-      <div className="card well small my-4">
+      <div className="card custom-card small my-4">
         <ul>
           <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
           <ul>
@@ -224,9 +224,9 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       </div>
 
       {/* TODO: エラー追加 */}
-      <GroupImportItems groupList={GROUPS_PAGE} groupName='Page' errors={[]} />
-      <GroupImportItems groupList={GROUPS_USER} groupName='User' errors={[]} />
-      <GroupImportItems groupList={GROUPS_CONFIG} groupName='Config' errors={[]} />
+      <GroupImportItems groupList={GROUPS_PAGE} groupName="Page" errors={[]} />
+      <GroupImportItems groupList={GROUPS_USER} groupName="User" errors={[]} />
+      <GroupImportItems groupList={GROUPS_CONFIG} groupName="Config" errors={[]} />
       <OtherImportItems />
 
       {configurationModal}

@@ -1,7 +1,6 @@
 import React, { FC, memo } from 'react';
 
-import Link from 'next/link';
-
+import { useKeywordManager } from '~/client/services/search-operation';
 import { IDataTagCount } from '~/interfaces/tag';
 
 
@@ -23,21 +22,20 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   const { tags } = props;
   const maxTagTextLength: number = props.maxTagTextLength ?? MAX_TAG_TEXT_LENGTH;
 
+  const { pushState } = useKeywordManager();
+
   const tagElements = tags.map((tag:IDataTagCount) => {
     const tagNameFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
 
-    const url = new URL('/_search', 'https://example.com');
-    url.searchParams.append('q', `tag:${tag.name}`);
-
     return (
-      <Link
+      <a
         key={tag.name}
-        href={`${url.pathname}${url.search}`}
-        className="grw-tag-label badge badge-secondary mr-2"
-        prefetch={false}
+        type="button"
+        className="grw-tag-label badge bg-primary me-2"
+        onClick={() => pushState(`tag:${tag.name}`)}
       >
         {tagNameFormat}
-      </Link>
+      </a>
     );
   });
 

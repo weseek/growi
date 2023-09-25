@@ -1,6 +1,6 @@
-import { IAttachmentHasId } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core';
 
-import { UserPicture } from './User/UserPicture';
+import { UserPicture } from './UserPicture';
 
 type AttachmentProps = {
   attachment: IAttachmentHasId,
@@ -36,21 +36,21 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
       </a>
     )
     : '';
-  const fileType = <span className="attachment-filetype badge badge-pill badge-secondary">{attachment.fileFormat}</span>;
-  const fileInUse = (inUse) ? <span className="attachment-in-use badge badge-pill badge-info">In Use</span> : '';
+  const fileType = <span className="attachment-filetype badge rounded-pill bg-primary">{attachment.fileFormat}</span>;
+  const fileInUse = (inUse) ? <span className="attachment-in-use badge rounded-pill bg-info">In Use</span> : '';
 
   return (
     <div className="attachment mb-2">
-      <span className="mr-1 attachment-userpicture">
+      <span className="me-1 attachment-userpicture">
         <UserPicture user={attachment.creator} size="sm"></UserPicture>
       </span>
-      <a className="mr-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
+      <a className="me-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
         <i className={formatIcon}></i> {attachment.originalName}
       </a>
-      <span className="mr-2">{fileType}</span>
-      <span className="mr-2">{fileInUse}</span>
-      <span className="mr-2">{btnDownload}</span>
-      <span className="mr-2">{btnTrash}</span>
+      <span className="me-2">{fileType}</span>
+      <span className="me-2">{fileInUse}</span>
+      <span className="me-2">{btnDownload}</span>
+      <span className="me-2">{btnTrash}</span>
     </div>
   );
 };

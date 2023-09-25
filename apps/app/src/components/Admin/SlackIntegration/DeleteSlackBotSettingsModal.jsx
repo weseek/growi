@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
@@ -7,28 +7,16 @@ import {
 } from 'reactstrap';
 
 const DeleteSlackBotSettingsModal = React.memo((props) => {
-  const { t } = useTranslation();
+  const { t, onClickDeleteButton, onClose } = useTranslation();
 
-  function closeModal() {
-    if (props.onClose == null) {
-      return;
-    }
+  const deleteSlackCredentialsHandler = useCallback(() => {
+    onClickDeleteButton?.();
+    onClose?.();
+  }, [onClickDeleteButton, onClose]);
 
-    props.onClose();
-  }
-
-  function deleteSlackCredentialsHandler() {
-    if (props.onClickDeleteButton == null) {
-      return;
-    }
-    props.onClickDeleteButton();
-
-    closeModal();
-  }
-
-  function closeButtonHandler() {
-    closeModal();
-  }
+  const closeButtonHandler = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
 
   return (
     <Modal isOpen={props.isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">
@@ -42,7 +30,7 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
           )}
           {!props.isResetAll && (
             <>
-              <i className="icon-trash mr-1" />
+              <i className="icon-trash me-1" />
               {t('admin:slack_integration.delete_slackbot_settings')}
             </>
           )}
@@ -73,7 +61,7 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
           )}
           {!props.isResetAll && (
             <>
-              <i className="icon-trash mr-1" />
+              <i className="icon-trash me-1" />
               {t('admin:slack_integration.delete')}
             </>
           )}

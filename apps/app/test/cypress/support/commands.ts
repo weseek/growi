@@ -81,7 +81,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
 
   cy.getByTestid('grw-sidebar').should('be.visible').within(() => {
 
-    const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-sub');
+    const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-child');
     if (isSidebarContextualNavigationHidden === isCollapsed) {
       return;
     }
@@ -96,7 +96,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
       }
 
       // wait until
-      return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
+      return cy.getByTestid('grw-contextual-navigation-child').then($contents => isHidden($contents) === isCollapsed);
     });
   });
 

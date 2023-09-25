@@ -1,5 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 
+import type {
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
+} from '@growi/core';
+import {
+  isIPageInfoForEntity, isIPageInfoForOperation,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
@@ -7,9 +13,6 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import {
-  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
-} from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
@@ -42,15 +45,15 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
       onClick={() => onClickMenuItem(!(expandContentWidth))}
       className="grw-page-control-dropdown-item"
     >
-      <div className="custom-control custom-switch ml-1">
+      <div className="form-check form-switch ms-1">
         <input
           id="switchContentWidth"
-          className="custom-control-input"
+          className="form-check-input"
           type="checkbox"
           checked={expandContentWidth}
           onChange={() => {}}
         />
-        <label className="custom-control-label" htmlFor="switchContentWidth">
+        <label className="form-label form-check-label" htmlFor="switchContentWidth">
           { t('wide_view') }
         </label>
       </div>
@@ -242,7 +245,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       ) }
       { showPageControlDropdown && (
         <PageItemControl
-          alignRight
+          alignEnd
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}

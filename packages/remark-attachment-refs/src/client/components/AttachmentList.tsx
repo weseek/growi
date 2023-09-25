@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { IAttachmentHasId } from '@growi/core';
-import { Attachment } from '@growi/ui/dist/components/Attachment';
+import type { IAttachmentHasId } from '@growi/core';
+import { Attachment } from '@growi/ui/dist/components';
 
 import { ExtractedAttachments } from './ExtractedAttachments';
 import { RefsContext } from './util/refs-context';
@@ -43,7 +43,7 @@ export const AttachmentList = ({
     if (isLoading) {
       return (
         <div className="text-muted">
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-spinner fa-pulse me-1"></i>
           <span className="attachment-refs-blink">{refsContext.toString()}</span>
         </div>
       );
@@ -67,7 +67,7 @@ export const AttachmentList = ({
       : attachments.map((attachment) => {
         return <AttachmentLink key={attachment._id} attachment={attachment} inUse={false} />;
       });
-  }, [refsContext, isLoading, attachments]);
+  }, [isLoading, error, attachments, refsContext, renderNoAttachmentsMessage]);
 
   return <div className={styles['attachment-refs']}>{renderContents()}</div>;
 

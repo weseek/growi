@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -47,14 +47,18 @@ const CreateTemplateModal = (props) => {
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
       <ModalBody>
-        <div className="form-group">
-          <label className="mb-4">
+        <div>
+          <label className="form-label mb-4">
             <code>{parentPath}</code><br />
             { t('template.modal_label.Create template under') }
           </label>
-          <div className="card-deck">
-            {renderTemplateCard('children', '_template')}
-            {renderTemplateCard('decendants', '__template')}
+          <div className="row row-cols-2">
+            <div className="col">
+              {renderTemplateCard('children', '_template')}
+            </div>
+            <div className="col">
+              {renderTemplateCard('decendants', '__template')}
+            </div>
           </div>
         </div>
       </ModalBody>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import type { IUser } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { UserPicture } from '@growi/ui/dist/components';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -173,7 +173,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                 </>
               ) }
-              <span className="ml-2">
+              <span className="ms-2">
                 <Link
                   id={`page-comment-revision-${commentId}`}
                   href={urljoin(returnPathForURL(pagePath, pageId), revHref)}

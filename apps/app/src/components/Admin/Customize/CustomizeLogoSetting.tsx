@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -25,10 +25,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogoSelected, setIsDefaultLogoSelected] = useState<boolean>(isDefaultLogo ?? true);
   const [retrieveError, setRetrieveError] = useState<any>();
-
-  const currentLogo = useMemo(() => {
-    return isDefaultLogo ? DEFAULT_LOGO : CUSTOMIZED_LOGO;
-  }, [isDefaultLogo]);
 
   const onSelectFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null && e.target.files.length > 0) {
@@ -87,17 +83,17 @@ const CustomizeLogoSetting = (): JSX.Element => {
             <div className="row">
               <div className="col-md-6 col-12 mb-3 mb-md-0">
                 <h4>
-                  <div className="custom-control custom-radio radio-primary">
+                  <div className="form-check radio-primary">
                     <input
                       type="radio"
                       id="radioDefaultLogo"
-                      className="custom-control-input"
+                      className="form-check-input"
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={isDefaultLogoSelected}
                       onChange={() => { setIsDefaultLogoSelected(true) }}
                     />
-                    <label className="custom-control-label" htmlFor="radioDefaultLogo">
+                    <label className="form-check-label" htmlFor="radioDefaultLogo">
                       {t('admin:customize_settings.default_logo')}
                     </label>
                   </div>
@@ -106,30 +102,30 @@ const CustomizeLogoSetting = (): JSX.Element => {
               </div>
               <div className="col-md-6 col-12">
                 <h4>
-                  <div className="custom-control custom-radio radio-primary">
+                  <div className="form-check radio-primary">
                     <input
                       type="radio"
                       id="radioUploadLogo"
-                      className="custom-control-input"
+                      className="form-check-input"
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={!isDefaultLogoSelected}
                       onChange={() => { setIsDefaultLogoSelected(false) }}
                     />
-                    <label className="custom-control-label" htmlFor="radioUploadLogo">
+                    <label className="form-check-label" htmlFor="radioUploadLogo">
                       { t('admin:customize_settings.upload_logo') }
                     </label>
                   </div>
                 </h4>
                 <div className="row mb-3">
-                  <label className="col-sm-4 col-12 col-form-label text-left">
+                  <label className="col-sm-4 col-12 col-form-label text-start">
                     { t('admin:customize_settings.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
                     {isCustomizedLogoUploaded && (
                       <>
                         <p>
-                          <img src='/attachment/brand-logo' className="picture picture-lg " id="settingBrandLogo" width="64" />
+                          <img src={CUSTOMIZED_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" />
                         </p>
                         <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                           { t('admin:customize_settings.delete_logo') }
@@ -139,7 +135,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                   </div>
                 </div>
                 <div className="row">
-                  <label className="col-sm-4 col-12 col-form-label text-left">
+                  <label className="col-sm-4 col-12 col-form-label text-start">
                     { t('admin:customize_settings.upload_new_logo') }
                   </label>
                   <div className="col-sm-8 col-12">

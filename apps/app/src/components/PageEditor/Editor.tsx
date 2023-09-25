@@ -20,7 +20,7 @@ import { IEditorMethods } from '../../interfaces/editor-methods';
 
 import AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
-import CodeMirrorEditor from './CodeMirrorEditor';
+// import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
@@ -135,8 +135,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
-    toastSuccess(t('toaster.file_upload_succeeded'));
-
     // abort if length is not 1
     if (items.length < 1) {
       return;
@@ -221,7 +219,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           && (
             <span className="overlay-content">
               <div className="speeding-wheel d-inline-block"></div>
-              <span className="sr-only">Uploading...</span>
+              <span className="visually-hidden">Uploading...</span>
             </span>
           )
         }
@@ -233,7 +231,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const renderNavbar = () => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
-        <ul className="pl-2 nav nav-navbar">
+        <ul className="ps-2 nav nav-navbar">
           { navBarItems.map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
@@ -249,7 +247,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size={'lg'} >
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size="lg">
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
@@ -283,7 +281,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
   return (
     <>
-      <div style={flexContainer} className={`editor-container ${styles['editor-container']}`} >
+      <div style={flexContainer} className={`editor-container ${styles['editor-container']}`}>
         <Dropzone
           ref={dropzoneRef}
           accept={getAcceptableType()}
@@ -307,17 +305,18 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
                 {/* for PC */}
                 { !isMobile && (
-                  <CodeMirrorEditor
-                    ref={cmEditorRef}
-                    indentSize={indentSize ?? defaultIndentSize}
-                    onPasteFiles={pasteFilesHandler}
-                    onDragEnter={dragEnterHandler}
-                    onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
-                    onAddAttachmentButtonClicked={addAttachmentHandler}
-                    editorSettings={editorSettings}
-                    isGfmMode={isGfmMode}
-                    {...props}
-                  />
+                  // <CodeMirrorEditor
+                  //   ref={cmEditorRef}
+                  //   indentSize={indentSize ?? defaultIndentSize}
+                  //   onPasteFiles={pasteFilesHandler}
+                  //   onDragEnter={dragEnterHandler}
+                  //   onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
+                  //   onAddAttachmentButtonClicked={addAttachmentHandler}
+                  //   editorSettings={editorSettings}
+                  //   isGfmMode={isGfmMode}
+                  //   {...props}
+                  // />
+                  <></>
                 )}
 
                 {/* for mobile */}
@@ -340,7 +339,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           && (
             <button
               type="button"
-              className="btn btn-outline-secondary btn-block btn-open-dropzone"
+              className="btn btn-outline-secondary btn-open-dropzone"
               onClick={addAttachmentHandler}
             >
               <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;

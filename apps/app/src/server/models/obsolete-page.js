@@ -1,7 +1,7 @@
-import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
+import { PageGrant } from '@growi/core';
+import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
-import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 
@@ -286,10 +286,6 @@ export const getPageSchema = (crowi) => {
           return data;
         });
       });
-  };
-
-  pageSchema.statics.getUserPagePath = function(user) {
-    return `/user/${user.username}`;
   };
 
   pageSchema.statics.getDeletedPageName = function(path) {
@@ -673,13 +669,6 @@ export const getPageSchema = (crowi) => {
 
   };
 
-  pageSchema.statics.removeByPath = function(path) {
-    if (path == null) {
-      throw new Error('path is required');
-    }
-    return this.findOneAndRemove({ path }).exec();
-  };
-
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
@@ -710,49 +699,6 @@ export const getPageSchema = (crowi) => {
     }
 
     await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroup: transferToUserGroupId });
-  };
-
-  /**
-   * associate GROWI page and HackMD page
-   * @param {Page} pageData
-   * @param {string} pageIdOnHackmd
-   */
-  pageSchema.statics.registerHackmdPage = function(pageData, pageIdOnHackmd) {
-    pageData.pageIdOnHackmd = pageIdOnHackmd;
-    return this.syncRevisionToHackmd(pageData);
-  };
-
-  /**
-   * update revisionHackmdSynced
-   * @param {Page} pageData
-   * @param {bool} isSave whether save or not
-   */
-  pageSchema.statics.syncRevisionToHackmd = function(pageData, isSave = true) {
-    pageData.revisionHackmdSynced = pageData.revision;
-    pageData.hasDraftOnHackmd = false;
-
-    let returnData = pageData;
-    if (isSave) {
-      returnData = pageData.save();
-    }
-    return returnData;
-  };
-
-  /**
-   * update hasDraftOnHackmd
-   * !! This will be invoked many time from many people !!
-   *
-   * @param {Page} pageData
-   * @param {Boolean} newValue
-   */
-  pageSchema.statics.updateHasDraftOnHackmd = async function(pageData, newValue) {
-    if (pageData.hasDraftOnHackmd === newValue) {
-      // do nothing when hasDraftOnHackmd equals to newValue
-      return;
-    }
-
-    pageData.hasDraftOnHackmd = newValue;
-    return pageData.save();
   };
 
   pageSchema.methods.getNotificationTargetUsers = async function() {

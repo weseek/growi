@@ -136,7 +136,7 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
-  const { pathUtils } = require('@growi/core');
+  const { pathUtils } = require('@growi/core/dist/utils');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -455,7 +455,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null || revisionId === null) {
@@ -482,7 +481,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
-    const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -833,7 +832,6 @@ module.exports = function(crowi, app) {
     };
 
     let page;
-    let descendantPages;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {

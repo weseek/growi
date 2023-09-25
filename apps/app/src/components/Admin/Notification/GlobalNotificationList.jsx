@@ -80,15 +80,15 @@ class GlobalNotificationList extends React.Component {
           return (
             <tr key={notification._id}>
               <td className="align-middle td-abs-center">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
-                    className="custom-control-input"
+                    className="form-check-input"
                     id={notification._id}
                     defaultChecked={notification.isEnabled}
                     onClick={() => this.toggleIsEnabled(notification)}
                   />
-                  <label className="custom-control-label" htmlFor={notification._id} />
+                  <label className="form-label form-check-label" htmlFor={notification._id} />
                 </div>
               </td>
               <td>
@@ -97,32 +97,32 @@ class GlobalNotificationList extends React.Component {
               <td>
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
-                    <li className="list-inline-item badge badge-pill badge-success">
+                    <li className="list-inline-item badge rounded-pill bg-success">
                       <i className="icon-doc"></i> CREATE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageEdit') && (
-                    <li className="list-inline-item badge badge-pill badge-warning">
+                    <li className="list-inline-item badge rounded-pill bg-warning text-dark">
                       <i className="icon-pencil"></i> EDIT
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageMove') && (
-                    <li className="list-inline-item badge badge-pill badge-pink">
+                    <li className="list-inline-item badge rounded-pill bg-pink">
                       <i className="icon-action-redo"></i> MOVE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageDelete') && (
-                    <li className="list-inline-item badge badge-pill badge-danger">
+                    <li className="list-inline-item badge rounded-pill bg-danger">
                       <i className="icon-fire"></i> DELETE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
-                    <li className="list-inline-item badge badge-pill badge-info">
+                    <li className="list-inline-item badge rounded-pill bg-info">
                       <i className="fa fa-heart-o"></i> LIKE
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (
-                    <li className="list-inline-item badge badge-pill badge-secondary">
+                    <li className="list-inline-item badge rounded-pill bg-primary">
                       <i className="icon-fw icon-bubble"></i> POST
                     </li>
                   )}
@@ -139,7 +139,7 @@ class GlobalNotificationList extends React.Component {
                     className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
-                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false"
                   >

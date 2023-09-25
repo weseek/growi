@@ -1,5 +1,5 @@
 @use '~/styles/mixins' as ms;
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 @use './page-editor-inheritance';
 
 

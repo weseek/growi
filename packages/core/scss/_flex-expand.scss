@@ -1,0 +1,9 @@
+@use './placeholders/flex-expand';
+
+.flex-expand-horiz {
+  @extend %flex-expand-horiz;
+}
+
+.flex-expand-vert {
+  @extend %flex-expand-vert;
+}

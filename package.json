@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "6.1.11-RC.0",
+  "version": "7.0.0-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -26,8 +26,7 @@
       "apps/*"
     ],
     "nohoist": [
-      "**/uvu/*",
-      "**/slackbot-proxy/bootstrap"
+      "**/uvu/*"
     ]
   },
   "scripts": {
@@ -44,7 +43,7 @@
     "cross-env": "^7.0.0",
     "dotenv-flow": "^3.2.0",
     "npm-run-all": "^4.1.5",
-    "ts-deepmerge": "^3.0.0",
+    "ts-deepmerge": "^6.2.0",
     "tslib": "^2.3.1",
     "yargs": "^17.7.1"
   },
@@ -84,6 +83,7 @@
     "reg-notify-slack-plugin": "^0.11.0",
     "reg-publish-s3-plugin": "^0.11.0",
     "reg-suit": "^0.12.2",
+    "rollup-plugin-node-externals": "^6.1.1",
     "shx": "^0.3.4",
     "stylelint": "^14.2.0",
     "stylelint-config-recess-order": "^3.0.0",
@@ -91,7 +91,7 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "~5.0.0",
     "vite": "^4.4.0",
-    "vite-plugin-dts": "^2.3.0",
+    "vite-plugin-dts": "^3.3.1",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.31.4",
     "vitest-mock-extended": "^1.1.3"

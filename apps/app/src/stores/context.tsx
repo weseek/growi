@@ -72,10 +72,6 @@ export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRR
   return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
 };
 
-export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
-};
-
 export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
@@ -102,6 +98,10 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
+};
+
+export const useIsEnabledMarp = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useContextSWR<boolean, Error>('isEnabledMarp', initialData, { fallbackData: false });
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {

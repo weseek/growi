@@ -81,18 +81,18 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="custom-control custom-checkbox custom-checkbox-info my-0">
+      <div className="form-check form-check-info my-0">
         <input
           type="checkbox"
           id={collectionName}
           name={collectionName}
-          className="custom-control-input"
+          className="form-check-input"
           value={collectionName}
           checked={isSelected}
           disabled={isImporting}
           onChange={this.changeHandler}
         />
-        <label className="text-capitalize custom-control-label" htmlFor={collectionName}>
+        <label className="form-label text-capitalize form-check-label" htmlFor={collectionName}>
           {collectionName}
         </label>
       </div>
@@ -118,12 +118,12 @@ export default class ImportCollectionItem extends React.Component {
             type="button"
             id="ddmMode"
             disabled={isImporting}
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
           >
             {this.renderModeLabel(option.mode)}
-            <span className="caret ml-2"></span>
+            <span className="caret ms-2"></span>
           </button>
           <ul className="dropdown-menu" aria-labelledby="ddmMode">
             { modes.map((mode) => {
@@ -147,7 +147,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm p-1 ml-2"
+        className="btn btn-outline-secondary btn-sm p-1 ms-2"
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >
@@ -200,7 +200,7 @@ export default class ImportCollectionItem extends React.Component {
 
     return (
       <div className="card border-light">
-        <div className="card-header bg-light">
+        <div className="card-header bg-light text-dark">
           <div className="d-flex justify-content-between align-items-center flex-wrap">
             {/* left */}
             {this.renderCheckbox()}

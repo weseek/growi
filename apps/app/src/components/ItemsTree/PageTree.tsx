@@ -7,7 +7,7 @@ import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import { PageTreeItem } from '../Sidebar/PageTreeItem/PageTreeItem';
-import PageTreeContentSkeleton from '../Sidebar/Skeleton/PageTreeContentSkeleton';
+import DefaultContentSkeleton from '../Sidebar/Skeleton/DefaultContentSkeleton';
 
 import { ItemsTree } from './ItemsTree';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';

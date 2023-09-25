@@ -37,7 +37,7 @@ export const CustomizeTitle: FC = () => {
         </div>
 
         <div className="col-12">
-          <Card className="card well">
+          <Card className="card custom-card">
             <CardBody className="px-0 py-2">
               {/* eslint-disable react/no-danger */}
               <p dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_title_detail') }} />
@@ -59,11 +59,11 @@ export const CustomizeTitle: FC = () => {
 
         {/* TODO i18n */}
         <div className="form-text text-muted col-12">
-            Default Value: <code>&#123;&#123;pagename&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
+          Default Value: <code>&#123;&#123;pagename&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
           <br />
-            Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
+          Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
         </div>
-        <div className="form-group col-12">
+        <div className="col-12">
           <input
             className="form-control"
             defaultValue={currentCustomizeTitle}

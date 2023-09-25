@@ -7,7 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 const ProxyCircle = () => (
   <div className="grw-bridge-proxy-circle">
     <div className="circle position-absolute bg-primary border-light rounded-circle">
-      <p className="circle-inner text-light font-weight-bold d-none d-lg-inline">Proxy Server</p>
+      <p className="circle-inner text-light fw-bold d-none d-lg-inline">Proxy Server</p>
       <p className="circle-inner grw-proxy-server-name d-block d-lg-none">Proxy Server</p>
     </div>
   </div>
@@ -24,7 +24,7 @@ const BridgeCore = (props) => {
         <p className={`${withProxy ? 'mt-0' : 'mt-2'}`}>
           <i className={iconClass} />
           <small
-            className="ml-2 d-none d-lg-inline"
+            className="ms-2 d-none d-lg-inline"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: description }}
           />

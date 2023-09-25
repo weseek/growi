@@ -1,4 +1,4 @@
-import { envUtils } from '@growi/core';
+import { envUtils } from '@growi/core/dist/utils';
 import { parseISO } from 'date-fns';
 
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
@@ -60,18 +60,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:useOnlyEnvVarForFileUploadType',
     type:    ValueType.BOOLEAN,
     default: false,
-  },
-  HACKMD_URI: {
-    ns:      'crowi',
-    key:     'app:hackmdUri',
-    type:    ValueType.STRING,
-    default: null,
-  },
-  HACKMD_URI_FOR_SERVER: {
-    ns:      'crowi',
-    key:     'app:hackmdUriForServer',
-    type:    ValueType.STRING,
-    default: null,
   },
   // OAUTH_GOOGLE_CLIENT_ID: {
   //   ns:      'crowi',
@@ -782,7 +770,7 @@ export default class ConfigLoader {
   /**
    * get config from the environment variables for display admin page
    *
-   * **use this only admin home page.**
+   * **use this only admin homepage.**
    */
   static getEnvVarsForDisplay(avoidSecurity = false): any {
     const config = {};

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-import { IRevisionHasPageId, pagePathUtils } from '@growi/core';
+import type { IRevisionHasPageId } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
@@ -16,7 +17,7 @@ const { encodeSpaces } = pagePathUtils;
 const DropdownItemContents = ({ title, contents }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
-    <div className="card well mb-1 p-2">{contents}</div>
+    <div className="card custom-card mb-1 p-2">{contents}</div>
   </>
 );
 
@@ -66,7 +67,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
       <div className="d-flex">
         <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
         <Dropdown
-          className="grw-copy-dropdown align-self-center ml-auto"
+          className="grw-copy-dropdown align-self-center ms-auto"
           isOpen={dropdownOpen}
           toggle={() => toggleDropdown()}
         >
@@ -76,7 +77,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
           >
             <i className="ti ti-clipboard"></i>
           </DropdownToggle>
-          <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+          <DropdownMenu strategy="fixed" end>
             {/* Page path URL */}
             <CopyToClipboard text={generateURL(currentPagePath)}>
               <DropdownItem className="px-3">

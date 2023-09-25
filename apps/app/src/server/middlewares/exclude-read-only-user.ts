@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import { NextFunction, Response } from 'express';
 import { Request } from 'express-validator/src/base';
 

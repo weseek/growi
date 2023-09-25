@@ -30,7 +30,7 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { t, userForPasswordResetModal } = this.props;
+    const { userForPasswordResetModal } = this.props;
     try {
       const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
@@ -47,9 +47,13 @@ class PasswordResetModal extends React.Component {
 
     return (
       <>
-        <button type="submit" className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
-          onClick={this.onClickSendNewPasswordButton} disabled={!isMailerSetup || isEmailSending || isEmailSent}>
-          {isEmailSending && <i className='fa fa-spinner fa-pulse mx-2' />}
+        <button
+          type="submit"
+          className={`btn ${isEmailSent ? 'btn-secondary' : 'btn-primary'}`}
+          onClick={this.onClickSendNewPasswordButton}
+          disabled={!isMailerSetup || isEmailSending || isEmailSent}
+        >
+          {isEmailSending && <i className="fa fa-spinner fa-pulse mx-2" />}
           {!isEmailSending && (isEmailSent ? t('commons:Done') : t('commons:Send'))}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
@@ -63,12 +67,12 @@ class PasswordResetModal extends React.Component {
     const { t, isMailerSetup, userForPasswordResetModal } = this.props;
 
     return (
-      <div className="d-flex col text-left ml-1 pl-0">
+      <div className="d-flex col text-start ms-1 ps-0">
         {!isMailerSetup ? (
-          <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          <label className="form-label form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
         ) : (
           <>
-            <p className="mr-2">To:</p>
+            <p className="me-2">To:</p>
             <div>
               <p className="mb-0">{userForPasswordResetModal.username}</p>
               <p className="mb-0">{userForPasswordResetModal.email}</p>
@@ -119,7 +123,7 @@ class PasswordResetModal extends React.Component {
               {showPassword ? temporaryPassword : maskedPassword}
             </span>
           </code>
-          <CopyToClipboard text={ temporaryPassword } onCopy={() => this.setState({ showTooltip: true })}>
+          <CopyToClipboard text={temporaryPassword} onCopy={() => this.setState({ showTooltip: true })}>
             <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
               <i className="fa fa-clone" aria-hidden="true"></i>
             </button>
@@ -210,6 +214,7 @@ const PasswordResetModalWrapperFC = (props) => {
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  isMailerSetup: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userForPasswordResetModal: PropTypes.object,

@@ -1,6 +1,6 @@
 {
   "name": "@growi/ui",
-  "version": "6.1.11-RC.0",
+  "version": "7.0.0-RC.0",
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": [
@@ -24,6 +24,11 @@
     "@growi/core": "link:../core"
   },
   "devDependencies": {
-    "react": "^18.2.0"
+    "reactstrap": "^9.2.0"
+  },
+  "peerDependencies": {
+    "next": "^13",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

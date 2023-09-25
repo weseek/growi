@@ -4,12 +4,15 @@ import FsLightbox from 'fslightbox-react';
 
 export const LightBox = (props) => {
   const [toggler, setToggler] = useState(false);
+  const { node, ...rest } = props;
+
   return (
     <>
-      <img src={props.src} alt={props.alt} onClick={() => setToggler(!toggler)}/>
+      <img {...rest} onClick={() => setToggler(!toggler)} />
       <FsLightbox
         toggler={toggler}
         sources={[props.src]}
+        type="image"
       />
     </>
   );

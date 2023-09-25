@@ -43,12 +43,10 @@ module.exports = function(crowi, app) {
   const loginPassport = require('./login-passport')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
-  const user = require('./user')(crowi, app);
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
-  const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
   const next = nextFactory(crowi);
@@ -163,12 +161,6 @@ module.exports = function(crowi, app) {
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
-
-  app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
-  app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
-  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, hackmd.validateForApi, hackmd.integrate);
-  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, hackmd.validateForApi, hackmd.discard);
-  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))

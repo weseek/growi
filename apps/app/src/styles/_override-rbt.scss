@@ -1,3 +1,5 @@
+// TODO: .form-group dropped in bootstrap v5
+// https://redmine.weseek.co.jp/issues/129103
 // override react-bootstrap-typeahead styles
 // see: https://github.com/ericgio/react-bootstrap-typeahead
 .form-group:not(.has-error) {
@@ -9,6 +11,9 @@
   }
 }
 
+// TODO: check padding when upgrade react-bootstrap-typeahead v6
+// .close to .btn-close in bootstrap v5
+// https://redmine.weseek.co.jp/issues/129103
 .rbt-input-wrapper {
   .close.rbt-close {
     // default bootstrap .close has padding 0
@@ -21,6 +26,8 @@
   display: none;
 }
 
+// TODO: .input-group-prepend dropped in bootstrap v5
+// https://redmine.weseek.co.jp/issues/129103
 // seamless border for .input-group-prepend
 .input-group-prepend + div {
   .rbt .rbt-input-main {

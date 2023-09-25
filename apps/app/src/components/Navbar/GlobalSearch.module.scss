@@ -1,4 +1,4 @@
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 // input styles
 .grw-global-search :global {
@@ -30,12 +30,6 @@
     height: 30px;
     .rbt-input-wrapper {
       margin-left: 8px;
-    }
-  }
-
-  .form-group:not(.has-error) {
-    .rbt-input.form-control {
-      border: none;
     }
   }
 

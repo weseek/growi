@@ -2,14 +2,14 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core';
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
@@ -28,8 +28,6 @@ declare global {
 
 
 const logger = loggerFactory('growi:SavePageControls');
-
-const { isTopPage } = pagePathUtils;
 
 export type SavePageControlsProps = {
   slackChannels: string
@@ -71,19 +69,19 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isRootPage = isTopPage(currentPage?.path ?? '');
+  const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
   return (
-    <div className="d-flex align-items-center form-inline flex-nowrap">
+    <div className="d-flex align-items-center flex-nowrap">
 
       {isAclEnabled
         && (
-          <div className="mr-2">
+          <div className="me-2">
             <GrantSelector
               grant={grant}
-              disabled={isRootPage}
+              disabled={isGrantSelectorDisabledPage}
               grantGroupId={grantedGroup?.id}
               grantGroupName={grantedGroup?.name}
               onUpdateGrant={updateGrantHandler}
@@ -94,19 +92,20 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
       <UncontrolledButtonDropdown direction="up">
         <Button
-          id="caret" data-testid="save-page-btn"
+          id="caret"
+          data-testid="save-page-btn"
           color="primary"
           className="btn-submit"
           onClick={save}
           disabled={isWaitingSaveProcessing}
         >
           {isWaitingSaveProcessing && (
-            <i className="fa fa-spinner fa-pulse mr-1"></i>
+            <i className="fa fa-spinner fa-pulse me-1"></i>
           )}
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-        <DropdownMenu right>
+        <DropdownMenu end>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>

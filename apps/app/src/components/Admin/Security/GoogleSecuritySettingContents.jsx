@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
@@ -54,27 +54,27 @@ class GoogleSecurityManagementContents extends React.Component {
           </div>
         )}
 
-        <div className="form-group row">
+        <div className="row">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 id="isGoogleEnabled"
-                className="custom-control-input"
+                className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGoogleEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="isGoogleEnabled">
+              <label className="form-label form-check-label" htmlFor="isGoogleEnabled">
                 {t('security_settings.OAuth.Google.enable_google')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('google') && isGoogleEnabled)
-              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
+          <label className="form-label col-12 col-md-3 text-start text-md-end py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"
@@ -102,7 +102,7 @@ class GoogleSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientId" className="col-3 text-right py-2">{t('security_settings.clientID')}</label>
+              <label htmlFor="googleClientId" className="col-3 text-end py-2 form-label">{t('security_settings.clientID')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -118,7 +118,7 @@ class GoogleSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientSecret" className="col-3 text-right py-2">{t('security_settings.client_secret')}</label>
+              <label htmlFor="googleClientSecret" className="col-3 text-end py-2 form-label">{t('security_settings.client_secret')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -135,16 +135,16 @@ class GoogleSecurityManagementContents extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6">
-                <div className="custom-control custom-checkbox custom-checkbox-success">
+                <div className="form-check form-check-success">
                   <input
                     id="bindByUserNameGoogle"
-                    className="custom-control-input"
+                    className="form-check-input"
                     type="checkbox"
                     checked={adminGoogleSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
-                    className="custom-control-label"
+                    className="form-check-label"
                     htmlFor="bindByUserNameGoogle"
                     dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />
@@ -176,7 +176,7 @@ class GoogleSecurityManagementContents extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForGoogleOauth" data-toggle="collapse"> {t('security_settings.OAuth.how_to.google')}</a>
+            <a href="#collapseHelpForGoogleOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.google')}</a>
           </h4>
           <ol id="collapseHelpForGoogleOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}

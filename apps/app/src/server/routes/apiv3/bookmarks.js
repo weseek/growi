@@ -79,7 +79,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const { Page, Bookmark, User } = crowi.models;
+  const { Page, Bookmark } = crowi.models;
 
   const validator = {
     bookmarks: [

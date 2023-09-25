@@ -176,7 +176,7 @@ export const LinkEditModal = (): JSX.Element => {
     return (
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="card card-disabled w-100 p-1 mb-0">
-          <p className="text-left text-muted mb-1 small">Markdown</p>
+          <p className="text-start text-muted mb-1 small">Markdown</p>
           <p className="text-center text-truncate text-muted">{linker.generateMarkdownText()}</p>
         </div>
         <div className="d-flex align-items-center justify-content-center">
@@ -186,7 +186,7 @@ export const LinkEditModal = (): JSX.Element => {
           </span>
         </div>
         <div className="card w-100 p-1 mb-0">
-          <p className="text-left text-muted mb-1 small">HTML</p>
+          <p className="text-start text-muted mb-1 small">HTML</p>
           <p className="text-center text-truncate">
             <a href={linker.link}>{linker.label}</a>
           </p>
@@ -242,10 +242,10 @@ export const LinkEditModal = (): JSX.Element => {
     return (
       <>
         <h3 className="grw-modal-head">{t('link_edit.set_link_and_label')}</h3>
-        <form className="form-group">
+        <form>
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
-              <div className="input-group-prepend">
+              <div>
                 <span className="input-group-text">{t('link_edit.link')}</span>
               </div>
               <SearchTypeahead
@@ -255,16 +255,18 @@ export const LinkEditModal = (): JSX.Element => {
                 keywordOnInit={linkInputValue}
                 autoFocus
               />
-              <div className="d-none d-sm-block input-group-append">
+              <div className="d-none d-sm-block">
                 <button type="button" id="preview-btn" className={`btn btn-info btn-page-preview ${styles['btn-page-preview']}`}>
                   <PagePreviewIcon />
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={isPreviewOpen} target="preview-btn" toggle={toggleIsPreviewOpen}>
                   <PopoverBody>
                     {markdown != null && pagePath != null && rendererOptions != null
-                    && <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
-                      <Preview markdown={markdown} pagePath={pagePath} rendererOptions={rendererOptions} />
-                    </div>
+                    && (
+                      <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
+                        <Preview markdown={markdown} pagePath={pagePath} rendererOptions={rendererOptions} />
+                      </div>
+                    )
                     }
                   </PopoverBody>
                 </Popover>
@@ -273,7 +275,7 @@ export const LinkEditModal = (): JSX.Element => {
           </div>
           <div className="form-gorup my-3">
             <div className="input-group flex-nowrap">
-              <div className="input-group-prepend">
+              <div>
                 <span className="input-group-text">{t('link_edit.label')}</span>
               </div>
               <input
@@ -294,34 +296,34 @@ export const LinkEditModal = (): JSX.Element => {
 
   const renderPathFormatForm = (): JSX.Element => {
     return (
-      <div className="card well pt-3">
-        <form className="form-group mb-0">
-          <div className="form-group mb-0 row">
-            <label className="col-sm-3">{t('link_edit.path_format')}</label>
+      <div className="card custom-card pt-3">
+        <form className="mb-0">
+          <div className="mb-0 row">
+            <label className="form-label col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
-              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+              <div className="form-check form-check-info form-check-inline">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   id="relativePath"
                   type="checkbox"
                   checked={isUseRelativePath}
                   onChange={toggleIsUseRelativePath}
                   disabled={!linkInputValue.startsWith('/') || linkerType === Linker.types.growiLink}
                 />
-                <label className="custom-control-label" htmlFor="relativePath">
+                <label className="form-label form-check-label" htmlFor="relativePath">
                   {t('link_edit.use_relative_path')}
                 </label>
               </div>
-              <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
+              <div className="form-check form-check-info form-check-inline">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   id="permanentLink"
                   type="checkbox"
                   checked={isUsePermanentLink}
                   onChange={toggleIsUsePamanentLink}
                   disabled={permalink === '' || linkerType === Linker.types.growiLink}
                 />
-                <label className="custom-control-label" htmlFor="permanentLink">
+                <label className="form-label form-check-label" htmlFor="permanentLink">
                   {t('link_edit.use_permanent_link')}
                 </label>
               </div>
@@ -357,7 +359,7 @@ export const LinkEditModal = (): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter>
-        { previewError && <span className='text-danger'>{previewError}</span>}
+        { previewError && <span className="text-danger">{previewError}</span>}
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>

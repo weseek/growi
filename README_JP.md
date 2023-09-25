@@ -6,7 +6,7 @@
   </p>
   <p align="center">
     <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
-    <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+    <a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
   </p>
 
 <p align="center">
@@ -36,9 +36,8 @@
 # 機能紹介
 
 - **主な機能**
-  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html)。
-  - [HackMD(CodiMd)](https://hackmd.io/) と連携することで同時多人数編集が可能です。
-    - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+  - マークダウンを使用してページを階層構造で作成することが可能です。 -> [デモサイトで GROWI を体験する](https://docs.growi.org/ja/guide/getting-started/try_growi.html)。
+  - 同時多人数編集が可能です。
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
   - Slack / Mattermost, IFTTT と連携することが可能です。
@@ -129,7 +128,7 @@ Issue と Pull requests の作成は英語・日本語どちらでも受け付�
 
 ## GROWI について話し合いましょう！
 
-質問や提案があれば、私たちの [Slack team](https://growi-slackin.weseek.co.jp/) にぜひご参加ください。
+質問や提案があれば、私たちの [Slack team](https://communityinviter.com/apps/wsgrowi/invite/) にぜひご参加ください。
 いつでも、どこでも GROWI について議論しましょう！
 
 # ライセンス

@@ -1,4 +1,4 @@
-import { PageGrant } from '~/interfaces/page';
+import { PageGrant } from '@growi/core';
 
 import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 
@@ -24,7 +24,6 @@ export type IUserForResuming = {
 export type IOptionsForUpdate = {
   grant?: PageGrant,
   grantUserGroupId?: ObjectIdLike,
-  isSyncRevisionToHackmd?: boolean,
   overwriteScopesOfDescendants?: boolean,
 };
 

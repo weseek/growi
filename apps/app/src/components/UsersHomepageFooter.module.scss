@@ -1,0 +1,106 @@
+@use '@growi/ui/src/styles/molecules/page_list';
+$grw-sidebar-content-header-height: 58px;
+$grw-sidebar-content-footer-height: 50px;
+
+.user-page-footer :global {
+  .grw-user-page-list-m {
+    .list-group{
+      .list-group-item {
+        .grw-visible-on-hover {
+          display: none;
+        }
+
+        &:hover {
+          .grw-visible-on-hover {
+            display: block;
+          }
+        }
+        .grw-triangle-container{
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
+        svg{
+          width: 20px;
+          height: 20px;
+        }
+        min-height: 40px;
+        border-radius: 0px;
+
+
+        &.grw-bookmark-item-list {
+          .picture {
+            width: 16px;
+            height: 16px;
+            vertical-align: text-bottom;
+
+            &.picture-md {
+              width: 20px;
+              height: 20px;
+            }
+          }
+          svg{
+            width: 14px;
+            height: 14px;
+          }
+          .grw-foldertree-control{
+            margin-left: 1rem;
+          }
+        }
+      }
+
+
+    }
+
+    .grw-foldertree-item-container {
+      input {
+        max-width: 25%;
+      }
+    }
+    .grw-foldertree-title-anchor{
+      width: fit-content !important;
+      margin-right: 20px;
+    }
+    svg {
+      width: 35px;
+      height: 35px;
+      margin-bottom: 6px;
+    }
+    .new-bookmark-folder{
+      max-height: 30px;
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    .grw-expand-compress-btn {
+      max-height: 40px;
+      svg {
+        width: 18px;
+        height: 18px;
+        margin-bottom: 3px;
+      }
+    }
+    .grw-folder-tree-container {
+      .grw-drop-item-area {
+        padding: 1rem;
+        .grw-accept-drop-item {
+          padding: 0.5rem;
+          border-style: dashed;
+          border-width: 0.15rem;
+        }
+      }
+    }
+  }
+}
+
+.grw-bookarks-contents-compressed {
+  max-height: calc(70vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+  overflow-y: scroll;
+}
+
+.grw-bookarks-contents-expanded {
+  max-height: calc(100vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+  overflow-y: scroll;
+}

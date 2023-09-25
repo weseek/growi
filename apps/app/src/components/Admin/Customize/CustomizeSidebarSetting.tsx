@@ -35,69 +35,73 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <h2 className="admin-setting-header">{t('customize_settings.default_sidebar_mode.title')}</h2>
 
-          <Card className="card well my-3">
+          <Card className="card custom-card my-3">
             <CardBody className="px-0 py-2">
               {t('customize_settings.default_sidebar_mode.desc')}
             </CardBody>
           </Card>
 
           <div className="d-flex justify-content-around mt-5">
-            <div id="layoutOptions" className="card-deck">
-              <div
-                className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsSidebarDrawerMode(true)}
-                role="button"
-              >
-                <img src={drawerIconFileName} />
-                <div className="card-body text-center">
-                  Drawer Mode
+            <div id="layoutOptions" className="row row-cols-2">
+              <div className="col">
+                <div
+                  className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
+                  onClick={() => setIsSidebarDrawerMode(true)}
+                  role="button"
+                >
+                  <img src={drawerIconFileName} />
+                  <div className="card-body text-center">
+                    Drawer Mode
+                  </div>
                 </div>
               </div>
-              <div
-                className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
-                onClick={() => setIsSidebarDrawerMode(false)}
-                role="button"
-              >
-                <img src={dockIconFileName} />
-                <div className="card-body  text-center">
-                  Dock Mode
+              <div className="col">
+                <div
+                  className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
+                  onClick={() => setIsSidebarDrawerMode(false)}
+                  role="button"
+                >
+                  <img src={dockIconFileName} />
+                  <div className="card-body  text-center">
+                    Dock Mode
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <Card className="card well my-5">
+          <Card className="card custom-card my-5">
             <CardBody className="px-0 py-2">
               {t('customize_settings.default_sidebar_mode.dock_mode_default_desc')}
             </CardBody>
           </Card>
 
           <div className="px-3">
-            <div className="custom-control custom-radio my-3">
+            <div className="form-check my-3">
               <input
                 type="radio"
                 id="is-open"
-                className="custom-control-input"
+                className="form-check-input"
                 name="mailVisibility"
                 checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === false}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
-              <label className="custom-control-label" htmlFor="is-open">
+              <label className="form-label form-check-label" htmlFor="is-open">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
-            <div className="custom-control custom-radio my-3">
+            <div className="form-check my-3">
               <input
                 type="radio"
                 id="is-closed"
-                className="custom-control-input"
+                className="form-check-input"
                 name="mailVisibility"
                 checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === true}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
-              <label className="custom-control-label" htmlFor="is-closed">
+              <label className="form-label form-check-label" htmlFor="is-closed">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}
               </label>
             </div>

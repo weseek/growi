@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -17,7 +17,7 @@ import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig,
+  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
@@ -34,6 +34,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
   rendererConfig: RendererConfig,
   showPageLimitationXL: number,
 
@@ -106,6 +107,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useRendererConfig(props.rendererConfig);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
 
   const title = generateCustomTitle(props, targetPage.title);
 
@@ -123,7 +125,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div id="main" className='main'>
+        <div id="main" className="main">
           <div id="content-main" className="content-main container-lg grw-container-convertible">
             {targetPage.component}
           </div>
@@ -163,6 +165,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 

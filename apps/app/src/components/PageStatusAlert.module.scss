@@ -1,5 +1,5 @@
 @use '~/styles/variables' as var;
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 .grw-page-status-alert :global {
   $margin-bottom: var.$grw-navbar-bottom-height + 10px;
@@ -17,7 +17,8 @@
       text-align: center;
 
       .btn {
-        @include bs.button-size(bs.$btn-padding-y-lg, bs.$btn-padding-x-lg, bs.$btn-font-size-lg, bs.$btn-line-height-lg, bs.$btn-border-radius-lg);
+        // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
+        // @include bs.button-size(bs.$btn-padding-y-lg, bs.$btn-padding-x-lg, bs.$btn-font-size-lg, bs.$btn-line-height-lg, bs.$btn-border-radius-lg);
       }
     }
   }

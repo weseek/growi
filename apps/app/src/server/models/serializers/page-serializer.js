@@ -28,9 +28,8 @@ function serializePageSecurely(page) {
     serialized = page.toObject();
   }
 
-  // depopulate revision and revisionHackmdSynced
+  // depopulate revision
   depopulate(serialized, 'revision');
-  depopulate(serialized, 'revisionHackmdSynced');
 
   serializeInsecureUserAttributes(serialized);
 

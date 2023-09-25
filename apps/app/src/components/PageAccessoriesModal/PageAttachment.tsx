@@ -2,7 +2,7 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 
-import { IAttachmentHasId } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core';
 
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
@@ -63,7 +63,7 @@ const PageAttachment = (): JSX.Element => {
     if (dataAttachments == null || inUseAttachmentsMap == null) {
       return (
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
         </div>
       );
     }

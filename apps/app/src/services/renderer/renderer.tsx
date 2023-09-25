@@ -6,6 +6,7 @@ import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-s
 import slug from 'rehype-slug';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
+import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 import toc from 'remark-toc';
@@ -29,6 +30,7 @@ import * as xsvToTable from './remark-plugins/xsv-to-table';
 // import EasyGrid from './PreProcessor/EasyGrid';
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:services:renderer');
 
 
@@ -98,6 +100,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       emoji,
       pukiwikiLikeLinker,
       growiDirective,
+      remarkFrontmatter,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -125,7 +128,7 @@ export const generateSSRViewOptions = (
 ): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
-  const { remarkPlugins, rehypePlugins, components } = options;
+  const { remarkPlugins, rehypePlugins } = options;
 
   // add remark plugins
   remarkPlugins.push(

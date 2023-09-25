@@ -17,7 +17,6 @@ const TIME_TO_ADD_SEC = 10;
 
 const logger = loggerFactory('growi:models:page-operation');
 
-type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*
@@ -75,7 +74,6 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   grant: { type: Number },
   grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
   format: { type: String },
-  isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },
 }, { _id: false });
 

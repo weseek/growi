@@ -1,0 +1,42 @@
+{
+  "name": "@growi/editor",
+  "version": "6.2.0-RC.0",
+  "license": "MIT",
+  "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && vite build",
+    "clean": "shx rm -rf dist",
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w --emptyOutDir=false",
+    "serve": "vite",
+    "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:typecheck": "tsc",
+    "lint": "npm-run-all -p lint:*",
+    "version": "yarn version --no-git-tag-version --preid=RC"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@codemirror/lang-markdown": "^6.2.0",
+    "@codemirror/language-data": "^6.3.1",
+    "@codemirror/state": "^6.2.1",
+    "@codemirror/view": "^6.15.3",
+    "@popperjs/core": "^2.11.8",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@uiw/react-codemirror": "^4.21.8",
+    "bootstrap": "^5.3.1",
+    "codemirror": "^6.0.1",
+    "eslint-plugin-react-refresh": "^0.4.1",
+    "material-icons": "^1.13.10",
+    "react-hook-form": "^7.45.4",
+    "react-toastify": "^9.1.3",
+    "reactstrap": "^9.2.0",
+    "swr": "^2.2.2",
+    "ts-deepmerge": "^6.2.0"
+  }
+}

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { IPageHasId, pagePathUtils } from '@growi/core';
+import type { IPageHasId, IPageInfoForOperation } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Link } from 'react-scroll';
 
-import { IPageInfoForOperation } from '~/interfaces/page';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -16,7 +16,7 @@ import TableOfContents from './TableOfContents';
 import styles from './PageSideContents.module.scss';
 
 
-const { isTopPage, isUsersHomePage, isTrashPage } = pagePathUtils;
+const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
 
 
 export type PageSideContentsProps = {
@@ -35,7 +35,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
-  const isUsersHomePagePath = isUsersHomePage(pagePath);
+  const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
 
   return (
@@ -45,7 +45,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
         {!isSharedUser && (
           <button
             type="button"
-            className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+            className="btn btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
             onClick={() => openDescendantPageListModal(pagePath)}
             data-testid="pageListButton"
           >
@@ -57,7 +57,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
             { !isTrash && pageInfo != null
               ? <CountBadge count={(pageInfo as IPageInfoForOperation).descendantCount} offset={1} />
-              : <div className='px-2'></div>}
+              : <div className="px-2"></div>}
           </button>
         )}
       </div>
@@ -65,17 +65,17 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       {/* Comments */}
       {!isTopPagePath && (
         <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-          <Link to={'page-comments'} offset={-120}>
+          <Link to="page-comments" offset={-120}>
             <button
               type="button"
-              className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+              className="btn btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
               data-testid="page-comment-button"
             >
               <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
               <span>Comments</span>
               { pageInfo != null
                 ? <CountBadge count={(pageInfo as IPageInfoForOperation).commentCount} />
-                : <div className='px-2'></div>}
+                : <div className="px-2"></div>}
             </button>
           </Link>
         </div>
@@ -83,7 +83,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
       <div className="d-none d-lg-block">
         <TableOfContents />
-        {isUsersHomePagePath && <ContentLinkButtons author={page?.creator} />}
+        {isUsersHomepagePath && <ContentLinkButtons author={page?.creator} />}
       </div>
     </>
   );

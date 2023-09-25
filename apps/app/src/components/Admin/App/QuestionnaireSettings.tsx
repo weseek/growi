@@ -49,11 +49,11 @@ const QuestionnaireSettings = (): JSX.Element => {
 
   return (
     <div id="questionnaire-settings" className="mb-5">
-      <p className="card well">
+      <p className="card custom-card">
         <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">
-            <span className="text-info mr-2"><i className="icon-info icon-fw"></i>{t('app_setting.about_data_sent')}</span>
+            <span className="text-info me-2"><i className="icon-info icon-fw"></i>{t('app_setting.about_data_sent')}</span>
             <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
               {t('app_setting.learn_more')} <i className="icon-share-alt"></i>
             </a>
@@ -63,38 +63,40 @@ const QuestionnaireSettings = (): JSX.Element => {
         </span>
       </p>
 
-      {isLoading && <div className="text-muted text-center mb-5">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1" />
-      </div>}
+      {isLoading && (
+        <div className="text-muted text-center mb-5">
+          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+        </div>
+      )}
 
       {!isLoading && (
         <>
           <div className="row my-3">
-            <div className="custom-control custom-switch custom-checkbox-info col-md-5 offset-md-5">
+            <div className="form-check form-switch form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="isQuestionnaireEnabled"
                 checked={isQuestionnaireEnabled}
                 onChange={onChangeIsQuestionnaireEnabledHandler}
               />
-              <label className="custom-control-label" htmlFor="isQuestionnaireEnabled">
+              <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
                 {t('app_setting.enable_questionnaire')}
               </label>
             </div>
           </div>
 
           <div className="row my-4">
-            <div className="custom-control custom-checkbox custom-checkbox-info col-md-5 offset-md-5">
+            <div className="form-check form-check-info col-md-5 offset-md-5">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="isAppSiteUrlHashed"
                 checked={isAppSiteUrlHashed}
                 onChange={onChangeisAppSiteUrlHashedHandler}
                 disabled={!isQuestionnaireEnabled}
               />
-              <label className="custom-control-label" htmlFor="isAppSiteUrlHashed">
+              <label className="form-label form-check-label" htmlFor="isAppSiteUrlHashed">
                 {t('app_setting.anonymize_app_site_url')}
               </label>
               <p className="form-text text-muted small">
@@ -103,7 +105,7 @@ const QuestionnaireSettings = (): JSX.Element => {
             </div>
           </div>
 
-          <AdminUpdateButtonRow onClick={onSubmitHandler}/>
+          <AdminUpdateButtonRow onClick={onSubmitHandler} />
         </>
       )}
     </div>

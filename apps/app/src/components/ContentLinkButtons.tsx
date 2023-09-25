@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { Link as ScrollLink } from 'react-scroll';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
@@ -32,7 +32,7 @@ const RecentlyCreatedLinkButton = React.memo(() => {
         type="button"
         className="btn btn-outline-secondary btn-sm px-3"
       >
-        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created mr-2`}><RecentlyCreatedIcon /></i>
+        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created me-2`}><RecentlyCreatedIcon /></i>
         <span>Recently Created</span>
       </button>
     </ScrollLink>

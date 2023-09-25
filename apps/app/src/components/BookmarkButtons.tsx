@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import DropdownToggle from 'reactstrap/es/DropdownToggle';
-import Popover from 'reactstrap/es/Popover';
-import PopoverBody from 'reactstrap/es/PopoverBody';
-import UncontrolledTooltip from 'reactstrap/es/UncontrolledTooltip';
+import DropdownToggle from 'reactstrap/esm/DropdownToggle';
+import Popover from 'reactstrap/esm/Popover';
+import PopoverBody from 'reactstrap/esm/PopoverBody';
+import UncontrolledTooltip from 'reactstrap/esm/UncontrolledTooltip';
 
 import { useSWRxBookmarkedUsers } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
@@ -64,12 +64,18 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
 
       <BookmarkFolderMenu
-        isOpen={isBookmarkFolderMenuOpen} pageId={pageId} isBookmarked={isBookmarked ?? false}
+        isOpen={isBookmarkFolderMenuOpen}
+        pageId={pageId}
+        isBookmarked={isBookmarked ?? false}
         onToggle={toggleBookmarkFolderMenuHandler}
         onUnbookmark={unbookmarkHandler}
       >
-        <DropdownToggle id='bookmark-dropdown-btn' color="transparent" className={`shadow-none btn btn-bookmark border-0
-          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
+        <DropdownToggle
+          id="bookmark-dropdown-btn"
+          color="transparent"
+          className={`shadow-none btn btn-bookmark border-0
+          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+        >
           <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
         </DropdownToggle>
       </BookmarkFolderMenu>
@@ -94,7 +100,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
                 <>
                   { bookmarkedUsers.length > 0
                     ? (
-                      <div className="px-2 text-right user-list-content text-truncate text-muted">
+                      <div className="px-2 text-end user-list-content text-truncate text-muted">
                         <UserPictureList users={bookmarkedUsers} />
                       </div>
                     )

@@ -1,8 +1,8 @@
 import React from 'react';
 
+import type { IPageInfoForEntity, IPageWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { IPageInfoForEntity, IPageWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
@@ -30,7 +30,7 @@ const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
         </div>
       </div>
     );
