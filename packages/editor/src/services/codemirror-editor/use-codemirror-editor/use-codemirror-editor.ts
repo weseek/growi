@@ -17,7 +17,7 @@ import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 const markdownHighlighting = HighlightStyle.define([
-  { tag: tags.heading1, fontSize: '1.6em', fontWeight: 'bold' },
+  { tag: tags.heading1 },
   { tag: tags.heading2 },
   { tag: tags.heading3 },
   { tag: tags.heading4 },
