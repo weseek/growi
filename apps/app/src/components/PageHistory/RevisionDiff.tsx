@@ -38,15 +38,12 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
     currentRevision.body,
   );
 
+  // Just testing the diff library.
+  // TODO: Delete these experimental codes when the test is finished.
   const previousMarkedBody = previousText.replaceAll('hogehoge', '<selected id="hoge">hogehoge</selected>');
 
-  // const compareLine = (lineNumber, line, operation, patchContent) => {
-  //   console.log(patchContent);
-  //   console.log(line);
-  //   console.log(lineNumber);
-  //   return line.includes('<selected id=');
-  // };
-
+  // Number of lines that are allowed to differ before rejecting a patch.
+  // refs: https://github.com/kpdecker/jsdiff#readme
   const patchAppliedmarkedBody = applyPatch(previousMarkedBody, patch, { fuzzFactor: 1 });
 
   const option: Diff2HtmlConfig = {
@@ -89,6 +86,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
         </div>
       </div>
       <div className="revision-history-diff pb-1" dangerouslySetInnerHTML={diffView} />
+      {/* TODO: Remove this line. */}
       <div>{patchAppliedmarkedBody}</div>
     </div>
   );
