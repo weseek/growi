@@ -11,7 +11,6 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import { IPageToDeleteWithMeta, IPageForItem } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -249,7 +248,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
-                <TriangleIcon />
+                <span className="material-icons-round">arrow_right</span>
               </div>
             </button>
           )}
