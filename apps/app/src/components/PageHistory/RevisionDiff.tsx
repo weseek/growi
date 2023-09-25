@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { IRevisionHasPageId } from '@growi/core';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
-import { createPatch } from 'diff';
+import { createPatch, applyPatch } from 'diff';
 import { html, Diff2HtmlConfig } from 'diff2html';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -37,6 +37,17 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
     previousText,
     currentRevision.body,
   );
+
+  const previousMarkedBody = previousText.replaceAll('hogehoge', '<selected id="hoge">hogehoge</selected>');
+
+  // const compareLine = (lineNumber, line, operation, patchContent) => {
+  //   console.log(patchContent);
+  //   console.log(line);
+  //   console.log(lineNumber);
+  //   return line.includes('<selected id=');
+  // };
+
+  const patchAppliedmarkedBody = applyPatch(previousMarkedBody, patch, { fuzzFactor: 1 });
 
   const option: Diff2HtmlConfig = {
     outputFormat: 'side-by-side',
@@ -78,6 +89,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
         </div>
       </div>
       <div className="revision-history-diff pb-1" dangerouslySetInnerHTML={diffView} />
+      <div>{patchAppliedmarkedBody}</div>
     </div>
   );
 
