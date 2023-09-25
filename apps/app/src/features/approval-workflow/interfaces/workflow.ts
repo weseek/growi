@@ -52,11 +52,12 @@ export type IWorkflow = {
   comment?: string,
   status: WorkflowStatus,
   approverGroups: IWorkflowApproverGroup[]
+  createdAt: Date;
 }
 
 export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
-export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
+export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups' | 'createdAt'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
 
 export type IWorkflowHasId = IWorkflow & HasObjectId
 

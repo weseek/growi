@@ -1,6 +1,7 @@
 // TODO: https://redmine.weseek.co.jp/issues/130336
 import React, { useState, useCallback } from 'react';
 
+import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
@@ -18,6 +19,9 @@ type Props = {
   onClickCreateWorkflowButton: () => void;
 }
 
+const formatDate = (date: Date) => {
+  return format(new Date(date), 'yyyy/MM/dd HH:mm');
+};
 
 export const WorkflowListPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -100,6 +104,9 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td>
                       {workflow.name}
+                      <div className="text-muted">
+                        {formatDate(workflow.createdAt)}
+                      </div>
                     </td>
                     <td>
                       {t(`approval_workflow.statuses.${workflow.status}`)}
