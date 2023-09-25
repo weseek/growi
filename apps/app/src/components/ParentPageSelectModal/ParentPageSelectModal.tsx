@@ -8,7 +8,8 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { useParentPageSelectModal } from '~/stores/modal';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 
-import ItemsTree from '../ItemsTree/ItemsTree';
+import { ItemsTree } from '../ItemsTree';
+
 import { PageTreeItemForModal } from './PageTreeItemForModal';
 
 

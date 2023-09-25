@@ -6,9 +6,10 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
-import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
+import { PageTreeItem } from '../Sidebar/PageTreeItem/PageTreeItem';
+import PageTreeContentSkeleton from '../Sidebar/Skeleton/PageTreeContentSkeleton';
 
-import ItemsTree from './ItemsTree';
+import { ItemsTree } from './ItemsTree';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 const PageTreeHeader = () => {
@@ -74,6 +75,7 @@ export const PageTree: FC = memo(() => {
         targetPath={path}
         targetPathOrId={targetPathOrId}
         targetAndAncestorsData={targetAndAncestorsData}
+        CustomTreeItem={PageTreeItem}
       />
 
       {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (

@@ -3,9 +3,10 @@ import React, { memo } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
+import { PageTree } from '../ItemsTree/PageTree';
+
 import { Bookmarks } from './Bookmarks';
 import CustomSidebar from './CustomSidebar';
-import { PageTree } from './PageTree';
 import RecentChanges from './RecentChanges';
 import Tag from './Tag';
 
