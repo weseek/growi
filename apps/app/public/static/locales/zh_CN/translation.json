@@ -821,6 +821,7 @@
     "create": "创建工作流程",
     "create_new": "创建新工作流程",
     "delete": "删除",
+    "delete_button_tooltip": "只有工作流程创建者、审批者或管理员可以删除",
     "show_detail": "显示详情",
     "statuses": {
       "INPROGRESS": "进行中",
