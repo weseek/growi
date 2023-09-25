@@ -1,4 +1,4 @@
-// TODO: https://redmine.weseek.co.jp/issues/130336
+// TODO: https://redmine.weseek.co.jp/issues/130337
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
