@@ -4,10 +4,7 @@ import { Modal } from 'reactstrap';
 
 import { useWorkflowModal, useSWRxWorkflow, useSWRxWorkflowList } from '../stores/workflow';
 
-import { CreateWorkflowPage } from './CreateWorkflowPage';
-import { WorkflowDetailPage } from './WorkflowDetailPage';
-import { WorkflowListPage } from './WorkflowListPage';
-
+import { CreateWorkflowPage, WorkflowDetailPage, WorkflowListPage } from './ModalComponents';
 
 const PageType = {
   list: 'LIST',

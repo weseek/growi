@@ -9,8 +9,8 @@ import {
 
 import { useCurrentUser } from '~/stores/context';
 
-import { IWorkflowHasId } from '../../interfaces/workflow';
-import { deleteWorkflow } from '../services/workflow';
+import { IWorkflowHasId } from '../../../interfaces/workflow';
+import { deleteWorkflow } from '../../services/workflow';
 
 
 type Props = {

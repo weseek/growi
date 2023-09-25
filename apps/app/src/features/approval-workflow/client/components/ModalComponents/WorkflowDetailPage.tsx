@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import { IWorkflowHasId } from '../../interfaces/workflow';
+import { IWorkflowHasId } from '../../../interfaces/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 

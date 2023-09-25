@@ -4,8 +4,8 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
-import { useCreateWorkflow } from '../services/workflow';
+import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../../interfaces/workflow';
+import { useCreateWorkflow } from '../../services/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
