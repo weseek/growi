@@ -121,6 +121,7 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                               onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
                             >{t('approval_workflow.delete')}
                             </DropdownItem>
+                            {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
                             { !isDeletable(workflow) && (
                               <UncontrolledTooltip
                                 target="delete-workflow-button"
