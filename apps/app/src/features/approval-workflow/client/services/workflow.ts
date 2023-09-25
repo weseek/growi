@@ -7,7 +7,7 @@ import { IWorkflowHasId, IWorkflowApproverGroupReq } from '../../interfaces/work
 
 export const useCreateWorkflow = (
     pageId?: string, name?: string, comment?: string, approverGroups?: IWorkflowApproverGroupReq[],
-): { createdWorkflow: IWorkflowHasId | undefined, createWorkflow: () => Promise<void> } => {
+): { createdWorkflow: IWorkflowHasId | undefined, createWorkflow: () => Promise<IWorkflowHasId | undefined> } => {
   const [createdWorkflow, setCreatedWorkflow] = useState<IWorkflowHasId | undefined>();
 
   const createWorkflow = useCallback(async() => {
@@ -17,7 +17,12 @@ export const useCreateWorkflow = (
     const response = await apiv3Post('/workflow', {
       pageId, name, comment, approverGroups,
     });
-    setCreatedWorkflow(response.data.setCreatedWorkflow as IWorkflowHasId | undefined);
+
+    const createWorkflow = response.data.createdWorkflow as IWorkflowHasId | undefined;
+
+    setCreatedWorkflow(createWorkflow);
+
+    return createWorkflow;
   }, [approverGroups, comment, name, pageId]);
 
   return { createdWorkflow, createWorkflow };

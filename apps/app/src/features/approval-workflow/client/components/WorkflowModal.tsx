@@ -39,6 +39,12 @@ const WorkflowModal = (): JSX.Element => {
   /*
   * for CreateWorkflowPage
   */
+  const onCreatedHandler = useCallback((workflowId: string) => {
+    mutateWorkflows();
+    setSelectedWorkflowId(workflowId);
+    setPageType(PageType.detail);
+  }, [mutateWorkflows]);
+
   const workflowListPageBackButtonClickHandler = useCallback(() => {
     setPageType(PageType.list);
   }, []);
@@ -62,7 +68,7 @@ const WorkflowModal = (): JSX.Element => {
       { pageType === PageType.creation && (
         <WorkflowCreationPage
           pageId={workflowModalData.pageId}
-          onCreated={mutateWorkflows}
+          onCreated={onCreatedHandler}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
         />
       )}

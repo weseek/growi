@@ -11,7 +11,7 @@ import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
   pageId: string,
-  onCreated?: () => void
+  onCreated?: (workflowId: string) => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
@@ -55,11 +55,10 @@ export const WorkflowCreationPage = (props: Props): JSX.Element => {
 
     try {
       // TODO: https://redmine.weseek.co.jp/issues/131035
-      await createWorkflow();
-      if (onCreated != null) {
-        onCreated();
+      const createdWorkflow = await createWorkflow();
+      if (onCreated != null && createdWorkflow != null) {
+        onCreated(createdWorkflow._id);
       }
-      // TODO: Move to the detail screen
     }
     catch (err) {
       // TODO: Consider how to display errors

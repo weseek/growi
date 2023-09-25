@@ -19,14 +19,10 @@ export const WorkflowDetailPage = (props: Props): JSX.Element => {
 
   const { workflow, onClickWorkflowListPageBackButton } = props;
 
-  if (workflow == null) {
-    return <></>;
-  }
-
   return (
     <>
       <WorkflowModalHeader
-        title={workflow.name ?? ''}
+        title={workflow?.name ?? ''}
         onClickPageBackButton={onClickWorkflowListPageBackButton}
       />
 
