@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { IRevisionHasId, pathUtils } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import type { IRevisionHasId } from '@growi/core';
+import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
+import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
@@ -27,8 +28,6 @@ export const Revision = (props: RevisionProps): JSX.Element => {
     revision, isLatestRevision, hasDiff, onClose, currentPageId, currentPagePath,
   } = props;
 
-  const { returnPathForURL } = pathUtils;
-
   const renderSimplifiedNodiff = (revision: IRevisionHasId) => {
 
     const author = revision.author;
@@ -37,7 +36,8 @@ export const Revision = (props: RevisionProps): JSX.Element => {
 
     return (
       <div className={`${styles['revision-history-main']} ${styles['revision-history-main-nodiff']}
-        revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center`}>
+        revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center`}
+      >
         <div className="picture-container">
           { pic }
         </div>

@@ -1,4 +1,4 @@
-import { isServer } from '@growi/core';
+import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -9,7 +9,7 @@ import { apiv3Get } from '../util/apiv3-client';
 const logger = loggerFactory('growi:services:AdminHomeContainer');
 
 /**
- * Service container for admin home page (AdminHome.jsx)
+ * Service container for admin homepage (AdminHome.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminHomeContainer extends Container {

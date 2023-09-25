@@ -1,4 +1,4 @@
-import { isClient } from '@growi/core';
+import { isClient } from '@growi/core/dist/utils';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -15,7 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('~/components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
-
+const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
@@ -28,6 +28,10 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   if (isClient()) {
     const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
     injectableContainers.push(adminSlackIntegrationLegacyContainer);
+  }
+
+  if (props.isAccessDeniedForNonAdminUser) {
+    return <ForbiddenPage />;
   }
 
 

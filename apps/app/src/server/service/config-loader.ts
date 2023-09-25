@@ -1,4 +1,4 @@
-import { envUtils } from '@growi/core';
+import { envUtils } from '@growi/core/dist/utils';
 import { parseISO } from 'date-fns';
 
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
@@ -520,18 +520,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  PROMSTER_ENABLED: {
-    ns:      'crowi',
-    key:     'promster:isEnabled',
-    type:    ValueType.BOOLEAN,
-    default: false,
-  },
-  PROMSTER_PORT: {
-    ns:      'crowi',
-    key:     'promster:port',
-    type:    ValueType.NUMBER,
-    default: 7788,
-  },
   GROWI_CLOUD_URI: {
     ns:      'crowi',
     key:     'app:growiCloudUri',
@@ -782,7 +770,7 @@ export default class ConfigLoader {
   /**
    * get config from the environment variables for display admin page
    *
-   * **use this only admin home page.**
+   * **use this only admin homepage.**
    */
   static getEnvVarsForDisplay(avoidSecurity = false): any {
     const config = {};

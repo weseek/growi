@@ -70,34 +70,38 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         )}
       </div>
 
-      {props.fileUploadType === 'aws' && <AwsSettingMolecule
-        s3ReferenceFileWithRelayMode={props.s3ReferenceFileWithRelayMode}
-        s3Region={props.s3Region}
-        s3CustomEndpoint={props.s3CustomEndpoint}
-        s3Bucket={props.s3Bucket}
-        s3AccessKeyId={props.s3AccessKeyId}
-        s3SecretAccessKey={props.s3SecretAccessKey}
-        onChangeS3ReferenceFileWithRelayMode={props.onChangeS3ReferenceFileWithRelayMode}
-        onChangeS3Region={props.onChangeS3Region}
-        onChangeS3CustomEndpoint={props.onChangeS3CustomEndpoint}
-        onChangeS3Bucket={props.onChangeS3Bucket}
-        onChangeS3AccessKeyId={props.onChangeS3AccessKeyId}
-        onChangeS3SecretAccessKey={props.onChangeS3SecretAccessKey}
-      />}
-      {props.fileUploadType === 'gcs' && <GcsSettingMolecule
-        gcsReferenceFileWithRelayMode={props.gcsReferenceFileWithRelayMode}
-        gcsUseOnlyEnvVars={props.gcsUseOnlyEnvVars}
-        gcsApiKeyJsonPath={props.gcsApiKeyJsonPath}
-        gcsBucket={props.gcsBucket}
-        gcsUploadNamespace={props.gcsUploadNamespace}
-        envGcsApiKeyJsonPath={props.envGcsApiKeyJsonPath}
-        envGcsBucket={props.envGcsBucket}
-        envGcsUploadNamespace={props.envGcsUploadNamespace}
-        onChangeGcsReferenceFileWithRelayMode={props.onChangeGcsReferenceFileWithRelayMode}
-        onChangeGcsApiKeyJsonPath={props.onChangeGcsApiKeyJsonPath}
-        onChangeGcsBucket={props.onChangeGcsBucket}
-        onChangeGcsUploadNamespace={props.onChangeGcsUploadNamespace}
-      />}
+      {props.fileUploadType === 'aws' && (
+        <AwsSettingMolecule
+          s3ReferenceFileWithRelayMode={props.s3ReferenceFileWithRelayMode}
+          s3Region={props.s3Region}
+          s3CustomEndpoint={props.s3CustomEndpoint}
+          s3Bucket={props.s3Bucket}
+          s3AccessKeyId={props.s3AccessKeyId}
+          s3SecretAccessKey={props.s3SecretAccessKey}
+          onChangeS3ReferenceFileWithRelayMode={props.onChangeS3ReferenceFileWithRelayMode}
+          onChangeS3Region={props.onChangeS3Region}
+          onChangeS3CustomEndpoint={props.onChangeS3CustomEndpoint}
+          onChangeS3Bucket={props.onChangeS3Bucket}
+          onChangeS3AccessKeyId={props.onChangeS3AccessKeyId}
+          onChangeS3SecretAccessKey={props.onChangeS3SecretAccessKey}
+        />
+      )}
+      {props.fileUploadType === 'gcs' && (
+        <GcsSettingMolecule
+          gcsReferenceFileWithRelayMode={props.gcsReferenceFileWithRelayMode}
+          gcsUseOnlyEnvVars={props.gcsUseOnlyEnvVars}
+          gcsApiKeyJsonPath={props.gcsApiKeyJsonPath}
+          gcsBucket={props.gcsBucket}
+          gcsUploadNamespace={props.gcsUploadNamespace}
+          envGcsApiKeyJsonPath={props.envGcsApiKeyJsonPath}
+          envGcsBucket={props.envGcsBucket}
+          envGcsUploadNamespace={props.envGcsUploadNamespace}
+          onChangeGcsReferenceFileWithRelayMode={props.onChangeGcsReferenceFileWithRelayMode}
+          onChangeGcsApiKeyJsonPath={props.onChangeGcsApiKeyJsonPath}
+          onChangeGcsBucket={props.onChangeGcsBucket}
+          onChangeGcsUploadNamespace={props.onChangeGcsUploadNamespace}
+        />
+      )}
     </>
   );
 });

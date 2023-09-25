@@ -86,6 +86,7 @@ export const useSWRxSearch = (
       ).then(result => result as IFormattedSearchResult);
     },
     {
+      keepPreviousData: true,
       revalidateOnFocus: false,
     },
   );

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import {
-  isPopulated, IUser, pagePathUtils, IPagePopulatedToShowRevision,
+import { isPopulated } from '@growi/core';
+import type {
+  IUser, IPagePopulatedToShowRevision,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -11,9 +14,6 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import {
-  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
-} from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -47,8 +47,6 @@ import type { SubNavButtonsProps } from './SubNavButtons';
 
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
-
-const { isUsersHomePage } = pagePathUtils;
 
 const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
@@ -341,11 +339,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         return (
           <>
             {!isReadOnlyUser
-              && <CreateTemplateMenuItems
-                onClickTemplateMenuItem={templateMenuItemClickHandler}
-              />
+              && (
+                <CreateTemplateMenuItems
+                  onClickTemplateMenuItem={templateMenuItemClickHandler}
+                />
+              )
             }
-          </>);
+          </>
+        );
       }
       return (
         <>
@@ -354,11 +355,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             revisionId={revisionId}
             isLinkSharingDisabled={isLinkSharingDisabled}
           />
-          {!isReadOnlyUser && <>
-            <DropdownItem divider />
-            <CreateTemplateMenuItems
-              onClickTemplateMenuItem={templateMenuItemClickHandler}
-            /></>
+          {!isReadOnlyUser && (
+            <>
+              <DropdownItem divider />
+              <CreateTemplateMenuItems
+                onClickTemplateMenuItem={templateMenuItemClickHandler}
+              />
+            </>
+          )
           }
         </>
       );
@@ -397,7 +401,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-          {(isAbleToShowPageAuthors && !isCompactMode && !isUsersHomePage(path ?? '')) && (
+          {(isAbleToShowPageAuthors && !isCompactMode && !pagePathUtils.isUsersHomepage(path ?? '')) && (
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
               <li className="pb-1">
                 {currentPage != null

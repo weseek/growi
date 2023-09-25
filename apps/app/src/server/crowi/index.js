@@ -4,7 +4,7 @@ import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
 import attachmentRoutes from '@growi/remark-attachment-refs/dist/server';
-import lsxRoutes from '@growi/remark-lsx/dist/server';
+import lsxRoutes from '@growi/remark-lsx/dist/server/index.cjs';
 import mongoose from 'mongoose';
 import next from 'next';
 
@@ -17,7 +17,7 @@ import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-
+import UserEvent from '../events/user';
 import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
@@ -35,7 +35,6 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
-
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -97,7 +96,7 @@ function Crowi() {
   this.port = this.env.PORT || 3000;
 
   this.events = {
-    user: new (require('../events/user'))(this),
+    user: new UserEvent(this),
     page: new (require('../events/page'))(this),
     activity: new (require('../events/activity'))(this),
     bookmark: new (require('../events/bookmark'))(this),
@@ -454,7 +453,7 @@ Crowi.prototype.start = async function() {
     this.crowiDev.init();
   }
 
-  const { express, configManager } = this;
+  const { express } = this;
 
   const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
@@ -472,15 +471,6 @@ Crowi.prototype.start = async function() {
       this.crowiDev.setupExpressAfterListening(express);
     }
   });
-  // listen for promster
-  if (configManager.getConfig('crowi', 'promster:isEnabled')) {
-    const { createServer } = require('@promster/server');
-    const promsterPort = configManager.getConfig('crowi', 'promster:port');
-
-    createServer({ port: promsterPort }).then(() => {
-      logger.info(`[${this.node_env}] Promster server is listening on port ${promsterPort}`);
-    });
-  }
 
   // setup Express Routes
   this.setupRoutesForPlugins();

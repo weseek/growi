@@ -1,5 +1,5 @@
 // !!! Do NOT import 'mongoose' to reduce bundle size !!!
-import { objectIdUtils } from '@growi/core';
+import { objectIdUtils } from '@growi/core/dist/utils';
 import ObjectId from 'bson-objectid';
 import superjson from 'superjson';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { pagePathUtils } from '@growi/core';
 import type { IUser } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components/User/UserPicture';
+import { pagePathUtils } from '@growi/core/dist/utils';
+import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
@@ -18,7 +18,6 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     date, user, mode = 'create', locate = 'subnav',
   } = props;
 
-  const { userPageRoot } = pagePathUtils;
   const formatType = 'yyyy/MM/dd HH:mm';
 
   const infoLabelForSubNav = mode === 'create'
@@ -32,7 +31,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     : 'Last revision posted at';
   const userLabel = user != null
     ? (
-      <Link href={userPageRoot(user)} prefetch={false}>
+      <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
         {user.name}
       </Link>
     )
@@ -40,11 +39,11 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
 
   if (locate === 'footer') {
     try {
-      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm"/> {userLabel}</p>;
+      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
     }
     catch (err) {
       if (err instanceof RangeError) {
-        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm"/> {userLabel}</p>;
+        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm" /> {userLabel}</p>;
       }
       return <></>;
     }
@@ -62,7 +61,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2">
-        <UserPicture user={user} size="sm"/>
+        <UserPicture user={user} size="sm" />
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>

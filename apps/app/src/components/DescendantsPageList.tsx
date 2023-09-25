@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
-import { toastSuccess } from '~/client/util/toastr';
-import {
+import type {
   IDataWithMeta,
   IPageHasId,
   IPageInfoForOperation,
-} from '~/interfaces/page';
+} from '@growi/core';
+import { useTranslation } from 'next-i18next';
+
+import { toastSuccess } from '~/client/util/toastr';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores/context';
@@ -82,10 +82,6 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     }
   }, [onPagePutBacked, t]);
 
-  function setPageNumber(selectedPageNumber) {
-    setActivePage(selectedPageNumber);
-  }
-
   if (pagingResult == null) {
     return (
       <div className="wiki">
@@ -113,7 +109,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
         <div className="my-4">
           <PaginationWrapper
             activePage={activePage}
-            changePage={setPageNumber}
+            changePage={selectedPageNumber => setActivePage(selectedPageNumber)}
             totalItemsCount={pagingResult.totalCount}
             pagingLimit={pagingResult.limit}
             align="center"

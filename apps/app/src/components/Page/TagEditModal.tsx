@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -15,32 +15,27 @@ type Props = {
 };
 
 function TagEditModal(props: Props): JSX.Element {
+  const { onClose, onTagsUpdated } = props;
+
   const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
-
-  function onTagsUpdatedByTagsInput(tags: string[]) {
-    setTags(tags);
-  }
 
   useEffect(() => {
     setTags(props.tags);
   }, [props.tags]);
 
-  function closeModalHandler() {
-    if (props.onClose == null) {
-      return;
-    }
-    props.onClose();
-  }
+  const closeModalHandler = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
 
-  function handleSubmit() {
-    if (props.onTagsUpdated == null) {
+  const handleSubmit = useCallback(() => {
+    if (onTagsUpdated == null) {
       return;
     }
 
-    props.onTagsUpdated(tags);
+    onTagsUpdated(tags);
     closeModalHandler();
-  }
+  }, [closeModalHandler, onTagsUpdated, tags]);
 
   return (
     <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal" autoFocus={false}>
@@ -48,7 +43,7 @@ function TagEditModal(props: Props): JSX.Element {
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
-        <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} autoFocus />
+        <TagsInput tags={tags} onTagsUpdated={tags => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={handleSubmit}>

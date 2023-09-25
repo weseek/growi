@@ -80,14 +80,10 @@ const PageDuplicateModal = (): JSX.Element => {
     }
   }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
 
-  /**
-   * change pageNameInput for PagePathAutoComplete
-   * @param {string} value
-   */
-  function ppacInputChangeHandler(value) {
+  const ppacInputChangeHandler = useCallback((value: string) => {
     setErrs(null);
     setPageNameInput(value);
-  }
+  }, []);
 
   /**
    * change pageNameInput

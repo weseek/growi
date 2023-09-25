@@ -38,7 +38,7 @@ export const Cheatsheet = (): JSX.Element => {
         className="code-highlighted"
         PreTag="div"
         style={oneDark}
-        language={'text'}
+        language="text"
       >
         {String(CheetSheetElm).replace(/\n$/, '')}
       </PrismAsyncLight>

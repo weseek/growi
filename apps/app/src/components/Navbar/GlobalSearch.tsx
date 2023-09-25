@@ -4,11 +4,12 @@ import React, {
 
 import assert from 'assert';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { IFocusable } from '~/client/interfaces/focusable';
+import { useKeywordManager } from '~/client/services/search-operation';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import {
   useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
@@ -46,6 +47,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault ?? false);
   const [isFocused, setFocused] = useState<boolean>(false);
 
+  const { pushState } = useKeywordManager();
+
   useEffect(() => {
     setScopeChildren(isSearchScopeChildrenAsDefault);
   }, [isSearchScopeChildrenAsDefault]);
@@ -63,17 +66,13 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   }, [returnPathForURL, router]);
 
   const search = useCallback(() => {
-    const url = new URL(window.location.href);
-    url.pathname = '/_search';
-
     // construct search query
     let q = text;
     if (isScopeChildren) {
       q += ` prefix:${currentPagePath ?? window.location.pathname}`;
     }
-    url.searchParams.append('q', q);
 
-    router.push(url.href);
+    pushState(q);
   }, [currentPagePath, isScopeChildren, router, text]);
 
   const scopeLabel = isScopeChildren

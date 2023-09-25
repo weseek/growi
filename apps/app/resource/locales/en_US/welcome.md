@@ -20,7 +20,7 @@ Let's increase the information exchange everyday.
 - Once we finished, press the "**Update**" button to publish the page.
     - We can also save it by `Ctrl(⌘) + S`.
 
-For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
+For more information: [Create page](https://docs.growi.org/en/guide/features/create_page.html)
 
 <div class="mt-4 card border-primary">
   <div class="card-header bg-primary text-light">
@@ -58,7 +58,7 @@ We can display the content list using a table and `$lsx`.
 
 # Slack
 
-<a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
 
 We welcome newcomers joining our slack channel to help improve GROWI.
 In addition to discussing development, we are also happy to answer your questions when you join.

@@ -1,7 +1,13 @@
+prerelease: true
+
+# Filter previous releases to consider target_commitish
+include-pre-releases: true
+filter-by-commitish: true
+
 categories:
   - title: 'BREAKING CHANGES'
     labels:
-      - 'type/reaking'
+      - 'type/breaking'
   - title: '💎 Features'
     labels:
       - 'type/feature'

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import { GrowiPluginType, ErrorV3 } from '@growi/core';
+import { GrowiPluginType } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -125,6 +126,9 @@ module.exports = (crowi) => {
       body('isAllReplyShown').isBoolean(),
       body('isSearchScopeChildrenAsDefault').isBoolean(),
     ],
+    CustomizePresentation: [
+      body('isEnabledMarp').isBoolean(),
+    ],
     customizeTitle: [
       body('customizeTitle').isString(),
     ],
@@ -180,6 +184,7 @@ module.exports = (crowi) => {
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
+      isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
@@ -429,6 +434,28 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
+
+  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.CustomizePresentation, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:isEnabledMarp': req.body.isEnabledMarp,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
+      };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating presentaion';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
     }
   });
 

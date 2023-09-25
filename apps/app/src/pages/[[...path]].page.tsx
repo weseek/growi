@@ -3,12 +3,13 @@ import React, { ReactNode, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import {
-  isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
-} from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
 } from '@growi/core';
+import {
+  isClient, pagePathUtils, pathUtils,
+} from '@growi/core/dist/utils';
 import ExtensibleCustomError from 'extensible-custom-error';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -34,7 +35,7 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
@@ -124,7 +125,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentPage } = useSWRxCurrentPage();
   return (
     <div data-testid="grw-contextual-sub-nav">
-      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>
+      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
     </div>
   );
 };
@@ -149,6 +150,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isEnabledMarp: boolean,
 
   isSlackConfigured: boolean,
   // isMailerSetup: boolean,
@@ -217,6 +219,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
   useRendererConfig(props.rendererConfig);
+  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
@@ -346,13 +349,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <DisplaySwitcher
-          pageView={
+          pageView={(
             <PageView
               pagePath={pagePath}
               initialPage={pageWithMeta?.data}
               rendererConfig={props.rendererConfig}
             />
-          }
+          )}
         />
 
         <PageStatusAlert />
@@ -590,6 +593,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
     isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
     adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
     isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 

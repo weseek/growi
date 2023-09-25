@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
 import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
@@ -16,6 +18,13 @@ describe('QuestionnaireService', () => {
     crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
       'security:passport-saml:isEnabled': true,
       'security:passport-github:isEnabled': true,
+    });
+
+    await mongoose.model('Config').create({
+      ns: 'crowi',
+      key: 'app:installed',
+      value: true,
+      createdAt: '2000-01-01',
     });
 
     crowi.setupQuestionnaireService();
@@ -49,6 +58,8 @@ describe('QuestionnaireService', () => {
       expect(growiInfo).toEqual({
         activeExternalAccountTypes: ['saml', 'github'],
         appSiteUrl: 'http://growi.test.jp',
+        installedAt: new Date('2000-01-01'),
+        installedAtByOldestUser: new Date('2000-01-01'),
         attachmentType: 'aws',
         deploymentType: 'growi-docker-compose',
         type: 'on-premise',

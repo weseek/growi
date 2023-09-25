@@ -1,4 +1,4 @@
-import { IDataWithMeta, IPageHasId } from './page';
+import type { IDataWithMeta, IPageHasId } from '@growi/core';
 
 export type IPageSearchMeta = {
   bookmarkCount?: number,
@@ -19,6 +19,13 @@ export type ISearchResultMeta = {
     total: number
     hitsCount: number
   },
+}
+
+export type ISearchResultData = {
+  _id: string
+  _score: number
+  _source: any
+  _highlight: any
 }
 
 export type ISearchResult<T> = ISearchResultMeta & {
