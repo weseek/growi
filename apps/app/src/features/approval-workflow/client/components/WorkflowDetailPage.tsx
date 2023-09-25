@@ -6,14 +6,20 @@ import {
   ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { IWorkflowHasId } from '../../interfaces/workflow';
+
 
 type Props = {
-  //
+  workflow?: IWorkflowHasId,
 }
 
 
 export const WorkflowDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+
+  const { workflow } = props;
+
+  console.log(workflow);
 
   return (
     <>

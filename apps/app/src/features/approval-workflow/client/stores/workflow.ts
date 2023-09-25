@@ -3,7 +3,7 @@ import useSWR, { SWRResponse } from 'swr';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
-import { IWorkflowPaginateResult } from '../../interfaces/workflow';
+import { IWorkflowHasId, IWorkflowPaginateResult } from '../../interfaces/workflow';
 
 export type WorkflowModalStatus = {
   pageId?: string,
@@ -28,6 +28,15 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+export const useSWRxWorkflow = (workflowId?: string): SWRResponse<IWorkflowHasId, Error> => {
+  const key = workflowId != null ? `/workflow/${workflowId}` : null;
+
+  return useSWR(
+    key,
+    endpoint => apiv3Get(endpoint).then(result => result.data.workflow),
+  );
 };
 
 // TODO: https://redmine.weseek.co.jp/issues/131035
