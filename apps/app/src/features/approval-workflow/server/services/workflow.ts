@@ -74,8 +74,8 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Operator has already been approved');
     }
 
-    const isLastApprover = targetWorkflow.isLastApprover(operatorId);
-    if (isLastApprover) {
+    const isFinalApprover = targetWorkflow.isFinalApprover(operatorId);
+    if (isFinalApprover) {
       targetWorkflow.status = WorkflowStatus.APPROVE;
     }
 

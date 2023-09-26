@@ -129,7 +129,7 @@ describe('Workflow', () => {
     });
   });
 
-  describe('.isLastApprover', () => {
+  describe('.isFinalApprover', () => {
     const approver = new mongoose.Types.ObjectId();
     const workflow1 = new mongoose.Types.ObjectId();
     const workflow2 = new mongoose.Types.ObjectId();
@@ -247,45 +247,45 @@ describe('Workflow', () => {
       const workflow = await Workflow.findById(workflow1);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(approver.toString());
+      const isFinalApprover = workflow?.isFinalApprover(approver.toString());
 
       // then
-      expect(isLastApprover).toBe(false);
+      expect(isFinalApprover).toBe(false);
     });
 
-    it('Should return "false" when the approver does not belong to the last approverGroup', async() => {
+    it('Should return "false" when the approver does not belong to the final approverGroup', async() => {
       // setup
       const workflow = await Workflow.findById(workflow2);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(approver.toString());
+      const isFinalApprover = workflow?.isFinalApprover(approver.toString());
 
       // then
-      expect(isLastApprover).toBe(false);
+      expect(isFinalApprover).toBe(false);
     });
 
     // eslint-disable-next-line max-len
-    it('Should return "true" when the approver belongs to the last approverGroup, approverGroup.isApproved is "false" and WorkflowApprovalType is "OR"', async() => {
+    it('Should return "true" when the approver belongs to the final approverGroup, approverGroup.isApproved is "false" and WorkflowApprovalType is "OR"', async() => {
       // setup
       const workflow = await Workflow.findById(workflow3);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(approver.toString());
+      const isFinalApprover = workflow?.isFinalApprover(approver.toString());
 
       // then
-      expect(isLastApprover).toBe(true);
+      expect(isFinalApprover).toBe(true);
     });
 
     // eslint-disable-next-line max-len
-    it('Should return "true" when the approver belongs to the last approverGroup, and the last one among the approvers in the approverGroup', async() => {
+    it('Should return "true" when the approver belongs to the final approverGroup, and the final one among the approvers in the approverGroup', async() => {
       // setup
       const workflow = await Workflow.findById(workflow4);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(approver.toString());
+      const isFinalApprover = workflow?.isFinalApprover(approver.toString());
 
       // then
-      expect(isLastApprover).toBe(true);
+      expect(isFinalApprover).toBe(true);
     });
   });
 });

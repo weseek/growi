@@ -87,7 +87,7 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 */
 interface WorkflowDocument extends IWorkflow, Document {
   findApprover(operatorId: string): IWorkflowApproverHasId | undefined
-  isLastApprover(approverId: string): boolean
+  isFinalApprover(approverId: string): boolean
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
@@ -137,24 +137,24 @@ WorkflowSchema.methods.findApprover = function(operatorId: string): IWorkflowApp
   }
 };
 
-WorkflowSchema.methods.isLastApprover = function(approverId: string): boolean {
-  const lastApproverGroup: IWorkflowApproverGroupHasId = this.approverGroups[this.approverGroups.length - 1];
+WorkflowSchema.methods.isFinalApprover = function(approverId: string): boolean {
+  const finalApproverGroup: IWorkflowApproverGroupHasId = this.approverGroups[this.approverGroups.length - 1];
 
-  if (lastApproverGroup.isApproved) {
+  if (finalApproverGroup.isApproved) {
     return false;
   }
 
-  const lastApproverGroupApproverIds = lastApproverGroup.approvers.map(approver => approver.user._id.toString());
-  if (!lastApproverGroupApproverIds.includes(approverId as string)) {
+  const finalApproverGroupApproverIds = finalApproverGroup.approvers.map(approver => approver.user._id.toString());
+  if (!finalApproverGroupApproverIds.includes(approverId)) {
     return false;
   }
 
-  if (lastApproverGroup.approvalType === WorkflowApprovalType.OR) {
+  if (finalApproverGroup.approvalType === WorkflowApprovalType.OR) {
     return true;
   }
 
-  const approvedCount = lastApproverGroup.approvers.filter(approver => approver.status === WorkflowApproverStatus.APPROVE).length;
-  if (lastApproverGroup.approvers.length - approvedCount === 1) {
+  const approvedCount = finalApproverGroup.approvers.filter(approver => approver.status === WorkflowApproverStatus.APPROVE).length;
+  if (finalApproverGroup.approvers.length - approvedCount === 1) {
     return true;
   }
 
