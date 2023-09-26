@@ -361,9 +361,8 @@ module.exports = (crowi: Crowi): Router => {
       const { approverStatus, delegatedUserId } = req.body;
       const { user } = req;
 
-      let workflow;
       try {
-        workflow = await Workflow.findById(workflowId);
+        const workflow = await Workflow.findById(workflowId);
         if (workflow == null) {
           return res.apiv3Err('Target workflow does not exist');
         }
@@ -372,23 +371,26 @@ module.exports = (crowi: Crowi): Router => {
         if (approver == null) {
           return res.apiv3Err('Operator is not an approver');
         }
+
+        switch (approverStatus) {
+          case WorkflowApproverStatus.APPROVE:
+            await WorkflowService.approve(workflowId, user._id.toString());
+            break;
+          case WorkflowApproverStatus.DELEGATE:
+            break;
+          case WorkflowApproverStatus.REMAND:
+            break;
+          default:
+            return;
+        }
+
+        return res.apiv3({});
       }
       catch (err) {
         logger.error(err);
         return res.apiv3Err(err);
       }
 
-      switch (approverStatus) {
-        case WorkflowApproverStatus.APPROVE:
-          await WorkflowService.approve(workflowId, user._id.toString());
-          break;
-        case WorkflowApproverStatus.DELEGATE:
-          break;
-        case WorkflowApproverStatus.REMAND:
-          break;
-        default:
-          return;
-      }
 
       // Descirption
       // approver の status の更新
@@ -396,8 +398,6 @@ module.exports = (crowi: Crowi): Router => {
       // Memo
       // 進行中の workflow 内の approver の status を更新することができる
       // req.body.approverStatus が "DELEGATE" だった場合は req.body.delegatedUserId が必須となる
-
-      return res.apiv3();
     });
 
 
