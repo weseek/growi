@@ -44,7 +44,7 @@ const PageTreeUnavailable = () => {
   );
 };
 
-export const PageTree = memo(() => {
+export const PageTreeContent = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -92,4 +92,4 @@ export const PageTree = memo(() => {
   );
 });
 
-PageTree.displayName = 'PageTree';
+PageTreeContent.displayName = 'PageTreeContent';

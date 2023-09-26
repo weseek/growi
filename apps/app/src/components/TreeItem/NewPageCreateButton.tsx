@@ -54,7 +54,7 @@ export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
         <NotAvailableForGuest>
           <NotAvailableForReadOnlyUser>
             <button
-              id='page-create-button-in-page-tree'
+              id="page-create-button-in-page-tree"
               type="button"
               className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
               onClick={onClickPlusButton}
