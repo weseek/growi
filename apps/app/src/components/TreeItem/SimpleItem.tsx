@@ -254,20 +254,18 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           )}
         </div>
         {SimpleItemContent.map((ItemContent, index) => (
-          <ItemContent key={index} {...SimpleItemContentProps}/>
+          <ItemContent key={index} {...SimpleItemContentProps} />
         ))}
       </li>
 
       {CustomNextComponents?.map((UnderItemContent, index) => (
-        <UnderItemContent key={index} {...SimpleItemContentProps}/>
+        <UnderItemContent key={index} {...SimpleItemContentProps} />
       ))}
 
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
-            {
-              <ItemClassFixed itemNode={node} {...commonProps} />
-            }
+            <ItemClassFixed itemNode={node} {...commonProps} />
             {isCreating && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
                 <i className="fa fa-spinner fa-pulse mr-1"></i>
