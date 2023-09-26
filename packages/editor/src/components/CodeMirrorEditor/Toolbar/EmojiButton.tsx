@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import Picker from '@emoji-mart/react';
+import { Picker } from 'emoji-mart';
 import { Modal } from 'reactstrap';
 
-// import 'emoji-mart/css/emoji-mart.css';
+import 'emoji-mart/css/emoji-mart.css';
 
 export const EmojiButton = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
