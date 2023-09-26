@@ -53,6 +53,82 @@ describe('Workflow', () => {
     });
   });
 
+  describe('.findApprover', () => {
+    const operator = new mongoose.Types.ObjectId();
+    const workflow1 = new mongoose.Types.ObjectId();
+    const workflow2 = new mongoose.Types.ObjectId();
+
+    beforeAll(async() => {
+      await Workflow.insertMany([
+        {
+          _id: workflow1,
+          creator: new mongoose.Types.ObjectId(),
+          pageId:  new mongoose.Types.ObjectId().toString(),
+          name: 'test workflow',
+          comment: 'commnet',
+          status: WorkflowStatus.INPROGRESS,
+          approverGroups: [
+            {
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: operator,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          _id: workflow2,
+          creator: new mongoose.Types.ObjectId(),
+          pageId:  new mongoose.Types.ObjectId().toString(),
+          name: 'test workflow',
+          comment: 'commnet',
+          status: WorkflowStatus.INPROGRESS,
+          approverGroups: [
+            {
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: new mongoose.Types.ObjectId(),
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    afterAll(async() => {
+      await Workflow.deleteMany({});
+    });
+
+    it('Should return the approver document if the passed operator exists within the workflow', async() => {
+      // setup
+      const workflow = await Workflow.findById(workflow1);
+
+      // when
+      const approver = workflow?.findApprover(operator.toString());
+
+      // then
+      expect(approver?.user._id.toString()).equal(operator.toString());
+    });
+
+
+    it('Should return "undefined" if the passed operator does not exist within the workflow.', async() => {
+      // setup
+      const workflow = await Workflow.findById(workflow2);
+
+      // when
+      const approver = workflow?.findApprover(operator.toString());
+
+      // then
+      expect(approver).toBeUndefined();
+    });
+  });
+
   describe('.isLastApprover', () => {
     const targetApprover = new mongoose.Types.ObjectId();
     const targetWorkflow1 = new mongoose.Types.ObjectId();
@@ -160,6 +236,10 @@ describe('Workflow', () => {
           ],
         },
       ]);
+    });
+
+    afterAll(async() => {
+      await Workflow.deleteMany({});
     });
 
     it('Should return "false" if approveGroup.isApproved is "true"', async() => {
