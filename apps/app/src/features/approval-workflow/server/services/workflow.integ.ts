@@ -1,8 +1,7 @@
-import type { IUserHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {
-  WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
+  IWorkflowHasId, WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
@@ -101,5 +100,94 @@ describe('WorkflowService', () => {
       // then
       expect(await Workflow.exists(workflowId2)).toBeNull();
     });
+  });
+
+  describe('.approve', () => {
+    const operator = new mongoose.Types.ObjectId();
+    const workflow1 = new mongoose.Types.ObjectId();
+    const workflow2 = new mongoose.Types.ObjectId();
+
+    beforeAll(async() => {
+      await Workflow.insertMany([
+        {
+          _id: workflow1,
+          creator: new mongoose.Types.ObjectId(),
+          pageId:  new mongoose.Types.ObjectId().toString(),
+          name: 'test workflow',
+          comment: 'commnet',
+          status: WorkflowStatus.INPROGRESS,
+          approverGroups: [
+            {
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: operator,
+                  status: WorkflowApproverStatus.APPROVE,
+                },
+                {
+                  user: new mongoose.Types.ObjectId(),
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          _id: workflow2,
+          creator: new mongoose.Types.ObjectId(),
+          pageId:  new mongoose.Types.ObjectId().toString(),
+          name: 'test workflow',
+          comment: 'commnet',
+          status: WorkflowStatus.INPROGRESS,
+          approverGroups: [
+            {
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: operator,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    afterAll(async() => {
+      await Workflow.deleteMany({});
+    });
+
+    it('Should keep approver.status as "APPROVE" and workflow.status as "INPROGRESS" if not the final approver', async() => {
+      // setup
+      const beforeWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
+      expect(beforeWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
+      expect(beforeWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
+
+      // when
+      await WorkflowService.approve(workflow1.toString(), operator.toString());
+
+      // then
+      const afterWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
+      expect(afterWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
+      expect(afterWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
+    });
+
+    it('Should result in approver.status becoming "APPROVE" and workflow.status changing to "APPROVE" if the User is the final approver', async() => {
+      // setup
+      const beforeWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
+      expect(beforeWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
+      expect(beforeWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
+
+      // when
+      await WorkflowService.approve(workflow1.toString(), operator.toString());
+
+      // then
+      const afterWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
+      expect(afterWorkflow.status).toEqual(WorkflowStatus.APPROVE);
+      expect(afterWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
+    });
+
+
   });
 });
