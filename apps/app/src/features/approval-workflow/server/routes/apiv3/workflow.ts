@@ -10,7 +10,7 @@ import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
+  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus, WorkflowApproverStatus,
 } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-seroalizer';
 import Workflow from '../../models/workflow';
@@ -381,6 +381,18 @@ module.exports = (crowi: Crowi): Router => {
       catch (err) {
         logger.error(err);
         return res.apiv3Err(err);
+      }
+
+      switch (approverStatus) {
+        case WorkflowApproverStatus.APPROVE:
+          WorkflowService.approve(workflowId, user);
+          break;
+        case WorkflowApproverStatus.DELEGATE:
+          break;
+        case WorkflowApproverStatus.REMAND:
+          break;
+        default:
+          return;
       }
 
       // Descirption

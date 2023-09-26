@@ -13,6 +13,7 @@ const logger = loggerFactory('growi:service:workflow');
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
+  approve(workflowId: ObjectIdLike, approver: IUserHasId): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
@@ -52,6 +53,10 @@ class WorkflowServiceImpl implements WorkflowService {
     // TODO: Also delete the related WorkflowActivity (temporary) document
 
     return;
+  }
+
+  async approve(workflowId: ObjectIdLike, approver: IUserHasId): Promise<void> {
+    //
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
