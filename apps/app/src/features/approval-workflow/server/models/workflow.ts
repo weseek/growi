@@ -154,7 +154,7 @@ WorkflowSchema.methods.isLastApprover = function(approverId: ObjectIdLike): bool
   }
 
   const approvedCount = lastApproverGroup.approvers.filter(approver => approver.status === WorkflowApproverStatus.APPROVE).length;
-  if (lastApproverGroup.approvers.length - 1 === approvedCount) {
+  if (lastApproverGroup.approvers.length - approvedCount === 1) {
     return true;
   }
 

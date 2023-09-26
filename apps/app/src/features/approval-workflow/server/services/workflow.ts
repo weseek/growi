@@ -61,6 +61,10 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Target workflow does not exist');
     }
 
+    if (targetWorkflow.status !== WorkflowStatus.INPROGRESS) {
+      throw Error('Workflow is not in-progress');
+    }
+
     const approver = targetWorkflow.findApprover(operatorId);
     if (approver == null) {
       throw Error('Operator is not an approver');
@@ -70,14 +74,14 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Operator has already been approved');
     }
 
-    approver.status = WorkflowApproverStatus.APPROVE;
-    (approver as any).save();
-
     const isLastApprover = targetWorkflow.isLastApprover(approver._id.toString());
     if (isLastApprover) {
       targetWorkflow.status = WorkflowStatus.APPROVE;
-      targetWorkflow.save();
     }
+
+    approver.status = WorkflowApproverStatus.APPROVE;
+
+    await targetWorkflow.save();
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
