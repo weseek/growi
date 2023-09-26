@@ -140,17 +140,17 @@ WorkflowSchema.methods.findApprover = function(operatorId: ObjectIdLike): IWorkf
 WorkflowSchema.methods.isLastApprover = function(approverId: ObjectIdLike): boolean {
   const lastApproverGroup: IWorkflowApproverGroupHasId = this.approverGroups[this.approverGroups.length - 1];
 
+  if (lastApproverGroup.isApproved) {
+    return false;
+  }
+
   const lastApproverGroupApproverIds = lastApproverGroup.approvers.map(approver => approver._id.toString());
   if (!lastApproverGroupApproverIds.includes(approverId as string)) {
     return false;
   }
 
-  if (lastApproverGroup.approvalType === WorkflowApprovalType.OR && !lastApproverGroup.isApproved) {
-    return true;
-  }
-
   if (lastApproverGroup.approvalType === WorkflowApprovalType.OR) {
-    return false;
+    return true;
   }
 
   const approvedCount = lastApproverGroup.approvers.filter(approver => approver.status === WorkflowApproverStatus.APPROVE).length;
