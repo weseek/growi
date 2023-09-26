@@ -362,16 +362,6 @@ module.exports = (crowi: Crowi): Router => {
       const { user } = req;
 
       try {
-        const workflow = await Workflow.findById(workflowId);
-        if (workflow == null) {
-          return res.apiv3Err('Target workflow does not exist');
-        }
-
-        const approver = workflow.findApprover(user._id.toString());
-        if (approver == null) {
-          return res.apiv3Err('Operator is not an approver');
-        }
-
         switch (approverStatus) {
           case WorkflowApproverStatus.APPROVE:
             await WorkflowService.approve(workflowId, user._id.toString());
@@ -381,7 +371,7 @@ module.exports = (crowi: Crowi): Router => {
           case WorkflowApproverStatus.REMAND:
             break;
           default:
-            return;
+            return res.apiv3Err('approverStatus can be "APPROVE", "REMAND" or "DELEGATE"');
         }
 
         return res.apiv3({});
