@@ -85,7 +85,9 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 /*
 * Workflow
 */
-interface WorkflowDocument extends IWorkflow, Document {}
+interface WorkflowDocument extends IWorkflow, Document {
+  findApprover(operatorId: ObjectIdLike): IWorkflowApprover | undefined
+}
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
 }
@@ -122,6 +124,16 @@ WorkflowSchema.plugin(mongoosePaginate);
 WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike) {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
   return workflow != null;
+};
+
+WorkflowSchema.methods.findApprover = function(operatorId: ObjectIdLike): IWorkflowApprover | undefined {
+  for (const approverGroup of this.approverGroups) {
+    for (const approver of approverGroup.approvers) {
+      if (approver.user.toString() === operatorId) {
+        return approver;
+      }
+    }
+  }
 };
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);

@@ -363,18 +363,14 @@ module.exports = (crowi: Crowi): Router => {
 
       let workflow;
       try {
-        workflow = await Workflow.findById(workflowId) as unknown as IWorkflowHasId;
+        workflow = await Workflow.findById(workflowId);
         if (workflow == null) {
           return res.apiv3Err('Target workflow does not exist');
         }
 
-        const approvers: string[] = [];
-        workflow.approverGroups.forEach((approverGroup) => {
-          approverGroup.approvers.forEach((approver) => {
-            approvers.push(approver.user.toString());
-          });
-        });
-        if (!approvers.includes(user._id.toString())) {
+        const approver = workflow.findApprover(user._id.toString());
+
+        if (approver == null) {
           return res.apiv3Err('Operator is not an approver');
         }
       }
