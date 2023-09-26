@@ -57,6 +57,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         indentWithTab: false,
         basicSetup: {
           defaultKeymap: false,
+          syntaxHighlighting: false,
         },
       },
     );
