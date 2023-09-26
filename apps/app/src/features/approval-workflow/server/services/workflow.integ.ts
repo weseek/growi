@@ -122,7 +122,7 @@ describe('WorkflowService', () => {
               approvers: [
                 {
                   user: operator,
-                  status: WorkflowApproverStatus.APPROVE,
+                  status: WorkflowApproverStatus.NONE,
                 },
                 {
                   user: new mongoose.Types.ObjectId(),
@@ -175,7 +175,7 @@ describe('WorkflowService', () => {
 
     it('Should result in approver.status becoming "APPROVE" and workflow.status changing to "APPROVE" if the User is the final approver', async() => {
       // setup
-      const beforeWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
+      const beforeWorkflow = await Workflow.findById(workflow2) as unknown as IWorkflowHasId;
       expect(beforeWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
       expect(beforeWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
 
@@ -183,7 +183,7 @@ describe('WorkflowService', () => {
       await WorkflowService.approve(workflow1.toString(), operator.toString());
 
       // then
-      const afterWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
+      const afterWorkflow = await Workflow.findById(workflow2) as unknown as IWorkflowHasId;
       expect(afterWorkflow.status).toEqual(WorkflowStatus.APPROVE);
       expect(afterWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
     });
