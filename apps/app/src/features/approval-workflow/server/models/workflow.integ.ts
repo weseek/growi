@@ -167,7 +167,7 @@ describe('Workflow', () => {
       const workflow = await Workflow.findById(targetWorkflowId1);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApproverId);
+      const isLastApprover = workflow?.isLastApprover(targetApproverId.toString());
 
       // then
       expect(isLastApprover).toBe(false);
@@ -178,7 +178,7 @@ describe('Workflow', () => {
       const workflow = await Workflow.findById(targetWorkflowId2);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApproverId);
+      const isLastApprover = workflow?.isLastApprover(targetApproverId.toString());
 
       // then
       expect(isLastApprover).toBe(false);
@@ -190,7 +190,7 @@ describe('Workflow', () => {
       const workflow = await Workflow.findById(targetWorkflowId3);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApproverId);
+      const isLastApprover = workflow?.isLastApprover(targetApproverId.toString());
 
       // then
       expect(isLastApprover).toBe(true);
@@ -202,7 +202,7 @@ describe('Workflow', () => {
       const workflow = await Workflow.findById(targetWorkflowId4);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApproverId);
+      const isLastApprover = workflow?.isLastApprover(targetApproverId.toString());
 
       // then
       expect(isLastApprover).toBe(true);

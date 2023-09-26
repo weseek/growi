@@ -55,7 +55,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return;
   }
 
-  async approve(workflowId: ObjectIdLike, operatorId: ObjectIdLike): Promise<void> {
+  async approve(workflowId: ObjectIdLike, operatorId: string): Promise<void> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
       throw Error('Target workflow does not exist');
