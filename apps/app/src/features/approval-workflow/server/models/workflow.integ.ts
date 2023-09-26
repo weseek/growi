@@ -130,16 +130,16 @@ describe('Workflow', () => {
   });
 
   describe('.isLastApprover', () => {
-    const targetApprover = new mongoose.Types.ObjectId();
-    const targetWorkflow1 = new mongoose.Types.ObjectId();
-    const targetWorkflow2 = new mongoose.Types.ObjectId();
-    const targetWorkflow3 = new mongoose.Types.ObjectId();
-    const targetWorkflow4 = new mongoose.Types.ObjectId();
+    const approver = new mongoose.Types.ObjectId();
+    const workflow1 = new mongoose.Types.ObjectId();
+    const workflow2 = new mongoose.Types.ObjectId();
+    const workflow3 = new mongoose.Types.ObjectId();
+    const workflow4 = new mongoose.Types.ObjectId();
 
     beforeAll(async() => {
       await Workflow.insertMany([
         {
-          _id: targetWorkflow1,
+          _id: workflow1,
           creator: new mongoose.Types.ObjectId(),
           pageId:  new mongoose.Types.ObjectId().toString(),
           name: 'test workflow',
@@ -150,7 +150,7 @@ describe('Workflow', () => {
               approvalType: WorkflowApprovalType.OR,
               approvers: [
                 {
-                  user: targetApprover,
+                  user: approver,
                   status: WorkflowApproverStatus.APPROVE,
                 },
               ],
@@ -158,7 +158,7 @@ describe('Workflow', () => {
           ],
         },
         {
-          _id: targetWorkflow2,
+          _id: workflow2,
           creator: new mongoose.Types.ObjectId(),
           pageId:  new mongoose.Types.ObjectId().toString(),
           name: 'test workflow',
@@ -169,7 +169,7 @@ describe('Workflow', () => {
               approvalType: WorkflowApprovalType.AND,
               approvers: [
                 {
-                  user: targetApprover,
+                  user: approver,
                   status: WorkflowApproverStatus.NONE,
                 },
               ],
@@ -186,7 +186,7 @@ describe('Workflow', () => {
           ],
         },
         {
-          _id: targetWorkflow3,
+          _id: workflow3,
           creator: new mongoose.Types.ObjectId(),
           pageId:  new mongoose.Types.ObjectId().toString(),
           name: 'test workflow',
@@ -197,7 +197,7 @@ describe('Workflow', () => {
               approvalType: WorkflowApprovalType.OR,
               approvers: [
                 {
-                  user: targetApprover,
+                  user: approver,
                   status: WorkflowApproverStatus.NONE,
                 },
                 {
@@ -209,7 +209,7 @@ describe('Workflow', () => {
           ],
         },
         {
-          _id: targetWorkflow4,
+          _id: workflow4,
           creator: new mongoose.Types.ObjectId(),
           pageId:  new mongoose.Types.ObjectId().toString(),
           name: 'test workflow',
@@ -220,7 +220,7 @@ describe('Workflow', () => {
               approvalType: WorkflowApprovalType.OR,
               approvers: [
                 {
-                  user: targetApprover,
+                  user: approver,
                   status: WorkflowApproverStatus.NONE,
                 },
                 {
@@ -244,10 +244,10 @@ describe('Workflow', () => {
 
     it('Should return "false" if approveGroup.isApproved is "true"', async() => {
       // setup
-      const workflow = await Workflow.findById(targetWorkflow1);
+      const workflow = await Workflow.findById(workflow1);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApprover.toString());
+      const isLastApprover = workflow?.isLastApprover(approver.toString());
 
       // then
       expect(isLastApprover).toBe(false);
@@ -255,10 +255,10 @@ describe('Workflow', () => {
 
     it('Should return "false" when the approver does not belong to the last approverGroup', async() => {
       // setup
-      const workflow = await Workflow.findById(targetWorkflow2);
+      const workflow = await Workflow.findById(workflow2);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApprover.toString());
+      const isLastApprover = workflow?.isLastApprover(approver.toString());
 
       // then
       expect(isLastApprover).toBe(false);
@@ -267,10 +267,10 @@ describe('Workflow', () => {
     // eslint-disable-next-line max-len
     it('Should return "true" when the approver belongs to the last approverGroup, approverGroup.isApproved is "false" and WorkflowApprovalType is "OR"', async() => {
       // setup
-      const workflow = await Workflow.findById(targetWorkflow3);
+      const workflow = await Workflow.findById(workflow3);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApprover.toString());
+      const isLastApprover = workflow?.isLastApprover(approver.toString());
 
       // then
       expect(isLastApprover).toBe(true);
@@ -279,10 +279,10 @@ describe('Workflow', () => {
     // eslint-disable-next-line max-len
     it('Should return "true" when the approver belongs to the last approverGroup, and the last one among the approvers in the approverGroup', async() => {
       // setup
-      const workflow = await Workflow.findById(targetWorkflow4);
+      const workflow = await Workflow.findById(workflow4);
 
       // when
-      const isLastApprover = workflow?.isLastApprover(targetApprover.toString());
+      const isLastApprover = workflow?.isLastApprover(approver.toString());
 
       // then
       expect(isLastApprover).toBe(true);
