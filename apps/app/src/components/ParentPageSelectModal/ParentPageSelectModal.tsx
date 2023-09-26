@@ -39,10 +39,10 @@ export const ParentPageSelectModal = () => {
     <Modal
       isOpen={isOpened}
       toggle={() => closeModal()}
-      centered={true}
+      centered
     >
       <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
-      <ModalBody >
+      <ModalBody>
         <ItemsTree
           CustomTreeItem={PageTreeItemForModal}
           isEnableActions={!isGuestUser}
@@ -54,10 +54,10 @@ export const ParentPageSelectModal = () => {
       </ModalBody>
       <ModalFooter>
         <Button color="primary">
-        Do Something
+          Do Something
         </Button>{' '}
         <Button color="secondary">
-        Cancel
+          Cancel
         </Button>
       </ModalFooter>
     </Modal>

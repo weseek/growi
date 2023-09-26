@@ -4,13 +4,13 @@ import React, {
 
 import nodePath from 'path';
 
-import type { Nullable } from '@growi/core';
+import type { Nullable, IPageToDeleteWithMeta } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { IPageToDeleteWithMeta, IPageForItem } from '~/interfaces/page';
+import { IPageForItem } from '~/interfaces/page';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -252,13 +252,13 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-        {SimpleItemContent.map((ItemContent, index) => (
-          <ItemContent key={index} {...SimpleItemContentProps} />
+        {SimpleItemContent.map(ItemContent => (
+          <ItemContent {...SimpleItemContentProps} />
         ))}
       </li>
 
-      {CustomNextComponents?.map((UnderItemContent, index) => (
-        <UnderItemContent key={index} {...SimpleItemContentProps} />
+      {CustomNextComponents?.map(UnderItemContent => (
+        <UnderItemContent {...SimpleItemContentProps} />
       ))}
 
       {

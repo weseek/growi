@@ -5,7 +5,8 @@ import React, {
 import nodePath from 'path';
 
 
-import { pathUtils } from '@growi/core';
+import type { IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 
@@ -14,9 +15,7 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageForItem,
-} from '~/interfaces/page';
+import { IPageForItem } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
@@ -142,7 +141,7 @@ export const Ellipsis: FC<EllipsisProps> = (props) => {
           </NotDraggableForClosableTextInput>
         </div>
       ) : (
-        <SimpleItemTool page={page} isEnableActions={false} isReadOnlyUser={false}/>
+        <SimpleItemTool page={page} isEnableActions={false} isReadOnlyUser={false} />
       )}
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">
@@ -161,7 +160,7 @@ export const Ellipsis: FC<EllipsisProps> = (props) => {
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i id='option-button-in-page-tree' className="icon-options fa fa-rotate-90 p-1"></i>
+              <i id="option-button-in-page-tree" className="icon-options fa fa-rotate-90 p-1"></i>
             </DropdownToggle>
           </PageItemControl>
         </div>
