@@ -381,7 +381,6 @@ module.exports = (crowi: Crowi): Router => {
         return res.apiv3Err(err);
       }
 
-
       // Descirption
       // approver の status の更新
 

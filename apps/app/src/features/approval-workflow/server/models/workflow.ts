@@ -144,7 +144,7 @@ WorkflowSchema.methods.isLastApprover = function(approverId: string): boolean {
     return false;
   }
 
-  const lastApproverGroupApproverIds = lastApproverGroup.approvers.map(approver => approver.user._id);
+  const lastApproverGroupApproverIds = lastApproverGroup.approvers.map(approver => approver.user._id.toString());
   if (!lastApproverGroupApproverIds.includes(approverId as string)) {
     return false;
   }
