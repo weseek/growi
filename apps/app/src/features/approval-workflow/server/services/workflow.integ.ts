@@ -180,7 +180,7 @@ describe('WorkflowService', () => {
       expect(beforeWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
 
       // when
-      await WorkflowService.approve(workflow1.toString(), operator.toString());
+      await WorkflowService.approve(workflow2.toString(), operator.toString());
 
       // then
       const afterWorkflow = await Workflow.findById(workflow2) as unknown as IWorkflowHasId;
