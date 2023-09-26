@@ -80,7 +80,6 @@ module.exports = (crowi: Crowi): Router => {
       body('actionType').isString().withMessage('actionType is required'),
     ],
     updateWorkflowApproverStatus: [
-      body('workflowId').isMongoId().withMessage('workflowId is required'),
       body('approverStatus').isString().withMessage('approverStatus is required'),
       body('delegatedUserId').optional().isMongoId().withMessage('delegatedUserId must be mongo id'),
     ],
@@ -358,8 +357,31 @@ module.exports = (crowi: Crowi): Router => {
    */
   router.put('/:workflowId/status', accessTokenParser, loginRequired, validator.updateWorkflowApproverStatus, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
-      const { workflowId, approverStatus, delegatedUserId } = req.body;
+      const { workflowId } = req.params;
+      const { approverStatus, delegatedUserId } = req.body;
       const { user } = req;
+
+      let workflow;
+      try {
+        workflow = await Workflow.findById(workflowId) as unknown as IWorkflowHasId;
+        if (workflow == null) {
+          return res.apiv3Err('Target workflow does not exist');
+        }
+
+        const approvers: string[] = [];
+        workflow.approverGroups.forEach((approverGroup) => {
+          approverGroup.approvers.forEach((approver) => {
+            approvers.push(approver.user.toString());
+          });
+        });
+        if (!approvers.includes(user._id.toString())) {
+          return res.apiv3Err('Operator is not an approver');
+        }
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err);
+      }
 
       // Descirption
       // approver の status の更新
