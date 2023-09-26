@@ -13,7 +13,7 @@ import {
   WorkflowApprovalTypes,
 } from '../../interfaces/workflow';
 import type {
-  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover, IWorkflowApproverGroupHasId,
+  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover, IWorkflowApproverGroupHasId, IWorkflowApproverHasId,
 } from '../../interfaces/workflow';
 
 
@@ -86,7 +86,7 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 * Workflow
 */
 interface WorkflowDocument extends IWorkflow, Document {
-  findApprover(operatorId: ObjectIdLike): IWorkflowApprover | undefined
+  findApprover(operatorId: ObjectIdLike): IWorkflowApproverHasId | undefined
   isLastApprover(approverId: ObjectIdLike): boolean
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
@@ -127,7 +127,7 @@ WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId
   return workflow != null;
 };
 
-WorkflowSchema.methods.findApprover = function(operatorId: ObjectIdLike): IWorkflowApprover | undefined {
+WorkflowSchema.methods.findApprover = function(operatorId: ObjectIdLike): IWorkflowApproverHasId | undefined {
   for (const approverGroup of this.approverGroups) {
     for (const approver of approverGroup.approvers) {
       if (approver.user.toString() === operatorId) {

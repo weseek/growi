@@ -369,7 +369,6 @@ module.exports = (crowi: Crowi): Router => {
         }
 
         const approver = workflow.findApprover(user._id.toString());
-
         if (approver == null) {
           return res.apiv3Err('Operator is not an approver');
         }
@@ -381,7 +380,7 @@ module.exports = (crowi: Crowi): Router => {
 
       switch (approverStatus) {
         case WorkflowApproverStatus.APPROVE:
-          WorkflowService.approve(workflowId, user);
+          await WorkflowService.approve(workflowId, user._id.toString());
           break;
         case WorkflowApproverStatus.DELEGATE:
           break;
