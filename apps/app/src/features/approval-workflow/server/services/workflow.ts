@@ -4,7 +4,7 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
+  IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:service:workflow');
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
-  approve(workflowId: ObjectIdLike, approver: IUserHasId): Promise<void>,
+  approve(workflowId: ObjectIdLike, approverId: ObjectIdLike): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
@@ -55,8 +55,29 @@ class WorkflowServiceImpl implements WorkflowService {
     return;
   }
 
-  async approve(workflowId: ObjectIdLike, approver: IUserHasId): Promise<void> {
-    //
+  async approve(workflowId: ObjectIdLike, operatorId: ObjectIdLike): Promise<void> {
+    const targetWorkflow = await Workflow.findById(workflowId);
+    if (targetWorkflow == null) {
+      throw Error('Target workflow does not exist');
+    }
+
+    const approver = targetWorkflow.findApprover(operatorId);
+    if (approver == null) {
+      throw Error('Operator is not an approver');
+    }
+
+    if (approver.status === WorkflowApproverStatus.APPROVE) {
+      throw Error('Operator has already been approved');
+    }
+
+    approver.status = WorkflowApproverStatus.APPROVE;
+    (approver as any).save();
+
+    const isLastApprover = targetWorkflow.isLastApprover(approver._id.toString());
+    if (isLastApprover) {
+      targetWorkflow.status = WorkflowStatus.APPROVE;
+      targetWorkflow.save();
+    }
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
