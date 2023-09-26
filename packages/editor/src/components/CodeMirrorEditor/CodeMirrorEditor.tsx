@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
+import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
@@ -18,10 +19,10 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
   );
 });
 
-
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
+  onUpload?: (args: File | File[]) => void,
   indentSize?: number,
 }
 
@@ -52,10 +53,37 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
+  useEffect(() => {
+
+    const extension = EditorView.domEventHandlers({
+      paste(event, view) {
+        console.log('codemirror: ', event.clipboardData?.getData('text'));
+        return false;
+      },
+      drop(event, view) {
+        console.log('CODEMIRROR: ', event, view);
+        return true;
+      },
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor]);
+
   return (
     <div className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
       <Toolbar />
     </div>
   );
+
+  // const { getRootProps, open } = useDropzoneEditor({ onUpload });
+
+  // return (
+  //   <div {...getRootProps()} className="flex-expand-vert">
+  //     <CodeMirrorEditorContainer ref={containerRef} />
+  //     <Toolbar fileOpen={open} />
+  //   </div>
+  // );
 };
