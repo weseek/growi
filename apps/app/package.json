@@ -52,6 +52,7 @@
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM",
     "string-width": "5.0.0 or above exports only ESM.",
+    "@keycloak/keycloak-admin-client": "19.0.0 or above exports only ESM.",
     "prom-client": "!!DO NOT REMOVE!! A peer dependency of @promster.",
     "remark-wiki-link": "!!DO NOT REMOVE!! including 'mdast-util-wiki-link' and 'micromark-extension-wiki-link' required by pukiwiki-like-linker"
   },
