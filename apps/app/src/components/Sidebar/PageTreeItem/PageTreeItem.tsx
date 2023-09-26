@@ -4,7 +4,7 @@ import React, {
 
 import nodePath from 'path';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 

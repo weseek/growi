@@ -2,7 +2,7 @@ import React, {
   useCallback, FC,
 } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
@@ -47,6 +47,9 @@ export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
       setIsOpen(true);
     }
   }, [hasDescendants, setIsOpen]);
+
+  const test = pagePathUtils;
+  console.dir(test);
 
   return (
     <>

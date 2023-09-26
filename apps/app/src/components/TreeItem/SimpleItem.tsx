@@ -4,9 +4,8 @@ import React, {
 
 import nodePath from 'path';
 
-import {
-  pathUtils, Nullable,
-} from '@growi/core';
+import type { Nullable } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';

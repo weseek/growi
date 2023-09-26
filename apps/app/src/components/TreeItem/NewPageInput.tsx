@@ -3,7 +3,7 @@ import React, { FC, useCallback, useEffect } from 'react';
 import nodePath from 'path';
 
 
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
