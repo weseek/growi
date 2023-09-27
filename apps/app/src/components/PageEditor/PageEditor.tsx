@@ -48,7 +48,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
-import { useGlobalSocket } from '~/stores/websocket';
+import { useGlobalSocket, GLOBAL_SOCKET_NS } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 
@@ -512,7 +512,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
     const socketIOProvider = new SocketIOProvider(
-      'ws://localhost:3000',
+      GLOBAL_SOCKET_NS,
       `yjs/${pageId}`,
       ydoc,
       { autoConnect: true },
