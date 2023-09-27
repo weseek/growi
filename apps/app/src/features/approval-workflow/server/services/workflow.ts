@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 import {
   IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus,
 } from '../../interfaces/workflow';
-import Workflow from '../models/workflow';
+import Workflow, { WorkflowDocument } from '../models/workflow';
 
 const logger = loggerFactory('growi:service:workflow');
 
@@ -56,16 +56,16 @@ class WorkflowServiceImpl implements WorkflowService {
   }
 
   async approve(workflowId: ObjectIdLike, operatorId: string): Promise<void> {
-    const targetWorkflow = await Workflow.findById(workflowId);
-    if (targetWorkflow == null) {
+    const workflow = await Workflow.findById(workflowId);
+    if (workflow == null) {
       throw Error('Target workflow does not exist');
     }
 
-    if (targetWorkflow.status !== WorkflowStatus.INPROGRESS) {
+    if (workflow.status !== WorkflowStatus.INPROGRESS) {
       throw Error('Workflow is not in-progress');
     }
 
-    const approver = targetWorkflow.findApprover(operatorId);
+    const approver = workflow.findApprover(operatorId);
     if (approver == null) {
       throw Error('Operator is not an approver');
     }
@@ -74,14 +74,14 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Operator has already been approved');
     }
 
-    const isFinalApprover = targetWorkflow.isFinalApprover(operatorId);
+    const isFinalApprover = workflow.isFinalApprover(operatorId);
     if (isFinalApprover) {
-      targetWorkflow.status = WorkflowStatus.APPROVE;
+      workflow.status = WorkflowStatus.APPROVE;
     }
 
     approver.status = WorkflowApproverStatus.APPROVE;
 
-    await targetWorkflow.save();
+    await workflow.save();
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {

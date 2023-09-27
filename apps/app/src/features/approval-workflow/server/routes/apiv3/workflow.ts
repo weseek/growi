@@ -373,7 +373,6 @@ module.exports = (crowi: Crowi): Router => {
           default:
             return res.apiv3Err('approverStatus can be "APPROVE", "REMAND" or "DELEGATE"');
         }
-
         return res.apiv3({});
       }
       catch (err) {

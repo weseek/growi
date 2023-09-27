@@ -187,7 +187,5 @@ describe('WorkflowService', () => {
       expect(afterWorkflow.status).toEqual(WorkflowStatus.APPROVE);
       expect(afterWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
     });
-
-
   });
 });
