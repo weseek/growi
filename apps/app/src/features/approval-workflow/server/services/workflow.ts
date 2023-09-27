@@ -6,14 +6,14 @@ import loggerFactory from '~/utils/logger';
 import {
   IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus,
 } from '../../interfaces/workflow';
-import Workflow, { WorkflowDocument } from '../models/workflow';
+import Workflow from '../models/workflow';
 
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
-  approve(workflowId: ObjectIdLike, approverId: ObjectIdLike): Promise<void>,
+  approve(workflowId: ObjectIdLike, approverId: string): Promise<void>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
