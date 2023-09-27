@@ -497,8 +497,8 @@
       "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
       "marp_official_site": "参考：Marp 公式サイト",
       "marp_official_site_link": "https://marp.app",
-      "marp_in_growi" : "参考：GROWI Docs - Marp でスライドを作成する",
-      "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
+      "presentation_docs" : "参考：GROWI Docs - プレゼンテーション機能を使う",
+      "presentation_docs_link": "https://docs.growi.org/ja/guide/features/presentation.html"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
