@@ -26,6 +26,9 @@ describe('workflow-seroalizer', () => {
 
     }
 
+    // Within the test, since the User Model doesn't exist, it's being replaced with a dummy User class
+    // eslint-disable-next-line max-len
+    // see: https://github.com/weseek/growi/blob/feat/131160-unit-test-implementation-of-serialize-workflow-securely/apps/app/src/server/models/serializers/user-serializer.js#L21
     vi.spyOn(mongoose, 'model').mockReturnValue(DummyUser);
 
     let workflow;
