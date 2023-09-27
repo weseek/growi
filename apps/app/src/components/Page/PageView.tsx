@@ -129,6 +129,7 @@ export const PageView = (props: Props): JSX.Element => {
     }
 
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
+    rendererOptions.sourcePos = true;
     const markdown = page.revision.body;
 
     return (
@@ -138,6 +139,24 @@ export const PageView = (props: Props): JSX.Element => {
       </>
     );
   };
+
+  // TODO: Delete these experimental codes when the test is finished.
+  const [selected, setSelected] = useState('');
+  useEffect(() => {
+    document.addEventListener('mouseup', () => {
+      const sel = window.getSelection();
+      console.log(sel);
+      if (sel == null || sel.isCollapsed) return; // 範囲選択されている箇所がない場合は何もせず終了
+      console.log();
+      const range = sel.getRangeAt(0);
+      console.log(range);
+      const newNode = document.createElement('span');
+      newNode.setAttribute('style', 'background-color: blue;'); // 範囲選択箇所の背景を青にする
+      newNode.innerHTML = sel.toString();
+      range.deleteContents(); // 範囲選択箇所を一旦削除
+      range.insertNode(newNode); // 範囲選択箇所の先頭から、修飾したspanを挿入
+    });
+  }, []);
 
   return (
     <PageViewLayout
