@@ -5,8 +5,10 @@ import { Modal } from 'reactstrap';
 
 import 'emoji-mart/css/emoji-mart.css';
 
-export const EmojiButton = (): JSX.Element => {
+export const EmojiButton = (props: any): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { onClickEmojiButtonHandler } = props;
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -17,7 +19,7 @@ export const EmojiButton = (): JSX.Element => {
       </button>
       <Modal isOpen={isOpen} toggle={toggle}>
         <Picker
-          onSelect={emoji => console.log(emoji)}
+          onSelect={(emoji: any) => onClickEmojiButtonHandler(emoji)}
         />
       </Modal>
     </>

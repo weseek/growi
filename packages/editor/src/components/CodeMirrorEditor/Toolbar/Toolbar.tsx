@@ -9,12 +9,16 @@ import { TextFormatTools } from './TextFormatTools';
 
 import styles from './Toolbar.module.scss';
 
-export const Toolbar = memo((): JSX.Element => {
+export const Toolbar = memo((props: any): JSX.Element => {
+  const { onClickEmojiButtonHandler } = props;
+
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup />
       <TextFormatTools />
-      <EmojiButton />
+      <EmojiButton
+        onClickEmojiButtonHandler={onClickEmojiButtonHandler}
+      />
       <TableButton />
       <DiagramButton />
       <TemplateButton />
