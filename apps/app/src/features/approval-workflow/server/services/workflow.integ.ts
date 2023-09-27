@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
-  IWorkflowHasId, WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
+  WorkflowStatus, WorkflowApproverStatus, WorkflowApprovalType,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
@@ -160,32 +160,32 @@ describe('WorkflowService', () => {
 
     it('Should keep approver.status as "APPROVE" and workflow.status as "INPROGRESS" if not the final approver', async() => {
       // setup
-      const beforeWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
-      expect(beforeWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
-      expect(beforeWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
+      const beforeWorkflow = await Workflow.findById(workflow1);
+      expect(beforeWorkflow?.status).toEqual(WorkflowStatus.INPROGRESS);
+      expect(beforeWorkflow?.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
 
       // when
       await WorkflowService.approve(workflow1.toString(), operator.toString());
 
       // then
-      const afterWorkflow = await Workflow.findById(workflow1) as unknown as IWorkflowHasId;
-      expect(afterWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
-      expect(afterWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
+      const afterWorkflow = await Workflow.findById(workflow1);
+      expect(afterWorkflow?.status).toEqual(WorkflowStatus.INPROGRESS);
+      expect(afterWorkflow?.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
     });
 
     it('Should result in approver.status becoming "APPROVE" and workflow.status changing to "APPROVE" if the User is the final approver', async() => {
       // setup
-      const beforeWorkflow = await Workflow.findById(workflow2) as unknown as IWorkflowHasId;
-      expect(beforeWorkflow.status).toEqual(WorkflowStatus.INPROGRESS);
-      expect(beforeWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
+      const beforeWorkflow = await Workflow.findById(workflow2);
+      expect(beforeWorkflow?.status).toEqual(WorkflowStatus.INPROGRESS);
+      expect(beforeWorkflow?.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.NONE);
 
       // when
       await WorkflowService.approve(workflow2.toString(), operator.toString());
 
       // then
-      const afterWorkflow = await Workflow.findById(workflow2) as unknown as IWorkflowHasId;
-      expect(afterWorkflow.status).toEqual(WorkflowStatus.APPROVE);
-      expect(afterWorkflow.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
+      const afterWorkflow = await Workflow.findById(workflow2);
+      expect(afterWorkflow?.status).toEqual(WorkflowStatus.APPROVE);
+      expect(afterWorkflow?.approverGroups[0].approvers[0].status).toEqual(WorkflowApproverStatus.APPROVE);
     });
   });
 });
