@@ -12,9 +12,7 @@ import {
   WorkflowApprovalType,
   WorkflowApprovalTypes,
 } from '../../interfaces/workflow';
-import type {
-  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover, IWorkflowApproverGroupHasId, IWorkflowApproverHasId,
-} from '../../interfaces/workflow';
+import type { IWorkflow, IWorkflowApproverGroup, IWorkflowApprover } from '../../interfaces/workflow';
 
 
 /*
@@ -86,7 +84,7 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 * Workflow
 */
 interface WorkflowDocument extends IWorkflow, Document {
-  findApprover(operatorId: string): IWorkflowApproverHasId | undefined
+  findApprover(operatorId: string): IWorkflowApprover | undefined
   isFinalApprover(approverId: string): boolean
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
@@ -122,12 +120,12 @@ const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
 
 WorkflowSchema.plugin(mongoosePaginate);
 
-WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike) {
+WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike): Promise<boolean> {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
   return workflow != null;
 };
 
-WorkflowSchema.methods.findApprover = function(operatorId: string): IWorkflowApproverHasId | undefined {
+WorkflowSchema.methods.findApprover = function(operatorId: string): IWorkflowApprover | undefined {
   for (const approverGroup of this.approverGroups) {
     for (const approver of approverGroup.approvers) {
       if (approver.user.toString() === operatorId) {
@@ -138,7 +136,7 @@ WorkflowSchema.methods.findApprover = function(operatorId: string): IWorkflowApp
 };
 
 WorkflowSchema.methods.isFinalApprover = function(approverId: string): boolean {
-  const finalApproverGroup: IWorkflowApproverGroupHasId = this.approverGroups[this.approverGroups.length - 1];
+  const finalApproverGroup: IWorkflowApproverGroup = this.approverGroups[this.approverGroups.length - 1];
 
   if (finalApproverGroup.isApproved) {
     return false;

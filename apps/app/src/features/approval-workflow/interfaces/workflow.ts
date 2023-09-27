@@ -58,8 +58,6 @@ export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & 
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
 export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
 
-export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;
-export type IWorkflowApproverGroupHasId = Omit<IWorkflowApproverGroup, 'approvers'> & { approvers: IWorkflowApproverHasId[] } & HasObjectId;
-export type IWorkflowHasId = Omit<IWorkflow, 'approverGroups'> & { approverGroups: IWorkflowApproverGroupHasId[] } & HasObjectId;
+export type IWorkflowHasId = IWorkflow & HasObjectId
 
 export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
