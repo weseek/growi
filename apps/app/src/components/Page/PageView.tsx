@@ -146,14 +146,14 @@ export const PageView = (props: Props): JSX.Element => {
     document.addEventListener('mouseup', () => {
       const sel = window.getSelection();
       console.log(sel);
-      if (sel == null || sel.isCollapsed) return; // 範囲選択されている箇所がない場合は何もせず終了
+      if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
       const range = sel.getRangeAt(0);
       console.log(range);
       const newNode = document.createElement('span');
-      newNode.setAttribute('style', 'background-color: blue;'); // 範囲選択箇所の背景を青にする
+      newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
       newNode.innerHTML = sel.toString();
-      range.deleteContents(); // 範囲選択箇所を一旦削除
-      range.insertNode(newNode); // 範囲選択箇所の先頭から、修飾したspanを挿入
+      range.deleteContents(); // Delete range selection.
+      range.insertNode(newNode); // Insert a qualified span from the beginning of the range selection.
     });
   }, []);
 
