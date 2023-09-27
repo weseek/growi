@@ -10,7 +10,6 @@ import { serializeWorkflowSecurely } from './workflow-seroalizer';
 describe('workflow-seroalizer', () => {
 
   describe('.serializeWorkflowSecurely', async() => {
-
     class DummyUser {
 
       username: string;
@@ -57,11 +56,7 @@ describe('workflow-seroalizer', () => {
       } as IWorkflowHasId;
     });
 
-
     it('Should serialize creator and approver', () => {
-      // setup
-
-
       // when
       const serializedWorkflow = serializeWorkflowSecurely(workflow);
 
@@ -83,5 +78,4 @@ describe('workflow-seroalizer', () => {
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toBeDefined();
     });
   });
-
 });
