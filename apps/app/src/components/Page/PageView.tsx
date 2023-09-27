@@ -147,7 +147,6 @@ export const PageView = (props: Props): JSX.Element => {
       const sel = window.getSelection();
       console.log(sel);
       if (sel == null || sel.isCollapsed) return; // 範囲選択されている箇所がない場合は何もせず終了
-      console.log();
       const range = sel.getRangeAt(0);
       console.log(range);
       const newNode = document.createElement('span');
