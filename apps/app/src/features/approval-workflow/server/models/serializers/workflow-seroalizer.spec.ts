@@ -29,10 +29,12 @@ describe('workflow-seroalizer', () => {
     vi.spyOn(mongoose, 'model').mockReturnValue(DummyUser);
 
     let workflow;
+    const password = 'password';
+    const apiToken = 'bX8XYssHo2L2v2SdWFvTb2zCTMpwGHnhZRf+fMKrfec=';
 
     beforeEach(() => {
-      const creator = new DummyUser('workflow-creator', 'password', 'bX8XYssHo2L2v2SdWFvTb2zCTMpwGHnhZRf+fMKrfec=');
-      const approver = new DummyUser('workflow-approver', 'password', '3Cq0QJfrStpv74P26asp2lJiefHwO/y+ooWeuoOBuaI=');
+      const creator = new DummyUser('workflow-creator', password, apiToken);
+      const approver = new DummyUser('workflow-approver', password, apiToken);
 
       workflow = {
         _id: new mongoose.Types.ObjectId().toString(),
@@ -57,6 +59,12 @@ describe('workflow-seroalizer', () => {
     });
 
     it('Should serialize creator and approver', () => {
+      // setup
+      expect(workflow.creator.password).toEqual(password);
+      expect(workflow.creator.apiToken).toEqual(apiToken);
+      expect(workflow.approverGroups[0].approvers[0].user.password).toEqual(password);
+      expect(workflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
+
       // when
       const serializedWorkflow = serializeWorkflowSecurely(workflow);
 
@@ -68,14 +76,20 @@ describe('workflow-seroalizer', () => {
     });
 
     it('Should serialize only the creator', () => {
+      // setup
+      expect(workflow.creator.password).toEqual(password);
+      expect(workflow.creator.apiToken).toEqual(apiToken);
+      expect(workflow.approverGroups[0].approvers[0].user.password).toEqual(password);
+      expect(workflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
+
       // when
       const serializedWorkflow = serializeWorkflowSecurely(workflow, true);
 
       // then
       expect(serializedWorkflow.creator.password).toBeUndefined();
       expect(serializedWorkflow.creator.apiToken).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toEqual('password');
-      expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toBeDefined();
+      expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toEqual(password);
+      expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
     });
   });
 });
