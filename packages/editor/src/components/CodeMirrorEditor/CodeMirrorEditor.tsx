@@ -22,7 +22,7 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
-  onUpload?: (args: File | File[]) => void,
+  onUpload?: (files: File[]) => void,
   indentSize?: number,
 }
 

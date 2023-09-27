@@ -294,15 +294,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
-  /**
-   * the upload event handler
-   * @param {any} file
-   */
-  const uploadHandler = useCallback((args: File | File[]) => {
-    const files = Array.isArray(args)
-      ? args
-      : [args];
-
+  // the upload event handler
+  const uploadHandler = useCallback((files: File[]) => {
     files.forEach(async(file) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -315,7 +308,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         }
 
         const formData = new FormData();
-        // const { pageId, path } = pageContainer.state;
         formData.append('file', file);
         if (currentPagePath != null) {
           formData.append('path', currentPagePath);
@@ -334,7 +326,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
         // when image
         if (attachment.fileFormat.startsWith('image/')) {
-        // modify to "![fileName](url)" syntax
+          // modify to "![fileName](url)" syntax
           insertText = `!${insertText}`;
         }
         // TODO: implement

@@ -17,7 +17,7 @@ const additionalExtensions: Extension[] = [
 type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
-  onUpload?: (args: File | File[]) => void,
+  onUpload?: (files: File[]) => void,
   indentSize?: number,
 }
 
