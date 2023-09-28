@@ -10,6 +10,8 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
+import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -153,13 +155,15 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
-    this.setupExternalAccountService(),
   ]);
 
-  // globalNotification depends on slack and mailer
   await Promise.all([
+    // globalNotification depends on slack and mailer
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
+    // depends on passport service
+    this.setupExternalAccountService(),
+    this.setupExternalUserGroupSyncService(),
   ]);
 
   await this.autoInstall();
@@ -457,7 +461,7 @@ Crowi.prototype.start = async function() {
     this.crowiDev.init();
   }
 
-  const { express, configManager } = this;
+  const { express } = this;
 
   const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
@@ -475,15 +479,6 @@ Crowi.prototype.start = async function() {
       this.crowiDev.setupExpressAfterListening(express);
     }
   });
-  // listen for promster
-  if (configManager.getConfig('crowi', 'promster:isEnabled')) {
-    const { createServer } = require('@promster/server');
-    const promsterPort = configManager.getConfig('crowi', 'promster:port');
-
-    createServer({ port: promsterPort }).then(() => {
-      logger.info(`[${this.node_env}] Promster server is listening on port ${promsterPort}`);
-    });
-  }
 
   // setup Express Routes
   this.setupRoutesForPlugins();
@@ -785,6 +780,12 @@ Crowi.prototype.setupG2GTransferService = async function() {
 // execute after setupPassport
 Crowi.prototype.setupExternalAccountService = function() {
   instanciateExternalAccountService(this.passportService);
+};
+
+// execute after setupPassport, s2sMessagingService, socketIoService
+Crowi.prototype.setupExternalUserGroupSyncService = function() {
+  this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
+  this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
 };
 
 export default Crowi;

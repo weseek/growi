@@ -9,6 +9,7 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   ISearchResult, ISearchResultData, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
@@ -301,7 +302,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
-      socket.emit('rebuildingFailed', { error: error.message });
+      socket.emit(SocketEventName.RebuildingFailed, { error: error.message });
 
       throw error;
     }
@@ -582,7 +583,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           logger.info(`Adding pages progressing: (count=${count}, errors=${bulkResponse.errors}, took=${bulkResponse.took}ms)`);
 
           if (shouldEmitProgress) {
-            socket?.emit('addPageProgress', { totalCount, count, skipped });
+            socket?.emit(SocketEventName.AddPageProgress, { totalCount, count, skipped });
           }
         }
         catch (err) {
@@ -606,7 +607,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
         if (shouldEmitProgress) {
-          socket?.emit('finishAddPage', { totalCount, count, skipped });
+          socket?.emit(SocketEventName.FinishAddPage, { totalCount, count, skipped });
         }
         callback();
       },

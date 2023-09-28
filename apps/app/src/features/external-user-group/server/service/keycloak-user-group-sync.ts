@@ -3,18 +3,22 @@ import GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupR
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
 import { configManager } from '~/server/service/config-manager';
+import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
 
+const logger = loggerFactory('growi:service:keycloak-user-group-sync-service');
+
 // When d = max depth of group trees
 // Max space complexity of generateExternalUserGroupTrees will be:
 // O(TREES_BATCH_SIZE * d)
 const TREES_BATCH_SIZE = 10;
 
-class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
+export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   kcAdminClient: KeycloakAdminClient;
 
@@ -22,19 +26,36 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   groupDescriptionAttribute: string; // attribute to map to group description
 
-  constructor(authProviderType: string) {
+  isInitialized = false;
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  constructor(s2sMessagingService: S2sMessagingService, socketIoService) {
     const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
     const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
     const kcGroupSyncClientRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
     const kcGroupDescriptionAttribute = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
 
-    super(ExternalGroupProviderType.keycloak, authProviderType);
+    super(ExternalGroupProviderType.keycloak, s2sMessagingService, socketIoService);
     this.kcAdminClient = new KeycloakAdminClient({ baseUrl: kcHost, realmName: kcGroupSyncClientRealm });
     this.realm = kcGroupRealm;
     this.groupDescriptionAttribute = kcGroupDescriptionAttribute;
   }
 
-  async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
+  init(authProviderType: 'oidc' | 'saml'): void {
+    this.authProviderType = authProviderType;
+    this.isInitialized = true;
+  }
+
+  override syncExternalUserGroups(): Promise<void> {
+    if (!this.isInitialized) {
+      const msg = 'Service not initialized';
+      logger.error(msg);
+      throw new Error(msg);
+    }
+    return super.syncExternalUserGroups();
+  }
+
+  override async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
     await this.auth();
 
     // Type is 'GroupRepresentation', but 'find' does not return 'attributes' field. Hence, attribute for description is not present.
@@ -121,5 +142,3 @@ class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
   }
 
 }
-
-export default KeycloakUserGroupSyncService;

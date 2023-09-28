@@ -13,12 +13,12 @@ import { instanciate } from '../../../src/server/service/external-account';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
 
-
 // dummy class to implement generateExternalUserGroupTrees which returns test data
 class TestExternalUserGroupSyncService extends ExternalUserGroupSyncService {
 
-  constructor() {
-    super(ExternalGroupProviderType.ldap, 'ldap');
+  constructor(s2sMessagingService, socketIoService) {
+    super('ldap', s2sMessagingService, socketIoService);
+    this.authProviderType = ExternalGroupProviderType.ldap;
   }
 
   async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
@@ -77,7 +77,7 @@ class TestExternalUserGroupSyncService extends ExternalUserGroupSyncService {
 
 }
 
-const testService = new TestExternalUserGroupSyncService();
+const testService = new TestExternalUserGroupSyncService(null, null);
 
 const checkGroup = (group: IExternalUserGroupHasId, expected: Omit<IExternalUserGroup, 'createdAt'>) => {
   const actual = {
