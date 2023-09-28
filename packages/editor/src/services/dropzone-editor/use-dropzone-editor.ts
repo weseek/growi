@@ -7,7 +7,7 @@ type DropzoneEditor = {
   onUpload?: (files: File[]) => void,
 }
 
-export const useDropzoneEditor = (props: DropzoneEditor): DropzoneState => {
+export const useDropFile = (props: DropzoneEditor): DropzoneState => {
 
   const { onUpload } = props;
 
