@@ -74,8 +74,6 @@
     "@growi/remark-growi-directive": "link:../../packages/remark-growi-directive",
     "@growi/remark-lsx": "link:../../packages/remark-lsx",
     "@growi/slack": "link:../../packages/slack",
-    "@promster/express": "^7.0.6",
-    "@promster/server": "^7.0.8",
     "@s3pweb/keycloak-admin-client-cjs": "^22.0.1",
     "@slack/web-api": "^6.2.4",
     "@slack/webhook": "^6.0.0",
