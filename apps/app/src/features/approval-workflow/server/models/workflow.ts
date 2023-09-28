@@ -85,7 +85,6 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 */
 interface WorkflowDocument extends IWorkflow, Document {
   findApprover(operatorId: string): IWorkflowApprover | undefined
-  isFinalApprover(approverId: string): boolean
   isApproved(): boolean
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
@@ -134,30 +133,6 @@ WorkflowSchema.methods.findApprover = function(operatorId: string): IWorkflowApp
       }
     }
   }
-};
-
-WorkflowSchema.methods.isFinalApprover = function(approverId: string): boolean {
-  const finalApproverGroup: IWorkflowApproverGroup = this.approverGroups[this.approverGroups.length - 1];
-
-  if (finalApproverGroup.isApproved) {
-    return false;
-  }
-
-  const finalApproverGroupApproverIds = finalApproverGroup.approvers.map(approver => approver.user._id.toString());
-  if (!finalApproverGroupApproverIds.includes(approverId)) {
-    return false;
-  }
-
-  if (finalApproverGroup.approvalType === WorkflowApprovalType.OR) {
-    return true;
-  }
-
-  const approvedCount = finalApproverGroup.approvers.filter(approver => approver.status === WorkflowApproverStatus.APPROVE).length;
-  if (finalApproverGroup.approvers.length - approvedCount === 1) {
-    return true;
-  }
-
-  return false;
 };
 
 WorkflowSchema.methods.isApproved = function(): boolean {
