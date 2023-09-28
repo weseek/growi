@@ -38,9 +38,10 @@ export const Playground = (): JSX.Element => {
   }, [codeMirrorEditor]);
 
   // the upload event handler
+  // demo of uploading a file.
   const uploadHandler = useCallback((files: File[]) => {
     files.forEach((file) => {
-
+      // set dummy file name.
       const insertText = `[${file.name}](/attachment/aaaabbbbccccdddd)\n`;
       codeMirrorEditor?.insertText(insertText);
     });
