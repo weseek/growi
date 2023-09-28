@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
-import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
+import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { EditorState, Prec, type Extension } from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
@@ -42,7 +42,8 @@ const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
-  syntaxHighlighting(markdownHighlighting),
+  Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
+  Prec.highest(syntaxHighlighting(markdownHighlighting)),
 ];
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
@@ -57,7 +58,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         indentWithTab: false,
         basicSetup: {
           defaultKeymap: false,
-          syntaxHighlighting: false,
         },
       },
     );
