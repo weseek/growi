@@ -78,7 +78,7 @@ describe('workflow-seroalizer', () => {
       });
 
       expect(workflow.creator.password).toEqual(password);
-      expect(workflow.creator.apiToken).toEqual(password);
+      expect(workflow.creator.apiToken).toEqual(apiToken);
       expect(workflow.approverGroups[0].approvers[0].user.password).toEqual(password);
       expect(workflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
 
@@ -102,7 +102,7 @@ describe('workflow-seroalizer', () => {
       });
 
       expect(workflow.creator.password).toEqual(password);
-      expect(workflow.creator.apiToken).toEqual(password);
+      expect(workflow.creator.apiToken).toEqual(apiToken);
       expect(workflow.approverGroups[0].approvers[0].user.password).toEqual(password);
       expect(workflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
 
