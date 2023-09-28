@@ -6,7 +6,7 @@ import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import { useDropFile } from '../../services';
+import { useFileDropzone } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -54,7 +54,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  const { getRootProps, open } = useDropFile({ onUpload });
+  const { getRootProps, open } = useFileDropzone({ onUpload });
 
   return (
     <div {...getRootProps()} className="flex-expand-vert">

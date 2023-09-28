@@ -1,2 +1,2 @@
 export * from './codemirror-editor';
-export * from './dropzone-editor';
+export * from './file-dropzone';
