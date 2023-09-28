@@ -27,7 +27,7 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
   isInitialized = false;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(s2sMessagingService: S2sMessagingService, socketIoService) {
+  constructor(s2sMessagingService: S2sMessagingService | null, socketIoService) {
     const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
     const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
     const kcGroupSyncClientRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
