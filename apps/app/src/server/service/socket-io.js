@@ -181,11 +181,8 @@ class SocketIoService {
         // get current Ydoc
         const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
 
-        // TODO: add error handling
-        // https://redmine.weseek.co.jp/issues/130773
         if (currentYdoc == null) {
-          logger.debug('currentYdoc is undefined');
-          return;
+          throw new Error(`currentYdoc for pageId ${pageId} is undefined.`);
         }
 
         const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
