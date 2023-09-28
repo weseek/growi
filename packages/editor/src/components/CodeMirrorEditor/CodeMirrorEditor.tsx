@@ -57,11 +57,30 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
     const extension = EditorView.domEventHandlers({
       paste(event, view) {
-        console.log('codemirror: ', event.clipboardData?.getData('text'));
+        event.preventDefault();
+        console.log('codemirror: ', event.clipboardData?.getData('text/plain'));
+        console.log('codemirror: ', event.clipboardData?.files);
+        console.log('codemirror: ', event.clipboardData?.items);
         return false;
       },
+      drag(event, view) {
+        event.preventDefault();
+        console.log('DRAG: ', event.dataTransfer);
+        return true;
+      },
+      dragenter(event, view) {
+        event.preventDefault();
+        console.log('DRAGENER: ', event.dataTransfer);
+        return true;
+      },
+      dragover(event, view) {
+        event.preventDefault();
+        console.log('DRAGOVER: ', event.dataTransfer);
+        return true;
+      },
       drop(event, view) {
-        console.log('CODEMIRROR: ', event, view);
+        event.preventDefault();
+        console.log('DROP: ', event.dataTransfer);
         return true;
       },
     });
