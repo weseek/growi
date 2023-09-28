@@ -7,17 +7,23 @@ import { TableButton } from './TableButton';
 import { TemplateButton } from './TemplateButton';
 import { TextFormatTools } from './TextFormatTools';
 
+import type { UseCodeMirrorEditor } from 'src';
+
 import styles from './Toolbar.module.scss';
 
-export const Toolbar = memo((props: any): JSX.Element => {
-  const { onClickEmojiButtonHandler } = props;
+type Props = {
+  codeMirrorEditor: UseCodeMirrorEditor | undefined
+}
+
+export const Toolbar = memo((props: Props): JSX.Element => {
+  const { codeMirrorEditor } = props;
 
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup />
       <TextFormatTools />
       <EmojiButton
-        onClickEmojiButtonHandler={onClickEmojiButtonHandler}
+        codeMirrorEditor={codeMirrorEditor}
       />
       <TableButton />
       <DiagramButton />

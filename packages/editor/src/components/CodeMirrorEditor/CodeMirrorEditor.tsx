@@ -52,29 +52,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  const onClickEmojiButtonHandler = (emoji : { colons: string}) => {
-    const view = codeMirrorEditor?.view;
-    const currentPos = view?.state.selection.main.head;
-
-    console.log(currentPos);
-
-    if (currentPos == null) {
-      return;
-    }
-
-    view?.dispatch({
-      changes: {
-        from: currentPos,
-        insert: emoji.colons,
-      },
-    });
-  };
-
-
   return (
     <div className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar onClickEmojiButtonHandler={onClickEmojiButtonHandler} />
+      <Toolbar codeMirrorEditor={codeMirrorEditor} />
     </div>
   );
 };
