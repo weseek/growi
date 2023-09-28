@@ -1,9 +1,11 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useCallback,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+
+import { useEmojiPickerModal } from '~/stores/modal';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
@@ -32,6 +34,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     indentSize,
   } = props;
 
+  const { open } = useEmojiPickerModal();
+
   const containerRef = useRef(null);
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {
@@ -51,6 +55,12 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, indentSize]);
+
+  const onInputColonHandler = useCallback((event) => {
+    if (event.key === 'DOM_VK_COLON') {
+      // emoji pickerを起動する処理
+    }
+  }, []);
 
   return (
     <div className="flex-expand-vert">
