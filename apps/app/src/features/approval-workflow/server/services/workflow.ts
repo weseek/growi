@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:service:workflow');
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
-  approve(workflowId: ObjectIdLike, approverId: string): Promise<void>,
+  approve(workflowId: ObjectIdLike, approverId: string): Promise<IWorkflowHasId>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
@@ -55,7 +55,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return;
   }
 
-  async approve(workflowId: ObjectIdLike, operatorId: string): Promise<void> {
+  async approve(workflowId: ObjectIdLike, operatorId: string): Promise<IWorkflowHasId> {
     const workflow = await Workflow.findById(workflowId);
     if (workflow == null) {
       throw Error('Target workflow does not exist');
@@ -74,14 +74,15 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Operator has already been approved');
     }
 
-    const isFinalApprover = workflow.isFinalApprover(operatorId);
-    if (isFinalApprover) {
-      workflow.status = WorkflowStatus.APPROVE;
-    }
-
     approver.status = WorkflowApproverStatus.APPROVE;
 
-    await workflow.save();
+    let updatedWorkflow = await workflow.save();
+    if (updatedWorkflow.isApproved()) {
+      updatedWorkflow.status = WorkflowStatus.APPROVE;
+      updatedWorkflow = await updatedWorkflow.save();
+    }
+
+    return updatedWorkflow as unknown as IWorkflowHasId;
   }
 
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {

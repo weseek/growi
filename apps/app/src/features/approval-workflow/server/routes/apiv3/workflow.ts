@@ -362,9 +362,10 @@ module.exports = (crowi: Crowi): Router => {
       const { user } = req;
 
       try {
+        let updatedWorkflow;
         switch (approverStatus) {
           case WorkflowApproverStatus.APPROVE:
-            await WorkflowService.approve(workflowId, user._id.toString());
+            updatedWorkflow = await WorkflowService.approve(workflowId, user._id.toString());
             break;
           case WorkflowApproverStatus.DELEGATE:
             break;
@@ -373,7 +374,7 @@ module.exports = (crowi: Crowi): Router => {
           default:
             return res.apiv3Err('approverStatus can be "APPROVE", "REMAND" or "DELEGATE"');
         }
-        return res.apiv3({});
+        return res.apiv3({ updatedWorkflow });
       }
       catch (err) {
         logger.error(err);

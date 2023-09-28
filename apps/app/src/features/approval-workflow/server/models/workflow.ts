@@ -86,6 +86,7 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 interface WorkflowDocument extends IWorkflow, Document {
   findApprover(operatorId: string): IWorkflowApprover | undefined
   isFinalApprover(approverId: string): boolean
+  isApproved(): boolean
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
@@ -157,6 +158,10 @@ WorkflowSchema.methods.isFinalApprover = function(approverId: string): boolean {
   }
 
   return false;
+};
+
+WorkflowSchema.methods.isApproved = function(): boolean {
+  return this.approverGroups[this.approverGroups.length - 1].isApproved;
 };
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);
