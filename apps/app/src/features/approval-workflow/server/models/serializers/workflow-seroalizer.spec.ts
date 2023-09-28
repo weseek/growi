@@ -29,6 +29,7 @@ describe('workflow-seroalizer', () => {
         password,
         apiToken,
       };
+
       workflow = {
         _id: new mongoose.Types.ObjectId().toString(),
         creator,
