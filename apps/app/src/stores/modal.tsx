@@ -739,32 +739,3 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
-
-
-/*
-* EmojiPickerModal
-*/
-type EmojiPickerModalStatus = {
-  isOpend: boolean,
-}
-
-type EmojiPickerModalUtils = {
-  open(): void,
-  close(): void,
-}
-
-export const useEmojiPickerModal = (): SWRResponse<EmojiPickerModalStatus, Error> & EmojiPickerModalUtils => {
-
-  const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<EmojiPickerModalStatus, Error>('emojiPickerModal', undefined, { fallbackData: initialStatus });
-
-  return {
-    ...swrResponse,
-    open: () => {
-      swrResponse.mutate({ isOpened: true });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  };
-};

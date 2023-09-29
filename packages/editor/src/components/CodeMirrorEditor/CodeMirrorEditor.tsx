@@ -1,11 +1,9 @@
 import {
-  forwardRef, useMemo, useRef, useEffect, useCallback,
+  forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
-
-// import { useEmojiPickerModal } from '~/stores/modal';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
