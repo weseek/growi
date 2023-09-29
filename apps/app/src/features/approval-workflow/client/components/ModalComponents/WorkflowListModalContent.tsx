@@ -24,7 +24,7 @@ const formatDate = (date: Date) => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm');
 };
 
-export const WorkflowListPage = (props: Props): JSX.Element => {
+export const WorkflowListModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {

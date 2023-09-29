@@ -4,7 +4,7 @@ import { Modal } from 'reactstrap';
 
 import { useWorkflowModal, useSWRxWorkflow, useSWRxWorkflowList } from '../stores/workflow';
 
-import { WorkflowListPage, WorkflowCreationPage, WorkflowDetailPage } from './ModalComponents';
+import { WorkflowListModalContent, WorkflowCreationModalContent, WorkflowDetailModalContent } from './ModalComponents';
 
 const PageType = {
   list: 'LIST',
@@ -57,7 +57,7 @@ const WorkflowModal = (): JSX.Element => {
   return (
     <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
       { pageType === PageType.list && (
-        <WorkflowListPage
+        <WorkflowListModalContent
           workflows={workflowPaginateResult?.docs ?? []}
           onDeleted={mutateWorkflows}
           onClickCreateWorkflowButton={createWorkflowButtonClickHandler}
@@ -66,7 +66,7 @@ const WorkflowModal = (): JSX.Element => {
       )}
 
       { pageType === PageType.creation && (
-        <WorkflowCreationPage
+        <WorkflowCreationModalContent
           pageId={workflowModalData.pageId}
           onCreated={onCreatedHandler}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
@@ -74,7 +74,7 @@ const WorkflowModal = (): JSX.Element => {
       )}
 
       { pageType === PageType.detail && (
-        <WorkflowDetailPage
+        <WorkflowDetailModalContent
           workflow={selectedWorkflow}
           onClickWorkflowListPageBackButton={workflowListPageBackButtonClickHandler}
         />

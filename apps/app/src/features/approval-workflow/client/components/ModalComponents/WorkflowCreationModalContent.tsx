@@ -15,7 +15,7 @@ type Props = {
   onClickWorkflowListPageBackButton: () => void;
 }
 
-export const WorkflowCreationPage = (props: Props): JSX.Element => {
+export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
