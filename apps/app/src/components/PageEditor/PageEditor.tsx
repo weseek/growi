@@ -490,7 +490,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     provider.disconnect();
     setProvider(null);
 
-    socket.off('sync:ydoc');
+    socket.off('ydoc:sync');
 
     setCPageId(pageId);
   }, [cPageId, pageId, provider, socket, ydoc]);
@@ -529,7 +529,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }, 5000);
 
       if (isSync) {
-        socket.emit('sync:ydoc', { pageId, initialValue });
+        socket.emit('ydoc:sync', { pageId, initialValue });
       }
     });
     socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
