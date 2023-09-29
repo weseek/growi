@@ -70,7 +70,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
         return true;
       },
       drop(event) {
-        // prevents conflicts between codemirror and react-dropzone
+        // prevents conflicts between codemirror and react-dropzone during file drops.
         event.preventDefault();
         return true;
       },
