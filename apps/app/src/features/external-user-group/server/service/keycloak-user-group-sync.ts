@@ -1,4 +1,6 @@
-import { GroupRepresentation, KeycloakAdminClient, UserRepresentation } from '@s3pweb/keycloak-admin-client-cjs';
+import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation';
+import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
 import { configManager } from '~/server/service/config-manager';
 import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
