@@ -1,9 +1,8 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, CSSProperties } from 'react';
 
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
-
 
 import { useNextThemes } from '~/stores/use-next-themes';
 
@@ -69,6 +68,13 @@ export const EmojiButton: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { codeMirrorEditor } = props;
+  const view = codeMirrorEditor?.view;
+
+  if (view == null) {
+    return;
+  }
+
+  const cursorIndex = view?.state.selection.main.head;
 
   const { resolvedTheme } = useNextThemes();
   const translation = getEmojiTranslation();
@@ -76,19 +82,45 @@ export const EmojiButton: FC<Props> = (props) => {
   const toggle = () => setIsOpen(!isOpen);
 
   const selectEmoji = (emoji: { colons: string }): void => {
-    const view = codeMirrorEditor?.view;
-    const currentPos = view?.state.selection.main.head;
 
-    if (currentPos == null) {
+    if (cursorIndex == null) {
       return;
     }
 
     view?.dispatch({
       changes: {
-        from: currentPos,
+        from: cursorIndex,
         insert: emoji.colons,
       },
     });
+
+    toggle();
+  };
+
+  const setStyle = (): CSSProperties => {
+    const offset = 20;
+    const emojiPickerHeight = 420;
+    // const cursorPos = this.editor.cursorCoords(true);
+    const cursorRect = view.coordsAtPos(cursorIndex);
+    const editorRect = view.dom.getBoundingClientRect();
+
+    if (cursorRect == null) {
+      return {};
+    }
+
+    // Emoji Picker bottom position exceed editor's bottom position
+    if (cursorRect.bottom + emojiPickerHeight > editorRect.bottom) {
+      return {
+        top: editorRect.bottom - emojiPickerHeight,
+        left: cursorRect.left + offset,
+        position: 'fixed',
+      };
+    }
+    return {
+      top: cursorRect.top + offset,
+      left: cursorRect.left + offset,
+      position: 'fixed',
+    };
   };
 
   return (
@@ -96,15 +128,18 @@ export const EmojiButton: FC<Props> = (props) => {
       <button type="button" className="btn btn-toolbar-button" onClick={toggle}>
         <span className="material-icons-outlined fs-6">emoji_emotions</span>
       </button>
-      <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
-        <Picker
-          onSelect={(emoji: any) => selectEmoji(emoji)}
-          i18n={translation}
-          title={translation.title}
-          emojiTooltip
-          theme={resolvedTheme}
-        />
-      </Modal>
+      <div className="mb-2 d-none d-md-block">
+        <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
+          <Picker
+            onSelect={(emoji: any) => selectEmoji(emoji)}
+            i18n={translation}
+            title={translation.title}
+            emojiTooltip
+            style={setStyle()}
+            theme={resolvedTheme}
+          />
+        </Modal>
+      </div>
     </>
   );
 };
