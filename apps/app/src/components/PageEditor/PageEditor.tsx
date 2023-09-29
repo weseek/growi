@@ -294,67 +294,67 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
 
 
-  /**
-   * the upload event handler
-   * @param {any} file
-   */
-  const uploadHandler = useCallback(async(file) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let res: any = await apiGet('/attachments.limit', {
-        fileSize: file.size,
-      });
+  // the upload event handler
+  const uploadHandler = useCallback((files: File[]) => {
+    files.forEach(async(file) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const resLimit: any = await apiGet('/attachments.limit', {
+          fileSize: file.size,
+        });
 
-      if (!res.isUploadable) {
-        throw new Error(res.errorMessage);
-      }
+        if (!resLimit.isUploadable) {
+          throw new Error(resLimit.errorMessage);
+        }
 
-      const formData = new FormData();
-      // const { pageId, path } = pageContainer.state;
-      formData.append('file', file);
-      if (currentPagePath != null) {
-        formData.append('path', currentPagePath);
-      }
-      if (pageId != null) {
-        formData.append('page_id', pageId);
-      }
-      if (pageId == null) {
-        formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
-      }
+        const formData = new FormData();
+        formData.append('file', file);
+        if (currentPagePath != null) {
+          formData.append('path', currentPagePath);
+        }
+        if (pageId != null) {
+          formData.append('page_id', pageId);
+        }
+        if (pageId == null) {
+          formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
+        }
 
-      res = await apiPostForm('/attachments.add', formData);
-      const attachment = res.attachment;
-      const fileName = attachment.originalName;
+        const resAdd: any = await apiPostForm('/attachments.add', formData);
+        const attachment = resAdd.attachment;
+        const fileName = attachment.originalName;
 
-      let insertText = `[${fileName}](${attachment.filePathProxied})`;
-      // when image
-      if (attachment.fileFormat.startsWith('image/')) {
-        // modify to "![fileName](url)" syntax
-        insertText = `!${insertText}`;
-      }
-      // TODO: implement
-      // refs: https://redmine.weseek.co.jp/issues/126528
-      // editorRef.current.insertText(insertText);
+        let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
+        // when image
+        if (attachment.fileFormat.startsWith('image/')) {
+          // modify to "![fileName](url)" syntax
+          insertText = `!${insertText}`;
+        }
+        // TODO: implement
+        // refs: https://redmine.weseek.co.jp/issues/126528
+        // editorRef.current.insertText(insertText);
+        codeMirrorEditor?.insertText(insertText);
 
-      // when if created newly
-      // Not using 'mutateGrant' to inherit the grant of the parent page
-      if (res.pageCreated) {
-        logger.info('Page is created', res.page._id);
-        mutateIsLatestRevision(true);
-        setCreatedPageRevisionIdWithAttachment(res.page.revision);
-        await mutateCurrentPageId(res.page._id);
-        await mutateCurrentPage();
+        // when if created newly
+        // Not using 'mutateGrant' to inherit the grant of the parent page
+        if (resAdd.pageCreated) {
+          logger.info('Page is created', resAdd.page._id);
+          mutateIsLatestRevision(true);
+          setCreatedPageRevisionIdWithAttachment(resAdd.page.revision);
+          await mutateCurrentPageId(resAdd.page._id);
+          await mutateCurrentPage();
+        }
       }
-    }
-    catch (e) {
-      logger.error('failed to upload', e);
-      toastError(e);
-    }
-    finally {
-      // TODO: implement
-      // refs: https://redmine.weseek.co.jp/issues/126528
-      // editorRef.current.terminateUploadingState();
-    }
+      catch (e) {
+        logger.error('failed to upload', e);
+        toastError(e);
+      }
+      finally {
+        // TODO: implement
+        // refs: https://redmine.weseek.co.jp/issues/126528
+        // editorRef.current.terminateUploadingState();
+      }
+    });
+
   }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
   const acceptedFileType = useMemo(() => {
@@ -581,6 +581,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <CodeMirrorEditorMain
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
+          onUpload={uploadHandler}
           indentSize={currentIndentSize ?? defaultIndentSize}
           acceptedFileType={acceptedFileType}
         />
