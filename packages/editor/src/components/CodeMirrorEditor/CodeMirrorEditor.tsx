@@ -23,6 +23,7 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
+  onUpload?: (files: File[]) => void,
   indentSize?: number,
 }
 
@@ -57,31 +58,20 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   useEffect(() => {
 
     const extension = EditorView.domEventHandlers({
-      paste(event, view) {
+      paste(event) {
         event.preventDefault();
-        console.log('codemirror: ', event.clipboardData?.getData('text/plain'));
-        console.log('codemirror: ', event.clipboardData?.files);
-        console.log('codemirror: ', event.clipboardData?.items);
-        return false;
-      },
-      drag(event, view) {
-        event.preventDefault();
-        console.log('DRAG: ', event.dataTransfer);
+
+        if (onUpload != null && event.clipboardData?.files != null) {
+          onUpload(Array.from(event.clipboardData?.files));
+        }
+        if (event.clipboardData?.getData('text/plain') != null) {
+          codeMirrorEditor?.replaceText(event.clipboardData?.getData('text/plain'));
+        }
         return true;
       },
-      dragenter(event, view) {
+      drop(event) {
+        // prevents conflicts between codemirror and react-dropzone
         event.preventDefault();
-        console.log('DRAGENER: ', event.dataTransfer);
-        return true;
-      },
-      dragover(event, view) {
-        event.preventDefault();
-        console.log('DRAGOVER: ', event.dataTransfer);
-        return true;
-      },
-      drop(event, view) {
-        event.preventDefault();
-        console.log('DROP: ', event.dataTransfer);
         return true;
       },
     });
@@ -89,7 +79,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
     return cleanupFunction;
 
-  }, [codeMirrorEditor]);
+  }, [codeMirrorEditor, onUpload]);
 
   const { getRootProps, open } = useFileDropzone({ onUpload });
 
