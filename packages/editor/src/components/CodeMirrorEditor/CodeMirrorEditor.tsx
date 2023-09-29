@@ -89,13 +89,4 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       <Toolbar fileOpen={open} />
     </div>
   );
-
-  // const { getRootProps, open } = useDropzoneEditor({ onUpload });
-
-  // return (
-  //   <div {...getRootProps()} className="flex-expand-vert">
-  //     <CodeMirrorEditorContainer ref={containerRef} />
-  //     <Toolbar fileOpen={open} />
-  //   </div>
-  // );
 };
