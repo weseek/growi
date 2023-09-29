@@ -39,10 +39,9 @@ const WorkflowModal = (): JSX.Element => {
   /*
   * for CreateWorkflowPage
   */
-  const onCreatedHandler = useCallback((workflowId: string) => {
-    mutateWorkflows();
-    setSelectedWorkflowId(workflowId);
-    setPageType(PageType.detail);
+  const onCreatedHandler = useCallback(async() => {
+    await mutateWorkflows();
+    setPageType(PageType.list);
   }, [mutateWorkflows]);
 
   const workflowListPageBackButtonClickHandler = useCallback(() => {

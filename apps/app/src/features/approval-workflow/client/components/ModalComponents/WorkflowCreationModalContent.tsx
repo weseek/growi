@@ -11,7 +11,7 @@ import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
   pageId: string,
-  onCreated?: (workflowId: string) => void
+  onCreated?: () => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
@@ -38,9 +38,9 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
   const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
 
-  const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
+  const { trigger: createWorkflow, isMutating } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
 
-  // const { createWorkflow } = useCreateWorkflow(pageId, workflowName, workflowDescription, approverGroups);
+  console.log('isMutating', isMutating);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
@@ -57,9 +57,9 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
 
     try {
       // TODO: https://redmine.weseek.co.jp/issues/131035
-      const createdWorkflow = await createWorkflow();
-      if (onCreated != null && createdWorkflow != null) {
-        onCreated(createdWorkflow._id);
+      await createWorkflow();
+      if (onCreated != null) {
+        onCreated();
       }
     }
     catch (err) {
