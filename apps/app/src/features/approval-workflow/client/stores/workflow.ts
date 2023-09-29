@@ -1,9 +1,10 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
-import { IWorkflowHasId, IWorkflowPaginateResult } from '../../interfaces/workflow';
+import { IWorkflowHasId, IWorkflowPaginateResult, IWorkflowApproverGroupReq } from '../../interfaces/workflow';
 
 export type WorkflowModalStatus = {
   pageId?: string,
@@ -46,5 +47,22 @@ export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: nu
   return useSWR(
     key,
     ([endpoint, limit, offset]) => apiv3Get(endpoint as string, { limit, offset }).then(result => result.data.paginateResult),
+  );
+};
+
+export const useSWRMUTxCreateWorkflow = (
+    pageId?: string,
+    approverGroups?: IWorkflowApproverGroupReq[],
+    name?: string,
+    comment?: string,
+): SWRMutationResponse<IWorkflowHasId, Error> => {
+
+  const key = pageId != null || approverGroups != null ? [pageId, approverGroups, name, comment] : null;
+
+  return useSWRMutation(
+    key,
+    ([pageId, approverGroups, name, comment]) => apiv3Post('/workflow', {
+      pageId, approverGroups, name, comment,
+    }).then(result => result.data.createdWorkflow),
   );
 };

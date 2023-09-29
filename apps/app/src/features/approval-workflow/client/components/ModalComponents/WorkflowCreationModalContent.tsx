@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
 import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../../interfaces/workflow';
-import { useCreateWorkflow } from '../../services/workflow';
+import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
@@ -38,7 +38,9 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
   const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
 
-  const { createWorkflow } = useCreateWorkflow(pageId, workflowName, workflowDescription, approverGroups);
+  const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
+
+  // const { createWorkflow } = useCreateWorkflow(pageId, workflowName, workflowDescription, approverGroups);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
