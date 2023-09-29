@@ -38,9 +38,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
   const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
 
-  const { trigger: createWorkflow, isMutating } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
-
-  console.log('isMutating', isMutating);
+  const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
