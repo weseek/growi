@@ -5,8 +5,11 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
+import { AcceptedUploadFileType } from 'src/consts';
+
 type Props = {
   fileOpen: () => void,
+  acceptedFileType?: AcceptedUploadFileType,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {

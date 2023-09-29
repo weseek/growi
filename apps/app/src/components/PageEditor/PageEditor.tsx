@@ -7,7 +7,9 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
+import {
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, AcceptedUploadFileType,
+} from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -359,12 +361,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const acceptedFileType = useMemo(() => {
     if (isUploadableFile) {
-      return '*';
+      return AcceptedUploadFileType.ALL;
     }
     if (isUploadableImage) {
-      return 'image/*';
+      return AcceptedUploadFileType.IMAGE;
     }
-    return null;
+    return AcceptedUploadFileType.NO;
   }, [isUploadableFile, isUploadableImage]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {

@@ -5,7 +5,7 @@ import {
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
@@ -23,6 +23,7 @@ type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
+  acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
 }
 
@@ -31,6 +32,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     editorKey,
     onChange,
     onUpload,
+    acceptedFileType,
     indentSize,
   } = props;
 
@@ -59,7 +61,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   return (
     <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar fileOpen={open} />
+      <Toolbar fileOpen={open} acceptedFileType={acceptedFileType} />
     </div>
   );
 };
