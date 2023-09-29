@@ -5,7 +5,7 @@ import {
 } from '../../../interfaces/workflow';
 
 
-import { serializeWorkflowSecurely } from './workflow-seroalizer';
+import { serializeWorkflowSecurely } from './workflow-serializer';
 
 
 describe('workflow-seroalizer', () => {
