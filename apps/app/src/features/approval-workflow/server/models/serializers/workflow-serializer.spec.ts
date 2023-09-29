@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 
-import {
-  IWorkflowHasId, WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus,
-} from '../../../interfaces/workflow';
-
+import type { IWorkflowHasId } from '../../../interfaces/workflow';
+import { WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus } from '../../../interfaces/workflow';
 
 import { serializeWorkflowSecurely } from './workflow-serializer';
 
@@ -48,13 +46,28 @@ describe('workflow-seroalizer', () => {
               },
             ],
           },
+          {
+            isApproved: false,
+            approvalType: WorkflowApprovalType.AND,
+            approvers: [
+              {
+                user: approver,
+                status: WorkflowApproverStatus.NONE,
+              },
+              {
+                user: approver,
+                status: WorkflowApproverStatus.NONE,
+              },
+            ],
+          },
         ],
       } as IWorkflowHasId;
     });
 
     const mocks = vi.hoisted(() => {
       return {
-        serializeUserSecurelyMock: vi.fn(() => { return {} }),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        serializeUserSecurelyMock: vi.fn((user: any) => { return {} }),
       };
     });
 
@@ -62,60 +75,62 @@ describe('workflow-seroalizer', () => {
       return { serializeUserSecurely: mocks.serializeUserSecurelyMock };
     });
 
+    mocks.serializeUserSecurelyMock.mockImplementation((user: any) => {
+      delete user.password;
+      delete user.apiToken;
+
+      return user;
+    });
+
     it('Should serialize creator and approver', () => {
-      // setup
-      mocks.serializeUserSecurelyMock.mockImplementationOnce(() => {
-        delete workflow.creator.password;
-        delete workflow.creator.apiToken;
-
-        return workflow;
-      });
-
-      mocks.serializeUserSecurelyMock.mockImplementationOnce(() => {
-        delete workflow.approverGroups[0].approvers[0].user.password;
-        delete workflow.approverGroups[0].approvers[0].user.apiToken;
-
-        return workflow;
-      });
-
       expect(workflow.creator.password).toEqual(password);
       expect(workflow.creator.apiToken).toEqual(apiToken);
       expect(workflow.approverGroups[0].approvers[0].user.password).toEqual(password);
       expect(workflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
+      expect(workflow.approverGroups[1].approvers[0].user.password).toEqual(password);
+      expect(workflow.approverGroups[1].approvers[0].user.apiToken).toEqual(apiToken);
+      expect(workflow.approverGroups[1].approvers[1].user.password).toEqual(password);
+      expect(workflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
 
       // when
       const serializedWorkflow = serializeWorkflowSecurely(workflow);
 
       // then
+      expect(mocks.serializeUserSecurelyMock).toBeCalledTimes(4);
       expect(serializedWorkflow.creator.password).toBeUndefined();
       expect(serializedWorkflow.creator.apiToken).toBeUndefined();
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toBeUndefined();
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toBeUndefined();
+      expect(serializedWorkflow.approverGroups[1].approvers[0].user.password).toBeUndefined();
+      expect(serializedWorkflow.approverGroups[1].approvers[0].user.apiToken).toBeUndefined();
+      expect(serializedWorkflow.approverGroups[1].approvers[1].user.password).toBeUndefined();
+      expect(serializedWorkflow.approverGroups[1].approvers[1].user.apiToken).toBeUndefined();
     });
 
     it('Should serialize only the creator', () => {
       // setup
-      mocks.serializeUserSecurelyMock.mockImplementationOnce(() => {
-        delete workflow.creator.password;
-        delete workflow.creator.apiToken;
-
-        return workflow;
-      });
-
       expect(workflow.creator.password).toEqual(password);
       expect(workflow.creator.apiToken).toEqual(apiToken);
       expect(workflow.approverGroups[0].approvers[0].user.password).toEqual(password);
       expect(workflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
-
+      expect(workflow.approverGroups[1].approvers[0].user.password).toEqual(password);
+      expect(workflow.approverGroups[1].approvers[0].user.apiToken).toEqual(apiToken);
+      expect(workflow.approverGroups[1].approvers[1].user.password).toEqual(password);
+      expect(workflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
 
       // when
       const serializedWorkflow = serializeWorkflowSecurely(workflow, true);
 
       // then
+      expect(mocks.serializeUserSecurelyMock).toBeCalledTimes(1);
       expect(serializedWorkflow.creator.password).toBeUndefined();
       expect(serializedWorkflow.creator.apiToken).toBeUndefined();
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toEqual(password);
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
+      expect(serializedWorkflow.approverGroups[1].approvers[0].user.password).toEqual(password);
+      expect(serializedWorkflow.approverGroups[1].approvers[0].user.apiToken).toEqual(apiToken);
+      expect(serializedWorkflow.approverGroups[1].approvers[1].user.password).toEqual(password);
+      expect(serializedWorkflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
     });
   });
 });
