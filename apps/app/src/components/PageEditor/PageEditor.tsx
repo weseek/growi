@@ -357,6 +357,15 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
+  const acceptedFileType = useMemo(() => {
+    if (isUploadableFile) {
+      return '*';
+    }
+    if (isUploadableImage) {
+      return 'image/*';
+    }
+    return null;
+  }, [isUploadableFile, isUploadableImage]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
     if (previewRef.current == null) {
@@ -554,8 +563,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     return <></>;
   }
 
-  const isUploadable = isUploadableImage || isUploadableFile;
-
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert">
@@ -575,6 +582,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
           indentSize={currentIndentSize ?? defaultIndentSize}
+          acceptedFileType={acceptedFileType}
         />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
