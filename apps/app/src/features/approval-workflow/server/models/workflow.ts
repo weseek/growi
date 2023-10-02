@@ -13,7 +13,7 @@ import {
   WorkflowApprovalTypes,
 } from '../../interfaces/workflow';
 import type {
-  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover,
+  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover, IWorkflowHasId,
 } from '../../interfaces/workflow';
 
 
@@ -85,7 +85,9 @@ WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 /*
 * Workflow
 */
-interface WorkflowDocument extends IWorkflow, Document {}
+interface WorkflowDocument extends IWorkflow, Document {
+  getLatestApprovedApproverGroupIndex(): number | null
+}
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
 }
@@ -122,6 +124,20 @@ WorkflowSchema.plugin(mongoosePaginate);
 WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike) {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
   return workflow != null;
+};
+
+WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number | null {
+  const workflow = this as IWorkflowHasId;
+  const apprverGroupsLength = workflow.approverGroups.length;
+  const reversedApporverGroups = [...workflow.approverGroups].reverse();
+
+  for (let i = 0; i < apprverGroupsLength; i++) {
+    if (reversedApporverGroups[i].isApproved) {
+      return apprverGroupsLength - i - 1;
+    }
+  }
+
+  return null;
 };
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);
