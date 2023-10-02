@@ -10,7 +10,7 @@ import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 
 import { ItemsTree } from '../ItemsTree';
 
-import { PageTreeItemForModal } from './PageTreeItemForModal';
+import { TreeItemForModal } from './TreeItemForModal';
 
 
 export const PageSelectModal = () => {
@@ -44,7 +44,7 @@ export const PageSelectModal = () => {
       <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
       <ModalBody>
         <ItemsTree
-          CustomTreeItem={PageTreeItemForModal}
+          CustomTreeItem={TreeItemForModal}
           isEnableActions={!isGuestUser}
           isReadOnlyUser={!!isReadOnlyUser}
           targetPath={path}

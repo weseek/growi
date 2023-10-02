@@ -27,7 +27,7 @@ import loggerFactory from '~/utils/logger';
 
 import { ItemNode, SimpleItemProps } from '../TreeItem';
 
-import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
+import ItemsTreeContentSkeleton from '../Sidebar/Skeleton/ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 

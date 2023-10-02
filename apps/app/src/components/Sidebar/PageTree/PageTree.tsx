@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 
-import ItemsTreeContentSkeleton from '../../ItemsTree/ItemsTreeContentSkeleton';
+import ItemsTreeContentSkeleton from '../Skeleton/ItemsTreeContentSkeleton';
 import { PageTreeHeader } from './PageTreeSubstance';
 
 const PageTreeContent = dynamic(
