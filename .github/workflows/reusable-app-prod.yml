@@ -267,7 +267,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn add cypress cypress-wait-until --dev
+        yarn add -W -D cypress cypress-wait-until
         yarn cypress install
 
     - name: Download production files artifact
