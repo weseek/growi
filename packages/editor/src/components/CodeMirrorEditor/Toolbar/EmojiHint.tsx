@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, CSSProperties } from 'react';
 
 import { Emoji } from 'emoji-mart';
 import emojiData from 'emoji-mart/data/all.json';
@@ -44,11 +44,26 @@ export const useEmojiAutoCompletion = (inputChar: string): string[] => {
 const EmojiHintItem = (props) => {
   const { emojiName } = props;
 
+  const [itemColor, setItemColor] = useState('');
+
   const onClickEmojiHintItemHandler = () => {};
+
+  const hoverOnHandler = () => {
+    setItemColor('#0d6efd');
+  };
+
+  const hoverOutHandler = () => {
+    setItemColor('');
+  };
 
   return (
     <div>
-      <div className="d-flex align-items-center mt-2 mb-2">
+      <div
+        className="d-flex align-items-center pt-2 pb-2 ps-2"
+        onMouseEnter={() => hoverOnHandler()}
+        onMouseLeave={() => hoverOutHandler()}
+        style={{ backgroundColor: itemColor }}
+      >
         <Emoji emoji={emojiName} size={16} />
         <p className="mb-0 ps-1">:{emojiName}</p>
       </div>
@@ -56,11 +71,16 @@ const EmojiHintItem = (props) => {
   );
 };
 
-export const EmojiHint = () => {
-  const suggestedEmojiArray = useEmojiAutoCompletion('fr');
+const EmojiHintModalStyle = {
+  maxHeight: '40vh',
+  overflowY: 'auto',
+  width: '70vh',
+};
 
+export const EmojiHint = () => {
+  const suggestedEmojiArray = useEmojiAutoCompletion('f');
   return (
-    <div>
+    <div style={EmojiHintModalStyle} className="modal-content">
       {suggestedEmojiArray.map(emojiName => (
         <EmojiHintItem emojiName={emojiName} />
       ))}

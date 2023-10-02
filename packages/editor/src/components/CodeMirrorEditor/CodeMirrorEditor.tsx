@@ -1,5 +1,5 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useCallback,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
@@ -51,6 +51,16 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, indentSize]);
+
+  const onInputColonHandler = useCallback((event) => {
+    if (event.keyCode === ':') {
+      // 処理を書く
+    }
+  }, []);
+
+  useEffect(() => {
+    // addevent, cleanup
+  }, [onInputColonHandler]);
 
   return (
     <div className="flex-expand-vert">
