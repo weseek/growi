@@ -488,8 +488,8 @@
       "enable_marp_desc": "Marp can be used in presentation preview. This option may make you vulnerable to XSS.",
       "marp_official_site": "The Marp Official Site",
       "marp_official_site_link": "https://marp.app",
-      "presentation_docs" : "GROWI Docs - Create slides for a presentation",
-      "presentation_docs_link": "https://docs.growi.org/en/guide/features/presentation.html"
+      "marp_in_growi" : "GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
