@@ -267,7 +267,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn --frozen-lockfile
+        yarn add cypress --dev
         yarn cypress install
 
     - name: Download production files artifact
