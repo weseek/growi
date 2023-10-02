@@ -909,6 +909,7 @@
     "USER_API_TOKEN_UPDATE": "API 令牌更新",
     "USER_EDITOR_SETTINGS_UPDATE": "编辑器设置更新",
     "USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE": "应用内通知设置更新",
+    "USER_REGISTRATION_APPROVAL_REQUEST": "用户注册 ID/密码验证请求",
     "PAGE_VIEW": "页面浏览量",
     "PAGE_USER_HOME_VIEW": "页面浏览量（用户主页）",
     "PAGE_FORBIDDEN": "页面浏览量（禁止页面）",
