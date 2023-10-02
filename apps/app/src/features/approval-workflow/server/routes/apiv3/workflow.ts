@@ -300,8 +300,12 @@ module.exports = (crowi: Crowi): Router => {
       const { name, comment, approverGroups } = req.body;
       const { user } = req;
 
+      const xssProcessedName = xss.process(name);
+      const xssProcessedComment = xss.process(comment);
+
+
       try {
-        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroups, name, comment);
+        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroups, xssProcessedName, xssProcessedComment);
         return res.apiv3({ updatedWorkflow });
       }
       catch (err) {
