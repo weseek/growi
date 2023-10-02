@@ -5,9 +5,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Button } from 'reactstrap';
 
-import { useParentPageSelectModal } from '~/stores/modal';
+import { usePageSelectModal } from '~/stores/modal';
 
-import { ParentPageSelectModal } from '../ParentPageSelectModal/ParentPageSelectModal';
+import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
@@ -39,7 +39,7 @@ type Props = {
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   const {
     open: openModal,
-  } = useParentPageSelectModal();
+  } = usePageSelectModal();
 
   return (
     <RawLayout className={className ?? ''}>
@@ -73,7 +73,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <SystemVersion showShortcutsButton />
 
       <Button onClick={() => openModal()}>Open!</Button>
-      <ParentPageSelectModal />
+      <PageSelectModal />
       {/* TODO: remove unnecessary code with https://redmine.weseek.co.jp/issues/128327 */}
     </RawLayout>
   );

@@ -741,22 +741,22 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
 };
 
 /*
-* ParentPageSelectModal
+* PageSelectModal
 */
-type ParentPageSelectModalStatus = {
+type PageSelectModalStatus = {
   isOpened: boolean;
 }
 
-type ParentPageSelectModalStatusUtils = {
-  open(): Promise<ParentPageSelectModalStatus | undefined>
-  close(): Promise<ParentPageSelectModalStatus | undefined>
+type PageSelectModalStatusUtils = {
+  open(): Promise<PageSelectModalStatus | undefined>
+  close(): Promise<PageSelectModalStatus | undefined>
 }
 
-export const useParentPageSelectModal = (
-    status?: ParentPageSelectModalStatus,
-): SWRResponse<ParentPageSelectModalStatus, Error> & ParentPageSelectModalStatusUtils => {
+export const usePageSelectModal = (
+    status?: PageSelectModalStatus,
+): SWRResponse<PageSelectModalStatus, Error> & PageSelectModalStatusUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<ParentPageSelectModalStatus, Error>('parentPageSelectModal', status, { fallbackData: initialStatus });
+  const swrResponse = useStaticSWR<PageSelectModalStatus, Error>('PageSelectModal', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,

@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import { useParentPageSelectModal } from '~/stores/modal';
+import { usePageSelectModal } from '~/stores/modal';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 
 import { ItemsTree } from '../ItemsTree';
@@ -13,13 +13,13 @@ import { ItemsTree } from '../ItemsTree';
 import { PageTreeItemForModal } from './PageTreeItemForModal';
 
 
-export const ParentPageSelectModal = () => {
+export const PageSelectModal = () => {
   const {
-    data: parentPageSelectModalData,
+    data: PageSelectModalData,
     close: closeModal,
-  } = useParentPageSelectModal();
+  } = usePageSelectModal();
 
-  const isOpened = parentPageSelectModalData?.isOpened ?? false;
+  const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
