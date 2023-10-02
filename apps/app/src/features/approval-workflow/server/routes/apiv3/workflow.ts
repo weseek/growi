@@ -10,7 +10,7 @@ import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
+  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus, WorkflowStatuses,
 } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-seroalizer';
 import Workflow from '../../models/workflow';
@@ -73,11 +73,9 @@ module.exports = (crowi: Crowi): Router => {
       body('comment').optional().isString().withMessage('comment must be string'),
       body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
-    updateWorkflowApproverGroups: [
-      body('workflowId').isMongoId().withMessage('workflowId is required'),
-      body('approverGroup').isObject().withMessage('approverGroups is required'),
-      body('approverGroupOffset').isInt().withMessage('approverGroupOffset is required'),
-      body('actionType').isString().withMessage('actionType is required'),
+    updateWorkflow: [
+      param('workflowId').isMongoId().withMessage('workflowId is required'),
+      body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
     updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -304,23 +302,20 @@ module.exports = (crowi: Crowi): Router => {
    *        200:
    *          description: Succeeded to update WorkflowApproverGroup
    */
-  router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
+  router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
-      const {
-        workflowId, approverGroup, approverGroupOffset, actionType,
-      } = req.body;
+      const { workflowId } = req.params;
+      const { approverGroups } = req.body;
+      const { user } = req;
 
-      // Descirption
-      // approverGroup の作成 or 更新 or 削除
-
-      // Memo
-      // actionType は actuonTypeForWorkflowApproverGroups に対応する
-      // req.body.approverGroupOffset は workflow.approverGroups の配列のインデックス番号
-      // req.body.actionType ごとに処理を分ける
-      // workflow 自体が承認済みの場合は作成と更新と削除はできない
-      // 承認済みの approverGroup 以前に作成と更新はできない
-
-      return res.apiv3();
+      try {
+        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroups);
+        return res.apiv3({ updatedWorkflow });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err);
+      }
     });
 
 
