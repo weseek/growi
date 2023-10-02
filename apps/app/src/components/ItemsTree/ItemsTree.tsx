@@ -27,7 +27,7 @@ import loggerFactory from '~/utils/logger';
 
 import { ItemNode, SimpleItemProps } from '../TreeItem';
 
-import PageTreeContentSkeleton from './PageTreeContentSkeleton';
+import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 
@@ -287,5 +287,5 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     );
   }
 
-  return <PageTreeContentSkeleton />;
+  return <ItemsTreeContentSkeleton />;
 };

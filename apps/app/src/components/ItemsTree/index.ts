@@ -1,4 +1,4 @@
-export * from './PageTree';
+export * from '../Sidebar/PageTree/PageTree';
 export { ItemNode } from './ItemNode';
-export * from './PrivateLegacyPagesLink';
+export * from '../Sidebar/PageTree/PrivateLegacyPagesLink';
 export * from './ItemsTree';
