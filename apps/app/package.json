@@ -246,6 +246,7 @@
     "plantuml-encoder": "^1.2.5",
     "popper.js": "^1.16.1",
     "prettier": "^1.19.1",
+    "pretty-bytes": "^6.1.1",
     "react-codemirror2": "^6.0.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dropzone": "^11.2.4",
