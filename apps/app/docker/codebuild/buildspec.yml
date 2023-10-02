@@ -31,8 +31,8 @@ phases:
       - docker push $IMAGE_TAG
       - docker push $IMAGE_TAG_GHCR
 
-cache:
-  paths:
-    - node_modules/**/*
-    - apps/*/node_modules/**/*
-    - packages/*/node_modules/**/*
+# cache:
+#   paths:
+#     - node_modules/**/*
+#     - apps/*/node_modules/**/*
+#     - packages/*/node_modules/**/*
