@@ -23,7 +23,7 @@ import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import {
   SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
-} from '../../TreeItem/SimpleItem';
+} from '../../TreeItem';
 
 type EllipsisProps = SimpleItemToolProps & {page: IPageForItem};
 
