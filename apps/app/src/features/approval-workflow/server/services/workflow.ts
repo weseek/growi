@@ -13,7 +13,9 @@ const logger = loggerFactory('growi:service:workflow');
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
-  updateWorkflow(workflowId: ObjectIdLike, operator: IUserHasId, updatedApproverGroups: IWorkflowApproverGroup[]): Promise<IWorkflowHasId>,
+  updateWorkflow(
+    workflowId: ObjectIdLike, operator: IUserHasId, updatedApproverGroups: IWorkflowApproverGroup[], name?: string, comment?: string,
+  ): Promise<IWorkflowHasId>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
@@ -56,7 +58,9 @@ class WorkflowServiceImpl implements WorkflowService {
     return;
   }
 
-  async updateWorkflow(workflowId: ObjectIdLike, operator: IUserHasId, updatedApproverGroups: IWorkflowApproverGroup[]): Promise<IWorkflowHasId> {
+  async updateWorkflow(
+      workflowId: ObjectIdLike, operator: IUserHasId, updatedApproverGroups: IWorkflowApproverGroup[], name?: string, comment?: string,
+  ): Promise<IWorkflowHasId> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
       throw Error('Target workflow does not exist');
@@ -96,13 +100,15 @@ class WorkflowServiceImpl implements WorkflowService {
 
     const uneditableApproverGrpups = getUneditableApproverGrpups(); // from db
     const editableApproverGroups = getEditableApproverGrpups(); // from updatedApproverGroups
-
     const mergedApproverGroups = [...uneditableApproverGrpups, ...editableApproverGroups];
 
     this.validateApproverGroups(true, targetWorkflow.creator._id, editableApproverGroups);
     this.validateApproverGroups(false, targetWorkflow.creator._id, mergedApproverGroups);
 
+    targetWorkflow.name = name;
+    targetWorkflow.comment = comment;
     targetWorkflow.approverGroups = mergedApproverGroups;
+
     const updatedWorkflow = await targetWorkflow.save();
     return updatedWorkflow as unknown as IWorkflowHasId;
   }

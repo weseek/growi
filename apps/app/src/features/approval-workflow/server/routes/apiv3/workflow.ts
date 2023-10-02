@@ -75,6 +75,8 @@ module.exports = (crowi: Crowi): Router => {
     ],
     updateWorkflow: [
       param('workflowId').isMongoId().withMessage('workflowId is required'),
+      body('name').optional().isString().withMessage('name must be a string'),
+      body('comment').optional().isString().withMessage('comment must be a string'),
       body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
     updateWorkflowApproverStatus: [
@@ -285,31 +287,29 @@ module.exports = (crowi: Crowi): Router => {
    *                  description: WorkflowId to be updated
    *                  type: string
    *                  required: true
-   *                approverGroup:
-   *                  descriotion: WorkflowApproverGroup
-   *                  $ref: '#/components/schemas/workflowApproverGroup'
-   *                  required: true
-   *                approverGroupOffset:
-   *                  description: Position to create, update, and delete approverGroups in Workflow.approverGroups
-   *                  type: number
-   *                  required: true
-   *                actionType:
-   *                  description: Whether to create, update, or delete the approver group
+   *                title:
    *                  type: string
+   *                comment:
+   *                  type: string
+   *                approverGroups:
+   *                  descriotion: WorkflowApproverGroups
    *                  required: true
+   *                  type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/workflowApproverGroup'
    *
    *      responses:
    *        200:
-   *          description: Succeeded to update WorkflowApproverGroup
+   *          description: Succeeded to update Workflow
    */
   router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const { workflowId } = req.params;
-      const { approverGroups } = req.body;
+      const { name, comment, approverGroups } = req.body;
       const { user } = req;
 
       try {
-        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroups);
+        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroups, name, comment);
         return res.apiv3({ updatedWorkflow });
       }
       catch (err) {
