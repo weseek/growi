@@ -10,7 +10,7 @@ import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus, WorkflowStatuses,
+  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
 } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-seroalizer';
 import Workflow from '../../models/workflow';
