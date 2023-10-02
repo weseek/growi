@@ -22,14 +22,6 @@ const router = express.Router();
 
 type RequestWithUser = Request & { user: IUserHasId }
 
-
-// for PUT:/workflow/{workflowId}:
-const actuonTypeForWorkflowApproverGroups = {
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE',
-} as const;
-
 /**
  * @swagger
  *  tags:
