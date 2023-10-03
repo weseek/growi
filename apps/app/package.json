@@ -239,6 +239,7 @@
     "jquery": "^3.7.0",
     "load-css-file": "^1.0.0",
     "material-icons": "^1.11.3",
+    "mongodb-memory-server": "^8.15.1",
     "morgan": "^1.10.0",
     "null-loader": "^4.0.1",
     "penpal": "^4.0.0",
