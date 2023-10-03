@@ -35,11 +35,13 @@ type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowAp
 
 
 export type IWorkflowApprover = {
+  _id: string,
   user: IUserHasId,
   status: WorkflowApproverStatus,
 }
 
 export type IWorkflowApproverGroup = {
+  _id: string,
   approvalType: WorkflowApprovalType
   approvers: IWorkflowApprover[],
   isApproved: boolean, // virtual
@@ -61,3 +63,18 @@ export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups'> & { cre
 export type IWorkflowHasId = IWorkflow & HasObjectId
 
 export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
+
+const UpdateAction = {
+  ADD: 'ADD',
+  REMOVE: 'REMOVE',
+} as const;
+
+type UpdateAction = typeof UpdateAction[keyof typeof UpdateAction];
+
+export type UpdateApproverGroupRequest = {
+  groupId: string,
+  shouldRemove: boolean,
+  approvalType?: WorkflowApprovalType,
+  userIdsToAdd?: string[],
+  userIdsToRemove?: string[],
+}

@@ -1,10 +1,20 @@
 import type { IUserHasId } from '@growi/core';
 
+
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroup, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus, WorkflowStatus,
+  IWorkflow,
+  IWorkflowHasId,
+  IWorkflowReq,
+  IWorkflowApproverGroup,
+  IWorkflowApproverGroupReq,
+  IWorkflowApprover,
+  WorkflowApprovalType,
+  WorkflowApproverStatus,
+  WorkflowStatus,
+  UpdateApproverGroupRequest,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
@@ -14,7 +24,7 @@ interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
   updateWorkflow(
-    workflowId: ObjectIdLike, operator: IUserHasId, updatedApproverGroups: IWorkflowApproverGroup[], name?: string, comment?: string,
+    workflowId: ObjectIdLike, operator: IUserHasId, approverGroupData: UpdateApproverGroupRequest[], name?: string, comment?: string,
   ): Promise<IWorkflowHasId>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
@@ -59,7 +69,7 @@ class WorkflowServiceImpl implements WorkflowService {
   }
 
   async updateWorkflow(
-      workflowId: ObjectIdLike, operator: IUserHasId, updatedApproverGroups: IWorkflowApproverGroup[], name?: string, comment?: string,
+      workflowId: ObjectIdLike, operator: IUserHasId, approverGroupData: UpdateApproverGroupRequest[], name?: string, comment?: string,
   ): Promise<IWorkflowHasId> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
@@ -73,41 +83,105 @@ class WorkflowServiceImpl implements WorkflowService {
     this.validateOperatableUser(targetWorkflow as unknown as IWorkflowHasId, operator);
 
     const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
+    console.log('latestApprovedApproverGroupIndex', latestApprovedApproverGroupIndex);
 
-    const getUneditableApproverGrpups = (): IWorkflowApproverGroup[] => {
-      if (latestApprovedApproverGroupIndex == null) {
-        return [];
-      }
-
-      if (latestApprovedApproverGroupIndex === 0) {
-        return targetWorkflow.approverGroups.slice(0, 1);
-      }
-
-      return targetWorkflow.approverGroups.slice(0, latestApprovedApproverGroupIndex);
+    const getApproverGroup = (workflow: IWorkflowHasId, groupId: string): IWorkflowApproverGroup | undefined => {
+      console.log('workflow', workflow);
+      return workflow.approverGroups.find(v => v._id.toString() === groupId);
     };
 
-    const getEditableApproverGrpups = (): IWorkflowApproverGroup[] => {
-      if (latestApprovedApproverGroupIndex == null) {
-        return updatedApproverGroups;
-      }
-
-      if (latestApprovedApproverGroupIndex === 0) {
-        return updatedApproverGroups.slice(1);
-      }
-
-      return updatedApproverGroups.slice(latestApprovedApproverGroupIndex);
+    const getApprover = (approverGroup: IWorkflowApproverGroup, userId: string): IWorkflowApprover | undefined => {
+      return approverGroup.approvers.find(v => v.user.toString() === userId);
     };
 
-    const uneditableApproverGrpups = getUneditableApproverGrpups(); // from db
-    const editableApproverGroups = getEditableApproverGrpups(); // from updatedApproverGroups
-    const mergedApproverGroups = [...uneditableApproverGrpups, ...editableApproverGroups];
+    for (const data of approverGroupData) {
+      console.log('data', data);
+      const approverGroup = getApproverGroup(targetWorkflow as unknown as IWorkflowHasId, data.groupId);
+      console.log('approverGroup', approverGroup);
+      if (approverGroup == null) {
+        throw Error('Target approevrGroup does not exist');
+      }
 
-    this.validateApproverGroups(true, targetWorkflow.creator._id, editableApproverGroups);
-    this.validateApproverGroups(false, targetWorkflow.creator._id, mergedApproverGroups);
+      const groupIndex = targetWorkflow.approverGroups.findIndex(v => v._id.toString() === data.groupId);
+      console.log('groupIndex', groupIndex);
+      if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= groupIndex) {
+        throw Error('Cannot edit approverGroups prior to the Approved approverGroup');
+      }
+
+      // Remove ApporverGroup
+      if (data.shouldRemove) {
+        (targetWorkflow.approverGroups as any).pull({ _id: approverGroup._id });
+        continue;
+      }
+
+      // Change ApprovalType
+      if (data.approvalType != null) {
+        approverGroup.approvalType = data.approvalType;
+      }
+
+      // Remove Approver
+      if (data.userIdsToRemove != null) {
+        data.userIdsToRemove.forEach((userId) => {
+          const approver = getApprover(approverGroup, userId);
+          console.log('remove approver', approver);
+
+          if (approver == null) {
+            throw Error('Target approver does not exist');
+          }
+
+          if (approver.status === WorkflowApproverStatus.APPROVE) {
+            throw Error('Cannot remove an approved apporver');
+          }
+
+          (approverGroup.approvers as any).pull({ _id: approver._id });
+        });
+      }
+
+      // Add Approver
+      if (data.userIdsToAdd != null) {
+        data.userIdsToAdd.forEach((userId) => {
+          (approverGroup.approvers as any).push({ user: userId });
+        });
+      }
+    }
+
+
+    // const getUneditableApproverGrpups = (): IWorkflowApproverGroup[] => {
+    //   if (latestApprovedApproverGroupIndex == null) {
+    //     return [];
+    //   }
+
+    //   if (latestApprovedApproverGroupIndex === 0) {
+    //     return targetWorkflow.approverGroups.slice(0, 1);
+    //   }
+
+    //   return targetWorkflow.approverGroups.slice(0, latestApprovedApproverGroupIndex);
+    // };
+
+    // const getEditableApproverGrpups = (): IWorkflowApproverGroup[] => {
+    //   if (latestApprovedApproverGroupIndex == null) {
+    //     return updatedApproverGroups;
+    //   }
+
+    //   if (latestApprovedApproverGroupIndex === 0) {
+    //     return updatedApproverGroups.slice(1);
+    //   }
+
+    //   return updatedApproverGroups.slice(latestApprovedApproverGroupIndex);
+    // };
+
+    // const uneditableApproverGrpups = getUneditableApproverGrpups(); // from db
+    // const editableApproverGroups = getEditableApproverGrpups(); // from updatedApproverGroups
+    // const mergedApproverGroups = [...uneditableApproverGrpups, ...editableApproverGroups];
+
+    // this.validateApproverGroups(false, targetWorkflow.creator._id, mergedApproverGroups);
+
+    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups);
 
     targetWorkflow.name = name;
     targetWorkflow.comment = comment;
-    targetWorkflow.approverGroups = mergedApproverGroups;
+
+    console.log('targetWorkflow', targetWorkflow);
 
     const updatedWorkflow = await targetWorkflow.save();
     return updatedWorkflow as unknown as IWorkflowHasId;

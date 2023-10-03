@@ -69,7 +69,7 @@ module.exports = (crowi: Crowi): Router => {
       param('workflowId').isMongoId().withMessage('workflowId is required'),
       body('name').optional().isString().withMessage('name must be a string'),
       body('comment').optional().isString().withMessage('comment must be a string'),
-      body('approverGroups').isArray().withMessage('approverGroups is required'),
+      body('approverGroupData').isArray().withMessage('approverGroups is required'),
     ],
     updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -297,15 +297,14 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const { workflowId } = req.params;
-      const { name, comment, approverGroups } = req.body;
+      const { name, comment, approverGroupData } = req.body;
       const { user } = req;
 
       const xssProcessedName = xss.process(name);
       const xssProcessedComment = xss.process(comment);
 
-
       try {
-        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroups, xssProcessedName, xssProcessedComment);
+        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, approverGroupData, xssProcessedName, xssProcessedComment);
         return res.apiv3({ updatedWorkflow });
       }
       catch (err) {
