@@ -6,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 
 import {
   IWorkflowHasId,
-  IWorkflowApproverGroupHasId,
   IWorkflowReq,
   IWorkflowApproverGroupReq,
   WorkflowApprovalType,
@@ -36,9 +35,6 @@ class WorkflowServiceImpl implements WorkflowService {
   }
 
   async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId> {
-    /*
-    *  Validation
-    */
     const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
     if (hasInprogressWorkflowInTargetPage) {
       throw Error('An in-progress workflow already exists');
@@ -46,9 +42,6 @@ class WorkflowServiceImpl implements WorkflowService {
 
     this.validateApproverGroups(true, workflow.creator.toString(), workflow.approverGroups);
 
-    /*
-    *  Create
-    */
     const createdWorkflow = await Workflow.create(workflow);
     return createdWorkflow;
   }
@@ -131,7 +124,7 @@ class WorkflowServiceImpl implements WorkflowService {
       }
     }
 
-    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupHasId[]);
+    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[]);
 
     targetWorkflow.name = name;
     targetWorkflow.comment = comment;
@@ -140,7 +133,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return updatedWorkflow as unknown as IWorkflowHasId;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[] | IWorkflowApproverGroupHasId[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void {
     const uniqueApprovers = new Set<string>();
     uniqueApprovers.add(creatorId);
 

@@ -57,7 +57,8 @@ export type IWorkflow = {
 
 export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
-export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
+export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups' | 'createdAt'>
+  & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
 
 // TODO: If you don't need it, delete it
 export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;
