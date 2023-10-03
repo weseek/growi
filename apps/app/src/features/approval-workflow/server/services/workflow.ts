@@ -84,11 +84,15 @@ class WorkflowServiceImpl implements WorkflowService {
 
         const groupIndex = targetWorkflow.approverGroups.findIndex(v => v._id.toString() === data.groupId);
         if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= groupIndex) {
-          throw Error('Cannot edit approverGroups prior to the Approved approverGroup');
+          throw Error('Cannot edit approverGroups prior to the approved approverGroup');
         }
 
         // Remove ApporverGroup
         if (data.shouldRemove) {
+          const isIncludeApprovedApprover = approverGroup.approvers.some(v => v.status === WorkflowApproverStatus.APPROVE);
+          if (isIncludeApprovedApprover) {
+            throw Error('Cannot remove an approverGroup that contains approved approvers');
+          }
           (targetWorkflow.approverGroups as any).pull({ _id: approverGroup._id });
           continue;
         }
