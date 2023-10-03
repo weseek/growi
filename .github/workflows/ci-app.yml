@@ -95,7 +95,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:4.4
+        image: mongo:6.0
         ports:
           - 27017/tcp
 
@@ -176,7 +176,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:4.4
+        image: mongo:6.0
         ports:
           - 27017/tcp
 
