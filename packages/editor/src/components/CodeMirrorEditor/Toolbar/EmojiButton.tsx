@@ -67,6 +67,8 @@ const getEmojiTranslation = (): Translation => {
 export const EmojiButton: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const { resolvedTheme } = useNextThemes();
+
   const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;
 
@@ -76,7 +78,6 @@ export const EmojiButton: FC<Props> = (props) => {
 
   const cursorIndex = view?.state.selection.main.head;
 
-  const { resolvedTheme } = useNextThemes();
   const translation = getEmojiTranslation();
 
   const toggle = () => setIsOpen(!isOpen);
