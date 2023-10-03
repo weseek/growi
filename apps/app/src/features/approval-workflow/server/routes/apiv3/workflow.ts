@@ -301,6 +301,14 @@ module.exports = (crowi: Crowi): Router => {
         return res.apiv3Err('At least one of "name", "comment" or "approverGroupData" must have a valid value');
       }
 
+      if (approverGroupData != null) {
+        const groupIds = approverGroupData.map(v => v.groupId);
+        const hasDuplicateGroupIds = new Set(groupIds).size !== groupIds.length;
+        if (hasDuplicateGroupIds) {
+          return res.apiv3Err('Cannot specify duplicate values for "groupId" within approverGroupData');
+        }
+      }
+
       const xssProcessedName = xss.process(name);
       const xssProcessedComment = xss.process(comment);
 
