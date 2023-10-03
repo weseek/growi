@@ -5,8 +5,11 @@ import {
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
+import { useEmojiHintModal } from '~/stores/modal';
+
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
+
 
 import { Toolbar } from './Toolbar';
 
@@ -32,6 +35,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     indentSize,
   } = props;
 
+  const { open: openEmojiHintModal } = useEmojiHintModal();
+
   const containerRef = useRef(null);
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {
@@ -52,20 +57,24 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  const onInputColonHandler = useCallback((event) => {
-    if (event.keyCode === ':') {
-      // 処理を書く
+  const onInputColonHandler = useCallback((event: any) => {
+    if (event.key === ':') {
+      console.log('ころん！');
+      openEmojiHintModal();
     }
   }, []);
 
   useEffect(() => {
-    // addevent, cleanup
+    document.addEventListener('keydown', onInputColonHandler, false);
+    return () => {
+      document.removeEventListener('keydown', onInputColonHandler, false);
+    };
   }, [onInputColonHandler]);
 
   return (
     <div className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar />
+      <Toolbar codeMirrorEditor={codeMirrorEditor} />
     </div>
   );
 };

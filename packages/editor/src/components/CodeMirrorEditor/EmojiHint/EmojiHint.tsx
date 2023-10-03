@@ -1,8 +1,15 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { FC } from 'react';
+
 
 import { Emoji } from 'emoji-mart';
 import emojiData from 'emoji-mart/data/all.json';
+
+import { useEmojiHintModal } from '~/stores/modal';
 import 'emoji-mart/css/emoji-mart.css';
+
+import { EmojiHintItem } from './EmojiHintItem';
+
+import type { UseCodeMirrorEditor } from 'src';
 
 export const useEmojiAutoCompletion = (inputChar: string): string[] => {
   const rawEmojiDataArray = emojiData.categories;
@@ -41,49 +48,39 @@ export const useEmojiAutoCompletion = (inputChar: string): string[] => {
   return suggestedEmojiArray;
 };
 
-const EmojiHintItem = (props) => {
-  const { emojiName } = props;
-
-  const [itemColor, setItemColor] = useState('');
-
-  const onClickEmojiHintItemHandler = () => {};
-
-  const hoverOnHandler = () => {
-    setItemColor('#0d6efd');
-  };
-
-  const hoverOutHandler = () => {
-    setItemColor('');
-  };
-
-  return (
-    <div>
-      <div
-        className="d-flex align-items-center pt-2 pb-2 ps-2"
-        onMouseEnter={() => hoverOnHandler()}
-        onMouseLeave={() => hoverOutHandler()}
-        style={{ backgroundColor: itemColor }}
-      >
-        <Emoji emoji={emojiName} size={16} />
-        <p className="mb-0 ps-1">:{emojiName}</p>
-      </div>
-    </div>
-  );
-};
-
 const EmojiHintModalStyle = {
   maxHeight: '40vh',
   overflowY: 'auto',
   width: '70vh',
 };
 
-export const EmojiHint = () => {
+type EmojiHintProps = {
+  codeMirrorEditor: UseCodeMirrorEditor | undefined,
+}
+
+export const EmojiHint: FC<EmojiHintProps> = (props) => {
+  const { codeMirrorEditor } = props;
+
+  const { data: emojiHintModalData } = useEmojiHintModal();
+
+  const { isOpened } = emojiHintModalData;
+
   const suggestedEmojiArray = useEmojiAutoCompletion('f');
+
   return (
-    <div style={EmojiHintModalStyle} className="modal-content">
-      {suggestedEmojiArray.map(emojiName => (
-        <EmojiHintItem emojiName={emojiName} />
-      ))}
-    </div>
+    <>
+      {
+        isOpened
+          ? (
+            <div style={EmojiHintModalStyle} className="modal-content">
+              {suggestedEmojiArray.map(emojiName => (
+                <EmojiHintItem codeMirrorEditor={codeMirrorEditor} emojiName={emojiName} />
+              ))}
+            </div>
+          ) : (
+            ''
+          )
+      }
+    </>
   );
 };

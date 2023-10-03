@@ -1,17 +1,24 @@
 import { memo } from 'react';
 
+import { EmojiHint } from '../EmojiHint/EmojiHint';
+
 import { AttachmentsDropup } from './AttachmentsDropup';
 import { DiagramButton } from './DiagramButton';
 import { EmojiButton } from './EmojiButton';
-import { EmojiHint } from './EmojiHint';
 import { TableButton } from './TableButton';
 import { TemplateButton } from './TemplateButton';
 import { TextFormatTools } from './TextFormatTools';
 
+import type { UseCodeMirrorEditor } from 'src';
+
 import styles from './Toolbar.module.scss';
 
-export const Toolbar = memo((): JSX.Element => {
-  EmojiHint();
+type Props = {
+  codeMirrorEditor: UseCodeMirrorEditor | undefined
+}
+
+export const Toolbar = memo((props: Props): JSX.Element => {
+  const { codeMirrorEditor } = props;
 
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
@@ -21,7 +28,7 @@ export const Toolbar = memo((): JSX.Element => {
       <TableButton />
       <DiagramButton />
       <TemplateButton />
-      <EmojiHint />
+      <EmojiHint codeMirrorEditor={codeMirrorEditor} />
     </div>
   );
 });
