@@ -1,4 +1,4 @@
-import React, { FC, useState, CSSProperties } from 'react';
+import { FC, useState, CSSProperties } from 'react';
 
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
@@ -27,7 +27,7 @@ type Translation = {
 
 const getEmojiTranslation = (): Translation => {
 
-  const categories = {};
+  const categories: { [key: string]: string } = {};
   [
     'search',
     'recent',
@@ -45,7 +45,7 @@ const getEmojiTranslation = (): Translation => {
     categories[category] = i18n.t(`emoji.categories.${category}`);
   });
 
-  const skintones = {};
+  const skintones: { [key: string]: string} = {};
   (Array.from(Array(6).keys())).forEach((tone) => {
     skintones[tone + 1] = i18n.t(`emoji.skintones.${tone + 1}`);
   });
@@ -73,7 +73,7 @@ export const EmojiButton: FC<Props> = (props) => {
   const view = codeMirrorEditor?.view;
 
   if (view == null) {
-    return;
+    return '';
   }
 
   const cursorIndex = view?.state.selection.main.head;
