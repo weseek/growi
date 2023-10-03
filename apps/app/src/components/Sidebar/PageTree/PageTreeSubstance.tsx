@@ -6,10 +6,10 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { mutatePageTree, useSWRxRootPage, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
-import { PageTreeItem } from '../PageTreeItem/PageTreeItem';
+import { ItemsTree } from '../../ItemsTree/ItemsTree';
+import { PageTreeItem } from '../PageTreeItem';
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
-import { ItemsTree } from '../../ItemsTree/ItemsTree';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 
