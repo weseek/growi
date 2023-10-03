@@ -69,7 +69,7 @@ module.exports = (crowi: Crowi): Router => {
       param('workflowId').isMongoId().withMessage('workflowId is required'),
       body('name').optional().isString().withMessage('name must be a string'),
       body('comment').optional().isString().withMessage('comment must be a string'),
-      body('approverGroupData').isArray().withMessage('approverGroups is required'),
+      body('approverGroupData').optional().isArray().withMessage('approverGroupData must be an array'),
     ],
     updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -283,12 +283,8 @@ module.exports = (crowi: Crowi): Router => {
    *                  type: string
    *                comment:
    *                  type: string
-   *                approverGroups:
-   *                  descriotion: WorkflowApproverGroups
-   *                  required: true
+   *                approverGroupData:
    *                  type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/workflowApproverGroup'
    *
    *      responses:
    *        200:
@@ -299,6 +295,11 @@ module.exports = (crowi: Crowi): Router => {
       const { workflowId } = req.params;
       const { name, comment, approverGroupData } = req.body;
       const { user } = req;
+
+      const isValid = [name, comment, approverGroupData].some(v => v != null);
+      if (!isValid) {
+        return res.apiv3Err('At least one of "name", "comment" or "approverGroupData" must have a valid value');
+      }
 
       const xssProcessedName = xss.process(name);
       const xssProcessedComment = xss.process(comment);
