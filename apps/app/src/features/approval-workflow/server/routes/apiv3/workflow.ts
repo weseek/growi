@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import {
   IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
 } from '../../../interfaces/workflow';
-import { serializeWorkflowSecurely } from '../../models/serializers/workflow-seroalizer';
+import { serializeWorkflowSecurely } from '../../models/serializers/workflow-serializer';
 import Workflow from '../../models/workflow';
 import { WorkflowService } from '../../services/workflow';
 

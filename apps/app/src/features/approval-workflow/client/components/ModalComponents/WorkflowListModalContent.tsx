@@ -1,6 +1,7 @@
 // TODO: https://redmine.weseek.co.jp/issues/130336
 import React, { useState, useCallback } from 'react';
 
+import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
@@ -8,21 +9,27 @@ import {
 
 import { useCurrentUser } from '~/stores/context';
 
-import { IWorkflowHasId } from '../../interfaces/workflow';
-import { deleteWorkflow } from '../services/workflow';
+import { IWorkflowHasId } from '../../../interfaces/workflow';
+import { deleteWorkflow } from '../../services/workflow';
 
 
 type Props = {
   workflows: IWorkflowHasId[]
   onDeleted?: () => void;
   onClickCreateWorkflowButton: () => void;
+  onClickShowWorkflowDetailButton: (workflowId: string) => void;
 }
 
+const formatDate = (date: Date) => {
+  return format(new Date(date), 'yyyy/MM/dd HH:mm');
+};
 
-export const WorkflowListPage = (props: Props): JSX.Element => {
+export const WorkflowListModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflows, onDeleted, onClickCreateWorkflowButton } = props;
+  const {
+    workflows, onDeleted, onClickCreateWorkflowButton, onClickShowWorkflowDetailButton,
+  } = props;
 
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
@@ -47,6 +54,15 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
       // TODO: Consider how to display errors
     }
   }, [onDeleted]);
+
+  const showWorkflowDetailButtonClickHandler = useCallback((workflowId: string) => {
+    if (onClickShowWorkflowDetailButton == null) {
+      return null;
+    }
+
+    onClickShowWorkflowDetailButton(workflowId);
+
+  }, [onClickShowWorkflowDetailButton]);
 
   const isDeletable = useCallback((workflow: IWorkflowHasId): boolean => {
     if (currentUser == null) {
@@ -100,6 +116,15 @@ export const WorkflowListPage = (props: Props): JSX.Element => {
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td>
                       {workflow.name}
+                      <div>
+                        <span className="text-muted">
+                          {formatDate(workflow.createdAt)}
+                        </span>
+                        <span className="btn btn-link text-muted" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                          {t('approval_workflow.show_detail')}
+                          <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+                        </span>
+                      </div>
                     </td>
                     <td>
                       {t(`approval_workflow.statuses.${workflow.status}`)}

@@ -52,6 +52,7 @@ export type IWorkflow = {
   comment?: string,
   status: WorkflowStatus,
   approverGroups: IWorkflowApproverGroup[]
+  createdAt: Date;
 }
 
 export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
