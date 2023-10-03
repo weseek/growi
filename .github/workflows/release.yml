@@ -31,6 +31,7 @@ jobs:
     - name: Install dependencies
       run: |
         yarn global add turbo
+        yarn global add node-gyp
         yarn --frozen-lockfile
 
     - name: Bump versions
@@ -201,6 +202,7 @@ jobs:
     - name: Install dependencies
       run: |
         yarn global add turbo
+        yarn global add node-gyp
         yarn --frozen-lockfile
 
     - name: Bump versions for next RC
