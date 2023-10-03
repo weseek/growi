@@ -85,18 +85,9 @@ class WorkflowServiceImpl implements WorkflowService {
     const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
     console.log('latestApprovedApproverGroupIndex', latestApprovedApproverGroupIndex);
 
-    const getApproverGroup = (workflow: IWorkflowHasId, groupId: string): IWorkflowApproverGroup | undefined => {
-      console.log('workflow', workflow);
-      return workflow.approverGroups.find(v => v._id.toString() === groupId);
-    };
-
-    const getApprover = (approverGroup: IWorkflowApproverGroup, userId: string): IWorkflowApprover | undefined => {
-      return approverGroup.approvers.find(v => v.user.toString() === userId);
-    };
-
     for (const data of approverGroupData) {
       console.log('data', data);
-      const approverGroup = getApproverGroup(targetWorkflow as unknown as IWorkflowHasId, data.groupId);
+      const approverGroup = targetWorkflow.findApproverGroup(data.groupId);
       console.log('approverGroup', approverGroup);
       if (approverGroup == null) {
         throw Error('Target approevrGroup does not exist');
@@ -122,7 +113,7 @@ class WorkflowServiceImpl implements WorkflowService {
       // Remove Approver
       if (data.userIdsToRemove != null) {
         data.userIdsToRemove.forEach((userId) => {
-          const approver = getApprover(approverGroup, userId);
+          const approver = (approverGroup as any).findApprover(userId);
           console.log('remove approver', approver);
 
           if (approver == null) {
