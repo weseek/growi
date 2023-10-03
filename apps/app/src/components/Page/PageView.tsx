@@ -141,20 +141,23 @@ export const PageView = (props: Props): JSX.Element => {
   };
 
   // TODO: Delete these experimental codes when the test is finished.
-  const [selected, setSelected] = useState('');
+  const selectionChangeEventHandler = () => {
+    const sel = document.getSelection();
+    console.log(sel);
+    if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
+    const range = sel.getRangeAt(0);
+    const newNode = document.createElement('span');
+    newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
+    newNode.innerHTML = sel.toString();
+    range.deleteContents(); // Delete range selection.
+    range.insertNode(newNode); // Insert a qualified span from the beginning of the range selection.
+  };
+
   useEffect(() => {
-    document.addEventListener('mouseup', () => {
-      const sel = window.getSelection();
-      console.log(sel);
-      if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
-      const range = sel.getRangeAt(0);
-      console.log(range);
-      const newNode = document.createElement('span');
-      newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
-      newNode.innerHTML = sel.toString();
-      range.deleteContents(); // Delete range selection.
-      range.insertNode(newNode); // Insert a qualified span from the beginning of the range selection.
-    });
+    document.addEventListener('selectionchange', selectionChangeEventHandler);
+    return () => {
+      document.removeEventListener('selectionchange', selectionChangeEventHandler);
+    };
   }, []);
 
   return (
