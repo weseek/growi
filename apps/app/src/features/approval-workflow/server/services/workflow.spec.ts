@@ -11,8 +11,8 @@ import { WorkflowService } from './workflow';
 describe('WorkflowService', () => {
 
   describe('.validateApproverGroups', () => {
-    const creator = new mongoose.Types.ObjectId();
-    const approver = new mongoose.Types.ObjectId();
+    const creator = new mongoose.Types.ObjectId().toString();
+    const approver = new mongoose.Types.ObjectId().toString();
 
     it('Should fail when setting approverGroup.approveType to "OR" when approverGroup.approvers.length is 1', () => {
 

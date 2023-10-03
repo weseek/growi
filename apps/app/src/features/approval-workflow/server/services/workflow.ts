@@ -44,7 +44,7 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('An in-progress workflow already exists');
     }
 
-    this.validateApproverGroups(true, workflow.creator, workflow.approverGroups);
+    this.validateApproverGroups(true, workflow.creator.toString(), workflow.approverGroups);
 
     /*
     *  Create
@@ -140,8 +140,8 @@ class WorkflowServiceImpl implements WorkflowService {
     return updatedWorkflow as unknown as IWorkflowHasId;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] | IWorkflowApproverGroupHasId[]): void {
-    const uniqueApprovers = new Set();
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[] | IWorkflowApproverGroupHasId[]): void {
+    const uniqueApprovers = new Set<string>();
     uniqueApprovers.add(creatorId);
 
     approverGroups.forEach((approverGroup) => {
@@ -150,10 +150,10 @@ class WorkflowServiceImpl implements WorkflowService {
       }
 
       approverGroup.approvers.forEach((approver) => {
-        if (uniqueApprovers.has(approver.user)) {
+        if (uniqueApprovers.has(approver.user.toString())) {
           throw Error('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
         }
-        uniqueApprovers.add(approver.user);
+        uniqueApprovers.add(approver.user.toString());
 
         if (isNew && approver.status != null && approver.status !== WorkflowApproverStatus.NONE) {
           throw Error('Cannot set approver.status to anything other than "NONE" during creation');
