@@ -3,10 +3,14 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { mutate } from 'swr';
+
+import { useNextThemes } from '~/stores/use-next-themes';
 
 import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
+
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
@@ -31,6 +35,12 @@ type Props = {
 }
 
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
+  const { resolvedTheme } = useNextThemes();
+
+  const data = { resolvedTheme };
+
+  mutate('resolvedTheme', data);
+
   return (
     <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>

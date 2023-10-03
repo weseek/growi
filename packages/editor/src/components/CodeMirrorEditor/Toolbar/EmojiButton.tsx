@@ -4,7 +4,7 @@ import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
 
-import { useNextThemes } from '~/stores/use-next-themes';
+import { useResolvedTheme } from '../../../stores/use-resolved-theme';
 
 import type { UseCodeMirrorEditor } from 'src';
 
@@ -67,7 +67,10 @@ const getEmojiTranslation = (): Translation => {
 export const EmojiButton: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { resolvedTheme } = useNextThemes();
+  const { data } = useResolvedTheme();
+  const { resolvedTheme } = data;
+
+  console.dir(data);
 
   const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;
