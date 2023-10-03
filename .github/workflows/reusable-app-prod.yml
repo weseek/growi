@@ -38,6 +38,10 @@ jobs:
       run: |
         yarn global add turbo
 
+    - name: Install node-gyp
+      run: |
+        yarn global add node-gyp
+
     - name: Prune repositories
       run: |
         turbo prune --scope=@growi/app
