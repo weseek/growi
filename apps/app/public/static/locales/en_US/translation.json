@@ -819,6 +819,7 @@
     "create_new": "Create new workflow",
     "delete": "Delete",
     "delete_button_tooltip": "Only the workflow creator, approver or administrator can delete",
+    "show_detail": "Show detail",
     "statuses": {
       "INPROGRESS": "IN-PROGRESS",
       "APPROVE": "APPROVE",

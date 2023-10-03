@@ -2,10 +2,12 @@
 import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ModalBody, ModalFooter } from 'reactstrap';
 
-import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
-import { useCreateWorkflow } from '../services/workflow';
+import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../../interfaces/workflow';
+import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
+
+import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
   pageId: string,
@@ -13,7 +15,7 @@ type Props = {
   onClickWorkflowListPageBackButton: () => void;
 }
 
-export const CreateWorkflowPage = (props: Props): JSX.Element => {
+export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
@@ -32,11 +34,11 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
     ],
   }] as IWorkflowApproverGroupReq[];
 
-  const [workflowName, setWorkflowName] = useState<string>('');
-  const [workflowDescription, setWorkflowDescription] = useState<string>('');
+  const [workflowName, setWorkflowName] = useState<string | undefined>();
+  const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
   const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
 
-  const { createWorkflow } = useCreateWorkflow(pageId, workflowName, workflowDescription, approverGroups);
+  const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setWorkflowName(event.target.value);
@@ -45,14 +47,6 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
   const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setWorkflowDescription(event.target.value);
   }, []);
-
-  const workflowListPageBackButtonClickHandler = useCallback(() => {
-    if (onClickWorkflowListPageBackButton == null) {
-      return;
-    }
-
-    onClickWorkflowListPageBackButton();
-  }, [onClickWorkflowListPageBackButton]);
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
     if (approverGroups == null) {
@@ -65,7 +59,6 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
       if (onCreated != null) {
         onCreated();
       }
-      // TODO: Move to the detail screen
     }
     catch (err) {
       // TODO: Consider how to display errors
@@ -74,9 +67,10 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ModalHeader className="bg-primary">
-        {t('approval_workflow.create_new')}
-      </ModalHeader>
+      <WorkflowModalHeader
+        title={t('approval_workflow.create_new')}
+        onClickPageBackButton={() => onClickWorkflowListPageBackButton()}
+      />
 
       <ModalBody>
 
@@ -123,10 +117,6 @@ export const CreateWorkflowPage = (props: Props): JSX.Element => {
       <ModalFooter>
         <button type="button" onClick={createWorkflowButtonClickHandler}>
           {t('approval_workflow.create')}
-        </button>
-
-        <button type="button" onClick={workflowListPageBackButtonClickHandler}>
-          {t('approval_workflow.back')}
         </button>
       </ModalFooter>
     </>
