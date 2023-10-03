@@ -1,2 +1,0 @@
-"use strict";const e=require("node:fs"),s=require("node:path"),n=process.env.NODE_ENV==="production",t=n?".":"../dist",r=e.readFileSync(s.resolve(__dirname,`${t}/hackmd-styles.js`)),i=e.readFileSync(s.resolve(__dirname,`${t}/hackmd-agent.js`)),c=e.readFileSync(s.resolve(__dirname,`${t}/style.css`)),o={stylesJS:r.toString(),agentJS:i.toString(),stylesCSS:c.toString().replace(/(\r\n|\n|\r)/gm,"")};module.exports=o;
-//# sourceMappingURL=index.cjs.map
