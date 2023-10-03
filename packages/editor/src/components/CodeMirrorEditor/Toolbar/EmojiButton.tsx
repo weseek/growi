@@ -73,7 +73,7 @@ export const EmojiButton: FC<Props> = (props) => {
   const view = codeMirrorEditor?.view;
 
   if (view == null) {
-    return '';
+    return <></>;
   }
 
   const cursorIndex = view?.state.selection.main.head;
