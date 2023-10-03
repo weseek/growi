@@ -5,25 +5,24 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflow,
   IWorkflowHasId,
+  IWorkflowApproverGroupHasId,
   IWorkflowReq,
-  IWorkflowApproverGroup,
   IWorkflowApproverGroupReq,
   WorkflowApprovalType,
   WorkflowApproverStatus,
   WorkflowStatus,
-  UpdateApproverGroupRequest,
+  ApproverGroupUpdateData,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
-  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
+  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
   updateWorkflow(
-    workflowId: ObjectIdLike, operator: IUserHasId, approverGroupData: UpdateApproverGroupRequest[], name?: string, comment?: string,
+    workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupUpdateData?: ApproverGroupUpdateData[],
   ): Promise<IWorkflowHasId>,
   validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
@@ -36,7 +35,7 @@ class WorkflowServiceImpl implements WorkflowService {
     this.validateOperatableUser = this.validateOperatableUser.bind(this);
   }
 
-  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow> {
+  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId> {
     /*
     *  Validation
     */
@@ -68,7 +67,7 @@ class WorkflowServiceImpl implements WorkflowService {
   }
 
   async updateWorkflow(
-      workflowId: ObjectIdLike, operator: IUserHasId, approverGroupData: UpdateApproverGroupRequest[], name?: string, comment?: string,
+      workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupData?: ApproverGroupUpdateData[],
   ): Promise<IWorkflowHasId> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
@@ -83,54 +82,56 @@ class WorkflowServiceImpl implements WorkflowService {
 
     const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
 
-    for (const data of approverGroupData) {
-      const approverGroup = targetWorkflow.findApproverGroup(data.groupId);
-      if (approverGroup == null) {
-        throw Error('Target approevrGroup does not exist');
-      }
+    if (approverGroupData != null && approverGroupData.length > 0) {
+      for (const data of approverGroupData) {
+        const approverGroup = targetWorkflow.findApproverGroup(data.groupId);
+        if (approverGroup == null) {
+          throw Error('Target approevrGroup does not exist');
+        }
 
-      const groupIndex = targetWorkflow.approverGroups.findIndex(v => v._id.toString() === data.groupId);
-      if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= groupIndex) {
-        throw Error('Cannot edit approverGroups prior to the Approved approverGroup');
-      }
+        const groupIndex = targetWorkflow.approverGroups.findIndex(v => v._id.toString() === data.groupId);
+        if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= groupIndex) {
+          throw Error('Cannot edit approverGroups prior to the Approved approverGroup');
+        }
 
-      // Remove ApporverGroup
-      if (data.shouldRemove) {
-        (targetWorkflow.approverGroups as any).pull({ _id: approverGroup._id });
-        continue;
-      }
+        // Remove ApporverGroup
+        if (data.shouldRemove) {
+          (targetWorkflow.approverGroups as any).pull({ _id: approverGroup._id });
+          continue;
+        }
 
-      // Change ApprovalType
-      if (data.approvalType != null) {
-        approverGroup.approvalType = data.approvalType;
-      }
+        // Change ApprovalType
+        if (data.approvalType != null) {
+          approverGroup.approvalType = data.approvalType;
+        }
 
-      // Remove Approver
-      if (data.userIdsToRemove != null) {
-        data.userIdsToRemove.forEach((userId) => {
-          const approver = (approverGroup as any).findApprover(userId);
+        // Remove Approver
+        if (data.userIdsToRemove != null && data.userIdsToRemove.length > 0) {
+          data.userIdsToRemove.forEach((userId) => {
+            const approver = (approverGroup as any).findApprover(userId);
 
-          if (approver == null) {
-            throw Error('Target approver does not exist');
-          }
+            if (approver == null) {
+              throw Error('Target approver does not exist');
+            }
 
-          if (approver.status === WorkflowApproverStatus.APPROVE) {
-            throw Error('Cannot remove an approved apporver');
-          }
+            if (approver.status === WorkflowApproverStatus.APPROVE) {
+              throw Error('Cannot remove an approved apporver');
+            }
 
-          (approverGroup.approvers as any).pull({ _id: approver._id });
-        });
-      }
+            (approverGroup.approvers as any).pull({ _id: approver._id });
+          });
+        }
 
-      // Add Approver
-      if (data.userIdsToAdd != null) {
-        data.userIdsToAdd.forEach((userId) => {
-          (approverGroup.approvers as any).push({ user: userId });
-        });
+        // Add Approver
+        if (data.userIdsToAdd != null && data.userIdsToAdd.length > 0) {
+          data.userIdsToAdd.forEach((userId) => {
+            (approverGroup.approvers as any).push({ user: userId });
+          });
+        }
       }
     }
 
-    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups);
+    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupHasId[]);
 
     targetWorkflow.name = name;
     targetWorkflow.comment = comment;
@@ -139,7 +140,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return updatedWorkflow as unknown as IWorkflowHasId;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] | IWorkflowApproverGroup[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] | IWorkflowApproverGroupHasId[]): void {
     const uniqueApprovers = new Set();
     uniqueApprovers.add(creatorId);
 

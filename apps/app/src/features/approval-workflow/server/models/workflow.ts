@@ -13,14 +13,14 @@ import {
   WorkflowApprovalTypes,
 } from '../../interfaces/workflow';
 import type {
-  IWorkflow, IWorkflowApproverGroup, IWorkflowApprover, IWorkflowHasId,
+  IWorkflowHasId, IWorkflowApproverGroupHasId, IWorkflowApproverHasId,
 } from '../../interfaces/workflow';
 
 
 /*
 * WorkflowApprover
 */
-interface WorkflowApproverDocument extends IWorkflowApprover, Document {}
+interface WorkflowApproverDocument extends IWorkflowApproverHasId, Document {}
 type WorkflowApproverModel = Model<WorkflowApproverDocument>;
 
 const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowApproverModel>({
@@ -43,8 +43,8 @@ const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowAppr
 /*
 * WorkflowApproverGroup
 */
-interface WorkflowApproverGroupDocument extends IWorkflowApproverGroup, Document {
-  findApprover(userId: string): IWorkflowApprover | undefined
+interface WorkflowApproverGroupDocument extends IWorkflowApproverGroupHasId, Document {
+  findApprover(userId: string): IWorkflowApproverHasId | undefined
 }
 type WorkflowApproverGroupModel = Model<WorkflowApproverGroupDocument>
 
@@ -60,7 +60,7 @@ const WorkflowApproverGroupSchema = new Schema<WorkflowApproverGroupDocument, Wo
   timestamps: { createdAt: true, updatedAt: true },
 });
 
-const getApproverStatuses = (approvers: IWorkflowApprover[]) => {
+const getApproverStatuses = (approvers: IWorkflowApproverHasId[]) => {
   return approvers.map(approver => approver.status);
 };
 
@@ -83,17 +83,17 @@ WorkflowApproverGroupSchema.virtual('isApproved').get(function() {
 WorkflowApproverGroupSchema.set('toJSON', { virtuals: true });
 WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 
-WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): IWorkflowApprover | undefined {
-  return (this as IWorkflowApproverGroup).approvers.find(v => v.user.toString() === userId);
+WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): IWorkflowApproverHasId | undefined {
+  return (this as IWorkflowApproverGroupHasId).approvers.find(v => v.user.toString() === userId);
 };
 
 
 /*
 * Workflow
 */
-interface WorkflowDocument extends IWorkflow, Document {
+interface WorkflowDocument extends IWorkflowHasId, Document {
   getLatestApprovedApproverGroupIndex(): number | null
-  findApproverGroup(groupId: string): IWorkflowApproverGroup | undefined
+  findApproverGroup(groupId: string): IWorkflowApproverGroupHasId | undefined
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
@@ -147,7 +147,7 @@ WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number 
   return null;
 };
 
-WorkflowSchema.methods.findApproverGroup = function(groupId: string): IWorkflowApproverGroup | undefined {
+WorkflowSchema.methods.findApproverGroup = function(groupId: string): IWorkflowApproverGroupHasId | undefined {
   return (this as IWorkflowHasId).approverGroups.find(v => v._id.toString() === groupId);
 };
 

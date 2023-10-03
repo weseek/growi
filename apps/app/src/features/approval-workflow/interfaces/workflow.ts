@@ -35,13 +35,11 @@ type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowAp
 
 
 export type IWorkflowApprover = {
-  _id: string,
   user: IUserHasId,
   status: WorkflowApproverStatus,
 }
 
 export type IWorkflowApproverGroup = {
-  _id: string,
   approvalType: WorkflowApprovalType
   approvers: IWorkflowApprover[],
   isApproved: boolean, // virtual
@@ -58,20 +56,16 @@ export type IWorkflow = {
 
 export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
-export type IWorkflowReq = Omit<IWorkflow, 'creator' | 'approverGroups'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
+export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups'> & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
 
-export type IWorkflowHasId = IWorkflow & HasObjectId
+// TODO: If you don't need it, delete it
+export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;
+export type IWorkflowApproverGroupHasId = Omit<IWorkflowApproverGroup, 'approvers'> & { approvers: IWorkflowApproverHasId[] } & HasObjectId;
+export type IWorkflowHasId = Omit<IWorkflow, 'approverGroups'> & { approverGroups: IWorkflowApproverGroupHasId[] } & HasObjectId;
 
 export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
 
-const UpdateAction = {
-  ADD: 'ADD',
-  REMOVE: 'REMOVE',
-} as const;
-
-type UpdateAction = typeof UpdateAction[keyof typeof UpdateAction];
-
-export type UpdateApproverGroupRequest = {
+export type ApproverGroupUpdateData = {
   groupId: string,
   shouldRemove: boolean,
   approvalType?: WorkflowApprovalType,
