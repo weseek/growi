@@ -37,7 +37,6 @@ export const PageTags:FC<Props> = (props: Props) => {
   return (
     <>
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
-        <i className="tag-icon icon-tag me-2" />
         <RenderTagLabels
           tags={tags}
           openEditorModal={openEditorModal}
