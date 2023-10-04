@@ -45,12 +45,17 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
       {
         extensions: defaultExtensions,
         // Reset settings of react-codemirror.
-        // The extension defined first will be used, so it must be disabled here.
+        // Extensions are defined first will be used if they have the same priority.
+        // If extensions conflict, disable them here.
+        // And add them to defaultExtensions: Extension[] with a lower priority.
+        // ref: https://codemirror.net/examples/config/
+        // ------- Start -------
         indentWithTab: false,
         basicSetup: {
           defaultKeymap: false,
           dropCursor: false,
         },
+        // ------- End -------
       },
     );
   }, [props]);
