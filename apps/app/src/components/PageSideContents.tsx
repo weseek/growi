@@ -1,22 +1,82 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import type { IPageHasId, IPageInfoForOperation } from '@growi/core';
+import { getIdForRef, type IPageHasId, type IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { Link } from 'react-scroll';
 
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { apiPost } from '~/client/util/apiv1-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxPageInfo } from '~/stores/page';
+import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
+import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
 import CountBadge from './Common/CountBadge';
 import { ContentLinkButtons } from './ContentLinkButtons';
 import PageListIcon from './Icons/PageListIcon';
+import { TagLabelsSkeleton } from './Page/TagLabels';
 import TableOfContents from './TableOfContents';
 
 import styles from './PageSideContents.module.scss';
 
 
 const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
+
+
+const TagLabels = dynamic(() => import('./Page/TagLabels').then(mod => mod.TagLabels), {
+  ssr: false,
+  loading: TagLabelsSkeleton,
+});
+
+
+type TagsProps = {
+  pageId: string,
+  revisionId: string,
+}
+
+const Tags = (props: TagsProps): JSX.Element => {
+  const { pageId, revisionId } = props;
+
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+
+  const { data: showTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+
+  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
+    try {
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+
+      updateStateAfterSave?.();
+
+      toastSuccess('updated tags successfully');
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }, [pageId, revisionId, updateStateAfterSave]);
+
+  if (!showTagLabel) {
+    return <></>;
+  }
+
+  const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
+
+  return (
+    <div className="grw-taglabels-container">
+      { tagsInfoData?.tags != null
+        ? <TagLabels tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+        : <TagLabelsSkeleton />
+      }
+    </div>
+  );
+};
 
 
 export type PageSideContentsProps = {
@@ -38,8 +98,12 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
 
+
   return (
     <>
+      {/* Tags */}
+      <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
+
       {/* Page list */}
       <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
         {!isSharedUser && (
