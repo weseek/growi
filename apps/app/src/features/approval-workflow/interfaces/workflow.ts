@@ -69,7 +69,7 @@ export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
 
 export type ApproverGroupUpdateData = {
   groupId: string,
-  shouldRemove: boolean,
+  shouldRemove?: boolean,
   approvalType?: WorkflowApprovalType,
   userIdsToAdd?: string[],
   userIdsToRemove?: string[],

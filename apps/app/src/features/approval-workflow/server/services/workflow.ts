@@ -15,6 +15,9 @@ import {
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
+import { WorkflowApproverGroupService } from './workflow-approver-group';
+
+
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
@@ -73,59 +76,8 @@ class WorkflowServiceImpl implements WorkflowService {
 
     this.validateOperatableUser(targetWorkflow as unknown as IWorkflowHasId, operator);
 
-    const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
-
     if (approverGroupData != null && approverGroupData.length > 0) {
-      for (const data of approverGroupData) {
-        const approverGroup = targetWorkflow.findApproverGroup(data.groupId);
-        if (approverGroup == null) {
-          throw Error('Target approevrGroup does not exist');
-        }
-
-        const groupIndex = targetWorkflow.approverGroups.findIndex(v => v._id.toString() === data.groupId);
-        if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= groupIndex) {
-          throw Error('Cannot edit approverGroups prior to the approved approverGroup');
-        }
-
-        // Remove ApporverGroup
-        if (data.shouldRemove) {
-          const isIncludeApprovedApprover = approverGroup.approvers.some(v => v.status === WorkflowApproverStatus.APPROVE);
-          if (isIncludeApprovedApprover) {
-            throw Error('Cannot remove an approverGroup that contains approved approvers');
-          }
-          (targetWorkflow.approverGroups as any).pull({ _id: approverGroup._id });
-          continue;
-        }
-
-        // Change ApprovalType
-        if (data.approvalType != null) {
-          approverGroup.approvalType = data.approvalType;
-        }
-
-        // Remove Approver
-        if (data.userIdsToRemove != null && data.userIdsToRemove.length > 0) {
-          data.userIdsToRemove.forEach((userId) => {
-            const approver = (approverGroup as any).findApprover(userId);
-
-            if (approver == null) {
-              throw Error('Target approver does not exist');
-            }
-
-            if (approver.status === WorkflowApproverStatus.APPROVE) {
-              throw Error('Cannot remove an approved apporver');
-            }
-
-            (approverGroup.approvers as any).pull({ _id: approver._id });
-          });
-        }
-
-        // Add Approver
-        if (data.userIdsToAdd != null && data.userIdsToAdd.length > 0) {
-          data.userIdsToAdd.forEach((userId) => {
-            (approverGroup.approvers as any).push({ user: userId });
-          });
-        }
-      }
+      WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, approverGroupData);
     }
 
     this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[]);
