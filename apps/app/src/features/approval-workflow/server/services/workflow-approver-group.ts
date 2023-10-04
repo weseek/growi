@@ -4,14 +4,13 @@ import {
   IWorkflowApproverGroupHasId,
   WorkflowApproverStatus,
   ApproverGroupUpdateData,
-  IWorkflowApproverGroup,
 } from '../../interfaces/workflow';
 
 interface WorkflowApproverGroupService {
   updateApproverGroup(targetWorkflow: IWorkflowHasId, approverGroupData: ApproverGroupUpdateData[]): void
   removeApproverGroup(targetWorkflow: IWorkflowHasId, approevrGroup: IWorkflowApproverGroupHasId): void
-  removeApprover(approverGroup: IWorkflowApproverGroup, userIdsToRemove: string[]): void
-  addApprover(approverGroup: IWorkflowApproverGroup, userIdsToAdd: string[]): void
+  removeApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToRemove: string[]): void
+  addApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToAdd: string[]): void
 }
 class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
@@ -31,7 +30,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  removeApprover(approverGroup: IWorkflowApproverGroup, userIdsToRemove: string[]): void {
+  removeApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToRemove: string[]): void {
     userIdsToRemove.forEach((userId) => {
       const approver = (approverGroup as any).findApprover(userId);
 
@@ -49,7 +48,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  addApprover(approverGroup: IWorkflowApproverGroup, userIdsToAdd: string[]): void {
+  addApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToAdd: string[]): void {
     userIdsToAdd.forEach((userId) => { (approverGroup.approvers as any).push({ user: userId }) });
 
     return;
