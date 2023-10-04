@@ -7,9 +7,6 @@ import loggerFactory from '~/utils/logger';
 import {
   IWorkflowHasId,
   IWorkflowReq,
-  IWorkflowApproverGroupReq,
-  WorkflowApprovalType,
-  WorkflowApproverStatus,
   WorkflowStatus,
   ApproverGroupUpdateData,
 } from '../../interfaces/workflow';
@@ -26,14 +23,12 @@ interface WorkflowService {
   updateWorkflow(
     workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupUpdateData?: ApproverGroupUpdateData[],
   ): Promise<IWorkflowHasId>,
-  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
 
 class WorkflowServiceImpl implements WorkflowService {
 
   constructor() {
-    this.validateApproverGroups = this.validateApproverGroups.bind(this);
     this.validateOperatableUser = this.validateOperatableUser.bind(this);
   }
 
@@ -43,7 +38,7 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('An in-progress workflow already exists');
     }
 
-    this.validateApproverGroups(true, workflow.creator.toString(), workflow.approverGroups);
+    WorkflowApproverGroupService.validateApproverGroups(true, workflow.creator.toString(), workflow.approverGroups);
 
     const createdWorkflow = await Workflow.create(workflow);
     return createdWorkflow;
@@ -80,35 +75,11 @@ class WorkflowServiceImpl implements WorkflowService {
       WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, approverGroupData);
     }
 
-    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[]);
-
     targetWorkflow.name = name;
     targetWorkflow.comment = comment;
 
     const updatedWorkflow = await targetWorkflow.save();
     return updatedWorkflow as unknown as IWorkflowHasId;
-  }
-
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void {
-    const uniqueApprovers = new Set<string>();
-    uniqueApprovers.add(creatorId);
-
-    approverGroups.forEach((approverGroup) => {
-      if (approverGroup.approvers.length <= 1 && approverGroup.approvalType === WorkflowApprovalType.OR) {
-        throw Error('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
-      }
-
-      approverGroup.approvers.forEach((approver) => {
-        if (uniqueApprovers.has(approver.user.toString())) {
-          throw Error('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
-        }
-        uniqueApprovers.add(approver.user.toString());
-
-        if (isNew && approver.status != null && approver.status !== WorkflowApproverStatus.NONE) {
-          throw Error('Cannot set approver.status to anything other than "NONE" during creation');
-        }
-      });
-    });
   }
 
   // Call this method before performing operations (update, delete) on a Workflow document
