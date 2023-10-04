@@ -68,7 +68,6 @@ export const EmojiButton: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data } = useResolvedTheme();
-  const { resolvedTheme } = data;
 
   console.dir(data);
 
@@ -140,7 +139,7 @@ export const EmojiButton: FC<Props> = (props) => {
             title={translation.title}
             emojiTooltip
             style={setStyle()}
-            theme={resolvedTheme}
+            // theme={resolvedTheme}
           />
         </Modal>
       </div>

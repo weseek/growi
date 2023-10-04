@@ -5,7 +5,7 @@ import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import { Lato } from 'next/font/google';
 import localFont from 'next/font/local';
-import { SWRConfig } from 'swr';
+import { SWRConfig, mutate } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
 
@@ -13,6 +13,7 @@ import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
 } from '~/stores/context';
+import { useNextThemes } from '~/stores/use-next-themes';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import { CommonProps } from './utils/commons';
@@ -54,6 +55,12 @@ type GrowiAppProps = AppProps & {
 registerTransformerForObjectId();
 
 function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
+  const { resolvedTheme } = useNextThemes();
+
+  console.log(resolvedTheme);
+
+  mutate('resolvedTheme', resolvedTheme);
+
   useI18nextHMR(isDev);
 
   useEffect(() => {
