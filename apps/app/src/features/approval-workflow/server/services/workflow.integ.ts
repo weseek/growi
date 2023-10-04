@@ -315,22 +315,22 @@ describe('WorkflowService', () => {
       const approverIdtoAdd2 = new mongoose.Types.ObjectId().toString();
 
       const targetWorkflow = await Workflow.findById(workflowId);
-      const targetApproverGroup3 = targetWorkflow?.findApproverGroup(approverGroupId3);
-      const targetApproverGroup4 = targetWorkflow?.findApproverGroup(approverGroupId4);
-      const targetApproverGroup5 = targetWorkflow?.findApproverGroup(approverGroupId5);
+      const targetApproverGroup1 = targetWorkflow?.findApproverGroup(approverGroupId3);
+      const targetApproverGroup2 = targetWorkflow?.findApproverGroup(approverGroupId4);
+      const targetApproverGroup3 = targetWorkflow?.findApproverGroup(approverGroupId5);
 
-      const targetApproverToAdd1 = (targetApproverGroup4 as any).findApprover(approverIdtoAdd1);
-      const targetApproverToAdd2 = (targetApproverGroup4 as any).findApprover(approverIdtoAdd2);
+      const targetApproverToAdd1 = (targetApproverGroup2 as any).findApprover(approverIdtoAdd1);
+      const targetApproverToAdd2 = (targetApproverGroup2 as any).findApprover(approverIdtoAdd2);
 
-      const targetApproverToRemove1 = (targetApproverGroup4 as any).findApprover(approverId7);
-      const targetApproverToRemove2 = (targetApproverGroup4 as any).findApprover(approverId8);
+      const targetApproverToRemove1 = (targetApproverGroup2 as any).findApprover(approverId7);
+      const targetApproverToRemove2 = (targetApproverGroup2 as any).findApprover(approverId8);
 
-      expect(targetApproverGroup3?.isApproved).toEqual(false);
+      expect(targetApproverGroup1?.isApproved).toEqual(false);
       expect(targetApproverToAdd1).toBeUndefined();
       expect(targetApproverToAdd2).toBeUndefined();
       expect(targetApproverToRemove1.status).toEqual(WorkflowApproverStatus.NONE);
       expect(targetApproverToRemove2.status).toEqual(WorkflowApproverStatus.NONE);
-      expect(targetApproverGroup5?.approvalType).toEqual(WorkflowApprovalType.AND);
+      expect(targetApproverGroup3?.approvalType).toEqual(WorkflowApprovalType.AND);
 
       const approverGroupData = [
         {
@@ -354,22 +354,22 @@ describe('WorkflowService', () => {
       const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', approverGroupData);
 
       // then
-      const updatedTargetApproverGroup3 = (updatedWorkflow as any).findApproverGroup(approverGroupId3);
-      const updatedTargetApproverGroup4 = (updatedWorkflow as any).findApproverGroup(approverGroupId4);
-      const updatedTargetApproverGroup5 = (updatedWorkflow as any).findApproverGroup(approverGroupId5);
+      const updatedTargetApproverGroup1 = (updatedWorkflow as any).findApproverGroup(approverGroupId3);
+      const updatedTargetApproverGroup2 = (updatedWorkflow as any).findApproverGroup(approverGroupId4);
+      const updatedTargetApproverGroup3 = (updatedWorkflow as any).findApproverGroup(approverGroupId5);
 
-      const updatedTargetApproverToAdd1 = (updatedTargetApproverGroup4 as any).findApprover(approverIdtoAdd1);
-      const updatedTargetApproverToAdd2 = (updatedTargetApproverGroup4 as any).findApprover(approverIdtoAdd2);
+      const updatedTargetApproverToAdd1 = (updatedTargetApproverGroup2 as any).findApprover(approverIdtoAdd1);
+      const updatedTargetApproverToAdd2 = (updatedTargetApproverGroup2 as any).findApprover(approverIdtoAdd2);
 
-      const updatedTargetApproverToRemove1 = (updatedTargetApproverGroup4 as any).findApprover(approverId7);
-      const updatedTargetApproverToRemove2 = (updatedTargetApproverGroup4 as any).findApprover(approverId8);
+      const updatedTargetApproverToRemove1 = (updatedTargetApproverGroup2 as any).findApprover(approverId7);
+      const updatedTargetApproverToRemove2 = (updatedTargetApproverGroup2 as any).findApprover(approverId8);
 
-      expect(updatedTargetApproverGroup3).toBeUndefined();
+      expect(updatedTargetApproverGroup1).toBeUndefined();
       expect(updatedTargetApproverToAdd1.status).toEqual(WorkflowApproverStatus.NONE);
       expect(updatedTargetApproverToAdd2.status).toEqual(WorkflowApproverStatus.NONE);
       expect(updatedTargetApproverToRemove1).toBeUndefined();
       expect(updatedTargetApproverToRemove2).toBeUndefined();
-      expect(updatedTargetApproverGroup5?.approvalType).toEqual(WorkflowApprovalType.OR);
+      expect(updatedTargetApproverGroup3?.approvalType).toEqual(WorkflowApprovalType.OR);
     });
   });
 });
