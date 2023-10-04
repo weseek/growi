@@ -56,29 +56,36 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, indentSize]);
 
   useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+
+      if (event.clipboardData == null) {
+        return;
+      }
+
+      if (onUpload != null && event.clipboardData.types.includes('Files')) {
+        onUpload(Array.from(event.clipboardData.files));
+      }
+
+      if (event.clipboardData.types.includes('text/plain')) {
+        const textData = event.clipboardData.getData('text/plain');
+        codeMirrorEditor?.replaceText(textData);
+      }
+    };
+
+    const handleDrop = (event: DragEvent) => {
+      // prevents conflicts between codemirror and react-dropzone during file drops.
+      event.preventDefault();
+    };
 
     const extension = EditorView.domEventHandlers({
-      paste(event) {
-        event.preventDefault();
-
-        if (onUpload != null && event.clipboardData?.files != null) {
-          onUpload(Array.from(event.clipboardData?.files));
-        }
-        if (event.clipboardData?.getData('text/plain') != null) {
-          codeMirrorEditor?.replaceText(event.clipboardData?.getData('text/plain'));
-        }
-        return true;
-      },
-      drop(event) {
-        // prevents conflicts between codemirror and react-dropzone during file drops.
-        event.preventDefault();
-        return true;
-      },
+      paste: handlePaste,
+      drop: handleDrop,
     });
 
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-    return cleanupFunction;
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
 
+    return cleanupFunction;
   }, [codeMirrorEditor, onUpload]);
 
   const { getRootProps, open } = useFileDropzone({ onUpload });
