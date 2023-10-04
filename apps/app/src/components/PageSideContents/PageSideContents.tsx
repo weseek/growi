@@ -14,11 +14,11 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
-import CountBadge from './Common/CountBadge';
-import { ContentLinkButtons } from './ContentLinkButtons';
-import PageListIcon from './Icons/PageListIcon';
-import { TagLabelsSkeleton } from './Page/TagLabels';
-import TableOfContents from './TableOfContents';
+import CountBadge from '../Common/CountBadge';
+import { ContentLinkButtons } from '../ContentLinkButtons';
+import PageListIcon from '../Icons/PageListIcon';
+import { PageTagsSkeleton } from '../PageTags';
+import TableOfContents from '../TableOfContents';
 
 import styles from './PageSideContents.module.scss';
 
@@ -26,9 +26,9 @@ import styles from './PageSideContents.module.scss';
 const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
 
 
-const TagLabels = dynamic(() => import('./Page/TagLabels').then(mod => mod.TagLabels), {
+const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), {
   ssr: false,
-  loading: TagLabelsSkeleton,
+  loading: PageTagsSkeleton,
 });
 
 
@@ -71,8 +71,8 @@ const Tags = (props: TagsProps): JSX.Element => {
   return (
     <div className="grw-taglabels-container">
       { tagsInfoData?.tags != null
-        ? <TagLabels tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
-        : <TagLabelsSkeleton />
+        ? <PageTags tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+        : <PageTagsSkeleton />
       }
     </div>
   );
