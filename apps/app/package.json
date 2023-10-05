@@ -52,7 +52,6 @@
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM",
     "string-width": "5.0.0 or above exports only ESM.",
-    "prom-client": "!!DO NOT REMOVE!! A peer dependency of @promster.",
     "remark-wiki-link": "!!DO NOT REMOVE!! including 'mdast-util-wiki-link' and 'micromark-extension-wiki-link' required by pukiwiki-like-linker"
   },
   "dependencies": {
@@ -73,8 +72,6 @@
     "@growi/remark-growi-directive": "link:../../packages/remark-growi-directive",
     "@growi/remark-lsx": "link:../../packages/remark-lsx",
     "@growi/slack": "link:../../packages/slack",
-    "@promster/express": "^7.0.6",
-    "@promster/server": "^7.0.8",
     "@slack/web-api": "^6.2.4",
     "@slack/webhook": "^6.0.0",
     "@types/jest": "^29.5.2",
@@ -154,7 +151,6 @@
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
     "passport-saml": "^3.2.0",
-    "prom-client": "^14.1.1",
     "qs": "^6.11.1",
     "rate-limiter-flexible": "^2.3.7",
     "react": "^18.2.0",
@@ -247,6 +243,7 @@
     "null-loader": "^4.0.1",
     "plantuml-encoder": "^1.2.5",
     "prettier": "^1.19.1",
+    "pretty-bytes": "^6.1.1",
     "react-codemirror2": "^6.0.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dropzone": "^11.2.4",

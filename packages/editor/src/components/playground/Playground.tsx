@@ -37,6 +37,18 @@ export const Playground = (): JSX.Element => {
     toast.success('Saved.', { autoClose: 2000 });
   }, [codeMirrorEditor]);
 
+  // the upload event handler
+  // demo of uploading a file.
+  const uploadHandler = useCallback((files: File[]) => {
+    files.forEach((file) => {
+      // set dummy file name.
+      const insertText = `[${file.name}](/attachment/aaaabbbbccccdddd)\n`;
+      codeMirrorEditor?.insertText(insertText);
+    });
+
+  }, [codeMirrorEditor]);
+
+
   return (
     <>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
@@ -47,6 +59,8 @@ export const Playground = (): JSX.Element => {
           <CodeMirrorEditorMain
             onSave={saveHandler}
             onChange={setMarkdownToPreview}
+            onUpload={uploadHandler}
+            indentSize={4}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
