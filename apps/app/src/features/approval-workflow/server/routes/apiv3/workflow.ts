@@ -309,24 +309,11 @@ module.exports = (crowi: Crowi): Router => {
         }
       }
 
-      const targetWorkflow = await Workflow.findById(workflowId);
-      if (targetWorkflow == null) {
-        return res.apiv3Err('Target workflow does not exist');
-      }
-
-      try {
-        WorkflowService.validateOperatableUser(targetWorkflow, user);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.apiv3Err(err);
-      }
-
       const xssProcessedName = xss.process(name);
       const xssProcessedComment = xss.process(comment);
 
       try {
-        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, xssProcessedName, xssProcessedComment, approverGroupData);
+        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, xssProcessedName, xssProcessedComment, approverGroupData);
         return res.apiv3({ updatedWorkflow });
       }
       catch (err) {
