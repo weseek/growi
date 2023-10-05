@@ -73,20 +73,30 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       }
     };
 
+    const extension = EditorView.domEventHandlers({
+      paste: handlePaste,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, onUpload]);
+
+  useEffect(() => {
+
     const handleDrop = (event: DragEvent) => {
       // prevents conflicts between codemirror and react-dropzone during file drops.
       event.preventDefault();
     };
 
     const extension = EditorView.domEventHandlers({
-      paste: handlePaste,
       drop: handleDrop,
     });
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-
     return cleanupFunction;
-  }, [codeMirrorEditor, onUpload]);
+
+  }, [codeMirrorEditor]);
 
   const { getRootProps, open } = useFileDropzone({ onUpload });
 
