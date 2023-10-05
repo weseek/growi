@@ -130,22 +130,68 @@
 
 
 @include bs.color-mode(light) {
-  .nologin {
+  .nologin :global {
     // background color
     $color-gradient: #3c465c;
     background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
       linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
       linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
+    .nologin-header {
+      background-color: rgba(white, 0.5);
+
+      .logo {
+        background-color: rgba(black, 0);
+        fill: rgba(black, 0.5);
+      }
+
+      h1 {
+        color: rgba(black, 0.5);
+      }
+    }
+
+    .nologin-dialog {
+      background-color: rgba(white, 0.5);
+      .link-switch {
+        color: #1939b8;
+        &:hover {
+          color: lighten(#1939b8,20%);
+        }
+      }
+    }
   }
 }
 
 @include bs.color-mode(dark) {
-  .nologin {
+  .nologin :global {
     // background color
     $color-gradient: #3c465c;
     background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
       linear-gradient(135deg, darken(var.$growi-green, 30%) 10%, hsla(225, 95%, 50%, 0) 70%),
       linear-gradient(225deg, darken(var.$growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
       linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
+    .nologin-header {
+      background-color: rgba(black, 0.5);
+
+      .logo {
+        background-color: rgba(white, 0);
+        fill: rgba(white, 0.5);
+      }
+
+      h1 {
+        color: rgba(white, 0.5);
+      }
+    }
+
+    .nologin-dialog {
+      background-color: rgba(black, 0.5);
+      .link-switch {
+        color: #7b9bd5;
+        &:hover {
+          color: lighten(#7b9bd5,10%);
+        }
+      }
+    }
   }
 }
