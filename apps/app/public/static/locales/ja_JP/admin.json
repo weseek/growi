@@ -921,6 +921,7 @@
     "USER_API_TOKEN_UPDATE": "API トークンの更新",
     "USER_EDITOR_SETTINGS_UPDATE": "エディター設定の更新",
     "USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE": "アプリ内通知設定の更新",
+    "USER_REGISTRATION_APPROVAL_REQUEST": "ID/Password 認証のユーザー登録リクエスト",
     "PAGE_VIEW": "ページ閲覧",
     "PAGE_USER_HOME_VIEW": "ページ閲覧（ユーザーホーム）",
     "PAGE_FORBIDDEN": "ページ閲覧（fobiddenページ）",
