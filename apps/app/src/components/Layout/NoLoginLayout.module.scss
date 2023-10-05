@@ -1,4 +1,5 @@
-@use '@growi/core/scss/bootstrap/init' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core/scss/growi-official-colors' as var;
 
 
 .nologin :global {
@@ -55,32 +56,32 @@
 
   $btn-fill-colors: (
     'login': (
-      rgba($danger, 0.4),
+      rgba(bs.$danger, 0.4),
       rgba(#7e4153, 0.7),
     ),
     'register': (
-      rgba($success, 0.4),
+      rgba(bs.$success, 0.4),
       rgba(#3f7263, 0.7),
     ),
     'google': (
       rgba(#24292e, 0.4),
-      $gray-700,
+      bs.$gray-700,
     ),
     'github': (
       rgba(lighten(black, 20%), 0.4),
-      $gray-700,
+      bs.$gray-700,
     ),
     'facebook': (
       rgba(#29487d, 0.4),
-      $gray-700,
+      bs.$gray-700,
     ),
     'oidc': (
       rgba(#24292e, 0.4),
-      $gray-700,
+      bs.$gray-700,
     ),
     'saml': (
       rgba(#55a79a, 0.4),
-      $gray-700,
+      bs.$gray-700,
     ),
   );
 
@@ -114,7 +115,7 @@
 }
 
 .link-switch {
-  color: $gray-200;
+  color: bs.$gray-200;
 
   &:hover {
     color: white;
@@ -124,5 +125,27 @@
 .nologin.error {
   .alert h2 {
     line-height: 1em;
+  }
+}
+
+
+@include bs.color-mode(light) {
+  .nologin {
+    // background color
+    $color-gradient: #3c465c;
+    background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
+      linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
+      linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+  }
+}
+
+@include bs.color-mode(dark) {
+  .nologin {
+    // background color
+    $color-gradient: #3c465c;
+    background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
+      linear-gradient(135deg, darken(var.$growi-green, 30%) 10%, hsla(225, 95%, 50%, 0) 70%),
+      linear-gradient(225deg, darken(var.$growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
+      linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
   }
 }
