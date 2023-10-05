@@ -25,6 +25,9 @@ export const SocketEventName = {
   // Hackmd
   EditingWithHackmd: 'page:editingWithHackmd',
 
+  // YDoc
+  YDocSync: 'ydoc:sync',
+  YDocSyncError: 'ydoc:sync:error',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 

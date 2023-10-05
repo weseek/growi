@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import { YSocketIO } from 'y-socket.io/dist/server';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -165,13 +166,13 @@ class SocketIoService {
 
   setupYjsConnection() {
     this.io.on('connection', (socket) => {
-      socket.on('ydoc:sync', async({ pageId, initialValue }) => {
+      socket.on(SocketEventName.YDocSync, async({ pageId, initialValue }) => {
         try {
           await this.yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }
         catch (error) {
           logger.warn(error.message);
-          socket.emit('ydoc:sync:error', 'An error occurred during YDoc synchronization.');
+          socket.emit(SocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
         }
       });
     });
