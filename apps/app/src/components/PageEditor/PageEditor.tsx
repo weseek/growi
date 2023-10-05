@@ -162,15 +162,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
-  const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
-    // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
-  })), [mutateIsEnabledUnsavedWarning]);
+  // const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
+  //   // Displays an unsaved warning alert
+  //   mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
+  // })), [mutateIsEnabledUnsavedWarning]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
-    mutateIsEnabledUnsavedWarningWithDebounce(value);
-  }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+    // mutateIsEnabledUnsavedWarningWithDebounce(value);
+  // }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+  }, [setMarkdownPreviewWithDebounce]);
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
