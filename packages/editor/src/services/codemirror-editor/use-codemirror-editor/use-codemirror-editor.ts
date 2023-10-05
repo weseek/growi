@@ -17,12 +17,12 @@ import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 const markdownHighlighting = HighlightStyle.define([
-  { tag: tags.heading1, fontSize: '1.9em', fontWeight: 'bold' },
-  { tag: tags.heading2, fontSize: '1.6em', fontWeight: 'bold' },
-  { tag: tags.heading3, fontSize: '1.4em', fontWeight: 'bold' },
-  { tag: tags.heading4, fontSize: '1.35em', fontWeight: 'bold' },
-  { tag: tags.heading5, fontSize: '1.25em', fontWeight: 'bold' },
-  { tag: tags.heading6, fontSize: '1.2em', fontWeight: 'bold' },
+  { tag: tags.heading1, class: 'cm-header-1' },
+  { tag: tags.heading2, class: 'cm-header-2' },
+  { tag: tags.heading3, class: 'cm-header-3' },
+  { tag: tags.heading4, class: 'cm-header-4' },
+  { tag: tags.heading5, class: 'cm-header-5' },
+  { tag: tags.heading6, class: 'cm-header-6' },
 ]);
 
 type UseCodeMirrorEditorUtils = {
