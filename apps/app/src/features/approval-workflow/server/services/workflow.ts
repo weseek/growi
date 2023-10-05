@@ -33,10 +33,6 @@ interface WorkflowService {
 
 class WorkflowServiceImpl implements WorkflowService {
 
-  constructor() {
-    this.validateOperatableUser = this.validateOperatableUser.bind(this);
-  }
-
   async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId> {
     const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
     if (hasInprogressWorkflowInTargetPage) {

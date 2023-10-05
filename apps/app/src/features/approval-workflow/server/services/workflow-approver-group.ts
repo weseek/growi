@@ -10,19 +10,9 @@ import { WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/w
 interface WorkflowApproverGroupService {
   createApproverGroup(targetWorkflow: IWorkflowHasId, createApproverGroupData: CreateApproverGroupData[]): void
   updateApproverGroup(targetWorkflow: IWorkflowHasId, updateApproverGroupData: UpdateApproverGroupData[]): void
-  removeApproverGroup(targetWorkflow: IWorkflowHasId, approevrGroup: IWorkflowApproverGroupHasId): void
-  removeApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToRemove: string[]): void
-  addApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToAdd: string[]): void
   validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void
 }
 class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
-
-  constructor() {
-    this.removeApproverGroup = this.removeApproverGroup.bind(this);
-    this.removeApprover = this.removeApprover.bind(this);
-    this.addApprover = this.addApprover.bind(this);
-    this.validateApproverGroups = this.validateApproverGroups.bind(this);
-  }
 
   // This method should be used after passing the validation of WorkflowService.updateWorkflow()
   createApproverGroup(targetWorkflow: IWorkflowHasId, createApproverGroupData: CreateApproverGroupData[]): void {
@@ -89,7 +79,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  removeApproverGroup(targetWorkflow: IWorkflowHasId, approverGroup: IWorkflowApproverGroupHasId): void {
+  private removeApproverGroup(targetWorkflow: IWorkflowHasId, approverGroup: IWorkflowApproverGroupHasId): void {
     const isIncludeApprovedApprover = approverGroup.approvers.some(v => v.status === WorkflowApproverStatus.APPROVE);
     if (isIncludeApprovedApprover) {
       throw Error('Cannot remove an approverGroup that contains approved approvers');
@@ -100,7 +90,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  removeApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToRemove: string[]): void {
+  private removeApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToRemove: string[]): void {
     userIdsToRemove.forEach((userId) => {
       const approver = (approverGroup as any).findApprover(userId);
 
@@ -118,7 +108,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  addApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToAdd: string[]): void {
+  private addApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToAdd: string[]): void {
     userIdsToAdd.forEach((userId) => { (approverGroup.approvers as any).push({ user: userId }) });
 
     return;
@@ -145,7 +135,6 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
       });
     });
   }
-
 
 }
 
