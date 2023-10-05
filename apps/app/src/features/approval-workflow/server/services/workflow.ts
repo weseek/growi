@@ -20,17 +20,11 @@ const logger = loggerFactory('growi:service:workflow');
 interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
-  updateWorkflow(
-    workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupUpdateData?: ApproverGroupUpdateData[],
-  ): Promise<IWorkflowHasId>,
+  updateWorkflow(workflowId: ObjectIdLike, name?: string, comment?: string, approverGroupUpdateData?: ApproverGroupUpdateData[]): Promise<IWorkflowHasId>,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
 
 class WorkflowServiceImpl implements WorkflowService {
-
-  constructor() {
-    this.validateOperatableUser = this.validateOperatableUser.bind(this);
-  }
 
   async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId> {
     const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
@@ -57,9 +51,7 @@ class WorkflowServiceImpl implements WorkflowService {
     return;
   }
 
-  async updateWorkflow(
-      workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupData?: ApproverGroupUpdateData[],
-  ): Promise<IWorkflowHasId> {
+  async updateWorkflow(workflowId: ObjectIdLike, name?: string, comment?: string, approverGroupData?: ApproverGroupUpdateData[]): Promise<IWorkflowHasId> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
       throw Error('Target workflow does not exist');
@@ -68,8 +60,6 @@ class WorkflowServiceImpl implements WorkflowService {
     if (targetWorkflow.status !== WorkflowStatus.INPROGRESS) {
       throw Error('Cannot edit workflows that are not in progress');
     }
-
-    this.validateOperatableUser(targetWorkflow as unknown as IWorkflowHasId, operator);
 
     if (approverGroupData != null && approverGroupData.length > 0) {
       WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, approverGroupData);
