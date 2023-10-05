@@ -159,6 +159,23 @@
         }
       }
     }
+
+    .input-group {
+      .input-group-text {
+        color: darken(white, 30%);
+        background-color: rgba(bs.$gray-700, 0.7);
+      }
+
+      .form-control {
+        color: white;
+        background-color: rgba(bs.$gray-600, 0.7);
+        box-shadow: unset;
+
+        &::placeholder {
+          color: darken(white, 30%);
+        }
+      }
+    }
   }
 }
 
@@ -193,5 +210,23 @@
         }
       }
     }
+
+    .input-group {
+      .input-group-text {
+        color: darken(white, 30%);
+        background-color: rgba($gray-700, 0.7);
+      }
+
+      .form-control {
+        color: white;
+        background-color: rgba(#505050, 0.7);
+        box-shadow: unset;
+
+        &::placeholder {
+          color: darken(white, 30%);
+        }
+      }
+    }
+
   }
 }
