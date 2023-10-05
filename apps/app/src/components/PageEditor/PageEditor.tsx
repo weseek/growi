@@ -12,8 +12,6 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
-import { SocketIOProvider } from 'y-socket.io';
-import * as Y from 'yjs';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
@@ -21,7 +19,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useDefaultIndentSize,
+  useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
@@ -48,7 +46,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
-import { useGlobalSocket, GLOBAL_SOCKET_NS } from '~/stores/websocket';
+import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 
@@ -115,6 +113,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+  const { data: user } = useCurrentUser();
 
   const { data: socket } = useGlobalSocket();
 
@@ -470,84 +469,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
-  const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
-  const [provider, setProvider] = useState<SocketIOProvider | null>(null);
-  const [cPageId, setCPageId] = useState(pageId);
-
-  // cleanup ydoc and provider
-  useEffect(() => {
-    if (cPageId === pageId) {
-      return;
-    }
-    if (!provider || !ydoc || socket == null) {
-      return;
-    }
-
-    ydoc.destroy();
-    setYdoc(null);
-
-    provider.destroy();
-    provider.disconnect();
-    setProvider(null);
-
-    socket.off('ydoc:sync');
-
-    setCPageId(pageId);
-  }, [cPageId, pageId, provider, socket, ydoc]);
-
-  // setup ydoc
-  useEffect(() => {
-    if (ydoc != null) {
-      return;
-    }
-
-    const _ydoc = new Y.Doc();
-    setYdoc(_ydoc);
-  }, [initialValue, ydoc]);
-
-  // setup socketIOProvider
-  useEffect(() => {
-    if (ydoc == null || provider != null || socket == null) {
-      return;
-    }
-
-    const socketIOProvider = new SocketIOProvider(
-      GLOBAL_SOCKET_NS,
-      `yjs/${pageId}`,
-      ydoc,
-      { autoConnect: true },
-    );
-    // TODO: apply provider awareness
-    // https://redmine.weseek.co.jp/issues/130770
-    socketIOProvider.awareness.setLocalState({ id: Math.random(), name: 'Perico' });
-    socketIOProvider.on('sync', (isSync: boolean) => {
-      // TODO: check behavior when ydoc diff is retrieved once from server but sync is false exactly 5 seconds later
-      setTimeout(() => {
-        if (!isSync) {
-          ydoc.getText('codemirror').insert(0, initialValue);
-        }
-      }, 5000);
-
-      if (isSync) {
-        socket.emit('ydoc:sync', { pageId, initialValue });
-      }
-    });
-    socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
-      if (_status) console.log(_status);
-    });
-    setProvider(socketIOProvider);
-  }, [initialValue, pageId, provider, socket, ydoc]);
-
-  // initialize
-  useEffect(() => {
-    if (ydoc == null) {
-      return;
-    }
-    codeMirrorEditor?.initDoc(ydoc.getText('codemirror').toString());
-    setMarkdownToPreview(ydoc.getText('codemirror').toString());
-    mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning, ydoc]);
-
   // initial caret line
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
@@ -602,19 +523,21 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // when transitioning to a different page, if the initialValue is the same,
-  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
-  const onRouterChangeComplete = useCallback(() => {
-    codeMirrorEditor?.initDoc(ydoc?.getText('codemirror').toString());
-    codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor, ydoc]);
 
-  useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
-    };
-  }, [onRouterChangeComplete, router.events]);
+  // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
+  // // when transitioning to a different page, if the initialValue is the same,
+  // // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  // const onRouterChangeComplete = useCallback(() => {
+  //   codeMirrorEditor?.initDoc(ydoc?.getText('codemirror').toString());
+  //   codeMirrorEditor?.setCaretLine();
+  // }, [codeMirrorEditor, ydoc]);
+
+  // useEffect(() => {
+  //   router.events.on('routeChangeComplete', onRouterChangeComplete);
+  //   return () => {
+  //     router.events.off('routeChangeComplete', onRouterChangeComplete);
+  //   };
+  // }, [onRouterChangeComplete, router.events]);
 
   if (!isEditable) {
     return <></>;
@@ -645,8 +568,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onChange={markdownChangedHandler}
           onSave={saveWithShortcut}
           indentSize={currentIndentSize ?? defaultIndentSize}
-          ydoc={ydoc}
-          provider={provider}
+          pageId={pageId}
+          userName={user?.name}
+          socket={socket}
+          initialValue={initialValue}
+          setMarkdownToPreview={setMarkdownToPreview}
         />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
