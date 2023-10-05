@@ -95,6 +95,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       color: userColor.color,
       colorLight: userColor.light,
     });
+
     socketIOProvider.on('sync', (isSync: boolean) => {
       // TODO: check behavior when ydoc diff is retrieved once from server but sync is false exactly 5 seconds later
       setTimeout(() => {
@@ -115,7 +116,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     setProvider(socketIOProvider);
   }, [initialValue, pageId, provider, socket, userName, ydoc]);
 
-  // setup yCollab and initialize markdown and preivew
+  // attach YDoc to CodeMirror
   useEffect(() => {
     if (ydoc == null || provider == null) {
       return;
@@ -123,10 +124,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
     const ytext = ydoc.getText('codemirror');
     const undoManager = new Y.UndoManager(ytext);
-    codeMirrorEditor?.initDoc(ytext.toString());
-    setMarkdownToPreview(ytext.toString());
-    // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
-    // mutateIsEnabledUnsavedWarning(false);
 
     const cleanup = codeMirrorEditor?.appendExtensions?.([
       yCollab(ytext, provider.awareness, { undoManager }),
@@ -134,6 +131,20 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
     return cleanup;
   }, [codeMirrorEditor, provider, setMarkdownToPreview, ydoc]);
+
+
+  // initialize markdown and preview
+  useEffect(() => {
+    if (ydoc == null) {
+      return;
+    }
+
+    const ytext = ydoc.getText('codemirror');
+    codeMirrorEditor?.initDoc(ytext.toString());
+    setMarkdownToPreview(ytext.toString());
+    // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
+    // mutateIsEnabledUnsavedWarning(false);
+  }, [codeMirrorEditor, setMarkdownToPreview, ydoc]);
 
   // setup additional extensions
   useEffect(() => {
