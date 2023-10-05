@@ -67,10 +67,17 @@ export type IWorkflowHasId = Omit<IWorkflow, 'approverGroups'> & { approverGroup
 
 export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
 
-export type ApproverGroupUpdateData = {
+
+export type UpdateApproverGroupData = {
   groupId: string,
   shouldRemove?: boolean,
   approvalType?: WorkflowApprovalType,
   userIdsToAdd?: string[],
   userIdsToRemove?: string[],
+}
+
+export type CreateApproverGroupData = {
+  groupIndex: number,
+  approvalType: WorkflowApprovalType,
+  userIdsToAdd: string[],
 }

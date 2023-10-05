@@ -2,12 +2,14 @@ import type {
   IWorkflowHasId,
   IWorkflowApproverGroupHasId,
   IWorkflowApproverGroupReq,
-  ApproverGroupUpdateData,
+  UpdateApproverGroupData,
+  CreateApproverGroupData,
 } from '../../interfaces/workflow';
 import { WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
 
 interface WorkflowApproverGroupService {
-  updateApproverGroup(targetWorkflow: IWorkflowHasId, approverGroupData: ApproverGroupUpdateData[]): void
+  createApproverGroup(targetWorkflow: IWorkflowHasId, createApproverGroupData: CreateApproverGroupData[]): void
+  updateApproverGroup(targetWorkflow: IWorkflowHasId, updateApproverGroupData: UpdateApproverGroupData[]): void
   removeApproverGroup(targetWorkflow: IWorkflowHasId, approevrGroup: IWorkflowApproverGroupHasId): void
   removeApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToRemove: string[]): void
   addApprover(approverGroup: IWorkflowApproverGroupHasId, userIdsToAdd: string[]): void
@@ -23,10 +25,32 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
   }
 
   // This method should be used after passing the validation of WorkflowService.updateWorkflow()
-  updateApproverGroup(targetWorkflow: IWorkflowHasId, approverGroupData: ApproverGroupUpdateData[]): void {
+  createApproverGroup(targetWorkflow: IWorkflowHasId, createApproverGroupData: CreateApproverGroupData[]): void {
     const latestApprovedApproverGroupIndex = (targetWorkflow as any).getLatestApprovedApproverGroupIndex();
 
-    for (const data of approverGroupData) {
+    for (const data of createApproverGroupData) {
+      if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= data.groupIndex) {
+        throw Error('Cannot edit approverGroups prior to the approved approverGroup');
+      }
+
+      const newApproverGroup = {
+        approvers: data.userIdsToAdd.map(userId => ({ user: userId })),
+        approvalType: data.approvalType,
+      };
+
+      (targetWorkflow.approverGroups as any).splice(data.groupIndex, 0, newApproverGroup);
+    }
+
+    this.validateApproverGroups(false, targetWorkflow.creator._id, targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[]);
+
+    return;
+  }
+
+  // This method should be used after passing the validation of WorkflowService.updateWorkflow()
+  updateApproverGroup(targetWorkflow: IWorkflowHasId, updateApproverGroupData: UpdateApproverGroupData[]): void {
+    const latestApprovedApproverGroupIndex = (targetWorkflow as any).getLatestApprovedApproverGroupIndex();
+
+    for (const data of updateApproverGroupData) {
       const approverGroup = (targetWorkflow.approverGroups as any).id(data.groupId);
 
       if (approverGroup == null) {

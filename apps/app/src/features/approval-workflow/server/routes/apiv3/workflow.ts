@@ -69,7 +69,8 @@ module.exports = (crowi: Crowi): Router => {
       param('workflowId').isMongoId().withMessage('workflowId is required'),
       body('name').optional().isString().withMessage('name must be a string'),
       body('comment').optional().isString().withMessage('comment must be a string'),
-      body('approverGroupData').optional().isArray().withMessage('approverGroupData must be an array'),
+      body('createApproverGroupData').optional().isArray().withMessage('createApproverGroupData must be an array'),
+      body('updateApproverGroupData').optional().isArray().withMessage('updateApproverGroupData must be an array'),
     ],
     updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -293,19 +294,29 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
       const { workflowId } = req.params;
-      const { name, comment, approverGroupData } = req.body;
+      const {
+        name, comment, createApproverGroupData, updateApproverGroupData,
+      } = req.body;
       const { user } = req;
 
-      const isValid = [name, comment, approverGroupData].some(v => v != null);
+      const isValid = [name, comment, createApproverGroupData, updateApproverGroupData].some(v => v != null);
       if (!isValid) {
-        return res.apiv3Err('At least one of "name", "comment" or "approverGroupData" must have a valid value');
+        return res.apiv3Err('At least one of "name", "comment", "createApproverGroupData" or "updateApproverGroupData" must have a valid value');
       }
 
-      if (approverGroupData != null) {
-        const groupIds = approverGroupData.map(v => v.groupId);
+      if (createApproverGroupData != null) {
+        const groupIndices = createApproverGroupData.map(v => v.groupIndex);
+        const hasDuplicateGroupIndices = new Set(groupIndices).size !== groupIndices.length;
+        if (hasDuplicateGroupIndices) {
+          return res.apiv3Err('Cannot specify duplicate values for "groupId" within updateApproverGroupData');
+        }
+      }
+
+      if (updateApproverGroupData != null) {
+        const groupIds = updateApproverGroupData.map(v => v.groupId);
         const hasDuplicateGroupIds = new Set(groupIds).size !== groupIds.length;
         if (hasDuplicateGroupIds) {
-          return res.apiv3Err('Cannot specify duplicate values for "groupId" within approverGroupData');
+          return res.apiv3Err('Cannot specify duplicate values for "groupId" within updateApproverGroupData');
         }
       }
 
@@ -313,7 +324,14 @@ module.exports = (crowi: Crowi): Router => {
       const xssProcessedComment = xss.process(comment);
 
       try {
-        const updatedWorkflow = await WorkflowService.updateWorkflow(workflowId, user, xssProcessedName, xssProcessedComment, approverGroupData);
+        const updatedWorkflow = await WorkflowService.updateWorkflow(
+          workflowId,
+          user,
+          xssProcessedName,
+          xssProcessedComment,
+          createApproverGroupData,
+          updateApproverGroupData,
+        );
         return res.apiv3({ updatedWorkflow });
       }
       catch (err) {

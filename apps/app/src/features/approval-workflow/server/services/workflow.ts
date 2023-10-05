@@ -1,6 +1,5 @@
 import type { IUserHasId } from '@growi/core';
 
-
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -8,7 +7,8 @@ import {
   IWorkflowHasId,
   IWorkflowReq,
   WorkflowStatus,
-  ApproverGroupUpdateData,
+  CreateApproverGroupData,
+  UpdateApproverGroupData,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
 
@@ -21,7 +21,12 @@ interface WorkflowService {
   createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
   updateWorkflow(
-    workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupUpdateData?: ApproverGroupUpdateData[],
+    workflowId: ObjectIdLike,
+    operator: IUserHasId,
+    name?: string,
+    comment?: string,
+    createApproverGroupData?: CreateApproverGroupData[],
+    approverGroupUpdateData?: UpdateApproverGroupData[],
   ): Promise<IWorkflowHasId>,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
@@ -58,7 +63,12 @@ class WorkflowServiceImpl implements WorkflowService {
   }
 
   async updateWorkflow(
-      workflowId: ObjectIdLike, operator: IUserHasId, name?: string, comment?: string, approverGroupData?: ApproverGroupUpdateData[],
+      workflowId: ObjectIdLike,
+      operator: IUserHasId,
+      name?: string,
+      comment?: string,
+      createApproverGroupData?: CreateApproverGroupData[],
+      updateApproverGroupData?: UpdateApproverGroupData[],
   ): Promise<IWorkflowHasId> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
@@ -71,8 +81,12 @@ class WorkflowServiceImpl implements WorkflowService {
 
     this.validateOperatableUser(targetWorkflow as unknown as IWorkflowHasId, operator);
 
-    if (approverGroupData != null && approverGroupData.length > 0) {
-      WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, approverGroupData);
+    if (createApproverGroupData != null && createApproverGroupData.length > 0) {
+      WorkflowApproverGroupService.createApproverGroup(targetWorkflow, createApproverGroupData);
+    }
+
+    if (updateApproverGroupData != null && updateApproverGroupData.length > 0) {
+      WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, updateApproverGroupData);
     }
 
     targetWorkflow.name = name;
