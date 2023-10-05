@@ -27,7 +27,8 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     const latestApprovedApproverGroupIndex = (targetWorkflow as any).getLatestApprovedApproverGroupIndex();
 
     for (const data of approverGroupData) {
-      const approverGroup = (targetWorkflow as any).findApproverGroup(data.groupId);
+      const approverGroup = (targetWorkflow.approverGroups as any).id(data.groupId);
+
       if (approverGroup == null) {
         throw Error('Target approevrGroup does not exist');
       }

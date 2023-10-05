@@ -93,7 +93,6 @@ WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): IWo
 */
 interface WorkflowDocument extends IWorkflowHasId, Document {
   getLatestApprovedApproverGroupIndex(): number | null
-  findApproverGroup(groupId: string): IWorkflowApproverGroupHasId | undefined
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
@@ -145,10 +144,6 @@ WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number 
   }
 
   return null;
-};
-
-WorkflowSchema.methods.findApproverGroup = function(groupId: string): IWorkflowApproverGroupHasId | undefined {
-  return (this as IWorkflowHasId).approverGroups.find(v => v._id.toString() === groupId);
 };
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);
