@@ -1,8 +1,32 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.2.1](https://github.com/weseek/growi/compare/v6.2.0...v6.2.1) - 2023-10-03
+
+### BREAKING CHANGES
+
+- support: Omit promster (#8105) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Download a markdown file using the page name as the file name (#8061) @soumaeda
+- imprv: Admin customize presentation form (#8083) @meiri-k
+- imprv: i18n for marp settings (#8110) @moekumasaka
+- imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Marp is enabled incorrectly problem (#8100) @reiji-h
+- fix: Do not work img tag if use style property 62x (#8092) @jam411
+
+### 🧰 Maintenance
+
+- support: Internationalization USER_REGISTRATION_APPROVAL_REQUEST label for v62x (#8130) @jam411
+- ci(deps): bump get-func-name from 2.0.0 to 2.0.2 (#8119) @dependabot
+- support: Omit promster (#8105) @yuki-takei
 
 ## [v6.2.0](https://github.com/weseek/growi/compare/v6.1.12...v6.2.0) - 2023-09-14
 

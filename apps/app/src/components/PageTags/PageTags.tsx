@@ -13,11 +13,11 @@ type Props = {
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
 }
 
-export const TagLabelsSkeleton = (): JSX.Element => {
+export const PageTagsSkeleton = (): JSX.Element => {
   return <Skeleton additionalClass={`${styles['grw-tag-labels-skeleton']} py-1`} />;
 };
 
-export const TagLabels:FC<Props> = (props: Props) => {
+export const PageTags:FC<Props> = (props: Props) => {
   const { tags, isTagLabelsDisabled, tagsUpdateInvoked } = props;
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
@@ -31,13 +31,12 @@ export const TagLabels:FC<Props> = (props: Props) => {
   };
 
   if (tags == null) {
-    return <TagLabelsSkeleton />;
+    return <PageTagsSkeleton />;
   }
 
   return (
     <>
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
-        <i className="tag-icon icon-tag me-2" />
         <RenderTagLabels
           tags={tags}
           openEditorModal={openEditorModal}
