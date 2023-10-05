@@ -67,9 +67,9 @@ const getEmojiTranslation = (): Translation => {
 export const EmojiButton: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data } = useResolvedTheme();
+  const { data: resolvedTheme } = useResolvedTheme();
 
-  console.dir(data);
+  console.dir(resolvedTheme);
 
   const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;
@@ -139,7 +139,7 @@ export const EmojiButton: FC<Props> = (props) => {
             title={translation.title}
             emojiTooltip
             style={setStyle()}
-            // theme={resolvedTheme}
+            theme={resolvedTheme}
           />
         </Modal>
       </div>

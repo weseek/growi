@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { mutate } from 'swr';
 
 import { Sidebar } from '../Sidebar';
 

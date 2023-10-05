@@ -12,7 +12,7 @@ type ResolvedThemeUtils = {
 }
 
 export const useResolvedTheme = (): SWRResponse<ResolvedThemeStatus, Error> & ResolvedThemeUtils => {
-  const swrResponse = useSWRStatic('resolvedTheme');
+  const swrResponse = useSWRStatic<ResolvedThemeStatus, Error>('resolvedTheme');
 
   const mutateResolvedTheme = (resolvedTheme: ColorScheme) => {
     mutate({ themeData: resolvedTheme });
