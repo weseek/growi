@@ -1,4 +1,3 @@
-
 import type {
   IWorkflowHasId,
   IWorkflowApproverGroupHasId,
@@ -23,6 +22,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     this.validateApproverGroups = this.validateApproverGroups.bind(this);
   }
 
+  // This method should be used after passing the validation of WorkflowService.updateWorkflow()
   updateApproverGroup(targetWorkflow: IWorkflowHasId, approverGroupData: ApproverGroupUpdateData[]): void {
     const latestApprovedApproverGroupIndex = (targetWorkflow as any).getLatestApprovedApproverGroupIndex();
 
