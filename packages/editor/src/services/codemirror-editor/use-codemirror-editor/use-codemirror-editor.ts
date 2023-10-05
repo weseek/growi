@@ -46,6 +46,8 @@ const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
+  syntaxHighlighting(markdownHighlighting),
+  Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
 ];
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
