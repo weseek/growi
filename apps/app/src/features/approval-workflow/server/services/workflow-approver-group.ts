@@ -70,7 +70,8 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     if (isIncludeApprovedApprover) {
       throw Error('Cannot remove an approverGroup that contains approved approvers');
     }
-    (targetWorkflow.approverGroups as any).pull({ _id: approverGroup._id });
+
+    (targetWorkflow.approverGroups as any).pull(approverGroup._id);
 
     return;
   }
@@ -87,7 +88,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
         throw Error('Cannot remove an approved apporver');
       }
 
-      (approverGroup.approvers as any).pull({ _id: approver._id });
+      (approverGroup.approvers as any).pull(approver._id);
     });
 
     return;
