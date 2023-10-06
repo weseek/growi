@@ -8,7 +8,6 @@ import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
-
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
@@ -32,7 +31,6 @@ type Props = {
 }
 
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
-
   return (
     <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>
