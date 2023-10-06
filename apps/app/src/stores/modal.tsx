@@ -8,8 +8,8 @@ import { SWRResponse } from 'swr';
 import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-import {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
+import type {
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, onSelectedFunction,
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -743,8 +743,13 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
 /*
 * PageSelectModal
 */
+export type IPageSelectModalOption = {
+  onSelected?: onSelectedFunction,
+}
+
 type PageSelectModalStatus = {
-  isOpened: boolean;
+  isOpened: boolean
+  opts?: IPageSelectModalOption
 }
 
 type PageSelectModalStatusUtils = {
@@ -760,7 +765,11 @@ export const usePageSelectModal = (
 
   return {
     ...swrResponse,
-    open: () => swrResponse.mutate({ isOpened: true }),
+    open: (
+        opts?: IPageSelectModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, opts,
+    }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
