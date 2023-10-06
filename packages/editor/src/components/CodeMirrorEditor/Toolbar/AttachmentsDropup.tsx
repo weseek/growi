@@ -8,12 +8,8 @@ import {
 import { AcceptedUploadFileType } from 'src/consts';
 
 type Props = {
-<<<<<<< HEAD
-  fileOpen: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
-=======
   onFileOpen: () => void,
->>>>>>> dev/7.0.x
+  acceptedFileType?: AcceptedUploadFileType,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
