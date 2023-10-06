@@ -15,22 +15,23 @@ const isAttachmentLink = (url: string): boolean => {
 
 const rewriteNode = (node: Node) => {
   const attachmentId = path.basename(node.url as string);
-  const data = node.data ?? (node.data = {});
-  data.hName = 'attachment';
-  data.hProperties = {
-    attachmentId,
-    url: node.url,
-    attachmentName: (node.children as any)[0]?.value,
+
+  node.data = {
+    ...(node.data ?? {}),
+    hName: 'attachment',
+    hProperties: {
+      attachmentId,
+      url: node.url,
+      attachmentName: (node.children as any)[0]?.value,
+    },
   };
 };
 
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type === 'link') {
-        if (isAttachmentLink(node.url as string)) {
-          rewriteNode(node);
-        }
+    visit(tree, 'link', (node: Node) => {
+      if (isAttachmentLink(node.url as string)) {
+        rewriteNode(node);
       }
     });
   };
