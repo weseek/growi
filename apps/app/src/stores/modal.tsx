@@ -9,7 +9,7 @@ import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, onSelectedFunction,
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -744,7 +744,7 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
 * PageSelectModal
 */
 export type IPageSelectModalOption = {
-  onSelected?: onSelectedFunction,
+  onSelected?: OnSelectedFunction,
 }
 
 type PageSelectModalStatus = {

@@ -26,4 +26,4 @@ export type OnRenamedFunction = (path: string) => void;
 export type OnDuplicatedFunction = (fromPath: string, toPath: string) => void;
 export type OnPutBackedFunction = (path: string) => void;
 export type onDeletedBookmarkFolderFunction = (bookmarkFolderId: string) => void;
-export type onSelectedFunction = () => void;
+export type OnSelectedFunction = () => void;
