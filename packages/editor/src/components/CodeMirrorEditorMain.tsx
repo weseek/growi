@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
-import type { Socket, DefaultEventsMap } from 'socket.io-client';
+// TODO: import socket.io-client types wihtout lint error
+// import type { Socket, DefaultEventsMap } from 'socket.io-client';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { yCollab } from 'y-codemirror.next';
@@ -30,7 +31,7 @@ type Props = {
   indentSize?: number,
   pageId?: string,
   userName?: string,
-  socket?: Socket<DefaultEventsMap, DefaultEventsMap>,
+  socket?: any, // Socket<DefaultEventsMap, DefaultEventsMap>,
   initialValue: string,
   setMarkdownToPreview: React.Dispatch<React.SetStateAction<string>>,
 }
@@ -44,6 +45,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setCPageId] = useState(pageId);
+  const [isGlobalSync, setIsGlobalSync] = useState<boolean>(false);
 
   // cleanup ydoc and socketIOProvider
   useEffect(() => {
@@ -65,6 +67,8 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     socket.off('ydoc:sync');
 
     setCPageId(pageId);
+
+    setIsGlobalSync(false);
   }, [cPageId, pageId, provider, socket, ydoc]);
 
   // setup ydoc
@@ -97,18 +101,16 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     });
 
     socketIOProvider.on('sync', (isSync: boolean) => {
-      // TODO: check behavior when ydoc diff is retrieved once from server but sync is false exactly 5 seconds later
-      setTimeout(() => {
-        if (!isSync) {
-          ydoc.getText('codemirror').insert(0, initialValue);
-        }
-      }, 5000);
-
       if (isSync) {
         // TODO: use SocketEventName
         socket.emit('ydoc:sync', { pageId, initialValue });
+        socket.on('status', () => {
+          console.log('socket');
+        });
       }
+      setIsGlobalSync(isSync);
     });
+
     // TODO: delete this code
     socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
       if (_status) console.log(_status);
@@ -139,12 +141,21 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       return;
     }
 
+    // console.log('sync', globalIsSync);
+    // // TODO: check behavior when ydoc diff is retrieved once from server but sync is false exactly 5 seconds later
+    // // TODO: Note that empty characters will be entered.s
+    // setTimeout(() => {
+    //   if (!globalIsSync) {
+    //     ydoc.getText('codemirror').insert(0, initialValue);
+    //   }
+    // }, 5000);
+
     const ytext = ydoc.getText('codemirror');
     codeMirrorEditor?.initDoc(ytext.toString());
     setMarkdownToPreview(ytext.toString());
     // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
     // mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, setMarkdownToPreview, ydoc]);
+  }, [codeMirrorEditor, initialValue, pageId, setMarkdownToPreview, socket, ydoc]);
 
   // setup additional extensions
   useEffect(() => {
@@ -177,10 +188,15 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, onSave]);
 
   return (
-    <CodeMirrorEditor
-      editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      onChange={onChange}
-      indentSize={indentSize}
-    />
+    <>
+      {isGlobalSync
+        ? (
+          <CodeMirrorEditor
+            editorKey={GlobalCodeMirrorEditorKey.MAIN}
+            onChange={onChange}
+            indentSize={indentSize}
+          />
+        ) : <p className="text-danger font-weight-bold">connecting ...</p>}
+    </>
   );
 };
