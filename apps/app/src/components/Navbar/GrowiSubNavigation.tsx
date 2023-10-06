@@ -16,9 +16,7 @@ export type GrowiSubNavigationProps = {
   pagePath?: string,
   pageId?: string,
   isNotFound?: boolean,
-  showDrawerToggler?: boolean,
   isTagLabelsDisabled?: boolean,
-  isDrawerMode?: boolean,
   isCompactMode?: boolean,
   tags?: string[],
   rightComponent?: React.FunctionComponent,
@@ -31,8 +29,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
 
   const {
     pageId, pagePath,
-    showDrawerToggler,
-    isDrawerMode, isCompactMode,
+    isCompactMode,
     rightComponent: RightComponent,
     additionalClasses = [],
   } = props;
@@ -49,11 +46,6 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
     >
       {/* Left side */}
       <div className="d-flex grw-subnav-start-side">
-        { (showDrawerToggler && isDrawerMode) && (
-          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'me-2 pe-2' : 'border-end me-4 pe-4'}`}>
-            <DrawerToggler />
-          </div>
-        ) }
         <div className="grw-path-nav-container">
           { pagePath != null && (
             <PagePathNav pageId={pageId} pagePath={pagePath} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
