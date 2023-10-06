@@ -1,10 +1,12 @@
 import React, {
+  useCallback,
   useEffect, useMemo, useRef, useState,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
+import { debounce } from 'throttle-debounce';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
@@ -141,24 +143,44 @@ export const PageView = (props: Props): JSX.Element => {
   };
 
   // TODO: Delete these experimental codes when the test is finished.
-  const selectionChangeEventHandler = () => {
+  const selectHandler = useCallback(() => {
     const sel = document.getSelection();
     console.log(sel);
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
-    const newNode = document.createElement('span');
-    newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
-    newNode.innerHTML = sel.toString();
+    const newRangeContents = range.cloneContents();
+    console.log(newRangeContents);
+    for (const childNode of newRangeContents.childNodes) {
+      console.log(childNode);
+      if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent != null) {
+        const newNodeElement = document.createElement('span');
+        newNodeElement.innerText = childNode.textContent;
+        newNodeElement.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
+        childNode.replaceWith(newNodeElement);
+      }
+      else {
+        const newNodeElement = childNode.textContent;
+        console.log(newNodeElement);
+      }
+
+    }
     range.deleteContents(); // Delete range selection.
-    range.insertNode(newNode); // Insert a qualified span from the beginning of the range selection.
-  };
+    range.insertNode(newRangeContents); // Insert a qualified span from the beginning of the range selection.
+
+    // const newNode = document.createElement('span');
+    // newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
+    // newNode.innerHTML = sel.toString();
+    // range.deleteContents(); // Delete range selection.
+    // range.insertNode(newNode); // Insert a qualified span from the beginning of the range selection.
+  }, []);
 
   useEffect(() => {
-    document.addEventListener('selectionchange', selectionChangeEventHandler);
+    const selectionChangeHandler = debounce(1000, selectHandler);
+    document.addEventListener('selectionchange', selectionChangeHandler);
     return () => {
-      document.removeEventListener('selectionchange', selectionChangeEventHandler);
+      document.removeEventListener('selectionchange', selectionChangeHandler);
     };
-  }, []);
+  }, [selectHandler]);
 
   return (
     <PageViewLayout
