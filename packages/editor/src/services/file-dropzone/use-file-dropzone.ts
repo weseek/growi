@@ -24,9 +24,12 @@ export const useFileDropzone = (props: DropzoneEditor): DropzoneState => {
   const accept: Accept = {};
   accept[(acceptedFileType ?? '')] = [];
 
+  const noDrag = acceptedFileType == null;
+
   return useDropzone({
     noKeyboard: true,
     noClick: true,
+    noDrag,
     onDrop: dropHandler,
     accept,
   });
