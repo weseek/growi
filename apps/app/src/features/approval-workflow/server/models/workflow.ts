@@ -135,11 +135,11 @@ WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId
 WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number | null {
   const workflow = this as IWorkflowHasId;
   const apprverGroupsLength = workflow.approverGroups.length;
-  const reversedApporverGroups = [...workflow.approverGroups].reverse();
 
-  for (let i = 0; i < apprverGroupsLength; i++) {
-    if (reversedApporverGroups[i].isApproved) {
-      return apprverGroupsLength - i - 1;
+  for (let i = apprverGroupsLength; i > 0; i--) {
+    const groupIndex = i - 1;
+    if (workflow.approverGroups[groupIndex].isApproved) {
+      return groupIndex;
     }
   }
 
