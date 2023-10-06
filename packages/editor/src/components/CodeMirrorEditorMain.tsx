@@ -28,6 +28,7 @@ const additionalExtensions: Extension[] = [
 type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
+  onUpload?: (files: File[]) => void,
   indentSize?: number,
   pageId?: string,
   userName?: string,
@@ -38,7 +39,7 @@ type Props = {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, indentSize, pageId, userName, initialValue, socket, setMarkdownToPreview,
+    onSave, onChange, onUpload, indentSize, pageId, userName, initialValue, socket, setMarkdownToPreview,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -194,6 +195,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
           <CodeMirrorEditor
             editorKey={GlobalCodeMirrorEditorKey.MAIN}
             onChange={onChange}
+            onUpload={onUpload}
             indentSize={indentSize}
           />
         ) : <p className="text-danger font-weight-bold">connecting ...</p>}

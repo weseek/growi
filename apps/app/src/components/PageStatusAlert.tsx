@@ -5,13 +5,9 @@ import * as ReactDOMServer from 'react-dom/server';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useEditingMarkdown, useIsConflict } from '~/stores/editor';
-import {
-  useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
-} from '~/stores/hackmd';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { Username } from './User/Username';
 
@@ -26,17 +22,13 @@ type AlertComponentContents = {
 export const PageStatusAlert = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
-  const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: isConflict } = useIsConflict();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { open: openConflictDiffModal } = useConflictDiffModal();
-  const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   // store remote latest page data
-  const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
@@ -53,37 +45,23 @@ export const PageStatusAlert = (): JSX.Element => {
     openConflictDiffModal();
   }, [openConflictDiffModal]);
 
-  const getContentsForSomeoneEditingAlert = useCallback((): AlertComponentContents => {
-    return {
-      additionalClasses: ['bg-success', 'd-hackmd-none'],
-      label:
-  <>
-    <i className="icon-fw icon-people"></i>
-    {t('hackmd.someone_editing')}
-  </>,
-      btn:
-  <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
-    <i className="fa fa-fw fa-file-text-o me-1"></i>
-    Open HackMD Editor
-  </a>,
-    };
-  }, [t]);
-
-  const getContentsForDraftExistsAlert = useCallback((): AlertComponentContents => {
-    return {
-      additionalClasses: ['bg-success', 'd-hackmd-none'],
-      label:
-  <>
-    <i className="icon-fw icon-pencil"></i>
-    {t('hackmd.this_page_has_draft')}
-  </>,
-      btn:
-  <button type="button" onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
-    <i className="fa fa-fw fa-file-text-o me-1"></i>
-    Open HackMD Editor
-  </button>,
-    };
-  }, [mutateEditorMode, t]);
+  // TODO: re-impl for builtin editor
+  //
+  // const getContentsForSomeoneEditingAlert = useCallback((): AlertComponentContents => {
+  //   return {
+  //     additionalClasses: ['bg-success', 'd-hackmd-none'],
+  //     label:
+  // <>
+  //   <i className="icon-fw icon-people"></i>
+  //   {t('hackmd.someone_editing')}
+  // </>,
+  //     btn:
+  // <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
+  //   <i className="fa fa-fw fa-file-text-o me-1"></i>
+  //   Open HackMD Editor
+  // </a>,
+  //   };
+  // }, [t]);
 
   const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
 
@@ -123,37 +101,17 @@ export const PageStatusAlert = (): JSX.Element => {
 
   const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
-    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
     // 'revision?._id' and 'remoteRevisionId' are can not be undefined
     if (revision?._id == null || remoteRevisionId == null) { return }
 
     // when remote revision is newer than both
-    if (isHackmdDocumentOutdated && isRevisionOutdated) {
+    if (isRevisionOutdated) {
       return getContentsForUpdatedAlert();
     }
 
-    // when someone editing with HackMD
-    if (isHackmdDraftUpdatingInRealtime) {
-      return getContentsForSomeoneEditingAlert();
-    }
-
-    // when the draft of HackMD is newest
-    if (hasDraftOnHackmd) {
-      return getContentsForDraftExistsAlert();
-    }
-
     return null;
-  }, [
-    revision?._id,
-    remoteRevisionId,
-    revisionIdHackmdSynced,
-    isHackmdDraftUpdatingInRealtime,
-    hasDraftOnHackmd,
-    getContentsForUpdatedAlert,
-    getContentsForSomeoneEditingAlert,
-    getContentsForDraftExistsAlert,
-  ]);
+  }, [revision?._id, remoteRevisionId, getContentsForUpdatedAlert]);
 
   if (!!isGuestUser || !!isReadOnlyUser || alertComponentContents == null) { return <></> }
 

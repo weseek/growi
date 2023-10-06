@@ -3,11 +3,15 @@ import React, { memo } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
+
 import { Bookmarks } from './Bookmarks';
 import { CustomSidebar } from './Custom';
 import { PageTree } from './PageTree';
 import { RecentChanges } from './RecentChanges';
 import Tag from './Tag';
+
+import styles from './SidebarContents.module.scss';
+
 
 export const SidebarContents = memo(() => {
   const { data: currentSidebarContents } = useCurrentSidebarContents();
@@ -31,7 +35,9 @@ export const SidebarContents = memo(() => {
   }
 
   return (
-    <Contents />
+    <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']}`}>
+      <Contents />
+    </div>
   );
 });
 SidebarContents.displayName = 'SidebarContents';

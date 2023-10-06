@@ -20,7 +20,7 @@ type Props = {
   onTagsUpdated: (tags: string[]) => void,
 }
 
-const TagsInput: FC<Props> = (props: Props) => {
+export const TagsInput: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const tagsInputRef = useRef<TypeaheadInstance>(null);
 
@@ -79,5 +79,3 @@ const TagsInput: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-export default TagsInput;

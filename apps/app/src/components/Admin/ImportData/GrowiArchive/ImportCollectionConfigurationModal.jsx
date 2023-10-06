@@ -140,19 +140,6 @@ class ImportCollectionConfigurationModal extends React.Component {
             <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
         </div>
-        <div className="form-check form-check-warning">
-          <input
-            id="cbOpt6"
-            type="checkbox"
-            className="form-check-input"
-            checked={option.initHackmdDatas || false} // add ' || false' to avoid uncontrolled input warning
-            onChange={() => this.changeHandler({ initHackmdDatas: !option.initHackmdDatas })}
-          />
-          <label htmlFor="cbOpt6" className="form-label form-check-label">
-            {t(`${translationBase}.initialize_hackmd_related_datas.label`)}
-            <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
-          </label>
-        </div>
       </>
     );
     /* eslint-enable react/no-unescaped-entities */

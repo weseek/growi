@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
-import { indentWithTab } from '@codemirror/commands';
+import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { EditorState, type Extension } from '@codemirror/state';
+import { EditorState, Prec, type Extension } from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
@@ -12,6 +12,8 @@ import { useAppendExtensions, type AppendExtensions } from './utils/append-exten
 import { useFocus, type Focus } from './utils/focus';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
+import { useInsertText, type InsertText } from './utils/insert-text';
+import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 type UseCodeMirrorEditorUtils = {
@@ -20,6 +22,8 @@ type UseCodeMirrorEditorUtils = {
   getDoc: GetDoc,
   focus: Focus,
   setCaretLine: SetCaretLine,
+  insertText: InsertText,
+  replaceText: ReplaceText,
 }
 export type UseCodeMirrorEditor = {
   state: EditorState | undefined;
@@ -30,6 +34,7 @@ export type UseCodeMirrorEditor = {
 const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
   keymap.of([indentWithTab]),
+  Prec.lowest(keymap.of(defaultKeymap)),
 ];
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
@@ -56,6 +61,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const getDoc = useGetDoc(view);
   const focus = useFocus(view);
   const setCaretLine = useSetCaretLine(view);
+  const insertText = useInsertText(view);
+  const replaceText = useReplaceText(view);
 
   return {
     state,
@@ -65,5 +72,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     getDoc,
     focus,
     setCaretLine,
+    insertText,
+    replaceText,
   };
 };

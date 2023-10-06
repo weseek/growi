@@ -22,9 +22,6 @@ export const SocketEventName = {
   PageUpdated: 'page:update',
   PageDeleted: 'page:delete',
 
-  // Hackmd
-  EditingWithHackmd: 'page:editingWithHackmd',
-
   // YDoc
   YDocSync: 'ydoc:sync',
   YDocSyncError: 'ydoc:sync:error',

@@ -453,7 +453,7 @@ Crowi.prototype.start = async function() {
     this.crowiDev.init();
   }
 
-  const { express, configManager } = this;
+  const { express } = this;
 
   const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
@@ -471,15 +471,6 @@ Crowi.prototype.start = async function() {
       this.crowiDev.setupExpressAfterListening(express);
     }
   });
-  // listen for promster
-  if (configManager.getConfig('crowi', 'promster:isEnabled')) {
-    const { createServer } = require('@promster/server');
-    const promsterPort = configManager.getConfig('crowi', 'promster:port');
-
-    createServer({ port: promsterPort }).then(() => {
-      logger.info(`[${this.node_env}] Promster server is listening on port ${promsterPort}`);
-    });
-  }
 
   // setup Express Routes
   this.setupRoutesForPlugins();

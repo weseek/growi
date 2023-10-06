@@ -1,8 +1,11 @@
+import path from 'path';
+
 import {
   AllSubscriptionStatusType, SubscriptionStatusType,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import sanitize from 'sanitize-filename';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -11,6 +14,7 @@ import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -585,6 +589,7 @@ module.exports = (crowi) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;
+    let pagePath;
 
     try {
       const Page = crowi.model('Page');
@@ -603,6 +608,7 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
+      pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
       if (page._id.toString() !== revision.pageId.toString()) {
@@ -614,7 +620,16 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const fileName = revision.id;
+    // replace forbidden characters to '_'
+    // refer to https://kb.acronis.com/node/56475?ckattempt=1
+    let fileName = sanitize(path.basename(pagePath), { replacement: '_' });
+
+
+    // replace root page name to '_top'
+    if (fileName === '') {
+      fileName = '_top';
+    }
+
     let stream;
 
     try {
@@ -626,7 +641,7 @@ module.exports = (crowi) => {
     }
 
     res.set({
-      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+      'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(fileName)}.${format}`,
     });
 
     const parameters = {

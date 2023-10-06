@@ -61,18 +61,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  HACKMD_URI: {
-    ns:      'crowi',
-    key:     'app:hackmdUri',
-    type:    ValueType.STRING,
-    default: null,
-  },
-  HACKMD_URI_FOR_SERVER: {
-    ns:      'crowi',
-    key:     'app:hackmdUriForServer',
-    type:    ValueType.STRING,
-    default: null,
-  },
   // OAUTH_GOOGLE_CLIENT_ID: {
   //   ns:      'crowi',
   //   key:     'security:passport-google:clientId',
@@ -519,18 +507,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gcs:useOnlyEnvVarsForSomeOptions',
     type:    ValueType.BOOLEAN,
     default: false,
-  },
-  PROMSTER_ENABLED: {
-    ns:      'crowi',
-    key:     'promster:isEnabled',
-    type:    ValueType.BOOLEAN,
-    default: false,
-  },
-  PROMSTER_PORT: {
-    ns:      'crowi',
-    key:     'promster:port',
-    type:    ValueType.NUMBER,
-    default: 7788,
   },
   GROWI_CLOUD_URI: {
     ns:      'crowi',

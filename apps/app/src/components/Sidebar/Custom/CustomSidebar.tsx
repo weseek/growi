@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -8,8 +9,8 @@ import { useSWRxPageByPath } from '~/stores/page';
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 import DefaultContentSkeleton from '../Skeleton/DefaultContentSkeleton';
 
-import { CustomSidebarSubstance } from './CustomSidebarSubstance';
 
+const CustomSidebarContent = dynamic(() => import('./CustomSidebarSubstance').then(mod => mod.CustomSidebarSubstance), { ssr: false });
 
 export const CustomSidebar = (): JSX.Element => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ export const CustomSidebar = (): JSX.Element => {
       </div>
 
       <Suspense fallback={<DefaultContentSkeleton />}>
-        <CustomSidebarSubstance />
+        <CustomSidebarContent />
       </Suspense>
     </div>
   );

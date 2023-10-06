@@ -9,17 +9,13 @@
   // set the max value that should be taken when sticky
   height: 100vh;
 
+  border-right : 1px solid var(--bs-border-color);
 
   .data-layout-container {
     display: flex;
     flex-direction: row;
     height: 100vh;
     margin-top: 0px;
-    // css-teprsg
-    > div:nth-of-type(2) {
-      padding-left: unset !important;
-      margin-left: unset !important;
-    }
   }
   .navigation {
     .grw-navigation-wrap {
@@ -215,6 +211,33 @@
       @include bs.media-breakpoint-up(md) {
         @include dock();
       }
+    }
+  }
+}
+
+
+.grw-sidebar :global {
+  .grw-contextual-navigation {
+    backdrop-filter: blur(20px);
+  }
+}
+@include bs.color-mode(light) {
+  .grw-sidebar :global {
+    --bs-border-color: var(--grw-highlight-200);
+
+    .grw-contextual-navigation {
+      background-color: rgba(var(--grw-highlight-100-rgb), .5);
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-sidebar :global {
+    --bs-color: var(--bs-gray-400);
+    --bs-border-color: var(--grw-highlight-800);
+
+    .grw-contextual-navigation {
+      background-color: rgba(var(--grw-highlight-800-rgb), .5);
     }
   }
 }

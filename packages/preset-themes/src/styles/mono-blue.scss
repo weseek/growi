@@ -1,264 +1,338 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
-@use './variables' as var;
-@use './theme/mixins/page-editor-mode-manager';
-@use './theme/hsl-functions' as hsl;
-
 :root[data-bs-theme='light'] {
-  // Theme colors
-  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
-  --primary-hs: 197,100%;
-  --primary-l: 24%;
-  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
-  --secondary-hs: 208,7%;
-  --secondary-l: 46%;
-  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
-  --accentcolor-hs: 210,14%;
-  --accentcolor-l: 89%;
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  // Background colors
-  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
-  --bgcolor-global-hs: 200,60%;
-  --bgcolor-global-l: 98%;
-  --bgcolor-inline-code: #{bs.$gray-100}; //optional
-  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
-  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+  $primary: #439cb9;
+  $highlight: #93e3ea;
 
-  // Font colors
-  --color-global: var(--primary);
-  --color-global-hs: var(--primary-hs);
-  --color-global-l: var(--primary-l);
-  --color-reversal: #{bs.$gray-100};
-  --color-link: #{hsl.lighten(var(--primary),5%)};
-  --color-link-hs: var(--primary-hs);
-  --color-link-l: calc(var(--primary-l) + 5%);
-  --color-link-hover: #{hsl.lighten(var(--color-link), 12%)};
-  --color-link-wiki: #{hsl.lighten(var(--primary),20%)};
-  --color-link-wiki-hs: var(--primary-hs);
-  --color-link-wiki-l: calc(var(--primary-l) + 20%);
-  --color-link-wiki-hover: #{hsl.lighten(var(--primary),40%)};
-  --color-link-nabvar: var(--color-reversal);
-  --color-inline-code: #c7254e; // optional
-  --color-search: #c0d6df;
+  @include generate-color-palette('primary', $primary, #021529, white);
+  @include generate-color-palette('highlight', $highlight, black, #edffff);
 
-  // List Group colors
-  // --color-list: var(--color-global);
-  --bgcolor-list: transparent;
-  --color-list-hover: var(--color-search);
-  --bgcolor-list-hover: #{hsl.lighten(var(--primary), 70%)};
-  // --color-list-active: var(--color-reversal);
-  // --bgcolor-list-active: var(--primary);
+  $body-color:                $gray-700;
+  $body-bg:                   white;
 
-  // Navbar
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-  --bgcolor-navbar-h: 0;
-  --bgcolor-navbar-s: 1%;
-  --bgcolor-navbar-l: 16%;
-  --bgcolor-navbar-hs: 0,1%;
-  --bgcolor-search-top-dropdown: var(--primary);
-  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
-  --bgcolor-search-top-dropdown-l: var(--primary-l);
-  --border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
+  $body-secondary-color:      rgba($body-color, .75);
+  $body-secondary-bg:         $gray-200;
 
-  // Logo colors
-  --bgcolor-logo: var(--primary);
-  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 10%),calc(var(--bgcolor-navbar-l) + 15%));
+  $body-tertiary-color:       rgba($body-color, .5);
+  $body-tertiary-bg:          $gray-100;
 
-  // Sidebar
-  --bgcolor-sidebar: var(--primary);
-  --bgcolor-sidebar-hs: var(--primary-hs);
-  --bgcolor-sidebar-l: var(--primary-l);
+  $border-color:              $gray-300;
 
-  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
-  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  $link-color:                $gray-800;
 
-  // Sidebar resize button
-  --color-resize-button: var(--color-reversal);
-  --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
-  --bgcolor-resize-button-hs: 199,74%;
-  --bgcolor-resize-button-l: 49%;
-  --color-resize-button-hover: var(--color-reversal);
-  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
 
-  // Sidebar contents
-  --color-sidebar-context: var(--color-global);
-  --color-sidebar-context-hs: var(--color-global-hs);
-  --color-sidebar-context-l: var(--color-global-l);
-  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
-  --bgcolor-sidebar-context-hs: 193,100%;
-  --bgcolor-sidebar-context-l: 97%;
+  @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  // Sidebar list group
-  // --bgcolor-sidebar-list-group: #; // optional
+  @import '@growi/core/scss/bootstrap/theming/root';
+  @import '@growi/core/scss/bootstrap/theming/root-light';
+  @import '@growi/core/scss/bootstrap/theming/apply';
 
-  // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
-  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
-
-  // Icon colors
-  --color-editor-icons: var(--color-global);
-
-  // Border colors
-  --border-color-theme: var(--accentcolor);
-  --bordercolor-inline-code: #ccc8c8; // optional
-
-  // admin theme box
-  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
-
-  // Navs {
-  .nav-tabs {
-    border-bottom: var(--accentcolor) 1px solid;
-    .nav-link {
-      &:hover {
-        border-color: #{hsl.lighten(var(--accentcolor),10%)};
-        border-bottom: none;
-      }
-      &.active {
-        background-color: transparent;
-      }
-    }
-  }
-  // Button
-  .btn-group.grw-page-editor-mode-manager {
-    .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(var(--primary), #{hsl.lighten(var(--primary), 65%)}, #{hsl.lighten(var(--primary), 70%)});
-    }
-  }
+  --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-700-rgb);
 }
 
 :root[data-bs-theme='dark'] {
-  // Theme colors
-  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
-  --primary-hs: 197,100%;
-  --primary-l: 39%;
-  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
-  --secondary-hs: 208,7%;
-  --secondary-l: 46%;
-  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
-  --accentcolor-hs: 203,78%;
-  --accentcolor-l: 35%;
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  // Background colors
-  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
-  --bgcolor-global-hs: 203,77%;
-  --bgcolor-global-l: 10%;
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-  --bgcolor-navbar-hs: 201,20%;
-  --bgcolor-navbar-l: 19%;
-  --bgcolor-inline-code: #1f1f22; //optional
-  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
-  --bgcolor-keyword-highlighted: #{darken(var.$grw-marker-red, 30%)};
+  $primary: #439cb9;
+  $highlight: #166cc0;
 
-  // Font colors
-  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
-  --color-global-hs: 180,1%;
-  --color-global-l: 83%;
-  --color-reversal: #{bs.$gray-100};
-  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
-  --color-link-hs: 201,75%;
-  --color-link-l: 77%;
-  --color-link-hover: #{hsl.darken(var(--color-link), 12%)};
-  --color-link-wiki: #{hsl.lighten(var(--primary),20%)};
-  --color-link-wiki-hs: var(--primary-hs);
-  --color-link-wiki-l: calc(var(--primary-l) + 20%);
-  --color-link-wiki-hover: #{hsl.lighten(var(--primary),40%)};
-  --color-link-nabvar: var(--color-reversal);
-  --color-inline-code: #c7254e; // optional
-  --color-search: #000102;
+  @include generate-color-palette('primary', $primary, #021529, white);
+  @include generate-color-palette('highlight', $highlight, black, white);
 
-  // List Group colors
-  // --color-list: var(--color-global);
-  --bgcolor-list: transparent;
-  --color-list-hover: #16617d;
-  // --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
-  // --color-list-active: var(--color-reversal);
-  // --bgcolor-list-active: var(--primary);
+  $body-color-dark:                   $gray-400;
+  $body-bg-dark:                      #16202c;
 
-  // Navbar
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-  --bgcolor-navbar-h: 0;
-  --bgcolor-navbar-s: 1%;
-  --bgcolor-navbar-l: 16%;
-  --bgcolor-navbar-hs:var(--bgcolor-navbar-h),var(--bgcolor-navbar-s);
-  --bgcolor-search-top-dropdown: var(--primary);
-  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
-  --bgcolor-search-top-dropdown-l: var(--primary-l);
-  --border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
+  $body-secondary-color-dark:         rgba($body-color-dark, .75);
+  $body-secondary-bg-dark:            $gray-800;
 
-  // Logo colors
-  --bgcolor-logo: #13191c;
-  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 10%),calc(var(--bgcolor-navbar-l) + 15%));
-  // --fillcolor-logo-mark: #4e5a60;
+  $body-tertiary-color-dark:          rgba($body-color-dark, .5);
+  $body-tertiary-bg-dark:             mix($gray-800, $gray-900, 50%);
 
-  // Sidebar
-  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
-  --bgcolor-sidebar-hs: 196,70%;
-  --bgcolor-sidebar-l: 29%;
-  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
-  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  $border-color-dark:                 $gray-700;
 
-  // Sidebar resize button
-  --color-resize-button: var(--color-global);
-  --bgcolor-resize-button: var(--primary);
-  --bgcolor-resize-button-hs: var(--primary-hs);
-  --bgcolor-resize-button-l: var(--primary-l);
-  --color-resize-button-hover: var(--color-global);
-  --bgcolor-resize-button-hover: #{hsl.darken(var(--primary), 5%)};
+  $link-color-dark:                   $gray-400;
 
-  // Sidebar contents
-  --bgcolor-sidebar-context: #{hsl.darken(var(--bgcolor-sidebar), 13%)};
-  --bgcolor-sidebar-context-hs: var(--bgcolor-sidebar-hs);
-  --bgcolor-sidebar-context-l: calc(var(--bgcolor-sidebar-l) - 13%);
-  --color-sidebar-context: var(--color-global);
-  --color-sidebar-context-hs: var(--color-global-hs);
-  --color-sidebar-context-l: var(--color-global-l);
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
 
-  // Sidebar list group
-  // --bgcolor-sidebar-list-group: #; // optional
+  @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
-  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
+  @import '@growi/core/scss/bootstrap/theming/root';
+  @import '@growi/core/scss/bootstrap/theming/root-dark';
+  @import '@growi/core/scss/bootstrap/theming/apply';
 
-  // Icon colors
-  --color-editor-icons: var(--color-global);
-
-  // Border colors
-  --border-color-theme: var(--accentcolor);
-  --bordercolor-inline-code: #4d4d4d; // optional
-
-  // admin theme box
-  --color-theme-color-box: var(--primary);
-
-  // Navs
-  .nav-tabs {
-    border-bottom: var(--accentcolor) 1px solid;
-    .nav-link {
-      &:hover {
-        border-color: #{hsl.lighten(var(--accentcolor), 10%)};
-        border-bottom: none;
-      }
-      &.active {
-        color: var(--color-link);
-        background-color: transparent;
-        border-color: var(--accentcolor);
-      }
-    }
-  }
-
-  // Table
-  .table {
-    color: white;
-  }
-
-  // Button
-  .btn-group.grw-page-editor-mode-manager {
-    .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 30%)}, var(--primary), #{hsl.darken(var(--primary), 10%)}, #{hsl.darken(var(--primary), 20%)});
-    }
-  }
+  --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-300-rgb);
 }
+
+// @use '@growi/core/scss/bootstrap/init' as bs;
+
+// @use './variables' as var;
+// @use './theme/mixins/page-editor-mode-manager';
+// @use './theme/hsl-functions' as hsl;
+
+// :root[data-bs-theme='light'] {
+//   // Theme colors
+//   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+//   --primary-hs: 197,100%;
+//   --primary-l: 24%;
+//   --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+//   --secondary-hs: 208,7%;
+//   --secondary-l: 46%;
+//   --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+//   --accentcolor-hs: 210,14%;
+//   --accentcolor-l: 89%;
+
+//   // Background colors
+//   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+//   --bgcolor-global-hs: 200,60%;
+//   --bgcolor-global-l: 98%;
+//   --bgcolor-inline-code: #{bs.$gray-100}; //optional
+//   --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+//   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),10%)};
+//   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+
+//   // Font colors
+//   --color-global: var(--primary);
+//   --color-global-hs: var(--primary-hs);
+//   --color-global-l: var(--primary-l);
+//   --color-reversal: #{bs.$gray-100};
+//   --color-link: #{hsl.lighten(var(--primary),5%)};
+//   --color-link-hs: var(--primary-hs);
+//   --color-link-l: calc(var(--primary-l) + 5%);
+//   --color-link-hover: #{hsl.lighten(var(--color-link), 12%)};
+//   --color-link-wiki: #{hsl.lighten(var(--primary),20%)};
+//   --color-link-wiki-hs: var(--primary-hs);
+//   --color-link-wiki-l: calc(var(--primary-l) + 20%);
+//   --color-link-wiki-hover: #{hsl.lighten(var(--primary),40%)};
+//   --color-link-nabvar: var(--color-reversal);
+//   --color-inline-code: #c7254e; // optional
+//   --color-search: #c0d6df;
+
+//   // List Group colors
+//   // --color-list: var(--color-global);
+//   --bgcolor-list: transparent;
+//   --color-list-hover: var(--color-search);
+//   --bgcolor-list-hover: #{hsl.lighten(var(--primary), 70%)};
+//   // --color-list-active: var(--color-reversal);
+//   // --bgcolor-list-active: var(--primary);
+
+//   // Navbar
+//   --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+//   --bgcolor-navbar-h: 0;
+//   --bgcolor-navbar-s: 1%;
+//   --bgcolor-navbar-l: 16%;
+//   --bgcolor-navbar-hs: 0,1%;
+//   --bgcolor-search-top-dropdown: var(--primary);
+//   --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+//   --bgcolor-search-top-dropdown-l: var(--primary-l);
+//   --border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
+
+//   // Logo colors
+//   --bgcolor-logo: var(--primary);
+//   --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 10%),calc(var(--bgcolor-navbar-l) + 15%));
+
+//   // Sidebar
+//   --bgcolor-sidebar: var(--primary);
+//   --bgcolor-sidebar-hs: var(--primary-hs);
+//   --bgcolor-sidebar-l: var(--primary-l);
+
+//   // --bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
+//   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+
+//   // Sidebar resize button
+//   --color-resize-button: var(--color-reversal);
+//   --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
+//   --bgcolor-resize-button-hs: 199,74%;
+//   --bgcolor-resize-button-l: 49%;
+//   --color-resize-button-hover: var(--color-reversal);
+//   --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+
+//   // Sidebar contents
+//   --color-sidebar-context: var(--color-global);
+//   --color-sidebar-context-hs: var(--color-global-hs);
+//   --color-sidebar-context-l: var(--color-global-l);
+//   --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+//   --bgcolor-sidebar-context-hs: 193,100%;
+//   --bgcolor-sidebar-context-l: 97%;
+
+//   // Sidebar list group
+//   // --bgcolor-sidebar-list-group: #; // optional
+
+//   // Subnavigation
+//   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+//   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+//   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
+
+//   // Icon colors
+//   --color-editor-icons: var(--color-global);
+
+//   // Border colors
+//   --border-color-theme: var(--accentcolor);
+//   --bordercolor-inline-code: #ccc8c8; // optional
+
+//   // admin theme box
+//   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
+
+//   // Navs {
+//   .nav-tabs {
+//     border-bottom: var(--accentcolor) 1px solid;
+//     .nav-link {
+//       &:hover {
+//         border-color: #{hsl.lighten(var(--accentcolor),10%)};
+//         border-bottom: none;
+//       }
+//       &.active {
+//         background-color: transparent;
+//       }
+//     }
+//   }
+//   // Button
+//   .btn-group.grw-page-editor-mode-manager {
+//     .btn.btn-outline-primary {
+//       @include page-editor-mode-manager.btn-page-editor-mode-manager(var(--primary), #{hsl.lighten(var(--primary), 65%)}, #{hsl.lighten(var(--primary), 70%)});
+//     }
+//   }
+// }
+
+// :root[data-bs-theme='dark'] {
+//   // Theme colors
+//   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+//   --primary-hs: 197,100%;
+//   --primary-l: 39%;
+//   --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+//   --secondary-hs: 208,7%;
+//   --secondary-l: 46%;
+//   --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+//   --accentcolor-hs: 203,78%;
+//   --accentcolor-l: 35%;
+
+//   // Background colors
+//   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+//   --bgcolor-global-hs: 203,77%;
+//   --bgcolor-global-l: 10%;
+//   --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+//   --bgcolor-navbar-hs: 201,20%;
+//   --bgcolor-navbar-l: 19%;
+//   --bgcolor-inline-code: #1f1f22; //optional
+//   --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+//   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
+//   --bgcolor-keyword-highlighted: #{darken(var.$grw-marker-red, 30%)};
+
+//   // Font colors
+//   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+//   --color-global-hs: 180,1%;
+//   --color-global-l: 83%;
+//   --color-reversal: #{bs.$gray-100};
+//   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+//   --color-link-hs: 201,75%;
+//   --color-link-l: 77%;
+//   --color-link-hover: #{hsl.darken(var(--color-link), 12%)};
+//   --color-link-wiki: #{hsl.lighten(var(--primary),20%)};
+//   --color-link-wiki-hs: var(--primary-hs);
+//   --color-link-wiki-l: calc(var(--primary-l) + 20%);
+//   --color-link-wiki-hover: #{hsl.lighten(var(--primary),40%)};
+//   --color-link-nabvar: var(--color-reversal);
+//   --color-inline-code: #c7254e; // optional
+//   --color-search: #000102;
+
+//   // List Group colors
+//   // --color-list: var(--color-global);
+//   --bgcolor-list: transparent;
+//   --color-list-hover: #16617d;
+//   // --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
+//   // --color-list-active: var(--color-reversal);
+//   // --bgcolor-list-active: var(--primary);
+
+//   // Navbar
+//   --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+//   --bgcolor-navbar-h: 0;
+//   --bgcolor-navbar-s: 1%;
+//   --bgcolor-navbar-l: 16%;
+//   --bgcolor-navbar-hs:var(--bgcolor-navbar-h),var(--bgcolor-navbar-s);
+//   --bgcolor-search-top-dropdown: var(--primary);
+//   --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+//   --bgcolor-search-top-dropdown-l: var(--primary-l);
+//   --border-image-navbar: linear-gradient(to right, #54bafd 0%, #3d98a3 50%, #708b0b 100%);
+
+//   // Logo colors
+//   --bgcolor-logo: #13191c;
+//   --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 10%),calc(var(--bgcolor-navbar-l) + 15%));
+//   // --fillcolor-logo-mark: #4e5a60;
+
+//   // Sidebar
+//   --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
+//   --bgcolor-sidebar-hs: 196,70%;
+//   --bgcolor-sidebar-l: 29%;
+//   // --bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
+//   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+
+//   // Sidebar resize button
+//   --color-resize-button: var(--color-global);
+//   --bgcolor-resize-button: var(--primary);
+//   --bgcolor-resize-button-hs: var(--primary-hs);
+//   --bgcolor-resize-button-l: var(--primary-l);
+//   --color-resize-button-hover: var(--color-global);
+//   --bgcolor-resize-button-hover: #{hsl.darken(var(--primary), 5%)};
+
+//   // Sidebar contents
+//   --bgcolor-sidebar-context: #{hsl.darken(var(--bgcolor-sidebar), 13%)};
+//   --bgcolor-sidebar-context-hs: var(--bgcolor-sidebar-hs);
+//   --bgcolor-sidebar-context-l: calc(var(--bgcolor-sidebar-l) - 13%);
+//   --color-sidebar-context: var(--color-global);
+//   --color-sidebar-context-hs: var(--color-global-hs);
+//   --color-sidebar-context-l: var(--color-global-l);
+
+//   // Sidebar list group
+//   // --bgcolor-sidebar-list-group: #; // optional
+
+//   // Subnavigation
+//   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+//   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+//   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
+
+//   // Icon colors
+//   --color-editor-icons: var(--color-global);
+
+//   // Border colors
+//   --border-color-theme: var(--accentcolor);
+//   --bordercolor-inline-code: #4d4d4d; // optional
+
+//   // admin theme box
+//   --color-theme-color-box: var(--primary);
+
+//   // Navs
+//   .nav-tabs {
+//     border-bottom: var(--accentcolor) 1px solid;
+//     .nav-link {
+//       &:hover {
+//         border-color: #{hsl.lighten(var(--accentcolor), 10%)};
+//         border-bottom: none;
+//       }
+//       &.active {
+//         color: var(--color-link);
+//         background-color: transparent;
+//         border-color: var(--accentcolor);
+//       }
+//     }
+//   }
+
+//   // Table
+//   .table {
+//     color: white;
+//   }
+
+//   // Button
+//   .btn-group.grw-page-editor-mode-manager {
+//     .btn.btn-outline-primary {
+//       @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 30%)}, var(--primary), #{hsl.darken(var(--primary), 10%)}, #{hsl.darken(var(--primary), 20%)});
+//     }
+//   }
+// }

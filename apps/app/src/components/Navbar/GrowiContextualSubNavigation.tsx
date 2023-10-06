@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { isPopulated } from '@growi/core';
 import type {
@@ -11,25 +11,22 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { apiPost } from '~/client/util/apiv1-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
-import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
+  useSWRMUTxCurrentPage, useCurrentPageId, useIsNotFound, useSWRxPageInfo,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
@@ -52,7 +49,7 @@ const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles[
 
 
 const PageEditorModeManager = dynamic(
-  () => import('./PageEditorModeManager'),
+  () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
   { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
 // TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
@@ -217,38 +214,39 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isContainerFluid } = useIsContainerFluid();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
-  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
-
+  // TODO: implement tags for editor
+  // refs: https://redmine.weseek.co.jp/issues/132125
   // eslint-disable-next-line max-len
-  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
+  // const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
+  // const { data: templateTagData } = useTemplateTagData();
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: templateTagData } = useTemplateTagData();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
-
-  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const path = currentPage?.path ?? currentPathname;
 
-  useEffect(() => {
-    // Run only when tagsInfoData has been updated
-    if (templateTagData == null) {
-      syncPageTagsForEditors();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tagsInfoData?.tags]);
+  // TODO: implement tags for editor
+  // refs: https://redmine.weseek.co.jp/issues/132125
+  // useEffect(() => {
+  //   // Run only when tagsInfoData has been updated
+  //   if (templateTagData == null) {
+  //     syncPageTagsForEditors();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [tagsInfoData?.tags]);
 
-  useEffect(() => {
-    if (pageId === null && templateTagData != null) {
-      mutatePageTagsForEditors(templateTagData);
-    }
-  }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
+  // TODO: implement tags for editor
+  // refs: https://redmine.weseek.co.jp/issues/132125
+  // useEffect(() => {
+  //   if (pageId === null && templateTagData != null) {
+  //     mutatePageTagsForEditors(templateTagData);
+  //   }
+  // }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
@@ -257,30 +255,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const isViewMode = editorMode === EditorMode.View;
 
 
-  const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
-    if (currentPage == null) {
-      return;
-    }
-
-    const { _id: pageId, revision: revisionId } = currentPage;
-    try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-
-      updateStateAfterSave?.();
-
-      toastSuccess('updated tags successfully');
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }, [currentPage, updateStateAfterSave]);
-
-  const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
-    // It will not be reflected in the DB until the page is refreshed
-    mutatePageTagsForEditors(newTags);
-    return;
-  }, [mutatePageTagsForEditors]);
+  // TODO: implement tags for editor
+  // refs: https://redmine.weseek.co.jp/issues/132125
+  // const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
+  //   // It will not be reflected in the DB until the page is refreshed
+  //   mutatePageTagsForEditors(newTags);
+  //   return;
+  // }, [mutatePageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -395,9 +376,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             )}
             {isAbleToChangeEditorMode && (
               <PageEditorModeManager
-                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
-                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
                 editorMode={editorMode}
+                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
               />
             )}
           </div>
@@ -440,12 +421,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       pagePath={pagePath}
       pageId={currentPage?._id}
       showDrawerToggler={isDrawerMode}
-      showTagLabel={isAbleToShowTagLabel}
-      isTagLabelsDisabled={!!isGuestUser || !!isReadOnlyUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
-      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
       rightComponent={RightComponent}
       additionalClasses={['container-fluid']}
     />

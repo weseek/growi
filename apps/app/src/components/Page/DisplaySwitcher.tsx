@@ -3,7 +3,6 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 
 
-import { useHackmdDraftUpdatedEffect } from '~/client/services/side-effects/hackmd-draft-updated';
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
 import { useIsEditable } from '~/stores/context';
@@ -28,7 +27,6 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
 
   usePageUpdatedEffect();
   useHashChangedEffect();
-  useHackmdDraftUpdatedEffect();
 
   const isViewMode = editorMode === EditorMode.View;
 
