@@ -128,7 +128,7 @@
   }
 }
 
-
+// Light mode color
 @include bs.color-mode(light) {
   .nologin :global {
     // background color
@@ -176,9 +176,27 @@
         }
       }
     }
+
+    .link-growi-org {
+      color: rgba(black, 0.4);
+
+      &:hover,
+      &.focus {
+        color: black;
+
+        .growi {
+          color: darken(var.$growi-green, 20%);
+        }
+
+        .org {
+          color: darken(var.$growi-blue, 15%);
+        }
+      }
+    }
   }
 }
 
+// Dark mode color
 @include bs.color-mode(dark) {
   .nologin :global {
     // background color
@@ -224,6 +242,23 @@
 
         &::placeholder {
           color: darken(white, 30%);
+        }
+      }
+    }
+
+    .link-growi-org {
+      color: rgba(white, 0.4);
+
+      &:hover,
+      &.focus {
+        color: rgba(white, 0.7);
+
+        .growi {
+          color: darken(var.$growi-green, 5%);
+        }
+
+        .org {
+          color: darken(var.$growi-blue, 5%);
         }
       }
     }
