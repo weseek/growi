@@ -30,6 +30,7 @@ type Props = {
   className?: string
 }
 
+
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
     <RawLayout className={className ?? ''}>

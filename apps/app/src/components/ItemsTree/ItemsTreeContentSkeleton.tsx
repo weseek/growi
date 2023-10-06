@@ -4,7 +4,7 @@ import { Skeleton } from '~/components/Skeleton';
 
 import styles from './ItemsTree.module.scss';
 
-const PageTreeContentSkeleton = (): JSX.Element => {
+const ItemsTreeContentSkeleton = (): JSX.Element => {
 
   return (
     <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`}>
@@ -15,4 +15,4 @@ const PageTreeContentSkeleton = (): JSX.Element => {
   );
 };
 
-export default PageTreeContentSkeleton;
+export default ItemsTreeContentSkeleton;
