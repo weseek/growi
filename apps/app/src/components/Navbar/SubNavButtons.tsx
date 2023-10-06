@@ -28,6 +28,9 @@ import SubscribeButton from '../SubscribeButton';
 import SeenUserInfo from '../User/SeenUserInfo';
 
 
+import styles from './SubNavButtons.module.scss';
+
+
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
   onClickMenuItem: (newValue: boolean) => void,
   expandContentWidth?: boolean,
@@ -212,7 +215,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   ];
 
   return (
-    <div className="d-flex" style={{ gap: '2px' }}>
+    <div className={`grw-sub-nav-buttons ${styles['grw-sub-nav-buttons']} d-flex`} style={{ gap: '2px' }}>
       {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
