@@ -1,17 +1,13 @@
 import {
-  forwardRef, useMemo, useRef, useEffect, useCallback,
+  forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
-import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
-
-import { useEmojiHintModal } from '~/stores/modal';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
-import { completeEmojiInput } from './EmojiHint/EmojiHint';
 import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
@@ -36,8 +32,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     indentSize,
   } = props;
 
-  const { open: openEmojiHintModal } = useEmojiHintModal();
-
   const containerRef = useRef(null);
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {
@@ -57,23 +51,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, indentSize]);
-
-  const onInputColonHandler = useCallback((event: any) => {
-    if (event.key === ':') {
-      openEmojiHintModal();
-    }
-  }, []);
-
-  const emojiMarkdownCompletions = markdownLanguage.data.of({
-    autocomplete: completeEmojiInput,
-  });
-
-  useEffect(() => {
-    document.addEventListener('keydown', onInputColonHandler, false);
-    return () => {
-      document.removeEventListener('keydown', onInputColonHandler, false);
-    };
-  }, [onInputColonHandler]);
 
   return (
     <div className="flex-expand-vert">
