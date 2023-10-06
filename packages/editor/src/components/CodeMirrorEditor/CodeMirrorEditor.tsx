@@ -2,6 +2,7 @@ import {
   forwardRef, useMemo, useRef, useEffect, useCallback,
 } from 'react';
 
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { indentUnit } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
@@ -10,7 +11,7 @@ import { useEmojiHintModal } from '~/stores/modal';
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
-
+import { completeEmojiInput } from './EmojiHint/EmojiHint';
 import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
@@ -59,10 +60,13 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const onInputColonHandler = useCallback((event: any) => {
     if (event.key === ':') {
-      console.log('ころん！');
       openEmojiHintModal();
     }
   }, []);
+
+  const emojiMarkdownCompletions = markdownLanguage.data.of({
+    autocomplete: completeEmojiInput,
+  });
 
   useEffect(() => {
     document.addEventListener('keydown', onInputColonHandler, false);

@@ -1,17 +1,9 @@
-import React, { FC } from 'react';
-
-
-import { Emoji } from 'emoji-mart';
+import type { CompletionContext } from '@codemirror/autocomplete';
+import { syntaxTree } from '@codemirror/language';
 import emojiData from 'emoji-mart/data/all.json';
 
-import { useEmojiHintModal } from '~/stores/modal';
-import 'emoji-mart/css/emoji-mart.css';
 
-import { EmojiHintItem } from './EmojiHintItem';
-
-import type { UseCodeMirrorEditor } from 'src';
-
-export const useEmojiAutoCompletion = (inputChar: string): string[] => {
+const getEmojiDataArray = (): string[] => {
   const rawEmojiDataArray = emojiData.categories;
 
   const emojiCategoriesData = [
@@ -37,50 +29,62 @@ export const useEmojiAutoCompletion = (inputChar: string): string[] => {
     fixedEmojiDataArray.push(...tempArray);
   });
 
-  const suggestedEmojiArray = fixedEmojiDataArray.filter((element) => {
-    return element.startsWith(inputChar);
-  });
-
-  console.dir(suggestedEmojiArray);
-
-  suggestedEmojiArray.sort((a, b) => { return a.length - b.length });
-
-  return suggestedEmojiArray;
+  return fixedEmojiDataArray;
 };
 
-const EmojiHintModalStyle = {
-  maxHeight: '40vh',
-  overflowY: 'auto',
-  width: '70vh',
+const emojiDataArray = getEmojiDataArray();
+
+const emojiOptions = emojiDataArray.map(
+  tag => ({ label: `:${tag}`, type: 'keyword' }),
+);
+
+export const completeEmojiInput = (context: CompletionContext) => {
+  const nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1);
+  const textBefore = context.state.sliceDoc(nodeBefore.from, context.pos);
+  const emojiBefore = /:\w*$/.exec(textBefore);
+
+  if (!emojiBefore && !context.explicit) return null;
+
+  return {
+    from: emojiBefore ? nodeBefore.from + emojiBefore.index : context.pos,
+    options: emojiOptions,
+    validFor: /^(:\w)?$/,
+  };
 };
 
-type EmojiHintProps = {
-  codeMirrorEditor: UseCodeMirrorEditor | undefined,
-}
+// const EmojiHintModalStyle = {
+//   maxHeight: '40vh',
+//   overflowY: 'auto',
+//   width: '70vh',
+// };
 
-export const EmojiHint: FC<EmojiHintProps> = (props) => {
-  const { codeMirrorEditor } = props;
+// type EmojiHintProps = {
+//   codeMirrorEditor: UseCodeMirrorEditor | undefined,
+// }
 
-  const { data: emojiHintModalData } = useEmojiHintModal();
+// export const EmojiHint: FC<EmojiHintProps> = (props) => {
+//   const { codeMirrorEditor } = props;
 
-  const { isOpened } = emojiHintModalData;
+//   const { data: emojiHintModalData } = useEmojiHintModal();
 
-  const suggestedEmojiArray = useEmojiAutoCompletion('f');
+//   const { isOpened } = emojiHintModalData;
 
-  return (
-    <>
-      {
-        isOpened
-          ? (
-            <div style={EmojiHintModalStyle} className="modal-content">
-              {suggestedEmojiArray.map(emojiName => (
-                <EmojiHintItem codeMirrorEditor={codeMirrorEditor} emojiName={emojiName} />
-              ))}
-            </div>
-          ) : (
-            ''
-          )
-      }
-    </>
-  );
-};
+//   const suggestedEmojiArray = useEmojiAutoCompletion('f');
+
+//   return (
+//     <>
+//       {
+//         isOpened
+//           ? (
+//             <div style={EmojiHintModalStyle} className="modal-content">
+//               {suggestedEmojiArray.map(emojiName => (
+//                 <EmojiHintItem codeMirrorEditor={codeMirrorEditor} emojiName={emojiName} />
+//               ))}
+//             </div>
+//           ) : (
+//             ''
+//           )
+//       }
+//     </>
+//   );
+// };
