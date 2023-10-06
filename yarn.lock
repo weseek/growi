@@ -5365,6 +5365,14 @@ binary@~0.3.0:
     buffers "~0.1.1"
     chainsaw "~0.1.0"
 
+bl@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/bl/-/bl-2.2.1.tgz#8c11a7b730655c5d56898cdc871224f40fd901d5"
+  integrity sha512-6Pesp1w0DEX1N550i/uGV/TqucVL4AM/pgThFSN/Qq9si1/DF9aIHs1BxD8V/QU0HoeHO6cQRTAuYnLPKq1e4g==
+  dependencies:
+    readable-stream "^2.3.5"
+    safe-buffer "^5.1.1"
+
 bl@^4.0.3, bl@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/bl/-/bl-4.1.0.tgz#451535264182bec2fbbc83a62ab98cf11d9f7b3a"
@@ -5487,6 +5495,11 @@ bson-objectid@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/bson-objectid/-/bson-objectid-2.0.4.tgz#339211572ef97dc98f2d68eaee7b99b7be59a089"
   integrity sha512-vgnKAUzcDoa+AeyYwXCoHyF2q6u/8H46dxu5JN+4/TZeq/Dlinn0K6GvxsCLb3LHUJl0m/TLiEK31kUwtgocMQ==
+
+bson@^1.1.4:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-1.1.6.tgz#fb819be9a60cd677e0853aee4ca712a785d6618a"
+  integrity sha512-EvVNVeGo4tHxwi8L6bPj3y3itEvStdwvvlojVxxbyYfoaxJ6keLgrTuKdyfEAszFK+H3olzBuafE0yoh0D1gdg==
 
 bson@^4.7.2:
   version "4.7.2"
@@ -12105,6 +12118,27 @@ mongodb@4.16.0, mongodb@^4.0.1, mongodb@^4.13.0:
     "@aws-sdk/credential-providers" "^3.186.0"
     saslprep "^1.0.3"
 
+mongodb@^3.7.4:
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.7.4.tgz#119530d826361c3e12ac409b769796d6977037a4"
+  integrity sha512-K5q8aBqEXMwWdVNh94UQTwZ6BejVbFhh1uB6c5FKtPE9eUMZPUO3sRZdgIEcHSrAWmxzpG/FeODDKL388sqRmw==
+  dependencies:
+    bl "^2.2.1"
+    bson "^1.1.4"
+    denque "^1.4.1"
+    optional-require "^1.1.8"
+    safe-buffer "^5.1.2"
+  optionalDependencies:
+    saslprep "^1.0.0"
+
+mongoist@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/mongoist/-/mongoist-2.7.0.tgz#047544a5ddec30254a8df48e869f03790d01ab04"
+  integrity sha512-5OKz4esuw5sVHb2TRxX5dTKVgBqj/SlRvzPABhJNoTtTwqySM7fr3VWizbIlBF40rlQi2Mz68UmSpAtSb/7cfA==
+  dependencies:
+    debug "^4.3.4"
+    mongodb "^3.7.4"
+
 mongoose-gridfs@^1.2.42:
   version "1.2.42"
   resolved "https://registry.yarnpkg.com/mongoose-gridfs/-/mongoose-gridfs-1.2.42.tgz#15f4ff25b9b4d7563d544cedd716fc326ad34961"
@@ -12771,6 +12805,13 @@ openid-client@^5.4.0:
     lru-cache "^6.0.0"
     object-hash "^2.0.1"
     oidc-token-hash "^5.0.1"
+
+optional-require@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/optional-require/-/optional-require-1.1.8.tgz#16364d76261b75d964c482b2406cb824d8ec44b7"
+  integrity sha512-jq83qaUb0wNg9Krv1c5OQ+58EK+vHde6aBPzLvPPqJm89UQWsvSuFy9X/OSNJnFeSOKo7btE0n8Nl2+nE+z5nA==
+  dependencies:
+    require-at "^1.0.6"
 
 optionator@^0.9.1:
   version "0.9.1"
