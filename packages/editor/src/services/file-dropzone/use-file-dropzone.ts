@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, Accept } from 'react-dropzone';
 import type { DropzoneState } from 'react-dropzone';
 
 import { AcceptedUploadFileType } from 'src/consts';
@@ -21,10 +21,14 @@ export const useFileDropzone = (props: DropzoneEditor): DropzoneState => {
     onUpload(acceptedFiles);
   }, [onUpload]);
 
+  const accept: Accept = {};
+  accept[(acceptedFileType ?? '')] = [];
+
   return useDropzone({
     noKeyboard: true,
     noClick: true,
     onDrop: dropHandler,
+    accept,
   });
 
 };

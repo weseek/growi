@@ -100,7 +100,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor]);
 
-  const { getRootProps, open } = useFileDropzone({ onUpload });
+  const { getRootProps, open } = useFileDropzone({ onUpload, acceptedFileType });
 
   return (
     <div {...getRootProps()} className="flex-expand-vert">
