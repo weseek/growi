@@ -4,6 +4,15 @@
     width: 100%;
     height: 100%;
 
+    // Header highlight style
+    .cm-header {
+      text-decoration: none;
+      &:first-of-type {
+        font-style: italic;
+        opacity: 0.5;
+      }
+    }
+
     .cm-header-1 {
       font-size: 1.9em;
     }
@@ -21,13 +30,6 @@
     }
     .cm-header-6 {
       font-size: 1.2em;
-    }
-    .ͼ7 {
-      text-decoration: none;
-    }
-    .ͼ5 {
-      font-style: italic;
-      opacity: 0.5;
     }
 
   }
