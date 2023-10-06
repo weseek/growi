@@ -366,7 +366,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (isUploadableImage) {
       return AcceptedUploadFileType.IMAGE;
     }
-    return AcceptedUploadFileType.NO;
+    return AcceptedUploadFileType.NONE;
   }, [isUploadableFile, isUploadableImage]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {

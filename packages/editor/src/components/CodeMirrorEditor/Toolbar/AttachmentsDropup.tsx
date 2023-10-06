@@ -5,7 +5,10 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
-import { AcceptedUploadFileType } from 'src/consts';
+import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-type';
+
+import { AttachmentsButton } from './AttachmentsButton';
+
 
 type Props = {
   onFileOpen: () => void,
@@ -14,7 +17,7 @@ type Props = {
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
 
-  const { onFileOpen } = props;
+  const { onFileOpen, acceptedFileType } = props;
   return (
     <>
       <UncontrolledDropdown direction="up" className="lh-1">
@@ -27,14 +30,7 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
             Attachments
           </DropdownItem>
           <DropdownItem divider />
-          <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
-            <span className="material-icons-outlined fs-5">attach_file</span>
-            Files
-          </DropdownItem>
-          <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
-            <span className="material-icons-outlined fs-5">image</span>
-            Images
-          </DropdownItem>
+          <AttachmentsButton onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
           <DropdownItem className="d-flex gap-1 align-items-center">
             <span className="material-icons-outlined fs-5">link</span>
             Link
