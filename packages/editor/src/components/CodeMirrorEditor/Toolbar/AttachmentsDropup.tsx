@@ -8,13 +8,17 @@ import {
 import { AcceptedUploadFileType } from 'src/consts';
 
 type Props = {
+<<<<<<< HEAD
   fileOpen: () => void,
   acceptedFileType?: AcceptedUploadFileType,
+=======
+  onFileOpen: () => void,
+>>>>>>> dev/7.0.x
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
 
-  const { fileOpen } = props;
+  const { onFileOpen } = props;
   return (
     <>
       <UncontrolledDropdown direction="up" className="lh-1">
@@ -27,11 +31,11 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
             Attachments
           </DropdownItem>
           <DropdownItem divider />
-          <DropdownItem className="d-flex gap-1 align-items-center" onClick={fileOpen}>
+          <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
             <span className="material-icons-outlined fs-5">attach_file</span>
             Files
           </DropdownItem>
-          <DropdownItem className="d-flex gap-1 align-items-center" onClick={fileOpen}>
+          <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
             <span className="material-icons-outlined fs-5">image</span>
             Images
           </DropdownItem>

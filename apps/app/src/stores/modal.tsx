@@ -739,3 +739,28 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
+
+/*
+* PageSelectModal
+*/
+type PageSelectModalStatus = {
+  isOpened: boolean;
+}
+
+type PageSelectModalStatusUtils = {
+  open(): Promise<PageSelectModalStatus | undefined>
+  close(): Promise<PageSelectModalStatus | undefined>
+}
+
+export const usePageSelectModal = (
+    status?: PageSelectModalStatus,
+): SWRResponse<PageSelectModalStatus, Error> & PageSelectModalStatusUtils => {
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageSelectModalStatus, Error>('PageSelectModal', status, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: () => swrResponse.mutate({ isOpened: true }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
