@@ -82,6 +82,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        yarn global add node-gyp
         yarn --frozen-lockfile
 
     - name: Download screenshots taken by cypress

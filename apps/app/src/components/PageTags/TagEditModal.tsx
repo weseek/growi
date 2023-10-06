@@ -5,7 +5,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import TagsInput from './TagsInput';
+import { TagsInput } from './TagsInput';
 
 type Props = {
   tags: string[],
