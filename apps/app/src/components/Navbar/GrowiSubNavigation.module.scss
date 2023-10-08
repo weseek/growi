@@ -41,14 +41,6 @@
       opacity: 0.5;
     }
 
-    .btn-edit-tags {
-      opacity: 0.5;
-
-      &.no-tags {
-        opacity: 0.7;
-      }
-    }
-
     .btn-skeleton {
       @extend %subnav-buttons-height;
       width: 100%;
