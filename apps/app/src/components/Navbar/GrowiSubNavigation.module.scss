@@ -41,11 +41,6 @@
       opacity: 0.5;
     }
 
-    .btn-skeleton {
-      @extend %subnav-buttons-height;
-      width: 100%;
-    }
-
     .btn-subscribe {
       @extend %subnav-buttons-height;
       font-size: 20px;

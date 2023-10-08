@@ -26,7 +26,7 @@ import {
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement,
+  EditorMode, useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
@@ -52,8 +52,6 @@ const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
   { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
-// TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
-// { ssr: false, loading: () => <Skeleton additionalClass='btn-skeleton py-2' /> },
 const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
