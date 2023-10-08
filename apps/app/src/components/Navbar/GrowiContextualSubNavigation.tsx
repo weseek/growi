@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { isPopulated } from '@growi/core';
 import type {
-  IUser, IPagePopulatedToShowRevision,
+  IPagePopulatedToShowRevision,
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -27,7 +27,7 @@ import {
 import { mutatePageTree } from '~/stores/page-listing';
 import {
   EditorMode, useEditorMode, useIsAbleToShowPageManagement,
-  useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
+  useIsAbleToChangeEditorMode,
 } from '~/stores/ui';
 
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -38,14 +38,10 @@ import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
 
-import type { AuthorInfoProps } from './AuthorInfo';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import type { SubNavButtonsProps } from './SubNavButtons';
 
-import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
-
-const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
 
 const PageEditorModeManager = dynamic(
@@ -56,9 +52,8 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
-const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
+const PageAuthorInfo = dynamic(() => import('./PageAuthorInfo').then(mod => mod.PageAuthorInfo), {
   ssr: false,
-  loading: AuthorInfoSkeleton,
 });
 
 type PageOperationMenuItemsProps = {
@@ -211,7 +206,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
-  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   // TODO: implement tags for editor
   // refs: https://redmine.weseek.co.jp/issues/132125
@@ -377,22 +371,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-          {(isAbleToShowPageAuthors && !pagePathUtils.isUsersHomepage(path ?? '')) && (
-            <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-start d-none d-lg-block d-edit-none py-2 ps-4 mb-0 ms-3`}>
-              <li className="pb-1">
-                {currentPage != null
-                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
-                  : <AuthorInfoSkeleton />
-                }
-              </li>
-              <li className="mt-1 pt-1 border-top">
-                {currentPage != null
-                  ? <AuthorInfo user={currentPage.lastUpdateUser as IUser} date={currentPage.updatedAt} mode="update" locate="subnav" />
-                  : <AuthorInfoSkeleton />
-                }
-              </li>
-            </ul>
-          )}
+
+          <PageAuthorInfo />
+
         </div>
 
         {path != null && currentUser != null && !isReadOnlyUser && (
