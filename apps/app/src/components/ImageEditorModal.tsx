@@ -6,7 +6,7 @@ import {
 
 import { useImageEditorModal } from '~/stores/modal';
 
-const WorkflowModal = (): JSX.Element => {
+const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close } = useImageEditorModal();
 
   if (imageEditorModalData?.imageSrc == null) {
@@ -32,4 +32,4 @@ const WorkflowModal = (): JSX.Element => {
   );
 };
 
-export default WorkflowModal;
+export default ImageEditorModal;
