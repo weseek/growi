@@ -72,7 +72,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         <DropdownToggle
           id="bookmark-dropdown-btn"
           color="transparent"
-          className={`shadow-none btn btn-bookmark border-0
+          className={`shadow-none btn btn-bookmark border-0 rounded-end-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
