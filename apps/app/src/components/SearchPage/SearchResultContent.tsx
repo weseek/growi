@@ -196,7 +196,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
-          isCompactMode
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -221,7 +220,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             pagePath={page.path}
             pageId={page._id}
             rightComponent={RightComponent}
-            isCompactMode
             additionalClasses={['px-4']}
           />
         ) }
