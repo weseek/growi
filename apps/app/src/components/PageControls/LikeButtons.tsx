@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 
-import UserPictureList from './User/UserPictureList';
+import UserPictureList from '../Common/UserPictureList';
 
 import styles from './LikeButtons.module.scss';
 

@@ -11,8 +11,8 @@ import UncontrolledTooltip from 'reactstrap/esm/UncontrolledTooltip';
 import { useSWRxBookmarkedUsers } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
 
-import { BookmarkFolderMenu } from './Bookmarks/BookmarkFolderMenu';
-import UserPictureList from './User/UserPictureList';
+import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
+import UserPictureList from '../Common/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
 

@@ -14,18 +14,19 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
+import type { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
-import { BookmarkButtons } from '../BookmarkButtons';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
-import LikeButtons from '../LikeButtons';
-import SubscribeButton from '../SubscribeButton';
-import SeenUserInfo from '../User/SeenUserInfo';
+
+import { BookmarkButtons } from './BookmarkButtons';
+import LikeButtons from './LikeButtons';
+import SeenUserInfo from './SeenUserInfo';
+import SubscribeButton from './SubscribeButton';
 
 
 import styles from './SubNavButtons.module.scss';

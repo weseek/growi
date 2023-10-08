@@ -5,7 +5,7 @@ import { FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
-import UserPictureList from './UserPictureList';
+import UserPictureList from '../Common/UserPictureList';
 
 
 import styles from './SeenUserInfo.module.scss';

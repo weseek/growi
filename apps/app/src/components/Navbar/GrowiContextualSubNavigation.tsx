@@ -36,10 +36,10 @@ import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
+import type { SubNavButtonsProps } from '../PageControls';
 import { Skeleton } from '../Skeleton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import type { SubNavButtonsProps } from './SubNavButtons';
 
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -49,7 +49,7 @@ const PageEditorModeManager = dynamic(
   { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
 const SubNavButtons = dynamic<SubNavButtonsProps>(
-  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+  () => import('../PageControls/SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
 const PageAuthorInfo = dynamic(() => import('../PageAuthorInfo/PageAuthorInfo').then(mod => mod.PageAuthorInfo), {
