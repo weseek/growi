@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+import { useImageEditorModal } from '~/stores/modal';
 
 export const ImageEditor = (props) => {
-  const { node, ...rest } = props;
-  const [toggler, setToggler] = useState(false);
+  const { ...rest } = props;
+
+  const { open: openImageEditorModal } = useImageEditorModal();
 
   return (
     <>
-      <img {...rest} onClick={() => setToggler(!toggler)} />
+      <img {...rest} onClick={() => openImageEditorModal()} />
     </>
   );
 };

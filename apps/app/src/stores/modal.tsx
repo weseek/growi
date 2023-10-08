@@ -739,3 +739,31 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
+
+
+/*
+ * ImageEditorModal
+ */
+type ImageEditorModalStatus = {
+  isOpened: boolean,
+}
+
+type ImageEditorModallUtils = {
+  open(): void,
+  close(): void,
+}
+
+export const useImageEditorModal = (): SWRResponse<ImageEditorModalStatus, Error> & ImageEditorModallUtils => {
+
+  const initialStatus: ImageEditorModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<LinkEditModalStatus, Error>('imageEditorModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: () => {
+      swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
