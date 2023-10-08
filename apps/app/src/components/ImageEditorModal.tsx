@@ -17,7 +17,7 @@ const WorkflowModal = (): JSX.Element => {
       </ModalHeader>
 
       <ModalBody>
-        ボディー
+        <img src={imageEditorModalData?.imageSrc}></img>
       </ModalBody>
 
       <ModalFooter>

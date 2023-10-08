@@ -14,7 +14,7 @@ export const ImageEditor = (props: Props): JSX.Element => {
 
   return (
     <>
-      <img src={src} alt={alt} onClick={() => openImageEditorModal()} />
+      <img src={src} alt={alt} onClick={() => openImageEditorModal(src)} />
     </>
   );
 };
