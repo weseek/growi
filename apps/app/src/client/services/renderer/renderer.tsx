@@ -17,7 +17,7 @@ import type { Pluggable } from 'unified';
 
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
-import { ImageEditor } from '~/components/ReactMarkdownComponents/ImageEditor';
+import { Image } from '~/components/ReactMarkdownComponents/Image';
 import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
 import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
@@ -306,7 +306,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.img = ImageEditor;
+    components.img = Image;
     components.slide = SlideViewer;
   }
 

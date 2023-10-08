@@ -20,7 +20,7 @@ function generateShapes() {
   }));
 }
 
-const WorkflowModal = (): JSX.Element => {
+const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close } = useImageEditorModal();
 
   const [stars, setStars] = useState(generateShapes());
@@ -109,4 +109,4 @@ const WorkflowModal = (): JSX.Element => {
   );
 };
 
-export default WorkflowModal;
+export default ImageEditorModal;
