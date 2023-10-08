@@ -7,7 +7,7 @@ import { useCurrentPathname } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useIsAbleToShowPageAuthors } from '~/stores/ui';
 
-import { AuthorInfo } from './AuthorInfo';
+import { AuthorInfo } from '../AuthorInfo';
 
 
 import styles from './PageAuthorInfo.module.scss';

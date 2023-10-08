@@ -52,7 +52,7 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
-const PageAuthorInfo = dynamic(() => import('./PageAuthorInfo').then(mod => mod.PageAuthorInfo), {
+const PageAuthorInfo = dynamic(() => import('../PageAuthorInfo/PageAuthorInfo').then(mod => mod.PageAuthorInfo), {
   ssr: false,
 });
 
