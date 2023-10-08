@@ -183,7 +183,6 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 
 type GrowiContextualSubNavigationProps = {
   currentPage?: IPagePopulatedToShowRevision | null,
-  isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
 
@@ -202,7 +201,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
-  const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
@@ -250,7 +248,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
-  const { isCompactMode, isLinkSharingDisabled } = props;
+  const { isLinkSharingDisabled } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
@@ -352,12 +350,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     return (
       <>
         <div className="d-flex">
-          <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
+          <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: '7px' }}>
             {isViewMode && (
               <div className="h-50">
                 {pageId != null && (
                   <SubNavButtons
-                    isCompactMode={isCompactMode}
                     pageId={pageId}
                     revisionId={revisionId}
                     shareLinkId={shareLinkId}
@@ -382,7 +379,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-          {(isAbleToShowPageAuthors && !isCompactMode && !pagePathUtils.isUsersHomepage(path ?? '')) && (
+          {(isAbleToShowPageAuthors && !pagePathUtils.isUsersHomepage(path ?? '')) && (
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-start d-none d-lg-block d-edit-none py-2 ps-4 mb-0 ms-3`}>
               <li className="pb-1">
                 {currentPage != null
@@ -420,9 +417,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <GrowiSubNavigation
       pagePath={pagePath}
       pageId={currentPage?._id}
-      showDrawerToggler={isDrawerMode}
-      isDrawerMode={isDrawerMode}
-      isCompactMode={isCompactMode}
       rightComponent={RightComponent}
       additionalClasses={['container-fluid']}
     />

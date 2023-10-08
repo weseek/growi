@@ -22,12 +22,6 @@
       min-height: var.$grw-subnav-min-height-md;
     }
 
-    .grw-drawer-toggler {
-      width: 50px;
-      height: 50px;
-      font-size: 24px;
-    }
-
     h1 {
       @include mixins.variable-font-size(32px);
       line-height: 1.4em;
@@ -123,47 +117,6 @@
       .btn-edit-tags {
         // change button opacity
         opacity: unset;
-      }
-    }
-
-    /*
-     * Compact Mode
-     */
-    &.grw-subnav-compact {
-      min-height: 70px;
-
-      @include bs.media-breakpoint-up(md) {
-        min-height: 90px;
-      }
-
-      .btn-skeleton {
-        @extend %compact-subnav-buttons-height;
-        width: 100%;
-      }
-
-      .btn-like,
-      .btn-bookmark,
-      .btn-subscribe {
-        width: 32px;
-        @extend %compact-subnav-buttons-height;
-        padding: 4px;
-        font-size: 16px;
-      }
-      .btn-seen-user {
-        width: 48px;
-        @extend %compact-subnav-buttons-height;
-        padding: 4px;
-        font-size: 16px;
-
-        svg {
-          width: 16px;
-          height: 16px;
-        }
-      }
-      .btn-page-item-control {
-        width: 32px;
-        @extend %compact-subnav-buttons-height;
-        font-size: 12px;
       }
     }
   }

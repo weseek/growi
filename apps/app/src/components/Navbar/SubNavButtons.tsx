@@ -66,7 +66,6 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
 
 
 type CommonProps = {
-  isCompactMode?: boolean,
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -90,7 +89,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
+    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -224,7 +223,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       )}
       {revisionId != null && (
         <LikeButtons
-          hideTotalNumber={isCompactMode}
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
           isLiked={isLiked}
@@ -236,10 +234,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
           bookmarkCount={pageInfo.bookmarkCount}
-          hideTotalNumber={isCompactMode}
         />
       )}
-      {revisionId != null && !isCompactMode && (
+      {revisionId != null && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}

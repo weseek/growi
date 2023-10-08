@@ -11,7 +11,6 @@ import styles from './LikeButtons.module.scss';
 
 type LikeButtonsProps = {
 
-  hideTotalNumber?: boolean,
   sumOfLikers: number,
   likers: IUser[],
 
@@ -30,7 +29,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   };
 
   const {
-    hideTotalNumber, isGuestUser, isLiked, sumOfLikers, onLikeClicked,
+    isGuestUser, isLiked, sumOfLikers, onLikeClicked,
   } = props;
 
   const getTooltipMessage = useCallback(() => {
@@ -57,25 +56,21 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
-      { !hideTotalNumber && (
-        <>
-          <button
-            type="button"
-            id="po-total-likes"
-            className={`shadow-none btn btn-like border-0
-              total-likes ${isLiked ? 'active' : ''}`}
-          >
-            {sumOfLikers}
-          </button>
-          <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
-            <PopoverBody className="user-list-popover">
-              <div className="px-2 text-end user-list-content text-truncate text-muted">
-                {props.likers?.length ? <UserPictureList users={props.likers} /> : t('No users have liked this yet.')}
-              </div>
-            </PopoverBody>
-          </Popover>
-        </>
-      ) }
+      <button
+        type="button"
+        id="po-total-likes"
+        className={`shadow-none btn btn-like border-0
+          total-likes ${isLiked ? 'active' : ''}`}
+      >
+        {sumOfLikers}
+      </button>
+      <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
+        <PopoverBody className="user-list-popover">
+          <div className="px-2 text-end user-list-content text-truncate text-muted">
+            {props.likers?.length ? <UserPictureList users={props.likers} /> : t('No users have liked this yet.')}
+          </div>
+        </PopoverBody>
+      </Popover>
     </div>
   );
 
