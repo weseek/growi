@@ -50,9 +50,7 @@ const PageControls = dynamic(
   () => import('../PageControls').then(mod => mod.PageControls),
   { ssr: false, loading: () => <></> },
 );
-const PageAuthorInfo = dynamic(() => import('../PageAuthorInfo/PageAuthorInfo').then(mod => mod.PageAuthorInfo), {
-  ssr: false,
-});
+
 
 type PageOperationMenuItemsProps = {
   pageId: string,
@@ -369,8 +367,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-
-          <PageAuthorInfo />
 
         </div>
 
