@@ -1,1 +1,1 @@
-export * from './SubNavButtons';
+export * from './PageControls';

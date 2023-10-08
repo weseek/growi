@@ -28,13 +28,12 @@ import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import { type RevisionLoaderProps } from '../Page/RevisionLoader';
 import { type PageCommentProps } from '../PageComment';
 import type { PageContentFooterProps } from '../PageContentFooter';
-import type { SubNavButtonsProps } from '../PageControls';
 
 import styles from './SearchResultContent.module.scss';
 
 
 const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../PageControls').then(mod => mod.SubNavButtons), { ssr: false });
+const PageControls = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
@@ -188,7 +187,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
-        <SubNavButtons
+        <PageControls
           pageId={page._id}
           revisionId={revisionId}
           path={page.path}
@@ -214,7 +213,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       data-testid="search-result-content"
       className={`dynamic-layout-root ${growiLayoutFluidClass} search-result-content ${styles['search-result-content']}`}
     >
-      <div className="grw-page-path-text-muted-container">
+      <div className=" ">
         { isRenderable && (
           <GrowiSubNavigation
             pagePath={page.path}

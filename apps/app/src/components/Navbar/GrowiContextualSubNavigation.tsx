@@ -36,7 +36,6 @@ import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
-import type { SubNavButtonsProps } from '../PageControls';
 import { Skeleton } from '../Skeleton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
@@ -48,8 +47,8 @@ const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
   { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
-const SubNavButtons = dynamic<SubNavButtonsProps>(
-  () => import('../PageControls/SubNavButtons').then(mod => mod.SubNavButtons),
+const PageControls = dynamic(
+  () => import('../PageControls').then(mod => mod.PageControls),
   { ssr: false, loading: () => <></> },
 );
 const PageAuthorInfo = dynamic(() => import('../PageAuthorInfo/PageAuthorInfo').then(mod => mod.PageAuthorInfo), {
@@ -346,7 +345,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             {isViewMode && (
               <div className="h-50">
                 {pageId != null && (
-                  <SubNavButtons
+                  <PageControls
                     pageId={pageId}
                     revisionId={revisionId}
                     shareLinkId={shareLinkId}
