@@ -53,7 +53,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className="grw-page-path-text-muted-container small">
+    <div className="small">
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );

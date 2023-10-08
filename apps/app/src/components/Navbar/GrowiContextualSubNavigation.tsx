@@ -36,9 +36,8 @@ import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
+import PagePathNav from '../PagePathNav';
 import { Skeleton } from '../Skeleton';
-
-import { GrowiSubNavigation } from './GrowiSubNavigation';
 
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -388,16 +387,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
 
   const pagePath = isIdenticalPath || isNotFound
-    ? currentPathname
-    : currentPage?.path;
+    ? currentPathname ?? ''
+    : currentPage?.path ?? '';
 
   return (
-    <GrowiSubNavigation
-      pagePath={pagePath}
-      pageId={currentPage?._id}
-      rightComponent={RightComponent}
-      additionalClasses={['container-fluid']}
-    />
+    <>
+      <RightComponent />
+      <PagePathNav pageId={pageId} pagePath={pagePath} />
+    </>
   );
 };
 

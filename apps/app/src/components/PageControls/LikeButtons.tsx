@@ -60,7 +60,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         type="button"
         id="po-total-likes"
         className={`shadow-none btn btn-like border-0
-          total-likes ${isLiked ? 'active' : ''}`}
+          total-counts ${isLiked ? 'active' : ''}`}
       >
         {sumOfLikers}
       </button>

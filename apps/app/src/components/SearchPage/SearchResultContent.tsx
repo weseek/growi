@@ -28,12 +28,13 @@ import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import { type RevisionLoaderProps } from '../Page/RevisionLoader';
 import { type PageCommentProps } from '../PageComment';
 import type { PageContentFooterProps } from '../PageContentFooter';
+import PagePathNav from '../PagePathNav';
 
 import styles from './SearchResultContent.module.scss';
 
 
 const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-const PageControls = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
+const SubNavButtons = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
@@ -187,7 +188,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
-        <PageControls
+        <SubNavButtons
           pageId={page._id}
           revisionId={revisionId}
           path={page.path}
@@ -213,21 +214,17 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       data-testid="search-result-content"
       className={`dynamic-layout-root ${growiLayoutFluidClass} search-result-content ${styles['search-result-content']}`}
     >
-      <div className=" ">
-        { isRenderable && (
-          <GrowiSubNavigation
-            pagePath={page.path}
-            pageId={page._id}
-            rightComponent={RightComponent}
-            additionalClasses={['px-4']}
-          />
-        ) }
-      </div>
+      <RightComponent />
+
       <div
         id="search-result-content-body-container"
         ref={scrollElementRef}
         className="search-result-content-body-container main container-lg grw-container-convertible overflow-y-scroll"
       >
+        { isRenderable && (
+          <PagePathNav pageId={page._id} pagePath={page.path} />
+        ) }
+
         { isRenderable && (
           <RevisionLoader
             rendererOptions={rendererOptions}

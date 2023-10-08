@@ -15,6 +15,7 @@ import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
 import UserPictureList from '../Common/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
+import popoverStyles from './user-list-popover.module.scss';
 
 interface Props {
   pageId: string,
@@ -86,12 +87,12 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         type="button"
         id="po-total-bookmarks"
         className={`shadow-none btn btn-bookmark border-0
-          total-bookmarks ${isBookmarked ? 'active' : ''}`}
+          total-counts ${isBookmarked ? 'active' : ''}`}
       >
         {bookmarkCount}
       </button>
       <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
-        <PopoverBody className="user-list-popover">
+        <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
           { isLoadingBookmarkedUsers && <i className="fa fa-spinner fa-pulse"></i> }
           { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
             <>

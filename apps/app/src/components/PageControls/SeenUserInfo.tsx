@@ -9,6 +9,7 @@ import UserPictureList from '../Common/UserPictureList';
 
 
 import styles from './SeenUserInfo.module.scss';
+import popoverStyles from './user-list-popover.module.scss';
 
 
 interface Props {
@@ -31,10 +32,10 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
         <span className="me-1 footstamp-icon">
           <FootstampIcon />
         </span>
-        <span className="seen-user-count">{sumOfSeenUsers || seenUsers.length}</span>
+        <span className="total-counts">{sumOfSeenUsers || seenUsers.length}</span>
       </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
-        <PopoverBody className="user-list-popover">
+        <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
           <div className="px-2 text-end user-list-content text-truncate text-muted">
             <UserPictureList users={seenUsers} />
           </div>
