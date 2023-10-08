@@ -28,17 +28,19 @@ const WorkflowModal = (): JSX.Element => {
   const [image] = useState(new window.Image());
 
   useEffect(() => {
-    if (imageEditorModalData?.imageSrc) {
-      image.src = imageEditorModalData.imageSrc;
-      image.onload = () => {
-        if (imageRef.current) {
-          const layer = imageRef.current.getLayer();
-          if (layer) {
-            layer.batchDraw();
-          }
+    const imageSrc = imageEditorModalData?.imageSrc;
+
+    if (!imageSrc) return;
+
+    image.src = imageSrc;
+    image.onload = () => {
+      if (imageRef.current) {
+        const layer = imageRef.current.getLayer();
+        if (layer) {
+          layer.batchDraw();
         }
-      };
-    }
+      }
+    };
   }, [image, imageEditorModalData]);
 
   const handleDragStart = (e) => {
