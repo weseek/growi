@@ -30,7 +30,7 @@ const ImageEditorModal = (): JSX.Element => {
   useEffect(() => {
     const imageSrc = imageEditorModalData?.imageSrc;
 
-    if (!imageSrc) return;
+    if (imageSrc == null) return;
 
     image.src = imageSrc;
     image.onload = () => {
