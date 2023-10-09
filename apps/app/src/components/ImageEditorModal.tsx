@@ -10,6 +10,7 @@ import {
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { useImageEditorModal } from '~/stores/modal';
+import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
 function generateShapes() {
   return [...Array(10)].map((_, i) => ({
@@ -28,6 +29,8 @@ const convertBase64ToBlob = async(base64Image: string): Promise<Blob> => {
 
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close } = useImageEditorModal();
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const [stars, setStars] = useState(generateShapes());
   const imageRef = React.useRef<Konva.Image | null>(null);
@@ -68,7 +71,7 @@ const ImageEditorModal = (): JSX.Element => {
   const saveImage = async() => {
     const temp = stageRef.current;
 
-    if (temp == null) {
+    if (temp == null || currentPageId == null || currentPagePath == null) {
       return;
     }
 
@@ -77,8 +80,8 @@ const ImageEditorModal = (): JSX.Element => {
     const formData = new FormData();
 
     formData.append('file', blobData, 'filename.png');
-    formData.append('page_id', '65226c5ea4eb0d25fc44d7a9');
-    formData.append('path', '/hoge');
+    formData.append('page_id', currentPageId);
+    formData.append('path', currentPagePath);
 
     try {
       await apiPostForm('/attachments.add', formData);
