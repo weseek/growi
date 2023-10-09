@@ -22,11 +22,6 @@ function generateShapes() {
   }));
 }
 
-const convertBase64ToBlob = async(base64Image: string): Promise<Blob> => {
-  const base64Response = await fetch(base64Image);
-  return base64Response.blob();
-};
-
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close } = useImageEditorModal();
   const { data: currentPageId } = useCurrentPageId();
@@ -75,15 +70,16 @@ const ImageEditorModal = (): JSX.Element => {
       return;
     }
 
-    const base64data = temp.toDataURL({});
-    const blobData = await convertBase64ToBlob(base64data);
-    const formData = new FormData();
-
-    formData.append('file', blobData, 'filename.png');
-    formData.append('page_id', currentPageId);
-    formData.append('path', currentPagePath);
-
     try {
+      const base64data = temp.toDataURL({});
+      const base64Response = await fetch(base64data);
+      const blobData = await base64Response.blob();
+      const formData = new FormData();
+
+      formData.append('file', blobData);
+      formData.append('page_id', currentPageId);
+      formData.append('path', currentPagePath);
+
       await apiPostForm('/attachments.add', formData);
     }
     catch (err) {
