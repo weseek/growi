@@ -69,7 +69,8 @@ const ImageEditorModal = (): JSX.Element => {
     }
 
     try {
-      const base64data = stageRef.current.toDataURL({});
+      // TODO: Put correct values in With and height
+      const base64data = stageRef.current.toDataURL({ quality: 0, width: 400, height: 400 });
       const base64Response = await fetch(base64data);
       const blobData = await base64Response.blob();
       const formData = new FormData();
@@ -78,10 +79,12 @@ const ImageEditorModal = (): JSX.Element => {
       formData.append('page_id', currentPageId);
       formData.append('path', currentPagePath);
 
-      await apiPostForm('/attachments.add', formData);
+      const res = await apiPostForm('/attachments.add', formData) as any;
+      const editedImagePath = res.attachment.filePathProxied;
 
-      // TODO: Replace the url of the attachment before editing with the url of the attachment after editing
-      // https://redmine.weseek.co.jp/issues/132370
+      if (imageEditorModalData?.onSave != null) {
+        imageEditorModalData?.onSave(editedImagePath);
+      }
 
       closeImageEditorModal();
     }

@@ -497,6 +497,24 @@ const PageEditor = React.memo((): JSX.Element => {
     };
   }, []);
 
+  // replace edited image path
+  useEffect(() => {
+    const handler = (editedImagePath: string, from, to) => {
+      if (editorRef.current == null) {
+        return;
+      }
+
+      const replaceText = `![](${editedImagePath})`;
+
+      editorRef.current.setEditedImagePath(replaceText, from, to);
+    };
+    globalEmitter.on('setEditedImageUrl', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('setEditedImageUrl', handler);
+    };
+  }, []);
+
   // set handler to save and return to View
   useEffect(() => {
     globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
