@@ -23,7 +23,7 @@ function generateShapes() {
 }
 
 const ImageEditorModal = (): JSX.Element => {
-  const { data: imageEditorModalData, close } = useImageEditorModal();
+  const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
 
@@ -82,6 +82,8 @@ const ImageEditorModal = (): JSX.Element => {
 
       // TODO: Replace the url of the attachment before editing with the url of the attachment after editing
       // https://redmine.weseek.co.jp/issues/132370
+
+      closeImageEditorModal();
     }
     catch (err) {
       // TODO: Error handling
@@ -94,7 +96,7 @@ const ImageEditorModal = (): JSX.Element => {
 
   return (
     <div>
-      <Modal isOpen={imageEditorModalData?.isOpened ?? false} toggle={() => close()}>
+      <Modal isOpen={imageEditorModalData?.isOpened ?? false} toggle={() => closeImageEditorModal()}>
         <ModalHeader>
           ヘッダー
         </ModalHeader>
