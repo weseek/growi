@@ -20,28 +20,35 @@ function generateShapes() {
   }));
 }
 
+const MAX_WIDTH = 800;
+
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close } = useImageEditorModal();
 
   const [stars, setStars] = useState(generateShapes());
   const imageRef = React.useRef<Konva.Image | null>(null);
   const [image] = useState(new window.Image());
+  const [imageWidth, setImageWidth] = useState<number>(image.naturalWidth);
+  const [imageHeight, setImageHeight] = useState<number>(image.naturalHeight);
 
-  useEffect(() => {
-    const imageSrc = imageEditorModalData?.imageSrc;
+  const resizeImage = (width: number, height: number) => {
+    const aspectRatio = width / height;
 
-    if (imageSrc == null) return;
+    let newWidth: number;
+    let newHeight: number;
 
-    image.src = imageSrc;
-    image.onload = () => {
-      if (imageRef.current) {
-        const layer = imageRef.current.getLayer();
-        if (layer) {
-          layer.batchDraw();
-        }
-      }
-    };
-  }, [image, imageEditorModalData]);
+    if (width > MAX_WIDTH) {
+      newWidth = MAX_WIDTH;
+      newHeight = MAX_WIDTH / aspectRatio;
+    }
+    else {
+      newWidth = width;
+      newHeight = height;
+    }
+
+    setImageWidth(newWidth);
+    setImageHeight(newHeight);
+  };
 
   const handleDragStart = (e) => {
     const id = e.target.id();
@@ -57,55 +64,73 @@ const ImageEditorModal = (): JSX.Element => {
     setStars(stars.map(star => ({ ...star, isDragging: false })));
   };
 
-  if (imageEditorModalData?.imageSrc == null) {
-    return <></>;
-  }
+  useEffect(() => {
+    const imageSrc = imageEditorModalData?.imageSrc;
+
+    if (imageSrc == null) return;
+
+    image.src = imageSrc;
+    image.onload = () => {
+      if (imageRef.current != null) {
+        const layer = imageRef.current.getLayer();
+        if (layer) {
+          layer.batchDraw();
+        }
+      }
+
+      resizeImage(image.naturalWidth, image.naturalHeight);
+    };
+  }, [image, imageEditorModalData]);
+
 
   return (
-    <div>
-      <Modal isOpen={imageEditorModalData?.isOpened ?? false} toggle={() => close()}>
-        <ModalHeader>
-          ヘッダー
-        </ModalHeader>
+    <Modal
+      style={{ maxWidth: '1000px' }}
+      isOpen={imageEditorModalData?.isOpened ?? false}
+      toggle={() => close()}
+    >
+      <ModalHeader>
+        ヘッダー
+      </ModalHeader>
 
-        <ModalBody>
-          <Stage width={window.innerWidth} height={window.innerHeight}>
-            <Layer>
-              <KonvaImage image={image} ref={imageRef} />
+      <ModalBody>
+        <Stage width={imageWidth} height={imageHeight}>
+          <Layer>
+            <KonvaImage image={image} ref={imageRef} width={imageWidth} height={imageHeight} />
 
-              {stars.map(star => (
-                <Star
-                  key={star.id}
-                  id={star.id}
-                  x={star.x}
-                  y={star.y}
-                  numPoints={5}
-                  innerRadius={20}
-                  outerRadius={40}
-                  fill="#89b717"
-                  opacity={0.8}
-                  draggable
-                  rotation={star.rotation}
-                  shadowColor="black"
-                  shadowBlur={10}
-                  shadowOpacity={0.6}
-                  shadowOffsetX={star.isDragging ? 10 : 5}
-                  shadowOffsetY={star.isDragging ? 10 : 5}
-                  scaleX={star.isDragging ? 1.2 : 1}
-                  scaleY={star.isDragging ? 1.2 : 1}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                />
-              ))}
-            </Layer>
-          </Stage>
-        </ModalBody>
+            {stars.map(star => (
+              <Star
+                key={star.id}
+                id={star.id}
+                x={star.x}
+                y={star.y}
+                numPoints={5}
+                innerRadius={20}
+                outerRadius={40}
+                fill="#89b717"
+                opacity={0.8}
+                draggable
+                rotation={star.rotation}
+                shadowColor="black"
+                shadowBlur={10}
+                shadowOpacity={0.6}
+                shadowOffsetX={star.isDragging ? 10 : 5}
+                shadowOffsetY={star.isDragging ? 10 : 5}
+                scaleX={star.isDragging ? 1.2 : 1}
+                scaleY={star.isDragging ? 1.2 : 1}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              />
+            ))}
 
-        <ModalFooter>
-          フッター
-        </ModalFooter>
-      </Modal>
-    </div>
+          </Layer>
+        </Stage>
+      </ModalBody>
+
+      <ModalFooter>
+        フッター
+      </ModalFooter>
+    </Modal>
   );
 };
 
