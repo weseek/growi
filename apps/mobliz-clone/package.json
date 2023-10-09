@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn next dev",
+    "dev": "yarn next dev -p 3020",
     "build": "yarn next build",
     "start": "yarn next start",
     "lint:typecheck": "npx -y tsc",
