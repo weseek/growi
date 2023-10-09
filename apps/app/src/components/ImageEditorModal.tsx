@@ -93,7 +93,7 @@ const ImageEditorModal = (): JSX.Element => {
         ヘッダー
       </ModalHeader>
 
-      <ModalBody>
+      <ModalBody className="mx-auto">
         <Stage width={imageWidth} height={imageHeight}>
           <Layer>
             <KonvaImage image={image} ref={imageRef} width={imageWidth} height={imageHeight} />
