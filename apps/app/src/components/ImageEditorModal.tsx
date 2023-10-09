@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import Konva from 'konva';
 import {
@@ -8,6 +8,7 @@ import {
   Modal, ModalBody, ModalHeader, ModalFooter,
 } from 'reactstrap';
 
+import { apiPostForm } from '~/client/util/apiv1-client';
 import { useImageEditorModal } from '~/stores/modal';
 
 function generateShapes() {
@@ -20,12 +21,19 @@ function generateShapes() {
   }));
 }
 
+const convertBase64ToBlob = async(base64Image: string): Promise<Blob> => {
+  const base64Response = await fetch(base64Image);
+  return base64Response.blob();
+};
+
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close } = useImageEditorModal();
 
   const [stars, setStars] = useState(generateShapes());
   const imageRef = React.useRef<Konva.Image | null>(null);
   const [image] = useState(new window.Image());
+
+  const stageRef = useRef<Konva.Stage>(null);
 
   useEffect(() => {
     const imageSrc = imageEditorModalData?.imageSrc;
@@ -57,6 +65,29 @@ const ImageEditorModal = (): JSX.Element => {
     setStars(stars.map(star => ({ ...star, isDragging: false })));
   };
 
+  const saveImage = async() => {
+    const temp = stageRef.current;
+
+    if (temp == null) {
+      return;
+    }
+
+    const base64data = temp.toDataURL({});
+    const blobData = await convertBase64ToBlob(base64data);
+    const formData = new FormData();
+
+    formData.append('file', blobData, 'filename.png');
+    formData.append('page_id', '65226c5ea4eb0d25fc44d7a9');
+    formData.append('path', '/hoge');
+
+    try {
+      await apiPostForm('/attachments.add', formData);
+    }
+    catch (err) {
+      //
+    }
+  };
+
   if (imageEditorModalData?.imageSrc == null) {
     return <></>;
   }
@@ -69,7 +100,7 @@ const ImageEditorModal = (): JSX.Element => {
         </ModalHeader>
 
         <ModalBody>
-          <Stage width={window.innerWidth} height={window.innerHeight}>
+          <Stage ref={stageRef} width={window.innerWidth} height={window.innerHeight}>
             <Layer>
               <KonvaImage image={image} ref={imageRef} />
 
@@ -102,7 +133,7 @@ const ImageEditorModal = (): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          フッター
+          <button type="button" onClick={() => saveImage()}>保存</button>
         </ModalFooter>
       </Modal>
     </div>
