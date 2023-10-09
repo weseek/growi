@@ -30,7 +30,7 @@ const ImageEditorModal = (): JSX.Element => {
   const [stars, setStars] = useState(generateShapes());
   const [image] = useState(new window.Image());
 
-  const imageRef = React.useRef<Konva.Image | null>(null);
+  const imageRef = useRef<Konva.Image | null>(null);
   const stageRef = useRef<Konva.Stage | null>(null);
 
   useEffect(() => {
