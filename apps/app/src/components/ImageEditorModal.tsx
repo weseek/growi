@@ -63,7 +63,7 @@ const ImageEditorModal = (): JSX.Element => {
     setStars(stars.map(star => ({ ...star, isDragging: false })));
   };
 
-  const saveButtonClickedHandler = async() => {
+  const saveButtonClickHandler = async() => {
     if (stageRef.current == null || currentPageId == null || currentPagePath == null) {
       return;
     }
@@ -133,7 +133,7 @@ const ImageEditorModal = (): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" onClick={() => saveButtonClickedHandler()}>保存</button>
+          <button type="button" onClick={() => saveButtonClickHandler()}>保存</button>
         </ModalFooter>
       </Modal>
     </div>
