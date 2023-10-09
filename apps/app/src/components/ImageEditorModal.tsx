@@ -28,10 +28,10 @@ const ImageEditorModal = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [stars, setStars] = useState(generateShapes());
-  const imageRef = React.useRef<Konva.Image | null>(null);
   const [image] = useState(new window.Image());
 
-  const stageRef = useRef<Konva.Stage>(null);
+  const imageRef = React.useRef<Konva.Image | null>(null);
+  const stageRef = useRef<Konva.Stage | null>(null);
 
   useEffect(() => {
     const imageSrc = imageEditorModalData?.imageSrc;
@@ -63,15 +63,13 @@ const ImageEditorModal = (): JSX.Element => {
     setStars(stars.map(star => ({ ...star, isDragging: false })));
   };
 
-  const saveImage = async() => {
-    const temp = stageRef.current;
-
-    if (temp == null || currentPageId == null || currentPagePath == null) {
+  const saveButtonClickedHandler = async() => {
+    if (stageRef.current == null || currentPageId == null || currentPagePath == null) {
       return;
     }
 
     try {
-      const base64data = temp.toDataURL({});
+      const base64data = stageRef.current.toDataURL({});
       const base64Response = await fetch(base64data);
       const blobData = await base64Response.blob();
       const formData = new FormData();
@@ -81,9 +79,12 @@ const ImageEditorModal = (): JSX.Element => {
       formData.append('path', currentPagePath);
 
       await apiPostForm('/attachments.add', formData);
+
+      // TODO: Replace the url of the attachment before editing with the url of the attachment after editing
+      // https://redmine.weseek.co.jp/issues/132370
     }
     catch (err) {
-      //
+      // TODO: Error handling
     }
   };
 
@@ -132,7 +133,7 @@ const ImageEditorModal = (): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" onClick={() => saveImage()}>保存</button>
+          <button type="button" onClick={() => saveButtonClickedHandler()}>保存</button>
         </ModalFooter>
       </Modal>
     </div>
