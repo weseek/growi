@@ -68,7 +68,7 @@ const ImageEditorModal = (): JSX.Element => {
   const saveImage = async() => {
     const temp = stageRef.current;
 
-    if (temp == null || imageEditorModalData?.pageId == null || imageEditorModalData?.pagePath == null) {
+    if (temp == null) {
       return;
     }
 
@@ -77,8 +77,8 @@ const ImageEditorModal = (): JSX.Element => {
     const formData = new FormData();
 
     formData.append('file', blobData, 'filename.png');
-    formData.append('page_id', imageEditorModalData?.pageId);
-    formData.append('path', imageEditorModalData?.pagePath);
+    formData.append('page_id', '65226c5ea4eb0d25fc44d7a9');
+    formData.append('path', '/hoge');
 
     try {
       await apiPostForm('/attachments.add', formData);
