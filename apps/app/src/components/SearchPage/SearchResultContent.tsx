@@ -24,16 +24,14 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
+import { PagePathNav } from '../Common/PagePathNav';
 import { type RevisionLoaderProps } from '../Page/RevisionLoader';
 import { type PageCommentProps } from '../PageComment';
 import type { PageContentFooterProps } from '../PageContentFooter';
-import PagePathNav from '../PagePathNav';
 
 import styles from './SearchResultContent.module.scss';
 
 
-const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
 const SubNavButtons = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });

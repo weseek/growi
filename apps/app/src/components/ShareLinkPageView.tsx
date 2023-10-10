@@ -105,7 +105,6 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
           ) }
           { !isNotFound && (
             <>
-              <PagePathNav pageId={page?._id} pagePath={pagePath} />
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
               <div className="mb-5">
                 <Contents />
