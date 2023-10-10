@@ -18,7 +18,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType) {
+  async createAttachment(file, user, pageId = null, attachmentType, parent) {
     const { fileUploadService } = this.crowi;
 
     // check limit
@@ -38,6 +38,9 @@ class AttachmentService {
     try {
       attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(fileStream, attachment);
+      if (parent != null) {
+        attachment.parent = parent;
+      }
       await attachment.save();
     }
     catch (err) {

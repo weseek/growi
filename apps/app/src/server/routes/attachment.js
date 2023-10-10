@@ -457,6 +457,8 @@ module.exports = function(crowi, app) {
     let pageId = req.body.page_id || null;
     const pagePath = req.body.path || null;
     const pageBody = req.body.page_body || null;
+    const parent = req.body.parent;
+
     let pageCreated = false;
 
     // check params
@@ -503,7 +505,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, parent);
     }
     catch (err) {
       logger.error(err);

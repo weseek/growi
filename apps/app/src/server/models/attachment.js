@@ -33,6 +33,7 @@ module.exports = function(crowi) {
     fileSize: { type: Number, default: 0 },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
+    parent: { type: ObjectId, ref: 'Attachment' },
     attachmentType: {
       type: String,
       enum: AttachmentType,
