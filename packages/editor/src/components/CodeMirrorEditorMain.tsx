@@ -46,7 +46,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setCPageId] = useState(pageId);
-  // const [isGlobalSync, setIsGlobalSync] = useState<boolean>(false);
 
   // cleanup ydoc and socketIOProvider
   useEffect(() => {
@@ -68,8 +67,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     socket.off('ydoc:sync');
 
     setCPageId(pageId);
-
-    // setIsGlobalSync(false);
   }, [cPageId, pageId, provider, socket, ydoc]);
 
   // setup ydoc
@@ -105,15 +102,14 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       if (isSync) {
         // TODO: use SocketEventName
         socket.emit('ydoc:sync', { pageId, initialValue });
-
       }
-      // setIsGlobalSync(isSync);
     });
 
     // TODO: delete this code
     socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
       if (_status) console.log(_status);
     });
+
     setProvider(socketIOProvider);
   }, [initialValue, pageId, provider, socket, userName, ydoc]);
 
@@ -139,15 +135,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     if (ydoc == null) {
       return;
     }
-
-    // console.log('sync', globalIsSync);
-    // // TODO: check behavior when ydoc diff is retrieved once from server but sync is false exactly 5 seconds later
-    // // TODO: Note that empty characters will be entered.s
-    // setTimeout(() => {
-    //   if (!globalIsSync) {
-    //     ydoc.getText('codemirror').insert(0, initialValue);
-    //   }
-    // }, 5000);
 
     const ytext = ydoc.getText('codemirror');
     codeMirrorEditor?.initDoc(ytext.toString());
@@ -193,16 +180,5 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       onUpload={onUpload}
       indentSize={indentSize}
     />
-    // <>
-    //   {isGlobalSync
-    //     ? (
-    //       <CodeMirrorEditor
-    //         editorKey={GlobalCodeMirrorEditorKey.MAIN}
-    //         onChange={onChange}
-    //         onUpload={onUpload}
-    //         indentSize={indentSize}
-    //       />
-    //     ) : <p className="text-danger font-weight-bold">connecting ...</p>}
-    // </>
   );
 };
