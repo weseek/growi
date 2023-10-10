@@ -744,14 +744,16 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
 /*
  * ImageEditorModal
  */
+type ImageEditorModalSaveHandler = (editedImagePath: string) => void;
+
 type ImageEditorModalStatus = {
   isOpened: boolean,
   imageSrc?: string,
-  onSave?: (editedImagePath: string) => void
+  onSave?: ImageEditorModalSaveHandler,
 }
 
 type ImageEditorModallUtils = {
-  open(imageSrc: string, onSave?: (editedImagePath: string) => void) : void,
+  open(imageSrc: string, onSave?: ImageEditorModalSaveHandler) : void,
   close(): void,
 }
 
@@ -761,7 +763,7 @@ export const useImageEditorModal = (): SWRResponse<ImageEditorModalStatus, Error
   const swrResponse = useStaticSWR<ImageEditorModalStatus, Error>('imageEditorModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: (imageSrc: string, onSave?: (editedImagePath: string) => void) => {
+    open: (imageSrc: string, onSave?: ImageEditorModalSaveHandler) => {
       swrResponse.mutate({ isOpened: true, imageSrc, onSave });
     },
     close: () => {
