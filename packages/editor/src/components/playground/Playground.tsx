@@ -61,6 +61,8 @@ export const Playground = (): JSX.Element => {
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
+            setMarkdownToPreview={setMarkdownToPreview}
+            initialValue={initialValue}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
