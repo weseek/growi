@@ -141,6 +141,10 @@
     .nologin-header {
       background-color: rgba(white, 0.5);
 
+      svg {
+        fill: var(--bs-body-color);
+      }
+
       .logo {
         background-color: rgba(black, 0);
         fill: rgba(black, 0.5);
@@ -209,6 +213,10 @@
 
     .nologin-header {
       background-color: rgba(black, 0.5);
+
+      svg {
+        fill: var(--bs-body-color);
+      }
 
       .logo {
         background-color: rgba(white, 0);
