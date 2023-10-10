@@ -26,7 +26,7 @@ import {
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
-  EditorMode, useEditorMode, useIsAbleToShowPageManagement,
+  useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
 } from '~/stores/ui';
 
@@ -172,7 +172,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 
 type GrowiContextualSubNavigationProps = {
   currentPage?: IPagePopulatedToShowRevision | null,
-  isLinkSharingDisabled: boolean,
+  isLinkSharingDisabled?: boolean,
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
