@@ -31,7 +31,7 @@ export const NoLoginLayout = ({
 
           <div className="row">
 
-            <div className="col-md-12">
+            <div className="col-md-12 position-relative">
               <div className="nologin-header mx-auto">
                 <GrowiLogo />
                 <h1 className="my-3">{ appTitle ?? 'GROWI' }</h1>
