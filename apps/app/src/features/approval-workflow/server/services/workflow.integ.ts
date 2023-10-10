@@ -364,8 +364,8 @@ describe('WorkflowService', () => {
 
 
       // then
-      // const createdTargetApproverGroup1 = updatedWorkflow.approverGroups[1];
-      // const createdTargetApproverGroup2 = updatedWorkflow.approverGroups[5];
+      const createdTargetApproverGroup1 = updatedWorkflow.approverGroups[1];
+      const createdTargetApproverGroup2 = updatedWorkflow.approverGroups[5];
 
       // const createdTargetApproverGroupApproverIds1 = createdTargetApproverGroup1.approvers.map(v => v.user.toString());
       // const createdTargetApproverGroupApproverIds2 = createdTargetApproverGroup2.approvers.map(v => v.user.toString());
@@ -381,8 +381,8 @@ describe('WorkflowService', () => {
       const updatedTargetApproverToRemove1 = (updatedTargetApproverGroup2 as any).findApprover(approverId7);
       const updatedTargetApproverToRemove2 = (updatedTargetApproverGroup2 as any).findApprover(approverId8);
 
-      // expect(createdTargetApproverGroup1.approvalType).toEqual(WorkflowApprovalType.AND);
-      // expect(createdTargetApproverGroup2.approvalType).toEqual(WorkflowApprovalType.OR);
+      expect(createdTargetApproverGroup1.approvalType).toEqual(WorkflowApprovalType.AND);
+      expect(createdTargetApproverGroup2.approvalType).toEqual(WorkflowApprovalType.OR);
       // expect(createdTargetApproverGroupApproverIds1.includes(approverIdToAdd1)).toBe(true);
       // expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd2)).toBe(true);
       // expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd3)).toBe(true);
