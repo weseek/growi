@@ -10,4 +10,12 @@
   .sticky-inner-wrapper {
     z-index: bs.$zindex-sticky;
   }
+
+  // set smaller font-size when sticky
+  .sticky-inner-wrapper.active {
+    h1 {
+      font-size: 1.75rem !important;
+    }
+  }
 }
+

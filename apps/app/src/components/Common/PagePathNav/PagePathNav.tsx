@@ -63,10 +63,10 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   const copyDropdownToggleClassName = 'd-block btn-outline-secondary btn-copy border-0 text-muted p-2';
 
   return (
-    <div className="grw-page-path-nav">
+    <div>
       {formerLink}
       <div className="d-flex align-items-center">
-        <h1 className="m-0 text-truncate">
+        <h1 className="m-0 fs-2 text-truncate">
           {collapsedParent}
           <span className={styles['grw-mr-02em']}>/</span>
           {latterLink}
@@ -88,7 +88,7 @@ type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
 
 export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element => {
   return (
-    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`}>
+    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1" innerActiveClass="active">
       {({ status }: { status: boolean }) => {
         const isCollapseParents = status === Sticky.STATUS_FIXED;
         return <PagePathNav {...props} isCollapseParents={isCollapseParents} />;
