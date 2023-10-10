@@ -185,7 +185,7 @@
     "remark-toc": "^8.0.1",
     "remark-wiki-link": "^1.0.4",
     "sanitize-filename": "^1.6.3",
-    "socket.io": "^4.2.0",
+    "socket.io": "^4.7.2",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
     "superjson": "^1.9.1",
