@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
-import Sticky from 'react-stickynode';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
@@ -11,11 +10,10 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { PagePathNav } from './Common/PagePathNav';
+import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Layout/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
-import { PagePathNav } from './PagePathNav';
 import type { PageSideContentsProps } from './PageSideContents';
 
 
@@ -55,12 +53,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   }, [disableLinkSharing, props.disableLinkSharing]);
 
   const headerContents = (
-    <Sticky>
-      {({ status }: { status: boolean }) => {
-        const isCollapseParents = status === Sticky.STATUS_FIXED;
-        return <PagePathNav pageId={page?._id} pagePath={pagePath} isCollapseParents={isCollapseParents} />;
-      }}
-    </Sticky>
+    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
   );
 
   const sideContents = !isNotFound

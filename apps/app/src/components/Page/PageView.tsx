@@ -5,7 +5,6 @@ import React, {
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
-import Sticky from 'react-stickynode';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
@@ -18,7 +17,7 @@ import { useIsMobile } from '~/stores/ui';
 
 
 import type { CommentsProps } from '../Comments';
-import { PagePathNav } from '../Common/PagePathNav';
+import { PagePathNavSticky } from '../Common/PagePathNav';
 import { PageViewLayout } from '../Layout/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
@@ -101,12 +100,7 @@ export const PageView = (props: Props): JSX.Element => {
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
   const headerContents = (
-    <Sticky>
-      {({ status }: { status: boolean }) => {
-        const isCollapseParents = status === Sticky.STATUS_FIXED;
-        return <PagePathNav pageId={page?._id} pagePath={pagePath} isCollapseParents={isCollapseParents} />;
-      }}
-    </Sticky>
+    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
   );
 
   const sideContents = !isNotFound && !isNotCreatable

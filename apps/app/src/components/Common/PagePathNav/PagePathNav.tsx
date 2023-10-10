@@ -3,11 +3,16 @@ import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
+import Sticky from 'react-stickynode';
 
 import { useIsNotFound } from '~/stores/page';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
+
+
+import styles from './PagePathNav.module.scss';
+
 
 const { isTrashPage } = pagePathUtils;
 
@@ -63,5 +68,19 @@ export const PagePathNav: FC<Props> = (props: Props) => {
         ) }
       </div>
     </div>
+  );
+};
+
+
+type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
+
+export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element => {
+  return (
+    <Sticky className={styles['grw-page-path-nav-sticky']}>
+      {({ status }: { status: boolean }) => {
+        const isCollapseParents = status === Sticky.STATUS_FIXED;
+        return <PagePathNav {...props} isCollapseParents={isCollapseParents} />;
+      }}
+    </Sticky>
   );
 };
