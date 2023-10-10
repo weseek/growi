@@ -22,6 +22,21 @@ function generateShapes() {
   }));
 }
 
+function getAttachmentId(imageSrc?: string): string | undefined {
+  if (imageSrc == null) {
+    return;
+  }
+
+  const regex = /(?:https?:\/\/[^/]+)?\/attachment\/(\w+)/;
+  const match = imageSrc.match(regex);
+
+  if (match == null) {
+    return;
+  }
+
+  return match[1];
+}
+
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
   const { data: currentPageId } = useCurrentPageId();
@@ -80,6 +95,11 @@ const ImageEditorModal = (): JSX.Element => {
       formData.append('file', blobData);
       formData.append('page_id', currentPageId);
       formData.append('path', currentPagePath);
+
+      const attachmentId = getAttachmentId(imageEditorModalData?.imageSrc);
+      if (attachmentId != null) {
+        formData.append('parent', attachmentId);
+      }
 
       const res = await apiPostForm('/attachments.add', formData) as any;
       const editedImagePath = res.attachment.filePathProxied;
