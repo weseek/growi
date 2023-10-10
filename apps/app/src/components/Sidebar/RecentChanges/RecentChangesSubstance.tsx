@@ -9,7 +9,7 @@ import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 import { useKeywordManager } from '~/client/services/search-operation';
 import FormattedDistanceDate from '~/components/FormattedDistanceDate';
 import InfiniteScroll from '~/components/InfiniteScroll';
-import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import { PagePathHierarchicalLink } from '~/components/PagePathHierarchicalLink';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';

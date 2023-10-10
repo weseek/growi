@@ -3,7 +3,9 @@ import React, { memo, useCallback } from 'react';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import LinkedPagePath from '../models/linked-page-path';
+import LinkedPagePath from '../../models/linked-page-path';
+
+import styles from './PagePathHierarchicalLink.module.scss';
 
 
 type PagePathHierarchicalLinkProps = {
@@ -16,8 +18,7 @@ type PagePathHierarchicalLinkProps = {
   isInnerElem?: boolean,
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JSX.Element => {
+export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JSX.Element => {
   const {
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash, isInnerElem,
   } = props;
@@ -26,7 +27,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
   const RootElm = useCallback(({ children }) => {
     return isInnerElem
       ? <>{children}</>
-      : <span className="grw-page-path-hierarchical-link text-break">{children}</span>;
+      : <span className="text-break">{children}</span>;
   }, [isInnerElem]);
 
   // render root element
@@ -43,7 +44,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
               <i className="icon-trash"></i>
             </Link>
           </span>
-          <span className="separator"><a href="/">/</a></span>
+          <span className={`separator ${styles.separator}`}><a href="/">/</a></span>
         </RootElm>
       )
       : (
@@ -51,7 +52,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
           <span className="path-segment">
             <Link href="/" prefetch={false}>
               <i className="icon-home"></i>
-              <span className="separator">/</span>
+              <span className={`separator ${styles.separator}`}>/</span>
             </Link>
           </span>
         </RootElm>
@@ -78,7 +79,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
         />
       ) }
       { isSeparatorRequired && (
-        <span className="separator">/</span>
+        <span className={`separator ${styles.separator}`}>/</span>
       ) }
 
       <Link href={href} prefetch={false} legacyBehavior>
@@ -93,7 +94,3 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
     </RootElm>
   );
 });
-PagePathHierarchicalLink.displayName = 'PagePathHierarchicalLink';
-
-
-export default PagePathHierarchicalLink;

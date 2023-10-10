@@ -8,7 +8,7 @@ import { useIsNotFound } from '~/stores/page';
 
 import LinkedPagePath from '../models/linked-page-path';
 
-import PagePathHierarchicalLink from './PagePathHierarchicalLink';
+import { PagePathHierarchicalLink } from './PagePathHierarchicalLink';
 
 const { isTrashPage } = pagePathUtils;
 
