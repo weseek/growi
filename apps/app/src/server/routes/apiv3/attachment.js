@@ -152,7 +152,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apv3Err(err);
+      return res.apiv3Err(err);
     }
   });
 
