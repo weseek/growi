@@ -21,13 +21,20 @@ type Props = {
   pageId?: string | null,
   isSingleLineMode?: boolean,
   isCollapseParents?: boolean,
+  formerLinkClassName?: string,
+  latterLinkClassName?: string,
 }
 
 const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
+const Separator = (): JSX.Element => {
+  return <span className={styles['grw-mr-02em']}>/</span>;
+};
+
 export const PagePathNav: FC<Props> = (props: Props) => {
   const {
     pageId, pagePath, isSingleLineMode, isCollapseParents,
+    formerLinkClassName, latterLinkClassName,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -36,7 +43,6 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   const isInTrash = isTrashPage(pagePath);
 
   let formerLink;
-  let collapsedParent;
   let latterLink;
 
   // one line
@@ -48,15 +54,25 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   else if (isCollapseParents) {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    collapsedParent = <CollapsedParentsDropdown linkedPagePath={linkedPagePathFormer} />;
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />;
+    latterLink = (
+      <>
+        <CollapsedParentsDropdown linkedPagePath={linkedPagePathFormer} />
+        <Separator />
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
+      </>
+    );
   }
   // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
     formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />;
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />;
+    latterLink = (
+      <>
+        <Separator />
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
+      </>
+    );
   }
 
   const copyDropdownId = `copydropdown-${pageId}`;
@@ -64,11 +80,9 @@ export const PagePathNav: FC<Props> = (props: Props) => {
 
   return (
     <div>
-      {formerLink}
+      <span className={formerLinkClassName}>{formerLink}</span>
       <div className="d-flex align-items-center">
-        <h1 className="m-0 fs-2 text-truncate">
-          {collapsedParent}
-          <span className={styles['grw-mr-02em']}>/</span>
+        <h1 className={`m-0 text-truncate ${latterLinkClassName}`}>
           {latterLink}
         </h1>
         { pageId != null && !isNotFound && (
@@ -98,7 +112,7 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
           <div className="d-inline-block pe-auto">
-            <PagePathNav {...props} isCollapseParents={isCollapseParents} />
+            <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3' : 'fs-2'} />
           </div>
         );
       }}
