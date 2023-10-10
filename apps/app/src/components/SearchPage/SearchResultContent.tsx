@@ -185,7 +185,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const revisionId = getIdForRef(page.revision);
 
     return (
-      <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
+      <div className="d-flex flex-column align-items-end justify-content-center px-2 py-1">
         <SubNavButtons
           pageId={page._id}
           revisionId={revisionId}
@@ -214,15 +214,17 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     >
       <RightComponent />
 
+      { isRenderable && (
+        <div className="container-lg grw-container-convertible pt-2 pb-2">
+          <PagePathNav pageId={page._id} pagePath={page.path} formerLinkClassName="small" latterLinkClassName="fs-3" />
+        </div>
+      ) }
+
       <div
         id="search-result-content-body-container"
         ref={scrollElementRef}
-        className="search-result-content-body-container main container-lg grw-container-convertible overflow-y-scroll"
+        className="search-result-content-body-container container-lg grw-container-convertible overflow-y-scroll"
       >
-        { isRenderable && (
-          <PagePathNav pageId={page._id} pagePath={page.path} />
-        ) }
-
         { isRenderable && (
           <RevisionLoader
             rendererOptions={rendererOptions}
