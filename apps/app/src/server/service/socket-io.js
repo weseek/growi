@@ -1,5 +1,4 @@
 import { Server } from 'socket.io';
-import { YSocketIO } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
@@ -38,12 +37,8 @@ class SocketIoService {
     });
     this.io.attach(server);
 
-    // create the YScoketIO instance
-    this.ysocketio = new YSocketIO(this.io);
-    this.ysocketio.initialize();
-
     // create the YjsConnectionManager instance
-    this.yjsConnectionManager = new YjsConnectionManager(this.ysocketio);
+    this.yjsConnectionManager = new YjsConnectionManager(this.io);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');

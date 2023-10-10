@@ -1,3 +1,4 @@
+import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
 import { YSocketIO } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
@@ -13,8 +14,10 @@ class YjsConnectionManager {
 
   private mdb: MongodbPersistence;
 
-  constructor(ysocketio: YSocketIO) {
-    this.ysocketio = ysocketio;
+  constructor(io: Server) {
+    this.ysocketio = new YSocketIO(io);
+    this.ysocketio.initialize();
+
     this.mdb = new MongodbPersistence(getMongoUri(), {
       collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
       flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
