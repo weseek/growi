@@ -22,6 +22,21 @@ function generateShapes() {
   }));
 }
 
+function getAttachmentId(imageSrc?: string): string | undefined {
+  if (imageSrc == null) {
+    return;
+  }
+
+  const regex = /(?:https?:\/\/[^/]+)?\/attachment\/(\w+)/;
+  const match = imageSrc.match(regex);
+
+  if (match == null) {
+    return;
+  }
+
+  return match[1];
+}
+
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
   const { data: currentPageId } = useCurrentPageId();
@@ -70,16 +85,19 @@ const ImageEditorModal = (): JSX.Element => {
 
     try {
       // TODO: Put correct values in With and height
-      const base64data = stageRef.current.toDataURL({
+      const blob = await stageRef.current.toBlob({
         quality: 0, width: 400, height: 400, mimeType: 'image/jpeg',
-      });
-      const base64Response = await fetch(base64data);
-      const blobData = await base64Response.blob();
-      const formData = new FormData();
+      }) as any;
 
-      formData.append('file', blobData);
+      const formData = new FormData();
+      formData.append('file', blob);
       formData.append('page_id', currentPageId);
       formData.append('path', currentPagePath);
+
+      const attachmentId = getAttachmentId(imageEditorModalData?.imageSrc);
+      if (attachmentId != null) {
+        formData.append('parent', attachmentId);
+      }
 
       const res = await apiPostForm('/attachments.add', formData) as any;
       const editedImagePath = res.attachment.filePathProxied;

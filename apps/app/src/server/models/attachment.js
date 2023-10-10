@@ -33,6 +33,7 @@ module.exports = function(crowi) {
     fileSize: { type: Number, default: 0 },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
+    parent: { type: ObjectId, ref: 'Attachment' },
     attachmentType: {
       type: String,
       enum: AttachmentType,
@@ -77,6 +78,21 @@ module.exports = function(crowi) {
     return attachment;
   };
 
+
+  attachmentSchema.statics.findAttachmentsWithAncestorsRecursively = async function(attachment, ancestors = [attachment]) {
+    if (attachment == null) {
+      return ancestors;
+    }
+
+    const parent = await this.findOne({ _id: attachment.parent });
+    if (parent == null) {
+      return ancestors;
+    }
+
+    ancestors.push(parent);
+
+    return this.findAttachmentsWithAncestorsRecursively(parent, ancestors);
+  };
 
   attachmentSchema.methods.getValidTemporaryUrl = function() {
     if (this.temporaryUrlExpiredAt == null) {
