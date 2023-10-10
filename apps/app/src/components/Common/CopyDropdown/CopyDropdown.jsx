@@ -25,7 +25,7 @@ const DropdownItemContents = ({ title, contents }) => (
 /* eslint-enable react/prop-types */
 
 
-const CopyDropdown = (props) => {
+export const CopyDropdown = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isParamsAppended, setParamsAppended] = useState(!props.isShareLinkMode);
@@ -211,5 +211,3 @@ CopyDropdown.propTypes = {
   dropdownToggleClassName: PropTypes.string,
   isShareLinkMode: PropTypes.bool,
 };
-
-export default CopyDropdown;

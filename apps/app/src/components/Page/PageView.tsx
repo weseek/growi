@@ -18,10 +18,10 @@ import { useIsMobile } from '~/stores/ui';
 
 
 import type { CommentsProps } from '../Comments';
+import { PagePathNav } from '../Common/PagePathNav';
 import { PageViewLayout } from '../Layout/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
-import { PagePathNav } from '../PagePathNav';
 import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';

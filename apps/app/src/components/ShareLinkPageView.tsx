@@ -11,6 +11,7 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
+import { PagePathNav } from './Common/PagePathNav';
 import { PageViewLayout } from './Layout/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';

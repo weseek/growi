@@ -33,7 +33,7 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
 import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
+import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
 
 type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,

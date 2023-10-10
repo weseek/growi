@@ -6,9 +6,8 @@ import dynamic from 'next/dynamic';
 
 import { useIsNotFound } from '~/stores/page';
 
-import LinkedPagePath from '../models/linked-page-path';
-
-import { PagePathHierarchicalLink } from './PagePathHierarchicalLink';
+import LinkedPagePath from '../../../models/linked-page-path';
+import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -19,7 +18,7 @@ type Props = {
   isCollapseParents?: boolean,
 }
 
-const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
+const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
 export const PagePathNav: FC<Props> = (props: Props) => {
   const {

@@ -3,7 +3,7 @@ import React, { memo, useCallback } from 'react';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import LinkedPagePath from '../../models/linked-page-path';
+import LinkedPagePath from '../../../models/linked-page-path';
 
 import styles from './PagePathHierarchicalLink.module.scss';
 

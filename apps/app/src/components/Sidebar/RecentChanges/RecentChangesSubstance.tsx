@@ -7,9 +7,9 @@ import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
 
 import { useKeywordManager } from '~/client/services/search-operation';
+import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
 import FormattedDistanceDate from '~/components/FormattedDistanceDate';
 import InfiniteScroll from '~/components/InfiniteScroll';
-import { PagePathHierarchicalLink } from '~/components/PagePathHierarchicalLink';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
