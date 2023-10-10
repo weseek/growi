@@ -13,6 +13,7 @@ import loggerFactory from '~/utils/logger';
 import { PageViewLayout } from './Layout/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
+import { PagePathNav } from './PagePathNav';
 import type { PageSideContentsProps } from './PageSideContents';
 
 
@@ -51,6 +52,10 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
 
+  const headerContents = (
+    <PagePathNav pageId={page?._id} pagePath={pagePath} />
+  );
+
   const sideContents = !isNotFound
     ? (
       <PageSideContents page={page} />
@@ -86,6 +91,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
   return (
     <PageViewLayout
+      headerContents={headerContents}
       sideContents={sideContents}
     >
       { specialContents }
@@ -99,6 +105,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
           ) }
           { !isNotFound && (
             <>
+              <PagePathNav pageId={page?._id} pagePath={pagePath} />
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
               <div className="mb-5">
                 <Contents />

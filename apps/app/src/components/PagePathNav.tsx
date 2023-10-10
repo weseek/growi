@@ -21,7 +21,7 @@ type Props = {
 
 const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
-const PagePathNav: FC<Props> = (props: Props) => {
+export const PagePathNav: FC<Props> = (props: Props) => {
   const {
     pageId, pagePath, isSingleLineMode, isCompactMode,
   } = props;
@@ -66,5 +66,3 @@ const PagePathNav: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-export default PagePathNav;
