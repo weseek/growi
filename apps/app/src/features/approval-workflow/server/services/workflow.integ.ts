@@ -386,8 +386,8 @@ describe('WorkflowService', () => {
       // expect(createdTargetApproverGroupApproverIds1.includes(approverIdToAdd1)).toBe(true);
       // expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd2)).toBe(true);
       // expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd3)).toBe(true);
-      expect(updatedTargetApproverGroup1).toBeUndefined();
-      expect(updatedTargetApproverGroup1).toBeUndefined();
+      expect(updatedTargetApproverGroup1).toBeNull();
+      expect(updatedTargetApproverGroup1).toBeNull();
       expect(updatedTargetApproverToAdd1.status).toEqual(WorkflowApproverStatus.NONE);
       expect(updatedTargetApproverToAdd2.status).toEqual(WorkflowApproverStatus.NONE);
       expect(updatedTargetApproverToRemove1).toBeUndefined();
