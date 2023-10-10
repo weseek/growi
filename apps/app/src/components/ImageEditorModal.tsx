@@ -70,7 +70,9 @@ const ImageEditorModal = (): JSX.Element => {
 
     try {
       // TODO: Put correct values in With and height
-      const base64data = stageRef.current.toDataURL({ quality: 0, width: 400, height: 400 });
+      const base64data = stageRef.current.toDataURL({
+        quality: 0, width: 400, height: 400, mimeType: 'image/jpeg',
+      });
       const base64Response = await fetch(base64data);
       const blobData = await base64Response.blob();
       const formData = new FormData();
