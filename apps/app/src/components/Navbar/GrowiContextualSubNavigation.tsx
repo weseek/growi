@@ -15,14 +15,14 @@ import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-ope
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid,
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useCurrentPageId, useIsNotFound, useSWRxPageInfo,
+  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -192,8 +192,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
-  const { data: isNotFound } = useIsNotFound();
-  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
