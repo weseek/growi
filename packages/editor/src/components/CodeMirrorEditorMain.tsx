@@ -30,7 +30,7 @@ type Props = {
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
   indentSize?: number,
-  pageId?: string,
+  pageId?: string | null,
   userName?: string,
   socket?: any, // Socket<DefaultEventsMap, DefaultEventsMap>,
   initialValue: string,
