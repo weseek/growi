@@ -325,9 +325,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
-        <header className="py-0 position-relative">
+        <nav className="sticky-top">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </header>
+        </nav>
 
         <DisplaySwitcher
           pageView={(
