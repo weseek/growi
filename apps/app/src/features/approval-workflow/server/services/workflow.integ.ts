@@ -260,7 +260,7 @@ describe('WorkflowService', () => {
       // setup
       const createApproverGroupData = [
         {
-          groupIndex: 1,
+          groupIndex: 0,
           approvalType: WorkflowApprovalType.AND,
           userIdsToAdd: [new mongoose.Types.ObjectId().toString()],
         },
