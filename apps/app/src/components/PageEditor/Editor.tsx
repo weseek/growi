@@ -96,8 +96,8 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     insertText: (text: string) => {
       editorSubstance()?.insertText(text);
     },
-    setEditedImagePath: (text: string, from, to) => {
-      editorSubstance()?.setEditedImagePath(text, from, to);
+    replaceValue: (text: string, from, to) => {
+      editorSubstance()?.replaceValue(text, from, to);
     },
     /**
      * remove overlay and set isUploading to false

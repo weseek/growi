@@ -506,7 +506,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
       const replaceText = `![](${editedImagePath})`;
 
-      editorRef.current.setEditedImagePath(replaceText, from, to);
+      editorRef.current.replaceValue(replaceText, from, to);
     };
     globalEmitter.on('setEditedImageUrl', handler);
 

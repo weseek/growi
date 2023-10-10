@@ -112,7 +112,7 @@ export default class AbstractEditor<T extends AbstractEditorProps> extends React
    * insert text
    * @param {string} _text
    */
-  setEditedImagePath(_text, _from, _to): Error {
+  replaceValue(_text, _from, _to): Error {
     throw new Error('this method should be impelemented in subclass');
   }
 

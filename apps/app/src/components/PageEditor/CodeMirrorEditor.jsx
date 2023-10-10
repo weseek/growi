@@ -291,7 +291,7 @@ class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
-  setEditedImagePath(text, from, to) {
+  replaceValue(text, from, to) {
     const editor = this.getCodeMirror();
     editor.getDoc().replaceRange(text, from, to);
   }

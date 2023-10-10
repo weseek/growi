@@ -5,7 +5,7 @@ export interface IEditorMethods {
   setScrollTopByLine: (line: number) => void,
   insertText: (text: string) => void,
   terminateUploadingState: () => void,
-  setEditedImagePath: (text: string, from: { line: number, ch: number }, to: { line: number, ch: number }) => void,
+  replaceValue: (text: string, from: { line: number, ch: number }, to: { line: number, ch: number }) => void,
 }
 
 export interface IEditorInnerMethods {
