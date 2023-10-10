@@ -61,6 +61,7 @@ jobs:
       - name: Install dependencies
         run: |
           yarn global add turbo
+          yarn global add node-gyp
           yarn --frozen-lockfile
 
       - name: Lint
@@ -95,7 +96,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:4.4
+        image: mongo:6.0
         ports:
           - 27017/tcp
 
@@ -132,6 +133,7 @@ jobs:
       - name: Install dependencies
         run: |
           yarn global add turbo
+          yarn global add node-gyp
           yarn --frozen-lockfile
 
       - name: Test
@@ -176,7 +178,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:4.4
+        image: mongo:6.0
         ports:
           - 27017/tcp
 
@@ -214,6 +216,7 @@ jobs:
       - name: Install dependencies
         run: |
           yarn global add turbo
+          yarn global add node-gyp
           yarn --frozen-lockfile
 
       - name: turbo run dev:ci

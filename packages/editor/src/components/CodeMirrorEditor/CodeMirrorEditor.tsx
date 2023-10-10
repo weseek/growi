@@ -3,9 +3,11 @@ import {
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
+import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { useFileDropzone } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -18,10 +20,10 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
   );
 });
 
-
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onChange?: (value: string) => void,
+  onUpload?: (files: File[]) => void,
   indentSize?: number,
 }
 
@@ -29,6 +31,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
     onChange,
+    onUpload,
     indentSize,
   } = props;
 
@@ -52,10 +55,55 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+
+      if (event.clipboardData == null) {
+        return;
+      }
+
+      if (onUpload != null && event.clipboardData.types.includes('Files')) {
+        onUpload(Array.from(event.clipboardData.files));
+      }
+
+      if (event.clipboardData.types.includes('text/plain')) {
+        const textData = event.clipboardData.getData('text/plain');
+        codeMirrorEditor?.replaceText(textData);
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      paste: handlePaste,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, onUpload]);
+
+  useEffect(() => {
+
+    const handleDrop = (event: DragEvent) => {
+      // prevents conflicts between codemirror and react-dropzone during file drops.
+      event.preventDefault();
+    };
+
+    const extension = EditorView.domEventHandlers({
+      drop: handleDrop,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor]);
+
+  const { getRootProps, open } = useFileDropzone({ onUpload });
+
   return (
-    <div className="flex-expand-vert">
+    <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar />
+      <Toolbar onFileOpen={open} />
     </div>
   );
 };

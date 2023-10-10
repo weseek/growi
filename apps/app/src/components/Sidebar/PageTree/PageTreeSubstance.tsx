@@ -6,9 +6,10 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import { mutatePageTree, useSWRxRootPage, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
+import { ItemsTree } from '../../ItemsTree/ItemsTree';
+import { PageTreeItem } from '../PageTreeItem';
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
-import ItemsTree from './ItemsTree';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 
@@ -44,6 +45,8 @@ const PageTreeUnavailable = () => {
 };
 
 export const PageTreeContent = memo(() => {
+  const { t } = useTranslation();
+
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPath } = useCurrentPagePath();
@@ -75,6 +78,7 @@ export const PageTreeContent = memo(() => {
         targetPath={path}
         targetPathOrId={targetPathOrId}
         targetAndAncestorsData={targetAndAncestorsData}
+        CustomTreeItem={PageTreeItem}
       />
 
       {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
