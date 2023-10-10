@@ -63,6 +63,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     provider.disconnect();
     setProvider(null);
 
+    // TODO: catch ydoc:sync:error
     // TODO: use SocketEventName
     socket.off('ydoc:sync');
 

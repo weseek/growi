@@ -1,3 +1,4 @@
+// see: https://github.com/yjs/y-codemirror.next#example
 import * as random from 'lib0/random';
 
 export const usercolors = [
