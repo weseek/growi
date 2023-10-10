@@ -7,22 +7,21 @@
     --bs-btn-font-size: 13px;
     --bs-btn-border-width: 2px;
 
-    width: 70px;
-
-    white-space: nowrap;
+    width: 90px;
+    @include bs.media-breakpoint-up(md) {
+      width: 70px;
+    }
 
     @include mixins.border-vertical('before', 70%, 1, true);
-    .grw-page-editor-mode-manager-icon {
-      @include bs.media-breakpoint-down(sm) {
-        font-size: 16px;
-      }
-    }
   }
 }
 
 .grw-page-editor-mode-manager-skeleton :global {
-  width: 139px;
-  height: calc(var(--bs-btn-line-height) + bs.$btn-padding-y*2 + bs.$btn-border-width*2);
+  width: 179px;
+  @include bs.media-breakpoint-down(sm) {
+    width: 90px;
+  }
+  height: 30px;
 }
 
 // == Colors

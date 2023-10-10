@@ -25,7 +25,7 @@ const DropdownItemContents = ({ title, contents }) => (
 /* eslint-enable react/prop-types */
 
 
-const CopyDropdown = (props) => {
+export const CopyDropdown = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isParamsAppended, setParamsAppended] = useState(!props.isShareLinkMode);
@@ -120,7 +120,6 @@ const CopyDropdown = (props) => {
 
         <DropdownMenu
           strategy="fixed"
-          style={{ zIndex: 1016 }} /* zIndex: 1016 // larger than z-index value of grw-subnav-fixed-container in GrowiSubNavigationSwitcher.module.scss */
         >
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
@@ -212,5 +211,3 @@ CopyDropdown.propTypes = {
   dropdownToggleClassName: PropTypes.string,
   isShareLinkMode: PropTypes.bool,
 };
-
-export default CopyDropdown;

@@ -4,10 +4,7 @@ $author-font-size: 12px;
 $date-font-size: 11px;
 
 .grw-author-info :global {
-  li {
-    font-size: $author-font-size;
-    list-style: none;
-  }
+  font-size: $author-font-size;
 
   .text-date {
     font-size: $date-font-size;
@@ -25,7 +22,7 @@ $date-font-size: 11px;
   }
 }
 
-.grw-author-info-skeleton :global {
-  width: 139px;
-  height: calc((#{$author-font-size} + #{$date-font-size}) * #{bs.$line-height-base});
-}
+// .grw-author-info-skeleton :global {
+//   width: 139px;
+//   height: calc((#{$author-font-size} + #{$date-font-size}) * #{bs.$line-height-base});
+// }
