@@ -1,6 +1,12 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+.grw-mr-02em {
+  margin-right: 0.2em;
+}
+
 .grw-page-path-nav-sticky :global {
+  min-height: 75px;
+
   .sticky-inner-wrapper {
     z-index: bs.$zindex-sticky;
   }
