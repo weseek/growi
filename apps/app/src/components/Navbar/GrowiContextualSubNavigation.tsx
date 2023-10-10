@@ -292,96 +292,82 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     }
   }, [isSharedPage, mutateCurrentPage]);
 
-  const templateMenuItemClickHandler = useCallback(() => {
-    setIsPageTempleteModalShown(true);
-  }, []);
-
-
-  const RightComponent = () => {
-    const additionalMenuItemsRenderer = () => {
-      if (revisionId == null || pageId == null) {
-        return (
-          <>
-            {!isReadOnlyUser
-              && (
-                <CreateTemplateMenuItems
-                  onClickTemplateMenuItem={templateMenuItemClickHandler}
-                />
-              )
-            }
-          </>
-        );
-      }
+  const additionalMenuItemsRenderer = useCallback(() => {
+    if (revisionId == null || pageId == null) {
       return (
         <>
-          <PageOperationMenuItems
-            pageId={pageId}
-            revisionId={revisionId}
-            isLinkSharingDisabled={isLinkSharingDisabled}
-          />
-          {!isReadOnlyUser && (
-            <>
-              <DropdownItem divider />
+          {!isReadOnlyUser
+            && (
               <CreateTemplateMenuItems
-                onClickTemplateMenuItem={templateMenuItemClickHandler}
+                onClickTemplateMenuItem={() => setIsPageTempleteModalShown(true)}
               />
-            </>
-          )
+            )
           }
         </>
       );
-    };
-
+    }
     return (
       <>
-        <div className="d-flex">
-          <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: '7px' }}>
-            {isViewMode && (
-              <div className="h-50">
-                {pageId != null && (
-                  <PageControls
-                    pageId={pageId}
-                    revisionId={revisionId}
-                    shareLinkId={shareLinkId}
-                    path={path ?? currentPathname} // If the page is empty, "path" is undefined
-                    expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-                    disableSeenUserInfoPopover={isSharedUser}
-                    showPageControlDropdown={isAbleToShowPageManagement}
-                    additionalMenuItemRenderer={additionalMenuItemsRenderer}
-                    onClickDuplicateMenuItem={duplicateItemClickedHandler}
-                    onClickRenameMenuItem={renameItemClickedHandler}
-                    onClickDeleteMenuItem={deleteItemClickedHandler}
-                    onClickSwitchContentWidth={switchContentWidthHandler}
-                  />
-                )}
-              </div>
-            )}
-            {isAbleToChangeEditorMode && (
-              <PageEditorModeManager
-                editorMode={editorMode}
-                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
-                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
+        <PageOperationMenuItems
+          pageId={pageId}
+          revisionId={revisionId}
+          isLinkSharingDisabled={isLinkSharingDisabled}
+        />
+        {!isReadOnlyUser && (
+          <>
+            <DropdownItem divider />
+            <CreateTemplateMenuItems
+              onClickTemplateMenuItem={() => setIsPageTempleteModalShown(true)}
+            />
+          </>
+        )
+        }
+      </>
+    );
+  }, [isLinkSharingDisabled, isReadOnlyUser, pageId, revisionId]);
+
+  return (
+    <>
+      <div className="d-flex justify-content-end p-2 gap-2 gap-md-4">
+        {isViewMode && (
+          <div className="h-50">
+            {pageId != null && (
+              <PageControls
+                pageId={pageId}
+                revisionId={revisionId}
+                shareLinkId={shareLinkId}
+                path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+                disableSeenUserInfoPopover={isSharedUser}
+                showPageControlDropdown={isAbleToShowPageManagement}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                onClickRenameMenuItem={renameItemClickedHandler}
+                onClickDeleteMenuItem={deleteItemClickedHandler}
+                onClickSwitchContentWidth={switchContentWidthHandler}
               />
             )}
           </div>
-
-        </div>
-
-        {path != null && currentUser != null && !isReadOnlyUser && (
-          <CreateTemplateModal
-            path={path}
-            isOpen={isPageTemplateModalShown}
-            onClose={() => setIsPageTempleteModalShown(false)}
+        )}
+        {isAbleToChangeEditorMode && (
+          <PageEditorModeManager
+            editorMode={editorMode}
+            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+            onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
           />
         )}
-      </>
-    );
-  };
+      </div>
 
-
-  return (
-    <RightComponent />
+      {path != null && currentUser != null && !isReadOnlyUser && (
+        <CreateTemplateModal
+          path={path}
+          isOpen={isPageTemplateModalShown}
+          onClose={() => setIsPageTempleteModalShown(false)}
+        />
+      )}
+    </>
   );
+
 };
 
 
