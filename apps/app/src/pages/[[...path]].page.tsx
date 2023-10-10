@@ -120,9 +120,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { isLinkSharingDisabled } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   return (
-    <div data-testid="grw-contextual-sub-nav">
-      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
-    </div>
+    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
   );
 };
 
