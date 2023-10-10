@@ -369,6 +369,12 @@ describe('WorkflowService', () => {
 
       const createdTargetApproverGroupApproverIds1 = createdTargetApproverGroup1.approvers.map(v => v.user.toString());
       const createdTargetApproverGroupApproverIds2 = createdTargetApproverGroup2.approvers.map(v => v.user.toString());
+      console.log('createdTargetApproverGroupApproverIds1', createdTargetApproverGroupApproverIds1);
+      console.log('createdTargetApproverGroupApproverIds2', createdTargetApproverGroupApproverIds2);
+      console.log('approverIdToAdd1', approverIdToAdd1);
+      console.log('approverIdToAdd2', approverIdToAdd2);
+      console.log('approverIdToAdd3', approverIdToAdd3);
+
 
       const updatedTargetApproverGroup1 = (updatedWorkflow.approverGroups as any).id(approverGroupId3);
 
