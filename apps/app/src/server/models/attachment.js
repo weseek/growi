@@ -89,7 +89,7 @@ module.exports = function(crowi) {
       return ancestors;
     }
 
-    ancestors.unshift(parent);
+    ancestors.push(parent);
 
     return this.findAttachmentsWithAncestorsRecursively(parent, ancestors);
   };
