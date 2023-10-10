@@ -56,6 +56,7 @@ export const Image = (props: Props): JSX.Element => {
 
   return (
     <>
+      {/* TODO: Do not pass onClick() for URLs other than attachment */}
       <img src={src} alt={alt} onClick={() => openImageEditorModal(src, setEditedImagePath)} />
     </>
   );
