@@ -15,15 +15,15 @@ const { isTrashPage } = pagePathUtils;
 type Props = {
   pagePath: string,
   pageId?: string | null,
-  isSingleLineMode?:boolean,
-  isCompactMode?:boolean,
+  isSingleLineMode?: boolean,
+  isCollapseParents?: boolean,
 }
 
 const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
 export const PagePathNav: FC<Props> = (props: Props) => {
   const {
-    pageId, pagePath, isSingleLineMode, isCompactMode,
+    pageId, pagePath, isSingleLineMode, isCollapseParents,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -47,7 +47,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />;
   }
 
-  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
+  const copyDropdownId = `copydropdown-${pageId}`;
   const copyDropdownToggleClassName = 'd-block btn-outline-secondary btn-copy border-0 text-muted p-2';
 
   return (
