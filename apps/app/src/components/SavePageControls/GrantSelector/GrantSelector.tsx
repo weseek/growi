@@ -87,12 +87,17 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const groupListItemClickHandler = useCallback((grantGroup: IGrantedGroup) => {
     if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
-      onUpdateGrant({ grant: 5, grantedGroups: [{ id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type }] });
+      let grantedGroupsCopy = grantedGroups != null ? [...grantedGroups] : [];
+      const grantGroupInfo = { id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type };
+      if (grantedGroupsCopy.find(group => group.id === grantGroupInfo.id) == null) {
+        grantedGroupsCopy.push(grantGroupInfo);
+      }
+      else {
+        grantedGroupsCopy = grantedGroupsCopy.filter(group => group.id !== grantGroupInfo.id);
+      }
+      onUpdateGrant({ grant: 5, grantedGroups: grantedGroupsCopy });
     }
-
-    // hide modal
-    setIsSelectGroupModalShown(false);
-  }, [onUpdateGrant]);
+  }, [onUpdateGrant, grantedGroups]);
 
   /**
    * Render grant selector DOM.
@@ -128,7 +133,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
       const labelElm = (
         <span>
           <i className="icon icon-fw icon-organization"></i>
-          <span className="label">{grantedGroups[0].name}</span>
+          <span className="label">{grantedGroups.map(group => group.name).join(', ')}</span>
         </span>
       );
 
@@ -183,8 +188,15 @@ export const GrantSelector = (props: Props): JSX.Element => {
     return (
       <div className="list-group">
         { myUserGroups.map((group) => {
+          const activeClass = grantedGroups?.find(g => g.id === group.item._id) != null ? 'active' : '';
+
           return (
-            <button key={group.item._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
+            <button
+              key={group.item._id}
+              type="button"
+              className={`list-group-item list-group-item-action ${activeClass}`}
+              onClick={() => groupListItemClickHandler(group)}
+            >
               <h5>{group.item.name}</h5>
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
@@ -193,7 +205,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
       </div>
     );
 
-  }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t]);
+  }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, grantedGroups]);
 
   return (
     <>
