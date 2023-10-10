@@ -291,6 +291,14 @@ class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  replaceValue(text, from, to) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceRange(text, from, to);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setScrollTopByLine(line) {
     if (Number.isNaN(line)) {
       return;
