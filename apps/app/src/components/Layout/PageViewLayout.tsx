@@ -18,11 +18,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
     <>
       <div id="main" className={`main page-view-layout ${styles['page-view-layout']}`}>
         <div id="content-main" className="content-main container-lg grw-container-convertible">
-          { headerContents != null && (
-            <header className="sticky-top mb-4">
-              {headerContents}
-            </header>
-          ) }
+          { headerContents != null && headerContents }
           { sideContents != null
             ? (
               <div className="d-flex flex-column flex-column-reverse flex-lg-row">

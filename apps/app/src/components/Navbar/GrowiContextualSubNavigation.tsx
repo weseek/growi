@@ -236,8 +236,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { isLinkSharingDisabled } = props;
 
-  const isViewMode = editorMode === EditorMode.View;
-
 
   // TODO: implement tags for editor
   // refs: https://redmine.weseek.co.jp/issues/132125

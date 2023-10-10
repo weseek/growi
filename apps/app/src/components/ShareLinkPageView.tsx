@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
+import Sticky from 'react-stickynode';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
@@ -53,7 +54,12 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   }, [disableLinkSharing, props.disableLinkSharing]);
 
   const headerContents = (
-    <PagePathNav pageId={page?._id} pagePath={pagePath} />
+    <Sticky>
+      {({ status }: { status: boolean }) => {
+        const isCollapseParents = status === Sticky.STATUS_FIXED;
+        return <PagePathNav pageId={page?._id} pagePath={pagePath} isCollapseParents={isCollapseParents} />;
+      }}
+    </Sticky>
   );
 
   const sideContents = !isNotFound
