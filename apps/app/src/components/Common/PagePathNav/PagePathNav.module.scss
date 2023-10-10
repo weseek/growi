@@ -1,0 +1,7 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+.grw-page-path-nav-sticky :global {
+  .sticky-inner-wrapper {
+    z-index: bs.$zindex-sticky;
+  }
+}
