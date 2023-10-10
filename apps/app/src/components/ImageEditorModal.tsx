@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import Konva from 'konva';
 import {
@@ -8,7 +8,9 @@ import {
   Modal, ModalBody, ModalHeader, ModalFooter,
 } from 'reactstrap';
 
+import { apiPostForm } from '~/client/util/apiv1-client';
 import { useImageEditorModal } from '~/stores/modal';
+import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
 function generateShapes() {
   return [...Array(10)].map((_, i) => ({
@@ -21,11 +23,15 @@ function generateShapes() {
 }
 
 const ImageEditorModal = (): JSX.Element => {
-  const { data: imageEditorModalData, close } = useImageEditorModal();
+  const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const [stars, setStars] = useState(generateShapes());
-  const imageRef = React.useRef<Konva.Image | null>(null);
   const [image] = useState(new window.Image());
+
+  const imageRef = useRef<Konva.Image | null>(null);
+  const stageRef = useRef<Konva.Stage | null>(null);
 
   useEffect(() => {
     const imageSrc = imageEditorModalData?.imageSrc;
@@ -57,19 +63,51 @@ const ImageEditorModal = (): JSX.Element => {
     setStars(stars.map(star => ({ ...star, isDragging: false })));
   };
 
+  const saveButtonClickHandler = async() => {
+    if (stageRef.current == null || currentPageId == null || currentPagePath == null) {
+      return;
+    }
+
+    try {
+      // TODO: Put correct values in With and height
+      const base64data = stageRef.current.toDataURL({
+        quality: 0, width: 400, height: 400, mimeType: 'image/jpeg',
+      });
+      const base64Response = await fetch(base64data);
+      const blobData = await base64Response.blob();
+      const formData = new FormData();
+
+      formData.append('file', blobData);
+      formData.append('page_id', currentPageId);
+      formData.append('path', currentPagePath);
+
+      const res = await apiPostForm('/attachments.add', formData) as any;
+      const editedImagePath = res.attachment.filePathProxied;
+
+      if (imageEditorModalData?.onSave != null) {
+        imageEditorModalData?.onSave(editedImagePath);
+      }
+
+      closeImageEditorModal();
+    }
+    catch (err) {
+      // TODO: Error handling
+    }
+  };
+
   if (imageEditorModalData?.imageSrc == null) {
     return <></>;
   }
 
   return (
     <div>
-      <Modal isOpen={imageEditorModalData?.isOpened ?? false} toggle={() => close()}>
+      <Modal isOpen={imageEditorModalData?.isOpened ?? false} toggle={() => closeImageEditorModal()}>
         <ModalHeader>
           ヘッダー
         </ModalHeader>
 
         <ModalBody>
-          <Stage width={window.innerWidth} height={window.innerHeight}>
+          <Stage ref={stageRef} width={window.innerWidth} height={window.innerHeight}>
             <Layer>
               <KonvaImage image={image} ref={imageRef} />
 
@@ -102,7 +140,7 @@ const ImageEditorModal = (): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          フッター
+          <button type="button" onClick={() => saveButtonClickHandler()}>保存</button>
         </ModalFooter>
       </Modal>
     </div>
