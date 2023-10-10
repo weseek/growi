@@ -45,7 +45,7 @@ export const Image = (props: Props): JSX.Element => {
       return;
     }
 
-    globalEmitter.emit('setEditedImageUrl', editedImagePath, replaceTargetPosition.from, replaceTargetPosition.to);
+    globalEmitter.emit('setEditedImagePath', editedImagePath, replaceTargetPosition.from, replaceTargetPosition.to);
   };
 
   const { open: openImageEditorModal } = useImageEditorModal();

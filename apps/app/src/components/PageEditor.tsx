@@ -508,10 +508,10 @@ const PageEditor = React.memo((): JSX.Element => {
 
       editorRef.current.replaceValue(replaceText, from, to);
     };
-    globalEmitter.on('setEditedImageUrl', handler);
+    globalEmitter.on('setEditedImagePath', handler);
 
     return function cleanup() {
-      globalEmitter.removeListener('setEditedImageUrl', handler);
+      globalEmitter.removeListener('setEditedImagePath', handler);
     };
   }, []);
 
