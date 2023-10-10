@@ -337,7 +337,7 @@ describe('WorkflowService', () => {
           userIdsToAdd: [approverIdToAdd1],
         },
         {
-          groupIndex: 5,
+          groupIndex: 3,
           approvalType: WorkflowApprovalType.OR,
           userIdsToAdd: [approverIdToAdd2, approverIdToAdd3],
         },
@@ -365,7 +365,7 @@ describe('WorkflowService', () => {
 
       // then
       const createdTargetApproverGroup1 = updatedWorkflow.approverGroups[1];
-      const createdTargetApproverGroup2 = updatedWorkflow.approverGroups[5];
+      const createdTargetApproverGroup2 = updatedWorkflow.approverGroups[3];
 
       const createdTargetApproverGroupApproverIds1 = createdTargetApproverGroup1.approvers.map(v => v.user.toString());
       const createdTargetApproverGroupApproverIds2 = createdTargetApproverGroup2.approvers.map(v => v.user.toString());
