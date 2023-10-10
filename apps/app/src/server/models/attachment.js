@@ -79,6 +79,21 @@ module.exports = function(crowi) {
   };
 
 
+  attachmentSchema.statics.findAttachmentsWithAncestorsRecursively = async function(attachment, ancestors = [attachment]) {
+    if (attachment == null) {
+      return ancestors;
+    }
+
+    const parent = await this.findOne({ _id: attachment.parent });
+    if (parent == null) {
+      return ancestors;
+    }
+
+    ancestors.unshift(parent);
+
+    return this.findAttachmentsWithAncestorsRecursively(parent, ancestors);
+  };
+
   attachmentSchema.methods.getValidTemporaryUrl = function() {
     if (this.temporaryUrlExpiredAt == null) {
       return null;
