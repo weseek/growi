@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import { Element } from 'react-markdown/lib/rehype-filter';
 
-import { useImageHistoryModal } from '~/stores/modal';
+import { useImageEditorModal } from '~/stores/modal';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -48,7 +48,7 @@ export const Image = (props: Props): JSX.Element => {
     globalEmitter.emit('setEditedImagePath', editedImagePath, replaceTargetPosition.from, replaceTargetPosition.to);
   };
 
-  const { open: openImageHistoryModal } = useImageHistoryModal();
+  const { open: openImageEditorModal } = useImageEditorModal();
 
   if (src == null) {
     return <></>;
@@ -57,7 +57,7 @@ export const Image = (props: Props): JSX.Element => {
   return (
     <>
       {/* TODO: Do not pass onClick() for URLs other than attachment */}
-      <img src={src} alt={alt} onClick={() => openImageHistoryModal(src, setEditedImagePath)} />
+      <img src={src} alt={alt} onClick={() => openImageEditorModal(src, setEditedImagePath)} />
     </>
   );
 };
