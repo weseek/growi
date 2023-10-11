@@ -771,34 +771,3 @@ export const useImageEditorModal = (): SWRResponse<ImageEditorModalStatus, Error
     },
   });
 };
-
-// /*
-//  * ImageHistoryModal
-//  */
-// type ImageHistoryModalSaveHandler = (editedImagePath: string) => void;
-
-// type ImageHistoryModalStatus = {
-//   isOpened: boolean,
-//   imageSrc?: string,
-//   onSave?: ImageHistoryModalSaveHandler,
-// }
-
-// type ImageHistoryModallUtils = {
-//   open(imageSrc: string, onSave?: ImageHistoryModalSaveHandler) : void,
-//   close(): void,
-// }
-
-// export const useImageHistoryModal = (): SWRResponse<ImageHistoryModalStatus, Error> & ImageHistoryModallUtils => {
-
-//   const initialStatus: ImageHistoryModalStatus = { isOpened: false };
-//   const swrResponse = useStaticSWR<ImageHistoryModalStatus, Error>('imageHistoryModal', undefined, { fallbackData: initialStatus });
-
-//   return Object.assign(swrResponse, {
-//     open: (imageSrc: string, onSave?: ImageHistoryModalSaveHandler) => {
-//       swrResponse.mutate({ isOpened: true, imageSrc, onSave });
-//     },
-//     close: () => {
-//       swrResponse.mutate({ isOpened: false });
-//     },
-//   });
-// };
