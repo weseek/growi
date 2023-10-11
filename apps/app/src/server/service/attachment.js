@@ -18,7 +18,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType, parent) {
+  async createAttachment(file, user, pageId = null, attachmentType, tag = null) {
     const { fileUploadService } = this.crowi;
 
     // check limit
@@ -36,11 +36,13 @@ class AttachmentService {
     // create an Attachment document and upload file
     let attachment;
     try {
+      const ObjectId = new mongoose.Types.ObjectId();
       attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(fileStream, attachment);
-      if (parent != null) {
-        attachment.parent = parent;
-      }
+
+      attachment._id = ObjectId;
+      attachment.tag = tag || ObjectId;
+
       await attachment.save();
     }
     catch (err) {
