@@ -58,7 +58,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ModalHeader>
+      <ModalHeader className="bg-primary text-light">
         編集履歴
       </ModalHeader>
 
@@ -86,7 +86,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" onClick={() => onClickTransitionEditButton()}>編集に戻る</button>
+        <button type="button" className="btn btn-primary mr-2 mx-auto" onClick={() => onClickTransitionEditButton()}>編集に戻る</button>
       </ModalFooter>
     </>
   );

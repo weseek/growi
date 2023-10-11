@@ -12,6 +12,9 @@ import { apiPostForm } from '~/client/util/apiv1-client';
 import { useImageEditorModal, ImageEditorModalStatus } from '~/stores/modal';
 import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
+import { ArrowIcon } from './ImageEditorModalToolsIcon/Arrow';
+import { TextIcon } from './ImageEditorModalToolsIcon/Text';
+import { TrimingIcon } from './ImageEditorModalToolsIcon/Triming';
 
 const MAX_WIDTH = 800;
 
@@ -50,6 +53,9 @@ function getAttachmentId(imageSrc?: string): string | undefined {
 }
 
 export const Tools = {
+  Arrow: 'arrow',
+  Text: 'text',
+  Triming: 'triming',
   Pen: 'pen',
 } as const;
 
@@ -169,13 +175,27 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ModalHeader>
+      <ModalHeader className="bg-primary text-light">
         画像編集
       </ModalHeader>
 
-      {/* ツールバー */}
-      <div>
-        <button type="button" onClick={() => onClickTransitionHistoryButton()}>編集履歴</button>
+      <div className="my-2 ml-3 d-flex">
+        <button type="button" className={`btn mr-1 ${tool === Tools.Arrow ? 'btn-light' : ''} `}>
+          <ArrowIcon /> 矢印
+        </button>
+        <button type="button" className={`btn mr-1 ${tool === Tools.Text ? 'btn-light' : ''} `}>
+          <TextIcon /> 文字
+        </button>
+        <button type="button" className={`btn mr-1 ${tool === Tools.Triming ? 'btn-light' : ''} `}>
+          <TrimingIcon /> トリミング
+        </button>
+        <button type="button" className={`btn mr-1 ${tool === Tools.Pen ? 'btn-light' : ''} `}>
+          <i className="icon-fw icon-pencil" /> ペン
+        </button>
+
+        <div className="ml-auto">
+          <button type="button" className="btn btn-outline-secondary mr-3" onClick={() => onClickTransitionHistoryButton()}>編集履歴</button>
+        </div>
       </div>
 
       <ModalBody className="mx-auto">
@@ -204,7 +224,8 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" onClick={() => saveButtonClickHandler()}>保存</button>
+        <button type="button" className="btn btn-outline-secondary mr-2" onClick={() => closeImageEditorModal()}>キャンセル</button>
+        <button type="button" className="btn btn-primary mr-2" onClick={() => saveButtonClickHandler()}>保存</button>
       </ModalFooter>
     </>
   );
