@@ -739,3 +739,49 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
+
+/*
+* SelectablePasteModal
+*/
+
+type SelectablePasteSubmitHandler = (contents: string) => void;
+
+type SelectablePasteModalStatus = {
+  isOpened: boolean,
+  url: string,
+  onSubmit?: SelectablePasteSubmitHandler,
+}
+
+type SelectablePasteModalStatusUtils = {
+  open(
+    url: string,
+    onSubmit?: SelectablePasteSubmitHandler,
+  ): void,
+  close(): void,
+}
+
+type SelectablePasteModalReturnType = SWRResponse<SelectablePasteModalStatus, Error> & SelectablePasteModalStatusUtils
+
+export const useSelectablePasteModal = (status?: SelectablePasteModalStatus): SelectablePasteModalReturnType => {
+  const initialData: SelectablePasteModalStatus = {
+    isOpened: false,
+    url: '',
+  };
+  const swrResponse = useStaticSWR<SelectablePasteModalStatus, Error>('selectablePasteModalStatus', status, { fallbackData: initialData });
+
+  const { mutate } = swrResponse;
+
+  const open = useCallback((url: string, onSubmit?: SelectablePasteSubmitHandler): void => {
+    mutate({ isOpened: true, url, onSubmit });
+  }, [mutate]);
+
+  const close = useCallback((): void => {
+    mutate({ isOpened: false, url: '', onSubmit: undefined });
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
+};
