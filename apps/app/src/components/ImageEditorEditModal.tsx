@@ -65,6 +65,7 @@ export const Tools = {
   Text: 'text',
   Triming: 'triming',
   Pen: 'pen',
+  Stamp: 'stamp',
 } as const;
 
 const ToolsArray = Object.keys(Tools);
@@ -220,6 +221,9 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
         </button>
         <button type="button" className={`btn mr-1 ${tool === Tools.Pen ? 'btn-light' : ''} `}>
           <i className="icon-fw icon-pencil" /> ペン
+        </button>
+        <button type="button" className={`btn mr-1 ${tool === Tools.Stamp ? 'btn-light' : ''} `}>
+          <i className="icon-fw icon-pencila" /> スタンプ
         </button>
 
         <div className="ml-auto">

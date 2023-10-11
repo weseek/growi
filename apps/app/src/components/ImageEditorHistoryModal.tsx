@@ -78,7 +78,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
                     </a>
                     <p>サイズ: {item.fileSize}バイト</p>
                     <p>作成日: {formatDate(item.createdAt)}</p>
-                    <button type="button" onClick={() => onRestoreClick(item._id)}>復元</button>
+                    <button type="button" className="btn btn-secondary" onClick={() => onRestoreClick(item._id)}>復元</button>
                   </div>
                 </div>
                 <div className="border mb-4"></div>
