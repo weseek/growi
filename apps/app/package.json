@@ -122,6 +122,8 @@
     "is-absolute-url": "^4.0.1",
     "is-iso-date": "^0.0.1",
     "lucene-query-parser": "^1.2.0",
+    "markdown-it": "^13.0.2",
+    "markdown-it-emoji": "^2.0.2",
     "markdown-table": "^1.1.1",
     "md5": "^2.2.1",
     "mermaid": "^10.1.0",
