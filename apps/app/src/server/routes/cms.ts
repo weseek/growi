@@ -1,9 +1,6 @@
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
+import md from 'markdown-it';
+import emoji from 'markdown-it-emoji';
 
-import { generateCmsRenderingOptions } from '~/services/renderer/cms_renderer';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:cms:pages');
@@ -15,26 +12,6 @@ module.exports = function(crowi) {
   const api: any = {};
 
   actions.api = api;
-
-  const { configManager } = crowi;
-
-  const rendererConfig = {
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-
-    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
-    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
-
-    // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-  };
 
   /**
    * @api {get} /pages.get get pages
@@ -73,17 +50,9 @@ module.exports = function(crowi) {
       }
     }
 
-    const rendererOptions = generateCmsRenderingOptions(rendererConfig, pageId);
+    const htmlString = md({ html: true }).use(emoji).render(page.revision.body);
 
-    const htmlString = await unified()
-      .use(remarkParse)
-      .use(rendererOptions.remarkPlugins)
-      .use(remarkRehype)
-      .use(rendererOptions.rehypePlugins)
-      .use(remarkStringify)
-      .process(page.revision.body);
-
-    return res.apiv3({ ...page, htlm: htmlString });
+    return res.apiv3({ ...page, htmlString });
   };
 
   return actions;
