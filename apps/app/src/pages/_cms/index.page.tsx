@@ -44,7 +44,7 @@ const CmsPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   useIsSearchPage(false);
   useCurrentPageId(null);
-  useCurrentPathname('/trash');
+  useCurrentPathname('/_cms');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -53,7 +53,7 @@ const CmsPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   const { data: isDrawerMode } = useDrawerMode();
 
-  const title = generateCustomTitleForPage(props, '/trash');
+  const title = generateCustomTitleForPage(props, 'GROWI CMS Manager');
 
   return (
     <>
@@ -63,7 +63,7 @@ const CmsPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       <div className="dynamic-layout-root">
         <header className="py-0 position-relative">
           <GrowiSubNavigation
-            pagePath="/_cms"
+            pagePath="/GROWI CMS Manager"
             showDrawerToggler={isDrawerMode}
             isTagLabelsDisabled
             isDrawerMode={isDrawerMode}
