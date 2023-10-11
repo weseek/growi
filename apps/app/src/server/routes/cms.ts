@@ -1,3 +1,8 @@
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import remarkStringify from 'remark-stringify';
+import { unified } from 'unified';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:cms:pages');
@@ -46,6 +51,16 @@ module.exports = function(crowi) {
         return res.apiv3Err(err, 500);
       }
     }
+
+    // console.log({ ...page, htlm: page.revision.body });
+
+    // const htmlString = await unified()
+    //   .use(remarkParse)
+    //   .use(remarkRehype)
+    //   .use(remarkStringify)
+    //   .process(page.revision.body);
+
+    // console.log({ ...page, htlm: htmlString });
 
     return res.apiv3({ page });
   };
