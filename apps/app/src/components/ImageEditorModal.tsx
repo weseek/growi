@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import Konva from 'konva';
 import {
-  Layer, Stage, Image as KonvaImage,
+  Layer, Stage, Line, Image as KonvaImage,
 } from 'react-konva';
 import {
   Modal, ModalBody, ModalHeader, ModalFooter,
@@ -49,6 +49,15 @@ function getAttachmentId(imageSrc?: string): string | undefined {
   return match[1];
 }
 
+export const Tools = {
+  Pen: 'pen',
+} as const;
+
+const ToolsArray = Object.keys(Tools);
+
+export type Tools = typeof ToolsArray[keyof typeof ToolsArray];
+
+
 const ImageEditorModal = (): JSX.Element => {
   const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
   const { data: currentPageId } = useCurrentPageId();
@@ -58,8 +67,43 @@ const ImageEditorModal = (): JSX.Element => {
   const [imageWidth, setImageWidth] = useState<number>(image.naturalWidth);
   const [imageHeight, setImageHeight] = useState<number>(image.naturalHeight);
 
+  const [tool, setTool] = useState<Tools | null>(Tools.Pen);
+
+  const [lines, setLines] = useState<any>([]);
+  const isDrawing = React.useRef(false);
+
   const imageRef = useRef<Konva.Image | null>(null);
   const stageRef = useRef<Konva.Stage | null>(null);
+
+
+  const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
+    if (event == null) {
+      return;
+    }
+
+    isDrawing.current = true;
+    const pos = event.target.getStage()?.getPointerPosition();
+    setLines([...lines, { tool, points: [pos?.x, pos?.y] }]);
+  };
+
+  const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
+    if (!isDrawing.current || event == null) {
+      return;
+    }
+    const pos = event.target.getStage()?.getPointerPosition();
+
+    const lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([pos?.x, pos?.y]);
+
+    // replace last
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
+
+  const handleMouseUp = () => {
+    isDrawing.current = false;
+  };
 
   const saveButtonClickHandler = async() => {
     if (stageRef.current == null || currentPageId == null || currentPagePath == null) {
@@ -127,9 +171,26 @@ const ImageEditorModal = (): JSX.Element => {
       </ModalHeader>
 
       <ModalBody className="mx-auto">
-        <Stage ref={stageRef} width={imageWidth} height={imageHeight}>
+        <Stage ref={stageRef} width={imageWidth} height={imageHeight} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
           <Layer>
             <KonvaImage image={image} ref={imageRef} width={imageWidth} height={imageHeight} />
+
+            {/* see: https://konvajs.org/docs/react/Free_Drawing.html */}
+            {lines.map((line, i) => (
+              <Line
+                key={i}
+                points={line.points}
+                stroke="#df4b26"
+                strokeWidth={5}
+                tension={0.5}
+                lineCap="round"
+                lineJoin="round"
+                globalCompositeOperation={
+                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                }
+              />
+            ))}
+
           </Layer>
         </Stage>
       </ModalBody>
