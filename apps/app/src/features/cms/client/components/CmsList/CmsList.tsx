@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { create } from '../../services/namespace';
+import { create } from '../../services/cms-namespace';
 import { useSWRxCmsNamespaces } from '../../stores/cms-namespace';
 
 export const CmsList = (): JSX.Element => {
