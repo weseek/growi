@@ -26,6 +26,7 @@ const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), 
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 const ImageEditorModal = dynamic(() => import('../ImageEditorModal').then(), { ssr: false });
+const ImageHistoryModal = dynamic(() => import('../ImageHistoryModal').then(), { ssr: false });
 // Fab
 const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
 
@@ -63,6 +64,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <DeleteBookmarkFolderModal />
         <PutbackPageModal />
         <ImageEditorModal />
+        <ImageHistoryModal />
       </DndProvider>
 
       <PagePresentationModal />
