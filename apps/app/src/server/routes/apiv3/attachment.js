@@ -147,7 +147,7 @@ module.exports = (crowi) => {
         throw Error('Attachment not found');
       }
 
-      const history = await Attachment.findAttachmentsWithAncestorsRecursively(targetAttachment);
+      const history = await Attachment.findAttachmentsWithTag(targetAttachment);
       return res.apiv3({ history });
     }
     catch (err) {
