@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { useImageEditorModal, ImageEditorModalStatus } from '~/stores/modal';
 import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
@@ -17,6 +18,13 @@ import { TextIcon } from './ImageEditorModalToolsIcon/Text';
 import { TrimingIcon } from './ImageEditorModalToolsIcon/Triming';
 
 const MAX_WIDTH = 800;
+
+type Attachment = {
+  attachment: {
+    tag: string;
+    filePathProxied: string;
+  }
+};
 
 function resizeImage(width: number, height: number) {
   const aspectRatio = width / height;
@@ -66,11 +74,14 @@ export type Tools = typeof ToolsArray[keyof typeof ToolsArray];
 type Props = {
   imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionHistoryButton: () => void;
+  attachmentId: string;
+  setAttachmentId: (id: string) => void;
 };
 
-
 export const ImageEditorEditModal = (props: Props): JSX.Element => {
-  const { imageEditorModalData, onClickTransitionHistoryButton } = props;
+  const {
+    imageEditorModalData, onClickTransitionHistoryButton, attachmentId, setAttachmentId,
+  } = props;
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -79,6 +90,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
   const [image] = useState(new window.Image());
   const [imageWidth, setImageWidth] = useState<number>(image.naturalWidth);
   const [imageHeight, setImageHeight] = useState<number>(image.naturalHeight);
+  const [attachment, setAttachment] = useState<Attachment | null>(null);
 
   const [tool, setTool] = useState<Tools | null>(Tools.Pen);
 
@@ -133,9 +145,8 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       formData.append('page_id', currentPageId);
       formData.append('path', currentPagePath);
 
-      const attachmentId = getAttachmentId(imageEditorModalData?.imageSrc);
-      if (attachmentId != null) {
-        formData.append('parent', attachmentId);
+      if (attachment !== null && attachment.attachment.tag !== null) {
+        formData.append('tag', attachment.attachment.tag);
       }
 
       const res = await apiPostForm('/attachments.add', formData) as any;
@@ -143,6 +154,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
 
       if (imageEditorModalData?.onSave != null) {
         imageEditorModalData?.onSave(editedImagePath);
+        setAttachmentId(editedImagePath.replace('/attachment/', ''));
       }
 
       closeImageEditorModal();
@@ -153,7 +165,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    const imageSrc = imageEditorModalData?.imageSrc;
+    const imageSrc = attachment?.attachment?.filePathProxied;
 
     if (imageSrc == null) return;
 
@@ -171,7 +183,24 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       setImageHeight(result.height);
 
     };
-  }, [image, imageEditorModalData]);
+  }, [image, attachment]);
+
+  useEffect(() => {
+    const finalAttachmentId = attachmentId || getAttachmentId(imageEditorModalData?.imageSrc);
+
+    if (!finalAttachmentId) {
+      return;
+    }
+
+    apiv3Get(`/attachment?attachmentId=${finalAttachmentId}`)
+      .then((response) => {
+        setAttachment(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+  }, [attachmentId, imageEditorModalData?.imageSrc]);
 
   return (
     <>

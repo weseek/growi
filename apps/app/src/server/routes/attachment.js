@@ -451,13 +451,14 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    *
    * @apiParam {String} page_id
+   * @apiParam {String} tag
    * @apiParam {File} file
    */
   api.add = async function(req, res) {
     let pageId = req.body.page_id || null;
     const pagePath = req.body.path || null;
     const pageBody = req.body.page_body || null;
-    const parent = req.body.parent;
+    const tag = req.body.tag || null;
 
     let pageCreated = false;
 
@@ -505,7 +506,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, parent);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, tag);
     }
     catch (err) {
       logger.error(err);

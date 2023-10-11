@@ -24,6 +24,7 @@ module.exports = function(crowi) {
   }
 
   const attachmentSchema = new mongoose.Schema({
+    _id: { type: ObjectId, index: true },
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true },
     filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
@@ -33,7 +34,7 @@ module.exports = function(crowi) {
     fileSize: { type: Number, default: 0 },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
-    parent: { type: ObjectId, ref: 'Attachment' },
+    tag: { type: ObjectId, ref: 'Attachment' },
     attachmentType: {
       type: String,
       enum: AttachmentType,
@@ -79,19 +80,12 @@ module.exports = function(crowi) {
   };
 
 
-  attachmentSchema.statics.findAttachmentsWithAncestorsRecursively = async function(attachment, ancestors = [attachment]) {
+  attachmentSchema.statics.findAttachmentsWithTag = async function(attachment) {
     if (attachment == null) {
-      return ancestors;
+      return [];
     }
 
-    const parent = await this.findOne({ _id: attachment.parent });
-    if (parent == null) {
-      return ancestors;
-    }
-
-    ancestors.push(parent);
-
-    return this.findAttachmentsWithAncestorsRecursively(parent, ancestors);
+    return this.find({ tag: attachment.tag }).sort({ createdAt: -1 });
   };
 
   attachmentSchema.methods.getValidTemporaryUrl = function() {
