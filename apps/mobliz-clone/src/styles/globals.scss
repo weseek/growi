@@ -8,4 +8,23 @@ body {
   padding: 0;
   margin: 0;
   overflow-x: hidden;
+  font-family: '游ゴシック', YuGothic, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: normal;
+  overflow-wrap: break-word;
+  background-color: #f9f9f9;
+}
+
+header {
+  background-image: url('../../public/weseek-blog-header.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 }
