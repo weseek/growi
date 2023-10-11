@@ -9,11 +9,18 @@ import {
 } from 'reactstrap';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { useImageEditorModal, ImageEditorModalStatus } from '~/stores/modal';
 import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
 
 const MAX_WIDTH = 800;
+
+type Attachment = {
+  attachment: {
+    tag: string;
+  }
+};
 
 function resizeImage(width: number, height: number) {
   const aspectRatio = width / height;
@@ -73,6 +80,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
   const [image] = useState(new window.Image());
   const [imageWidth, setImageWidth] = useState<number>(image.naturalWidth);
   const [imageHeight, setImageHeight] = useState<number>(image.naturalHeight);
+  const [attachment, setAttachment] = useState<Attachment | null>(null);
 
   const [tool, setTool] = useState<Tools | null>(Tools.Pen);
 
@@ -127,9 +135,8 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       formData.append('page_id', currentPageId);
       formData.append('path', currentPagePath);
 
-      const attachmentId = getAttachmentId(imageEditorModalData?.imageSrc);
-      if (attachmentId != null) {
-        formData.append('parent', attachmentId);
+      if (attachment !== null && attachment.attachment.tag !== null) {
+        formData.append('tag', attachment.attachment.tag);
       }
 
       const res = await apiPostForm('/attachments.add', formData) as any;
@@ -166,6 +173,22 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
 
     };
   }, [image, imageEditorModalData]);
+
+  useEffect(() => {
+    const attachmentId = getAttachmentId(imageEditorModalData?.imageSrc);
+
+    if (attachmentId == null) {
+      return;
+    }
+
+    apiv3Get(`/attachment?attachmentId=${attachmentId}`)
+      .then((response) => {
+        setAttachment(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [imageEditorModalData?.imageSrc]);
 
   return (
     <>
