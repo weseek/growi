@@ -1,0 +1,6 @@
+/_obsolete/**
+/dist/**
+/transpiled/**
+/public/**
+/tmp/**
+/next-env.d.ts
