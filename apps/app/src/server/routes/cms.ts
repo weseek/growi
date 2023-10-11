@@ -73,11 +73,13 @@ module.exports = function(crowi) {
       }
     }
 
-    // generateCmsRenderingOptions;
+    const rendererOptions = generateCmsRenderingOptions(rendererConfig, pageId);
 
     const htmlString = await unified()
       .use(remarkParse)
+      .use(rendererOptions.remarkPlugins)
       .use(remarkRehype)
+      .use(rendererOptions.rehypePlugins)
       .use(remarkStringify)
       .process(page.revision.body);
 
