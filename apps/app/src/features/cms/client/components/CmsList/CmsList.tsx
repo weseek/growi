@@ -13,7 +13,7 @@ export const CmsList = (): JSX.Element => {
     <table className="table table-bordered grw-duplicated-paths-table">
       <thead>
         <tr>
-          <th>namespace</th>
+          <th className="col-4">namespace</th>
           <th>desc</th>
         </tr>
       </thead>
@@ -21,8 +21,8 @@ export const CmsList = (): JSX.Element => {
         {data.map((cmsNamespace) => {
           const { namespace, desc } = cmsNamespace;
           return (
-            <tr key={namespace} className="d-flex">
-              <td className="text-break">
+            <tr key={namespace}>
+              <td>
                 <Link href={`/_cms/${namespace}`} prefetch={false}>
                   {namespace}
                 </Link>
