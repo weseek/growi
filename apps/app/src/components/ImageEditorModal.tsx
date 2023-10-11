@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import Konva from 'konva';
 import {
-  Layer, Stage, Star, Image as KonvaImage,
+  Layer, Stage, Image as KonvaImage,
 } from 'react-konva';
 import {
   Modal, ModalBody, ModalHeader, ModalFooter,
@@ -33,15 +33,6 @@ function resizeImage(width: number, height: number) {
   return { width: newWidth, height: newHeight };
 }
 
-function generateShapes() {
-  return [...Array(10)].map((_, i) => ({
-    id: i.toString(),
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    rotation: Math.random() * 180,
-    isDragging: false,
-  }));
-}
 
 function getAttachmentId(imageSrc?: string): string | undefined {
   if (imageSrc == null) {
@@ -63,27 +54,12 @@ const ImageEditorModal = (): JSX.Element => {
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const [stars, setStars] = useState(generateShapes());
   const [image] = useState(new window.Image());
   const [imageWidth, setImageWidth] = useState<number>(image.naturalWidth);
   const [imageHeight, setImageHeight] = useState<number>(image.naturalHeight);
 
   const imageRef = useRef<Konva.Image | null>(null);
   const stageRef = useRef<Konva.Stage | null>(null);
-
-  const handleDragStart = (e) => {
-    const id = e.target.id();
-    setStars(
-      stars.map(star => ({
-        ...star,
-        isDragging: star.id === id,
-      })),
-    );
-  };
-
-  const handleDragEnd = () => {
-    setStars(stars.map(star => ({ ...star, isDragging: false })));
-  };
 
   const saveButtonClickHandler = async() => {
     if (stageRef.current == null || currentPageId == null || currentPagePath == null) {
@@ -154,31 +130,6 @@ const ImageEditorModal = (): JSX.Element => {
         <Stage ref={stageRef} width={imageWidth} height={imageHeight}>
           <Layer>
             <KonvaImage image={image} ref={imageRef} width={imageWidth} height={imageHeight} />
-
-            {stars.map(star => (
-              <Star
-                key={star.id}
-                id={star.id}
-                x={star.x}
-                y={star.y}
-                numPoints={5}
-                innerRadius={20}
-                outerRadius={40}
-                fill="#89b717"
-                opacity={0.8}
-                draggable
-                rotation={star.rotation}
-                shadowColor="black"
-                shadowBlur={10}
-                shadowOpacity={0.6}
-                shadowOffsetX={star.isDragging ? 10 : 5}
-                shadowOffsetY={star.isDragging ? 10 : 5}
-                scaleX={star.isDragging ? 1.2 : 1}
-                scaleY={star.isDragging ? 1.2 : 1}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-              />
-            ))}
           </Layer>
         </Stage>
       </ModalBody>
