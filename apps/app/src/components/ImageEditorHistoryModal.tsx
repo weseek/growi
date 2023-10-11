@@ -16,10 +16,11 @@ type HistoryItem = {
 type Props = {
   imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionEditButton: () => void;
+  onRestoreClick: (id: string) => void;
 };
 
 export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
-  const { imageEditorModalData, onClickTransitionEditButton } = props;
+  const { imageEditorModalData, onClickTransitionEditButton, onRestoreClick } = props;
 
   const [attachmentHistory, setAttachmentHistory] = useState<{ history: Array<HistoryItem> } | null>(null);
   const [maxHeight, setMaxHeight] = useState('70vh');
@@ -77,6 +78,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
                     </a>
                     <p>サイズ: {item.fileSize}バイト</p>
                     <p>作成日: {formatDate(item.createdAt)}</p>
+                    <button type="button" onClick={() => onRestoreClick(item._id)}>復元</button>
                   </div>
                 </div>
               </div>

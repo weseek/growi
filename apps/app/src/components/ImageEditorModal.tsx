@@ -14,6 +14,7 @@ type ModalType = 'edit' | 'history';
 
 const ImageEditorModal = (): JSX.Element => {
   const [modalType, setModalType] = useState<ModalType>('edit');
+  const [attachmentId, setAttachmentId] = useState('');
 
   const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
 
@@ -25,6 +26,11 @@ const ImageEditorModal = (): JSX.Element => {
     setModalType('edit');
   };
 
+  const restoreAttachment = (id: string) => {
+    setAttachmentId(id);
+    setModalType('edit');
+  };
+
   return (
     <Modal
       style={{ maxWidth: '1000px' }}
@@ -32,11 +38,20 @@ const ImageEditorModal = (): JSX.Element => {
       toggle={() => closeImageEditorModal()}
     >
       { modalType === 'edit' && (
-        <ImageEditorEditModal imageEditorModalData={imageEditorModalData} onClickTransitionHistoryButton={transitionHistoryButtonClickHandler} />
+        <ImageEditorEditModal
+          imageEditorModalData={imageEditorModalData}
+          onClickTransitionHistoryButton={transitionHistoryButtonClickHandler}
+          attachmentId={attachmentId}
+          setAttachmentId={setAttachmentId}
+        />
       )}
 
       { modalType === 'history' && (
-        <ImageEditorHistoryModal imageEditorModalData={imageEditorModalData} onClickTransitionEditButton={transitionEditButtonClickHandler} />
+        <ImageEditorHistoryModal
+          imageEditorModalData={imageEditorModalData}
+          onClickTransitionEditButton={transitionEditButtonClickHandler}
+          onRestoreClick={restoreAttachment}
+        />
       ) }
     </Modal>
   );

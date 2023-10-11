@@ -19,6 +19,7 @@ const MAX_WIDTH = 800;
 type Attachment = {
   attachment: {
     tag: string;
+    filePathProxied: string;
   }
 };
 
@@ -67,11 +68,14 @@ export type Tools = typeof ToolsArray[keyof typeof ToolsArray];
 type Props = {
   imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionHistoryButton: () => void;
+  attachmentId: string;
+  setAttachmentId: (id: string) => void;
 };
 
-
 export const ImageEditorEditModal = (props: Props): JSX.Element => {
-  const { imageEditorModalData, onClickTransitionHistoryButton } = props;
+  const {
+    imageEditorModalData, onClickTransitionHistoryButton, attachmentId, setAttachmentId,
+  } = props;
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -144,6 +148,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
 
       if (imageEditorModalData?.onSave != null) {
         imageEditorModalData?.onSave(editedImagePath);
+        setAttachmentId(editedImagePath.replace('/attachment/', ''));
       }
 
       closeImageEditorModal();
@@ -154,7 +159,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    const imageSrc = imageEditorModalData?.imageSrc;
+    const imageSrc = attachment?.attachment?.filePathProxied;
 
     if (imageSrc == null) return;
 
@@ -172,23 +177,24 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       setImageHeight(result.height);
 
     };
-  }, [image, imageEditorModalData]);
+  }, [image, attachment]);
 
   useEffect(() => {
-    const attachmentId = getAttachmentId(imageEditorModalData?.imageSrc);
+    const finalAttachmentId = attachmentId || getAttachmentId(imageEditorModalData?.imageSrc);
 
-    if (attachmentId == null) {
+    if (!finalAttachmentId) {
       return;
     }
 
-    apiv3Get(`/attachment?attachmentId=${attachmentId}`)
+    apiv3Get(`/attachment?attachmentId=${finalAttachmentId}`)
       .then((response) => {
         setAttachment(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [imageEditorModalData?.imageSrc]);
+
+  }, [attachmentId, imageEditorModalData?.imageSrc]);
 
   return (
     <>
