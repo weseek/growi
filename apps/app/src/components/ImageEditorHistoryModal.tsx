@@ -79,6 +79,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
                     <p>作成日: {formatDate(item.createdAt)}</p>
                   </div>
                 </div>
+                <div className="border mb-4"></div>
               </div>
             ))
             : 'No history available'
@@ -86,7 +87,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" className="btn btn-primary mr-2 mx-auto" onClick={() => onClickTransitionEditButton()}>編集に戻る</button>
+        <button type="button" className="btn btn-outline-secondary mr-2 mx-auto" onClick={() => onClickTransitionEditButton()}>編集に戻る</button>
       </ModalFooter>
     </>
   );
