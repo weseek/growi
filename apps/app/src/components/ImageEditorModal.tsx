@@ -14,7 +14,7 @@ type ModalType = 'edit' | 'history';
 
 const ImageEditorModal = (): JSX.Element => {
   const [modalType, setModalType] = useState<ModalType>('edit');
-  const [attachmentId, setAttachmentId] = useState('');
+  const [attachmentId, setAttachmentId] = useState<string | null>(null);
 
   const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
 
@@ -51,6 +51,8 @@ const ImageEditorModal = (): JSX.Element => {
           imageEditorModalData={imageEditorModalData}
           onClickTransitionEditButton={transitionEditButtonClickHandler}
           onRestoreClick={restoreAttachment}
+          attachmentId={attachmentId}
+          setAttachmentId={setAttachmentId}
         />
       ) }
     </Modal>

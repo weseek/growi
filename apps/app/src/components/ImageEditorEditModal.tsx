@@ -75,8 +75,8 @@ export type Tools = typeof ToolsArray[keyof typeof ToolsArray];
 type Props = {
   imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionHistoryButton: () => void;
-  attachmentId: string;
-  setAttachmentId: (id: string) => void;
+  attachmentId: string | null;
+  setAttachmentId: (id: string | null) => void;
 };
 
 export const ImageEditorEditModal = (props: Props): JSX.Element => {
