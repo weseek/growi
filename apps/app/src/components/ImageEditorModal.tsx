@@ -31,17 +31,24 @@ const ImageEditorModal = (): JSX.Element => {
     setModalType('edit');
   };
 
+  const cleanupModal = () => {
+    closeImageEditorModal();
+    setSelectedAttachmentId(null);
+    setModalType('edit');
+  };
+
   return (
     <Modal
       style={{ maxWidth: '1000px' }}
       isOpen={imageEditorModalData?.isOpened ?? false}
-      toggle={() => closeImageEditorModal()}
+      toggle={() => cleanupModal()}
     >
       { modalType === 'edit' && (
         <ImageEditorEditModal
           onClickTransitionHistoryButton={transitionHistoryButtonClickHandler}
           selectedAttachmentId={selectedAttachmentId}
           setSelectedAttachmentId={setSelectedAttachmentId}
+          cleanupModal={cleanupModal}
         />
       )}
 

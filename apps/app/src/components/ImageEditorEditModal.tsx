@@ -23,6 +23,7 @@ import {
   useDraggable, useDrawing, useFocusable, useShapes, useStage,
 } from './ImageEditorEditModal/hooks';
 import { ArrowIcon } from './ImageEditorModalToolsIcon/Arrow';
+import { StampIcon } from './ImageEditorModalToolsIcon/Stamp';
 import { TextIcon } from './ImageEditorModalToolsIcon/Text';
 import { TrimingIcon } from './ImageEditorModalToolsIcon/Triming';
 
@@ -70,16 +71,17 @@ type Props = {
   onClickTransitionHistoryButton: () => void;
   selectedAttachmentId: string | null;
   setSelectedAttachmentId: (id: string | null) => void;
+  cleanupModal: () => void;
 };
 
 export const ImageEditorEditModal = (props: Props): JSX.Element => {
   const {
-    onClickTransitionHistoryButton, selectedAttachmentId, setSelectedAttachmentId,
+    onClickTransitionHistoryButton, selectedAttachmentId, setSelectedAttachmentId, cleanupModal,
   } = props;
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
+  const { data: imageEditorModalData } = useImageEditorModal();
 
   const currentAttachmentId = imageEditorModalData?.imageSrc?.replace('/attachment/', '');
 
@@ -176,7 +178,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
         setSelectedAttachmentId(editedImagePath.replace('/attachment/', ''));
       }
 
-      closeImageEditorModal();
+      cleanupModal();
     }
     catch (err) {
       // TODO: Error handling
@@ -279,9 +281,8 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
           }}
           className={`btn mr-1 ${tool === Tools.Stamp ? 'btn-light' : ''} `}
         >
-          <i className="icon-fw icon-pencila" /> スタンプ
+          <StampIcon /> スタンプ
         </button>
-
         <div className="ml-auto">
           <button type="button" className="btn btn-outline-secondary mr-3" onClick={() => onClickTransitionHistoryButton()}>編集履歴</button>
         </div>
@@ -450,13 +451,8 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" className="btn btn-outline-secondary mr-2" onClick={() => closeImageEditorModal()}>キャンセル</button>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={() => { saveButtonClickHandler() }}
-        >保存
-        </button>
+        <button type="button" className="btn btn-outline-secondary mr-2" onClick={() => cleanupModal()}>キャンセル</button>
+        <button type="button" className="btn btn-primary mr-2" onClick={() => saveButtonClickHandler()}>保存</button>
       </ModalFooter>
     </>
   );
