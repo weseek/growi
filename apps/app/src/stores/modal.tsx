@@ -746,7 +746,7 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
  */
 type ImageEditorModalSaveHandler = (editedImagePath: string) => void;
 
-export type ImageEditorModalStatus = {
+type ImageEditorModalStatus = {
   isOpened: boolean,
   imageSrc?: string,
   onSave?: ImageEditorModalSaveHandler,

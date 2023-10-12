@@ -10,7 +10,7 @@ import {
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { useImageEditorModal, ImageEditorModalStatus } from '~/stores/modal';
+import { useImageEditorModal } from '~/stores/modal';
 import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
 import { ArrowIcon } from './ImageEditorModalToolsIcon/Arrow';
@@ -44,22 +44,6 @@ function resizeImage(width: number, height: number) {
   return { width: newWidth, height: newHeight };
 }
 
-
-function getAttachmentId(imageSrc?: string): string | undefined {
-  if (imageSrc == null) {
-    return;
-  }
-
-  const regex = /(?:https?:\/\/[^/]+)?\/attachment\/(\w+)/;
-  const match = imageSrc.match(regex);
-
-  if (match == null) {
-    return;
-  }
-
-  return match[1];
-}
-
 export const Tools = {
   Arrow: 'arrow',
   Text: 'text',
@@ -73,20 +57,21 @@ const ToolsArray = Object.keys(Tools);
 export type Tools = typeof ToolsArray[keyof typeof ToolsArray];
 
 type Props = {
-  imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionHistoryButton: () => void;
-  attachmentId: string;
-  setAttachmentId: (id: string) => void;
+  selectedAttachmentId: string | null;
+  setSelectedAttachmentId: (id: string | null) => void;
 };
 
 export const ImageEditorEditModal = (props: Props): JSX.Element => {
   const {
-    imageEditorModalData, onClickTransitionHistoryButton, attachmentId, setAttachmentId,
+    onClickTransitionHistoryButton, selectedAttachmentId, setSelectedAttachmentId,
   } = props;
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { close: closeImageEditorModal } = useImageEditorModal();
+  const { data: imageEditorModalData, close: closeImageEditorModal } = useImageEditorModal();
+
+  const currentAttachmentId = imageEditorModalData?.imageSrc?.replace('/attachment/', '');
 
   const [image] = useState(new window.Image());
   const [imageWidth, setImageWidth] = useState<number>(image.naturalWidth);
@@ -155,7 +140,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
 
       if (imageEditorModalData?.onSave != null) {
         imageEditorModalData?.onSave(editedImagePath);
-        setAttachmentId(editedImagePath.replace('/attachment/', ''));
+        setSelectedAttachmentId(editedImagePath.replace('/attachment/', ''));
       }
 
       closeImageEditorModal();
@@ -187,13 +172,13 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
   }, [image, attachment]);
 
   useEffect(() => {
-    const finalAttachmentId = attachmentId || getAttachmentId(imageEditorModalData?.imageSrc);
+    const targetAttachmentId = selectedAttachmentId || currentAttachmentId;
 
-    if (!finalAttachmentId) {
+    if (targetAttachmentId == null) {
       return;
     }
 
-    apiv3Get(`/attachment?attachmentId=${finalAttachmentId}`)
+    apiv3Get(`/attachment?attachmentId=${targetAttachmentId}`)
       .then((response) => {
         setAttachment(response.data);
       })
@@ -201,7 +186,7 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
         console.error(error);
       });
 
-  }, [attachmentId, imageEditorModalData?.imageSrc]);
+  }, [selectedAttachmentId, currentAttachmentId]);
 
   return (
     <>

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 
+import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type { ImageEditorModalStatus } from '~/stores/modal';
+import { useImageEditorModal } from '~/stores/modal';
 
 type HistoryItem = {
   _id: string;
@@ -14,29 +15,54 @@ type HistoryItem = {
 };
 
 type Props = {
-  imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionEditButton: () => void;
   onRestoreClick: (id: string) => void;
+  setSelectedAttachmentId: (id: string | null) => void;
 };
 
 export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
-  const { imageEditorModalData, onClickTransitionEditButton, onRestoreClick } = props;
+  const {
+    onClickTransitionEditButton, onRestoreClick, setSelectedAttachmentId,
+  } = props;
+
+  const { data: imageEditorModalData } = useImageEditorModal();
+  const currentAttachmentId = imageEditorModalData?.imageSrc?.replace('/attachment/', '');
 
   const [attachmentHistory, setAttachmentHistory] = useState<{ history: Array<HistoryItem> } | null>(null);
   const [maxHeight, setMaxHeight] = useState('70vh');
 
-  useEffect(() => {
-    if (imageEditorModalData?.imageSrc != null) {
-      const attachmentId = imageEditorModalData.imageSrc.replace('/attachment/', '');
-      apiv3Get(`/attachment/history/${attachmentId}`)
-        .then((response) => {
-          setAttachmentHistory(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+  const getAttachmentsHistory = useCallback(async() => {
+    if (currentAttachmentId == null) {
+      return;
     }
-  }, [imageEditorModalData?.imageSrc]);
+
+    try {
+      const res = await apiv3Get(`/attachment/history/${currentAttachmentId}`);
+      setAttachmentHistory(res.data);
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }, [currentAttachmentId]);
+
+  const deleteAttachment = async(attachmentId: string) => {
+    try {
+      await apiPost('/attachments.remove', { attachment_id: attachmentId });
+      await getAttachmentsHistory();
+      setSelectedAttachmentId(null);
+    }
+    catch (err) {
+      // error handling
+    }
+  };
+
+  useEffect(() => {
+    if (currentAttachmentId == null) {
+      return;
+    }
+
+    getAttachmentsHistory();
+  }, [getAttachmentsHistory, currentAttachmentId]);
 
   useEffect(() => {
     const updateMaxHeight = () => setMaxHeight(`${window.innerHeight * 0.7}px`);
@@ -78,7 +104,21 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
                     </a>
                     <p>サイズ: {item.fileSize}バイト</p>
                     <p>作成日: {formatDate(item.createdAt)}</p>
-                    <button type="button" className="btn btn-secondary" onClick={() => onRestoreClick(item._id)}>復元</button>
+
+                    { item._id === currentAttachmentId && (
+                      <p className="text-muted">現在のバージョン</p>
+                    )}
+
+                    {
+                      item._id !== currentAttachmentId && (
+                        <>
+                          <button type="button" className="btn btn-secondary" onClick={() => onRestoreClick(item._id)}>復元</button>
+                          <button type="button" className="btn text-danger" onClick={() => deleteAttachment(item._id)}>
+                            <i className="icon-fw icon-trash" />
+                          </button>
+                        </>
+                      )
+                    }
                   </div>
                 </div>
                 <div className="border mb-4"></div>
