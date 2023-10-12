@@ -4,7 +4,7 @@ import { ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type { ImageEditorModalStatus } from '~/stores/modal';
+import { useImageEditorModal } from '~/stores/modal';
 
 type HistoryItem = {
   _id: string;
@@ -15,18 +15,17 @@ type HistoryItem = {
 };
 
 type Props = {
-  imageEditorModalData?: ImageEditorModalStatus,
   onClickTransitionEditButton: () => void;
   onRestoreClick: (id: string) => void;
-  attachmentId: string | null,
-  setAttachmentId: (id: string | null) => void;
+  setSelectedAttachmentId: (id: string | null) => void;
 };
 
 export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
   const {
-    imageEditorModalData, onClickTransitionEditButton, onRestoreClick, attachmentId, setAttachmentId,
+    onClickTransitionEditButton, onRestoreClick, setSelectedAttachmentId,
   } = props;
 
+  const { data: imageEditorModalData } = useImageEditorModal();
   const currentAttachmentId = imageEditorModalData?.imageSrc?.replace('/attachment/', '');
 
   const [attachmentHistory, setAttachmentHistory] = useState<{ history: Array<HistoryItem> } | null>(null);
@@ -50,7 +49,7 @@ export const ImageEditorHistoryModal = (props: Props): JSX.Element => {
     try {
       await apiPost('/attachments.remove', { attachment_id: attachmentId });
       await getAttachmentsHistory();
-      setAttachmentId(null);
+      setSelectedAttachmentId(null);
     }
     catch (err) {
       // error handling
