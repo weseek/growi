@@ -13,6 +13,15 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { useImageEditorModal } from '~/stores/modal';
 import { useCurrentPageId, useCurrentPagePath } from '~/stores/page';
 
+import {
+  EditableText, TransformableCircle, TransformableLine, TransformableRect,
+} from './ImageEditorEditModal/components';
+import { TransformableImage } from './ImageEditorEditModal/components/TransformableImage';
+import { TransformableStamp } from './ImageEditorEditModal/components/TransformableStamp';
+import { ShapesContext, ShapesConsumer, useShapesContext } from './ImageEditorEditModal/context';
+import {
+  useDraggable, useDrawing, useFocusable, useShapes, useStage,
+} from './ImageEditorEditModal/hooks';
 import { ArrowIcon } from './ImageEditorModalToolsIcon/Arrow';
 import { TextIcon } from './ImageEditorModalToolsIcon/Text';
 import { TrimingIcon } from './ImageEditorModalToolsIcon/Triming';
@@ -50,6 +59,7 @@ export const Tools = {
   Triming: 'triming',
   Pen: 'pen',
   Stamp: 'stamp',
+  Rectangle: 'rectangle',
 } as const;
 
 const ToolsArray = Object.keys(Tools);
@@ -78,56 +88,79 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
   const [imageHeight, setImageHeight] = useState<number>(image.naturalHeight);
   const [attachment, setAttachment] = useState<Attachment | null>(null);
 
-  const [tool, setTool] = useState<Tools | null>(Tools.Pen);
+  const [tool, setTool] = useState<Tools | null>(null);
 
   const [lines, setLines] = useState<any>([]);
   const isDrawing = React.useRef(false);
 
   const imageRef = useRef<Konva.Image | null>(null);
   const stageRef = useRef<Konva.Stage | null>(null);
+  const layerRef = useRef<Konva.Layer | null>(null);
 
+  const {
+    zoom,
+    mode,
+  } = useShapesContext();
 
-  const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
-    if (event == null) {
-      return;
+  const {
+    stage,
+    setStage,
+    layer,
+    setLayer,
+  } = useStage();
+
+  const {
+    addShape, updateShape, setShapes, shapes,
+  } = useShapes();
+
+  const {
+    selected, onDragStart, onDragEnd, unselect, setSelected,
+    draggable, setDraggable,
+  } = useDraggable({
+    updateShape,
+  });
+
+  const {
+    onDrawStart,
+    onDrawing,
+    onDrawEnd,
+    points,
+    willDrawing, setWillDrawing, drawing,
+  } = useDrawing({
+    addShape, setSelected,
+  });
+
+  const {
+    unfocus,
+  } = useFocusable();
+
+  useEffect(() => {
+    if (stageRef.current && !stage) {
+      setStage(stageRef.current);
     }
-
-    isDrawing.current = true;
-    const pos = event.target.getStage()?.getPointerPosition();
-    setLines([...lines, { tool, points: [pos?.x, pos?.y] }]);
-  };
-
-  const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
-    if (!isDrawing.current || event == null) {
-      return;
+    if (layerRef.current && !layer) {
+      setLayer(layerRef.current);
     }
-    const pos = event.target.getStage()?.getPointerPosition();
+  }, [layer, stage, stageRef, layerRef, setLayer, setStage]);
 
-    const lastLine = lines[lines.length - 1];
-    // add point
-    lastLine.points = lastLine.points.concat([pos?.x, pos?.y]);
-
-    // replace last
-    lines.splice(lines.length - 1, 1, lastLine);
-    setLines(lines.concat());
-  };
-
-  const handleMouseUp = () => {
-    isDrawing.current = false;
-  };
+  useEffect(() => {
+    setShapes([]);
+  }, []);
 
   const saveButtonClickHandler = async() => {
-    if (stageRef.current == null || currentPageId == null || currentPagePath == null) {
+    if (stage == null || currentPageId == null || currentPagePath == null) {
       return;
     }
 
     try {
-      const blob = await stageRef.current.toBlob({
+      const blob = await stage.toBlob({
         width: imageWidth, height: imageHeight, mimeType: 'image/jpeg',
       }) as any;
 
       const formData = new FormData();
-      formData.append('file', blob);
+      const file = new File([blob], 'example.jpeg', { type: blob.type });
+
+      formData.append('file', file);
       formData.append('page_id', currentPageId);
       formData.append('path', currentPagePath);
 
@@ -148,6 +181,11 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
     catch (err) {
       // TODO: Error handling
     }
+  };
+
+  const handleAddShape = (configs: {[key: string]: any}) => {
+    const [shape] = addShape<Konva.ShapeConfig>({ ...configs });
+    setSelected(shape.id);
   };
 
   useEffect(() => {
@@ -198,16 +236,49 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
         <button type="button" className={`btn mr-1 ${tool === Tools.Arrow ? 'btn-light' : ''} `}>
           <ArrowIcon /> 矢印
         </button>
-        <button type="button" className={`btn mr-1 ${tool === Tools.Text ? 'btn-light' : ''} `}>
+        <button
+          type="button"
+          onClick={() => {
+            setTool(Tools.Text);
+            handleAddShape({ type: 'text' });
+          }}
+          className={`btn mr-1 ${tool === Tools.Text ? 'btn-light' : ''} `}
+        >
           <TextIcon /> 文字
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setTool(Tools.Rectangle);
+            handleAddShape({ type: 'rectangle' });
+          }}
+          className={`btn mr-1 ${tool === Tools.Rectangle ? 'btn-light' : ''} `}
+        >
+          <i className="icon-fw icon-loop" /> 四角
         </button>
         <button type="button" className={`btn mr-1 ${tool === Tools.Triming ? 'btn-light' : ''} `}>
           <TrimingIcon /> トリミング
         </button>
-        <button type="button" className={`btn mr-1 ${tool === Tools.Pen ? 'btn-light' : ''} `}>
+        <button
+          type="button"
+          onClick={() => {
+            setTool(Tools.Pen);
+            unselect();
+            unfocus();
+            setWillDrawing(true);
+          }}
+          className={`btn mr-1 ${tool === Tools.Pen ? 'btn-light' : ''} `}
+        >
           <i className="icon-fw icon-pencil" /> ペン
         </button>
-        <button type="button" className={`btn mr-1 ${tool === Tools.Stamp ? 'btn-light' : ''} `}>
+        <button
+          type="button"
+          onClick={() => {
+            setTool(Tools.Stamp);
+            handleAddShape({ type: 'stamp' });
+          }}
+          className={`btn mr-1 ${tool === Tools.Stamp ? 'btn-light' : ''} `}
+        >
           <i className="icon-fw icon-pencila" /> スタンプ
         </button>
 
@@ -217,33 +288,175 @@ export const ImageEditorEditModal = (props: Props): JSX.Element => {
       </div>
 
       <ModalBody className="mx-auto">
-        <Stage ref={stageRef} width={imageWidth} height={imageHeight} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
-          <Layer>
-            <KonvaImage image={image} ref={imageRef} width={imageWidth} height={imageHeight} />
-
-            {/* see: https://konvajs.org/docs/react/Free_Drawing.html */}
-            {lines.map((line, i) => (
-              <Line
-                key={i}
-                points={line.points}
-                stroke="#df4b26"
-                strokeWidth={5}
-                tension={0.5}
-                lineCap="round"
-                lineJoin="round"
-                globalCompositeOperation={
-                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
+        <ShapesConsumer>
+          {value => (
+          // TODO: 키보드 이벤트 리스닝하게 하기
+            <Stage
+              ref={stageRef}
+              // TODO: 캔버스 크기를 이미지 기반으로 조절 가능하게
+              width={imageWidth}
+              height={imageHeight}
+              onMouseDown={(e) => {
+                if (willDrawing) {
+                  setDraggable(false);
+                  onDrawStart(e);
                 }
-              />
-            ))}
+                else {
+                  unselect(e);
+                  unfocus(e);
+                }
+              }}
+              onMouseMove={(e) => {
+                if (drawing) {
+                  onDrawing(e);
+                  unselect(e);
+                  unfocus(e);
+                }
+              }}
+              onMouseUp={(e) => {
+                if (drawing) {
+                  onDrawEnd(e);
+                  setDraggable(true);
+                }
+              }}
+              scaleX={1}
+              scaleY={1}
+              onTouchStart={unselect}
+              style={{
+                cursor: willDrawing || drawing ? 'crosshair' : 'default',
+                display: 'inline-block',
+                backgroundColor: 'white',
+                verticalAlign: 'middle',
+              }}
+            >
+              <ShapesContext.Provider value={value}>
+                <Layer>
+                  <KonvaImage image={image} ref={imageRef} width={imageWidth} height={imageHeight} onClick={() => setSelected(null)} />
+                </Layer>
+                <Layer ref={layerRef}>
+                  {shapes.map((shape) => {
+                    switch (shape.type) {
+                      case 'rectangle':
+                        return (
+                          <TransformableRect
+                            {...shape}
+                            draggable={draggable}
+                            key={shape.id}
+                            isSelected={selected === shape.id}
+                            onDragStart={e => onDragStart(e, shape)}
+                            onDragEnd={e => onDragEnd(e)}
+                            onClick={() => setSelected(shape.id)}
+                            onTransform={updated => updateShape({
+                              ...updated,
+                              id: shape.id,
+                            })}
+                          />
+                        );
+                      case 'stamp':
+                        return (
+                          <TransformableStamp
+                            {...shape}
+                            draggable={draggable}
+                            key={shape.id}
+                            maxWidth={imageWidth}
+                            isSelected={selected === shape.id}
+                            onDragStart={e => onDragStart(e, shape)}
+                            onDragEnd={e => onDragEnd(e)}
+                            onClick={() => setSelected(shape.id)}
+                            onTransform={updated => updateShape({
+                              ...updated,
+                              id: shape.id,
+                            })}
+                          />
+                        );
+                      case 'ellipse':
+                        return (
+                          <TransformableCircle
+                            {...shape}
+                            draggable={draggable}
+                            key={shape.id}
+                            radiusX={shape.radiusX}
+                            radiusY={shape.radiusY}
+                            isSelected={selected === shape.id}
+                            onClick={() => setSelected(shape.id)}
+                            onDragStart={e => onDragStart(e, shape)}
+                            onDragEnd={e => onDragEnd(e)}
+                            onTransform={updated => updateShape({
+                              ...updated,
+                              id: shape.id,
+                            })}
+                          />
+                        );
+                      case 'line':
+                        return (
+                          <TransformableLine
+                            {...shape}
+                            draggable={draggable}
+                            key={shape.id!}
+                            mode={shape.mode}
+                            points={shape.points}
+                            isSelected={selected === shape.id}
+                            onDragStart={e => onDragStart(e, shape)}
+                            onDragEnd={e => onDragEnd(e)}
+                            onClick={() => setSelected(shape.id)}
+                            onTransform={updated => updateShape({
+                              ...updated,
+                              id: shape.id,
+                            })}
+                          />
+                        );
+                      case 'text':
+                        return (
+                          <EditableText
+                            {...shape}
+                            draggable={draggable}
+                            id={shape.id}
+                            key={shape.id}
+                            text={shape.text}
+                            stage={stageRef.current}
+                            isSelected={selected === shape.id}
+                            onDragStart={e => onDragStart(e, shape)}
+                            onDragEnd={e => onDragEnd(e)}
+                            onClick={() => setSelected(shape.id)}
+                            onTransform={updated => updateShape({
+                              ...updated,
+                              id: shape.id,
+                            })}
+                          />
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
 
-          </Layer>
-        </Stage>
+                  {drawing && points.length > 0 ? (
+                    <TransformableLine
+                      mode={mode}
+                      points={points}
+                      isSelected={false}
+                      onDragStart={() => {}}
+                      onDragEnd={() => {}}
+                      onClick={() => {}}
+                      onTransform={() => {}}
+                      stroke="#df4b26"
+                    />
+                  )
+                    : null}
+                </Layer>
+              </ShapesContext.Provider>
+            </Stage>
+          )}
+        </ShapesConsumer>
       </ModalBody>
 
       <ModalFooter>
         <button type="button" className="btn btn-outline-secondary mr-2" onClick={() => closeImageEditorModal()}>キャンセル</button>
-        <button type="button" className="btn btn-primary mr-2" onClick={() => saveButtonClickHandler()}>保存</button>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={() => { saveButtonClickHandler() }}
+        >保存
+        </button>
       </ModalFooter>
     </>
   );
