@@ -25,7 +25,7 @@ context('Click page icons button', () => {
     cy.getByTestid('subscribe-button-tooltip').should('not.exist');
 
     cy.waitUntilSkeletonDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}1-subscribe-page`) })
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}1-subscribe-page`) })
 
     // Unsubscribe
     cy.get('#subscribe-button').click({force: true});
@@ -40,7 +40,7 @@ context('Click page icons button', () => {
     cy.getByTestid('subscribe-button-tooltip').should('not.exist');
 
     cy.waitUntilSkeletonDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}2-unsubscribe-page`) })
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}2-unsubscribe-page`) })
   });
 
   it('Successfully Like / Dislike a page', () => {
@@ -60,12 +60,12 @@ context('Click page icons button', () => {
     cy.getByTestid('like-button-tooltip').should('not.exist');
 
     cy.waitUntilSpinnerDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}3-like-page`) });
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}3-like-page`) });
 
     // total liker (user-list-popover is commented out because it is sometimes displayed and sometimes not.)
     // cy.get('#po-total-likes').click({force: true});
     // cy.get('.user-list-popover').should('be.visible')
-    // cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}4-likes-counter`) });
+    // cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}4-likes-counter`) });
 
     // unlike
     cy.get('#like-button').click({force: true});
@@ -80,12 +80,12 @@ context('Click page icons button', () => {
     cy.getByTestid('like-button-tooltip').should('not.exist');
 
     cy.waitUntilSpinnerDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}5-dislike-page`) });
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}5-dislike-page`) });
 
     // total liker (user-list-popover is commented out because it is sometimes displayed and sometimes not.)
     // cy.get('#po-total-likes').click({force: true});
     // cy.get('.user-list-popover').should('be.visible');
-    // cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}6-likes-counter`) });
+    // cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}6-likes-counter`) });
   });
 
   it('Successfully Bookmark / Unbookmark a page', () => {
@@ -105,7 +105,7 @@ context('Click page icons button', () => {
     cy.getByTestid('bookmark-button-tooltip').should('not.exist');
 
     cy.waitUntilSpinnerDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}7-bookmark-page`) });
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}7-bookmark-page`) });
 
     // total bookmarker
     cy.waitUntil(() => {
@@ -117,7 +117,7 @@ context('Click page icons button', () => {
       });
     });
     cy.waitUntilSpinnerDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}8-bookmarks-counter`) });
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}8-bookmarks-counter`) });
 
     // unbookmark
     cy.get('#bookmark-dropdown-btn').click({force: true});
@@ -134,7 +134,7 @@ context('Click page icons button', () => {
     cy.getByTestid('bookmark-button-tooltip').should('not.exist');
 
     cy.waitUntilSpinnerDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}9-unbookmark-page`) });
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}9-unbookmark-page`) });
 
     // total bookmarker
     cy.waitUntil(() => {
@@ -146,7 +146,7 @@ context('Click page icons button', () => {
       });
     });
     cy.waitUntilSpinnerDisappear();
-    cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}10-bookmarks-counter`) });
+    cy.getByTestid('grw-contextual-sub-nav').within(() => { cy.screenshot(`${ssPrefix}10-bookmarks-counter`) });
   });
 
   // user-list-popover is commented out because it is sometimes displayed and sometimes not
@@ -154,7 +154,7 @@ context('Click page icons button', () => {
   //   cy.visit('/Sandbox');
   //   cy.waitUntilSkeletonDisappear();
 
-  //   cy.get('#grw-subnav-container').within(() => {
+  //   cy.getByTestid('grw-contextual-sub-nav').within(() => {
   //     cy.get('div.grw-seen-user-info').find('button#btn-seen-user').click({force: true});
   //   });
 
@@ -168,7 +168,7 @@ context('Click page icons button', () => {
 
   //   cy.get('.user-list-popover').should('be.visible')
 
-  //   cy.get('#grw-subnav-container').within(() => {
+  //   cy.getByTestid('grw-contextual-sub-nav').within(() => {
   //     cy.screenshot(`${ssPrefix}11-seen-user-list`);
   //   });
   // });

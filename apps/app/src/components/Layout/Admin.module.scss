@@ -5,16 +5,6 @@ $slack-work-space-name-card-background: #fff5ff;
 $slack-work-space-name-card-border: #efc1f6;
 
 .admin-page :global {
-  .title {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
-    line-height: 1em;
-
-    @include mixins.variable-font-size(28px);
-    line-height: 1.1em;
-  }
-
   .admin-user-menu {
     .dropdown-menu {
       right: 0;

@@ -180,9 +180,9 @@
   /*
   * GROWI subnavigation
   */
-  .grw-subnav {
-    background-color: var(--bgcolor-subnav);
-  }
+  // .grw-subnav {
+  //   background-color: var(--bgcolor-subnav);
+  // }
 
   .grw-subnav-fixed-container .grw-subnav {
     background-color: hsl.alpha(var(--bgcolor-subnav),85%);
@@ -207,9 +207,9 @@
   /**
    * GROWI PagePathHierarchicalLink
    */
-  .grw-page-path-text-muted-container .grw-page-path-hierarchical-link a {
-    color: $gray-600;
-  }
+  // .grw-page-path-text-muted-container .grw-page-path-hierarchical-link a {
+  //   color: $gray-600;
+  // }
   /*
   * GROWI Sidebar
   */
