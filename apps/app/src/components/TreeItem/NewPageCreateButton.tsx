@@ -48,9 +48,6 @@ export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
     }
   }, [hasDescendants, setIsOpen]);
 
-  const test = pagePathUtils;
-  console.dir(test);
-
   return (
     <>
       {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
