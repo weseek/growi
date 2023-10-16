@@ -1,7 +1,11 @@
 import { Server } from 'socket.io';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
+
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+
+import YjsConnectionManager from './yjsConnectionManager';
 
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -33,6 +37,9 @@ class SocketIoService {
     });
     this.io.attach(server);
 
+    // create the YjsConnectionManager instance
+    this.yjsConnectionManager = new YjsConnectionManager(this.io);
+
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
 
@@ -47,6 +54,7 @@ class SocketIoService {
 
     await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
+    await this.setupYjsConnection();
   }
 
   getDefaultSocket() {
@@ -147,6 +155,20 @@ class SocketIoService {
       // set event handlers for joining rooms
       socket.on('join:page', ({ pageId }) => {
         socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
+    });
+  }
+
+  setupYjsConnection() {
+    this.io.on('connection', (socket) => {
+      socket.on(SocketEventName.YDocSync, async({ pageId, initialValue }) => {
+        try {
+          await this.yjsConnectionManager.handleYDocSync(pageId, initialValue);
+        }
+        catch (error) {
+          logger.warn(error.message);
+          socket.emit(SocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
+        }
       });
     });
   }

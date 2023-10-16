@@ -19,7 +19,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useDefaultIndentSize,
+  useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
@@ -113,6 +113,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+  const { data: user } = useCurrentUser();
 
   const { data: socket } = useGlobalSocket();
 
@@ -161,15 +162,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
-  const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
-    // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
-  })), [mutateIsEnabledUnsavedWarning]);
+  // const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
+  //   // Displays an unsaved warning alert
+  //   mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
+  // })), [mutateIsEnabledUnsavedWarning]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
-    mutateIsEnabledUnsavedWarningWithDebounce(value);
-  }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+    // mutateIsEnabledUnsavedWarningWithDebounce(value);
+  // }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+  }, [setMarkdownPreviewWithDebounce]);
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -467,17 +469,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
-
-  // initialize
-  useEffect(() => {
-    if (initialValue == null) {
-      return;
-    }
-    codeMirrorEditor?.initDoc(initialValue);
-    setMarkdownToPreview(initialValue);
-    mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning]);
-
   // initial caret line
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
@@ -532,19 +523,21 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // when transitioning to a different page, if the initialValue is the same,
-  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
-  const onRouterChangeComplete = useCallback(() => {
-    codeMirrorEditor?.initDoc(initialValue);
-    codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor, initialValue]);
 
-  useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
-    };
-  }, [onRouterChangeComplete, router.events]);
+  // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
+  // // when transitioning to a different page, if the initialValue is the same,
+  // // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  // const onRouterChangeComplete = useCallback(() => {
+  //   codeMirrorEditor?.initDoc(ydoc?.getText('codemirror').toString());
+  //   codeMirrorEditor?.setCaretLine();
+  // }, [codeMirrorEditor, ydoc]);
+
+  // useEffect(() => {
+  //   router.events.on('routeChangeComplete', onRouterChangeComplete);
+  //   return () => {
+  //     router.events.off('routeChangeComplete', onRouterChangeComplete);
+  //   };
+  // }, [onRouterChangeComplete, router.events]);
 
   if (!isEditable) {
     return <></>;
@@ -576,6 +569,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onSave={saveWithShortcut}
           onUpload={uploadHandler}
           indentSize={currentIndentSize ?? defaultIndentSize}
+          pageId={pageId}
+          userName={user?.name}
+          socket={socket}
+          initialValue={initialValue}
+          setMarkdownToPreview={setMarkdownToPreview}
         />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

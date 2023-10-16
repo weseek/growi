@@ -22,6 +22,9 @@ export const SocketEventName = {
   PageUpdated: 'page:update',
   PageDeleted: 'page:delete',
 
+  // YDoc
+  YDocSync: 'ydoc:sync',
+  YDocSyncError: 'ydoc:sync:error',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 

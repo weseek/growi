@@ -185,7 +185,7 @@
     "remark-toc": "^8.0.1",
     "remark-wiki-link": "^1.0.4",
     "sanitize-filename": "^1.6.3",
-    "socket.io": "^4.2.0",
+    "socket.io": "^4.7.2",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
     "superjson": "^1.9.1",
@@ -256,6 +256,10 @@
     "socket.io-client": "^4.2.0",
     "source-map-loader": "^4.0.1",
     "swagger2openapi": "^7.0.8",
-    "tsc-alias": "^1.2.9"
+    "tsc-alias": "^1.2.9",
+    "y-codemirror.next": "^0.3.2",
+    "y-mongodb-provider": "^0.1.7",
+    "y-socket.io": "^1.1.0",
+    "yjs": "^13.6.7"
   }
 }
