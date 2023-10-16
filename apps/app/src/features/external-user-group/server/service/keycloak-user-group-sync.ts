@@ -5,12 +5,18 @@ import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRep
 import { configManager } from '~/server/service/config-manager';
 import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
 import loggerFactory from '~/utils/logger';
+import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
 
 const logger = loggerFactory('growi:service:keycloak-user-group-sync-service');
+
+// When d = max depth of group trees
+// Max space complexity of generateExternalUserGroupTrees will be:
+// O(TREES_BATCH_SIZE * d)
+const TREES_BATCH_SIZE = 10;
 
 export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
@@ -54,14 +60,9 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
     // Type is 'GroupRepresentation', but 'find' does not return 'attributes' field. Hence, attribute for description is not present.
     logger.info('Get groups from keycloak server');
-    const rootGroups = await await this.kcAdminClient.groups.find({ realm: this.realm });
+    const rootGroups = await this.kcAdminClient.groups.find({ realm: this.realm });
 
-    const treesWithNull: (ExternalUserGroupTreeNode | null)[] = [];
-    // Do not use Promise.all, because the keycloak server may not be able to handle all requests
-    for await (const group of rootGroups) {
-      treesWithNull.push(await this.groupRepresentationToTreeNode(group));
-    }
-    return treesWithNull
+    return (await batchProcessPromiseAll(rootGroups, TREES_BATCH_SIZE, group => this.groupRepresentationToTreeNode(group)))
       .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
   }
 
