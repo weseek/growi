@@ -2229,6 +2229,11 @@
   resolved "https://registry.yarnpkg.com/@exodus/schemasafe/-/schemasafe-1.1.1.tgz#006ab8b33b1aec6d2992c75e5918c65197388aa2"
   integrity sha512-Pd7+aGvWIaTDL5ecV4ZBEtBrjXnk8/ly5xyHbikxVhgcq7qhihzHWHbcYmFupQBT2A5ggNZGvT7Bpj0M6AKHjA==
 
+"@fastify/busboy@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.0.0.tgz#f22824caff3ae506b18207bad4126dbc6ccdb6b8"
+  integrity sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==
+
 "@godaddy/terminus@^4.9.0":
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@godaddy/terminus/-/terminus-4.9.0.tgz#c7de0b45ede05116854d1461832dd05df169f689"
@@ -5046,7 +5051,7 @@ bunyan@^1.8.12, bunyan@^1.8.15:
     mv "~2"
     safe-json-stringify "~1"
 
-busboy@1.6.0, busboy@^1.6.0:
+busboy@1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/busboy/-/busboy-1.6.0.tgz#966ea36a9502e43cdb9146962523b92f531f6893"
   integrity sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==
@@ -15608,11 +15613,11 @@ uncontrollable@^7.2.1:
     react-lifecycles-compat "^3.0.4"
 
 undici@^5.5.1:
-  version "5.21.2"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-5.21.2.tgz#329f628aaea3f1539a28b9325dccc72097d29acd"
-  integrity sha512-f6pTQ9RF4DQtwoWSaC42P/NKlUjvezVvd9r155ohqkwFNRyBKM3f3pcty3ouusefNRyM25XhIQEbeQ46sZDJfQ==
+  version "5.26.3"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.26.3.tgz#ab3527b3d5bb25b12f898dfd22165d472dd71b79"
+  integrity sha512-H7n2zmKEWgOllKkIUkLvFmsJQj062lSm3uA4EYApG8gLuiOM0/go9bIoC3HVaSnfg4xunowDE2i9p8drkXuvDw==
   dependencies:
-    busboy "^1.6.0"
+    "@fastify/busboy" "^2.0.0"
 
 unified@^10.0.0, unified@^10.1.2, unified@~10.1.1:
   version "10.1.2"
