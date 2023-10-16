@@ -14,6 +14,7 @@ import { useCurrentSidebarContents } from '~/stores/ui';
 
 import DrawerToggler from '../Navbar/DrawerToggler';
 
+import { PageCreateButton } from './PageCreateButton';
 import { SidebarBrandLogo } from './SidebarBrandLogo';
 
 import styles from './SidebarNav.module.scss';
@@ -111,8 +112,9 @@ export const SidebarNav: FC<Props> = (props: Props) => {
         <Link href="/" className="grw-logo d-block">
           <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
         </Link>
-        <DrawerToggler />
       </div>
+
+      <PageCreateButton />
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
