@@ -8,7 +8,6 @@ import { useUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
-  useCurrentSidebarContents,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
 } from '~/stores/ui';
@@ -239,9 +238,7 @@ export const Sidebar = memo((): JSX.Element => {
             onMouseLeave={hoverOutHandler}
           >
             <div className="grw-navigation-wrap">
-              <div className="grw-global-navigation">
-                <SidebarNav />
-              </div>
+              <SidebarNav />
               <div
                 ref={resizableContainer}
                 className="grw-contextual-navigation"
