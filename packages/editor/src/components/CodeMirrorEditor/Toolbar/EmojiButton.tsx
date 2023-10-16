@@ -69,8 +69,6 @@ export const EmojiButton: FC<Props> = (props) => {
 
   const { data: resolvedTheme } = useResolvedTheme();
 
-  console.dir(resolvedTheme);
-
   const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;
 

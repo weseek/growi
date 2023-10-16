@@ -52,7 +52,6 @@ export default defineConfig({
       },
       external: [
         'emoji-mart/css/emoji-mart.css',
-        '~/stores/use-next-themes',
       ],
     },
   },
