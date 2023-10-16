@@ -1,0 +1,67 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '~/styles/variables' as var;
+
+@use './button-styles';
+
+.grw-primary-items :global {
+  .btn {
+    @extend %btn-primary-basis;
+
+    i {
+      opacity: 0.7;
+
+      &:hover,
+      &:focus {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+// Add indicator
+.grw-primary-items :global {
+  $btn-active-indicator-height: 34px;
+
+  .btn {
+    &.active {
+      position: relative;
+
+      // indicator
+      &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 3px;
+        height: $btn-active-indicator-height;
+        content: '';
+        background-color: var(--bs-primary);
+        transform: translateY(#{(var.$grw-sidebar-nav-height - $btn-active-indicator-height) / 2});
+      }
+    }
+  }
+}
+
+// == Colors
+.grw-primary-items :global {
+  .btn.btn-primary {
+    @extend %btn-primary-color-vars;
+  }
+}
+@include bs.color-mode(light) {
+  .grw-primary-items :global {
+    .btn-primary {
+      --bs-btn-color: var(--grw-sidebar-nav-btn-color, var(--grw-primary-600));
+      --bs-btn-hover-bg: var(--grw-sidebar-nav-btn-hover-bg, var(--grw-highlight-300));
+    }
+  }
+}
+@include bs.color-mode(dark) {
+  .grw-primary-items :global {
+    .btn-primary {
+      --bs-btn-color: var(--grw-sidebar-nav-btn-color, var(--grw-primary-300));
+      --bs-btn-hover-bg: var(--grw-sidebar-nav-btn-hover-bg, var(--grw-highlight-700));
+    }
+  }
+}

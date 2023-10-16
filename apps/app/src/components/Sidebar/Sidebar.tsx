@@ -28,36 +28,6 @@ const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
-const GlobalNavigation = memo(() => {
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: currentContents } = useCurrentSidebarContents();
-  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
-
-  const { scheduleToPut } = useUserUISettings();
-
-  const itemSelectedHandler = useCallback((selectedContents) => {
-    if (isDrawerMode) {
-      return;
-    }
-
-    let newValue = false;
-
-    // already selected
-    if (currentContents === selectedContents) {
-      // toggle collapsed
-      newValue = !isCollapsed;
-    }
-
-    mutateSidebarCollapsed(newValue, false);
-    scheduleToPut({ isSidebarCollapsed: newValue });
-
-  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed, scheduleToPut]);
-
-  return <SidebarNav onItemSelected={itemSelectedHandler} />;
-
-});
-GlobalNavigation.displayName = 'GlobalNavigation';
-
 
 export const Sidebar = memo((): JSX.Element => {
 
@@ -270,7 +240,7 @@ export const Sidebar = memo((): JSX.Element => {
           >
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
-                <GlobalNavigation></GlobalNavigation>
+                <SidebarNav />
               </div>
               <div
                 ref={resizableContainer}
