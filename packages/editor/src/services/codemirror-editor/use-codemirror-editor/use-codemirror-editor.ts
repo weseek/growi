@@ -19,12 +19,12 @@ import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 const markdownHighlighting = HighlightStyle.define([
-  { tag: tags.heading1, class: 'cm-header-1' },
-  { tag: tags.heading2, class: 'cm-header-2' },
-  { tag: tags.heading3, class: 'cm-header-3' },
-  { tag: tags.heading4, class: 'cm-header-4' },
-  { tag: tags.heading5, class: 'cm-header-5' },
-  { tag: tags.heading6, class: 'cm-header-6' },
+  { tag: tags.heading1, class: 'cm-header-1 cm-header' },
+  { tag: tags.heading2, class: 'cm-header-2 cm-header' },
+  { tag: tags.heading3, class: 'cm-header-3 cm-header' },
+  { tag: tags.heading4, class: 'cm-header-4 cm-header' },
+  { tag: tags.heading5, class: 'cm-header-5 cm-header' },
+  { tag: tags.heading6, class: 'cm-header-6 cm-header' },
 ]);
 
 type UseCodeMirrorEditorUtils = {
