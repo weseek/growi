@@ -11,11 +11,9 @@ import {
   useCurrentSidebarContents,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
-  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import DrawerToggler from '../Navbar/DrawerToggler';
-import { StickyStretchableScrollerProps } from '../StickyStretchableScroller';
 
 import { NavigationResizeHexagon } from './NavigationResizeHexagon';
 import { SidebarNav } from './SidebarNav';
@@ -25,9 +23,6 @@ import styles from './Sidebar.module.scss';
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
 
-
-const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('../StickyStretchableScroller')
-  .then(mod => mod.StickyStretchableScroller), { ssr: false });
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -63,39 +58,11 @@ const GlobalNavigation = memo(() => {
 });
 GlobalNavigation.displayName = 'GlobalNavigation';
 
-const SidebarContentsWrapper = memo(() => {
-  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
-
-  const calcViewHeight = useCallback(() => {
-    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-    return elem != null
-      ? window.innerHeight - elem?.getBoundingClientRect().top
-      : window.innerHeight;
-  }, []);
-
-  return (
-    <>
-      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
-        <StickyStretchableScroller
-          simplebarRef={mutateSidebarScroller}
-          stickyElemSelector=".grw-sidebar"
-          calcViewHeight={calcViewHeight}
-        >
-          <SidebarContents />
-        </StickyStretchableScroller>
-      </div>
-
-      <DrawerToggler iconClass="icon-arrow-left" />
-    </>
-  );
-});
-SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
-
 
 export const Sidebar = memo((): JSX.Element => {
 
   const { data: isDrawerMode } = useDrawerMode();
-  const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
+  const { data: isDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();

@@ -243,18 +243,9 @@ describe('Access to sidebar', () => {
           cy.get('.list-group-item').should('be.visible');
 
           // The scope of the screenshot is not narrowed because the blackout is shifted
-          cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, { blackout: blackoutOverride });
+          cy.screenshot(`${ssPrefix}recent-changes-access-to-recent-changes`, { blackout: blackoutOverride });
         });
 
-        it('Successfully switch content size', () => {
-          cy.get('#grw-sidebar-contents-wrapper').within(() => {
-            cy.get('#recentChangesResize').click({force: true});
-            cy.get('.list-group-item').should('be.visible');
-          });
-
-          // The scope of the screenshot is not narrowed because the blackout is shifted
-          cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, { blackout: blackoutOverride });
-        });
       });
 
       describe('Test tags tab', () => {
