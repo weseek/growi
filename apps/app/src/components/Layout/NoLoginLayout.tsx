@@ -32,7 +32,7 @@ export const NoLoginLayout = ({
           <div className="row">
 
             <div className="col-md-12 position-relative">
-              <div className="nologin-header mx-auto">
+              <div className="nologin-header mx-auto flex-column">
                 <GrowiLogo />
                 <h1 className="my-3">{ appTitle ?? 'GROWI' }</h1>
                 <div className="noLogin-form-errors px-3"></div>
