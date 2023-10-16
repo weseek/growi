@@ -11,13 +11,14 @@ import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
   workflow?: IWorkflowHasId,
+  workflowEditButtonClickHandler: () => void,
   onClickWorkflowListPageBackButton: () => void,
 }
 
 export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflow, onClickWorkflowListPageBackButton } = props;
+  const { workflow, workflowEditButtonClickHandler, onClickWorkflowListPageBackButton } = props;
 
   return (
     <>
@@ -27,6 +28,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
+        <button type="button" onClick={() => { workflowEditButtonClickHandler() }}>{t('approval_workflow.edit')}</button>
         詳細ページ
       </ModalBody>
 
