@@ -107,6 +107,7 @@ describe('WorkflowService', () => {
     const creator = { _id: new mongoose.Types.ObjectId() } as unknown as IUserHasId;
 
     const workflowId = new mongoose.Types.ObjectId().toString();
+    const approvedWorkflowId = new mongoose.Types.ObjectId().toString();
 
     const approverGroupId1 = new mongoose.Types.ObjectId().toString();
     const approverGroupId2 = new mongoose.Types.ObjectId().toString();
@@ -126,86 +127,116 @@ describe('WorkflowService', () => {
     const approverId10 = new mongoose.Types.ObjectId().toString();
 
     beforeAll(async() => {
-      await Workflow.create({
-        _id: workflowId,
-        creator: creator._id,
-        pageId: new mongoose.Types.ObjectId(),
-        name: 'page1 Workflow',
-        comment: 'commnet',
-        status: WorkflowStatus.INPROGRESS,
-        approverGroups: [
-          {
-            _id: approverGroupId1,
-            approvalType: WorkflowApprovalType.OR,
-            approvers: [
-              {
-                user: approverId1,
-                status: WorkflowApproverStatus.APPROVE,
-              },
-              {
-                user: approverId2,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-          {
-            _id: approverGroupId2,
-            approvalType: WorkflowApprovalType.AND,
-            approvers: [
-              {
-                user: approverId3,
-                status: WorkflowApproverStatus.APPROVE,
-              },
-              {
-                user: approverId4,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-          {
-            _id: approverGroupId3,
-            approvalType: WorkflowApprovalType.AND,
-            approvers: [
-              {
-                user: approverId5,
-                status: WorkflowApproverStatus.NONE,
-              },
-              {
-                user: approverId6,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-          {
-            _id: approverGroupId4,
-            approvalType: WorkflowApprovalType.AND,
-            approvers: [
-              {
-                user: approverId7,
-                status: WorkflowApproverStatus.NONE,
-              },
-              {
-                user: approverId8,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-          {
-            _id: approverGroupId5,
-            approvalType: WorkflowApprovalType.AND,
-            approvers: [
-              {
-                user: approverId9,
-                status: WorkflowApproverStatus.NONE,
-              },
-              {
-                user: approverId10,
-                status: WorkflowApproverStatus.NONE,
-              },
-            ],
-          },
-        ],
-      });
+      await Workflow.insertMany([
+        {
+          _id: workflowId,
+          creator: creator._id,
+          pageId: new mongoose.Types.ObjectId(),
+          name: 'In-progress Workflow',
+          comment: 'commnet',
+          status: WorkflowStatus.INPROGRESS,
+          approverGroups: [
+            {
+              _id: approverGroupId1,
+              approvalType: WorkflowApprovalType.OR,
+              approvers: [
+                {
+                  user: approverId1,
+                  status: WorkflowApproverStatus.APPROVE,
+                },
+                {
+                  user: approverId2,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+            {
+              _id: approverGroupId2,
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: approverId3,
+                  status: WorkflowApproverStatus.APPROVE,
+                },
+                {
+                  user: approverId4,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+            {
+              _id: approverGroupId3,
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: approverId5,
+                  status: WorkflowApproverStatus.NONE,
+                },
+                {
+                  user: approverId6,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+            {
+              _id: approverGroupId4,
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: approverId7,
+                  status: WorkflowApproverStatus.NONE,
+                },
+                {
+                  user: approverId8,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+            {
+              _id: approverGroupId5,
+              approvalType: WorkflowApprovalType.AND,
+              approvers: [
+                {
+                  user: approverId9,
+                  status: WorkflowApproverStatus.NONE,
+                },
+                {
+                  user: approverId10,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          _id: approvedWorkflowId,
+          creator: creator._id,
+          pageId: new mongoose.Types.ObjectId(),
+          name: 'Approved Workflow',
+          comment: 'commnet',
+          status: WorkflowStatus.APPROVE,
+          approverGroups: [
+            {
+              _id: approverGroupId1,
+              approvalType: WorkflowApprovalType.OR,
+              approvers: [
+                {
+                  user: approverId1,
+                  status: WorkflowApproverStatus.APPROVE,
+                },
+                {
+                  user: approverId2,
+                  status: WorkflowApproverStatus.NONE,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    afterAll(async() => {
+      await Workflow.deleteMany({});
     });
 
     it('Should fail if a non-existent workflowId is provided', () => {
@@ -220,7 +251,11 @@ describe('WorkflowService', () => {
     });
 
     it('Should fail when trying to edit a workflow that is not in progress', () => {
-      // wip
+      // when
+      const caller = () => WorkflowService.updateWorkflow(approvedWorkflowId, creator, 'name', 'comment', undefined, undefined);
+
+      // then
+      expect(caller).rejects.toThrow('Cannot edit workflows that are not in progress');
     });
 
     it('Should fail when the target approverGroup does not exist', () => {
