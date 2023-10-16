@@ -26,7 +26,7 @@ export const NoLoginLayout = ({
 
   return (
     <RawLayout className={`nologin ${commonStyles.nologin} ${classNames}`}>
-      <div className="page-wrapper">
+      <div className="page-wrapper flex-row">
         <div className="main container-fluid">
 
           <div className="row">
