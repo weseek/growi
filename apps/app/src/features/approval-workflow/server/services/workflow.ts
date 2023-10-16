@@ -4,39 +4,43 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflow, IWorkflowHasId, IWorkflowReq, IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus,
+  IWorkflowHasId,
+  IWorkflowReq,
+  WorkflowStatus,
+  CreateApproverGroupData,
+  UpdateApproverGroupData,
 } from '../../interfaces/workflow';
 import Workflow from '../models/workflow';
+
+import { WorkflowApproverGroupService } from './workflow-approver-group';
+
 
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
-  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow>,
+  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
-  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void,
+  updateWorkflow(
+    workflowId: ObjectIdLike,
+    operator: IUserHasId,
+    name?: string,
+    comment?: string,
+    createApproverGroupData?: CreateApproverGroupData[],
+    approverGroupUpdateData?: UpdateApproverGroupData[],
+  ): Promise<IWorkflowHasId>,
   validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
 }
 
 class WorkflowServiceImpl implements WorkflowService {
 
-  constructor() {
-    this.validateApproverGroups = this.validateApproverGroups.bind(this);
-  }
-
-  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflow> {
-    /*
-    *  Validation
-    */
+  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId> {
     const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
     if (hasInprogressWorkflowInTargetPage) {
       throw Error('An in-progress workflow already exists');
     }
 
-    this.validateApproverGroups(true, workflow.creator, workflow.approverGroups);
+    WorkflowApproverGroupService.validateApproverGroups(true, workflow.creator.toString(), workflow.approverGroups);
 
-    /*
-    *  Create
-    */
     const createdWorkflow = await Workflow.create(workflow);
     return createdWorkflow;
   }
@@ -54,26 +58,38 @@ class WorkflowServiceImpl implements WorkflowService {
     return;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[]): void {
-    const uniqueApprovers = new Set();
-    uniqueApprovers.add(creatorId);
+  async updateWorkflow(
+      workflowId: ObjectIdLike,
+      operator: IUserHasId,
+      name?: string,
+      comment?: string,
+      createApproverGroupData?: CreateApproverGroupData[],
+      updateApproverGroupData?: UpdateApproverGroupData[],
+  ): Promise<IWorkflowHasId> {
+    const targetWorkflow = await Workflow.findById(workflowId);
+    if (targetWorkflow == null) {
+      throw Error('Target workflow does not exist');
+    }
 
-    approverGroups.forEach((approverGroup) => {
-      if (approverGroup.approvers.length <= 1 && approverGroup.approvalType === WorkflowApprovalType.OR) {
-        throw Error('approverGroup.approvalType cannot be set to "OR" when approverGroup.approvers.length is 1');
-      }
+    if (targetWorkflow.status !== WorkflowStatus.INPROGRESS) {
+      throw Error('Cannot edit workflows that are not in progress');
+    }
 
-      approverGroup.approvers.forEach((approver) => {
-        if (uniqueApprovers.has(approver.user)) {
-          throw Error('Cannot set the same approver within Workflow.ApproverGroups. Also, Workflow.creator cannot be set as an approver.');
-        }
-        uniqueApprovers.add(approver.user);
+    this.validateOperatableUser(targetWorkflow as unknown as IWorkflowHasId, operator);
 
-        if (isNew && approver.status != null && approver.status !== WorkflowApproverStatus.NONE) {
-          throw Error('Cannot set approver.status to anything other than "NONE" during creation');
-        }
-      });
-    });
+    if (createApproverGroupData != null && createApproverGroupData.length > 0) {
+      WorkflowApproverGroupService.createApproverGroup(targetWorkflow, createApproverGroupData);
+    }
+
+    if (updateApproverGroupData != null && updateApproverGroupData.length > 0) {
+      WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, updateApproverGroupData);
+    }
+
+    targetWorkflow.name = name;
+    targetWorkflow.comment = comment;
+
+    const updatedWorkflow = await targetWorkflow.save();
+    return updatedWorkflow as unknown as IWorkflowHasId;
   }
 
   // Call this method before performing operations (update, delete) on a Workflow document

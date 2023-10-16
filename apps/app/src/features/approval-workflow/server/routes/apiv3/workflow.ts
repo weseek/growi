@@ -22,14 +22,6 @@ const router = express.Router();
 
 type RequestWithUser = Request & { user: IUserHasId }
 
-
-// for PUT:/workflow/{workflowId}:
-const actuonTypeForWorkflowApproverGroups = {
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE',
-} as const;
-
 /**
  * @swagger
  *  tags:
@@ -73,11 +65,12 @@ module.exports = (crowi: Crowi): Router => {
       body('comment').optional().isString().withMessage('comment must be string'),
       body('approverGroups').isArray().withMessage('approverGroups is required'),
     ],
-    updateWorkflowApproverGroups: [
-      body('workflowId').isMongoId().withMessage('workflowId is required'),
-      body('approverGroup').isObject().withMessage('approverGroups is required'),
-      body('approverGroupOffset').isInt().withMessage('approverGroupOffset is required'),
-      body('actionType').isString().withMessage('actionType is required'),
+    updateWorkflow: [
+      param('workflowId').isMongoId().withMessage('workflowId is required'),
+      body('name').optional().isString().withMessage('name must be a string'),
+      body('comment').optional().isString().withMessage('comment must be a string'),
+      body('createApproverGroupData').optional().isArray().withMessage('createApproverGroupData must be an array'),
+      body('updateApproverGroupData').optional().isArray().withMessage('updateApproverGroupData must be an array'),
     ],
     updateWorkflowApproverStatus: [
       body('workflowId').isMongoId().withMessage('workflowId is required'),
@@ -287,40 +280,64 @@ module.exports = (crowi: Crowi): Router => {
    *                  description: WorkflowId to be updated
    *                  type: string
    *                  required: true
-   *                approverGroup:
-   *                  descriotion: WorkflowApproverGroup
-   *                  $ref: '#/components/schemas/workflowApproverGroup'
-   *                  required: true
-   *                approverGroupOffset:
-   *                  description: Position to create, update, and delete approverGroups in Workflow.approverGroups
-   *                  type: number
-   *                  required: true
-   *                actionType:
-   *                  description: Whether to create, update, or delete the approver group
+   *                title:
    *                  type: string
-   *                  required: true
+   *                comment:
+   *                  type: string
+   *                approverGroupData:
+   *                  type: array
    *
    *      responses:
    *        200:
-   *          description: Succeeded to update WorkflowApproverGroup
+   *          description: Succeeded to update Workflow
    */
-  router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflowApproverGroups, apiV3FormValidator,
+  router.put('/:workflowId', accessTokenParser, loginRequired, validator.updateWorkflow, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
+      const { workflowId } = req.params;
       const {
-        workflowId, approverGroup, approverGroupOffset, actionType,
+        name, comment, createApproverGroupData, updateApproverGroupData,
       } = req.body;
+      const { user } = req;
 
-      // Descirption
-      // approverGroup の作成 or 更新 or 削除
+      const isValid = [name, comment, createApproverGroupData, updateApproverGroupData].some(v => v != null);
+      if (!isValid) {
+        return res.apiv3Err('At least one of "name", "comment", "createApproverGroupData" or "updateApproverGroupData" must have a valid value');
+      }
 
-      // Memo
-      // actionType は actuonTypeForWorkflowApproverGroups に対応する
-      // req.body.approverGroupOffset は workflow.approverGroups の配列のインデックス番号
-      // req.body.actionType ごとに処理を分ける
-      // workflow 自体が承認済みの場合は作成と更新と削除はできない
-      // 承認済みの approverGroup 以前に作成と更新はできない
+      if (createApproverGroupData != null) {
+        const groupIndices = createApproverGroupData.map(v => v.groupIndex);
+        const hasDuplicateGroupIndices = new Set(groupIndices).size !== groupIndices.length;
+        if (hasDuplicateGroupIndices) {
+          return res.apiv3Err('Cannot specify duplicate values for "groupId" within updateApproverGroupData');
+        }
+      }
 
-      return res.apiv3();
+      if (updateApproverGroupData != null) {
+        const groupIds = updateApproverGroupData.map(v => v.groupId);
+        const hasDuplicateGroupIds = new Set(groupIds).size !== groupIds.length;
+        if (hasDuplicateGroupIds) {
+          return res.apiv3Err('Cannot specify duplicate values for "groupId" within updateApproverGroupData');
+        }
+      }
+
+      const xssProcessedName = xss.process(name);
+      const xssProcessedComment = xss.process(comment);
+
+      try {
+        const updatedWorkflow = await WorkflowService.updateWorkflow(
+          workflowId,
+          user,
+          xssProcessedName,
+          xssProcessedComment,
+          createApproverGroupData,
+          updateApproverGroupData,
+        );
+        return res.apiv3({ updatedWorkflow });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err);
+      }
     });
 
 
