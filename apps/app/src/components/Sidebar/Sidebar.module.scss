@@ -38,10 +38,6 @@
           overflow-x: hidden;
         }
       }
-
-      .simplebar-mask {
-        z-index: 110; // greater than the value of .grw-navigation-draggable to fix https://redmine.weseek.co.jp/issues/86678
-      }
     }
     .grw-navigation-draggable {
       position: absolute;
