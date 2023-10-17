@@ -88,7 +88,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
 
     cy.waitUntil(() => {
       // do
-      cy.getByTestid("grw-navigation-resize-button").click({force: true});
+      cy.getByTestid("grw-switch-collapse-button").click({force: true});
       // wait until saving UserUISettings
       if (waitUntilSaving) {
         // eslint-disable-next-line cypress/no-unnecessary-waiting

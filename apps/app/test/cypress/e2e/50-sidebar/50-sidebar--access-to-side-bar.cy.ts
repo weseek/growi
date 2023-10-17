@@ -36,8 +36,9 @@ describe('Access to sidebar', () => {
           });
         });
 
+        // TODO: rewrite test case with grw-switch-collapse-button
         it('Successfully collapse sidebar', () => {
-          cy.getByTestid('grw-navigation-resize-button').click({force: true});
+          cy.getByTestid('grw-switch-collapse-button').click({force: true});
 
           cy.getByTestid('grw-contextual-navigation-child').should('not.be.visible');
 
