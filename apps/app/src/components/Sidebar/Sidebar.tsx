@@ -159,16 +159,16 @@ export const SidebarSubstance = memo((): JSX.Element => {
               <SidebarContents />
             </div>
           </div>
-        </div>
-        <div className="grw-navigation-draggable">
-          { isResizableByDrag && (
-            <div
-              className="grw-navigation-draggable-hitarea"
-              onMouseDown={dragableAreaMouseDownHandler}
-            >
-              <div className="grw-navigation-draggable-hitarea-child"></div>
-            </div>
-          ) }
+          <div className="grw-navigation-draggable">
+            { isResizableByDrag && (
+              <div
+                className="grw-navigation-draggable-hitarea"
+                onMouseDown={dragableAreaMouseDownHandler}
+              >
+                <div className="grw-navigation-draggable-hitarea-child"></div>
+              </div>
+            ) }
+          </div>
         </div>
       </div>
     </div>
