@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 import { useIsDefaultLogo } from '~/stores/context';
 
-import DrawerToggler from '../../Navbar/DrawerToggler';
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
 import { PrimaryItems } from './PrimaryItems';
@@ -27,7 +26,6 @@ export const SidebarNav: FC = memo(() => {
           <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
         </Link>
       </div>
-      <DrawerToggler />
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         <PrimaryItems />

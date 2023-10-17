@@ -37,11 +37,6 @@
           height: 100%;
           overflow-x: hidden;
         }
-
-        .grw-drawer-toggler {
-          display: none; // invisible in default
-        }
-
       }
 
       .simplebar-mask {
@@ -68,59 +63,6 @@
           width: 2px;
           height: 100%;
           background-color: rgb(76, 154, 255);
-        }
-      }
-      .grw-navigation-resize-button {
-        position: fixed;
-
-        $width: 27.691px;
-        $height: 23.999px;
-
-        @mixin hitarea($size-hitarea) {
-          top: ($width - $size-hitarea) / 2;
-          left: ($height - $size-hitarea) / 2;
-          width: $size-hitarea;
-          height: $size-hitarea;
-        }
-
-        // locate to the center of screen
-        top: calc(50vh - $height/2);
-
-        display: none;
-        padding: 0px;
-        background-color: transparent;
-        border: 0;
-        transform: translateX(-50%);
-
-        .hexagon-container {
-          // set transform
-          svg * {
-            transition: fill 100ms linear;
-          }
-          svg {
-            width: $width + 2px; // add 1px for drop-shadow
-            height: $height + 2px; // add 1px for drop-shadow
-            .background {
-              filter: drop-shadow(0px 1px 0px rgba(#999, 60%));
-            }
-          }
-        }
-        .hitarea {
-          position: absolute;
-          border-radius: bs.$border-radius-pill;
-
-          @include hitarea(30px);
-        }
-
-        // reverse and center icon at the time of collapsed
-        &.collapsed {
-          display: block;
-          .hexagon-container svg {
-            transform: rotate(180deg);
-          }
-          .hitarea {
-            @include hitarea(80px);
-          }
         }
       }
       &:hover {
@@ -172,30 +114,10 @@
     div.navigation {
       transform: translateX(0);
     }
-
-    .grw-contextual-navigation-child {
-      .grw-drawer-toggler {
-        display: block;
-      }
-    }
   }
 
   .grw-navigation-resize-button {
     display: none !important;
-  }
-
-  .grw-contextual-navigation-child {
-    .grw-drawer-toggler {
-      @include bs.media-breakpoint-down(sm) {
-        position: fixed;
-        right: -15px;
-        bottom: 15px;
-        width: 42px;
-        height: 42px;
-        font-size: 18px;
-        transform: translateX(100%);
-      }
-    }
   }
 }
 

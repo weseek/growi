@@ -206,24 +206,24 @@ ul.pagination {
   $bgcolor-resize-button: var(--bgcolor-resize-button,white);
   $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
   $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
-  .grw-navigation-resize-button {
-    .hexagon-container svg {
-      .background {
-        fill: var(--bgcolor-resize-button);
-      }
-      .icon {
-        fill: var(--color-resize-button);
-      }
-    }
-    &:hover .hexagon-container svg {
-      .background {
-        fill: var(--bgcolor-resize-button-hover);
-      }
-      .icon {
-        fill: var(--color-resize-button-hover);
-      }
-    }
-  }
+  // .grw-navigation-resize-button {
+  //   .hexagon-container svg {
+  //     .background {
+  //       fill: var(--bgcolor-resize-button);
+  //     }
+  //     .icon {
+  //       fill: var(--color-resize-button);
+  //     }
+  //   }
+  //   &:hover .hexagon-container svg {
+  //     .background {
+  //       fill: var(--bgcolor-resize-button-hover);
+  //     }
+  //     .icon {
+  //       fill: var(--color-resize-button-hover);
+  //     }
+  //   }
+  // }
   div.grw-contextual-navigation {
     > div {
       color: var(--color-sidebar-context);
