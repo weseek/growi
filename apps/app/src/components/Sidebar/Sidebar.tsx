@@ -1,5 +1,5 @@
 import React, {
-  memo, useCallback, useEffect, useRef, useState,
+  memo, useCallback, useEffect, useRef,
 } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -20,6 +20,7 @@ import styles from './Sidebar.module.scss';
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
 
 
+const sidebarNavWidth = 48;
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 0;
 const sidebarFixedWidthInDrawerMode = 320;
@@ -76,7 +77,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const draggableAreaMoveHandler = useCallback((event: MouseEvent) => {
     event.preventDefault();
 
-    const newWidth = event.pageX - 60;
+    const newWidth = event.pageX - sidebarNavWidth;
     if (resizableContainer.current != null) {
       setContentWidth(newWidth);
       resizableContainer.current.classList.add('dragging');
