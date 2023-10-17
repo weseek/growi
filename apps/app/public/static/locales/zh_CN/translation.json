@@ -823,6 +823,10 @@
     "delete": "删除",
     "delete_button_tooltip": "只有工作流程创建者、审批者或管理员可以删除",
     "show_detail": "显示详情",
+    "edit": "编辑",
+    "edit_workflow": "编辑工作流程",
+    "cancel": "取消",
+    "completion": "完成",
     "statuses": {
       "INPROGRESS": "进行中",
       "APPROVE": "批准",
