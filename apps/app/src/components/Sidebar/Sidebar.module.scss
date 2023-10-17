@@ -69,9 +69,6 @@
         .grw-navigation-draggable-hitarea-child {
           display: block;
         }
-        .grw-navigation-resize-button {
-          display: block;
-        }
       }
     }
   }
@@ -114,10 +111,6 @@
     div.navigation {
       transform: translateX(0);
     }
-  }
-
-  .grw-navigation-resize-button {
-    display: none !important;
   }
 }
 
