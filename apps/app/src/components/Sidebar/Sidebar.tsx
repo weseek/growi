@@ -64,16 +64,6 @@ export const SidebarSubstance = memo((): JSX.Element => {
     resizableContainer.current.style.width = `${newWidth}px`;
   }, []);
 
-  useEffect(() => {
-    if (isCollapsed) {
-      setContentWidth(sidebarMinimizeWidth);
-    }
-    else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setContentWidth(currentProductNavWidth!);
-    }
-  }, [currentProductNavWidth, isCollapsed, setContentWidth]);
-
   const draggableAreaMoveHandler = useCallback((event: MouseEvent) => {
     event.preventDefault();
 
