@@ -51,6 +51,7 @@ RUN apt-get update \
 ENV DEBIAN_FRONTEND=dialog
 
 RUN yarn global add turbo
+RUN yarn global add node-gyp
 
 # Uncomment to default to non-root user
 # USER $USER_UID

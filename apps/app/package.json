@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "6.2.1-RC.0",
+  "version": "6.2.2-RC.0",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -243,13 +243,14 @@
     "jquery": "^3.7.0",
     "load-css-file": "^1.0.0",
     "material-icons": "^1.11.3",
-    "mongodb-memory-server": "^8.12.2",
+    "mongodb-memory-server": "^8.15.1",
     "morgan": "^1.10.0",
     "null-loader": "^4.0.1",
     "penpal": "^4.0.0",
     "plantuml-encoder": "^1.2.5",
     "popper.js": "^1.16.1",
     "prettier": "^1.19.1",
+    "pretty-bytes": "^6.1.1",
     "react-codemirror2": "^6.0.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dropzone": "^11.2.4",
