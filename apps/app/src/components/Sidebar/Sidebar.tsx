@@ -97,6 +97,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
           <SidebarNav />
           <ResizableArea
             width={resizableAreaWidth}
+            minWidth={sidebarMinWidth}
             disabled={disableResizing}
             onResize={resizeHandler}
             onResizeDone={resizeDoneHandler}

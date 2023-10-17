@@ -1,12 +1,12 @@
 import React, { memo, useCallback, useRef } from 'react';
 
 
-const minWidth = 40;
 const sidebarNavWidth = 48;
 
 
 type Props = {
   width: number,
+  minWidth?: number,
   disabled?: boolean,
   children?: React.ReactNode,
   onResize?: (newWidth: number) => void,
@@ -16,7 +16,8 @@ type Props = {
 
 export const ResizableArea = memo((props: Props): JSX.Element => {
   const {
-    width, disabled, children,
+    width, minWidth = width,
+    disabled, children,
     onResize, onResizeDone, onCollapsed,
   } = props;
 
@@ -25,17 +26,21 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
   const draggableAreaMoveHandler = useCallback((event: MouseEvent) => {
     event.preventDefault();
 
-    const newWidth = event.pageX - sidebarNavWidth;
+    const widthByMousePos = event.pageX - sidebarNavWidth;
+
+    const newWidth = Math.max(widthByMousePos, minWidth);
     onResize?.(newWidth);
     resizableContainer.current?.classList.add('dragging');
-  }, [onResize]);
+  }, [minWidth, onResize]);
 
-  const dragableAreaMouseUpHandler = useCallback(() => {
+  const dragableAreaMouseUpHandler = useCallback((event: MouseEvent) => {
     if (resizableContainer.current == null) {
       return;
     }
 
-    if (resizableContainer.current.clientWidth < minWidth) {
+    const widthByMousePos = event.pageX - sidebarNavWidth;
+
+    if (widthByMousePos < minWidth / 2) {
       // force collapsed
       onCollapsed?.();
     }
@@ -46,7 +51,7 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
 
     resizableContainer.current.classList.remove('dragging');
 
-  }, [onCollapsed, onResizeDone]);
+  }, [minWidth, onCollapsed, onResizeDone]);
 
   const dragableAreaMouseDownHandler = useCallback((event: React.MouseEvent) => {
     if (disabled) {
