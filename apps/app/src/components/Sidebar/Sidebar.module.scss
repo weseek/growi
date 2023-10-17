@@ -23,49 +23,6 @@
       flex-direction: row;
       height: 100%;
       overflow: hidden;
-
-      .grw-contextual-navigation {
-        position: relative;
-        width: 240px;
-        height: 100%;
-        &:not(.dragging) {
-          transition: width 200ms cubic-bezier(0.2, 0, 0, 1) 0s;
-        }
-        will-change: width;
-
-        .grw-contextual-navigation-child {
-          height: 100%;
-          overflow-x: hidden;
-        }
-      }
-    }
-    .grw-navigation-draggable {
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      left: 100%;
-      z-index: 10; // greater than the value of SimpleBar
-      width: 0;
-      .grw-navigation-draggable-hitarea {
-        position: relative;
-        left: -4px;
-        width: 24px;
-        height: 100%;
-        cursor: ew-resize;
-        .grw-navigation-draggable-hitarea-child {
-          position: absolute;
-          left: 3px;
-          display: none;
-          width: 2px;
-          height: 100%;
-          background-color: rgb(76, 154, 255);
-        }
-      }
-      &:hover {
-        .grw-navigation-draggable-hitarea-child {
-          display: block;
-        }
-      }
     }
   }
 
@@ -128,7 +85,7 @@
 
 
 .grw-sidebar :global {
-  .grw-contextual-navigation {
+  .sidebar-contents-container {
     backdrop-filter: blur(20px);
   }
 }
@@ -136,7 +93,7 @@
   .grw-sidebar :global {
     --bs-border-color: var(--grw-highlight-200);
 
-    .grw-contextual-navigation {
+    .grw-navigation-wrap {
       background-color: rgba(var(--grw-highlight-100-rgb), .5);
     }
   }
@@ -147,7 +104,7 @@
     --bs-color: var(--bs-gray-400);
     --bs-border-color: var(--grw-highlight-800);
 
-    .grw-contextual-navigation {
+    .grw-navigation-wrap {
       background-color: rgba(var(--grw-highlight-800-rgb), .5);
     }
   }

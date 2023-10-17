@@ -1,6 +1,9 @@
 import React, { memo, useCallback, useRef } from 'react';
 
 
+import styles from './ResizableArea.module.scss';
+
+
 const sidebarNavWidth = 48;
 
 
@@ -76,14 +79,14 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
     <>
       <div
         ref={resizableContainer}
-        className="grw-contextual-navigation"
+        className={`grw-contextual-navigation ${styles['grw-contextual-navigation']} h-100`}
         style={{ width }}
       >
-        <div className={`grw-contextual-navigation-child ${width === 0 ? 'd-none' : ''}`} data-testid="grw-contextual-navigation-child">
+        <div className={`grw-contextual-navigation-child h-100 ${width === 0 ? 'd-none' : ''}`} data-testid="grw-contextual-navigation-child">
           {children}
         </div>
       </div>
-      <div className="grw-navigation-draggable">
+      <div className={styles['grw-navigation-draggable']}>
         { !disabled && (
           <div
             className="grw-navigation-draggable-hitarea"

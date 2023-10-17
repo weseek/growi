@@ -1,0 +1,44 @@
+.grw-contextual-navigation :global {
+  position: relative;
+  will-change: width;
+
+  .grw-contextual-navigation-child {
+    overflow-x: hidden;
+  }
+}
+
+.grw-contextual-navigation:not(:global .dragging) {
+  transition: width 100ms cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+
+
+.grw-navigation-draggable :global {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 100%;
+  z-index: 10; // greater than the value of SimpleBar
+  width: 0;
+
+  .grw-navigation-draggable-hitarea {
+    position: relative;
+    left: -4px;
+    width: 24px;
+    height: 100%;
+    cursor: ew-resize;
+    .grw-navigation-draggable-hitarea-child {
+      position: absolute;
+      left: 3px;
+      display: none;
+      width: 2px;
+      height: 100%;
+      background-color: rgb(76, 154, 255);
+    }
+  }
+}
+
+.grw-navigation-draggable:hover :global {
+  .grw-navigation-draggable-hitarea-child {
+    display: block;
+  }
+}
