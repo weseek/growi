@@ -7,19 +7,19 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
-  workflowDetailePageBackButtonClickHandler: () => void
+  onClickWorkflowDetailPageBackButton: () => void
 }
 
 export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { workflowDetailePageBackButtonClickHandler } = props;
+  const { onClickWorkflowDetailPageBackButton } = props;
 
   return (
     <>
       <WorkflowModalHeader
         title={t('approval_workflow.edit_workflow')}
-        onClickPageBackButton={workflowDetailePageBackButtonClickHandler}
+        onClickPageBackButton={onClickWorkflowDetailPageBackButton}
       />
 
       <ModalBody>
