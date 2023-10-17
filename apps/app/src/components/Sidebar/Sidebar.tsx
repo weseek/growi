@@ -103,7 +103,9 @@ export const SidebarSubstance = memo((): JSX.Element => {
             onResizeDone={resizeDoneHandler}
             onCollapsed={collapsedByResizableAreaHandler}
           >
-            <SidebarContents />
+            <div className="sidebar-contents-container">
+              <SidebarContents />
+            </div>
           </ResizableArea>
         </div>
       </div>
