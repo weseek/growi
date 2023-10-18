@@ -269,8 +269,8 @@ describe('WorkflowService', () => {
 
       const previousWorkflow = await Workflow.findById(workflowId);
 
-      const previousApproverGroup1 = previousWorkflow?.approverGroups[1];
-      const previousApproverGroup2 = previousWorkflow?.approverGroups[3];
+      const previousApproverGroup1 = previousWorkflow?.approverGroups[0];
+      const previousApproverGroup2 = previousWorkflow?.approverGroups[1];
       const previousApproverGroup3 = (previousWorkflow?.approverGroups as any).id(approverGroupId1);
       const previousApproverGroup4 = (previousWorkflow?.approverGroups as any).id(approverGroupId2);
       const previousApproverGroup5 = (previousWorkflow?.approverGroups as any).id(approverGroupId3);
@@ -298,8 +298,8 @@ describe('WorkflowService', () => {
       );
 
       // then
-      const updatedApproverGroup1 = updatedWorkflow?.approverGroups[1];
-      const updatedApproverGroup2 = updatedWorkflow?.approverGroups[3];
+      const updatedApproverGroup1 = updatedWorkflow?.approverGroups[0];
+      const updatedApproverGroup2 = updatedWorkflow?.approverGroups[1];
       const updatedApproverGroup3 = (updatedWorkflow?.approverGroups as any).id(approverGroupId1);
       const updatedApproverGroup4 = (updatedWorkflow?.approverGroups as any).id(approverGroupId2);
       const updatedApproverGroup5 = (updatedWorkflow?.approverGroups as any).id(approverGroupId3);
