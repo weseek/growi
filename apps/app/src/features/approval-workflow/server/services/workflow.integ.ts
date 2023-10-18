@@ -240,12 +240,12 @@ describe('WorkflowService', () => {
 
       const createApproverGroupData = [
         {
-          groupIndex: 1,
+          groupIndex: 0,
           approvalType: WorkflowApprovalType.AND,
           userIdsToAdd: [approverIdToAdd1],
         },
         {
-          groupIndex: 3,
+          groupIndex: 1,
           approvalType: WorkflowApprovalType.OR,
           userIdsToAdd: [approverIdToAdd2, approverIdToAdd3],
         },
