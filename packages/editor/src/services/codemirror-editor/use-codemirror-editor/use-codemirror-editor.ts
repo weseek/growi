@@ -78,8 +78,6 @@ const completeEmojiInput = (context: CompletionContext) => {
 
   if (!emojiBefore && !context.explicit) return null;
 
-  console.log('kohsei');
-
   return {
     from: emojiBefore ? nodeBefore.from + emojiBefore.index : context.pos,
     options: emojiOptions,
