@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { isPopulated } from '@growi/core';
 import type {
-  IUser, IPagePopulatedToShowRevision,
+  IPagePopulatedToShowRevision,
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -12,22 +12,22 @@ import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsIdenticalPath,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid,
 } from '~/stores/context';
 import {
-  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
+  usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useCurrentPageId, useIsNotFound, useSWRxPageInfo,
+  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement,
-  useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
+  useEditorMode, useIsAbleToShowPageManagement,
+  useIsAbleToChangeEditorMode,
 } from '~/stores/ui';
 
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -38,30 +38,19 @@ import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
 
-import type { AuthorInfoProps } from './AuthorInfo';
-import { GrowiSubNavigation } from './GrowiSubNavigation';
-import type { SubNavButtonsProps } from './SubNavButtons';
-
-import AuthorInfoStyles from './AuthorInfo.module.scss';
+import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
-
-const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
 
 const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
   { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
-// TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
-// { ssr: false, loading: () => <Skeleton additionalClass='btn-skeleton py-2' /> },
-const SubNavButtons = dynamic<SubNavButtonsProps>(
-  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+const PageControls = dynamic(
+  () => import('../PageControls').then(mod => mod.PageControls),
   { ssr: false, loading: () => <></> },
 );
-const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
-  ssr: false,
-  loading: AuthorInfoSkeleton,
-});
+
 
 type PageOperationMenuItemsProps = {
   pageId: string,
@@ -183,8 +172,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 
 type GrowiContextualSubNavigationProps = {
   currentPage?: IPagePopulatedToShowRevision | null,
-  isCompactMode?: boolean,
-  isLinkSharingDisabled: boolean,
+  isLinkSharingDisabled?: boolean,
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
@@ -202,12 +190,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
-  const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
-  const { data: isNotFound } = useIsNotFound();
-  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -215,7 +200,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
-  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   // TODO: implement tags for editor
   // refs: https://redmine.weseek.co.jp/issues/132125
@@ -250,9 +234,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
-  const { isCompactMode, isLinkSharingDisabled } = props;
-
-  const isViewMode = editorMode === EditorMode.View;
+  const { isLinkSharingDisabled } = props;
 
 
   // TODO: implement tags for editor
@@ -309,124 +291,85 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     }
   }, [isSharedPage, mutateCurrentPage]);
 
-  const templateMenuItemClickHandler = useCallback(() => {
-    setIsPageTempleteModalShown(true);
-  }, []);
-
-
-  const RightComponent = () => {
-    const additionalMenuItemsRenderer = () => {
-      if (revisionId == null || pageId == null) {
-        return (
-          <>
-            {!isReadOnlyUser
-              && (
-                <CreateTemplateMenuItems
-                  onClickTemplateMenuItem={templateMenuItemClickHandler}
-                />
-              )
-            }
-          </>
-        );
-      }
+  const additionalMenuItemsRenderer = useCallback(() => {
+    if (revisionId == null || pageId == null) {
       return (
         <>
-          <PageOperationMenuItems
-            pageId={pageId}
-            revisionId={revisionId}
-            isLinkSharingDisabled={isLinkSharingDisabled}
-          />
-          {!isReadOnlyUser && (
-            <>
-              <DropdownItem divider />
+          {!isReadOnlyUser
+            && (
               <CreateTemplateMenuItems
-                onClickTemplateMenuItem={templateMenuItemClickHandler}
+                onClickTemplateMenuItem={() => setIsPageTempleteModalShown(true)}
               />
-            </>
-          )
+            )
           }
         </>
       );
-    };
-
+    }
     return (
       <>
-        <div className="d-flex">
-          <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-            {isViewMode && (
-              <div className="h-50">
-                {pageId != null && (
-                  <SubNavButtons
-                    isCompactMode={isCompactMode}
-                    pageId={pageId}
-                    revisionId={revisionId}
-                    shareLinkId={shareLinkId}
-                    path={path ?? currentPathname} // If the page is empty, "path" is undefined
-                    expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-                    disableSeenUserInfoPopover={isSharedUser}
-                    showPageControlDropdown={isAbleToShowPageManagement}
-                    additionalMenuItemRenderer={additionalMenuItemsRenderer}
-                    onClickDuplicateMenuItem={duplicateItemClickedHandler}
-                    onClickRenameMenuItem={renameItemClickedHandler}
-                    onClickDeleteMenuItem={deleteItemClickedHandler}
-                    onClickSwitchContentWidth={switchContentWidthHandler}
-                  />
-                )}
-              </div>
-            )}
-            {isAbleToChangeEditorMode && (
-              <PageEditorModeManager
-                editorMode={editorMode}
-                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
-                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
-              />
-            )}
-          </div>
-          {(isAbleToShowPageAuthors && !isCompactMode && !pagePathUtils.isUsersHomepage(path ?? '')) && (
-            <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-start d-none d-lg-block d-edit-none py-2 ps-4 mb-0 ms-3`}>
-              <li className="pb-1">
-                {currentPage != null
-                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
-                  : <AuthorInfoSkeleton />
-                }
-              </li>
-              <li className="mt-1 pt-1 border-top">
-                {currentPage != null
-                  ? <AuthorInfo user={currentPage.lastUpdateUser as IUser} date={currentPage.updatedAt} mode="update" locate="subnav" />
-                  : <AuthorInfoSkeleton />
-                }
-              </li>
-            </ul>
-          )}
-        </div>
-
-        {path != null && currentUser != null && !isReadOnlyUser && (
-          <CreateTemplateModal
-            path={path}
-            isOpen={isPageTemplateModalShown}
-            onClose={() => setIsPageTempleteModalShown(false)}
-          />
-        )}
+        <PageOperationMenuItems
+          pageId={pageId}
+          revisionId={revisionId}
+          isLinkSharingDisabled={isLinkSharingDisabled}
+        />
+        {!isReadOnlyUser && (
+          <>
+            <DropdownItem divider />
+            <CreateTemplateMenuItems
+              onClickTemplateMenuItem={() => setIsPageTempleteModalShown(true)}
+            />
+          </>
+        )
+        }
       </>
     );
-  };
-
-
-  const pagePath = isIdenticalPath || isNotFound
-    ? currentPathname
-    : currentPage?.path;
+  }, [isLinkSharingDisabled, isReadOnlyUser, pageId, revisionId]);
 
   return (
-    <GrowiSubNavigation
-      pagePath={pagePath}
-      pageId={currentPage?._id}
-      showDrawerToggler={isDrawerMode}
-      isDrawerMode={isDrawerMode}
-      isCompactMode={isCompactMode}
-      rightComponent={RightComponent}
-      additionalClasses={['container-fluid']}
-    />
+    <>
+      <div
+        className={`grw-contextual-sub-navigation ${styles['grw-contextual-sub-navigation']}
+          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4
+        `}
+        data-testid="grw-contextual-sub-nav"
+      >
+        <div className="h-50">
+          {pageId != null && (
+            <PageControls
+              pageId={pageId}
+              revisionId={revisionId}
+              shareLinkId={shareLinkId}
+              path={path ?? currentPathname} // If the page is empty, "path" is undefined
+              expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+              disableSeenUserInfoPopover={isSharedUser}
+              showPageControlDropdown={isAbleToShowPageManagement}
+              additionalMenuItemRenderer={additionalMenuItemsRenderer}
+              onClickDuplicateMenuItem={duplicateItemClickedHandler}
+              onClickRenameMenuItem={renameItemClickedHandler}
+              onClickDeleteMenuItem={deleteItemClickedHandler}
+              onClickSwitchContentWidth={switchContentWidthHandler}
+            />
+          )}
+        </div>
+        {isAbleToChangeEditorMode && (
+          <PageEditorModeManager
+            editorMode={editorMode}
+            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+            onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
+          />
+        )}
+      </div>
+
+      {path != null && currentUser != null && !isReadOnlyUser && (
+        <CreateTemplateModal
+          path={path}
+          isOpen={isPageTemplateModalShown}
+          onClose={() => setIsPageTempleteModalShown(false)}
+        />
+      )}
+    </>
   );
+
 };
 
 

@@ -8,8 +8,8 @@ import { SWRResponse } from 'swr';
 import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-import {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction,
+import type {
+  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -738,4 +738,38 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
       swrResponse.mutate({ isOpened: false });
     },
   });
+};
+
+/*
+* PageSelectModal
+*/
+export type IPageSelectModalOption = {
+  onSelected?: OnSelectedFunction,
+}
+
+type PageSelectModalStatus = {
+  isOpened: boolean
+  opts?: IPageSelectModalOption
+}
+
+type PageSelectModalStatusUtils = {
+  open(): Promise<PageSelectModalStatus | undefined>
+  close(): Promise<PageSelectModalStatus | undefined>
+}
+
+export const usePageSelectModal = (
+    status?: PageSelectModalStatus,
+): SWRResponse<PageSelectModalStatus, Error> & PageSelectModalStatusUtils => {
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageSelectModalStatus, Error>('PageSelectModal', status, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: (
+        opts?: IPageSelectModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
 };

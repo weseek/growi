@@ -496,8 +496,8 @@
       "enable_marp_desc": "Marp 可在演示视图中使用。该选项可能会使您受到 XSS 的攻击。",
       "marp_official_site": "参考资料：Marp 官方网站",
       "marp_official_site_link": "https://marp.app",
-      "presentation_docs" : "参考资料：GROWI Docs - Create slides for a presentation",
-      "presentation_docs_link": "https://docs.growi.org/en/guide/features/presentation.html"
+      "marp_in_growi" : "参考资料：GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "自定义标题",
     "custom_title_detail": "您可以自定义<code>&lt；title&gt；</code>标记。<br><code>&123；&123；sitename&&125；&125；</code>将自动替换为应用程序名称，并且<code>&123；&123；page&&125；&125；</code>将替换为页面名称/路径。",

@@ -14,7 +14,7 @@ context('Modal for page operation', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       //wait until
@@ -47,7 +47,7 @@ context('Modal for page operation', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until
@@ -65,7 +65,7 @@ context('Modal for page operation', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until
@@ -97,7 +97,7 @@ context('Modal for page operation', () => {
 //   it('PresentationModal for "/" is shown successfully', () => {
 //     cy.visit('/');
 
-//     cy.get('#grw-subnav-container').within(() => {
+//     cy.getByTestid('grw-contextual-sub-nav').within(() => {
 //       cy.getByTestid('open-page-item-control-btn').click({force: true});
 //       cy.getByTestid('open-presentation-modal-btn').click({force: true});
 //     });

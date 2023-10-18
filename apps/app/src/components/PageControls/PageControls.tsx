@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
 import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
@@ -14,18 +14,22 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
+import type { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
-import { BookmarkButtons } from '../BookmarkButtons';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
-import LikeButtons from '../LikeButtons';
-import SubscribeButton from '../SubscribeButton';
-import SeenUserInfo from '../User/SeenUserInfo';
+
+import { BookmarkButtons } from './BookmarkButtons';
+import LikeButtons from './LikeButtons';
+import SeenUserInfo from './SeenUserInfo';
+import SubscribeButton from './SubscribeButton';
+
+
+import styles from './PageControls.module.scss';
 
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
@@ -63,7 +67,6 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
 
 
 type CommonProps = {
-  isCompactMode?: boolean,
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -74,7 +77,7 @@ type CommonProps = {
   onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
 }
 
-type SubNavButtonsSubstanceProps = CommonProps & {
+type PageControlsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string | null,
@@ -83,11 +86,11 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   expandContentWidth?: boolean,
 }
 
-const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
+const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
+    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -212,7 +215,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   ];
 
   return (
-    <div className="d-flex" style={{ gap: '2px' }}>
+    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
       {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
@@ -221,7 +224,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       )}
       {revisionId != null && (
         <LikeButtons
-          hideTotalNumber={isCompactMode}
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
           isLiked={isLiked}
@@ -233,10 +235,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
           bookmarkCount={pageInfo.bookmarkCount}
-          hideTotalNumber={isCompactMode}
         />
       )}
-      {revisionId != null && !isCompactMode && (
+      {revisionId != null && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
@@ -262,7 +263,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   );
 };
 
-export type SubNavButtonsProps = CommonProps & {
+type PageControlsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,
@@ -270,7 +271,7 @@ export type SubNavButtonsProps = CommonProps & {
   expandContentWidth?: boolean,
 };
 
-export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
+export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
@@ -287,7 +288,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   }
 
   return (
-    <SubNavButtonsSubstance
+    <PageControlsSubstance
       {...props}
       pageInfo={pageInfo}
       pageId={pageId}
@@ -300,4 +301,4 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       expandContentWidth={expandContentWidth}
     />
   );
-};
+});
