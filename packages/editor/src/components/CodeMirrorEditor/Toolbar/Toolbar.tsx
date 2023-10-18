@@ -12,13 +12,13 @@ import type { UseCodeMirrorEditor } from 'src';
 import styles from './Toolbar.module.scss';
 
 type Props = {
-  codeMirrorEditor: UseCodeMirrorEditor | undefined
+  codeMirrorEditor?: UseCodeMirrorEditor,
   onFileOpen: () => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
-  const { codeMirrorEditor ,onFileOpen } = props;
+  const { codeMirrorEditor, onFileOpen } = props;
 
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
