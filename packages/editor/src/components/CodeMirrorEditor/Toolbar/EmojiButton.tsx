@@ -11,7 +11,7 @@ import type { UseCodeMirrorEditor } from 'src';
 import 'emoji-mart/css/emoji-mart.css';
 
 type Props = {
-  codeMirrorEditor: UseCodeMirrorEditor | undefined
+  codeMirrorEditor?: UseCodeMirrorEditor
 }
 
 type Translation = {
