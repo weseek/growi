@@ -1,1 +1,1 @@
-export * from './ResizableLine';
+export * from './ResizableArea';
