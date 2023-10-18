@@ -2,7 +2,7 @@ import { FC, memo, useCallback } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
@@ -26,7 +26,6 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   } = props;
 
   const { data: currentContents, mutate } = useCurrentSidebarContents();
-  const { scheduleToPut } = useUserUISettings();
 
   const isSelected = contents === currentContents;
 
@@ -34,7 +33,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     mutate(contents, false);
     scheduleToPut({ currentSidebarContents: contents });
     onItemSelected?.(contents);
-  }, [contents, mutate, onItemSelected, scheduleToPut]);
+  }, [contents, mutate, onItemSelected]);
 
   const labelForTestId = label.toLowerCase().replace(' ', '-');
 

@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useEffect } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
-import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
+import { type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
@@ -13,7 +13,6 @@ import {
 import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
-import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -221,36 +220,21 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   return useStaticSWR(key);
 };
 
-type PreferCollapsedModeByUserUtils = {
-  update: (preferCollapsedMode: boolean) => void
-}
 
-export const usePreferCollapsedModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferCollapsedModeByUserUtils, boolean> => {
-  const { scheduleToPut } = useUserUISettings();
-
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferCollapsedModeByUser', initialData);
-
-  const utils: PreferCollapsedModeByUserUtils = {
-    update: (preferCollapsedMode: boolean) => {
-      swrResponse.mutate(preferCollapsedMode);
-      scheduleToPut({ preferCollapsedModeByUser: preferCollapsedMode });
-    },
-  };
-
-  return withUtils<PreferCollapsedModeByUserUtils>(swrResponse, utils);
-
+export const usePreferCollapsedModeByUser = (initialData?: boolean): SWRResponse<boolean> => {
+  return useSWRStatic('preferCollapsedModeByUser', initialData);
 };
 
 export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarCollapsed', initialData, { fallbackData: false });
+  return useSWRStatic('isSidebarCollapsed', initialData, { fallbackData: false });
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+  return useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('productNavWidth', initialData, { fallbackData: 320 });
+  return useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {

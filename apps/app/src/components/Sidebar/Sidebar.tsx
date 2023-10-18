@@ -4,7 +4,7 @@ import React, {
 
 import dynamic from 'next/dynamic';
 
-import { useUserUISettings } from '~/client/services/user-ui-settings';
+import { scheduleToPut } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
@@ -35,8 +35,6 @@ export const SidebarSubstance = memo((): JSX.Element => {
 
   const [resizableAreaWidth, setResizableAreaWidth] = useState(0);
 
-  const { scheduleToPut } = useUserUISettings();
-
   const toggleDrawerMode = useCallback((bool) => {
     const isStateModified = isResizeDisabled !== bool;
     if (!isStateModified) {
@@ -62,13 +60,13 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const resizeDoneHandler = useCallback((newWidth: number) => {
     mutateProductNavWidth(newWidth, false);
     scheduleToPut({ preferCollapsedModeByUser: false, currentProductNavWidth: newWidth });
-  }, [mutateProductNavWidth, scheduleToPut]);
+  }, [mutateProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
     mutateSidebarCollapsed(true);
     mutateProductNavWidth(sidebarMinWidth, false);
     scheduleToPut({ preferCollapsedModeByUser: true, currentProductNavWidth: sidebarMinWidth });
-  }, [mutateProductNavWidth, mutateSidebarCollapsed, scheduleToPut]);
+  }, [mutateProductNavWidth, mutateSidebarCollapsed]);
 
   useEffect(() => {
     toggleDrawerMode(isDrawerMode);
