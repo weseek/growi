@@ -49,7 +49,7 @@ const getEmojiDataArray = (): string[] => {
 const emojiDataArray = getEmojiDataArray();
 
 const emojiOptions = emojiDataArray.map(
-  tag => ({ label: `:${tag}`, type: 'keyword' }),
+  tag => ({ label: `:${tag}:`, type: 'keyword' }),
 );
 
 const completeEmojiInput = (context: CompletionContext) => {
@@ -58,8 +58,6 @@ const completeEmojiInput = (context: CompletionContext) => {
   const emojiBefore = /:\w*$/.exec(textBefore);
 
   if (!emojiBefore && !context.explicit) return null;
-
-  console.log('kohsei');
 
   return {
     from: emojiBefore ? nodeBefore.from + emojiBefore.index : context.pos,
