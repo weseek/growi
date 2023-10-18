@@ -35,7 +35,7 @@ export const SidebarContents = memo(() => {
   }
 
   return (
-    <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']}`}>
+    <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']}`} data-testid="grw-sidebar-contents">
       <Contents />
     </div>
   );
