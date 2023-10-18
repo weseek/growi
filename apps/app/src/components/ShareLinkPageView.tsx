@@ -10,6 +10,7 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
+import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Layout/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
@@ -51,6 +52,10 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
 
+  const headerContents = (
+    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
+  );
+
   const sideContents = !isNotFound
     ? (
       <PageSideContents page={page} />
@@ -86,6 +91,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
   return (
     <PageViewLayout
+      headerContents={headerContents}
       sideContents={sideContents}
     >
       { specialContents }

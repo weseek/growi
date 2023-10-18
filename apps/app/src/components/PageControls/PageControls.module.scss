@@ -1,0 +1,30 @@
+%page-controls-buttons-height {
+  height: 40px;
+}
+
+.grw-page-controls :global {
+
+  .btn-subscribe {
+    --bs-btn-font-size: 18px;
+    @extend %page-controls-buttons-height;
+  }
+
+  .btn-like,
+  .btn-bookmark,
+  .btn-seen-user {
+    --bs-btn-font-size: 18px;
+
+    @extend %page-controls-buttons-height;
+    padding-right: 6px;
+    padding-left: 8px;
+  }
+
+  .total-counts {
+    font-size: 13px;
+  }
+
+  .btn-page-item-control {
+    @extend %page-controls-buttons-height;
+  }
+
+}

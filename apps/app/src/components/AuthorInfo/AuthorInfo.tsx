@@ -6,6 +6,10 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
+
+import styles from './AuthorInfo.module.scss';
+
+
 export type AuthorInfoProps = {
   date: Date,
   user: IUser,
@@ -59,7 +63,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   };
 
   return (
-    <div className="d-flex align-items-center">
+    <div className={`grw-author-info ${styles['grw-author-info']} d-flex align-items-center`}>
       <div className="me-2">
         <UserPicture user={user} size="sm" />
       </div>
