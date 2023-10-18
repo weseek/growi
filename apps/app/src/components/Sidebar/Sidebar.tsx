@@ -93,18 +93,18 @@ export const SidebarSubstance = memo((): JSX.Element => {
       <div className="navigation transition-enabled">
         <div className="grw-navigation-wrap">
           <SidebarNav />
-          <ResizableArea
-            width={resizableAreaWidth}
-            minWidth={sidebarMinWidth}
-            disabled={disableResizing}
-            onResize={resizeHandler}
-            onResizeDone={resizeDoneHandler}
-            onCollapsed={collapsedByResizableAreaHandler}
-          >
-            <div className="sidebar-contents-container">
+          <div className="sidebar-contents-container">
+            <ResizableArea
+              width={resizableAreaWidth}
+              minWidth={sidebarMinWidth}
+              disabled={disableResizing}
+              onResize={resizeHandler}
+              onResizeDone={resizeDoneHandler}
+              onCollapsed={collapsedByResizableAreaHandler}
+            >
               <SidebarContents />
-            </div>
-          </ResizableArea>
+            </ResizableArea>
+          </div>
         </div>
       </div>
     </div>

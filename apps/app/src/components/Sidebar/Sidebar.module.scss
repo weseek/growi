@@ -93,7 +93,7 @@
   .grw-sidebar :global {
     --bs-border-color: var(--grw-highlight-200);
 
-    .grw-navigation-wrap {
+    .sidebar-contents-container {
       background-color: rgba(var(--grw-highlight-100-rgb), .5);
     }
   }
@@ -104,7 +104,7 @@
     --bs-color: var(--bs-gray-400);
     --bs-border-color: var(--grw-highlight-800);
 
-    .grw-navigation-wrap {
+    .sidebar-contents-container {
       background-color: rgba(var(--grw-highlight-800-rgb), .5);
     }
   }
