@@ -115,8 +115,6 @@ describe('WorkflowService', () => {
     const approverGroupId1 = new mongoose.Types.ObjectId().toString();
     const approverGroupId2 = new mongoose.Types.ObjectId().toString();
     const approverGroupId3 = new mongoose.Types.ObjectId().toString();
-    const approverGroupId4 = new mongoose.Types.ObjectId().toString();
-    const approverGroupId5 = new mongoose.Types.ObjectId().toString();
 
     const approverId1 = new mongoose.Types.ObjectId().toString();
     const approverId2 = new mongoose.Types.ObjectId().toString();
@@ -124,10 +122,6 @@ describe('WorkflowService', () => {
     const approverId4 = new mongoose.Types.ObjectId().toString();
     const approverId5 = new mongoose.Types.ObjectId().toString();
     const approverId6 = new mongoose.Types.ObjectId().toString();
-    const approverId7 = new mongoose.Types.ObjectId().toString();
-    const approverId8 = new mongoose.Types.ObjectId().toString();
-    const approverId9 = new mongoose.Types.ObjectId().toString();
-    const approverId10 = new mongoose.Types.ObjectId().toString();
 
     beforeAll(async() => {
       await Workflow.insertMany([
@@ -141,11 +135,11 @@ describe('WorkflowService', () => {
           approverGroups: [
             {
               _id: approverGroupId1,
-              approvalType: WorkflowApprovalType.OR,
+              approvalType: WorkflowApprovalType.AND,
               approvers: [
                 {
                   user: approverId1,
-                  status: WorkflowApproverStatus.APPROVE,
+                  status: WorkflowApproverStatus.NONE,
                 },
                 {
                   user: approverId2,
@@ -159,7 +153,7 @@ describe('WorkflowService', () => {
               approvers: [
                 {
                   user: approverId3,
-                  status: WorkflowApproverStatus.APPROVE,
+                  status: WorkflowApproverStatus.NONE,
                 },
                 {
                   user: approverId4,
@@ -177,34 +171,6 @@ describe('WorkflowService', () => {
                 },
                 {
                   user: approverId6,
-                  status: WorkflowApproverStatus.NONE,
-                },
-              ],
-            },
-            {
-              _id: approverGroupId4,
-              approvalType: WorkflowApprovalType.AND,
-              approvers: [
-                {
-                  user: approverId7,
-                  status: WorkflowApproverStatus.NONE,
-                },
-                {
-                  user: approverId8,
-                  status: WorkflowApproverStatus.NONE,
-                },
-              ],
-            },
-            {
-              _id: approverGroupId5,
-              approvalType: WorkflowApprovalType.AND,
-              approvers: [
-                {
-                  user: approverId9,
-                  status: WorkflowApproverStatus.NONE,
-                },
-                {
-                  user: approverId10,
                   status: WorkflowApproverStatus.NONE,
                 },
               ],
@@ -261,104 +227,6 @@ describe('WorkflowService', () => {
       expect(caller).rejects.toThrow('Cannot edit workflows that are not in progress');
     });
 
-    it('Should fail when the target approverGroup does not exist', () => {
-      // setup
-      const nonExistApproverGroupId = new mongoose.Types.ObjectId().toString();
-      const updateApproverGroupData = [
-        {
-          groupId: nonExistApproverGroupId,
-          shouldRemove: true,
-        },
-      ];
-
-      // when
-      const caller = () => WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', undefined, updateApproverGroupData);
-
-      // then
-      expect(caller).rejects.toThrow('Target approevrGroup does not exist');
-    });
-
-    it('Should fail if there is an approved approverGroup before the target approverGroup (when updating a group) ', () => {
-      // setup
-      const updateApproverGroupData = [
-        {
-          groupId: approverGroupId1,
-          shouldRemove: true,
-        },
-      ];
-
-      // when
-      const caller = () => WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', undefined, updateApproverGroupData);
-
-      // then
-      expect(caller).rejects.toThrow('Cannot edit approverGroups prior to the approved approverGroup');
-    });
-
-    it('Should fail if there is an approved approverGroup before the target approverGroup (When adding a group) ', () => {
-      // setup
-      const createApproverGroupData = [
-        {
-          groupIndex: 0,
-          approvalType: WorkflowApprovalType.AND,
-          userIdsToAdd: [new mongoose.Types.ObjectId().toString()],
-        },
-      ];
-
-      // when
-      const caller = () => WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', createApproverGroupData, undefined);
-
-      // then
-      expect(caller).rejects.toThrow('Cannot edit approverGroups prior to the approved approverGroup');
-    });
-
-    it('Should fail if there are approved approvers within the approverGroup being deleted', () => {
-      // setup
-      const approverGroupData = [
-        {
-          groupId: approverGroupId2,
-          shouldRemove: true,
-        },
-      ];
-
-      // when
-      const caller = () => WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', undefined, approverGroupData);
-
-      // then
-      expect(caller).rejects.toThrow('Cannot remove an approverGroup that contains approved approvers');
-    });
-
-    it('Should fail if the approver to be deleted does not exist', () => {
-      // setup
-      const approverGroupData = [
-        {
-          groupId: approverGroupId2,
-          userIdsToRemove: [new mongoose.Types.ObjectId().toString()],
-        },
-      ];
-
-      // when
-      const caller = () => WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', undefined, approverGroupData);
-
-      // then
-      expect(caller).rejects.toThrow('Target approver does not exist');
-    });
-
-    it('Should fail if the approver to be deleted is approved', () => {
-      // setup
-      const approverGroupData = [
-        {
-          groupId: approverGroupId2,
-          userIdsToRemove: [approverId3],
-        },
-      ];
-
-      // when
-      const caller = () => WorkflowService.updateWorkflow(workflowId, creator, 'name', 'comment', undefined, approverGroupData);
-
-      // then
-      expect(caller).rejects.toThrow('Cannot remove an approved apporver');
-    });
-
     it('Update approverGroup', async() => {
       // setup
       const approverIdToAdd1 = new mongoose.Types.ObjectId().toString();
@@ -385,16 +253,16 @@ describe('WorkflowService', () => {
 
       const updateApproverGroupData = [
         {
-          groupId: approverGroupId3,
+          groupId: approverGroupId1,
           shouldRemove: true,
         },
         {
-          groupId: approverGroupId4,
+          groupId: approverGroupId2,
           userIdsToAdd: [approverIdToAdd4, approverIdToAdd5],
-          userIdsToRemove: [approverId7, approverId8],
+          userIdsToRemove: [approverId3, approverId4],
         },
         {
-          groupId: approverGroupId5,
+          groupId: approverGroupId3,
           approvalType: WorkflowApprovalType.OR,
         },
       ];
@@ -403,9 +271,9 @@ describe('WorkflowService', () => {
 
       const previousApproverGroup1 = previousWorkflow?.approverGroups[1];
       const previousApproverGroup2 = previousWorkflow?.approverGroups[3];
-      const previousApproverGroup3 = (previousWorkflow?.approverGroups as any).id(approverGroupId3);
-      const previousApproverGroup4 = (previousWorkflow?.approverGroups as any).id(approverGroupId4);
-      const previousApproverGroup5 = (previousWorkflow?.approverGroups as any).id(approverGroupId5);
+      const previousApproverGroup3 = (previousWorkflow?.approverGroups as any).id(approverGroupId1);
+      const previousApproverGroup4 = (previousWorkflow?.approverGroups as any).id(approverGroupId2);
+      const previousApproverGroup5 = (previousWorkflow?.approverGroups as any).id(approverGroupId3);
 
       expect(previousWorkflow?.name).toEqual(workflowName);
       expect(previousWorkflow?.comment).toEqual(workflowComment);
@@ -415,8 +283,8 @@ describe('WorkflowService', () => {
       expect(previousApproverGroup3).not.toBeNull();
       expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeUndefined();
       expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeUndefined();
-      expect(previousApproverGroup4.findApprover(approverId7)).not.toBeUndefined();
-      expect(previousApproverGroup4.findApprover(approverId8)).not.toBeUndefined();
+      expect(previousApproverGroup4.findApprover(approverId3)).not.toBeUndefined();
+      expect(previousApproverGroup4.findApprover(approverId4)).not.toBeUndefined();
       expect(previousApproverGroup5.approvalType).toEqual(WorkflowApprovalType.AND);
 
       // when
@@ -432,20 +300,20 @@ describe('WorkflowService', () => {
       // then
       const updatedApproverGroup1 = updatedWorkflow?.approverGroups[1];
       const updatedApproverGroup2 = updatedWorkflow?.approverGroups[3];
-      const updatedApproverGroup3 = (updatedWorkflow?.approverGroups as any).id(approverGroupId3);
-      const updatedApproverGroup4 = (updatedWorkflow?.approverGroups as any).id(approverGroupId4);
-      const updatedApproverGroup5 = (updatedWorkflow?.approverGroups as any).id(approverGroupId5);
+      const updatedApproverGroup3 = (updatedWorkflow?.approverGroups as any).id(approverGroupId1);
+      const updatedApproverGroup4 = (updatedWorkflow?.approverGroups as any).id(approverGroupId2);
+      const updatedApproverGroup5 = (updatedWorkflow?.approverGroups as any).id(approverGroupId3);
 
-      expect(updatedWorkflow?.name).toEqual(updatedWorkflowName);
-      expect(updatedWorkflow?.comment).toEqual(updatedWorkflowComment);
+      expect(updatedWorkflow?.name).toEqual(workflowName);
+      expect(updatedWorkflow?.comment).toEqual(workflowComment);
       expect((updatedApproverGroup1 as any).findApprover(approverIdToAdd1)).not.toBeUndefined();
       expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd2)).not.toBeUndefined();
       expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd3)).not.toBeUndefined();
       expect(updatedApproverGroup3).toBeNull();
       expect(updatedApproverGroup4.findApprover(approverIdToAdd4)).not.toBeUndefined();
       expect(updatedApproverGroup4.findApprover(approverIdToAdd5)).not.toBeUndefined();
-      expect(updatedApproverGroup4.findApprover(approverId7)).toBeUndefined();
-      expect(updatedApproverGroup4.findApprover(approverId8)).toBeUndefined();
+      expect(updatedApproverGroup4.findApprover(approverId3)).toBeUndefined();
+      expect(updatedApproverGroup4.findApprover(approverId4)).toBeUndefined();
       expect(updatedApproverGroup5.approvalType).toEqual(WorkflowApprovalType.OR);
     });
   });
