@@ -88,12 +88,13 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
       </div>
       <div className={styles['grw-navigation-draggable']}>
         { !disabled && (
-          <div
-            className="grw-navigation-draggable-hitarea"
-            onMouseDown={dragableAreaMouseDownHandler}
-          >
-            <div className="grw-navigation-draggable-hitarea-child"></div>
-          </div>
+          <>
+            <div
+              className="grw-navigation-draggable-hitarea"
+              onMouseDown={dragableAreaMouseDownHandler}
+            />
+            <div className="grw-navigation-draggable-line"></div>
+          </>
         ) }
       </div>
     </>
