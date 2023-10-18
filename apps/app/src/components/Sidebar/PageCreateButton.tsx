@@ -7,11 +7,11 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseEnter = () => {
+  const onMouseEnterHandler = () => {
     setIsHovered(true);
   };
 
-  const handleMouseLeave = () => {
+  const onMouseLeaveHandler = () => {
     setIsHovered(false);
   };
 
@@ -19,16 +19,16 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const isSelected = true;
   // TODO: create page directly
   // TODO: https://redmine.weseek.co.jp/issues/132680s
-  const onClickCreateNewPageButton = useCallback(() => {
+  const onCreateNewPageButtonHandler = useCallback(() => {
     // router.push(`${router.pathname}#edit`);
   }, [router]);
-  const onClickCreateTodayButton = useCallback(() => {
+  const onCreateTodaysButtonHandler = useCallback(() => {
     // router.push(`${router.pathname}#edit`);
   }, [router]);
-  const onClickTemplateForChildrenButton = useCallback(() => {
+  const onTemplateForChildrenButtonHandler = useCallback(() => {
     // router.push(`${router.pathname}/_template#edit`);
   }, [router]);
-  const onClickTemplateForDescendantsButton = useCallback(() => {
+  const onTemplateForDescendantsButtonHandler = useCallback(() => {
     // router.push(`${router.pathname}/__template#edit`);
   }, [router]);
 
@@ -39,13 +39,13 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   return (
     <div
       className="d-flex flex-row"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={onMouseEnterHandler}
+      onMouseLeave={onMouseLeaveHandler}
     >
       <div>
         <button
           className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
-          onClick={onClickCreateNewPageButton}
+          onClick={onCreateNewPageButtonHandler}
           type="button"
           data-testid="grw-sidebar-nav-page-create-button"
         >
@@ -66,7 +66,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             <li>
               <button
                 className="dropdown-item"
-                onClick={onClickCreateNewPageButton}
+                onClick={onCreateNewPageButtonHandler}
                 type="button"
               >
                 Create New Page
@@ -79,7 +79,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             <li>
               <button
                 className="dropdown-item"
-                onClick={onClickCreateTodayButton}
+                onClick={onCreateTodaysButtonHandler}
                 type="button"
               >
                 Create today&apos;s
@@ -90,7 +90,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             <li>
               <button
                 className="dropdown-item"
-                onClick={onClickTemplateForChildrenButton}
+                onClick={onTemplateForChildrenButtonHandler}
                 type="button"
               >
                 Template for children
@@ -99,7 +99,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             <li>
               <button
                 className="dropdown-item"
-                onClick={onClickTemplateForDescendantsButton}
+                onClick={onTemplateForDescendantsButtonHandler}
                 type="button"
               >
                 Template for descendants
