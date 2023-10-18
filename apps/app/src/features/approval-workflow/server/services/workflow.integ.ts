@@ -136,7 +136,7 @@ describe('WorkflowService', () => {
           creator: creator._id,
           pageId: new mongoose.Types.ObjectId(),
           name: workflowName,
-          comment: workflowCommnet,
+          comment: workflowComment,
           status: WorkflowStatus.INPROGRESS,
           approverGroups: [
             {
