@@ -61,13 +61,13 @@ export const SidebarSubstance = memo((): JSX.Element => {
 
   const resizeDoneHandler = useCallback((newWidth: number) => {
     mutateProductNavWidth(newWidth, false);
-    scheduleToPut({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
+    scheduleToPut({ preferCollapsedModeByUser: false, currentProductNavWidth: newWidth });
   }, [mutateProductNavWidth, scheduleToPut]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
     mutateSidebarCollapsed(true);
     mutateProductNavWidth(sidebarMinWidth, false);
-    scheduleToPut({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
+    scheduleToPut({ preferCollapsedModeByUser: true, currentProductNavWidth: sidebarMinWidth });
   }, [mutateProductNavWidth, mutateSidebarCollapsed, scheduleToPut]);
 
   useEffect(() => {
