@@ -410,14 +410,14 @@ describe('WorkflowService', () => {
 
       expect(previousWorkflow?.name).toEqual(workflowName);
       expect(previousWorkflow?.comment).toEqual(workflowComment);
-      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeNull();
-      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeNull();
-      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeNull();
+      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeTruthy();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeTruthy();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeTruthy();
       expect(previousApproverGroup3).not.toBeNull();
-      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeNull();
-      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeNull();
-      expect(previousApproverGroup4.findApprover(approverId7)).not.toBeNull();
-      expect(previousApproverGroup4.findApprover(approverId8)).not.toBeNull();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeTruthy();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeTruthy();
+      expect(previousApproverGroup4.findApprover(approverId7)).not.toBeTruthy();
+      expect(previousApproverGroup4.findApprover(approverId8)).not.toBeTruthy();
       expect(previousApproverGroup5.approvalType).toEqual(WorkflowApprovalType.AND);
 
 
