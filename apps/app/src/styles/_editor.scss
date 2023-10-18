@@ -7,24 +7,6 @@
 .layout-root.editing {
   overflow-y: hidden !important;
 
-  .grw-navbar {
-    position: fixed !important;
-    width: 100vw;
-  }
-
-  // restrict height of subnav
-  .grw-subnav {
-    height: var.$grw-subnav-height-on-edit;
-    min-height: unset;
-    padding-top: 0;
-    padding-right: 15px;
-    padding-left: 15px;
-
-    @include bs.media-breakpoint-up(lg) {
-      height: var.$grw-subnav-height-lg-on-edit;
-    }
-  }
-
   .page-wrapper {
     top: 0;
     height: 100vh;
@@ -95,32 +77,6 @@
       width: 38px;
       height: 38px;
       font-size: 18px;
-    }
-
-    .grw-taglabels-container {
-      margin-bottom: 0;
-    }
-  }
-
-  // ellipsis .grw-page-path-hierarchical-link
-  .grw-subnav-start-side {
-    overflow: hidden;
-    .grw-path-nav-container {
-      margin-right: 1rem;
-      overflow: hidden;
-      .grw-page-path-nav {
-        white-space: nowrap;
-
-        .grw-page-path-hierarchical-link {
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        h1 {
-          overflow: hidden;
-        }
-      }
     }
   }
 

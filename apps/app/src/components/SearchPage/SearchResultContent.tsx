@@ -24,8 +24,7 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
-import type { SubNavButtonsProps } from '../Navbar/SubNavButtons';
+import { PagePathNav } from '../Common/PagePathNav';
 import { type RevisionLoaderProps } from '../Page/RevisionLoader';
 import { type PageCommentProps } from '../PageComment';
 import type { PageContentFooterProps } from '../PageContentFooter';
@@ -33,8 +32,7 @@ import type { PageContentFooterProps } from '../PageContentFooter';
 import styles from './SearchResultContent.module.scss';
 
 
-const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+const SubNavButtons = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
@@ -187,7 +185,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const revisionId = getIdForRef(page.revision);
 
     return (
-      <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
+      <div className="d-flex flex-column align-items-end justify-content-center px-2 py-1">
         <SubNavButtons
           pageId={page._id}
           revisionId={revisionId}
@@ -196,7 +194,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
-          isCompactMode
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -215,21 +212,18 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       data-testid="search-result-content"
       className={`dynamic-layout-root ${growiLayoutFluidClass} search-result-content ${styles['search-result-content']}`}
     >
-      <div className="grw-page-path-text-muted-container">
-        { isRenderable && (
-          <GrowiSubNavigation
-            pagePath={page.path}
-            pageId={page._id}
-            rightComponent={RightComponent}
-            isCompactMode
-            additionalClasses={['px-4']}
-          />
-        ) }
-      </div>
+      <RightComponent />
+
+      { isRenderable && (
+        <div className="container-lg grw-container-convertible pt-2 pb-2">
+          <PagePathNav pageId={page._id} pagePath={page.path} formerLinkClassName="small" latterLinkClassName="fs-3" />
+        </div>
+      ) }
+
       <div
         id="search-result-content-body-container"
         ref={scrollElementRef}
-        className="search-result-content-body-container main container-lg grw-container-convertible overflow-y-scroll"
+        className="search-result-content-body-container container-lg grw-container-convertible overflow-y-scroll"
       >
         { isRenderable && (
           <RevisionLoader
