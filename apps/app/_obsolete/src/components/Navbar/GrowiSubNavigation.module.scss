@@ -1,0 +1,103 @@
+@use '~/styles/variables' as var;
+@use '@growi/core/scss/bootstrap/init' as bs;
+@use '~/styles/mixins';
+
+%subnav-buttons-height {
+  height: 40px;
+}
+
+%compact-subnav-buttons-height {
+  height: 32px;
+}
+
+// https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
+// workaround to use '&' in global scope
+.grw-subnav {
+  :global {
+    min-height: var.$grw-subnav-min-height;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    @include bs.media-breakpoint-up(md) {
+      min-height: var.$grw-subnav-min-height-md;
+    }
+
+    h1 {
+      @include mixins.variable-font-size(32px);
+      line-height: 1.4em;
+    }
+
+    .btn-copy {
+      &:not(:hover):not(:active) {
+        background-color: transparent !important;
+      }
+      opacity: 0.5;
+    }
+
+    .btn-subscribe {
+      @extend %subnav-buttons-height;
+      font-size: 20px;
+    }
+
+    .btn-like,
+    .btn-bookmark,
+    .btn-seen-user {
+      @extend %subnav-buttons-height;
+      padding-right: 6px;
+      padding-left: 8px;
+      font-size: 20px;
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+    .total-likes,
+    .total-bookmarks {
+      display: flex;
+      align-items: flex-end;
+      padding-right: 8px;
+      padding-left: 6px;
+      font-size: 14px;
+      font-weight: bs.$font-weight-bold;
+    }
+    .seen-user-count {
+      padding-right: 6px;
+      padding-left: 6px;
+      font-size: 14px;
+      font-weight: bs.$font-weight-bold;
+      vertical-align: bottom;
+    }
+
+    .btn-page-item-control {
+      height: 40px;
+      font-size: 16px;
+    }
+
+    .user-list-popover {
+      max-width: 200px;
+
+      .user-list-content {
+        direction: rtl;
+
+        .liker-user-count,
+        .seen-user-count {
+          font-size: 12px;
+          font-weight: bolder;
+        }
+      }
+      .cls-1 {
+        isolation: isolate;
+      }
+    }
+  }
+
+  &:global {
+    &:hover {
+      .btn-copy,
+      .btn-edit-tags {
+        // change button opacity
+        opacity: unset;
+      }
+    }
+  }
+}

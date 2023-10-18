@@ -31,6 +31,7 @@ type Props = {
   className?: string
 }
 
+
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
     <RawLayout className={className ?? ''}>
@@ -39,7 +40,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <div className="page-wrapper flex-row">
           <Sidebar />
 
-          <div className="flex-expand-vert">{/* neccessary for nested {children} make expanded */}
+          <div className="d-flex flex-grow-1 flex-column">{/* neccessary for nested {children} make expanded */}
             <AlertSiteUrlUndefined />
             {children}
           </div>
