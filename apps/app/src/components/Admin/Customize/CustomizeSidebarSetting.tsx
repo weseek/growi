@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSWRxSidebarConfig } from '~/stores/ui';
+import { useSWRxSidebarConfig } from '~/stores/admin/sidebar-config';
 import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
