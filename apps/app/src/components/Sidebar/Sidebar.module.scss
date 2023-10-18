@@ -2,28 +2,13 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
 .grw-sidebar :global {
-  // sticky
-  position: sticky;
-  top: 0;
-
-  // set the max value that should be taken when sticky
-  height: 100vh;
-
   border-right : 1px solid var(--bs-border-color);
 
-  .data-layout-container {
+  .grw-navigation-wrap {
     display: flex;
     flex-direction: row;
-    height: 100vh;
-    margin-top: 0px;
-  }
-  .navigation {
-    .grw-navigation-wrap {
-      display: flex;
-      flex-direction: row;
-      height: 100%;
-      overflow: hidden;
-    }
+    height: 100%;
+    overflow: hidden;
   }
 
   .grw-sidebar-content-header {
@@ -36,18 +21,23 @@
 
 // Dock Mode
 @mixin dock() {
+  .grw-navigation-wrap {
+    // sticky
+    position: sticky;
+    top: 0;
+
+    // set the max value that should be taken when sticky
+    height: 100vh;
+  }
 }
 
 // Drawer Mode
 @mixin drawer() {
-  z-index: bs.$zindex-fixed + 2;
 
-  .data-layout-container {
+  .grw-navigation-wrap {
     position: fixed;
     top: 0;
-    width: 0;
-  }
-  div.navigation.transition-enabled {
+    z-index: bs.$zindex-fixed + 2;
     max-width: 80vw;
 
     // apply transition
@@ -56,12 +46,12 @@
   }
 
   &:not(.open) {
-    div.navigation {
+    .grw-navigation-wrap {
       transform: translateX(-100%);
     }
   }
   &.open {
-    div.navigation {
+    .grw-navigation-wrap {
       transform: translateX(0);
     }
   }
@@ -73,12 +63,7 @@
       @include drawer();
     }
     &.grw-sidebar-dock {
-      @include bs.media-breakpoint-down(sm) {
-        @include drawer();
-      }
-      @include bs.media-breakpoint-up(md) {
-        @include dock();
-      }
+      @include dock();
     }
   }
 }

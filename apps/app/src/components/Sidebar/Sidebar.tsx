@@ -89,24 +89,20 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsed;
 
   return (
-    <div className="data-layout-container">
-      <div className="navigation transition-enabled">
-        <div className="grw-navigation-wrap">
-          <SidebarNav />
-          <ResizableArea
-            width={resizableAreaWidth}
-            minWidth={sidebarMinWidth}
-            disabled={disableResizing}
-            onResize={resizeHandler}
-            onResizeDone={resizeDoneHandler}
-            onCollapsed={collapsedByResizableAreaHandler}
-          >
-            <div className="sidebar-contents-container">
-              <SidebarContents />
-            </div>
-          </ResizableArea>
+    <div className="grw-navigation-wrap">
+      <SidebarNav />
+      <ResizableArea
+        width={resizableAreaWidth}
+        minWidth={sidebarMinWidth}
+        disabled={disableResizing}
+        onResize={resizeHandler}
+        onResizeDone={resizeDoneHandler}
+        onCollapsed={collapsedByResizableAreaHandler}
+      >
+        <div className="sidebar-contents-container">
+          <SidebarContents />
         </div>
-      </div>
+      </ResizableArea>
     </div>
   );
 
