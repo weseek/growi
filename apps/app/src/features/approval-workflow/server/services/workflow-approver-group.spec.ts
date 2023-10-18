@@ -103,6 +103,7 @@ describe('WorkflowApproverGroupService', () => {
   describe('.createApproverGroup', () => {
     it('Should fail when trying to add an approverGroup before an approved approverGroup', () => {
       // setup
+      const validateApproverGroupsSpy = vi.spyOn(WorkflowApproverGroupService, 'validateApproverGroups');
       const targetWorkflowMock = {
         approverGroups: [
           {
@@ -130,6 +131,7 @@ describe('WorkflowApproverGroupService', () => {
       // then
       expect(caller).toThrow('Cannot edit approverGroups prior to the approved approverGroup');
       expect(targetWorkflowMock.getLatestApprovedApproverGroupIndex).toBeCalledTimes(1);
+      expect(validateApproverGroupsSpy).not.toHaveBeenCalled();
     });
   });
 });
