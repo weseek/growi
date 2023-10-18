@@ -13,9 +13,7 @@ import {
 import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { IPageGrantData } from '~/interfaces/page';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
@@ -221,14 +219,6 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
 };
 
 
-export const usePreferCollapsedModeByUser = (initialData?: boolean): SWRResponse<boolean> => {
-  return useSWRStatic('preferCollapsedModeByUser', initialData);
-};
-
-export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isSidebarCollapsed', initialData, { fallbackData: false });
-};
-
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
   return useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 };
@@ -263,6 +253,18 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
       }
       : undefined,
   );
+};
+
+export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
+};
+
+export const useCollapsedMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isCollapsedMode', initialData, { fallbackData: false });
+};
+
+export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {

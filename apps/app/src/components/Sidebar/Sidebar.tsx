@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
-  useSidebarCollapsed,
+  useCollapsedMode, useCollapsedContentsOpened,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
 } from '~/stores/ui';
@@ -30,7 +30,8 @@ export const SidebarSubstance = memo((): JSX.Element => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
-  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
+  const { data: isCollapsedMode, mutate: mutateCollapsedMode } = useCollapsedMode();
+  const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
   const [resizableAreaWidth, setResizableAreaWidth] = useState(0);
@@ -63,10 +64,11 @@ export const SidebarSubstance = memo((): JSX.Element => {
   }, [mutateProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
-    mutateSidebarCollapsed(true);
+    mutateCollapsedMode(true);
+    mutateCollapsedContentsOpened(false);
     mutateProductNavWidth(sidebarMinWidth, false);
     scheduleToPut({ preferCollapsedModeByUser: true, currentProductNavWidth: sidebarMinWidth });
-  }, [mutateProductNavWidth, mutateSidebarCollapsed]);
+  }, [mutateCollapsedContentsOpened, mutateCollapsedMode, mutateProductNavWidth]);
 
   useEffect(() => {
     toggleDrawerMode(isDrawerMode);
@@ -77,16 +79,16 @@ export const SidebarSubstance = memo((): JSX.Element => {
     if (isDrawerMode) {
       setResizableAreaWidth(sidebarFixedWidthInDrawerMode);
     }
-    else if (isCollapsed) {
+    else if (isCollapsedMode) {
       setResizableAreaWidth(sidebarCollapsedWidth);
     }
     else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setResizableAreaWidth(currentProductNavWidth!);
     }
-  }, [currentProductNavWidth, isCollapsed, isDrawerMode]);
+  }, [currentProductNavWidth, isCollapsedMode, isDrawerMode]);
 
-  const disableResizing = isResizeDisabled || isDrawerMode || isCollapsed;
+  const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
 
   return (
     <div className="data-layout-container">
