@@ -99,7 +99,6 @@
     "diff": "^5.0.0",
     "diff_match_patch": "^0.1.1",
     "ejs": "^3.1.8",
-    "emoji-mart": "npm:panta82-emoji-mart@^3.0.1",
     "esa-node": "^0.2.2",
     "escape-string-regexp": "^4.0.0",
     "eslint-plugin-regex": "^1.8.0",
