@@ -399,7 +399,6 @@ describe('WorkflowService', () => {
         },
       ];
 
-
       const previousWorkflow = await Workflow.findById(workflowId);
 
       const previousApproverGroup1 = previousWorkflow?.approverGroups[1];
@@ -410,14 +409,14 @@ describe('WorkflowService', () => {
 
       expect(previousWorkflow?.name).toEqual(workflowName);
       expect(previousWorkflow?.comment).toEqual(workflowComment);
-      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeTruthy();
-      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeTruthy();
-      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeTruthy();
+      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeUndefined();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeUndefined();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeUndefined();
       expect(previousApproverGroup3).not.toBeNull();
-      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeTruthy();
-      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeTruthy();
-      expect(previousApproverGroup4.findApprover(approverId7)).not.toBeTruthy();
-      expect(previousApproverGroup4.findApprover(approverId8)).not.toBeTruthy();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeUndefined();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeUndefined();
+      expect(previousApproverGroup4.findApprover(approverId7)).not.toBeUndefined();
+      expect(previousApproverGroup4.findApprover(approverId8)).not.toBeUndefined();
       expect(previousApproverGroup5.approvalType).toEqual(WorkflowApprovalType.AND);
 
 
