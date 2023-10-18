@@ -88,7 +88,7 @@ describe('WorkflowApproverGroupService', () => {
       const caller = () => WorkflowApproverGroupService.updateApproverGroup(targetWorkflow as any, updateApproverGroupData);
 
       // then
-      expect(caller).rejects.toThrow('Target approevrGroup does not exist');
+      expect(caller).toThrow('Target approevrGroup does not exist');
     });
 
     it('Should fail if there is an approved approverGroup before the target approverGroup (when updating a group) ', async() => {
@@ -106,7 +106,7 @@ describe('WorkflowApproverGroupService', () => {
       const caller = () => WorkflowApproverGroupService.updateApproverGroup(targetWorkflow as any, updateApproverGroupData);
 
       // then
-      expect(caller).rejects.toThrow('Cannot edit approverGroups prior to the approved approverGroup');
+      expect(caller).toThrow('Cannot edit approverGroups prior to the approved approverGroup');
     });
 
     it('Should fail if there is an approved approverGroup before the target approverGroup (When adding a group) ', async() => {
@@ -125,7 +125,7 @@ describe('WorkflowApproverGroupService', () => {
       const caller = () => WorkflowApproverGroupService.createApproverGroup(targetWorkflow as any, createApproverGroupData);
 
       // then
-      expect(caller).rejects.toThrow('Cannot edit approverGroups prior to the approved approverGroup');
+      expect(caller).toThrow('Cannot edit approverGroups prior to the approved approverGroup');
     });
 
     it('Should fail if there are approved approvers within the approverGroup being deleted', async() => {
@@ -143,7 +143,7 @@ describe('WorkflowApproverGroupService', () => {
       const caller = () => WorkflowApproverGroupService.updateApproverGroup(targetWorkflow as any, updateApproverGroupData);
 
       // then
-      expect(caller).rejects.toThrow('Cannot remove an approverGroup that contains approved approvers');
+      expect(caller).toThrow('Cannot remove an approverGroup that contains approved approvers');
     });
 
     it('Should fail if the approver to be deleted does not exist', async() => {
@@ -161,7 +161,7 @@ describe('WorkflowApproverGroupService', () => {
       const caller = () => WorkflowApproverGroupService.updateApproverGroup(targetWorkflow as any, updateApproverGroupData);
 
       // then
-      expect(caller).rejects.toThrow('Target approver does not exist');
+      expect(caller).toThrow('Target approver does not exist');
     });
 
     it('Should fail if the approver to be deleted is approved', async() => {
@@ -179,7 +179,7 @@ describe('WorkflowApproverGroupService', () => {
       const caller = () => WorkflowApproverGroupService.updateApproverGroup(targetWorkflow as any, updateApproverGroupData);
 
       // then
-      expect(caller).rejects.toThrow('Cannot remove an approved apporver');
+      expect(caller).toThrow('Cannot remove an approved apporver');
     });
   });
 });
