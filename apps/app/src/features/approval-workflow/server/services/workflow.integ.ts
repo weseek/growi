@@ -109,6 +109,9 @@ describe('WorkflowService', () => {
     const workflowId = new mongoose.Types.ObjectId().toString();
     const approvedWorkflowId = new mongoose.Types.ObjectId().toString();
 
+    const workflowName = 'workflow name';
+    const workflowComment = 'workflo comment';
+
     const approverGroupId1 = new mongoose.Types.ObjectId().toString();
     const approverGroupId2 = new mongoose.Types.ObjectId().toString();
     const approverGroupId3 = new mongoose.Types.ObjectId().toString();
@@ -132,8 +135,8 @@ describe('WorkflowService', () => {
           _id: workflowId,
           creator: creator._id,
           pageId: new mongoose.Types.ObjectId(),
-          name: 'In-progress Workflow',
-          comment: 'commnet',
+          name: workflowName,
+          comment: workflowCommnet,
           status: WorkflowStatus.INPROGRESS,
           approverGroups: [
             {
@@ -365,7 +368,7 @@ describe('WorkflowService', () => {
       const approverIdToAdd5 = new mongoose.Types.ObjectId().toString();
 
       const updatedWorkflowName = 'Updated workflow name';
-      const updatedWorkflowDescription = 'Updated workflow description';
+      const updatedWorkflowComment = 'Updated workflow comment';
 
       const createApproverGroupData = [
         {
@@ -396,12 +399,34 @@ describe('WorkflowService', () => {
         },
       ];
 
+
+      const previousWorkflow = await Workflow.findById(workflowId);
+
+      const previousApproverGroup1 = previousWorkflow?.approverGroups[1];
+      const previousApproverGroup2 = previousWorkflow?.approverGroups[3];
+      const previousApproverGroup3 = (previousWorkflow?.approverGroups as any).id(approverGroupId3);
+      const previousApproverGroup4 = (previousWorkflow?.approverGroups as any).id(approverGroupId4);
+      const previousApproverGroup5 = (previousWorkflow?.approverGroups as any).id(approverGroupId5);
+
+      expect(previousWorkflow?.name).toEqual(workflowName);
+      expect(previousWorkflow?.comment).toEqual(workflowComment);
+      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeNull();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeNull();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeNull();
+      expect(previousApproverGroup3).not.toBeNull();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeNull();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeNull();
+      expect(previousApproverGroup4.findApprover(approverId7)).not.toBeNull();
+      expect(previousApproverGroup4.findApprover(approverId8)).not.toBeNull();
+      expect(previousApproverGroup5.approvalType).toEqual(WorkflowApprovalType.AND);
+
+
       // when
       const updatedWorkflow = await WorkflowService.updateWorkflow(
         workflowId,
         creator,
         updatedWorkflowName,
-        updatedWorkflowDescription,
+        updatedWorkflowComment,
         createApproverGroupData,
         updateApproverGroupData,
       );
@@ -426,13 +451,12 @@ describe('WorkflowService', () => {
       const updatedTargetApproverToRemove2 = (updatedTargetApproverGroup2 as any).findApprover(approverId8);
 
       expect(updatedWorkflow.name).toEqual(updatedWorkflowName);
-      expect(updatedWorkflow.comment).toEqual(updatedWorkflowDescription);
+      expect(updatedWorkflow.comment).toEqual(updatedWorkflowComment);
       expect(createdTargetApproverGroup1.approvalType).toEqual(WorkflowApprovalType.AND);
       expect(createdTargetApproverGroup2.approvalType).toEqual(WorkflowApprovalType.OR);
       expect(createdTargetApproverGroupApproverIds1.includes(approverIdToAdd1)).toBe(true);
       expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd2)).toBe(true);
       expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd3)).toBe(true);
-      expect(updatedTargetApproverGroup1).toBeNull();
       expect(updatedTargetApproverGroup1).toBeNull();
       expect(updatedTargetApproverToAdd1.status).toEqual(WorkflowApproverStatus.NONE);
       expect(updatedTargetApproverToAdd2.status).toEqual(WorkflowApproverStatus.NONE);
