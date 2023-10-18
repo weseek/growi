@@ -820,6 +820,10 @@
     "delete": "Delete",
     "delete_button_tooltip": "Only the workflow creator, approver or administrator can delete",
     "show_detail": "Show detail",
+    "edit": "Edit",
+    "edit_workflow": "Edit workflow",
+    "cancel": "Cancel",
+    "completion": "completion",
     "statuses": {
       "INPROGRESS": "IN-PROGRESS",
       "APPROVE": "APPROVE",
