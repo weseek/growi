@@ -277,14 +277,14 @@ describe('WorkflowService', () => {
 
       expect(previousWorkflow?.name).toEqual(workflowName);
       expect(previousWorkflow?.comment).toEqual(workflowComment);
-      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeUndefined();
-      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeUndefined();
-      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeUndefined();
-      expect(previousApproverGroup3).not.toBeNull();
-      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeUndefined();
-      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeUndefined();
-      expect(previousApproverGroup4.findApprover(approverId3)).not.toBeUndefined();
-      expect(previousApproverGroup4.findApprover(approverId4)).not.toBeUndefined();
+      expect((previousApproverGroup1 as any).findApprover(approverIdToAdd1)).toBeNullable();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd2)).toBeNullable();
+      expect((previousApproverGroup2 as any).findApprover(approverIdToAdd3)).toBeNullable();
+      expect(previousApproverGroup3).not.toBeNullable();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd4)).toBeNullable();
+      expect(previousApproverGroup4.findApprover(approverIdToAdd5)).toBeNullable();
+      expect(previousApproverGroup4.findApprover(approverId3)).not.toBeNullable();
+      expect(previousApproverGroup4.findApprover(approverId4)).not.toBeNullable();
       expect(previousApproverGroup5.approvalType).toEqual(WorkflowApprovalType.AND);
 
       // when
@@ -306,14 +306,14 @@ describe('WorkflowService', () => {
 
       expect(updatedWorkflow?.name).toEqual(updatedWorkflowName);
       expect(updatedWorkflow?.comment).toEqual(updatedWorkflowComment);
-      expect((updatedApproverGroup1 as any).findApprover(approverIdToAdd1)).not.toBeUndefined();
-      expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd2)).not.toBeUndefined();
-      expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd3)).not.toBeUndefined();
-      expect(updatedApproverGroup3).toBeNull();
-      expect(updatedApproverGroup4.findApprover(approverIdToAdd4)).not.toBeUndefined();
-      expect(updatedApproverGroup4.findApprover(approverIdToAdd5)).not.toBeUndefined();
-      expect(updatedApproverGroup4.findApprover(approverId3)).toBeUndefined();
-      expect(updatedApproverGroup4.findApprover(approverId4)).toBeUndefined();
+      expect((updatedApproverGroup1 as any).findApprover(approverIdToAdd1)).not.toBeNullable();
+      expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd2)).not.toBeNullable();
+      expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd3)).not.toBeNullable();
+      expect(updatedApproverGroup3).toBeNullable();
+      expect(updatedApproverGroup4.findApprover(approverIdToAdd4)).not.toBeNullable();
+      expect(updatedApproverGroup4.findApprover(approverIdToAdd5)).not.toBeNullable();
+      expect(updatedApproverGroup4.findApprover(approverId3)).toBeNullable();
+      expect(updatedApproverGroup4.findApprover(approverId4)).toBeNullable();
       expect(updatedApproverGroup5.approvalType).toEqual(WorkflowApprovalType.OR);
     });
   });
