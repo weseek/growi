@@ -35,10 +35,8 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
       onClick={() => onClick?.(editorMode)}
       data-testid={`${editorMode}-button`}
     >
-      <span className="d-flex flex-column flex-md-row justify-content-center">
-        <span className="grw-page-editor-mode-manager-icon me-md-1">{icon}</span>
-        <span className="grw-page-editor-mode-manager-label">{label}</span>
-      </span>
+      <span className="me-1">{icon}</span>
+      <span>{label}</span>
     </button>
   );
 });

@@ -11,22 +11,22 @@ import UncontrolledTooltip from 'reactstrap/esm/UncontrolledTooltip';
 import { useSWRxBookmarkedUsers } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
 
-import { BookmarkFolderMenu } from './Bookmarks/BookmarkFolderMenu';
-import UserPictureList from './User/UserPictureList';
+import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
+import UserPictureList from '../Common/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
+import popoverStyles from './user-list-popover.module.scss';
 
 interface Props {
   pageId: string,
   isBookmarked?: boolean,
   bookmarkCount: number,
-  hideTotalNumber?: boolean,
 }
 
 export const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const {
-    pageId, isBookmarked, bookmarkCount, hideTotalNumber,
+    pageId, isBookmarked, bookmarkCount,
   } = props;
 
   const [isBookmarkFolderMenuOpen, setBookmarkFolderMenuOpen] = useState(false);
@@ -73,7 +73,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         <DropdownToggle
           id="bookmark-dropdown-btn"
           color="transparent"
-          className={`shadow-none btn btn-bookmark border-0
+          className={`shadow-none btn btn-bookmark border-0 rounded-end-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
@@ -83,35 +83,31 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
-      { !hideTotalNumber && (
-        <>
-          <button
-            type="button"
-            id="po-total-bookmarks"
-            className={`shadow-none btn btn-bookmark border-0
-              total-bookmarks ${isBookmarked ? 'active' : ''}`}
-          >
-            {bookmarkCount}
-          </button>
-          <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
-            <PopoverBody className="user-list-popover">
-              { isLoadingBookmarkedUsers && <i className="fa fa-spinner fa-pulse"></i> }
-              { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
-                <>
-                  { bookmarkedUsers.length > 0
-                    ? (
-                      <div className="px-2 text-end user-list-content text-truncate text-muted">
-                        <UserPictureList users={bookmarkedUsers} />
-                      </div>
-                    )
-                    : t('No users have bookmarked yet')
-                  }
-                </>
-              ) }
-            </PopoverBody>
-          </Popover>
-        </>
-      ) }
+      <button
+        type="button"
+        id="po-total-bookmarks"
+        className={`shadow-none btn btn-bookmark border-0
+          total-counts ${isBookmarked ? 'active' : ''}`}
+      >
+        {bookmarkCount}
+      </button>
+      <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
+        <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
+          { isLoadingBookmarkedUsers && <i className="fa fa-spinner fa-pulse"></i> }
+          { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
+            <>
+              { bookmarkedUsers.length > 0
+                ? (
+                  <div className="px-2 text-end user-list-content text-truncate text-muted">
+                    <UserPictureList users={bookmarkedUsers} />
+                  </div>
+                )
+                : t('No users have bookmarked yet')
+              }
+            </>
+          ) }
+        </PopoverBody>
+      </Popover>
     </div>
   );
 };

@@ -35,32 +35,10 @@
   }
 
   .search-result-content {
-    .search-result-content-nav {
-      min-height: var.$grw-subnav-search-preview-min-height;
-      overflow: auto;
-
-      .grw-subnav {
-        min-height: inherit;
-      }
-    }
-
-    .search-result-content {
-
-      > h2 {
-        margin-right: 10px;
-        font-size: 22px;
-        line-height: 1em;
-      }
-
-      &:first-child > h2 {
-        margin-top: 0;
-      }
-
-      .search-result-content-body-container {
-        .wiki {
-          padding: 16px;
-          font-size: 14px;
-        }
+    .search-result-content-body-container {
+      .wiki {
+        margin-top: 2em;
+        font-size: 14px;
       }
     }
   }
