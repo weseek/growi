@@ -304,8 +304,8 @@ describe('WorkflowService', () => {
       const updatedApproverGroup4 = (updatedWorkflow?.approverGroups as any).id(approverGroupId2);
       const updatedApproverGroup5 = (updatedWorkflow?.approverGroups as any).id(approverGroupId3);
 
-      expect(updatedWorkflow?.name).toEqual(workflowName);
-      expect(updatedWorkflow?.comment).toEqual(workflowComment);
+      expect(updatedWorkflow?.name).toEqual(updatedWorkflowName);
+      expect(updatedWorkflow?.comment).toEqual(updatedWorkflowComment);
       expect((updatedApproverGroup1 as any).findApprover(approverIdToAdd1)).not.toBeUndefined();
       expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd2)).not.toBeUndefined();
       expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd3)).not.toBeUndefined();
