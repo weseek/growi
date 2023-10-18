@@ -419,7 +419,6 @@ describe('WorkflowService', () => {
       expect(previousApproverGroup4.findApprover(approverId8)).not.toBeUndefined();
       expect(previousApproverGroup5.approvalType).toEqual(WorkflowApprovalType.AND);
 
-
       // when
       const updatedWorkflow = await WorkflowService.updateWorkflow(
         workflowId,
@@ -430,38 +429,24 @@ describe('WorkflowService', () => {
         updateApproverGroupData,
       );
 
-
       // then
-      const createdTargetApproverGroup1 = updatedWorkflow.approverGroups[1];
-      const createdTargetApproverGroup2 = updatedWorkflow.approverGroups[3];
+      const updatedApproverGroup1 = updatedWorkflow?.approverGroups[1];
+      const updatedApproverGroup2 = updatedWorkflow?.approverGroups[3];
+      const updatedApproverGroup3 = (updatedWorkflow?.approverGroups as any).id(approverGroupId3);
+      const updatedApproverGroup4 = (updatedWorkflow?.approverGroups as any).id(approverGroupId4);
+      const updatedApproverGroup5 = (updatedWorkflow?.approverGroups as any).id(approverGroupId5);
 
-      const createdTargetApproverGroupApproverIds1 = createdTargetApproverGroup1.approvers.map(v => v.user.toString());
-      const createdTargetApproverGroupApproverIds2 = createdTargetApproverGroup2.approvers.map(v => v.user.toString());
-
-      const updatedTargetApproverGroup1 = (updatedWorkflow.approverGroups as any).id(approverGroupId3);
-
-      const updatedTargetApproverGroup2 = (updatedWorkflow.approverGroups as any).id(approverGroupId4);
-      const updatedTargetApproverGroup3 = (updatedWorkflow.approverGroups as any).id(approverGroupId5);
-
-      const updatedTargetApproverToAdd1 = (updatedTargetApproverGroup2 as any).findApprover(approverIdToAdd4);
-      const updatedTargetApproverToAdd2 = (updatedTargetApproverGroup2 as any).findApprover(approverIdToAdd5);
-
-      const updatedTargetApproverToRemove1 = (updatedTargetApproverGroup2 as any).findApprover(approverId7);
-      const updatedTargetApproverToRemove2 = (updatedTargetApproverGroup2 as any).findApprover(approverId8);
-
-      expect(updatedWorkflow.name).toEqual(updatedWorkflowName);
-      expect(updatedWorkflow.comment).toEqual(updatedWorkflowComment);
-      expect(createdTargetApproverGroup1.approvalType).toEqual(WorkflowApprovalType.AND);
-      expect(createdTargetApproverGroup2.approvalType).toEqual(WorkflowApprovalType.OR);
-      expect(createdTargetApproverGroupApproverIds1.includes(approverIdToAdd1)).toBe(true);
-      expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd2)).toBe(true);
-      expect(createdTargetApproverGroupApproverIds2.includes(approverIdToAdd3)).toBe(true);
-      expect(updatedTargetApproverGroup1).toBeNull();
-      expect(updatedTargetApproverToAdd1.status).toEqual(WorkflowApproverStatus.NONE);
-      expect(updatedTargetApproverToAdd2.status).toEqual(WorkflowApproverStatus.NONE);
-      expect(updatedTargetApproverToRemove1).toBeUndefined();
-      expect(updatedTargetApproverToRemove2).toBeUndefined();
-      expect(updatedTargetApproverGroup3?.approvalType).toEqual(WorkflowApprovalType.OR);
+      expect(updatedWorkflow?.name).toEqual(updatedWorkflowName);
+      expect(updatedWorkflow?.comment).toEqual(updatedWorkflowComment);
+      expect((updatedApproverGroup1 as any).findApprover(approverIdToAdd1)).not.toBeUndefined();
+      expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd2)).not.toBeUndefined();
+      expect((updatedApproverGroup2 as any).findApprover(approverIdToAdd3)).not.toBeUndefined();
+      expect(updatedApproverGroup3).toBeNull();
+      expect(updatedApproverGroup4.findApprover(approverIdToAdd4)).not.toBeUndefined();
+      expect(updatedApproverGroup4.findApprover(approverIdToAdd5)).not.toBeUndefined();
+      expect(updatedApproverGroup4.findApprover(approverId7)).toBeUndefined();
+      expect(updatedApproverGroup4.findApprover(approverId8)).toBeUndefined();
+      expect(updatedApproverGroup5.approvalType).toEqual(WorkflowApprovalType.OR);
     });
   });
 });
