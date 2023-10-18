@@ -57,7 +57,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
+    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth, onClickWorkflowMenuItem,
   } = props;
 
