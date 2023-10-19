@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import { useIsDefaultLogo } from '~/stores/context';
 
+import { PageCreateButton } from '../PageCreateButton';
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
 import { PrimaryItems } from './PrimaryItems';
@@ -26,6 +27,8 @@ export const SidebarNav: FC = memo(() => {
           <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
         </Link>
       </div>
+
+      <PageCreateButton />
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         <PrimaryItems />
