@@ -12,36 +12,6 @@ import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 import { ApproverGroupCard } from './ApproverGroupCard';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
-type EditableApproverGroupCardProps = {
-  creatorId?: string
-  groupIndex: number
-  editingApproverGroups: IWorkflowApproverGroupReq[]
-  onUpdateApproverGroups: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReq) => void
-  onClickAddApproverGroupCard: () => void
-}
-
-const EditableApproverGroupCard = (props: EditableApproverGroupCardProps): JSX.Element => {
-  const {
-    creatorId, groupIndex, editingApproverGroups, onClickAddApproverGroupCard, onUpdateApproverGroups,
-  } = props;
-
-  return (
-    <div className="mt-4">
-      <ApproverGroupCard
-        creatorId={creatorId}
-        groupIndex={groupIndex}
-        editingApproverGroups={editingApproverGroups}
-        onUpdateApproverGroups={onUpdateApproverGroups}
-      />
-
-      <div className="text-center mt-2">
-        <button type="button" onClick={() => onClickAddApproverGroupCard()}>フローを追加</button>
-      </div>
-    </div>
-  );
-};
-
-
 type WorkflowCreationModalContentProps = {
   pageId: string,
   onCreated?: () => void
@@ -79,8 +49,10 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
     setEditingApproverGroups(clonedApproverGroups);
   }, [editingApproverGroups]);
 
-  const addApproverGroupCardButtonClickHandler = () => {
-    setEditingApproverGroups([...editingApproverGroups, [] as any]);
+  const addApproverGroupCardButtonClickHandler = (groupIndex: number) => {
+    const clonedApproverGroups = [...editingApproverGroups];
+    clonedApproverGroups.splice(groupIndex, 0, initialApproverGroup);
+    setEditingApproverGroups(clonedApproverGroups);
   };
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
@@ -108,7 +80,6 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
       />
 
       <ModalBody>
-
         <div className="row align-items-center">
           <label htmlFor="name" className="col-md-4 col-form-label">
             {t('approval_workflow.name')}
@@ -148,7 +119,7 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
         </div>
 
         {editingApproverGroups?.map((_, index) => (
-          <EditableApproverGroupCard
+          <ApproverGroupCard
             creatorId={currentUser?._id}
             groupIndex={index}
             editingApproverGroups={editingApproverGroups}
