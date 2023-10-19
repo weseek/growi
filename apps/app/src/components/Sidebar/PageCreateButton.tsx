@@ -42,7 +42,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <div>
+      <div className="btn-group">
         <button
           className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
           onClick={onCreateNewPageButtonHandler}
@@ -55,13 +55,11 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       {isHovered && (
         <div className="btn-group dropend">
           <button
-            className="btn btn-secondary position-absolute"
+            className="btn btn-secondary dropdown-toggle dropdown-toggle-split position-absolute"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-          >
-            &gt;
-          </button>
+          />
           <ul className="dropdown-menu">
             <li>
               <button
