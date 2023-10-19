@@ -2,6 +2,8 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
 .grw-sidebar :global {
+  top: 0;
+  height: 100vh;
   border-right : 1px solid var(--bs-border-color);
 
   .grw-navigation-wrap {
@@ -22,39 +24,25 @@
 
 // Dock Mode
 @mixin dock() {
-  .grw-navigation-wrap {
-    // sticky
-    position: sticky;
-    top: 0;
-
-    // set the max value that should be taken when sticky
-    height: 100vh;
-  }
+  // sticky
+  position: sticky;
 }
 
 // Drawer Mode
 @mixin drawer() {
+  position: fixed;
+  z-index: bs.$zindex-fixed + 2;
+  max-width: 80vw;
 
-  .grw-navigation-wrap {
-    position: fixed;
-    top: 0;
-    z-index: bs.$zindex-fixed + 2;
-    max-width: 80vw;
-
-    // apply transition
-    transition-property: transform;
-    @include mixins.apply-navigation-transition();
-  }
+  // apply transition
+  transition-property: transform;
+  @include mixins.apply-navigation-transition();
 
   &:not(.open) {
-    .grw-navigation-wrap {
-      transform: translateX(-100%);
-    }
+    transform: translateX(-100%);
   }
   &.open {
-    .grw-navigation-wrap {
-      transform: translateX(0);
-    }
+    transform: translateX(0);
   }
 
   .sidebar-contents-container {
