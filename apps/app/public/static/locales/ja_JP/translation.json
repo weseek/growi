@@ -857,6 +857,9 @@
     "show_detail": "詳細を見る",
     "cancel": "キャンセル",
     "completion": "完了",
+    "add_flow": "フローの追加",
+    "completion_conditions": "完了条件",
+    "description_for_new_creation": "最後のフローが完了するとワークフローは完了になります",
     "approval_type": {
       "AND": "全員が承認",
       "OR": "1人が承認"

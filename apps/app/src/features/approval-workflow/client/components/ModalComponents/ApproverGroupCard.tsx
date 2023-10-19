@@ -50,7 +50,7 @@ export const ApproverGroupCard = (props: Props): JSX.Element => {
     <div className="mt-4">
       {onClickAddApproverGroupCard != null && (
         <div className="text-center mt-2">
-          <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}>フローを追加</button>
+          <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}>{t('approval_workflow.add_flow')}</button>
         </div>
       )}
 
@@ -75,13 +75,13 @@ export const ApproverGroupCard = (props: Props): JSX.Element => {
             </ul>
           </div>
 
-          完了条件
+          {t('approval_workflow.completion_conditions')}
         </div>
       </div>
 
       {onClickAddApproverGroupCard != null && (
         <div className="text-center mt-2">
-          <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}>フローを追加</button>
+          <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}>{t('approval_workflow.add_flow')}</button>
         </div>
       )}
     </div>

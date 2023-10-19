@@ -824,6 +824,9 @@
     "edit_workflow": "Edit workflow",
     "cancel": "Cancel",
     "completion": "completion",
+    "add_flow": "フローの追加",
+    "completion_conditions": "Completion conditions",
+    "description_for_new_creation": "When the final flow is completed, the workflow is marked as finished",
     "approval_type": {
       "and": "Everyone's approval",
       "or": "One person's approval"
