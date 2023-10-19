@@ -30,13 +30,13 @@ const EditableApproverGroupCard = (props: EditableApproverGroupCardProps): JSX.E
 };
 
 
-type Props = {
+type WorkflowCreationModalContentProps = {
   pageId: string,
   onCreated?: () => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
-export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
+export const WorkflowCreationModalContent = (props: WorkflowCreationModalContentProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
@@ -55,30 +55,26 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
     ],
   }] as IWorkflowApproverGroupReq[];
 
-  const [workflowName, setWorkflowName] = useState<string | undefined>();
-  const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
-  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[]>(approverGroupsDummyData);
+  const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>();
+  const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>();
+  const [editingApproverGroups, setEditingApproverGroups] = useState<IWorkflowApproverGroupReq[]>(approverGroupsDummyData);
 
-  const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
+  const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, editingApproverGroups, editingWorkflowName, editingWorkflowDescription);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setWorkflowName(event.target.value);
+    setEditingWorkflowName(event.target.value);
   }, []);
 
   const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setWorkflowDescription(event.target.value);
+    setEditingWorkflowDescription(event.target.value);
   }, []);
 
-  // const approverGroupChangeHandler = useCallback(() => {
-
-  // }, []);
-
   const addApproverGroupCardButtonClickHandler = () => {
-    setApproverGroups([...approverGroups, [] as any]);
+    setEditingApproverGroups([...editingApproverGroups, [] as any]);
   };
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
-    if (approverGroups == null) {
+    if (editingApproverGroups == null) {
       return;
     }
 
@@ -92,7 +88,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [approverGroups, createWorkflow, onCreated]);
+  }, [createWorkflow, editingApproverGroups, onCreated]);
 
   return (
     <>
@@ -114,7 +110,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
                   className="form-control"
                   type="text"
                   name="name"
-                  value={workflowName}
+                  value={editingWorkflowName}
                   onChange={workflowNameChangeHandler}
                   required
                 />
@@ -133,7 +129,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
                 <textarea
                   className="form-control"
                   name="description"
-                  value={workflowDescription}
+                  value={editingWorkflowDescription}
                   onChange={workflowDescriptionChangeHandler}
                 />
               </div>
@@ -144,10 +140,9 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
         {/* <ApproverGroupCard /> */}
 
 
-        {approverGroups?.map((data, index) => (
+        {editingApproverGroups?.map((data, index) => (
           <EditableApproverGroupCard onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler} />
         ))}
-
 
       </ModalBody>
 
