@@ -201,12 +201,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
 
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // eslint-disable-next-line max-len
-  // const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
-  // const { data: templateTagData } = useTemplateTagData();
-
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -214,36 +208,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const path = currentPage?.path ?? currentPathname;
 
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // useEffect(() => {
-  //   // Run only when tagsInfoData has been updated
-  //   if (templateTagData == null) {
-  //     syncPageTagsForEditors();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [tagsInfoData?.tags]);
-
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // useEffect(() => {
-  //   if (pageId === null && templateTagData != null) {
-  //     mutatePageTagsForEditors(templateTagData);
-  //   }
-  // }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
-
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const { isLinkSharingDisabled } = props;
-
-
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
-  //   // It will not be reflected in the DB until the page is refreshed
-  //   mutatePageTagsForEditors(newTags);
-  //   return;
-  // }, [mutatePageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
