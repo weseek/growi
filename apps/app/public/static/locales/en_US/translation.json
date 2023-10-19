@@ -824,6 +824,10 @@
     "edit_workflow": "Edit workflow",
     "cancel": "Cancel",
     "completion": "completion",
+    "approval_type": {
+      "and": "Everyone's approval",
+      "or": "One person's approval"
+    },
     "statuses": {
       "INPROGRESS": "IN-PROGRESS",
       "APPROVE": "APPROVE",

@@ -857,6 +857,10 @@
     "show_detail": "詳細を見る",
     "cancel": "キャンセル",
     "completion": "完了",
+    "approval_type": {
+      "AND": "全員が承認",
+      "OR": "1人が承認"
+    },
     "statuses": {
       "INPROGRESS": "進行中",
       "APPROVE": "承認",

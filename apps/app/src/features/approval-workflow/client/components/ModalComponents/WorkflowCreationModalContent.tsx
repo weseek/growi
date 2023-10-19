@@ -7,6 +7,7 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../../interfaces/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
+import { ApproverGroupCard } from './ApproverGroupCard';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
@@ -111,6 +112,8 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
             </div>
           </div>
         </div>
+
+        <ApproverGroupCard />
 
       </ModalBody>
 

@@ -827,6 +827,10 @@
     "edit_workflow": "编辑工作流程",
     "cancel": "取消",
     "completion": "完成",
+    "approval_type": {
+      "and": "大家的认可",
+      "or": "一个人的认可"
+    },
     "statuses": {
       "INPROGRESS": "进行中",
       "APPROVE": "批准",
