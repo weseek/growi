@@ -6,13 +6,12 @@ import { WorkflowApprovalType, IWorkflowApproverGroupReq } from '../../../interf
 
 type Props = {
   creatorId?: string
-  groupIndex: number
   editingApproverGroups: IWorkflowApproverGroupReq[]
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReq) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
 }
 
-export const ApproverGroupCard = (props: Props): JSX.Element => {
+const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
   const {
     creatorId, groupIndex, editingApproverGroups, onUpdateApproverGroups, onClickAddApproverGroupCard,
   } = props;
@@ -45,7 +44,6 @@ export const ApproverGroupCard = (props: Props): JSX.Element => {
 
   const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
 
-
   return (
     <div className="mt-4">
       {onClickAddApproverGroupCard != null && (
@@ -75,7 +73,7 @@ export const ApproverGroupCard = (props: Props): JSX.Element => {
             </ul>
           </div>
 
-          {t('approval_workflow.completion_conditions')}
+          {t('approval_workflow.')}
         </div>
       </div>
 
@@ -85,5 +83,27 @@ export const ApproverGroupCard = (props: Props): JSX.Element => {
         </div>
       )}
     </div>
+  );
+};
+
+export const ApproverGroupCards = (props: Props): JSX.Element => {
+  const {
+    creatorId, editingApproverGroups, onUpdateApproverGroups, onClickAddApproverGroupCard,
+  } = props;
+
+  return (
+    <>
+      {editingApproverGroups?.map((_, index) => (
+        <ApproverGroupCard
+          // eslint-disable-next-line react/no-array-index-key
+          key={index}
+          creatorId={creatorId}
+          groupIndex={index}
+          editingApproverGroups={editingApproverGroups}
+          onUpdateApproverGroups={onUpdateApproverGroups}
+          onClickAddApproverGroupCard={onClickAddApproverGroupCard}
+        />
+      ))}
+    </>
   );
 };

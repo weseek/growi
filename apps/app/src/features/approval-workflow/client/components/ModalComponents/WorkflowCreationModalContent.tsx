@@ -9,7 +9,7 @@ import { useCurrentUser } from '~/stores/context';
 import { IWorkflowApproverGroupReq, WorkflowApprovalType } from '../../../interfaces/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
-import { ApproverGroupCard } from './ApproverGroupCard';
+import { ApproverGroupCards } from './ApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type WorkflowCreationModalContentProps = {
@@ -118,15 +118,12 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
           </div>
         </div>
 
-        {editingApproverGroups?.map((_, index) => (
-          <ApproverGroupCard
-            creatorId={currentUser?._id}
-            groupIndex={index}
-            editingApproverGroups={editingApproverGroups}
-            onUpdateApproverGroups={approverGroupsChangeHandler}
-            onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler}
-          />
-        ))}
+        <ApproverGroupCards
+          creatorId={currentUser?._id}
+          editingApproverGroups={editingApproverGroups}
+          onUpdateApproverGroups={approverGroupsChangeHandler}
+          onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler}
+        />
 
       </ModalBody>
 
