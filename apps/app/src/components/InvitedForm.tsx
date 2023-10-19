@@ -82,11 +82,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
-          <div>
-            <span className="input-group-text">
-              <i className="icon-envelope"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-envelope"></i>
+          </span>
           <input
             type="text"
             className="form-control"
@@ -99,11 +97,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* UserID Form */}
         <div className="input-group" id="input-group-username">
-          <div>
-            <span className="input-group-text">
-              <i className="icon-user"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-user"></i>
+          </span>
           <input
             type="text"
             className="form-control"
@@ -115,11 +111,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Name Form */}
         <div className="input-group">
-          <div>
-            <span className="input-group-text">
-              <i className="icon-tag"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-tag"></i>
+          </span>
           <input
             type="text"
             className="form-control"
@@ -131,11 +125,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Password Form */}
         <div className="input-group">
-          <div>
-            <span className="input-group-text">
-              <i className="icon-lock"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-lock"></i>
+          </span>
           <input
             type="password"
             className="form-control"
