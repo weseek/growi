@@ -215,8 +215,8 @@ module.exports = (crowi: Crowi): Router => {
       ldapGroupMembershipAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
       ldapGroupMembershipAttributeType: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType'),
       ldapGroupChildGroupAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute'),
-      autoGenerateUserOnLdapGroupSync: configManager?.getConfig('crowi', 'external-user-group:ldap:autoGenerateUserOnGroupSync'),
-      preserveDeletedLdapGroups: configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups'),
+      autoGenerateUserOnLdapGroupSync: configManager?.getConfig('crowi', 'external-user-group:ldap:autoGenerateUserOnGroupSync') || false,
+      preserveDeletedLdapGroups: configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups') || false,
       ldapGroupNameAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute'),
       ldapGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute'),
     };
@@ -231,8 +231,8 @@ module.exports = (crowi: Crowi): Router => {
       keycloakGroupSyncClientRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm'),
       keycloakGroupSyncClientID: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID'),
       keycloakGroupSyncClientSecret: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret'),
-      autoGenerateUserOnKeycloakGroupSync: configManager?.getConfig('crowi', 'external-user-group:keycloak:autoGenerateUserOnGroupSync'),
-      preserveDeletedKeycloakGroups: configManager?.getConfig('crowi', 'external-user-group:keycloak:preserveDeletedGroups'),
+      autoGenerateUserOnKeycloakGroupSync: configManager?.getConfig('crowi', 'external-user-group:keycloak:autoGenerateUserOnGroupSync') || false,
+      preserveDeletedKeycloakGroups: configManager?.getConfig('crowi', 'external-user-group:keycloak:preserveDeletedGroups') || false,
       keycloakGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute'),
     };
 
