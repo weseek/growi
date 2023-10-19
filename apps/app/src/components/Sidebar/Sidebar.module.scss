@@ -6,10 +6,9 @@
   height: 100vh;
   border-right : 1px solid var(--bs-border-color);
 
-  .grw-navigation-wrap {
+  .grw-sidebar-inner {
     display: flex;
     flex-direction: row;
-    height: 100%;
 
     border-top : 1px solid var(--bs-border-color);
   }

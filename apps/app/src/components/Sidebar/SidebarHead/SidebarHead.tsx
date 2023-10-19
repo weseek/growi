@@ -19,11 +19,9 @@ export const SidebarHead: FC = memo(() => {
   return (
     <div className={styles['grw-sidebar-head']}>
       {/* Brand Logo  */}
-      <div className="navbar-brand">
-        <Link href="/" className="grw-logo d-block">
-          <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
-        </Link>
-      </div>
+      <Link href="/" className="grw-logo d-block">
+        <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
+      </Link>
     </div>
   );
 

@@ -92,7 +92,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
 
   return (
-    <div className="grw-navigation-wrap d-print-none">
+    <div className="grw-sidebar-inner d-print-none h-100">
       <SidebarNav />
       <div className="sidebar-contents-container">
         <ResizableArea

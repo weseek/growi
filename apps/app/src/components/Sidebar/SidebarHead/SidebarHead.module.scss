@@ -6,17 +6,14 @@
   // declare $height with the same value as the sidebar nav width
   $height: var.$grw-sidebar-nav-width;
 
-  // set position and z-index to prevent dropdowns covered by other element
-  position: relative;
-  z-index: bs.$zindex-fixed;
-
   height: $height;
-  border-right : 1px solid var(--bs-border-color);
 
   .grw-logo {
     $width: var.$grw-sidebar-nav-width;
     $logomark-width: 27.7px;
     $logomark-height: 24px;
+
+    width: $width;
 
     svg {
       width: $width;
