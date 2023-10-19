@@ -141,12 +141,12 @@
       background-color: rgba(white, 0.5);
 
       svg {
-        fill: var(--bs-body-color);
+        color: var(--bs-body-color);
       }
 
       .logo {
+        color: rgba(black, 0.5);
         background-color: rgba(black, 0);
-        fill: rgba(black, 0.5);
       }
 
       h1 {
@@ -214,12 +214,12 @@
       background-color: rgba(black, 0.5);
 
       svg {
-        fill: var(--bs-body-color);
+        color: var(--bs-body-color);
       }
 
       .logo {
+        color: rgba(white, 0.5);
         background-color: rgba(white, 0);
-        fill: rgba(white, 0.5);
       }
 
       h1 {
