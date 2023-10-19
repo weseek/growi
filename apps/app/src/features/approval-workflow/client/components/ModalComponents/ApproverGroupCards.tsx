@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next';
 
 import { WorkflowApprovalType, IWorkflowApproverGroupReq } from '../../../interfaces/workflow';
 
+import { SearchUserTypeahead } from './SearchUserTypeahead';
+
 type Props = {
   creatorId?: string
   editingApproverGroups: IWorkflowApproverGroupReq[]
@@ -32,9 +34,9 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
-  const updateApproversHandler = useCallback((userIds: string[]) => {
+  const updateApproversHandler = useCallback((userIds?: string[]) => {
     const clonedApproverGroup = { ...editingApproverGroup };
-    const approvers = userIds.map(userId => ({ user: userId }));
+    const approvers = userIds != null ? userIds.map(userId => ({ user: userId })) : [];
     clonedApproverGroup.approvers = approvers;
 
     if (onUpdateApproverGroups != null) {
@@ -56,6 +58,8 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 
       <div className="card rounded">
         <div className="card-body">
+
+          <SearchUserTypeahead onChange={updateApproversHandler} />
 
           <div className="d-flex justify-content-center align-items-center mt-3">
 

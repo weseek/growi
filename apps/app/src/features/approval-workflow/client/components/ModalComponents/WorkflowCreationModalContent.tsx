@@ -80,39 +80,41 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
-        <div className="row align-items-center">
-          <label htmlFor="name" className="col-md-4 col-form-label">
-            {t('approval_workflow.name')}
-          </label>
-          <div className="col-md-8 mb-3">
-            <div className="row">
-              <div className="col">
-                <input
-                  className="form-control"
-                  type="text"
-                  name="name"
-                  value={editingWorkflowName}
-                  onChange={workflowNameChangeHandler}
-                  required
-                />
+        <div className="mb-3">
+          <div className="row align-items-center">
+            <label htmlFor="name" className="col-md-4 col-form-label">
+              {t('approval_workflow.name')}
+            </label>
+            <div className="col-md-8 mb-3">
+              <div className="row">
+                <div className="col">
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="name"
+                    value={editingWorkflowName}
+                    onChange={workflowNameChangeHandler}
+                    required
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="row">
-          <label htmlFor="description" className="col-md-4 col-form-label">
-            {t('approval_workflow.description')}
-          </label>
-          <div className="col-md-8">
-            <div className="row">
-              <div className="col">
-                <textarea
-                  className="form-control"
-                  name="description"
-                  value={editingWorkflowDescription}
-                  onChange={workflowDescriptionChangeHandler}
-                />
+          <div className="row">
+            <label htmlFor="description" className="col-md-4 col-form-label">
+              {t('approval_workflow.description')}
+            </label>
+            <div className="col-md-8">
+              <div className="row">
+                <div className="col">
+                  <textarea
+                    className="form-control"
+                    name="description"
+                    value={editingWorkflowDescription}
+                    onChange={workflowDescriptionChangeHandler}
+                  />
+                </div>
               </div>
             </div>
           </div>
