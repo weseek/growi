@@ -831,8 +831,8 @@
     "completion_conditions": "完工条件",
     "description_for_new_creation": "当最终流程完成时，工作流程被标记为已完成",
     "approval_type": {
-      "and": "大家的认可",
-      "or": "一个人的认可"
+      "AND": "大家的认可",
+      "OR": "一个人的认可"
     },
     "statuses": {
       "INPROGRESS": "进行中",
