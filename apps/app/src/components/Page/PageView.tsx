@@ -9,9 +9,9 @@ import dynamic from 'next/dynamic';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
-  useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
+  useIsForbidden, useIsIdenticalPath, useIsNotCreatable, useIsNotFound,
 } from '~/stores/context';
-import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 

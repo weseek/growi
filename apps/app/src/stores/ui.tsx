@@ -20,12 +20,12 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
-  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
+  useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useIsEditable, useIsReadOnlyUser,
+  useIsEditable, useIsReadOnlyUser, useIsNotFound,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from './context';
 import { useStaticSWR } from './use-static-swr';

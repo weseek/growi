@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
-import { useIsNotFound } from '~/stores/page';
+import { useIsNotFound } from '~/stores/context';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 

@@ -5,7 +5,7 @@ import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
-import { useIsNotFound } from '~/stores/page';
+import { useIsNotFound } from '~/stores/context';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';

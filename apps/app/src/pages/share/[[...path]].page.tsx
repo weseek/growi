@@ -19,10 +19,10 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
 import {
-  useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
+  useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname, useIsNotFound,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
 } from '~/stores/context';
-import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';

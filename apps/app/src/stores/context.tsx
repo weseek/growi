@@ -52,6 +52,10 @@ export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Erro
   return useContextSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
 
+export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+};
+
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
@@ -252,11 +256,12 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isIdenticalPath } = useIsIdenticalPath();
+  const { data: isNotFound } = useIsNotFound();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
-    ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
-      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
+    ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath, isNotFound],
+    ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath, isNotFound]) => {
+      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser && !isNotFound);
     },
   );
 };

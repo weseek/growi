@@ -24,7 +24,7 @@ import type { AxiosResponse } from '~/utils/axios';
 import type { IPageTagsInfo } from '../interfaces/tag';
 
 import {
-  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
+  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser, useIsNotFound,
 } from './context';
 
 
@@ -37,10 +37,6 @@ export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nu
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
   return useSWRStatic('isLatestRevision', initialData);
-};
-
-export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {

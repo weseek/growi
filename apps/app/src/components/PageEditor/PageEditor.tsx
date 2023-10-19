@@ -21,7 +21,7 @@ import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced, useIsNotFound,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
@@ -32,7 +32,7 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsLatestRevision, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
