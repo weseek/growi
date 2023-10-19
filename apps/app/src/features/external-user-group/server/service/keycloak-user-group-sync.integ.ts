@@ -88,7 +88,8 @@ vi.mock('@keycloak/keycloak-admin-client', () => {
 
         // mock group users
         listMembers: (payload) => {
-          if (payload?.id === 'groupId1') {
+          // set 'first' condition to 0 (the first member request to server) or else it will result in infinite loop
+          if (payload?.id === 'groupId1' && payload?.first === 0) {
             return Promise.resolve([
               {
                 id: 'userId1',
@@ -97,7 +98,7 @@ vi.mock('@keycloak/keycloak-admin-client', () => {
               },
             ]);
           }
-          if (payload?.id === 'groupId2') {
+          if (payload?.id === 'groupId2' && payload?.first === 0) {
             return Promise.resolve([
               {
                 id: 'userId2',
@@ -106,7 +107,7 @@ vi.mock('@keycloak/keycloak-admin-client', () => {
               },
             ]);
           }
-          if (payload?.id === 'groupId3') {
+          if (payload?.id === 'groupId3' && payload?.first === 0) {
             return Promise.resolve([
               {
                 id: 'userId3',
@@ -115,7 +116,7 @@ vi.mock('@keycloak/keycloak-admin-client', () => {
               },
             ]);
           }
-          if (payload?.id === 'groupId4') {
+          if (payload?.id === 'groupId4' && payload?.first === 0) {
             return Promise.resolve([
               {
                 id: 'userId4',
@@ -124,7 +125,7 @@ vi.mock('@keycloak/keycloak-admin-client', () => {
               },
             ]);
           }
-          return Promise.reject(new Error('not found'));
+          return Promise.resolve([]);
         },
       };
 
@@ -150,7 +151,6 @@ describe('KeycloakUserGroupSyncService.generateExternalUserGroupTrees', () => {
   });
 
   it('creates ExternalUserGroupTrees', async() => {
-
     const rootNodes = await keycloakUserGroupSyncService?.generateExternalUserGroupTrees();
 
     expect(rootNodes?.length).toBe(2);
