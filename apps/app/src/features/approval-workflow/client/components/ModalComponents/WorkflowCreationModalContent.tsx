@@ -12,22 +12,22 @@ import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 import { ApproverGroupCards } from './ApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
-type WorkflowCreationModalContentProps = {
+const initialApproverGroup = {
+  approvalType: WorkflowApprovalType.AND,
+  approvers: [],
+};
+
+type Props = {
   pageId: string,
   onCreated?: () => void
   onClickWorkflowListPageBackButton: () => void;
 }
 
-export const WorkflowCreationModalContent = (props: WorkflowCreationModalContentProps): JSX.Element => {
+export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
-
-  const initialApproverGroup = {
-    approvalType: WorkflowApprovalType.AND,
-    approvers: [],
-  };
 
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>();
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>();
@@ -49,11 +49,11 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
     setEditingApproverGroups(clonedApproverGroups);
   }, [editingApproverGroups]);
 
-  const addApproverGroupCardButtonClickHandler = (groupIndex: number) => {
+  const addApproverGroupCardButtonClickHandler = useCallback((groupIndex: number) => {
     const clonedApproverGroups = [...editingApproverGroups];
     clonedApproverGroups.splice(groupIndex, 0, initialApproverGroup);
     setEditingApproverGroups(clonedApproverGroups);
-  };
+  }, [editingApproverGroups]);
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
     if (editingApproverGroups == null) {
