@@ -42,12 +42,14 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
+  const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
+
   const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
 
   return (
-    <div className="mt-4">
-      {onClickAddApproverGroupCard != null && (
-        <div className="text-center mt-2">
+    <>
+      {onClickAddApproverGroupCard != null && groupIndex === 0 && isCreatableEditingApproverGroup && (
+        <div className="text-center my-2">
           <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}>{t('approval_workflow.add_flow')}</button>
         </div>
       )}
@@ -73,35 +75,28 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
             </ul>
           </div>
 
-          {t('approval_workflow.')}
+          {t('approval_workflow.completion_conditions')}
         </div>
       </div>
 
-      {onClickAddApproverGroupCard != null && (
-        <div className="text-center mt-2">
+      {onClickAddApproverGroupCard != null && isCreatableEditingApproverGroup && (
+        <div className="text-center my-2">
           <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}>{t('approval_workflow.add_flow')}</button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
 export const ApproverGroupCards = (props: Props): JSX.Element => {
-  const {
-    creatorId, editingApproverGroups, onUpdateApproverGroups, onClickAddApproverGroupCard,
-  } = props;
-
   return (
     <>
-      {editingApproverGroups?.map((_, index) => (
+      {props.editingApproverGroups?.map((_, index) => (
         <ApproverGroupCard
           // eslint-disable-next-line react/no-array-index-key
           key={index}
-          creatorId={creatorId}
           groupIndex={index}
-          editingApproverGroups={editingApproverGroups}
-          onUpdateApproverGroups={onUpdateApproverGroups}
-          onClickAddApproverGroupCard={onClickAddApproverGroupCard}
+          {...props}
         />
       ))}
     </>

@@ -124,7 +124,6 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
           onUpdateApproverGroups={approverGroupsChangeHandler}
           onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler}
         />
-
       </ModalBody>
 
       <ModalFooter>
