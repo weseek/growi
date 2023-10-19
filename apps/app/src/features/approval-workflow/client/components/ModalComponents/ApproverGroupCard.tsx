@@ -1,18 +1,48 @@
-import React, { useState, useCallback } from 'react';
-
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { WorkflowApprovalType, IWorkflowApproverGroupReq } from '../../../interfaces/workflow';
 
-export const ApproverGroupCard = (): JSX.Element => {
+type Props = {
+  creatorId?: string
+  groupIndex: number
+  editingApproverGroups: IWorkflowApproverGroupReq[]
+  onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReq) => void
+}
+
+export const ApproverGroupCard = (props: Props): JSX.Element => {
+  const {
+    creatorId, groupIndex, editingApproverGroups, onUpdateApproverGroups,
+  } = props;
+
   const { t } = useTranslation();
 
-  const [approvalType, setApprovalType] = useState<WorkflowApprovalType>(WorkflowApprovalType.AND);
+  const editingApproverGroup = editingApproverGroups?.[groupIndex];
+  const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
+  const editingApprovers = editingApproverGroup.approvers?.map(v => v.user.toString()) ?? [];
+  const excludedSearchUserId = [creatorId, ...editingApprovers];
 
-  const changeApprovalTypeButtonClickHandler = useCallback(() => {
-    setApprovalType(approvalType === WorkflowApprovalType.AND ? WorkflowApprovalType.OR : WorkflowApprovalType.AND);
-  }, [approvalType]);
+  const changeApprovalTypeButtonClickHandler = useCallback((approvalType: WorkflowApprovalType) => {
+    const clonedApproverGroup = { ...editingApproverGroup };
+    clonedApproverGroup.approvalType = approvalType;
+
+    if (onUpdateApproverGroups != null) {
+      onUpdateApproverGroups(groupIndex, clonedApproverGroup);
+    }
+  }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
+
+  const updateApproversHandler = useCallback((userIds: string[]) => {
+    const clonedApproverGroup = { ...editingApproverGroup };
+    const approvers = userIds.map(userId => ({ user: userId }));
+    clonedApproverGroup.approvers = approvers;
+
+    if (onUpdateApproverGroups != null) {
+      onUpdateApproverGroups(groupIndex, clonedApproverGroup);
+    }
+  }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
+
+  const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
 
   return (
     <div className="card rounded">
@@ -23,10 +53,13 @@ export const ApproverGroupCard = (): JSX.Element => {
 
         <div className="dropdown">
           <a className="btn btn-light btn-sm rounded-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {t(`approval_workflow.approval_type.${approvalType}`)}
+            {t(`approval_workflow.approval_type.${editingApprovalType}`)}
           </a>
-          <ul className="dropdown-menu" onClick={() => changeApprovalTypeButtonClickHandler()}>
-            { approvalType === WorkflowApprovalType.AND
+          <ul
+            className="dropdown-menu"
+            onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
+          >
+            { isApprovalTypeAnd
               ? <>{t('approval_workflow.approval_type.OR')}</>
               : <>{t('approval_workflow.approval_type.AND')}</>
             }

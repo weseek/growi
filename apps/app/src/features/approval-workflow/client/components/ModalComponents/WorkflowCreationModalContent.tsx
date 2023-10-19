@@ -1,26 +1,38 @@
 // TODO: https://redmine.weseek.co.jp/issues/130338
-import React, { FC, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import { IWorkflowApproverGroupReq, WorkflowApprovalType, WorkflowApproverStatus } from '../../../interfaces/workflow';
+import { useCurrentUser } from '~/stores/context';
+
+import { IWorkflowApproverGroupReq, WorkflowApprovalType } from '../../../interfaces/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
 import { ApproverGroupCard } from './ApproverGroupCard';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
-
 type EditableApproverGroupCardProps = {
+  creatorId?: string
+  groupIndex: number
+  editingApproverGroups: IWorkflowApproverGroupReq[]
+  onUpdateApproverGroups: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReq) => void
   onClickAddApproverGroupCard: () => void
 }
 
 const EditableApproverGroupCard = (props: EditableApproverGroupCardProps): JSX.Element => {
-  const { onClickAddApproverGroupCard } = props;
+  const {
+    creatorId, groupIndex, editingApproverGroups, onClickAddApproverGroupCard, onUpdateApproverGroups,
+  } = props;
 
   return (
     <div className="mt-4">
-      <ApproverGroupCard />
+      <ApproverGroupCard
+        creatorId={creatorId}
+        groupIndex={groupIndex}
+        editingApproverGroups={editingApproverGroups}
+        onUpdateApproverGroups={onUpdateApproverGroups}
+      />
 
       <div className="text-center mt-2">
         <button type="button" onClick={() => onClickAddApproverGroupCard()}>フローを追加</button>
@@ -38,26 +50,18 @@ type WorkflowCreationModalContentProps = {
 
 export const WorkflowCreationModalContent = (props: WorkflowCreationModalContentProps): JSX.Element => {
   const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
 
-  const approverGroupsDummyData = [{
+  const initialApproverGroup = {
     approvalType: WorkflowApprovalType.AND,
-    approvers: [
-      {
-        user: '64e41166aa753ef87f073770',
-        status: WorkflowApproverStatus.NONE,
-      },
-      {
-        user: '64ec3bcd763893423f32b9dd',
-        status: WorkflowApproverStatus.NONE,
-      },
-    ],
-  }] as IWorkflowApproverGroupReq[];
+    approvers: [],
+  };
 
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>();
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>();
-  const [editingApproverGroups, setEditingApproverGroups] = useState<IWorkflowApproverGroupReq[]>(approverGroupsDummyData);
+  const [editingApproverGroups, setEditingApproverGroups] = useState<IWorkflowApproverGroupReq[]>([initialApproverGroup]);
 
   const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, editingApproverGroups, editingWorkflowName, editingWorkflowDescription);
 
@@ -68,6 +72,12 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
   const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditingWorkflowDescription(event.target.value);
   }, []);
+
+  const approverGroupsChangeHandler = useCallback((groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReq) => {
+    const clonedApproverGroups = [...editingApproverGroups];
+    clonedApproverGroups[groupIndex] = updateApproverGroupData;
+    setEditingApproverGroups(clonedApproverGroups);
+  }, [editingApproverGroups]);
 
   const addApproverGroupCardButtonClickHandler = () => {
     setEditingApproverGroups([...editingApproverGroups, [] as any]);
@@ -137,11 +147,14 @@ export const WorkflowCreationModalContent = (props: WorkflowCreationModalContent
           </div>
         </div>
 
-        {/* <ApproverGroupCard /> */}
-
-
-        {editingApproverGroups?.map((data, index) => (
-          <EditableApproverGroupCard onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler} />
+        {editingApproverGroups?.map((_, index) => (
+          <EditableApproverGroupCard
+            creatorId={currentUser?._id}
+            groupIndex={index}
+            editingApproverGroups={editingApproverGroups}
+            onUpdateApproverGroups={approverGroupsChangeHandler}
+            onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler}
+          />
         ))}
 
       </ModalBody>
