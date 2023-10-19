@@ -8,7 +8,7 @@ const sidebarNavWidth = 48;
 
 
 type Props = {
-  width: number,
+  width?: number,
   minWidth?: number,
   disabled?: boolean,
   children?: React.ReactNode,
@@ -19,7 +19,7 @@ type Props = {
 
 export const ResizableArea = memo((props: Props): JSX.Element => {
   const {
-    width, minWidth = width,
+    width, minWidth = 0,
     disabled, children,
     onResize, onResizeDone, onCollapsed,
   } = props;

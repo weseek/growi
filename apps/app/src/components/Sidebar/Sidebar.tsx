@@ -22,9 +22,8 @@ import styles from './Sidebar.module.scss';
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
 
 
-const sidebarMinWidth = 240;
-const sidebarCollapsedWidth = 0;
-const sidebarFixedWidthInDrawerMode = 320;
+const resizableAreaMinWidth = 300;
+const resizableAreaCollapsedWidth = 0;
 
 
 export const SidebarSubstance = memo((): JSX.Element => {
@@ -35,7 +34,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
-  const [resizableAreaWidth, setResizableAreaWidth] = useState(0);
+  const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
 
   const toggleDrawerMode = useCallback((bool) => {
     const isStateModified = isResizeDisabled !== bool;
@@ -78,10 +77,10 @@ export const SidebarSubstance = memo((): JSX.Element => {
   // open/close resizable container when drawer mode
   useEffect(() => {
     if (isDrawerMode) {
-      setResizableAreaWidth(sidebarFixedWidthInDrawerMode);
+      setResizableAreaWidth(undefined);
     }
     else if (isCollapsedMode) {
-      setResizableAreaWidth(sidebarCollapsedWidth);
+      setResizableAreaWidth(resizableAreaCollapsedWidth);
     }
     else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -92,12 +91,12 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
 
   return (
-    <div className="grw-sidebar-inner d-print-none h-100">
+    <div className="grw-sidebar-inner d-flex flex-row h-100">
       <SidebarNav />
-      <div className="sidebar-contents-container">
+      <div className="sidebar-contents-container flex-grow-1">
         <ResizableArea
           width={resizableAreaWidth}
-          minWidth={sidebarMinWidth}
+          minWidth={resizableAreaMinWidth}
           disabled={disableResizing}
           onResize={resizeHandler}
           onResizeDone={resizeDoneHandler}
@@ -122,7 +121,7 @@ export const Sidebar = (): JSX.Element => {
   const isOpenClass = `${isDrawerOpened ? 'open' : ''}`;
 
   return (
-    <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass}`} data-testid="grw-sidebar">
+    <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} vh-100`} data-testid="grw-sidebar">
       <SidebarHead />
       <SidebarSubstance />
     </div>
