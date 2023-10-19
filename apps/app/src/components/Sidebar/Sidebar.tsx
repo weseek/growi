@@ -13,6 +13,7 @@ import {
 } from '~/stores/ui';
 
 import { ResizableArea } from './ResizableArea/ResizableArea';
+import { SidebarHead } from './SidebarHead';
 import { SidebarNav } from './SidebarNav';
 
 import styles from './Sidebar.module.scss';
@@ -91,7 +92,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
 
   return (
-    <div className="grw-navigation-wrap">
+    <div className="grw-navigation-wrap d-print-none">
       <SidebarNav />
       <div className="sidebar-contents-container">
         <ResizableArea
@@ -121,7 +122,8 @@ export const Sidebar = (): JSX.Element => {
   const isOpenClass = `${isDrawerOpened ? 'open' : ''}`;
 
   return (
-    <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} d-print-none`} data-testid="grw-sidebar">
+    <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass}`} data-testid="grw-sidebar">
+      <SidebarHead />
       <SidebarSubstance />
     </div>
   );

@@ -1,0 +1,54 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '../variables' as var;
+
+.grw-sidebar-head :global {
+  // declare $height with the same value as the sidebar nav width
+  $height: var.$grw-sidebar-nav-width;
+
+  // set position and z-index to prevent dropdowns covered by other element
+  position: relative;
+  z-index: bs.$zindex-fixed;
+
+  height: $height;
+  border-right : 1px solid var(--bs-border-color);
+
+  .grw-logo {
+    $width: var.$grw-sidebar-nav-width;
+    $logomark-width: 27.7px;
+    $logomark-height: 24px;
+
+    svg {
+      width: $width;
+      height: $height;
+      padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
+    }
+  }
+}
+
+
+// == Colors
+.grw-sidebar-head :global {
+}
+@include bs.color-mode(light) {
+  .grw-sidebar-head :global {
+    background-color: var(
+      --grw-sidebar-head-bg,
+      var(
+        --grw-sidebar-nav-bg,
+        var(--grw-highlight-100)
+      )
+    );
+  }
+}
+@include bs.color-mode(dark) {
+  .grw-sidebar-head :global {
+    background-color: var(
+      --grw-sidebar-head-bg,
+      var(
+        --grw-sidebar-nav-bg,
+        var(--grw-highlight-800)
+      )
+    );
+  }
+}

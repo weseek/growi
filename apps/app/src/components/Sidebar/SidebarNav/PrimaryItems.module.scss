@@ -1,6 +1,6 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use '~/styles/variables' as var;
+@use '../variables' as var;
 
 @use './button-styles';
 
@@ -21,6 +21,7 @@
 
 // Add indicator
 .grw-primary-items :global {
+  $btn-height: var.$grw-sidebar-primary-button-height;
   $btn-active-indicator-height: 34px;
 
   .btn {
@@ -37,7 +38,7 @@
         height: $btn-active-indicator-height;
         content: '';
         background-color: var(--bs-primary);
-        transform: translateY(#{(var.$grw-sidebar-nav-height - $btn-active-indicator-height) / 2});
+        transform: translateY(#{($btn-height - $btn-active-indicator-height) / 2});
       }
     }
   }

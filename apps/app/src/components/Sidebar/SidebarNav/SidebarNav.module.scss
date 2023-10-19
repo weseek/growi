@@ -1,23 +1,16 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use '~/styles/variables' as var;
+@use '../variables' as var;
 
 .grw-sidebar-nav :global {
   // set position and z-index to prevent dropdowns covered by other element
   position: relative;
   z-index: bs.$zindex-fixed;
 
+  width: var.$grw-sidebar-nav-width;
   height: 100vh;
 
   border-right : 1px solid var(--bs-border-color);
-
-  .grw-logo {
-    svg {
-      width: var.$grw-logo-width;
-      height: var.$grw-logo-width;
-      padding: (var.$grw-logo-width - var.$grw-logomark-width) / 2;
-    }
-  }
 
   .grw-sidebar-nav-secondary-container {
     position: fixed;
