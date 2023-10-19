@@ -56,26 +56,29 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 
       <div className="card rounded">
         <div className="card-body">
-          <div className="text-muted">
-            <i className="fa fa-user" />
-          </div>
 
-          <div className="dropdown">
-            <a className="btn btn-light btn-sm rounded-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {t(`approval_workflow.approval_type.${editingApprovalType}`)}
-            </a>
-            <ul
-              className="dropdown-menu"
-              onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
-            >
-              { isApprovalTypeAnd
-                ? <>{t('approval_workflow.approval_type.OR')}</>
-                : <>{t('approval_workflow.approval_type.AND')}</>
-              }
-            </ul>
-          </div>
+          <div className="d-flex justify-content-center align-items-center mt-3">
 
-          {t('approval_workflow.completion_conditions')}
+            <span className="text-muted">
+              {t('approval_workflow.completion_conditions')}
+            </span>
+
+            <div className="dropdown">
+              <a className="btn btn-light btn-sm rounded-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {t(`approval_workflow.approval_type.${editingApprovalType}`)}
+              </a>
+              <ul
+                className="dropdown-menu"
+                onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
+              >
+                { isApprovalTypeAnd
+                  ? <>{t('approval_workflow.approval_type.OR')}</>
+                  : <>{t('approval_workflow.approval_type.AND')}</>
+                }
+              </ul>
+            </div>
+
+          </div>
         </div>
       </div>
 
